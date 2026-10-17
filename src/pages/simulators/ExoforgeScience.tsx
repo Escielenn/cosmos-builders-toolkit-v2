@@ -1,7 +1,9 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 const ExoforgeScience = () => {
+  useMetaTags({ title: "ExoForge: The Science" });
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />

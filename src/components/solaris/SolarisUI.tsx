@@ -1,7 +1,7 @@
 /**
  * SolarisUI, Floating data readout panel (right side).
  * Shows star info + selected body info.
- * HTML overlay in simulator aesthetic (cyan on deep black).
+ * HTML overlay in the simulator aesthetic (product primary on the sim canvas).
  */
 
 import type { StarData, PlanetData, SelectedBody } from "./types";
@@ -15,21 +15,21 @@ interface SolarisUIProps {
 const S = {
   // Top-right, above the generate panel. Capped so the two cannot overlap.
   panel:
-    "absolute right-3 top-14 z-10 w-56 bg-[rgba(15,15,16,0.92)] border border-sf-line backdrop-blur-[16px] rounded-none p-3.5 space-y-3 max-h-[44%] overflow-y-auto sf-sb",
+    "absolute right-3 top-14 z-10 w-56 bg-sf-surface/90 border border-sf-line backdrop-blur-sf-panel rounded-none p-3.5 space-y-3 max-h-[44%] overflow-y-auto sf-sb",
   // Readout contrast: labels were white/30, which is below the tier-3 floor for
   // text you are meant to read rather than skim past.
   sectionLabel:
-    "font-heading text-[13px] uppercase tracking-[2px] text-sf-primary-bright/80 mb-1.5 block",
+    "font-heading text-[13px] uppercase tracking-wide text-sf-primary-text mb-1.5 block",
   row: "flex items-baseline justify-between gap-2 py-0.5",
-  label: "font-heading text-[13px] uppercase tracking-[1.5px] text-white/50 shrink-0",
-  value: "font-mono text-[14px] text-white/95 text-right",
-  name: "font-heading text-[14px] uppercase tracking-[2px] text-white mb-1",
+  label: "font-heading text-[13px] uppercase tracking-[1.5px] text-t3 shrink-0",
+  value: "font-mono text-[14px] text-t1 text-right",
+  name: "font-heading text-[14px] uppercase tracking-wide text-t1 mb-1",
   badge:
-    "inline-block px-1.5 py-0.5 text-[12px] uppercase tracking-wider font-mono border rounded-sm mt-1",
+    "inline-block px-1.5 py-0.5 text-[12px] uppercase tracking-wider font-mono border rounded-sf-tag mt-1",
   badgeHz:
-    "bg-[rgba(46,204,113,0.1)] border-sf-emerald text-sf-emerald-text",
+    "bg-sf-emerald/[0.06] border-sf-emerald text-sf-emerald-text",
   ghost:
-    "text-[13px] text-white/45 font-mono uppercase tracking-wider text-center py-4",
+    "text-[13px] text-t3 font-mono uppercase tracking-wider text-center py-4",
 };
 
 function fmt(n: number, decimals = 2): string {
@@ -48,7 +48,7 @@ export default function SolarisUI({ systemName, star, selectedBody }: SolarisUIP
     <div className={S.panel}>
       {/* Title */}
       <div className="pb-2 border-b border-sf-line">
-        <p className="font-heading text-[12px] uppercase tracking-[2px] text-sf-primary-text/50">
+        <p className="font-heading text-[12px] uppercase tracking-wide text-t4">
           System
         </p>
         <p className={S.name}>{systemName}</p>
@@ -72,9 +72,9 @@ export default function SolarisUI({ systemName, star, selectedBody }: SolarisUIP
         {selectedBody && selectedBody.type === "planet" ? (
           <PlanetReadout planet={selectedBody.data as PlanetData} />
         ) : selectedBody && selectedBody.type === "star" ? (
-          <p className={S.ghost}>Star selected</p>
+          <p className={S.ghost}>STAR SELECTED.</p>
         ) : (
-          <p className={S.ghost}>Click any body to inspect</p>
+          <p className={S.ghost}>SELECT A BODY TO INSPECT.</p>
         )}
       </div>
     </div>
@@ -113,7 +113,7 @@ function PlanetReadout({ planet }: { planet: PlanetData }) {
           <Row label="Hazard" value={m.hazard} />
           <Row label="Resources" value={m.resources} />
           {m.note && (
-            <p className="mt-1.5 font-sans text-[13px] leading-relaxed text-white/40">
+            <p className="mt-1.5 font-sans text-[13px] leading-relaxed text-t2">
               {m.note}
             </p>
           )}

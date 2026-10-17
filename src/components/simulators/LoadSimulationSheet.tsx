@@ -15,6 +15,8 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
+import { EmptyState } from "@/components/ui/empty-state";
 import type { SimulationSave } from "@/hooks/use-simulation-save";
 
 interface LoadSimulationSheetProps {
@@ -36,7 +38,7 @@ export default function LoadSimulationSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-80 bg-sf-surface border-sf-line-interactive">
         <SheetHeader>
-          <SheetTitle className="font-heading text-sm font-light uppercase tracking-[3px] text-sf-primary-text flex items-center gap-2">
+          <SheetTitle className="font-heading text-sm font-light uppercase tracking-wide text-sf-primary-text flex items-center gap-2">
             <FolderOpen className="w-4 h-4" />
             Saved Simulations
           </SheetTitle>
@@ -44,21 +46,21 @@ export default function LoadSimulationSheet({
 
         <div className="mt-4 space-y-2">
           {isLoading && (
-            <p className="font-mono text-[13px] uppercase tracking-wider text-t4 text-center py-4">
-              Loading...
-            </p>
+            <Loader size="sm" message="RETRIEVING SAVES" className="py-4" />
           )}
 
           {!isLoading && saves.length === 0 && (
-            <p className="font-mono text-[13px] uppercase tracking-wider text-t4 text-center py-4">
-              No saved simulations
-            </p>
+            <EmptyState
+              hideDial
+              title="NO SAVED SIMULATIONS ON FILE."
+              description="Save a run from the simulator toolbar to see it here."
+            />
           )}
 
           {saves.map((save) => (
             <div
               key={save.id}
-              className="p-3 border border-sf-line bg-white/[0.02] hover:bg-white/[0.04] transition-colors"
+              className="p-3 border border-sf-line bg-sf-surface hover:bg-sf-surface-elevated hover:border-sf-line-emphasis transition-colors duration-base"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
@@ -78,10 +80,10 @@ export default function LoadSimulationSheet({
                     onLoad(save);
                     onOpenChange(false);
                   }}
-                  className="shrink-0 text-sf-primary-text hover:text-sf-primary-text/80"
+                  className="shrink-0 min-h-hit text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1"
                 >
                   <Play className="w-3.5 h-3.5 mr-1" />
-                  Load
+                  LOAD
                 </Button>
               </div>
             </div>

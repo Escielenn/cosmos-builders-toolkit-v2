@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { Save, FolderOpen, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useMetaTags } from "@/hooks/use-meta-tags";
+import { Loader } from "@/components/ui/loader";
 import { useWorldId } from "@/hooks/use-world-id";
 import { useSimulationSave } from "@/hooks/use-simulation-save";
 import { useSimOpenOn } from "@/hooks/use-sim-open-on";
@@ -17,6 +19,7 @@ import { useDismissedFlags } from "@/hooks/use-dismissed-flags";
 import SimSubjectChip from "@/components/simulators/SimSubjectChip";
 
 const RogueSimulator = () => {
+  useMetaTags({ title: "Rogue" });
   const [loaded, setLoaded] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const worldId = useWorldId();
@@ -89,10 +92,7 @@ const RogueSimulator = () => {
         <div className="flex-1 relative" style={{ marginTop: 64 }}>
           {!loaded && (
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-background">
-              <div className="w-10 h-10 border-2 border-primary border-t-primary rounded-full animate-spin" />
-              <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground animate-pulse">
-                Initializing ROGUE
-              </p>
+              <Loader message="INITIALIZING ROGUE" />
             </div>
           )}
           {/* Wrapper shrinks 340px right when NarrativeBridge is open so the
@@ -111,14 +111,14 @@ const RogueSimulator = () => {
               src="/rogue/sim.html"
               title="Rogue, Wandering Object Encounters"
               allow="fullscreen"
-              className={`w-full h-full border-0 transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+              className={`w-full h-full border-0 transition-opacity duration-slow ease-sf-out ${loaded ? 'opacity-100' : 'opacity-0'}`}
               onLoad={() => setLoaded(true)}
             />
           </div>
           {/* Save/Load controls */}
           {loaded && (
             <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex flex-col items-stretch gap-1.5">
-            <div className="flex items-center gap-1.5 border border-sf-primary bg-sf-void/90 px-1.5 py-1 backdrop-blur-sm">
+            <div className="flex items-center gap-1.5 border border-sf-line bg-sf-surface/90 px-1.5 py-1 backdrop-blur-sf-panel">
               <Button
                 variant="outline"
                 size="sm"
@@ -128,7 +128,7 @@ const RogueSimulator = () => {
                   refreshPayload();
                   setPublishDialogOpen(true);
                 }}
-                className="bg-sf-primary/[0.12] border-sf-primary text-sf-primary-bright-text hover:bg-sf-primary/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                className="bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] uppercase tracking-wider min-h-hit px-3"
               >
                 <Rocket className="w-3 h-3 mr-1" />
                 Publish
@@ -137,7 +137,7 @@ const RogueSimulator = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setLoadSheetOpen(true)}
-                className="bg-sf-primary/[0.12] border-sf-primary text-sf-primary-bright-text hover:bg-sf-primary/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                className="bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] uppercase tracking-wider min-h-hit px-3"
               >
                 <FolderOpen className="w-3 h-3 mr-1" />
                 Load
@@ -146,7 +146,7 @@ const RogueSimulator = () => {
                 variant="outline"
                 size="sm"
                 onClick={requestSave}
-                className="bg-sf-primary/[0.12] border-sf-primary text-sf-primary-bright-text hover:bg-sf-primary/25 hover:text-white text-[13px] uppercase tracking-wider h-8 px-3"
+                className="bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] uppercase tracking-wider min-h-hit px-3"
               >
                 <Save className="w-3 h-3 mr-1" />
                 Save
@@ -165,7 +165,7 @@ const RogueSimulator = () => {
               )}
             </div>
               {simFlags.length > 0 && (
-                <div className="max-w-sm border border-sf-primary bg-sf-void/90 px-3 py-2 backdrop-blur-sm">
+                <div className="max-w-sm border border-sf-line bg-sf-surface/90 px-3 py-2 backdrop-blur-sf-panel">
                   <SimFlagStrip flags={simFlags} dismissedIds={dismissedIds} onDismiss={dismissFlag} />
                 </div>
               )}

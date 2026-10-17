@@ -18,7 +18,7 @@ export function SimSubjectChip({ worldId }: { worldId?: string | null }) {
 
   if (subject.isLoading) {
     return (
-      <span className="flex h-8 items-center px-2 font-mono text-[12px] uppercase tracking-wider text-t4">
+      <span className="flex min-h-hit items-center px-2 font-mono text-[12px] uppercase tracking-wider text-t4">
         // LOCATING SUBJECT…
       </span>
     );
@@ -27,7 +27,7 @@ export function SimSubjectChip({ worldId }: { worldId?: string | null }) {
   if (subject.isMissing || !subject.entry) {
     return (
       <span
-        className="flex h-8 items-center gap-1.5 border border-sf-crimson px-2 font-mono text-[12px] uppercase tracking-wider text-sf-crimson-text"
+        className="flex min-h-hit items-center gap-1.5 border border-sf-crimson px-2 font-mono text-[12px] uppercase tracking-wider text-sf-crimson-text"
         title="The id in this link is not on file in that world."
       >
         // SUBJECT NOT ON FILE
@@ -46,12 +46,12 @@ export function SimSubjectChip({ worldId }: { worldId?: string | null }) {
   );
 
   const className =
-    "flex h-8 items-center gap-1.5 border border-sf-primary bg-sf-primary/[0.06] px-2";
+    "flex min-h-hit items-center gap-1.5 border border-sf-primary bg-sf-primary/[0.06] px-2";
 
   return worldId ? (
     <Link
       to={`/worlds/${worldId}/codex/${entry.id}`}
-      className={`${className} transition-colors hover:border-sf-primary-bright`}
+      className={`${className} transition-colors duration-base hover:bg-sf-primary/[0.12] hover:shadow-sf-glow-teal`}
       title="Open this entity's Codex page"
     >
       {inner}

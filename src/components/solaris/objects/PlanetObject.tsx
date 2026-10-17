@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
+import { tokens } from "@/styles/tokens";
 import type { PlanetData } from "../types";
 import { radiusToScene, auToScene } from "../utils/scaleAU";
 import { getPlanetMaterial } from "../utils/planetColor";
@@ -82,10 +83,10 @@ export function PlanetObject({ planet, sim, index, onClick, onDragStart, selecte
             map={texture ?? undefined}
             // The texture already carries the planet's colour, so tinting it
             // again would double-darken it. White lets the map through as painted.
-            color={texture ? "#ffffff" : planet.colorHex}
+            color={texture ? "white" : planet.colorHex}
             roughness={material.roughness}
             metalness={material.metalness}
-            emissive={planet.inHabitableZone ? "#22CC66" : "#000000"}
+            emissive={planet.inHabitableZone ? tokens.status.ok : "black"}
             emissiveIntensity={planet.inHabitableZone ? 0.15 : 0}
           />
         </mesh>
@@ -106,7 +107,7 @@ export function PlanetObject({ planet, sim, index, onClick, onDragStart, selecte
       </group>
 
       {selected && (
-        <spotLight position={[0, radius * 3, 0]} target-position={[0, 0, 0]} intensity={0.5} color="#ffffff" angle={0.5} penumbra={0.8} distance={radius * 10} />
+        <spotLight position={[0, radius * 3, 0]} target-position={[0, 0, 0]} intensity={0.5} color="white" angle={0.5} penumbra={0.8} distance={radius * 10} />
       )}
 
       {showMoons && planet.moons.map((moon, moonIdx) => (

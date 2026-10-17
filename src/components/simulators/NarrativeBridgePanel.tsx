@@ -56,7 +56,7 @@ export default function NarrativeBridgePanel({
       /* storage unavailable (private mode / quota); state stays in memory */
     }
     setSaved(true);
-    toast({ title: "NOTES SAVED.", description: "Narrative notes saved locally." });
+    toast({ title: "NOTES SAVED.", description: "STORED IN THIS BROWSER." });
   }, [notes, config.simulatorType, toast]);
 
   const filledCount = Object.values(notes).filter((v) => v.trim()).length;
@@ -68,12 +68,12 @@ export default function NarrativeBridgePanel({
     return (
       <button
         onClick={() => onOpenChange(true)}
-        className="absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-sf-primary/[0.08] border border-sf-primary border-r-0 px-2.5 py-5 hover:bg-sf-primary/[0.16] transition-colors duration-base group shadow-[0_0_18px_rgba(21,193,123,0.18)]"
+        className="absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-sf-primary/[0.08] border border-sf-primary border-r-0 px-2.5 py-5 hover:bg-sf-primary/[0.16] transition-colors duration-base ease-sf-out group shadow-sf-glow-teal"
         title="Open Narrative Bridge"
         aria-label="Open Narrative Bridge"
       >
-        <ChevronLeft className="w-3.5 h-3.5 text-sf-primary-text group-hover:text-white mb-2 mx-auto" />
-        <span className="font-heading text-[13px] font-medium uppercase tracking-[2px] text-sf-primary-text group-hover:text-white transition-colors [writing-mode:vertical-lr] rotate-180 inline-block">
+        <ChevronLeft className="w-3.5 h-3.5 text-sf-primary-text group-hover:text-t1 mb-2 mx-auto" />
+        <span className="font-heading text-[13px] font-medium uppercase tracking-wide text-sf-primary-text group-hover:text-t1 transition-colors duration-base [writing-mode:vertical-lr] rotate-180 inline-block">
           Narrative Bridge
         </span>
         {filledCount > 0 && (
@@ -90,19 +90,19 @@ export default function NarrativeBridgePanel({
 
   // Expanded panel
   return (
-    <div className="absolute right-0 top-0 bottom-0 z-30 w-80 max-w-[92vw] bg-sf-void/95 backdrop-blur-sf-side border-l border-sf-line-interactive overflow-y-auto sf-sb animate-in slide-in-from-right duration-300">
+    <div className="absolute right-0 top-0 bottom-0 z-30 w-80 max-w-[92vw] bg-sf-void/95 backdrop-blur-sf-side border-l border-sf-line-interactive overflow-y-auto sf-sb animate-in slide-in-from-right duration-slow">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-sf-void/95 backdrop-blur-sf-side px-4 py-3 border-b border-sf-line">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <PenLine className="w-3.5 h-3.5 text-sf-primary-text" />
-            <span className="font-heading text-[13px] uppercase tracking-[2px] text-sf-primary-text">
+            <span className="font-heading text-[13px] uppercase tracking-wide text-sf-primary-text">
               Narrative Bridge
             </span>
           </div>
           <button
             onClick={() => onOpenChange(false)}
-            className="text-t4 hover:text-t2 transition-colors p-1"
+            className="inline-flex min-h-hit min-w-hit items-center justify-center text-t3 hover:text-t1 transition-colors duration-base"
             aria-label="Close Narrative Bridge"
           >
             <X className="w-4 h-4" />
@@ -118,7 +118,7 @@ export default function NarrativeBridgePanel({
         {config.questions.map((q) => (
           <div key={q.id}>
             <label
-              className="font-heading text-[13px] uppercase tracking-[2px] block mb-1.5"
+              className="font-heading text-[13px] uppercase tracking-wide block mb-1.5"
               style={{ color: q.layerColor }}
             >
               {q.layer}
@@ -129,22 +129,22 @@ export default function NarrativeBridgePanel({
             <Textarea
               value={notes[q.id] ?? ""}
               onChange={(e) => updateNote(q.id, e.target.value)}
-              placeholder="Write your thoughts..."
-              className="min-h-[80px] bg-white/[0.03] border-sf-line-interactive text-t2 text-xs resize-y"
+              placeholder="Write your thoughts…"
+              className="min-h-[80px] rounded-none bg-sf-surface border-sf-line-interactive hover:border-sf-line-emphasis text-t2 text-sf-body resize-y"
             />
           </div>
         ))}
 
         {/* General Notes, freeform textarea */}
         <div>
-          <label className="font-heading text-[13px] uppercase tracking-[2px] text-sf-primary-text/70 block mb-1.5">
+          <label className="font-heading text-[13px] uppercase tracking-wide text-sf-primary-text block mb-1.5">
             General Notes
           </label>
           <textarea
             value={notes["general_notes"] ?? ""}
             onChange={(e) => updateNote("general_notes", e.target.value)}
             placeholder="Free-form notes, observations, story ideas..."
-            className="w-full font-sans text-[14px] leading-relaxed text-t2 placeholder:text-t4 bg-white/[0.03] border border-sf-line-interactive rounded-[6px] px-[14px] py-3 min-h-[120px] resize-y focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus focus:border-sf-primary transition-colors"
+            className="w-full font-sans text-sf-body leading-relaxed text-t2 placeholder:text-t3 bg-sf-surface border border-sf-line-interactive hover:border-sf-line-emphasis rounded-none px-[14px] py-3 min-h-[120px] resize-y focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus focus:border-sf-primary transition-colors"
           />
         </div>
 
@@ -152,17 +152,17 @@ export default function NarrativeBridgePanel({
         <div className="pt-3 border-t border-sf-line space-y-2">
           <div className="flex items-center justify-between">
             <p className="font-mono text-[12px] text-t4 uppercase tracking-wider">
-              {filledCount} / {config.questions.length} notes written
+              {filledCount} / {config.questions.length} NOTES WRITTEN
             </p>
             <Button
               variant="outline"
               size="sm"
               onClick={handleSave}
               disabled={filledCount === 0}
-              className="h-6 text-[12px] uppercase tracking-wider px-2 gap-1 border-sf-primary text-sf-primary-text hover:bg-sf-primary/10"
+              className="min-h-hit text-[12px] uppercase tracking-wider px-3 gap-1 border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12]"
             >
               <Save className="w-3 h-3" />
-              {saved ? "Saved" : "Save Notes"}
+              {saved ? "NOTES SAVED" : "SAVE NOTES"}
             </Button>
           </div>
           <p className="text-[12px] text-t4 leading-relaxed">

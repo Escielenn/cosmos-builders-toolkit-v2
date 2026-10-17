@@ -11,7 +11,7 @@
  */
 
 import { useState, useCallback, useEffect, useMemo } from "react";
-import { Rocket, Globe } from "lucide-react";
+import { Rocket, Globe, TriangleAlert } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -190,7 +190,7 @@ export default function PublishToWorldDialog({
 
       toast({
         title: "PUBLISHED TO WORLD.",
-        description: `"${name.trim()}" has been added as a ${entryType.replace("_", " ")}.`,
+        description: `"${name.trim()}" ON FILE AS ${entryType.replace("_", " ").toUpperCase()}.`,
       });
       onOpenChange(false);
       setName("");
@@ -254,7 +254,7 @@ export default function PublishToWorldDialog({
       <Dialog open={open && !matchDialogOpen} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-md bg-sf-surface border-sf-line-interactive">
           <DialogHeader>
-            <DialogTitle className="font-heading text-sm font-light uppercase tracking-[3px] text-sf-primary-text flex items-center gap-2">
+            <DialogTitle className="font-heading text-sm font-light uppercase tracking-wide text-sf-primary-text flex items-center gap-2">
               <Globe className="w-4 h-4" />
               Publish to World
             </DialogTitle>
@@ -298,7 +298,7 @@ export default function PublishToWorldDialog({
 
             {narrativeNotes && Object.values(narrativeNotes).some((v) => v.trim()) && (
               <p className="text-[13px] text-t4 font-mono uppercase tracking-wider">
-                + Narrative notes will be attached
+                + NARRATIVE NOTES ATTACHED
               </p>
             )}
 
@@ -307,7 +307,7 @@ export default function PublishToWorldDialog({
                 numbers came with it. */}
             {hasData ? (
               facts.length > 0 ? (
-                <div className="border border-sf-line-interactive">
+                <div className="border border-sf-line">
                   <div className="border-b border-sf-line-hairline px-3 py-1.5 font-mono text-[12px] uppercase tracking-wider text-t3">
                     Promote {facts.length} {facts.length === 1 ? "value" : "values"} to canon
                   </div>
@@ -331,7 +331,8 @@ export default function PublishToWorldDialog({
                 </p>
               )
             ) : (
-              <p className="text-[13px] leading-relaxed text-sf-amber">
+              <p className="flex items-start gap-1.5 text-[13px] leading-relaxed text-sf-amber-text">
+                <TriangleAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-sf-amber" aria-hidden />
                 Reading the simulation. If this does not clear in a moment, close
                 this and press Save first, so the entity arrives with its numbers
                 rather than just a name.
@@ -360,7 +361,7 @@ export default function PublishToWorldDialog({
               ) : (
                 <Rocket className="w-4 h-4" />
               )}
-              {isPublishing ? "Publishing..." : "Publish"}
+              {isPublishing ? "PUBLISHING…" : "Publish"}
             </Button>
           </DialogFooter>
         </DialogContent>
