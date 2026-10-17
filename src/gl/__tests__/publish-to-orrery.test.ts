@@ -10,7 +10,9 @@
 // It did not. Solaris publishes `planet.orbital_distance_au`; bind/system.ts
 // reads `orbit.semi_major_axis`, which is the name 08-VOCABULARY declares and
 // which NOTHING IN THE APP WRITES. So a published planet arrived at the orrery
-// carrying its distance and was reported unplaced.
+// carrying its distance and was reported unplaced. The alias table fixed the
+// read side; Solaris now also writes the canonical name, and entries written
+// under the old name are still placed (legacyPublishedPlanet below).
 //
 // These tests are built from the real publish builder rather than a hand-made
 // entry, because the bug lived exactly in the gap between what that builder
@@ -60,6 +62,17 @@ function publishedPlanet(payload = PAYLOAD): WorldEntry {
   } as unknown as WorldEntry;
 }
 
+/** An entry as a Solaris publish left it before writes moved to the
+ * canonical name: orbital distance stored as `planet.orbital_distance_au`. */
+function legacyPublishedPlanet(payload = PAYLOAD): WorldEntry {
+  const entry = publishedPlanet(payload);
+  const meta = entry.metadata as { _published_facts: Array<Record<string, unknown>> };
+  meta._published_facts = meta._published_facts.map((f) =>
+    f.predicate === "orbit.semi_major_axis" ? { ...f, predicate: "planet.orbital_distance_au" } : f,
+  );
+  return entry;
+}
+
 const star: WorldEntry = {
   id: "star-1",
   world_id: "w",
@@ -88,7 +101,7 @@ describe("a planet published from Solaris reaches the orrery", () => {
   it("carries the same number the publish diff showed", () => {
     // The reviewable diff and the ring must not be able to disagree.
     const facts = solarisPlanetPublishFacts(PAYLOAD);
-    const shown = facts.find((f) => f.predicate === "planet.orbital_distance_au")!;
+    const shown = facts.find((f) => f.predicate === "orbit.semi_major_axis")!;
     const bound = bindSystem(star, [publishedPlanet()]);
     expect(bound.bodies[0].orbit.semiMajorAxisAU).toBeCloseTo(Number(shown.value), 6);
   });
@@ -108,7 +121,7 @@ describe("the canonical name still wins", () => {
   it("prefers orbit.semi_major_axis when both are present", () => {
     // The alias exists to rescue an older publish, never to outrank the name
     // 08-VOCABULARY declares.
-    const entry = publishedPlanet();
+    const entry = legacyPublishedPlanet();
     const meta = entry.metadata as { _published_facts: unknown[] };
     meta._published_facts = [
       ...(meta._published_facts as Array<Record<string, unknown>>),
@@ -116,6 +129,12 @@ describe("the canonical name still wins", () => {
     ];
     const bound = bindSystem(star, [entry]);
     expect(bound.bodies[0].orbit.semiMajorAxisAU).toBeCloseTo(3.3, 6);
+  });
+
+  it("still places a planet published before the canonical write (deprecated name only)", () => {
+    const bound = bindSystem(star, [legacyPublishedPlanet()]);
+    expect(bound.unplaced).toEqual([]);
+    expect(bound.bodies[0].orbit.semiMajorAxisAU).toBeCloseTo(1.4, 6);
   });
 
   it("still reports a planet with NO distance at all as unplaced", () => {
@@ -170,8 +189,8 @@ describe("no new predicate arrives unnoticed", () => {
     // this fails, add the predicate here and check that whatever reads that
     // fact asks for the same spelling — or add an alias.
     expect(solarisPlanetPublishFacts(PAYLOAD).map((f) => f.predicate).sort()).toEqual([
+      "orbit.semi_major_axis",
       "planet.name",
-      "planet.orbital_distance_au",
       "planet.type",
       "star.luminosity_lsun",
       "star.spectral_class",
