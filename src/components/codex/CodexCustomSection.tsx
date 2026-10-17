@@ -113,7 +113,7 @@ const SortableRow = ({
       {/* Drag handle, only this triggers drag */}
       <button
         type="button"
-        className="shrink-0 p-0.5 cursor-grab active:cursor-grabbing text-t4 opacity-0 group-hover/sortable:opacity-100 transition-opacity touch-none"
+        className="shrink-0 p-0.5 cursor-grab active:cursor-grabbing transition-colors duration-base text-t4 hover:text-t2 touch-none"
         {...attributes}
         {...listeners}
         tabIndex={-1}
@@ -233,7 +233,7 @@ const ChildRow = ({
 // Static preview row shown in DragOverlay (no interactivity needed)
 const DragPreviewRow = ({ element }: { element: CodexElement }) => (
   <div className="flex items-center gap-1.5 px-3 py-[3px] bg-sf-surface-elevated border border-primary shadow-lg shadow-primary/5">
-    <GripVertical className="w-3 h-3 text-primary shrink-0" />
+    <GripVertical className="w-3 h-3 text-sf-primary-text shrink-0" />
     <span className="text-[13px] text-t1 truncate">
       {element.title}
     </span>
@@ -421,7 +421,7 @@ const CodexCustomSection = ({
         ) : (
           <ChevronRight className="w-2.5 h-2.5 text-t3 shrink-0" />
         )}
-        <span className="font-heading text-[12px] uppercase tracking-[3px] text-t3 flex-1">
+        <span className="font-heading text-[12px] uppercase tracking-wide text-t3 flex-1">
           Custom
         </span>
         {elements.length > 0 && (
@@ -434,8 +434,8 @@ const CodexCustomSection = ({
       {expanded && (
         <div>
           {sortedTopLevel.length === 0 ? (
-            <p className="px-3 py-1.5 text-[12px] text-t4 italic">
-              No entries on file.
+            <p className="px-3 py-1.5 font-mono text-sf-mono uppercase text-t4">
+              NO ENTRIES ON FILE.
             </p>
           ) : (
             <DndContext
@@ -526,14 +526,14 @@ const CodexCustomSection = ({
           <div className="flex gap-2 px-3 py-2">
             <button
               onClick={onCreateFolder}
-              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-sf-line-interactive text-[12px] font-heading uppercase tracking-wider text-t3 hover:text-primary hover:border-primary transition-colors"
+              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-sf-line-interactive text-[12px] font-heading uppercase tracking-wider text-t3 hover:text-sf-primary-text hover:border-primary transition-colors"
             >
               <Plus className="w-3 h-3" />
               New Folder
             </button>
             <button
               onClick={onCreateEntry}
-              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-sf-line-interactive text-[12px] font-heading uppercase tracking-wider text-t3 hover:text-primary hover:border-primary transition-colors"
+              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-sf-line-interactive text-[12px] font-heading uppercase tracking-wider text-t3 hover:text-sf-primary-text hover:border-primary transition-colors"
             >
               <Plus className="w-3 h-3" />
               New Entry

@@ -92,7 +92,7 @@ export function CreateEntityModal({
       {/* Modals sit on `elevated` above the scrim — there is no fourth plane. */}
       <DialogContent className="border-sf-line-interactive bg-sf-surface-elevated sm:max-w-[420px]">
         <DialogHeader>
-          <DialogTitle className="font-heading text-sm font-light uppercase tracking-[2px] text-t1">
+          <DialogTitle className="font-heading text-sm font-light uppercase tracking-wide text-t1">
             New Entity
           </DialogTitle>
         </DialogHeader>
@@ -100,25 +100,25 @@ export function CreateEntityModal({
         <div className="space-y-4">
           {/* Name */}
           <div className="space-y-1.5">
-            <Label className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
+            <Label className="text-[12px] font-medium uppercase tracking-wide text-t3">
               Name
             </Label>
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Keth, The Venn, Commander Voss..."
-              className="h-9 text-xs rounded-xs"
+              className="h-9 text-xs rounded-none"
               autoFocus
             />
           </div>
 
           {/* Entity Type */}
           <div className="space-y-1.5">
-            <Label className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
+            <Label className="text-[12px] font-medium uppercase tracking-wide text-t3">
               Type
             </Label>
             <Select value={entityType} onValueChange={(v) => handleTypeChange(v as EntityType)}>
-              <SelectTrigger className="h-9 text-xs rounded-xs">
+              <SelectTrigger className="h-9 text-xs rounded-none">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="max-h-[200px]">
@@ -134,28 +134,28 @@ export function CreateEntityModal({
           {/* Custom type label */}
           {entityType === "custom" && (
             <div className="space-y-1.5">
-              <Label className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
+              <Label className="text-[12px] font-medium uppercase tracking-wide text-t3">
                 Custom Type Label
               </Label>
               <Input
                 value={customTypeLabel}
                 onChange={(e) => setCustomTypeLabel(e.target.value)}
                 placeholder="e.g. Trade Route, Weather Pattern..."
-                className="h-9 text-xs rounded-xs"
+                className="h-9 text-xs rounded-none"
               />
             </div>
           )}
 
           {/* Cascade Stage */}
           <div className="space-y-1.5">
-            <Label className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
+            <Label className="text-[12px] font-medium uppercase tracking-wide text-t3">
               Cascade Stage
             </Label>
             <Select
               value={cascadeStage}
               onValueChange={(v) => setCascadeStage(v as CascadeStage)}
             >
-              <SelectTrigger className="h-9 text-xs rounded-xs">
+              <SelectTrigger className="h-9 text-xs rounded-none">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -172,7 +172,7 @@ export function CreateEntityModal({
 
           {/* Summary */}
           <div className="space-y-1.5">
-            <Label className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
+            <Label className="text-[12px] font-medium uppercase tracking-wide text-t3">
               Summary
             </Label>
             <StellarForgeEditor

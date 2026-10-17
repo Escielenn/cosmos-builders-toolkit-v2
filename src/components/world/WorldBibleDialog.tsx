@@ -275,7 +275,7 @@ const WorldBibleDialog = ({
                 className={cn(
                   "px-3 py-1.5 text-[12px] uppercase tracking-wider font-heading transition-colors",
                   exportStructure === "cascade"
-                    ? "bg-primary/10 text-primary border border-primary"
+                    ? "bg-primary/10 text-sf-primary-text border border-primary"
                     : "text-t4 hover:text-t3"
                 )}
               >
@@ -286,7 +286,7 @@ const WorldBibleDialog = ({
                 className={cn(
                   "px-3 py-1.5 text-[12px] uppercase tracking-wider font-heading transition-colors",
                   exportStructure === "entity"
-                    ? "bg-primary/10 text-primary border border-primary"
+                    ? "bg-primary/10 text-sf-primary-text border border-primary"
                     : "text-t4 hover:text-t3"
                 )}
               >
@@ -353,8 +353,8 @@ const WorldBibleDialog = ({
                       <div className="flex items-center space-x-2 p-3 bg-muted/30">
                         <Checkbox
                           checked={chapterSelected}
-                          // indeterminate doesn't exist in shadcn, use visual cue
-                          className={!chapterSelected && someSelected ? "opacity-60" : ""}
+                          // Partial selection: primary edge + tint (no opacity states)
+                          className={!chapterSelected && someSelected ? "border-sf-primary bg-sf-primary/[0.12]" : ""}
                           onCheckedChange={() => toggleChapter(cw.chapter.id)}
                         />
                         <div className="flex-1">
@@ -426,12 +426,12 @@ const WorldBibleDialog = ({
                   {theme.swatch.map((color, i) => (
                     <div
                       key={i}
-                      className="w-4 h-4 rounded-sm border border-sf-line-interactive"
+                      className="w-4 h-4 rounded-none border border-sf-line-interactive"
                       style={{ backgroundColor: color }}
                     />
                   ))}
                   {isSelected && (
-                    <Check className="w-3 h-3 text-primary ml-0.5" />
+                    <Check className="w-3 h-3 text-sf-primary-text ml-0.5" />
                   )}
                 </button>
               );

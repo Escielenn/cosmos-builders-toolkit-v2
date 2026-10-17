@@ -53,8 +53,8 @@ export function TemplateFieldsForm({
 
   if (fields.length === 0) {
     return (
-      <div className="text-xs text-t4 italic">
-        This template has no fields defined.
+      <div className="font-mono text-sf-mono uppercase text-t4">
+        NO FIELDS DEFINED ON THIS TEMPLATE.
       </div>
     );
   }
@@ -208,7 +208,7 @@ export function TemplateFieldsForm({
                         }}
                         className={
                           isOn
-                            ? "text-xs px-2 py-1 border border-primary bg-primary/10 text-primary"
+                            ? "text-xs px-2 py-1 border border-primary bg-primary/10 text-sf-primary-text"
                             : "text-xs px-2 py-1 border border-sf-line text-t3 hover:border-primary"
                         }
                       >

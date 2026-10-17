@@ -115,7 +115,7 @@ export function MoodboardUpload({
             <p className="text-sm text-t2">
               Drag & drop an image here, or click to select
             </p>
-            <p className="text-xs text-t3/70">
+            <p className="text-xs text-t4">
               Max 5MB. JPG, PNG, GIF, WebP supported.
             </p>
           </div>

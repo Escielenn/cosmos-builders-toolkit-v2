@@ -165,7 +165,7 @@ const HierarchicalExportDialog = ({
                   >
                     <div className="flex items-start gap-3">
                       <div className="w-10 h-10 rounded-none bg-primary/20 flex items-center justify-center shrink-0">
-                        <Icon className="w-5 h-5 text-primary" />
+                        <Icon className="w-5 h-5 text-sf-primary-text" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
@@ -208,12 +208,12 @@ const HierarchicalExportDialog = ({
                   {theme.swatch.map((color, i) => (
                     <div
                       key={i}
-                      className="w-4 h-4 rounded-sm border border-sf-line-interactive"
+                      className="w-4 h-4 rounded-none border border-sf-line-interactive"
                       style={{ backgroundColor: color }}
                     />
                   ))}
                   {isSelected && (
-                    <Check className="w-3 h-3 text-primary ml-0.5" />
+                    <Check className="w-3 h-3 text-sf-primary-text ml-0.5" />
                   )}
                 </button>
               );

@@ -37,6 +37,7 @@ import {
 import { countWords } from "@/lib/text";
 import type { WorldEntry } from "@/services/world-data";
 import type { WritingFolder } from "@/hooks/use-writing-documents";
+import { EmptyState } from "@/components/ui/empty-state";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -81,7 +82,7 @@ function Card({
         {...attributes}
         {...listeners}
         aria-label={`Reorder ${doc.title || "Untitled"}`}
-        className="absolute right-1 top-1 cursor-grab p-1 text-t4 opacity-0 transition-opacity group-hover:opacity-100"
+        className="absolute right-1 top-1 cursor-grab transition-colors duration-base p-1 text-t4 hover:text-t2"
       >
         <GripVertical className="h-3 w-3" />
       </button>
@@ -102,7 +103,7 @@ function Card({
         )}
       </button>
 
-      <div className="mt-2 flex flex-wrap items-center gap-2 border-t border-sf-line pt-2 font-mono text-[12px] uppercase tracking-[1.2px]">
+      <div className="mt-2 flex flex-wrap items-center gap-2 border-t border-sf-line pt-2 font-mono text-[12px] uppercase tracking-wide">
         {meta.status && (
           <span className={STATUS_TONE[meta.status]}>{STATUS_LABELS[meta.status]}</span>
         )}
@@ -147,7 +148,7 @@ function Group({
     <section className="mb-8">
       <div className="mb-3 flex items-baseline gap-3 border-b border-sf-line pb-1.5">
         <h3 className="font-serif text-[17px] italic text-sf-emerald">{title}</h3>
-        <span className="font-mono text-[12px] uppercase tracking-[1.2px] text-t4">
+        <span className="font-mono text-[12px] uppercase tracking-wide text-t4">
           {docs.length} {docs.length === 1 ? "scene" : "scenes"} ·{" "}
           {totalWords.toLocaleString()} words
         </span>
@@ -197,9 +198,14 @@ export function Corkboard({
   if (empty) {
     return (
       <div className="px-6 py-16 text-center">
-        <p className="mb-2 font-serif text-[17px] italic text-t2">
-          Nothing on the board yet
-        </p>
+        <EmptyState
+          warm
+          hideDial
+          className="py-0 pb-4"
+          eyebrow="// CORKBOARD"
+          title="Nothing on the board yet."
+          description="NO SYNOPSES ON FILE."
+        />
         <p className="mx-auto max-w-sm font-serif text-[14px] leading-relaxed text-t2">
           Create a document and give it a synopsis. The board shows one card per
           scene, so you can see the shape of the whole manuscript at once.

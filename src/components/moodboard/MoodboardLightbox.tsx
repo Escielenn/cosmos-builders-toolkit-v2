@@ -57,12 +57,12 @@ export function MoodboardLightbox({
   if (!currentImage) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 bg-[var(--sf-scrim)] backdrop-blur-md flex items-center justify-center">
       {/* Close button */}
       <Button
         variant="ghost"
         size="icon"
-        className="absolute top-4 right-4 text-white hover:bg-white/10 z-10"
+        className="absolute top-4 right-4 text-t1 hover:bg-sf-surface-elevated z-10"
         onClick={onClose}
         aria-label="Close lightbox"
       >
@@ -74,7 +74,7 @@ export function MoodboardLightbox({
         <Button
           variant="ghost"
           size="icon"
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/10 z-10 h-12 w-12"
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-t1 hover:bg-sf-surface-elevated z-10 h-12 w-12"
           onClick={handlePrev}
           aria-label="Previous image"
         >
@@ -87,7 +87,7 @@ export function MoodboardLightbox({
         <Button
           variant="ghost"
           size="icon"
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/10 z-10 h-12 w-12"
+          className="absolute right-4 top-1/2 -translate-y-1/2 text-t1 hover:bg-sf-surface-elevated z-10 h-12 w-12"
           onClick={handleNext}
           aria-label="Next image"
         >
@@ -108,13 +108,13 @@ export function MoodboardLightbox({
 
         {/* Caption */}
         {currentImage.caption && (
-          <div className="mt-4 text-white text-center max-w-xl">
+          <div className="mt-4 text-t1 text-center max-w-xl">
             <p>{currentImage.caption}</p>
           </div>
         )}
 
         {/* Counter */}
-        <div className="mt-2 text-white/60 text-sm">
+        <div className="mt-2 text-t3 text-sm">
           {currentIndex + 1} / {images.length}
         </div>
       </div>

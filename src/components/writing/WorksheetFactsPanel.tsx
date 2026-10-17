@@ -45,7 +45,7 @@ export function WorksheetFactsPanel({ worldId, onInsert }: WorksheetFactsPanelPr
 
   if (isLoading || loadingSims) {
     return (
-      <p className="px-4 py-6 font-mono text-[12px] uppercase tracking-[1.5px] text-t4">
+      <p className="px-4 py-6 font-mono text-[12px] uppercase tracking-wide text-t4">
         // Reading tool data…
       </p>
     );
@@ -76,7 +76,7 @@ export function WorksheetFactsPanel({ worldId, onInsert }: WorksheetFactsPanelPr
   if (groups.length === 0) {
     return (
       <div className="px-4 py-6">
-        <p className="mb-2 font-heading text-[12px] uppercase tracking-[1.5px] text-t3">
+        <p className="mb-2 font-heading text-[12px] uppercase tracking-wide text-t3">
           No tool data yet
         </p>
         <p className="mb-4 text-[13px] leading-relaxed text-t2">
@@ -111,13 +111,13 @@ export function WorksheetFactsPanel({ worldId, onInsert }: WorksheetFactsPanelPr
         return (
           <div key={group.id} className="mb-4 last:mb-0">
             <div className="flex items-baseline gap-2 border-b border-sf-line px-3 pb-1.5">
-              <span className="min-w-0 flex-1 truncate font-heading text-[12px] uppercase tracking-[1.5px] text-sf-emerald">
+              <span className="min-w-0 flex-1 truncate font-heading text-[12px] uppercase tracking-wide text-sf-emerald">
                 {group.title}
               </span>
               {href && (
                 <Link
                   to={href}
-                  className="shrink-0 font-mono text-[12px] uppercase tracking-[1px] text-t4 transition-colors hover:text-sf-primary-text"
+                  className="shrink-0 font-mono text-[12px] uppercase tracking-wider text-t4 transition-colors hover:text-sf-primary-text"
                   title={isSim ? "Open this simulator" : "Open this worksheet"}
                 >
                   Open
@@ -148,7 +148,7 @@ export function WorksheetFactsPanel({ worldId, onInsert }: WorksheetFactsPanelPr
 function FactRow({ fact, onInsert }: { fact: WorksheetFact; onInsert: () => void }) {
   return (
     <li className="group flex items-baseline gap-2 py-1">
-      <span className="w-[42%] shrink-0 text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
+      <span className="w-[42%] shrink-0 text-[12px] font-medium uppercase tracking-wide text-t3">
         {fact.label}
       </span>
       <span className="min-w-0 flex-1 break-words font-mono text-[12px] text-t1">
@@ -158,7 +158,7 @@ function FactRow({ fact, onInsert }: { fact: WorksheetFact; onInsert: () => void
         onClick={onInsert}
         title={`Insert "${fact.insert ?? fact.value}" at the cursor`}
         aria-label={`Insert ${fact.label} into the document`}
-        className="shrink-0 p-1 text-t4 opacity-0 transition-opacity hover:text-sf-primary-text focus-visible:opacity-100 group-hover:opacity-100"
+        className="transition-colors duration-base shrink-0 p-1 text-t4 hover:text-sf-primary-text"
       >
         <CornerDownLeft className="h-3 w-3" />
       </button>

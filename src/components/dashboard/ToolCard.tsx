@@ -45,10 +45,10 @@ const ToolCard = ({
     >
       <div className="flex items-start justify-between">
         {CustomIcon ? (
-          <CustomIcon className={`w-12 h-12 rounded-sm sf-card-icon ${!canAccess ? "grayscale" : ""}`} />
+          <CustomIcon className={`w-12 h-12 rounded-none sf-card-icon ${!canAccess ? "grayscale" : ""}`} />
         ) : FallbackIcon ? (
           <div
-            className={`w-12 h-12 rounded-sm flex items-center justify-center ${
+            className={`w-12 h-12 rounded-none flex items-center justify-center ${
               canAccess
                 ? "bg-gradient-to-br from-primary to-accent"
                 : "bg-muted"
@@ -61,17 +61,15 @@ const ToolCard = ({
             />
           </div>
         ) : (
-          <div className="w-12 h-12 rounded-sm bg-muted flex items-center justify-center">
+          <div className="w-12 h-12 rounded-none bg-muted flex items-center justify-center">
             <span className="text-t3">?</span>
           </div>
         )}
         <div className="flex items-center gap-2">
           {isPro && isSubscribed && (
-            <Badge variant="secondary" className="group/badge text-xs bg-green-500/20 text-green-600 dark:text-green-400 cursor-default">
-              <Unlock className="w-3 h-3" />
-              <span className="inline-block max-w-0 overflow-hidden opacity-0 group-hover/badge:max-w-[5rem] group-hover/badge:opacity-100 group-hover/badge:ml-1 transition-all duration-300 ease-out whitespace-nowrap">
-                Unlocked
-              </span>
+            <Badge variant="secondary" className="gap-1 rounded-none text-xs uppercase bg-sf-emerald/[0.06] border border-sf-emerald text-sf-emerald-text cursor-default">
+              <Unlock className="w-3 h-3" aria-hidden="true" />
+              <span className="whitespace-nowrap">Unlocked</span>
             </Badge>
           )}
           {isPro && !isSubscribed && <ProBadge />}
@@ -86,7 +84,7 @@ const ToolCard = ({
       <div className="flex-1">
         {canAccess ? (
           <Link to={path ?? getToolRoute(id) ?? `/tools/${id}`}>
-            <h3 className="font-heading font-medium text-lg hover:text-primary transition-colors">
+            <h3 className="font-heading font-medium text-lg hover:text-sf-primary-text transition-colors">
               {title}
             </h3>
           </Link>

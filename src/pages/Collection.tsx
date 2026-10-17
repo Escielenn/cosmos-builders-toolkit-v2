@@ -1,7 +1,7 @@
 /** Register: WRITER (Lora) — a library a writer browses, not an instrument readout. */
 import { useState, useMemo, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, FileText, Search, ChevronRight } from "lucide-react";
+import { FileText, Search, ChevronRight } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -28,9 +28,12 @@ import { PageBursts } from "@/components/ui/data-burst";
 import { COLLECTION_BURSTS } from "@/lib/data-bursts";
 import { EmptyState } from "@/components/ui/empty-state";
 
+import { BackLink } from "@/components/ui/back-link";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 type SortBy = "recent" | "alphabetical" | "tool-type";
 
 const Collection = () => {
+  useMetaTags({ title: "Collection" });
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { worksheets, isLoading } = useAllWorksheets();
@@ -110,13 +113,7 @@ const Collection = () => {
       <PageBursts bursts={COLLECTION_BURSTS} />
       <main className="container mx-auto px-4 pt-24 pb-16 relative z-10">
         {/* Back Navigation */}
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 font-serif text-[14px] italic text-t3 hover:text-sf-primary-bright transition-colors duration-base mb-6"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          ← RETURN TO BRIDGE
-        </Link>
+        <BackLink to="/" label="RETURN TO BRIDGE" className="mb-6" />
 
         {/* My Worlds Quick Access */}
         <section className="mb-12">
@@ -157,7 +154,7 @@ const Collection = () => {
                   >
                     <GlassPanel hover className="p-4 w-44">
                       <div className="flex items-center gap-2.5 mb-1.5">
-                        <WorldIconRenderer iconId={world.icon} className="w-6 h-6 text-primary shrink-0" />
+                        <WorldIconRenderer iconId={world.icon} className="w-6 h-6 text-sf-primary-text shrink-0" />
                         <h3 className="font-medium text-sm truncate">
                           {world.name}
                         </h3>
@@ -269,10 +266,10 @@ const Collection = () => {
                   <GlassPanel hover className="p-5 h-full">
                     <div className="flex items-start gap-3">
                       {CustomIcon ? (
-                        <CustomIcon className="w-10 h-10 rounded-sm shrink-0" />
+                        <CustomIcon className="w-10 h-10 rounded-none shrink-0" />
                       ) : (
-                        <div className="w-10 h-10 rounded-sm bg-primary/20 flex items-center justify-center shrink-0">
-                          <FileText className="w-5 h-5 text-primary" />
+                        <div className="w-10 h-10 rounded-none bg-primary/20 flex items-center justify-center shrink-0">
+                          <FileText className="w-5 h-5 text-sf-primary-text" />
                         </div>
                       )}
                       <div className="flex-1 min-w-0">

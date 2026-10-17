@@ -75,7 +75,7 @@ export function GraphSearch({
       <button
         type="button"
         onClick={handleOpen}
-        className="flex min-h-hit items-center gap-1.5 border border-sf-line bg-sf-surface px-3 font-sans text-[12px] uppercase tracking-[1.2px] text-t3 transition-colors hover:text-t1"
+        className="flex min-h-hit items-center gap-1.5 border border-sf-line bg-sf-surface px-3 font-sans text-[12px] uppercase tracking-wide text-t3 transition-colors hover:text-t1"
         title="Search entities (Ctrl+F)"
       >
         <Search className="w-3 h-3" />
@@ -94,7 +94,7 @@ export function GraphSearch({
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search entities..."
           aria-label="Search entities"
-          className="h-8 w-[160px] rounded-xs border-sf-line-interactive bg-transparent text-[13px]"
+          className="h-8 w-[160px] rounded-none border-sf-line-interactive bg-transparent text-[13px]"
         />
         <button
           type="button"
@@ -129,7 +129,7 @@ export function GraphSearch({
                   <div className="truncate text-[13px] text-t2">
                     {entity.name}
                   </div>
-                  <div className="text-[12px] uppercase tracking-[1px] text-t4">
+                  <div className="text-[12px] uppercase tracking-wider text-t4">
                     {entity.custom_type_label ??
                       ENTITY_TYPE_LABELS[entity.entity_type]}
                   </div>

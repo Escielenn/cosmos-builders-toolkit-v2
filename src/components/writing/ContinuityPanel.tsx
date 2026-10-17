@@ -152,7 +152,7 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
 
     return (
       <div className="px-4 py-6">
-        <p className="mb-1 font-mono text-[13px] uppercase tracking-[1.2px] text-t1">
+        <p className="mb-1 font-mono text-[13px] uppercase tracking-wide text-t1">
           Ambiguous: {candidates.length} {noun} on file. Which is this scene about?
         </p>
         <p className="mb-3 text-[13px] leading-relaxed text-t2">
@@ -169,7 +169,7 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
             >
               {c.title}
               {c.entryType && (
-                <span className="ml-2 text-[12px] uppercase tracking-[1.5px] text-t4">
+                <span className="ml-2 text-[12px] uppercase tracking-wide text-t4">
                   {ENTITY_TYPE_LABELS[c.entryType] ?? c.entryType}
                 </span>
               )}
@@ -187,14 +187,14 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
   // and clears it must not depend on that count either.
   const subjectBar = entityId && (
     <div className="flex items-center justify-between border-b border-sf-line-hairline px-4 py-2">
-      <span className="text-[12px] uppercase tracking-[1.5px] text-t4">
+      <span className="text-[12px] uppercase tracking-wide text-t4">
         Scene about <span className="text-t2">{currentSubject?.title ?? "a subject no longer on file"}</span>
       </span>
       {canChangeSubject && (
         <button
           type="button"
           onClick={() => onSetEntityId?.("")}
-          className="min-h-hit text-[12px] uppercase tracking-[1.5px] text-sf-primary-text transition-colors hover:text-sf-primary-bright"
+          className="min-h-hit text-[12px] uppercase tracking-wide text-sf-primary-text transition-colors hover:text-sf-primary-bright"
         >
           Change
         </button>
@@ -258,7 +258,7 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
             {n.message}
           </p>
 
-          <div className="mb-2 flex items-center gap-3 font-mono text-[12px] uppercase tracking-[1.2px]">
+          <div className="mb-2 flex items-center gap-3 font-mono text-[12px] uppercase tracking-wide">
             <span className="text-t4">
               World <span className="text-sf-primary-text">{n.worldValue}</span>
             </span>

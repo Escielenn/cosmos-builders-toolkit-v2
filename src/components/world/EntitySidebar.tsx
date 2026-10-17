@@ -128,7 +128,7 @@ function ColorDotPicker({
       <PopoverTrigger asChild>
         <button
           type="button"
-          className="shrink-0 w-3 h-3 rounded-full border border-sf-line hover:border-sf-line transition-colors"
+          className="shrink-0 w-3 h-3 rounded-full border border-sf-line-interactive hover:border-sf-line-emphasis transition-colors"
           style={{ backgroundColor: color }}
           onClick={(e) => e.stopPropagation()}
           aria-label="Change entity color"
@@ -140,7 +140,7 @@ function ColorDotPicker({
         className="w-48 p-3 bg-sf-void border-sf-line-interactive"
         onClick={(e) => e.stopPropagation()}
       >
-        <p className="font-sans text-[12px] uppercase tracking-[1.5px] text-t3 mb-2">
+        <p className="font-sans text-[12px] uppercase tracking-wide text-t3 mb-2">
           Entity Color
         </p>
 
@@ -154,7 +154,7 @@ function ColorDotPicker({
               className={cn(
                 "w-5 h-5 rounded-full border transition-all hover:scale-110",
                 color === swatch
-                  ? "border-sf-line ring-1 ring-white/30"
+                  ? "border-sf-line ring-2 ring-sf-line-emphasis"
                   : "border-sf-line hover:border-sf-line"
               )}
               style={{ backgroundColor: swatch }}
@@ -184,12 +184,12 @@ function ColorDotPicker({
             onChange={(e) => setCustomHex(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleCustomSubmit()}
             placeholder="#FF00AA"
-            className="flex-1 bg-white/4 border border-sf-line rounded-xs px-2 py-1 text-[12px] font-mono text-t2 placeholder:text-t4 focus:border-sf-primary"
+            className="flex-1 bg-sf-surface border border-sf-line-interactive rounded-none px-2 py-1 text-[12px] font-mono text-t2 placeholder:text-t4 focus:border-sf-primary"
           />
           <button
             type="button"
             onClick={handleCustomSubmit}
-            className="px-2 py-1 text-[12px] text-sf-primary-text bg-sf-primary/8 border border-sf-primary hover:bg-sf-primary/15 transition-colors"
+            className="px-2 py-1 text-[12px] text-sf-primary-text bg-sf-primary/[0.06] border border-sf-primary hover:bg-sf-primary/[0.12] transition-colors"
           >
             Set
           </button>
@@ -241,7 +241,7 @@ function SortableEntityRow({
       {/* Drag handle */}
       <button
         type="button"
-        className="shrink-0 p-0.5 cursor-grab active:cursor-grabbing text-t4 opacity-0 group-hover/entity-row:opacity-100 transition-opacity touch-none"
+        className="shrink-0 p-0.5 cursor-grab active:cursor-grabbing transition-colors duration-base text-t4 hover:text-t2 touch-none"
         {...attributes}
         {...listeners}
         tabIndex={-1}
@@ -257,7 +257,7 @@ function SortableEntityRow({
             onClick={() => onEntityClick(entity.id)}
             className={cn(
               "flex-1 min-w-0 flex items-center gap-2 px-2 py-[5px] text-left transition-colors",
-              "hover:bg-white/[0.04]",
+              "hover:bg-sf-surface-elevated",
               isActive && "bg-primary/[0.08] border-l-2 border-primary"
             )}
           >
@@ -276,7 +276,7 @@ function SortableEntityRow({
 
             {/* Type badge */}
             <span
-              className="shrink-0 font-mono text-[12px] uppercase tracking-wider px-1.5 py-0.5 rounded-sm border"
+              className="shrink-0 font-mono text-[12px] uppercase tracking-wider px-1.5 py-0.5 rounded-none border"
               style={{
                 color: entityColor,
                 borderColor: `${entityColor}26`,
@@ -338,7 +338,7 @@ function StaticEntityRow({
           onClick={() => onEntityClick(entity.id)}
           className={cn(
             "w-full flex items-center gap-2 px-3 py-[5px] text-left transition-colors",
-            "hover:bg-white/[0.04]",
+            "hover:bg-sf-surface-elevated",
             isActive && "bg-primary/[0.08] border-l-2 border-primary"
           )}
         >
@@ -357,7 +357,7 @@ function StaticEntityRow({
 
           {/* Type badge */}
           <span
-            className="shrink-0 font-mono text-[12px] uppercase tracking-wider px-1.5 py-0.5 rounded-sm border"
+            className="shrink-0 font-mono text-[12px] uppercase tracking-wider px-1.5 py-0.5 rounded-none border"
             style={{
               color: entityColor,
               borderColor: `${entityColor}26`,
@@ -397,7 +397,7 @@ function DragPreviewRow({ entity }: { entity: Entity }) {
   const entityColor = entity.color || ENTITY_TYPE_COLORS[entity.entity_type];
   return (
     <div className="flex items-center gap-2 px-3 py-[5px] bg-sf-surface-elevated border border-primary shadow-lg shadow-primary/5">
-      <GripVertical className="w-3 h-3 text-primary shrink-0" />
+      <GripVertical className="w-3 h-3 text-sf-primary-text shrink-0" />
       <span
         className="w-3 h-3 rounded-full shrink-0"
         style={{ backgroundColor: entityColor }}
@@ -475,7 +475,7 @@ function CascadeGroup({
           <ChevronRight className="w-2.5 h-2.5 text-t3 shrink-0" />
         )}
         <span
-          className="font-heading text-[12px] uppercase tracking-[3px] flex-1"
+          className="font-heading text-[12px] uppercase tracking-wide flex-1"
           style={{ color: stageColor }}
         >
           {CASCADE_STAGE_LABELS[stage]}
@@ -517,8 +517,8 @@ function CascadeGroup({
       )}
 
       {expanded && entities.length === 0 && (
-        <p className="px-3 py-1.5 text-[12px] text-t4 italic">
-          No entities.
+        <p className="px-3 py-1.5 font-mono text-sf-mono uppercase text-t4">
+          NO ENTITIES ON FILE.
         </p>
       )}
     </div>
@@ -627,7 +627,7 @@ const EntitySidebar = ({
       <div className="px-3 pt-3 pb-1">
         <button
           onClick={onCreateEntity}
-          className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center gap-1.5 px-3 py-1.5 border border-sf-line-interactive text-[12px] font-heading uppercase tracking-wider text-t3 hover:text-primary hover:border-primary transition-colors"
+          className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center gap-1.5 px-3 py-1.5 border border-sf-line-interactive text-[12px] font-heading uppercase tracking-wider text-t3 hover:text-sf-primary-text hover:border-primary transition-colors"
         >
           <Plus className="w-3 h-3" />
           Create Entity
@@ -643,7 +643,7 @@ const EntitySidebar = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search entities..."
-            className="w-full bg-white/4 border border-sf-line rounded-xs pl-7 pr-2 py-1.5 text-[13px] font-sans text-t2 placeholder:text-t4 focus:border-sf-primary"
+            className="w-full bg-sf-surface border border-sf-line-interactive rounded-none pl-7 pr-2 py-1.5 text-[13px] font-sans text-t2 placeholder:text-t4 focus:border-sf-primary"
           />
         </div>
       </div>
@@ -653,7 +653,7 @@ const EntitySidebar = ({
         <button
           onClick={() => handleViewChange("tool")}
           className={cn(
-            "flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-[1.5px] transition-colors",
+            "flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-wide transition-colors",
             viewMode === "tool"
               ? "text-sf-primary-text bg-sf-primary/8 border border-sf-primary"
               : "text-t4 hover:text-t3"
@@ -666,7 +666,7 @@ const EntitySidebar = ({
         <button
           onClick={() => handleViewChange("wiki")}
           className={cn(
-            "flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-[1.5px] transition-colors",
+            "flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-wide transition-colors",
             viewMode === "wiki"
               ? "text-sf-primary-text bg-sf-primary/8 border border-sf-primary"
               : "text-t4 hover:text-t3"
@@ -698,8 +698,8 @@ const EntitySidebar = ({
         {viewMode === "wiki" && alphabeticalList && (
           <div>
             {alphabeticalList.length === 0 ? (
-              <p className="px-3 py-4 text-center text-[12px] text-t4 italic">
-                {searchQuery ? "No matches found." : "No entities yet."}
+              <p className="px-3 py-4 text-center font-mono text-sf-mono uppercase text-t4">
+                {searchQuery ? "NO MATCHES ON FILE." : "NO ENTITIES ON FILE."}
               </p>
             ) : (
               alphabeticalList.map((entity) => (
@@ -722,7 +722,7 @@ const EntitySidebar = ({
           Object.values(cascadeGroups).every((g) => g.length === 0) && (
             <div className="px-3 py-6 text-center">
               <p className="font-mono text-[12px] uppercase tracking-wider text-t4">
-                No matches found
+                NO MATCHES ON FILE.
               </p>
             </div>
           )}

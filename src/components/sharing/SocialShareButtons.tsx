@@ -61,7 +61,7 @@ export function SocialShareButtons({
 
   return (
     <div className="space-y-2">
-      <p className="text-[12px] font-heading uppercase tracking-[2px] text-t4">
+      <p className="text-[12px] font-heading uppercase tracking-wide text-t4">
         Share
       </p>
 
@@ -72,7 +72,7 @@ export function SocialShareButtons({
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[12px] font-sans text-t2 hover:text-t1 border border-sf-line hover:border-sf-line transition-colors"
+            className="inline-flex min-h-hit items-center gap-1.5 px-2.5 py-1.5 text-[12px] font-sans text-t2 hover:text-t1 border border-sf-line-interactive hover:border-sf-line-emphasis transition-colors"
             style={{ borderLeftColor: `${link.color}40`, borderLeftWidth: 2 }}
           >
             <ExternalLink className="w-3 h-3" />
@@ -81,15 +81,16 @@ export function SocialShareButtons({
         ))}
 
         <button
+          type="button"
           onClick={handleCopy}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[12px] font-sans text-t2 hover:text-teal border border-sf-line hover:border-teal/20 transition-colors"
+          className="inline-flex min-h-hit items-center gap-1.5 px-2.5 py-1.5 text-[12px] font-sans text-t2 hover:text-sf-primary-text border border-sf-line-interactive hover:border-sf-primary transition-colors"
         >
           {copied ? (
-            <Check className="w-3 h-3 text-teal" />
+            <Check className="w-3 h-3 text-sf-emerald" />
           ) : (
             <Copy className="w-3 h-3" />
           )}
-          {copied ? "Copied" : "Copy Link"}
+          {copied ? "LINK COPIED." : "COPY LINK"}
         </button>
       </div>
     </div>

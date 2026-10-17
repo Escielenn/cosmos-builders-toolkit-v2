@@ -259,7 +259,7 @@ export function WriteSheet({
     <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
       <DialogPrimitive.Portal>
         {/* Overlay */}
-        <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 duration-300" />
+        <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-[var(--sf-scrim)] backdrop-blur-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 duration-slow" />
 
         {/* Content, full viewport, scrollable */}
         <DialogPrimitive.Content
@@ -277,7 +277,7 @@ export function WriteSheet({
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="fixed top-5 right-5 z-50 p-2 rounded-sm text-t4 hover:text-t1 transition-colors"
+            className="fixed top-5 right-5 z-50 p-2 rounded-none text-t4 hover:text-t1 transition-colors"
             aria-label="Close"
           >
             <X className="w-5 h-5" />
@@ -286,7 +286,7 @@ export function WriteSheet({
           {/* Centered writing area */}
           <div
             className={cn(
-              "w-full max-w-3xl mx-auto px-6 pb-28 transition-all duration-500 ease-out",
+              "w-full max-w-3xl mx-auto px-6 pb-28 transition-all duration-slow ease-sf-out",
               isWriting ? "pt-8 md:pt-10" : "pt-16 md:pt-28"
             )}
           >
@@ -294,7 +294,7 @@ export function WriteSheet({
             <div className="relative">
               {entryId && (
                 <Pencil className={cn(
-                  "absolute left-0 text-t4 transition-all duration-500",
+                  "absolute left-0 text-t4 transition-all duration-slow",
                   isWriting ? "top-1 w-3.5 h-3.5 -translate-x-5" : "top-2.5 w-4 h-4 -translate-x-7"
                 )} />
               )}
@@ -304,7 +304,7 @@ export function WriteSheet({
                 onBlur={handleTitleBlur}
                 placeholder="Untitled Entry"
                 className={cn(
-                  "w-full bg-transparent border-0 border-b border-sf-line focus:border-primary font-display uppercase tracking-sf-title text-t1 transition-all duration-500 ease-out pb-3",
+                  "w-full bg-transparent border-0 border-b border-sf-line focus:border-primary font-display uppercase tracking-sf-title text-t1 transition-all duration-slow ease-sf-out pb-3",
                   isWriting
                     ? "text-lg md:text-xl mb-2"
                     : "text-3xl md:text-5xl mb-3"
@@ -312,7 +312,7 @@ export function WriteSheet({
               />
               {prompt && (
                 <p className={cn(
-                  "text-t3 italic leading-relaxed transition-all duration-500 ease-out",
+                  "text-t3 italic leading-relaxed transition-all duration-slow ease-sf-out",
                   isWriting ? "text-xs mb-4" : "text-sm mb-8"
                 )}>
                   {prompt.prompt}
@@ -323,7 +323,7 @@ export function WriteSheet({
             {/* Metadata row, world selector, prompt badge */}
             <div
               className={cn(
-                "flex items-center gap-3 flex-wrap transition-all duration-300",
+                "flex items-center gap-3 flex-wrap transition-all duration-slow",
                 isWriting ? "mb-3" : "mb-5"
               )}
             >
@@ -375,7 +375,7 @@ export function WriteSheet({
             {/* Editor */}
             <Suspense
               fallback={
-                <div className="rounded-xs border border-sf-line bg-white/[0.02] animate-pulse min-h-[400px]" />
+                <div className="rounded-none border border-sf-line bg-sf-surface animate-pulse min-h-[400px]" />
               }
             >
               <RichTextEditor
@@ -418,9 +418,9 @@ export function WriteSheet({
                 <span className="text-t4 hidden sm:inline">|</span>
 
                 <div className="hidden sm:flex items-center gap-2">
-                  <div className="w-16 h-1 rounded-xs bg-white/[0.06] overflow-hidden">
+                  <div className="w-16 h-1 rounded-none bg-sf-surface-elevated overflow-hidden">
                     <div
-                      className="h-full bg-primary rounded-xs transition-all duration-500"
+                      className="h-full bg-primary rounded-none transition-all duration-slow"
                       style={{ width: `${goalProgress}%` }}
                     />
                   </div>
@@ -441,7 +441,7 @@ export function WriteSheet({
                   </span>
                 )}
                 {saveStatus === "saved" && (
-                  <span className="flex items-center gap-1.5 text-xs text-primary">
+                  <span className="flex items-center gap-1.5 text-xs text-sf-primary-text">
                     <Check className="w-3.5 h-3.5" />
                     <span className="hidden sm:inline">Saved</span>
                   </span>

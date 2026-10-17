@@ -16,10 +16,11 @@ import {
 import type { BookEntry } from "@/lib/bookshelf-data";
 import { PageBursts } from "@/components/ui/data-burst";
 import { BOOKSHELF_BURSTS } from "@/lib/data-bursts";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 const CoverFallback = ({ title, author }: { title: string; author: string }) => (
   <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/10 flex flex-col items-center justify-center p-3 text-center">
-    <BookOpen className="w-8 h-8 text-primary/40 mb-2" />
+    <BookOpen className="w-8 h-8 text-sf-primary-text mb-2" />
     <p className="text-xs font-heading font-medium text-t2 leading-tight">
       {title}
     </p>
@@ -81,7 +82,7 @@ const BookCard = ({ book }: { book: BookEntry }) => {
             href={getAmazonUrl(book.title, book.author)}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-primary hover:underline flex items-center gap-1"
+            className="text-xs text-sf-primary-text hover:underline flex items-center gap-1"
           >
             Amazon <ExternalLink className="w-2.5 h-2.5" />
           </a>
@@ -89,7 +90,7 @@ const BookCard = ({ book }: { book: BookEntry }) => {
             href={getBookshopUrl(book.title, book.author, book.isbn)}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-primary hover:underline flex items-center gap-1"
+            className="text-xs text-sf-primary-text hover:underline flex items-center gap-1"
           >
             Bookshop <ExternalLink className="w-2.5 h-2.5" />
           </a>
@@ -100,6 +101,7 @@ const BookCard = ({ book }: { book: BookEntry }) => {
 };
 
 const Bookshelf = () => {
+  useMetaTags({ title: "Bookshelf" });
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredBooks = useMemo(() => {

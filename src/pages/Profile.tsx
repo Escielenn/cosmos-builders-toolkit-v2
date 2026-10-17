@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { SectionHero } from "@/components/ui/section-hero";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Save, ArrowLeft, Upload, Zap, Calendar, CreditCard, AlertCircle, Award, ChevronRight } from "lucide-react";
+import { Save, Upload, Zap, Calendar, CreditCard, AlertCircle, Award, ChevronRight } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { useToast } from "@/hooks/use-toast";
 import { useSubscription } from "@/hooks/use-subscription";
@@ -26,6 +26,9 @@ import AvatarPickerDialog from "@/components/settings/AvatarPickerDialog";
 import { PageBursts } from "@/components/ui/data-burst";
 import { SETTINGS_BURSTS } from "@/lib/data-bursts";
 import { mapError } from "@/lib/ship-voice";
+import { BackLink } from "@/components/ui/back-link";
+import { useMetaTags } from "@/hooks/use-meta-tags";
+import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
 
 const Profile = () => {
   const { user, profile, loading, updateProfile } = useAuth();
@@ -40,6 +43,16 @@ const Profile = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [avatarPickerOpen, setAvatarPickerOpen] = useState(false);
+
+  useMetaTags({ title: "Personnel File" });
+
+  // Dirty = any editable field differs from the profile as loaded.
+  const isDirty =
+    !!profile &&
+    (displayName !== (profile.display_name || "") ||
+      bio !== (profile.bio || "") ||
+      avatarUrl !== (profile.avatar_url || ""));
+  useUnsavedChangesGuard(isDirty && !isSaving);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -131,14 +144,7 @@ const Profile = () => {
       
       <main className="relative container mx-auto px-4 pt-24 pb-16 max-w-2xl">
         <PageBursts bursts={SETTINGS_BURSTS} />
-        <Button
-          variant="ghost" 
-          className="mb-6 gap-2" 
-          onClick={() => navigate("/")}
-        >
-          <ArrowLeft className="w-4 h-4" />
-          ← RETURN TO BRIDGE
-        </Button>
+        <BackLink to="/" label="RETURN TO BRIDGE" className="mb-6" />
 
         <SectionHero
           eyebrow="// PERSONNEL FILE"
@@ -264,15 +270,15 @@ const Profile = () => {
 
         {/* Subscription Section */}
         <GlassPanel className="p-8 mt-6">
-          <h2 className="font-heading text-xl font-medium mb-4 flex items-center gap-2">
-            <Zap className="w-5 h-5 text-sf-amber" />
+          <h2 className="font-heading text-sf-h3 text-t1 mb-4 flex items-center gap-2">
+            <Zap className="w-5 h-5 text-sf-amber" aria-hidden="true" />
             Subscription
           </h2>
 
           {isSubscribed && subscription ? (
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <Badge className="bg-green-500/20 text-green-600 dark:text-green-400">
+                <Badge className="rounded-none uppercase bg-sf-emerald/[0.06] border border-sf-emerald text-sf-emerald-text">
                   Active
                 </Badge>
                 <Badge variant="secondary">
@@ -281,9 +287,9 @@ const Profile = () => {
               </div>
 
               {subscription.status === 'past_due' && (
-                <div className="p-3 rounded-none bg-red-500/10 border border-sf-crimson flex items-center gap-2">
-                  <AlertCircle className="w-5 h-5 text-sf-crimson" />
-                  <p className="text-sm text-red-600 dark:text-sf-crimson-text">
+                <div className="p-3 rounded-none bg-sf-crimson/[0.06] border border-sf-crimson flex items-center gap-2">
+                  <AlertCircle className="w-5 h-5 text-sf-crimson" aria-hidden="true" />
+                  <p className="text-sm text-sf-crimson-text">
                     Payment failed. Update payment method to restore access.
                   </p>
                 </div>
@@ -306,7 +312,7 @@ const Profile = () => {
                       <AlertCircle className="w-4 h-4 text-sf-amber" />
                       <span>Cancels on</span>
                     </div>
-                    <div className="text-sf-amber dark:text-sf-amber">
+                    <div className="text-sf-amber-text">
                       {subscription.current_period_end
                         ? new Date(subscription.current_period_end).toLocaleDateString()
                         : 'N/A'}
@@ -387,16 +393,16 @@ function CommendationsSummary({ navigate }: { navigate: (path: string) => void }
     <GlassPanel className="p-6 md:p-8 mt-6">
       <button
         type="button"
-        className="w-full flex items-center justify-between group"
+        className="w-full min-h-hit flex items-center justify-between group"
         onClick={() => navigate("/commendations")}
       >
         <div className="flex items-center gap-3">
-          <Award className="w-5 h-5 text-emerald" />
+          <Award className="w-5 h-5 text-sf-emerald" aria-hidden="true" />
           <div className="text-left">
-            <h3 className="font-heading text-sm uppercase tracking-[3px] text-emerald">
+            <h3 className="font-heading text-sf-eyebrow uppercase text-sf-emerald-text">
               Commendations
             </h3>
-            <p className="font-sans text-[12px] text-t4 mt-0.5">
+            <p className="font-mono text-sf-mono text-t4 mt-0.5">
               {isLoading ? "INITIALIZING..." : `${earnedCount} OF ${totalCount} EARNED`}
             </p>
           </div>

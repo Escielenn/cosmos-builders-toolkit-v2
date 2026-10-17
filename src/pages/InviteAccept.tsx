@@ -9,8 +9,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useAcceptInvite } from "@/hooks/use-collaborators";
 import { PageBursts } from "@/components/ui/data-burst";
 import { INVITE_ACCEPT_BURSTS } from "@/lib/data-bursts";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 const InviteAccept = () => {
+  useMetaTags({ title: "Invitation" });
   const { token } = useParams<{ token: string }>();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -34,7 +36,7 @@ const InviteAccept = () => {
         <PageBursts bursts={INVITE_ACCEPT_BURSTS} />
         <main className="container mx-auto px-4 py-16 max-w-md relative z-10">
           <GlassPanel className="p-8 text-center">
-            <Globe className="w-12 h-12 text-primary mx-auto mb-4" />
+            <Globe className="w-12 h-12 text-sf-primary-text mx-auto mb-4" />
             <h1 className="font-heading text-2xl font-medium mb-2">
               World Invitation
             </h1>
@@ -77,7 +79,7 @@ const InviteAccept = () => {
         <PageBursts bursts={INVITE_ACCEPT_BURSTS} />
         <main className="container mx-auto px-4 py-16 max-w-md relative z-10">
           <GlassPanel className="p-8 text-center">
-            <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto mb-4" />
+            <CheckCircle2 className="w-12 h-12 text-sf-emerald mx-auto mb-4" />
             <h1 className="font-heading text-2xl font-medium mb-2">
               {result.already_member
                 ? "Already a collaborator"

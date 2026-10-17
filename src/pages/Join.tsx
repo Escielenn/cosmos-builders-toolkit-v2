@@ -22,6 +22,8 @@ import { TERMS_CONTENT } from "@/lib/legal/terms-content";
 import { PageBursts } from "@/components/ui/data-burst";
 import { AUTH_BURSTS } from "@/lib/data-bursts";
 import { mapError } from "@/lib/ship-voice";
+import { BackLink } from "@/components/ui/back-link";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 const emailSchema = z.string().email("VALID EMAIL REQUIRED.");
 const passwordSchema = z.string().min(6, "AT LEAST 6 CHARS REQUIRED.");
@@ -35,6 +37,7 @@ const VALID_CODES = new Set([
 ]);
 
 const Join = () => {
+  useMetaTags({ title: "Join" });
   const { code } = useParams<{ code: string }>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -120,7 +123,7 @@ const Join = () => {
         <p className="text-sm text-t2 mb-6 text-center max-w-sm">
           You already have a StellarForge account. Head to your dashboard to start building.
         </p>
-        <Link to="/" className="text-sm text-primary hover:underline">
+        <Link to="/" className="text-sm text-sf-primary-text hover:underline">
           Go to Dashboard
         </Link>
       </div>
@@ -139,9 +142,7 @@ const Join = () => {
           This invitation link is no longer valid. If you believe this is an error,
           contact the person who shared it with you.
         </p>
-        <Link to="/auth" className="text-sm text-primary hover:underline">
-          ← RETURN TO AUTHENTICATION
-        </Link>
+        <BackLink to="/auth" label="RETURN TO AUTHENTICATION" />
       </div>
     );
   }
@@ -257,13 +258,13 @@ const Join = () => {
                 I have read and agree to the{" "}
                 <button
                   type="button"
-                  className="text-primary hover:underline"
+                  className="text-sf-primary-text hover:underline"
                   onClick={(e) => { e.preventDefault(); setTosDialogOpen(true); }}
                 >
                   Terms of Service
                 </button>{" "}
                 and{" "}
-                <Link to="/privacy" className="text-primary hover:underline" target="_blank">
+                <Link to="/privacy" className="text-sf-primary-text hover:underline" target="_blank">
                   Privacy Policy
                 </Link>
               </label>
@@ -281,7 +282,7 @@ const Join = () => {
 
           <div className="mt-6 space-y-3">
             {/* NDA / Confidentiality notice */}
-            <div className="p-4 rounded-sm bg-amber-500/[0.06] border border-sf-amber">
+            <div className="p-4 rounded-none bg-sf-amber/[0.06] border border-sf-amber">
               <p className="text-xs font-medium text-sf-amber uppercase tracking-wider mb-2">
                 Early Access - Confidential Preview
               </p>
@@ -303,13 +304,13 @@ const Join = () => {
                 </li>
                 <li className="flex gap-2">
                   <span className="text-sf-amber shrink-0">-</span>
-                  <span><strong className="text-t2">Support & Roadmap.</strong> We are available for direct support, and our full development roadmap is visible at <a href="/roadmap" className="text-primary hover:underline">stellarforge.tools/roadmap</a>.</span>
+                  <span><strong className="text-t2">Support & Roadmap.</strong> We are available for direct support, and our full development roadmap is visible at <a href="/roadmap" className="text-sf-primary-text hover:underline">stellarforge.tools/roadmap</a>.</span>
                 </li>
               </ul>
             </div>
 
             {/* Privacy notice */}
-            <div className="p-3 rounded-sm bg-primary/5 border border-primary">
+            <div className="p-3 rounded-none bg-primary/5 border border-primary">
               <p className="text-xs font-medium text-t1 mb-1">
                 Your Worlds Are Yours Alone
               </p>
@@ -327,7 +328,7 @@ const Join = () => {
           <DialogHeader>
             <DialogTitle className="font-heading text-xl">Terms of Service</DialogTitle>
           </DialogHeader>
-          <div className="prose prose-invert prose-sm max-w-none [&_h2]:text-lg [&_h2]:font-heading [&_h2]:font-light [&_h2]:tracking-[0.08em] [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-base [&_h3]:font-medium [&_h3]:mt-4 [&_h3]:mb-2 [&_h4]:text-sm [&_h4]:font-medium [&_h4]:mt-3 [&_h4]:mb-1 [&_p]:text-sm [&_p]:text-t3 [&_p]:leading-relaxed [&_p]:mb-3 [&_li]:text-sm [&_li]:text-t3 [&_hr]:border-sf-line-interactive [&_hr]:my-4 [&_strong]:text-t1">
+          <div className="prose prose-invert prose-sm max-w-none [&_h2]:text-lg [&_h2]:font-heading [&_h2]:font-light [&_h2]:tracking-wider [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-base [&_h3]:font-medium [&_h3]:mt-4 [&_h3]:mb-2 [&_h4]:text-sm [&_h4]:font-medium [&_h4]:mt-3 [&_h4]:mb-1 [&_p]:text-sm [&_p]:text-t3 [&_p]:leading-relaxed [&_p]:mb-3 [&_li]:text-sm [&_li]:text-t3 [&_hr]:border-sf-line-interactive [&_hr]:my-4 [&_strong]:text-t1">
             <ReactMarkdown>{TERMS_CONTENT}</ReactMarkdown>
           </div>
         </DialogContent>

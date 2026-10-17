@@ -78,29 +78,29 @@ const StatusBar = () => {
       <div className="hidden md:flex items-center gap-4">
         <span>
           <span className="text-t4">CMB </span>
-          <span className="text-sf-amber-warm/60">627 km/s</span>
+          <span className="text-sf-amber-warm-text">627 km/s</span>
         </span>
         <span className="text-t4">·</span>
         <span>
           <span className="text-t4">GALACTIC </span>
-          <span className="text-sf-amber-warm/60">230 km/s</span>
+          <span className="text-sf-amber-warm-text">230 km/s</span>
         </span>
         <span className="text-t4">·</span>
         <span>
           <span className="text-t4">SOLAR </span>
-          <span className="text-sf-amber-warm/60">29.78 km/s</span>
+          <span className="text-sf-amber-warm-text">29.78 km/s</span>
         </span>
       </div>
 
       {/* Mobile left: condensed */}
       <div className="flex md:hidden items-center gap-2">
         <span className="text-t4">CMB </span>
-        <span className="text-sf-amber-warm/60">627 km/s</span>
+        <span className="text-sf-amber-warm-text">627 km/s</span>
       </div>
 
       {/* Center: sector + target star + lunar phase */}
       <div className="hidden md:flex items-center gap-4">
-        <span className="text-sf-primary-text/40">
+        <span className="text-sf-primary-text">
           // SECTOR: {sector}
         </span>
         <span className="hidden xl:inline text-t4">·</span>

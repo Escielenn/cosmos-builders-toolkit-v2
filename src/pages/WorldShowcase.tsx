@@ -12,7 +12,7 @@ import { useMetaTags } from "@/hooks/use-meta-tags";
 import { useAuth } from "@/contexts/AuthContext";
 import { SocialShareButtons } from "@/components/sharing/SocialShareButtons";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, ChevronDown, ChevronUp, Globe, Link2, Lock, MoonStar, Users } from "lucide-react";
+import { ChevronDown, ChevronUp, Globe, Link2, Lock, MoonStar, Users } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
@@ -46,6 +46,7 @@ import type { WorldTheme } from "@/hooks/use-world";
 
 import { mapError } from "@/lib/ship-voice";
 import WorldIconRenderer from "@/components/world/WorldIconRenderer";
+import { BackLink } from "@/components/ui/back-link";
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -156,7 +157,7 @@ function CascadeCoverageBar({ entities }: { entities: Entity[] }) {
       {CASCADE_STAGES.map((stage, i) => (
         <div key={stage} className="flex-1 flex flex-col items-center gap-1.5">
           <div
-            className="w-full h-2 transition-all duration-300"
+            className="w-full h-2 transition-all duration-slow"
             style={{
               backgroundColor: populated[i]
                 ? CASCADE_STAGE_COLORS[stage]
@@ -168,7 +169,7 @@ function CascadeCoverageBar({ entities }: { entities: Entity[] }) {
             }}
           />
           <span
-            className="font-heading text-[12px] uppercase tracking-[1.5px] transition-colors"
+            className="font-heading text-[12px] uppercase tracking-wide transition-colors"
             style={{
               color: populated[i]
                 ? CASCADE_STAGE_COLORS[stage]
@@ -219,7 +220,7 @@ function EntityCard({
 
   return (
     <GlassPanel
-      className="p-4 cursor-pointer group transition-all duration-200 hover:-translate-y-0.5"
+      className="p-4 cursor-pointer group transition-all duration-base hover:-translate-y-0.5"
       hover
       onClick={onToggle}
     >
@@ -228,21 +229,21 @@ function EntityCard({
         <div className="flex items-center gap-2.5 min-w-0">
           {/* Color dot */}
           <div
-            className="w-2.5 h-2.5 flex-shrink-0 rounded-sm"
+            className="w-2.5 h-2.5 flex-shrink-0 rounded-none"
             style={{ backgroundColor: color }}
           />
           <div className="min-w-0">
             <h3 className="font-heading text-sm font-light text-t1 truncate">
               {entity.name}
             </h3>
-            <span className="font-sans text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
+            <span className="font-sans text-[12px] font-medium uppercase tracking-wide text-t3">
               {entity.custom_type_label || ENTITY_TYPE_LABELS[entity.entity_type]}
             </span>
           </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           <span
-            className="font-mono text-[12px] px-1.5 py-0.5 rounded-sm"
+            className="font-mono text-[12px] px-1.5 py-0.5 rounded-none"
             style={{
               backgroundColor: `${stageColor}0F`,
               border: `1px solid ${stageColor}26`,
@@ -279,7 +280,7 @@ function EntityCard({
           {/* Description */}
           {entity.description && (
             <div className="space-y-1">
-              <span className="font-sans text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
+              <span className="font-sans text-[12px] font-medium uppercase tracking-wide text-t3">
                 Description
               </span>
               <p className="font-sans text-sm text-t2 leading-relaxed whitespace-pre-wrap">
@@ -294,7 +295,7 @@ function EntityCard({
               {entity.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="font-mono text-[12px] px-2 py-0.5 rounded-sm bg-white/[0.04] border border-sf-line text-t3"
+                  className="font-mono text-[12px] px-2 py-0.5 rounded-none bg-sf-surface-elevated border border-sf-line text-t3"
                 >
                   {tag}
                 </span>
@@ -305,7 +306,7 @@ function EntityCard({
           {/* Connections */}
           {relatedConnections.length > 0 && (
             <div className="space-y-2">
-              <span className="font-sans text-[12px] font-medium uppercase tracking-[1.5px] text-t3 flex items-center gap-1.5">
+              <span className="font-sans text-[12px] font-medium uppercase tracking-wide text-t3 flex items-center gap-1.5">
                 <Link2 className="w-3 h-3" />
                 Connections
               </span>
@@ -323,7 +324,7 @@ function EntityCard({
                   return (
                     <div
                       key={conn.id}
-                      className="flex items-center gap-2 py-1 px-2 rounded-xs bg-white/[0.02]"
+                      className="flex items-center gap-2 py-1 px-2 rounded-none bg-sf-surface"
                     >
                       <div
                         className="w-1.5 h-1.5 rounded-full flex-shrink-0"
@@ -346,7 +347,7 @@ function EntityCard({
 
       {/* Bottom edge glow line */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-[2px] transition-transform duration-300 origin-left scale-x-0 group-hover:scale-x-100"
+        className="absolute bottom-0 left-0 right-0 h-[2px] transition-transform duration-slow origin-left scale-x-0 group-hover:scale-x-100"
         style={{ backgroundColor: `${color}99` }}
       />
     </GlassPanel>
@@ -386,7 +387,7 @@ function VisibilitySelector({
             key={opt.value}
             onClick={() => onSelect(opt.value)}
             disabled={disabled}
-            className="flex items-center gap-1.5 px-3 py-1.5 font-sans text-[12px] font-medium uppercase tracking-[1px] transition-all duration-200"
+            className="flex items-center gap-1.5 px-3 py-1.5 font-sans text-[12px] font-medium uppercase tracking-wider transition-all duration-base"
             style={{
               backgroundColor: isActive ? `${opt.color}0F` : "transparent",
               border: `1px solid ${isActive ? `${opt.color}26` : "var(--sf-line-interactive)"}`,
@@ -420,7 +421,7 @@ function StatCard({
       >
         {value}
       </div>
-      <div className="font-sans text-[12px] font-medium uppercase tracking-[1.5px] text-t3">
+      <div className="font-sans text-[12px] font-medium uppercase tracking-wide text-t3">
         {label}
       </div>
     </GlassPanel>
@@ -532,7 +533,7 @@ export default function WorldShowcase() {
           </p>
           <Link
             to="/"
-            className="font-sans text-sm text-primary hover:text-primary/80 transition-colors"
+            className="font-sans text-sm text-sf-primary-text hover:text-t1 transition-colors"
           >
             Return Home
           </Link>
@@ -566,7 +567,7 @@ export default function WorldShowcase() {
             <div className="flex items-start gap-3">
               <MoonStar className="w-6 h-6 mt-0.5 shrink-0 text-sf-stellar" aria-hidden="true" />
               <div>
-                <p className="font-heading text-sm font-light uppercase tracking-[2px] text-stellar mb-1">
+                <p className="font-heading text-sm font-light uppercase tracking-wide text-sf-stellar-text mb-1">
                   Sample World - The Tidelock Archives
                 </p>
                 <p className="text-[13px] text-t2 leading-relaxed max-w-2xl">
@@ -651,18 +652,12 @@ export default function WorldShowcase() {
 
         <div className="relative max-w-5xl mx-auto px-6 py-20 md:py-28">
           {/* Back link */}
-          <Link
-            to={`/worlds/${world.id}`}
-            className="inline-flex items-center gap-2 font-sans text-xs text-t4 hover:text-t2 transition-colors mb-8"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            ← RETURN TO BRIDGE
-          </Link>
+          <BackLink to={`/worlds/${world.id}`} label="RETURN TO WORLD" className="mb-8" />
 
           {/* World icon + name */}
           <div className="flex items-center gap-4 mb-4">
             <span role="img" aria-label="World icon">
-              <WorldIconRenderer iconId={world.icon || "globe"} className="w-10 h-10 text-primary" />
+              <WorldIconRenderer iconId={world.icon || "globe"} className="w-10 h-10 text-sf-primary-text" />
             </span>
             <h1 className="font-display text-3xl md:text-5xl tracking-sf-title text-t1 uppercase">
               {world.name}
@@ -696,7 +691,7 @@ export default function WorldShowcase() {
               {world.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="font-mono text-[12px] px-2.5 py-1 rounded-sm bg-white/[0.04] border border-sf-line text-t3"
+                  className="font-mono text-[12px] px-2.5 py-1 rounded-none bg-sf-surface-elevated border border-sf-line text-t3"
                 >
                   {tag}
                 </span>
@@ -707,7 +702,7 @@ export default function WorldShowcase() {
           {/* Visibility badge (non-owner visitors see status; owner sees it in top banner) */}
           {!isOwner && isCommunityWorld && (
             <div className="flex items-center gap-2 mt-4">
-              <span className="inline-flex items-center gap-1.5 font-mono text-[12px] px-2.5 py-1 rounded-sm bg-sf-primary/[0.06] border border-sf-primary text-sf-primary-text">
+              <span className="inline-flex items-center gap-1.5 font-mono text-[12px] px-2.5 py-1 rounded-none bg-sf-primary/[0.06] border border-sf-primary text-sf-primary-text">
                 <Globe className="w-3 h-3" />
                 {visibility === "public" ? "Public" : "Community"}
               </span>
@@ -771,7 +766,7 @@ export default function WorldShowcase() {
       {/* ----------------------------------------------------------------- */}
       <section className="max-w-5xl mx-auto px-6 pb-10">
         <GlassPanel className="p-6">
-          <h2 className="font-heading text-sm font-light uppercase tracking-[3px] text-emerald mb-5">
+          <h2 className="font-heading text-sm font-light uppercase tracking-wide text-sf-emerald-text mb-5">
             Environmental Cascade Coverage
           </h2>
           <CascadeCoverageBar entities={entities} />
@@ -800,7 +795,7 @@ export default function WorldShowcase() {
                   {/* Stage header */}
                   <div className="flex items-center gap-3 mb-5">
                     <div
-                      className="w-3 h-3 rounded-sm"
+                      className="w-3 h-3 rounded-none"
                       style={{ backgroundColor: CASCADE_STAGE_COLORS[stage] }}
                     />
                     <h2
@@ -862,7 +857,7 @@ export default function WorldShowcase() {
         }}
       />
       <div className="text-center pb-12">
-        <span className="font-mono text-[12px] uppercase tracking-[2px] text-t4">
+        <span className="font-mono text-[12px] uppercase tracking-wide text-t4">
           Built with StellarForge
         </span>
       </div>

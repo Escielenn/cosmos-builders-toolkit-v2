@@ -125,7 +125,7 @@ const BackupStatusWidget = ({ worlds }: BackupStatusWidgetProps) => {
               );
             })}
             {worldBackups.length > 5 && (
-              <p className="text-[12px] text-t3/50 text-center pt-1">
+              <p className="text-[12px] text-t4 text-center pt-1">
                 +{worldBackups.length - 5} more
               </p>
             )}

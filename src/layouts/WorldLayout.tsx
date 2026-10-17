@@ -179,7 +179,7 @@ const WorldLayout = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="flex items-center justify-center" style={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
-          <p className="font-mono text-[12px] uppercase tracking-[0.18em] text-sf-crimson-text">
+          <p className="font-mono text-[12px] uppercase tracking-wide text-sf-crimson-text">
             // WORLD DATA UNAVAILABLE. RETRY WHEN READY.
           </p>
         </div>
@@ -208,7 +208,7 @@ const WorldLayout = () => {
                   <button
                     onClick={() => handleSidebarTabChange("codex")}
                     className={cn(
-                      "flex-1 flex items-center justify-center gap-1.5 px-2 py-2 font-heading text-[12px] font-medium uppercase tracking-[0.2em] transition-colors duration-base",
+                      "flex-1 flex items-center justify-center gap-1.5 px-2 py-2 font-heading text-[12px] font-medium uppercase tracking-wide transition-colors duration-base",
                       sidebarTab === "codex"
                         ? "text-sf-primary-text border-b-2 border-sf-primary bg-sf-primary/[0.06]"
                         : "text-t4 hover:text-t3"
@@ -221,7 +221,7 @@ const WorldLayout = () => {
                   <button
                     onClick={() => handleSidebarTabChange("entities")}
                     className={cn(
-                      "flex-1 flex items-center justify-center gap-1.5 px-2 py-2 font-heading text-[12px] font-medium uppercase tracking-[0.2em] transition-colors duration-base",
+                      "flex-1 flex items-center justify-center gap-1.5 px-2 py-2 font-heading text-[12px] font-medium uppercase tracking-wide transition-colors duration-base",
                       sidebarTab === "entities"
                         ? "text-sf-primary-text border-b-2 border-sf-primary bg-sf-primary/[0.06]"
                         : "text-t4 hover:text-t3"

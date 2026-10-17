@@ -64,7 +64,7 @@ const AppearanceSettings = () => {
   return (
     <div className="space-y-6">
       <div className="mb-2 flex items-center gap-2">
-        <Palette className="h-5 w-5 text-primary" />
+        <Palette className="h-5 w-5 text-sf-primary-text" />
         <h3 className="font-heading text-lg font-medium">Appearance</h3>
         <span className="ml-auto font-mono text-sf-mono uppercase text-t4">{id}</span>
       </div>
@@ -112,7 +112,7 @@ const AppearanceSettings = () => {
         <button
           type="button"
           onClick={reset}
-          className="min-h-hit shrink-0 border border-sf-line-interactive px-sf-3 font-sans text-[12px] font-medium uppercase tracking-[1.2px] text-t2 transition-sf duration-fast hover:border-sf-primary hover:text-sf-primary-text"
+          className="min-h-hit shrink-0 border border-sf-line-interactive px-sf-3 font-sans text-[12px] font-medium uppercase tracking-wide text-t2 transition-sf duration-fast hover:border-sf-primary hover:text-sf-primary-text"
         >
           Reset to Void · Teal
         </button>

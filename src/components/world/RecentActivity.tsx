@@ -111,7 +111,7 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
   if (isLoading) {
     return (
       <section className="mb-8">
-        <h2 className="font-heading text-sm font-light uppercase tracking-[3px] text-sf-emerald mb-3 flex items-center gap-2">
+        <h2 className="font-heading text-sm font-light uppercase tracking-wide text-sf-emerald mb-3 flex items-center gap-2">
           <Activity className="w-3.5 h-3.5" />
           Recent Activity
         </h2>
@@ -128,7 +128,7 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
 
   return (
     <section className="mb-8">
-      <h2 className="font-heading text-sm font-light uppercase tracking-[3px] text-sf-emerald mb-3 flex items-center gap-2">
+      <h2 className="font-heading text-sm font-light uppercase tracking-wide text-sf-emerald mb-3 flex items-center gap-2">
         <Activity className="w-3.5 h-3.5" />
         Recent Activity
       </h2>
@@ -139,7 +139,7 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
             <Link
               key={`${item.type}-${item.id}`}
               to={item.linkTo}
-              className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/[0.03] transition-colors group"
+              className="flex items-center gap-3 px-4 py-2.5 hover:bg-sf-surface-elevated transition-colors group"
             >
               <Icon className="w-3.5 h-3.5 text-t4 shrink-0 group-hover:text-t3 transition-colors" />
               <div className="flex-1 min-w-0">
@@ -147,7 +147,7 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
                   {item.name}
                 </span>
               </div>
-              <span className="font-mono text-[12px] uppercase tracking-[1px] text-t4 shrink-0">
+              <span className="font-mono text-[12px] uppercase tracking-wider text-t4 shrink-0">
                 {TYPE_LABELS[item.type]}
               </span>
               <span className="font-mono text-[12px] text-t4 shrink-0 w-24 text-right">

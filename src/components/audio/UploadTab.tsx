@@ -88,14 +88,14 @@ export default function UploadTab() {
             return (
               <div
                 key={track.id}
-                className={`group flex items-center gap-3 px-3 py-2 transition-colors hover:bg-white/[0.03] ${
+                className={`group flex items-center gap-3 px-3 py-2 transition-colors hover:bg-sf-surface-elevated ${
                   isThis ? "bg-primary/[0.04]" : ""
                 }`}
               >
                 <button
                   type="button"
                   onClick={() => (isPlaying ? pause() : play(track))}
-                  className={`shrink-0 ${isThis ? "text-primary" : "text-t4 hover:text-t2"}`}
+                  className={`shrink-0 ${isThis ? "text-sf-primary-text" : "text-t4 hover:text-t2"}`}
                   aria-label={isPlaying ? "Pause" : "Play"}
                 >
                   {isPlaying ? (
@@ -106,7 +106,7 @@ export default function UploadTab() {
                 </button>
 
                 <div className="min-w-0 flex-1">
-                  <p className={`text-sm truncate ${isThis ? "text-primary" : "text-t2"}`}>
+                  <p className={`text-sm truncate ${isThis ? "text-sf-primary-text" : "text-t2"}`}>
                     {track.title}
                   </p>
                 </div>
@@ -120,7 +120,7 @@ export default function UploadTab() {
                 <button
                   type="button"
                   onClick={() => deleteTrack.mutate({ trackId: track.id })}
-                  className="p-1 text-t4 hover:text-sf-crimson-text opacity-0 group-hover:opacity-100 transition-all"
+                  className="p-1 text-t4 hover:text-sf-crimson-text transition-all"
                   aria-label="Delete track"
                 >
                   <Trash2 className="w-3 h-3" />

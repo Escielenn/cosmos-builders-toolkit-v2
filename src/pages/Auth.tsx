@@ -14,6 +14,7 @@ import { PageBursts } from "@/components/ui/data-burst";
 import { AUTH_BURSTS } from "@/lib/data-bursts";
 import { TOTAL_TOOL_COUNT } from "@/lib/tools-config";
 import { mapError } from "@/lib/ship-voice";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 const YOUTUBE_VIDEO_ID = "iGYxmAQa8DY";
 
@@ -21,6 +22,7 @@ const emailSchema = z.string().email("VALID EMAIL REQUIRED.");
 const passwordSchema = z.string().min(6, "AT LEAST 6 CHARS REQUIRED.");
 
 const Auth = () => {
+  useMetaTags({ title: "Authentication" });
   // Login state (existing-user sign-in)
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -155,14 +157,14 @@ const Auth = () => {
           {/* Hero, display-font scale per April 2026 handoff */}
           <div className="space-y-7">
             <CubeLogo size={80} className="rounded-none" />
-            <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-primary-text text-[13px] tracking-[3px]">
+            <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-primary-text text-[13px] tracking-wide">
               <span aria-hidden className="block w-12 h-px bg-sf-primary" />
               <span>// OPEN EARLY ACCESS</span>
             </div>
             <h1 className="font-display font-light text-sf-hero leading-[0.98] text-t1 max-w-[12ch]">
               <span className="text-sf-primary-text">Stellar</span>forge.
             </h1>
-            <p className="font-heading text-[12px] tracking-[0.2em] uppercase text-t3">
+            <p className="font-heading text-[12px] tracking-wide uppercase text-t3">
               Science Fiction Worldbuilding Tools
             </p>
             <p className="font-sans text-[19px] text-t2 max-w-[780px] leading-[1.55]">
@@ -177,9 +179,9 @@ const Auth = () => {
           <div className="grid md:grid-cols-3 gap-6">
             <GlassPanel className="p-6 text-center md:text-left">
               <div className="w-10 h-10 rounded-none bg-sf-primary/[0.06] border border-sf-primary flex items-center justify-center mb-3 mx-auto md:mx-0">
-                <Layers className="w-5 h-5 text-primary" />
+                <Layers className="w-5 h-5 text-sf-primary-text" />
               </div>
-              <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-primary-text mb-2">
+              <h3 className="font-heading text-[12px] font-medium uppercase tracking-wide text-sf-primary-text mb-2">
                 Systematic Worldbuilding
               </h3>
               <p className="text-sm text-t2">
@@ -191,7 +193,7 @@ const Auth = () => {
               <div className="w-10 h-10 rounded-none bg-sf-stellar/[0.06] border border-sf-stellar flex items-center justify-center mb-3 mx-auto md:mx-0">
                 <Share2 className="w-5 h-5 text-sf-stellar" />
               </div>
-              <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-primary-text mb-2">
+              <h3 className="font-heading text-[12px] font-medium uppercase tracking-wide text-sf-primary-text mb-2">
                 Cross-Tool Integration
               </h3>
               <p className="text-sm text-t2">
@@ -201,9 +203,9 @@ const Auth = () => {
             </GlassPanel>
             <GlassPanel className="p-6 text-center md:text-left">
               <div className="w-10 h-10 rounded-none bg-sf-primary/[0.06] border border-sf-primary flex items-center justify-center mb-3 mx-auto md:mx-0">
-                <FileDown className="w-5 h-5 text-primary" />
+                <FileDown className="w-5 h-5 text-sf-primary-text" />
               </div>
-              <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-primary-text mb-2">
+              <h3 className="font-heading text-[12px] font-medium uppercase tracking-wide text-sf-primary-text mb-2">
                 Export Everything
               </h3>
               <p className="text-sm text-t2">
@@ -217,7 +219,7 @@ const Auth = () => {
           <GlassPanel className="overflow-hidden p-2" lightArc glow>
             <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
               <iframe
-                className="absolute top-0 left-0 w-full h-full rounded-sm"
+                className="absolute top-0 left-0 w-full h-full rounded-none"
                 src={`https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?rel=0`}
                 title="StellarForge Preview"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -241,10 +243,10 @@ const Auth = () => {
 
             {signupComplete ? (
               <div className="text-center py-6 space-y-3">
-                <div className="w-12 h-12 rounded-sm bg-primary/[0.06] border border-primary flex items-center justify-center mx-auto">
-                  <Rocket className="w-5 h-5 text-primary" />
+                <div className="w-12 h-12 rounded-none bg-primary/[0.06] border border-primary flex items-center justify-center mx-auto">
+                  <Rocket className="w-5 h-5 text-sf-primary-text" />
                 </div>
-                <h3 className="font-heading text-sm font-light tracking-[0.1em] uppercase">
+                <h3 className="font-heading text-sm font-light tracking-wide uppercase">
                   ACCOUNT CREATED
                 </h3>
                 <p className="text-sm text-t2">
@@ -275,7 +277,7 @@ const Auth = () => {
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-dashed border-sf-line-interactive"></div>
                   </div>
-                  <div className="relative flex justify-center font-mono text-[12px] tracking-[0.18em] uppercase">
+                  <div className="relative flex justify-center font-mono text-[12px] tracking-wide uppercase">
                     <span className="bg-sf-surface px-2 text-t4">// OR EMAIL</span>
                   </div>
                 </div>
@@ -378,7 +380,7 @@ const Auth = () => {
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-dashed border-sf-line-interactive"></div>
                   </div>
-                  <div className="relative flex justify-center font-mono text-[12px] tracking-[0.18em] uppercase">
+                  <div className="relative flex justify-center font-mono text-[12px] tracking-wide uppercase">
                     <span className="bg-sf-surface px-2 text-t4">// OR EMAIL</span>
                   </div>
                 </div>
@@ -426,7 +428,7 @@ const Auth = () => {
           </div>
 
           {/* Footer */}
-          <div className="text-center font-mono text-[12px] tracking-[0.18em] text-t4 pb-8 uppercase">
+          <div className="text-center font-mono text-[12px] tracking-wide text-t4 pb-8 uppercase">
             <p>© {new Date().getFullYear()} STELLARFORGE · 39.87°N · 104.97°W</p>
           </div>
 

@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
 import { WikiPage } from "@/components/world/WikiPage";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 /**
  * /worlds/:worldId/codex/:entityId — one URL per thing (Brief F1).
@@ -11,6 +12,7 @@ import { WikiPage } from "@/components/world/WikiPage";
  * here so nothing the app ever linked goes dark.
  */
 const CodexEntityRoute = () => {
+  useMetaTags({ title: "Codex" });
   const { entityId } = useParams<{ entityId: string }>();
   const layoutContext = useWorldLayoutContext();
   const worldId = layoutContext?.worldId ?? "";

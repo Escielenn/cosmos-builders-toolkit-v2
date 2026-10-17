@@ -83,12 +83,12 @@ const BackgroundSelector = () => {
         ) : (
           <div className="w-full h-full bg-background starfield-preview" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-        <span className="absolute bottom-2 left-2 text-xs font-medium text-white">
+        <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--sf-scrim)] to-transparent" />
+        <span className="absolute bottom-2 left-2 text-xs font-medium text-t1">
           {option.name}
         </span>
         {isSelected && (
-          <div className="absolute top-2 right-2 w-5 h-5 rounded-sm bg-primary flex items-center justify-center">
+          <div className="absolute top-2 right-2 w-5 h-5 rounded-none bg-primary flex items-center justify-center">
             <Check className="w-3 h-3 text-primary-foreground" />
           </div>
         )}
@@ -116,8 +116,8 @@ const BackgroundSelector = () => {
             className={cn(
               "sf-nav-link inline-flex items-center justify-center w-9 h-9 transition-colors",
               backgroundVisible
-                ? "text-t3 hover:text-primary"
-                : "text-t3/40 hover:text-primary/60"
+                ? "text-t3 hover:text-sf-primary-text"
+                : "text-t4 hover:text-t1"
             )}
             onClick={toggleBackgroundVisible}
           >
@@ -181,18 +181,18 @@ const BackgroundSelector = () => {
                       : "border-sf-line hover:border-primary"
                   )}
                 >
-                  <div className="w-full h-full bg-gradient-to-br from-purple-900/50 via-blue-900/50 to-cyan-900/50 flex items-center justify-center">
-                    <Shuffle className="w-8 h-8 text-white/70" />
+                  <div className="w-full h-full bg-gradient-to-br from-sf-violet/[0.25] via-sf-stellar/[0.25] to-sf-teal/[0.25] flex items-center justify-center">
+                    <Shuffle className="w-8 h-8 text-t2" aria-hidden="true" />
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-                  <span className="absolute bottom-2 left-2 text-xs font-medium text-white">
+                  <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--sf-scrim)] to-transparent" />
+                  <span className="absolute bottom-2 left-2 text-xs font-medium text-t1">
                     Random
                   </span>
-                  <span className="absolute bottom-2 right-2 text-[12px] text-white/60">
+                  <span className="absolute bottom-2 right-2 text-[12px] text-t3">
                     Changes each visit
                   </span>
                   {!hasUserPreference && (
-                    <div className="absolute top-2 right-2 w-5 h-5 rounded-sm bg-primary flex items-center justify-center">
+                    <div className="absolute top-2 right-2 w-5 h-5 rounded-none bg-primary flex items-center justify-center">
                       <Check className="w-3 h-3 text-primary-foreground" />
                     </div>
                   )}
@@ -258,12 +258,12 @@ const BackgroundSelector = () => {
                     >
                       <span className="text-[12px] font-mono text-t3 uppercase tracking-wider">{option.name}</span>
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-                    <span className="absolute bottom-2 left-2 text-xs font-medium text-white">
+                    <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--sf-scrim)] to-transparent" />
+                    <span className="absolute bottom-2 left-2 text-xs font-medium text-t1">
                       {option.name}
                     </span>
                     {isSelected && (
-                      <div className="absolute top-2 right-2 w-5 h-5 rounded-sm bg-primary flex items-center justify-center">
+                      <div className="absolute top-2 right-2 w-5 h-5 rounded-none bg-primary flex items-center justify-center">
                         <Check className="w-3 h-3 text-primary-foreground" />
                       </div>
                     )}
@@ -321,12 +321,12 @@ const BackgroundSelector = () => {
                     alt="Custom background"
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-                  <span className="absolute bottom-2 left-2 text-xs font-medium text-white">
+                  <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--sf-scrim)] to-transparent" />
+                  <span className="absolute bottom-2 left-2 text-xs font-medium text-t1">
                     Custom
                   </span>
                   {backgroundId === "custom" && (
-                    <div className="absolute top-2 right-2 w-5 h-5 rounded-sm bg-primary flex items-center justify-center">
+                    <div className="absolute top-2 right-2 w-5 h-5 rounded-none bg-primary flex items-center justify-center">
                       <Check className="w-3 h-3 text-primary-foreground" />
                     </div>
                   )}
@@ -335,7 +335,7 @@ const BackgroundSelector = () => {
                       e.stopPropagation();
                       clearCustomBackground();
                     }}
-                    className="absolute top-2 left-2 w-5 h-5 rounded-sm bg-destructive flex items-center justify-center hover:bg-destructive/80"
+                    className="absolute top-2 left-2 w-5 h-5 rounded-none bg-destructive flex items-center justify-center hover:bg-destructive/80"
                   >
                     <X className="w-3 h-3 text-destructive-foreground" />
                   </button>

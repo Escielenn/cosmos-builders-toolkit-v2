@@ -54,7 +54,7 @@ const BackgroundLayer = () => {
           aria-hidden="true"
         >
           {/* Solid black base, prevents any previous background from bleeding through */}
-          <div className="absolute inset-0 bg-black" />
+          <div className="absolute inset-0 bg-sf-void" />
 
           {!failed && (
             <video
@@ -67,7 +67,7 @@ const BackgroundLayer = () => {
               preload="auto"
               onCanPlay={() => setLoaded(true)}
               onError={() => setFailed(true)}
-              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-slow ${
                 loaded ? "opacity-[calc(0.4*var(--sf-ambient))]" : "opacity-0"
               }`}
             />

@@ -6,7 +6,7 @@ const SharedPageHeader = () => {
   return (
     <header className="sticky top-0 z-50 border-b border-sf-line bg-background/80 backdrop-blur-xl">
       <div className="container mx-auto px-4 h-14 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+        <Link to="/" className="flex items-center gap-2 hover:text-sf-primary-text transition-colors">
           <CubeLogo size={28} />
           <span className="font-heading font-medium text-lg">StellarForge</span>
         </Link>

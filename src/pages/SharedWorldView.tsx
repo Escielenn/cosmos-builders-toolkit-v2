@@ -12,8 +12,10 @@ import { CosmicTelemetry } from "@/components/layout/CosmicVelocityTicker";
 import { DISTANCE_DATA } from "@/lib/cosmic-telemetry";
 import { PageBursts } from "@/components/ui/data-burst";
 import { SHARED_WORLD_BURSTS } from "@/lib/data-bursts";
+import { useMetaTags } from "@/hooks/use-meta-tags";
 
 const SharedWorldView = () => {
+  useMetaTags({ title: "Shared World" });
   const { token } = useParams<{ token: string }>();
   const { data, isLoading, error } = useSharedWorld(token);
 
@@ -63,7 +65,7 @@ const SharedWorldView = () => {
               <div className="flex items-center gap-3">
                 {data.icon && (
                   <div className="w-10 h-10 rounded-none bg-primary/10 flex items-center justify-center">
-                    <WorldIconRenderer iconId={data.icon} className="w-7 h-7 text-primary" />
+                    <WorldIconRenderer iconId={data.icon} className="w-7 h-7 text-sf-primary-text" />
                   </div>
                 )}
                 <h1 className="font-display text-3xl md:text-4xl font-medium">
@@ -82,11 +84,11 @@ const SharedWorldView = () => {
                       <img
                         src={data.owner_avatar_url}
                         alt=""
-                        className="w-5 h-5 rounded-sm"
+                        className="w-5 h-5 rounded-none"
                       />
                     ) : (
-                      <div className="w-5 h-5 rounded-sm bg-primary/20 flex items-center justify-center">
-                        <span className="text-[12px] font-medium text-primary">
+                      <div className="w-5 h-5 rounded-none bg-primary/20 flex items-center justify-center">
+                        <span className="text-[12px] font-medium text-sf-primary-text">
                           {data.owner_display_name.charAt(0).toUpperCase()}
                         </span>
                       </div>
@@ -129,7 +131,7 @@ const SharedWorldView = () => {
                     <GlassPanel key={ws.id} className="p-4">
                       <div className="flex items-start justify-between gap-3">
                         <div>
-                          <Badge className="bg-primary/10 text-primary text-xs mb-2">
+                          <Badge className="bg-primary/10 text-sf-primary-text text-xs mb-2">
                             {getToolDisplayName(ws.tool_type)}
                           </Badge>
                           <h3 className="font-medium">

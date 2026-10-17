@@ -348,7 +348,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
         className="px-3 py-1.5 text-left flex items-center gap-2"
       >
         {layoutContext?.worldIcon && (
-          <WorldIconRenderer iconId={layoutContext.worldIcon} className="w-4 h-4 text-primary shrink-0" />
+          <WorldIconRenderer iconId={layoutContext.worldIcon} className="w-4 h-4 text-sf-primary-text shrink-0" />
         )}
         {/* The world's own name, in the writer's voice — not a system label. */}
         <span className="font-serif text-[17px] italic text-t1 block truncate">
@@ -378,7 +378,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       <div className="px-3 pb-1 flex items-center gap-1">
         <button
           onClick={() => handleGroupByChange("cascade")}
-          className={`flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-[1.5px] transition-colors ${
+          className={`flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-wide transition-colors ${
             groupBy === "cascade"
               ? "text-sf-primary-text bg-sf-primary/8 border border-sf-primary"
               : "text-t4 hover:text-t3"
@@ -390,7 +390,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
         </button>
         <button
           onClick={() => handleGroupByChange("entity")}
-          className={`flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-[1.5px] transition-colors ${
+          className={`flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-wide transition-colors ${
             groupBy === "entity"
               ? "text-sf-primary-text bg-sf-primary/8 border border-sf-primary"
               : "text-t4 hover:text-t3"
@@ -481,7 +481,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
           return allEmpty ? (
             <div className="px-3 py-6 text-center">
               <p className="font-mono text-[12px] uppercase tracking-wider text-t4">
-                No matches found
+                NO MATCHES ON FILE.
               </p>
             </div>
           ) : null;

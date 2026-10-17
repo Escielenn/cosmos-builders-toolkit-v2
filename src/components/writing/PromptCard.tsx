@@ -20,9 +20,9 @@ export function PromptCard({ onStartWriting }: PromptCardProps) {
     <GlassPanel glow className="p-6 md:p-8">
       {isLoading ? (
         <div className="animate-pulse space-y-3">
-          <div className="h-5 w-40 bg-white/[0.06] rounded-xs" />
-          <div className="h-6 w-64 bg-white/[0.06] rounded-xs" />
-          <div className="h-4 w-full bg-white/[0.06] rounded-xs" />
+          <div className="h-5 w-40 bg-sf-surface-elevated rounded-none" />
+          <div className="h-6 w-64 bg-sf-surface-elevated rounded-none" />
+          <div className="h-4 w-full bg-sf-surface-elevated rounded-none" />
         </div>
       ) : (
         <>
@@ -35,7 +35,7 @@ export function PromptCard({ onStartWriting }: PromptCardProps) {
                 {DIFFICULTY_LABELS[prompt.difficulty]}
               </Badge>
             </div>
-            <span className="font-mono text-[12px] text-t4 uppercase tracking-[1.5px] ml-auto">
+            <span className="font-mono text-[12px] text-t4 uppercase tracking-wide ml-auto">
               {source === "scheduled"
                 ? "Scheduled Prompt"
                 : source === "featured"
