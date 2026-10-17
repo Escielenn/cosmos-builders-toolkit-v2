@@ -1,4 +1,4 @@
-import { ENTITY_MASTER_FIELDS } from "./entity-config";
+import { ENTITY_MASTER_FIELDS, readMasterField } from "./entity-config";
 
 /**
  * Given entity metadata and a target tool type, produces a partial worksheet
@@ -21,7 +21,7 @@ export function prepopulateWorksheetData(
     const path = field.worksheetPaths?.[toolType];
     if (!path) continue;
 
-    const value = entityMetadata[field.key];
+    const value = readMasterField(entityMetadata, field);
     if (value === undefined || value === null || value === "") continue;
 
     setNestedValue(result, path, value);

@@ -61,6 +61,7 @@ import {
 } from "@/lib/star-system-data";
 import { calcHZBoundaries, luminosityFromMass } from "@/lib/habitable-zone/calculations";
 import StarSystemDiagram from "@/components/tools/StarSystemDiagram";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 
@@ -511,7 +512,7 @@ const StarSystemBuilder = () => {
   };
 
   const handleSave = async () => {
-    localStorage.setItem("ssb-worksheet", JSON.stringify(formState));
+    writeStandaloneBackup("ssb-worksheet", formState, { worldId, signedIn: !!user });
 
     if (worldId && user) {
       const worksheetData = formState as unknown as Json;

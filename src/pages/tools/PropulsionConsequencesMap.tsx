@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { useState, useEffect, useMemo, useRef, lazy, Suspense } from "react";
 import { useWorldId } from "@/hooks/use-world-id";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
@@ -44,6 +44,7 @@ import { useWorlds } from "@/hooks/use-worlds";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import { Json } from "@/integrations/supabase/types";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 // Section definitions for navigation
 const SECTIONS: Section[] = [
@@ -575,21 +576,35 @@ const PropulsionConsequencesMap = () => {
     ) as Record<string, string>;
   }, [velocityPercent, accelerationG, isFTL]);
 
-  // Auto-fill benchmark fields when computed values change
+  // Auto-fill benchmark fields when computed values change, but only fields
+  // the writer has not edited. A field counts as edited when it holds a value
+  // that is not the one this page last auto-filled; those are kept and shown
+  // as stale with a RECOMPUTE action instead of being silently overwritten.
+  const lastAutoBenchmarks = useRef<Partial<Record<keyof TravelBenchmark, string>>>({});
   useEffect(() => {
     if (!computedBenchmarks) return;
+    setFormState((prev) => {
+      const next = { ...prev.benchmarks };
+      for (const { key } of BENCHMARK_ROUTES) {
+        const current = prev.benchmarks[key];
+        const userEdited = !!current && current !== lastAutoBenchmarks.current[key];
+        if (!userEdited) next[key] = computedBenchmarks[key];
+      }
+      return { ...prev, benchmarks: next };
+    });
+    lastAutoBenchmarks.current = Object.fromEntries(
+      BENCHMARK_ROUTES.map(({ key }) => [key, computedBenchmarks[key]])
+    ) as Partial<Record<keyof TravelBenchmark, string>>;
+  }, [computedBenchmarks]);
+
+  const recomputeBenchmark = (field: keyof TravelBenchmark) => {
+    if (!computedBenchmarks) return;
+    const value = computedBenchmarks[field];
     setFormState((prev) => ({
       ...prev,
-      benchmarks: {
-        ...prev.benchmarks,
-        earthMars: computedBenchmarks.earthMars,
-        earthJupiter: computedBenchmarks.earthJupiter,
-        earthNeptune: computedBenchmarks.earthNeptune,
-        solAlphaCentauri: computedBenchmarks.solAlphaCentauri,
-        solProximaB: computedBenchmarks.solProximaB,
-      },
+      benchmarks: { ...prev.benchmarks, [field]: value },
     }));
-  }, [computedBenchmarks]);
+  };
 
   const updateSystem = (field: keyof PropulsionSystem, value: string) => {
     setFormState((prev) => ({
@@ -631,8 +646,8 @@ const PropulsionConsequencesMap = () => {
   };
 
   const handleSave = async () => {
-    // Always save to localStorage as backup
-    localStorage.setItem("pcm-worksheet", JSON.stringify(formState));
+    // Browser backup in standalone mode only (see lib/standalone-backup)
+    writeStandaloneBackup("pcm-worksheet", formState, { worldId, signedIn: !!user });
 
     // If we have a worldId and user is authenticated, save to Supabase
     if (worldId && user) {
@@ -884,9 +899,34 @@ const PropulsionConsequencesMap = () => {
                             <span className="text-sm font-medium">{route.label}</span>
                             <span className="text-xs text-t4">({route.distanceLabel})</span>
                           </div>
-                          <span className="text-sm text-primary font-mono">
-                            {computedBenchmarks[route.key]}
-                          </span>
+                          {formState.benchmarks[route.key] &&
+                          formState.benchmarks[route.key] !== computedBenchmarks[route.key] ? (
+                            <div className="flex items-center gap-3">
+                              <span className="flex flex-col items-end">
+                                <span className="text-sm text-t1 font-mono">
+                                  {formState.benchmarks[route.key]}
+                                </span>
+                                <span className="text-[12px] text-sf-amber-text font-mono">
+                                  {"// STALE. COMPUTED "}
+                                  {computedBenchmarks[route.key]}
+                                </span>
+                              </span>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                onClick={() => recomputeBenchmark(route.key)}
+                                aria-label={`Recompute ${route.label} travel time`}
+                                className="min-h-hit text-[12px]"
+                              >
+                                RECOMPUTE
+                              </Button>
+                            </div>
+                          ) : (
+                            <span className="text-sm text-primary font-mono">
+                              {computedBenchmarks[route.key]}
+                            </span>
+                          )}
                         </div>
                       ))}
                     </div>

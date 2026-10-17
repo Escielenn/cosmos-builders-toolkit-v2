@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
 import { Button } from "@/components/ui/button";
 import { Check, Pencil, X } from "lucide-react";
-import { ENTITY_MASTER_FIELDS, type MasterFieldDef } from "@/lib/entity-config";
+import { ENTITY_MASTER_FIELDS, withMasterFieldAliases, type MasterFieldDef } from "@/lib/entity-config";
 import { useUpdateEntityMetadata } from "@/hooks/use-world-entities";
 import { sanitizeHtml } from "@/lib/sanitize";
 
@@ -28,9 +28,11 @@ export default function EntityMasterInfobox({
   entryId,
   entryType,
   worldId,
-  metadata,
+  metadata: storedMetadata,
   canEdit,
 }: EntityMasterInfoboxProps) {
+  // Fields stored under a retired key (MasterFieldDef.legacyKeys) still show.
+  const metadata = withMasterFieldAliases(entryType, storedMetadata);
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<Record<string, unknown>>({});
   const updateMetadata = useUpdateEntityMetadata(worldId);

@@ -55,6 +55,7 @@ import {
   CONTRADICTION_PROMPTS,
   STORY_CONFLICT_PROMPTS,
 } from "@/lib/technology-data";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const SECTIONS: Section[] = [
   { id: "section-definition", title: "1. Technology Definition" },
@@ -363,7 +364,7 @@ const TechnologyConsequences = () => {
   };
 
   const handleSave = async () => {
-    localStorage.setItem("tc-worksheet", JSON.stringify(formState));
+    writeStandaloneBackup("tc-worksheet", formState, { worldId, signedIn: !!user });
 
     if (worldId && user) {
       const worksheetData = formState as unknown as Json;

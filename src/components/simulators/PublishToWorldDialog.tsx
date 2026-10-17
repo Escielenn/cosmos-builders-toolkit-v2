@@ -27,14 +27,14 @@ import { Loader } from "@/components/ui/loader";
 import SimulationWorldPicker from "@/components/simulators/SimulationWorldPicker";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { createEntry } from "@/services/world-entries";
+import { createEntry, getEntry, updateEntry } from "@/services/world-entries";
+import { mapError } from "@/lib/ship-voice";
 import { findFuzzyNameMatches, type EntityMatchCandidate } from "@/services/entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import type { SimulatorPayload } from "@/hooks/use-simulation-save";
 import type { EntryType } from "@/services/world-data";
 import { extractSimulationFacts } from "@/lib/simulation-facts";
 import { newRunId } from "@/lib/simulators/published-facts";
-import { mapError } from "@/lib/ship-voice";
 
 /** Map simulator output types to entity types */
 const OUTPUT_TYPE_MAP: Record<string, EntryType> = {
@@ -146,6 +146,33 @@ export default function PublishToWorldDialog({
     }
   }, [targetWorld, user, name]);
 
+  // The metadata a publish writes. Shared by the create path and the
+  // "link to existing entity" path so both record the same run the same way.
+  const buildSimMetadata = useCallback(
+    (): Record<string, unknown> => ({
+      _simulator_source: simulatorType,
+      // Law II, provenance up: which run produced these numbers.
+      _source: {
+        kind: "sim" as const,
+        tool_id: simulatorType,
+        run_id: newRunId(),
+        seed:
+          (payload?.parameters as Record<string, unknown> | undefined)?.seed as
+            | string
+            | number
+            | null
+            | undefined ?? null,
+        published_at: new Date().toISOString(),
+      },
+      _simulator_data: payload?.parameters ?? {},
+      _simulator_results: payload?.results ?? {},
+      ...(narrativeNotes && Object.keys(narrativeNotes).length > 0
+        ? { _narrative_notes: narrativeNotes }
+        : {}),
+    }),
+    [simulatorType, payload, narrativeNotes]
+  );
+
   const createEntity = useCallback(async () => {
     if (!targetWorld || !user) return;
 
@@ -156,27 +183,7 @@ export default function PublishToWorldDialog({
           worldId: targetWorld,
           title: name.trim(),
           entryType,
-          metadata: {
-            _simulator_source: simulatorType,
-            // Law II, provenance up: which run produced these numbers.
-            _source: {
-              kind: "sim" as const,
-              tool_id: simulatorType,
-              run_id: newRunId(),
-              seed:
-                (payload?.parameters as Record<string, unknown> | undefined)?.seed as
-                  | string
-                  | number
-                  | null
-                  | undefined ?? null,
-              published_at: new Date().toISOString(),
-            },
-            _simulator_data: payload?.parameters ?? {},
-            _simulator_results: payload?.results ?? {},
-            ...(narrativeNotes && Object.keys(narrativeNotes).length > 0
-              ? { _narrative_notes: narrativeNotes }
-              : {}),
-          },
+          metadata: buildSimMetadata(),
         },
         user.id
       );
@@ -196,19 +203,42 @@ export default function PublishToWorldDialog({
     } finally {
       setIsPublishing(false);
     }
-  }, [targetWorld, user, name, entryType, simulatorType, payload, narrativeNotes, toast, onOpenChange]);
+  }, [targetWorld, user, name, entryType, buildSimMetadata, toast, onOpenChange]);
 
+  // The name matched an existing entity and the writer chose to link to it:
+  // attach this run to that entity. Merges only the keys a publish writes, so
+  // the entity's other metadata (master fields, pending changes, published
+  // facts from other tools) is left as it was. Title and content are not
+  // touched.
   const handleMatchLink = useCallback(
-    (_candidate: EntityMatchCandidate) => {
-      // Entity already exists, just close and notify
+    async (candidate: EntityMatchCandidate) => {
       setMatchDialogOpen(false);
-      toast({
-        title: "ENTITY EXISTS.",
-        description: `"${_candidate.title}" already exists in your world. Simulation data noted.`,
-      });
-      onOpenChange(false);
+      setIsPublishing(true);
+      try {
+        const existing = await getEntry(candidate.id);
+        if (!existing) throw { code: "PGRST116" };
+        const prior = (existing.metadata ?? {}) as Record<string, unknown>;
+        await updateEntry({
+          entryId: candidate.id,
+          metadata: { ...prior, ...buildSimMetadata() },
+        });
+        toast({
+          title: "SIMULATION RUN ATTACHED.",
+          description: `"${candidate.title.toUpperCase()}" UPDATED WITH THIS RUN.`,
+        });
+        onOpenChange(false);
+        setName("");
+      } catch (error) {
+        toast({
+          title: "NOTHING RECORDED.",
+          description: mapError(error),
+          variant: "destructive",
+        });
+      } finally {
+        setIsPublishing(false);
+      }
     },
-    [toast, onOpenChange]
+    [buildSimMetadata, toast, onOpenChange]
   );
 
   const handleMatchCreateSeparate = useCallback(() => {

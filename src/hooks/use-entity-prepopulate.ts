@@ -23,7 +23,7 @@ import { useMemo, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useSubjectEntity } from "@/hooks/use-subject-entity";
 import { attachWorksheetToEntity } from "@/services/worksheet-subjects";
-import { ENTITY_MASTER_FIELDS, type MasterFieldDef } from "@/lib/entity-config";
+import { ENTITY_MASTER_FIELDS, readMasterField, type MasterFieldDef } from "@/lib/entity-config";
 import type { WorldEntry } from "@/services/world-data";
 
 // ---------------------------------------------------------------------------
@@ -60,7 +60,7 @@ export function buildFormPatch(
   for (const field of fields) {
     const dotPath = field.worksheetPaths?.[toolSlug];
     if (!dotPath) continue;
-    const value = metadata[field.key];
+    const value = readMasterField(metadata, field);
     if (value !== undefined && value !== null && value !== "") {
       setAtPath(patch, dotPath, value);
     }

@@ -53,7 +53,7 @@ describe("solarisPlanetPublishFacts", () => {
 
   it("emits every real value from the handoff payload", () => {
     expect(facts.find((f) => f.predicate === "planet.name")?.value).toBe("Kepler-442b");
-    expect(facts.find((f) => f.predicate === "planet.orbital_distance_au")?.value).toBe(0.55);
+    expect(facts.find((f) => f.predicate === "orbit.semi_major_axis")?.value).toBe(0.55);
     expect(facts.find((f) => f.predicate === "star.spectral_class")?.value).toBe("orange");
     expect(facts.find((f) => f.predicate === "star.luminosity_lsun")?.value).toBe(0.42);
     expect(facts.find((f) => f.predicate === "system.name")?.value).toBe("Kepler-442");
@@ -75,8 +75,14 @@ describe("formatPublishedFact", () => {
     expect(formatPublishedFact(fact)).toBe("water world");
   });
 
+  it("writes the canonical orbit.semi_major_axis, never the deprecated name", () => {
+    const predicates = solarisPlanetPublishFacts(payload).map((f) => f.predicate);
+    expect(predicates).toContain("orbit.semi_major_axis");
+    expect(predicates).not.toContain("planet.orbital_distance_au");
+  });
+
   it("appends the unit for a measured value", () => {
-    const fact = solarisPlanetPublishFacts(payload).find((f) => f.predicate === "planet.orbital_distance_au")!;
+    const fact = solarisPlanetPublishFacts(payload).find((f) => f.predicate === "orbit.semi_major_axis")!;
     expect(formatPublishedFact(fact)).toBe("0.55 AU");
   });
 });
@@ -149,6 +155,16 @@ describe("reconstructSolarisHandoff", () => {
   it("returns null when the entry is missing a required predicate", () => {
     const partial = solarisPlanetPublishFacts(payload).filter((f) => f.predicate !== "planet.name");
     expect(reconstructSolarisHandoff(entryWithFacts(partial))).toBeNull();
+  });
+
+  it("rebuilds from an entry published under the deprecated distance name", () => {
+    const legacy = solarisPlanetPublishFacts(payload).map((f) =>
+      f.predicate === "orbit.semi_major_axis" ? { ...f, predicate: "planet.orbital_distance_au" } : f,
+    );
+    const entry = entryWithFacts(legacy);
+    expect(reconstructSolarisHandoff(entry)?.planetAU).toBe(0.55);
+    expect(readTidelockSeed(entry)?.auFraction).toBeCloseTo(0.44, 5);
+    expect(readPublishedFact(entry, "orbit.semi_major_axis")?.value).toBe(0.55);
   });
 
   it("returns null for a star type outside the known habitable-zone table", () => {

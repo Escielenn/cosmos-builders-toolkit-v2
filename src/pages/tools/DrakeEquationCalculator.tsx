@@ -36,6 +36,7 @@ import { DrakeSummaryTemplate, DrakeFullReportTemplate } from "@/lib/pdf/templat
 import { Json } from "@/integrations/supabase/types";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 // Section definitions for navigation
 const SECTIONS: Section[] = [
@@ -417,13 +418,16 @@ const DrakeEquationCalculator = () => {
     }
   }, [existingWorksheet]);
 
-  // Auto-save to localStorage
+  // Auto-save to localStorage (standalone mode only)
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formState));
+      writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
       setHasUnsavedChanges(true);
     }, 500);
     return () => clearTimeout(timeoutId);
+    // worldId/user are read from the same render as formState; re-running on
+    // auth or world changes alone would flag unsaved changes spuriously.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formState]);
 
   // Update a single value
@@ -464,8 +468,8 @@ const DrakeEquationCalculator = () => {
 
   // Save to cloud
   const handleSave = async () => {
-    // Always save to localStorage as backup
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formState));
+    // Browser backup in standalone mode only (see lib/standalone-backup)
+    writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
 
     // If we have a worldId and user is authenticated, save to Supabase
     if (worldId && user) {

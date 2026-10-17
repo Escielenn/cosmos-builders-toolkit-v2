@@ -92,6 +92,7 @@ import type { FormStateForCalc } from "@/lib/surface-gravity/calculations";
 import PlanetSizeComparison from "@/components/tools/PlanetSizeComparison";
 import GravityScaleBar from "@/components/tools/GravityScaleBar";
 import AtmosphericRetentionChart from "@/components/tools/AtmosphericRetentionChart";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 
 // Preset glyphs (lucide, not emoji). Kept out of lib/surface-gravity/data,
@@ -469,8 +470,8 @@ const SurfaceGravityCalculator = () => {
   // ─── Save ──────────────────────────────────────────────────────────
 
   const handleSave = async () => {
-    // Always save to localStorage
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formState));
+    // Browser backup in standalone mode only (see lib/standalone-backup)
+    writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
 
     if (worldId && user) {
       const wsId = currentWorksheetId || worksheetId;

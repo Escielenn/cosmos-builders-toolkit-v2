@@ -46,6 +46,7 @@ import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import QuestionSection from "@/components/tools/QuestionSection";
 import { LinkedWorksheetRef, getLinkConfigsForTool } from "@/lib/worksheet-links-config";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 
@@ -797,8 +798,8 @@ const EnvironmentalChainReaction = () => {
   };
 
   const handleSave = async () => {
-    // Always save to localStorage as backup
-    localStorage.setItem("ecr-worksheet", JSON.stringify(formState));
+    // Browser backup in standalone mode only (see lib/standalone-backup)
+    writeStandaloneBackup("ecr-worksheet", formState, { worldId, signedIn: !!user });
 
     // If we have a worldId and user is authenticated, save directly to Supabase
     if (worldId && user) {

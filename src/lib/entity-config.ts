@@ -73,6 +73,47 @@ export interface MasterFieldDef {
    * Maps tool slug → dot-notation path into worksheet data JSON.
    */
   worksheetPaths?: Record<string, string>;
+  /**
+   * Metadata keys this field was stored under before a rename. Read-only
+   * fallback (see readMasterField); new writes always use `key`.
+   */
+  legacyKeys?: readonly string[];
+}
+
+/**
+ * Read a master field from entity metadata: `field.key` first, then any
+ * `legacyKeys`, so data stored under a retired key still loads.
+ */
+export function readMasterField(
+  metadata: Record<string, unknown> | null | undefined,
+  field: MasterFieldDef
+): unknown {
+  if (!metadata) return undefined;
+  const current = metadata[field.key];
+  if (current !== undefined) return current;
+  for (const legacy of field.legacyKeys ?? []) {
+    if (metadata[legacy] !== undefined) return metadata[legacy];
+  }
+  return undefined;
+}
+
+/**
+ * Copy of `metadata` with each master field of `entityType` filled from its
+ * legacy key when the current key is absent. Legacy keys are left in place.
+ */
+export function withMasterFieldAliases(
+  entityType: string,
+  metadata: Record<string, unknown>
+): Record<string, unknown> {
+  const fields = ENTITY_MASTER_FIELDS[entityType];
+  if (!fields?.some((f) => f.legacyKeys?.length)) return metadata;
+  const out = { ...metadata };
+  for (const field of fields) {
+    if (out[field.key] !== undefined) continue;
+    const value = readMasterField(metadata, field);
+    if (value !== undefined) out[field.key] = value;
+  }
+  return out;
 }
 
 /** Generic fields shared by all creatable entity types */
@@ -582,7 +623,11 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
     ...GENERIC_FIELDS,
     {
       label: "Body Plan",
-      key: "bodyPlan",
+      // Was "bodyPlan", the same key as the species field (evo-bio symmetry),
+      // so continuity treated two unrelated facts as one. Stored data under
+      // the old key still reads via legacyKeys.
+      key: "mythBodyPlan",
+      legacyKeys: ["bodyPlan"],
       type: "text",
       worksheetPaths: { "xenomythology-framework-builder": "physicalForm.bodyPlan" },
     },

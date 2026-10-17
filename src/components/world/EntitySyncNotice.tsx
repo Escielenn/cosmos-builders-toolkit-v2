@@ -40,8 +40,9 @@ export default function EntitySyncNotice({
     queryClient.invalidateQueries({ queryKey: ["codex-data", worldId] });
   };
 
+  // `fields` undefined = accept all; otherwise only the named field keys.
   const acceptMutation = useMutation({
-    mutationFn: () => acceptPendingChanges(entryId),
+    mutationFn: (fields?: string[]) => acceptPendingChanges(entryId, fields),
     onSuccess: invalidate,
   });
 
@@ -74,7 +75,7 @@ export default function EntitySyncNotice({
 
       <div className="space-y-1 ml-6">
         {pendingChanges.map((change) => (
-          <div key={change.field} className="flex items-baseline gap-2 text-[12px]">
+          <div key={change.field} className="flex items-center gap-2 text-[12px]">
             <span className="text-t3 font-medium">{change.label}:</span>
             <span className="text-t4 line-through">
               {formatValue(change.oldValue)}
@@ -83,6 +84,17 @@ export default function EntitySyncNotice({
             <span className="text-amber font-mono">
               {formatValue(change.newValue)}
             </span>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => acceptMutation.mutate([change.field])}
+              disabled={isAnyPending}
+              aria-label={`Accept ${change.label}`}
+              className="ml-auto gap-1 h-6 text-[12px] text-amber hover:bg-amber/10"
+            >
+              <Check className="w-3 h-3" />
+              Accept
+            </Button>
           </div>
         ))}
       </div>
@@ -91,7 +103,7 @@ export default function EntitySyncNotice({
         <Button
           size="sm"
           variant="outline"
-          onClick={() => acceptMutation.mutate()}
+          onClick={() => acceptMutation.mutate(undefined)}
           disabled={isAnyPending}
           className="gap-1 h-6 text-[12px] border-sf-amber text-amber hover:bg-amber/10"
         >

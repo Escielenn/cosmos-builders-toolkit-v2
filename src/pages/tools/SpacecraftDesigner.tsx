@@ -43,6 +43,7 @@ import { useWorlds } from "@/hooks/use-worlds";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import { Json } from "@/integrations/supabase/types";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 // Section definitions for navigation
 const SECTIONS: Section[] = [
@@ -503,8 +504,8 @@ const SpacecraftDesigner = () => {
   };
 
   const handleSave = async () => {
-    // Always save to localStorage as backup
-    localStorage.setItem("spacecraft-designer", JSON.stringify(formState));
+    // Browser backup in standalone mode only (see lib/standalone-backup)
+    writeStandaloneBackup("spacecraft-designer", formState, { worldId, signedIn: !!user });
 
     // If we have a worldId and user is authenticated, save to Supabase
     if (worldId && user) {

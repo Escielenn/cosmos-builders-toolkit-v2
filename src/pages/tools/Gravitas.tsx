@@ -110,6 +110,7 @@ import {
   generateMythologicalSeeds,
   generateNarrativeSnippet,
 } from "@/lib/gravitas/experiential";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 // ─── Constants ────────────────────────────────────────────────────────
 
@@ -306,7 +307,7 @@ const Gravitas = () => {
   // ─── Save / Worksheet Management ───────────────────────────────────
 
   const handleSave = async () => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formState));
+    writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
 
     if (worldId && user) {
       const wsId = currentWorksheetId || worksheetId;

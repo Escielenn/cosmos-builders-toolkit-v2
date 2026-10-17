@@ -77,6 +77,7 @@ import {
   formatDuration,
 } from "@/lib/time-dilation/calculations";
 import type { FormStateForCalc } from "@/lib/time-dilation/calculations";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 // ─── FormState ───────────────────────────────────────────────────────
 
@@ -416,7 +417,7 @@ const TimeDilationCalculator = () => {
   // ─── Save / Load / Export ──────────────────────────────────────────
 
   const handleSave = async () => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formState));
+    writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
 
     if (worldId && user) {
       const worksheetData = formState as unknown as Json;
