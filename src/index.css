@@ -2167,7 +2167,7 @@ html {
 .sf-loading-screen {
   position: fixed;
   inset: 0;
-  z-index: 10000;
+  z-index: 100; /* toast tier: covers Header (50); 9999 is reserved */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2268,7 +2268,7 @@ html {
   left: 0;
   width: 100%;
   height: 2px;
-  z-index: 99999;
+  z-index: 100; /* toast tier: above Header (50); 9999 is reserved */
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.2s;
@@ -2535,7 +2535,7 @@ html {
 /* Wiki-link autocomplete popover */
 .sf-wiki-autocomplete {
   position: fixed;
-  z-index: 1000;
+  z-index: 100; /* above dialogs (50); toast tier */
   background: var(--sf-surface-elevated);
   border: 1px solid var(--sf-line);
   min-width: 280px;
@@ -2627,7 +2627,7 @@ html {
 
 .sf-entity-mention-list {
   position: fixed;
-  z-index: 1000;
+  z-index: 100; /* above dialogs (50); toast tier */
   background: var(--sf-surface-elevated);
   border: 1px solid var(--sf-line);
   min-width: 260px;

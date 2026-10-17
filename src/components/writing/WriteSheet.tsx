@@ -277,7 +277,7 @@ export function WriteSheet({
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="fixed top-5 right-5 z-[60] p-2 rounded-sm text-t4 hover:text-t1 transition-colors"
+            className="fixed top-5 right-5 z-50 p-2 rounded-sm text-t4 hover:text-t1 transition-colors"
             aria-label="Close"
           >
             <X className="w-5 h-5" />
@@ -398,7 +398,7 @@ export function WriteSheet({
           </div>
 
           {/* ─── Fixed footer ──────────────────────────────────────────── */}
-          <div className="fixed bottom-0 left-0 right-0 z-[60] bg-background/95 backdrop-blur-md border-t border-sf-line">
+          <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-sf-line">
             <div className="max-w-3xl mx-auto px-6 py-3 flex items-center justify-between">
               {/* Left: word count + daily goal */}
               <div className="flex items-center gap-3">

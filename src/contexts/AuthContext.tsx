@@ -197,7 +197,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // instead of an infinite spinner (the paused-DB failure mode).
   if (connectionError && !session) {
     return (
-      <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[hsl(var(--sf-void-hsl))] px-6">
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[hsl(var(--sf-void-hsl))] px-6">
         <div className="max-w-md border border-sf-border bg-sf-surface/90 p-8 text-center">
           <div className="mb-4 font-mono text-[12px] uppercase tracking-[3px] text-sf-crimson-text">
             {"// connection lost"}
