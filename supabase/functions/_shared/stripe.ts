@@ -83,7 +83,12 @@ async function stripeRequest(endpoint: string, method: string = 'GET', body?: Re
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.error?.message || 'Stripe API error');
+    // Carry Stripe's error code (e.g. resource_missing) so callers can treat
+    // "already gone" as success where that is the right reading.
+    throw Object.assign(new Error(data.error?.message || 'Stripe API error'), {
+      code: data.error?.code as string | undefined,
+      status: response.status,
+    });
   }
 
   return data;
@@ -122,6 +127,11 @@ export const stripe = {
     retrieve: async (id: string) => {
       return stripeRequest(`/customers/${id}`);
     },
+    // Deleting a customer cancels their subscriptions and removes stored
+    // payment methods. Stripe keeps issued invoices for its own records.
+    del: async (id: string) => {
+      return stripeRequest(`/customers/${id}`, 'DELETE');
+    },
   },
   checkout: {
     sessions: {
@@ -151,6 +161,10 @@ export const stripe = {
     },
     update: async (id: string, params: Record<string, any>) => {
       return stripeRequest(`/subscriptions/${id}`, 'POST', params);
+    },
+    /** Cancel immediately (not at period end). */
+    cancel: async (id: string) => {
+      return stripeRequest(`/subscriptions/${id}`, 'DELETE');
     },
   },
   webhooks: {

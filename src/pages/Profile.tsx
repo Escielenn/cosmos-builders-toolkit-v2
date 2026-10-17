@@ -19,6 +19,7 @@ import { supabase } from "@/integrations/supabase/client";
 import ExportSettings from "@/components/settings/ExportSettings";
 import WritingSettings from "@/components/settings/WritingSettings";
 import AppearanceSettings from "@/components/settings/AppearanceSettings";
+import AccountDataSettings from "@/components/settings/AccountDataSettings";
 import { useEarnedBadges } from "@/hooks/use-badges";
 import { BADGE_DEFINITIONS } from "@/lib/badges/definitions";
 import AvatarPickerDialog from "@/components/settings/AvatarPickerDialog";
@@ -356,6 +357,11 @@ const Profile = () => {
               </Button>
             </div>
           )}
+        </GlassPanel>
+
+        {/* Your Data: full export and account deletion */}
+        <GlassPanel className="p-8 mt-6">
+          <AccountDataSettings />
         </GlassPanel>
       </main>
 

@@ -470,6 +470,38 @@ export type Database = {
           },
         ]
       }
+      entity_fold_map: {
+        Row: {
+          collided: boolean
+          created_at: string
+          entry_id: string
+          legacy_entity_id: string
+          world_id: string
+        }
+        Insert: {
+          collided?: boolean
+          created_at?: string
+          entry_id: string
+          legacy_entity_id: string
+          world_id: string
+        }
+        Update: {
+          collided?: boolean
+          created_at?: string
+          entry_id?: string
+          legacy_entity_id?: string
+          world_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entity_fold_map_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "world_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       entity_type_fields: {
         Row: {
           created_at: string
@@ -614,6 +646,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      f3_fold_report: {
+        Row: {
+          created_at: string
+          entry_id: string | null
+          entry_type: string | null
+          id: string
+          legacy_id: string | null
+          name: string | null
+          note: string | null
+          phase: string
+          world_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          entry_id?: string | null
+          entry_type?: string | null
+          id?: string
+          legacy_id?: string | null
+          name?: string | null
+          note?: string | null
+          phase: string
+          world_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          entry_id?: string | null
+          entry_type?: string | null
+          id?: string
+          legacy_id?: string | null
+          name?: string | null
+          note?: string | null
+          phase?: string
+          world_id?: string | null
+        }
+        Relationships: []
       }
       hidden_example_worlds: {
         Row: {
@@ -822,7 +890,7 @@ export type Database = {
             foreignKeyName: "scene_pins_entity_id_fkey"
             columns: ["entity_id"]
             isOneToOne: false
-            referencedRelation: "entities"
+            referencedRelation: "world_entries"
             referencedColumns: ["id"]
           },
           {
@@ -880,6 +948,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      stripe_events: {
+        Row: {
+          id: string
+          livemode: boolean
+          processed_at: string
+          type: string
+        }
+        Insert: {
+          id: string
+          livemode?: boolean
+          processed_at?: string
+          type: string
+        }
+        Update: {
+          id?: string
+          livemode?: boolean
+          processed_at?: string
+          type?: string
+        }
+        Relationships: []
       }
       subscriptions: {
         Row: {
@@ -1296,41 +1385,68 @@ export type Database = {
       }
       world_connections: {
         Row: {
+          bidirectional: boolean
+          cascade_stage: string | null
           connection_type: string
           created_at: string
           created_by: string
           description: string | null
           id: string
+          legacy_entity_connection_id: string | null
+          notes: string | null
+          relationship_label: string | null
           source_entry_id: string | null
           source_worksheet_id: string | null
+          status: string | null
+          strength: number | null
           target_entry_id: string | null
           target_worksheet_id: string | null
+          time_end: string | null
+          time_start: string | null
           updated_at: string
           world_id: string
         }
         Insert: {
+          bidirectional?: boolean
+          cascade_stage?: string | null
           connection_type?: string
           created_at?: string
           created_by: string
           description?: string | null
           id?: string
+          legacy_entity_connection_id?: string | null
+          notes?: string | null
+          relationship_label?: string | null
           source_entry_id?: string | null
           source_worksheet_id?: string | null
+          status?: string | null
+          strength?: number | null
           target_entry_id?: string | null
           target_worksheet_id?: string | null
+          time_end?: string | null
+          time_start?: string | null
           updated_at?: string
           world_id: string
         }
         Update: {
+          bidirectional?: boolean
+          cascade_stage?: string | null
           connection_type?: string
           created_at?: string
           created_by?: string
           description?: string | null
           id?: string
+          legacy_entity_connection_id?: string | null
+          notes?: string | null
+          relationship_label?: string | null
           source_entry_id?: string | null
           source_worksheet_id?: string | null
+          status?: string | null
+          strength?: number | null
           target_entry_id?: string | null
           target_worksheet_id?: string | null
+          time_end?: string | null
+          time_start?: string | null
           updated_at?: string
           world_id?: string
         }
@@ -2095,6 +2211,7 @@ export type Database = {
       }
       cleanup_world_versions: { Args: never; Returns: number }
       compile_world_snapshot: { Args: { p_world_id: string }; Returns: Json }
+      export_account_data: { Args: never; Returns: Json }
       fork_world: { Args: { p_source_world_id: string }; Returns: string }
       get_collaborators_for_world: {
         Args: { p_world_id: string }
@@ -2112,6 +2229,7 @@ export type Database = {
       }
       lookup_user_by_email: { Args: { p_email: string }; Returns: Json }
       maybe_snapshot_world: { Args: { p_world_id: string }; Returns: boolean }
+      prepare_account_deletion: { Args: { p_user_id: string }; Returns: Json }
       remove_roadmap_vote: {
         Args: { p_roadmap_item_id: string; p_vote_count?: number }
         Returns: Json
@@ -2138,12 +2256,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -2167,11 +2285,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -2192,11 +2310,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -2217,11 +2335,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -2234,11 +2352,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
