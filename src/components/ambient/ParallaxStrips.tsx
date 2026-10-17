@@ -89,14 +89,10 @@ export function ParallaxStrips({
         // Theme planes, not a hardcoded night: light bases get a light strip.
         background: "linear-gradient(180deg, var(--sf-void), var(--sf-surface))",
         opacity: "var(--sf-ambient)",
-        // Telemetry never runs behind the headline or body copy: heroes are
-        // left-aligned, so the strips fade in from the right of the text
-        // column instead of crossing it.
-        WebkitMaskImage: "linear-gradient(90deg, transparent 0%, transparent 42%, #000 82%)",
-        maskImage: "linear-gradient(90deg, transparent 0%, transparent 42%, #000 82%)",
       }}
       aria-hidden
     >
+      <div className="sf-strips-text absolute inset-0">
       {strips.map((s, i) => (
         <div
           key={i}
@@ -112,6 +108,7 @@ export function ParallaxStrips({
           {s.text}&nbsp;&nbsp;·&nbsp;&nbsp;{s.text}
         </div>
       ))}
+      </div>
     </div>
   );
 }

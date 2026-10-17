@@ -3389,3 +3389,16 @@ html {
   background: linear-gradient(to right, transparent, rgb(var(--sf-primary-bright-rgb) / 0.25), transparent);
   pointer-events: none;
 }
+
+/* ParallaxStrips: telemetry never runs behind the headline or body copy.
+   Heroes are left-aligned, so on wide screens the strips fade in to the
+   right of the text column; on narrow screens the column is the full
+   width, so the text strips are masked out and only the plane gradient
+   remains. */
+.sf-strips-text {
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 42%, #000 82%);
+  mask-image: linear-gradient(90deg, transparent 0%, transparent 42%, #000 82%);
+}
+@media (max-width: 767px) {
+  .sf-strips-text { visibility: hidden; }
+}
