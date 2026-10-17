@@ -106,7 +106,7 @@ const LegalPageLayout = ({
             {badgeIcon}
             {badgeText}
           </p>
-          <h1 className="font-display text-3xl md:text-4xl font-light tracking-sf-title mb-4 text-t1 uppercase">
+          <h1 className="font-display text-3xl md:text-4xl font-light tracking-title mb-4 text-t1 uppercase">
             {title}
           </h1>
           {subtitle && (

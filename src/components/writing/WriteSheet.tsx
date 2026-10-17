@@ -304,7 +304,7 @@ export function WriteSheet({
                 onBlur={handleTitleBlur}
                 placeholder="Untitled Entry"
                 className={cn(
-                  "w-full bg-transparent border-0 border-b border-sf-line focus:border-primary font-display uppercase tracking-sf-title text-t1 transition-all duration-slow ease-sf-out pb-3",
+                  "w-full bg-transparent border-0 border-b border-sf-line focus:border-primary font-display uppercase tracking-title text-t1 transition-all duration-slow ease-sf-out pb-3",
                   isWriting
                     ? "text-lg md:text-xl mb-2"
                     : "text-3xl md:text-5xl mb-3"

@@ -81,7 +81,7 @@ export function EmptyState({
       {!hideDial && <VelocityDial className="w-40" />}
 
       {eyebrow && (
-        <p className="font-mono text-[12px] tracking-[0.18em] uppercase text-sf-primary-text">
+        <p className="font-mono text-[12px] tracking-wide uppercase text-sf-primary-text">
           {eyebrow}
         </p>
       )}
@@ -89,14 +89,14 @@ export function EmptyState({
       <h2
         className={cn(
           "text-3xl md:text-4xl font-light text-t1",
-          warm ? "font-serif italic" : "font-display tracking-sf-title uppercase",
+          warm ? "font-serif italic" : "font-display tracking-title uppercase",
         )}
       >
         {title}
       </h2>
 
       {description && (
-        <p className="font-mono text-[12px] tracking-[0.18em] uppercase text-t3 max-w-md">
+        <p className="font-mono text-[12px] tracking-wide uppercase text-t3 max-w-md">
           {description}
         </p>
       )}

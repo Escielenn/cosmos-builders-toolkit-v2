@@ -59,7 +59,7 @@ const Archive = () => {
 
         {/* Header */}
         <div className="flex items-center gap-3 mb-8">
-          <h1 className="font-heading font-light text-2xl uppercase tracking-sf-wide">
+          <h1 className="font-heading font-light text-2xl uppercase tracking-wide">
             Archive
           </h1>
           {archivedWorlds.length > 0 && (

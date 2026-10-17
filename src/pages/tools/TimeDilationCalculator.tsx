@@ -864,7 +864,7 @@ const TimeDilationCalculator = () => {
               <>
                 {/* Hero: Lorentz Factor */}
                 <GlassPanel glow className="p-6 md:p-8 text-center">
-                  <p className="font-mono text-xs uppercase tracking-sf-ultra text-t2 mb-2">
+                  <p className="font-mono text-xs uppercase tracking-wide text-t2 mb-2">
                     Lorentz Factor (γ)
                   </p>
                   <p className={`font-mono text-5xl md:text-6xl font-sf-light ${sColors.text}`}>
@@ -888,7 +888,7 @@ const TimeDilationCalculator = () => {
 
                 {/* Speed of Light Bar */}
                 <div className="px-1 py-4">
-                  <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-3">
+                  <p className="font-mono text-xs uppercase tracking-wide text-t2 mb-3">
                     Velocity Scale
                   </p>
                   <div className="relative h-6 rounded-none overflow-hidden bg-accent/10 border border-sf-line-interactive">
@@ -966,7 +966,7 @@ const TimeDilationCalculator = () => {
 
                 {/* Time Difference */}
                 <GlassPanel className={`p-5 border-l-4 ${sColors.border}`}>
-                  <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-1">
+                  <p className="font-mono text-xs uppercase tracking-wide text-t2 mb-1">
                     Time Difference
                   </p>
                   <p className={`font-mono text-3xl font-medium ${sColors.text}`}>
@@ -1010,7 +1010,7 @@ const TimeDilationCalculator = () => {
 
                   return (
                     <div className="px-1 py-4">
-                      <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-3">
+                      <p className="font-mono text-xs uppercase tracking-wide text-t2 mb-3">
                         Time Divergence
                       </p>
                       <svg viewBox={`0 0 ${W} ${H}`} className="w-full" preserveAspectRatio="xMidYMid meet">
@@ -1044,7 +1044,7 @@ const TimeDilationCalculator = () => {
                 {formState.velocityProfile.mode === "brachistochrone" &&
                   calculationResult.accelerationPhaseSeconds !== undefined && (
                     <GlassPanel className="p-5">
-                      <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-3">
+                      <p className="font-mono text-xs uppercase tracking-wide text-t2 mb-3">
                         Flight Profile
                       </p>
                       <div className="space-y-2">
@@ -1083,7 +1083,7 @@ const TimeDilationCalculator = () => {
 
                 {/* Narrative Summary */}
                 <GlassPanel className="p-5 bg-sf-primary/5">
-                  <p className="font-mono text-xs uppercase tracking-sf-wide text-sf-primary-text mb-3">
+                  <p className="font-mono text-xs uppercase tracking-wide text-sf-primary-text mb-3">
                     Narrative Summary
                   </p>
                   <p className="text-sm leading-relaxed text-t2">
@@ -1103,7 +1103,7 @@ const TimeDilationCalculator = () => {
                 {/* Story Callouts */}
                 {calculationResult.storyCallouts.length > 0 && (
                   <div className="space-y-3">
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-t2">
+                    <p className="font-mono text-xs uppercase tracking-wide text-t2">
                       What This Means For Your Story
                     </p>
                     {calculationResult.storyCallouts.map((callout, i) => (

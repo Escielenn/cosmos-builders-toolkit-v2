@@ -146,7 +146,7 @@ export default function WelcomeDialog({ open, onOpenChange, variant }: WelcomeDi
 
           {/* Title & subtitle */}
           <div className="space-y-2">
-            <h2 className="font-display text-2xl tracking-sf-title text-t1 uppercase">
+            <h2 className="font-display text-2xl tracking-title text-t1 uppercase">
               {config.title}
             </h2>
             <p className="text-sm text-t2 leading-relaxed">

@@ -138,7 +138,7 @@ const Header = () => {
                   logged-out visitors during OPEN EARLY ACCESS); SF
                   abbreviation below xl for compact layouts. */}
               <Wordmark size="md" className="hidden xl:inline-flex" />
-              <span className="xl:hidden font-display text-lg font-light tracking-sf-wide text-t1 uppercase">
+              <span className="xl:hidden font-display text-lg font-light tracking-wide text-t1 uppercase">
                 SF
               </span>
             </Link>
@@ -170,7 +170,7 @@ const Header = () => {
               <SheetHeader className="text-left">
                 <SheetTitle className="flex items-center gap-3">
                   <CubeLogo size={32} className="rounded-none" />   {/* sheet header */}
-                  <span className="font-display text-sm font-light tracking-sf-wide text-t1 uppercase">
+                  <span className="font-display text-sm font-light tracking-wide text-t1 uppercase">
                     SF
                   </span>
                 </SheetTitle>

@@ -174,7 +174,7 @@ const CreateWorldButton = () => {
       <Dialog open={showWelcome} onOpenChange={(open) => { if (!open) handleWelcomeDismiss(); }}>
         <DialogContent className="sm:max-w-sm">
           <div className="py-6 text-center space-y-4">
-            <h2 className="font-heading text-lg tracking-sf-wide uppercase">
+            <h2 className="font-heading text-lg tracking-wide uppercase">
               World Initialized.
             </h2>
             <div className="space-y-2">

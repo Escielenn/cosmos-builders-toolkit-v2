@@ -154,7 +154,7 @@ const Join = () => {
           <Link to="/auth" className="flex items-center gap-3 group">
             <CubeLogo size={40} className="rounded-none" />
             <div className="flex flex-col">
-              <span className="font-display font-light text-lg leading-tight tracking-sf-wide">
+              <span className="font-display font-light text-lg leading-tight tracking-wide">
                 STELLARFORGE
               </span>
               <span className="text-xs text-t3">Science Fiction Worldbuilding Tools</span>

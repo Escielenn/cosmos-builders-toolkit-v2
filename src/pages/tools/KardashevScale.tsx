@@ -571,7 +571,7 @@ const KardashevScale = () => {
                   Your Civilization Is
                 </p>
                 <h3
-                  className="font-display text-2xl md:text-3xl tracking-sf-title mb-2"
+                  className="font-display text-2xl md:text-3xl tracking-title mb-2"
                   style={{ color: results.band.color }}
                 >
                   {results.band.label.toUpperCase()}

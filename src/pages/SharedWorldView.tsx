@@ -123,7 +123,7 @@ const SharedWorldView = () => {
             {/* Worksheets */}
             {data.worksheets && data.worksheets.length > 0 && (
               <div>
-                <h2 className="font-heading font-light text-xl uppercase tracking-sf-wide mb-4">
+                <h2 className="font-heading font-light text-xl uppercase tracking-wide mb-4">
                   Worksheets ({data.worksheets.length})
                 </h2>
                 <div className="space-y-3">

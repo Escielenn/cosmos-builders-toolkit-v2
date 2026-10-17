@@ -913,7 +913,7 @@ const LexDrift = () => {
               <>
                 {/* Hero: Divergence Score */}
                 <GlassPanel glow className="p-6 md:p-8 text-center">
-                  <p className="font-mono text-xs uppercase tracking-sf-ultra text-t2 mb-2">
+                  <p className="font-mono text-xs uppercase tracking-wide text-t2 mb-2">
                     Language Divergence
                   </p>
                   <p className={`font-mono text-5xl md:text-6xl font-sf-light ${sColors.text}`}>
@@ -927,7 +927,7 @@ const LexDrift = () => {
                 {/* Intelligibility / New Terms */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <GlassPanel className="p-5">
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-1">
+                    <p className="font-mono text-xs uppercase tracking-wide text-t2 mb-1">
                       Mutual Intelligibility
                     </p>
                     <p className="font-mono text-2xl font-medium text-t1">
@@ -938,7 +938,7 @@ const LexDrift = () => {
                     </p>
                   </GlassPanel>
                   <GlassPanel className="p-5">
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-1">
+                    <p className="font-mono text-xs uppercase tracking-wide text-t2 mb-1">
                       Estimated New Vocabulary
                     </p>
                     <p className="font-mono text-2xl font-medium text-t1">
@@ -1012,7 +1012,7 @@ const LexDrift = () => {
                 {/* Sound & Grammar Changes */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <GlassPanel className={`p-5 border-l-4 ${sColors.border}`}>
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-2">
+                    <p className="font-mono text-xs uppercase tracking-wide text-t2 mb-2">
                       Sound Changes
                     </p>
                     <p className="text-sm text-t2 leading-relaxed">
@@ -1020,7 +1020,7 @@ const LexDrift = () => {
                     </p>
                   </GlassPanel>
                   <GlassPanel className={`p-5 border-l-4 ${sColors.border}`}>
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-2">
+                    <p className="font-mono text-xs uppercase tracking-wide text-t2 mb-2">
                       Grammar Changes
                     </p>
                     <p className="text-sm text-t2 leading-relaxed">
@@ -1031,7 +1031,7 @@ const LexDrift = () => {
 
                 {/* Historical Analogue */}
                 <GlassPanel className="p-5 bg-sf-primary/5">
-                  <p className="font-mono text-xs uppercase tracking-sf-wide text-sf-primary-text mb-2">
+                  <p className="font-mono text-xs uppercase tracking-wide text-sf-primary-text mb-2">
                     Historical Analogue
                   </p>
                   <p className="font-heading font-medium text-t1 mb-1">
@@ -1048,7 +1048,7 @@ const LexDrift = () => {
                 {/* Sign Language Results */}
                 {calculationResult.signLanguageDivergence !== undefined && (
                   <GlassPanel className="p-5">
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-2">
+                    <p className="font-mono text-xs uppercase tracking-wide text-t2 mb-2">
                       Sign Language Track
                     </p>
                     <div className="grid grid-cols-2 gap-4 mb-3">
@@ -1074,7 +1074,7 @@ const LexDrift = () => {
                 {/* Liturgical Note */}
                 {calculationResult.liturgicalNote && (
                   <GlassPanel className="p-5 border-l-4 border-l-sf-amber">
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-sf-amber-text mb-2">
+                    <p className="font-mono text-xs uppercase tracking-wide text-sf-amber-text mb-2">
                       Liturgical Preservation
                     </p>
                     <p className="text-sm text-t2 leading-relaxed">
@@ -1085,7 +1085,7 @@ const LexDrift = () => {
 
                 {/* Modifier Breakdown */}
                 <GlassPanel className="p-5">
-                  <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-3">
+                  <p className="font-mono text-xs uppercase tracking-wide text-t2 mb-3">
                     Divergence Modifiers
                   </p>
                   <div className="space-y-2">
@@ -1114,7 +1114,7 @@ const LexDrift = () => {
 
                 {/* Narrative Summary */}
                 <GlassPanel className="p-5 bg-sf-primary/5">
-                  <p className="font-mono text-xs uppercase tracking-sf-wide text-sf-primary-text mb-3">
+                  <p className="font-mono text-xs uppercase tracking-wide text-sf-primary-text mb-3">
                     Narrative Summary
                   </p>
                   <p className="text-sm leading-relaxed text-t2">
@@ -1134,7 +1134,7 @@ const LexDrift = () => {
                 {/* Story Callouts */}
                 {calculationResult.storyCallouts.length > 0 && (
                   <div className="space-y-3">
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-t2">
+                    <p className="font-mono text-xs uppercase tracking-wide text-t2">
                       What This Means For Your Story
                     </p>
                     {calculationResult.storyCallouts.map((callout, i) => (
@@ -1174,7 +1174,7 @@ const LexDrift = () => {
             <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.samples}</p>
             <div className="space-y-4">
               <GlassPanel className="p-4 border-l-4 border-l-primary">
-                <p className="font-mono text-xs uppercase tracking-sf-wide text-sf-primary-text mb-2">
+                <p className="font-mono text-xs uppercase tracking-wide text-sf-primary-text mb-2">
                   Original (Earth Standard)
                 </p>
                 <p className="text-sm font-medium">{SAMPLE_ORIGINAL}</p>
@@ -1187,7 +1187,7 @@ const LexDrift = () => {
                     key={sample.years}
                     className={`p-4 ${isRelevant ? "" : "border-dashed border-sf-disabled-line"}`}
                   >
-                    <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-2">
+                    <p className="font-mono text-xs uppercase tracking-wide text-t2 mb-2">
                       {sample.label}
                     </p>
                     <p className="text-sm font-medium mb-2 font-mono">{sample.text}</p>
@@ -1198,7 +1198,7 @@ const LexDrift = () => {
 
               {/* Scientific Notes */}
               <div className="pt-4 space-y-3">
-                <p className="font-mono text-xs uppercase tracking-sf-wide text-t2">
+                <p className="font-mono text-xs uppercase tracking-wide text-t2">
                   Linguistic Principles
                 </p>
                 {SCIENTIFIC_NOTES.map((note) => (
@@ -1291,7 +1291,7 @@ const LexDrift = () => {
                   {/* Multi-ship results */}
                   {calculationResult.valid && calculationResult.shipResults && calculationResult.shipResults.length > 0 && (
                     <div className="space-y-3">
-                      <p className="font-mono text-xs uppercase tracking-sf-wide text-t2">
+                      <p className="font-mono text-xs uppercase tracking-wide text-t2">
                         Inter-Ship Analysis
                       </p>
                       {calculationResult.shipResults.map((sr, i) => (

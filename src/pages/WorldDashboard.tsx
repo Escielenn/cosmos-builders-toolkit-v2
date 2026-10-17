@@ -672,7 +672,7 @@ const WorldDashboard = () => {
         <BackLink to="/" label="RETURN TO BRIDGE" className="mb-6" />
         <GlassPanel className="p-12 text-center">
           <p className="font-mono text-[12px] tracking-wide text-sf-crimson-text uppercase mb-4">// STATUS: UNREACHABLE</p>
-          <h1 className="font-display text-3xl md:text-4xl font-light tracking-sf-title uppercase text-t1 mb-4">WORLD NOT FOUND</h1>
+          <h1 className="font-display text-3xl md:text-4xl font-light tracking-title uppercase text-t1 mb-4">WORLD NOT FOUND</h1>
           <p className="font-mono text-[12px] tracking-wide uppercase text-t3 mb-6">
             RECORD DOES NOT EXIST OR CLEARANCE INSUFFICIENT.
           </p>

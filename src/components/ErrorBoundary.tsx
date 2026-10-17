@@ -59,7 +59,7 @@ class ErrorBoundary extends Component<Props, State> {
               <p className="font-mono text-[12px] tracking-wide text-sf-crimson-text uppercase mb-3">
                 // STATUS: FAULT
               </p>
-              <h1 className="font-display text-3xl md:text-4xl font-light uppercase tracking-sf-title text-t1 mb-4">
+              <h1 className="font-display text-3xl md:text-4xl font-light uppercase tracking-title text-t1 mb-4">
                 SYSTEM FAULT
               </h1>
               <p className="font-mono text-[12px] tracking-wide uppercase text-t3 leading-relaxed mb-6">

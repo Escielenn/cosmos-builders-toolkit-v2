@@ -41,7 +41,7 @@ export function PromptOfTheDay() {
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
         <Sparkles className="w-4 h-4 text-sf-primary-text" />
-        <span className="font-heading text-xs font-medium uppercase tracking-sf-wide text-t4">
+        <span className="font-heading text-xs font-medium uppercase tracking-wide text-t4">
           Today's Prompt
         </span>
       </div>

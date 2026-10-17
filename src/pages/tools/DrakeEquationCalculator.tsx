@@ -737,7 +737,7 @@ const DrakeEquationCalculator = () => {
 
             {/* Multiplicative Chain Visualization */}
             <div className="mt-8 space-y-2">
-              <h4 className="font-mono text-xs uppercase tracking-sf-wide text-t2 text-center mb-4">
+              <h4 className="font-mono text-xs uppercase tracking-wide text-t2 text-center mb-4">
                 Factor Contribution
               </h4>
               {(() => {

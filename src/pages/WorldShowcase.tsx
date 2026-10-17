@@ -659,7 +659,7 @@ export default function WorldShowcase() {
             <span role="img" aria-label="World icon">
               <WorldIconRenderer iconId={world.icon || "globe"} className="w-10 h-10 text-sf-primary-text" />
             </span>
-            <h1 className="font-display text-3xl md:text-5xl tracking-sf-title text-t1 uppercase">
+            <h1 className="font-display text-3xl md:text-5xl tracking-title text-t1 uppercase">
               {world.name}
             </h1>
           </div>

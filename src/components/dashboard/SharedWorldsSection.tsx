@@ -14,7 +14,7 @@ const SharedWorldsSection = () => {
   return (
     <section className="mb-16 scroll-mt-24">
       <div className="flex items-center justify-between mb-8">
-        <h2 className="font-heading font-light text-2xl uppercase tracking-sf-wide">
+        <h2 className="font-heading font-light text-2xl uppercase tracking-wide">
           Shared with Me
         </h2>
       </div>

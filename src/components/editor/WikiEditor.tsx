@@ -275,7 +275,7 @@ export function WikiEditor({
                       className={cn(
                         "w-3.5 h-3.5 rounded-full border transition-all",
                         preferences.themeId === theme.id
-                          ? "ring-2 ring-[#5B8DEF] ring-offset-1 ring-offset-background border-sf-stellar"
+                          ? "ring-2 ring-sf-stellar ring-offset-1 ring-offset-background border-sf-stellar"
                           : "border-sf-line hover:border-sf-line-emphasis"
                       )}
                       style={{ backgroundColor: theme.swatch[0] }}
