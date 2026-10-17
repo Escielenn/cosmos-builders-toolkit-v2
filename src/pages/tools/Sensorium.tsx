@@ -120,6 +120,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 
@@ -410,9 +411,9 @@ const Sensorium = () => {
   };
 
   const handleSave = async () => {
-    // Always save to localStorage
+    // Browser backup in standalone mode only (see lib/standalone-backup)
     try {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formState));
+      writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
     } catch (e) {
       console.error("localStorage save failed", e);
     }

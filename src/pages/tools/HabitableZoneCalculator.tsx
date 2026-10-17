@@ -75,6 +75,7 @@ import {
   formatTemperature,
 } from "@/lib/habitable-zone/calculations";
 import type { FormStateForCalc } from "@/lib/habitable-zone/calculations";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 // ─── FormState ───────────────────────────────────────────────────────
 
@@ -333,7 +334,7 @@ const HabitableZoneCalculator = () => {
   // ─── Save / Load / Export ──────────────────────────────────────────
 
   const handleSave = async () => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formState));
+    writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
 
     if (worldId && user) {
       const worksheetData = formState as unknown as Json;

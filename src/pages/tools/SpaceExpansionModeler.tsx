@@ -96,6 +96,7 @@ import {
   type ForceDirection,
   type InteractionResult,
 } from "@/lib/space-expansion-data";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const TOOL_TYPE = "space-expansion-modeler";
 const LOCAL_STORAGE_KEY = "space-expansion-worksheet";
@@ -183,7 +184,7 @@ const SpaceExpansionModeler = () => {
   // ── Handlers ─────────────────────────────────────────────────────
 
   const handleSave = async () => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formState));
+    writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
     if (worldId && user) {
       const worksheetData = formState as unknown as Json;
       try {

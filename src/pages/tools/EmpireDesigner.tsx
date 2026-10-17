@@ -60,6 +60,7 @@ import {
   STABILITY_FACTORS,
   SF_EMPIRE_EXAMPLES,
 } from "@/lib/empire-data";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 
@@ -531,7 +532,7 @@ const EmpireDesigner = () => {
   };
 
   const handleSave = async () => {
-    localStorage.setItem("ed-worksheet", JSON.stringify(formState));
+    writeStandaloneBackup("ed-worksheet", formState, { worldId, signedIn: !!user });
 
     if (worldId && user) {
       const worksheetData = formState as unknown as Json;

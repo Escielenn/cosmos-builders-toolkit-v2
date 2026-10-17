@@ -85,6 +85,7 @@ import {
   getIdentityLabel,
 } from "@/lib/lexdrift/calculations";
 import type { FormStateForCalc, ContactEvent, AdditionalShip } from "@/lib/lexdrift/calculations";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 // ─── FormState ───────────────────────────────────────────────────────
 
@@ -421,7 +422,7 @@ const LexDrift = () => {
   // ─── Save / Load / Export ──────────────────────────────────────────
 
   const handleSave = async () => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formState));
+    writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
 
     if (worldId && user) {
       const worksheetData = formState as unknown as Json;

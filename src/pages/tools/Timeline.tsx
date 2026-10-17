@@ -68,6 +68,7 @@ import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import PresenceAvatars from "@/components/timeline/PresenceAvatars";
 import { useTimelineKeyboard } from "@/components/timeline/useTimelineKeyboard";
 import { fitAllEvents } from "@/lib/timeline/utils";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const TOOL_TYPE = "timeline";
 const LOCAL_STORAGE_KEY = "tl-worksheet";
@@ -265,7 +266,7 @@ const Timeline = () => {
   // ─── Save & Worksheet Handlers ────────────────────────────────────
 
   const handleSave = async () => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state));
+    writeStandaloneBackup(LOCAL_STORAGE_KEY, state, { worldId, signedIn: !!user });
 
     if (worldId && user) {
       const worksheetData = state as unknown as Json;

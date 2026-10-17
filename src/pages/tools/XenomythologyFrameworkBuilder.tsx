@@ -95,6 +95,7 @@ import {
   XENOMYTHOLOGY_SECTIONS,
   SECTION_GUIDANCE,
 } from "@/lib/xenomythology-data";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 
@@ -862,8 +863,8 @@ const XenomythologyFrameworkBuilder = () => {
   };
 
   const handleSave = async () => {
-    // Always save to localStorage as backup
-    localStorage.setItem("xenomythology-framework-builder", JSON.stringify(formState));
+    // Browser backup in standalone mode only (see lib/standalone-backup)
+    writeStandaloneBackup("xenomythology-framework-builder", formState, { worldId, signedIn: !!user });
 
     // If we have a worldId and user is authenticated, save to Supabase
     if (worldId && user) {

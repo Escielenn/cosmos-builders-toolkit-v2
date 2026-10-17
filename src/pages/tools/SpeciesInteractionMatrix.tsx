@@ -55,6 +55,7 @@ import {
   SF_INTERACTION_EXAMPLES,
   STORY_PROMPT_TEMPLATES,
 } from "@/lib/species-interaction-data";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const SECTIONS: Section[] = [
   { id: "section-registry", title: "1. Species Registry" },
@@ -460,7 +461,7 @@ const SpeciesInteractionMatrix = () => {
   };
 
   const handleSave = async () => {
-    localStorage.setItem("sim-worksheet", JSON.stringify(formState));
+    writeStandaloneBackup("sim-worksheet", formState, { worldId, signedIn: !!user });
 
     if (worldId && user) {
       const worksheetData = formState as unknown as Json;

@@ -45,6 +45,7 @@ import {
   SF_EXAMPLES,
   SECTION_HELPERS,
 } from "@/lib/one-big-lie-data";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 // Types
 interface FormState {
@@ -363,7 +364,7 @@ const OneBigLie = () => {
 
   // Save
   const handleSave = async () => {
-    localStorage.setItem("one-big-lie-worksheet", JSON.stringify(formState));
+    writeStandaloneBackup("one-big-lie-worksheet", formState, { worldId, signedIn: !!user });
 
     if (worldId && user) {
       const worksheetData = formState as unknown as Json;

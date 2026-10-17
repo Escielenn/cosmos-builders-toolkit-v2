@@ -52,6 +52,7 @@ import {
   EXOPLANET_EXAMPLES,
   PLANETARY_PROFILE_SECTIONS,
 } from "@/lib/planetary-profile-data";
+import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 
@@ -467,8 +468,8 @@ const PlanetaryProfile = () => {
   };
 
   const handleSave = async () => {
-    // Always save to localStorage as backup
-    localStorage.setItem("planetary-profile", JSON.stringify(formState));
+    // Browser backup in standalone mode only (see lib/standalone-backup)
+    writeStandaloneBackup("planetary-profile", formState, { worldId, signedIn: !!user });
 
     // If we have a worldId and user is authenticated, save to Supabase
     if (worldId && user) {
