@@ -130,7 +130,7 @@ const BackgroundSelector = () => {
         </TooltipContent>
       </Tooltip>
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <DialogContent className="sm:max-w-xl max-h-[85vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-xl max-h-[85vh] overflow-y-auto sf-sb">
         <DialogHeader>
           <DialogTitle className="font-heading text-xl">
             Choose Background

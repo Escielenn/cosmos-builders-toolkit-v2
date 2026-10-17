@@ -323,7 +323,7 @@ const Join = () => {
 
       {/* TOS Dialog */}
       <Dialog open={tosDialogOpen} onOpenChange={setTosDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto sf-sb">
           <DialogHeader>
             <DialogTitle className="font-heading text-xl">Terms of Service</DialogTitle>
           </DialogHeader>

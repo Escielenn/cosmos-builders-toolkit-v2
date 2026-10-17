@@ -583,7 +583,7 @@ const ExportDialog = ({
               </div>
             </div>
             {formState && typeof formState === "object" && (
-              <div className="rounded-none border border-sf-line bg-muted/30 p-3 max-h-40 overflow-auto">
+              <div className="rounded-none border border-sf-line bg-muted/30 p-3 max-h-40 overflow-auto sf-sb">
                 <p className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3 mb-2">
                   Preview
                 </p>

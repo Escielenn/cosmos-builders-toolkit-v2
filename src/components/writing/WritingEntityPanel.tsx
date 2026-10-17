@@ -179,7 +179,7 @@ export function WritingEntityPanel({
         {/* Detail Mode */}
         {/* --------------------------------------------------------------- */}
         {selectedEntity ? (
-          <div className="flex-1 overflow-y-auto sf-custom-scrollbar px-3 py-3 space-y-4">
+          <div className="flex-1 overflow-y-auto sf-sb sf-custom-scrollbar px-3 py-3 space-y-4">
             {/* Name + type + stage badges */}
             <div>
               <h3 className="font-heading text-sm font-light tracking-wide text-t1 mb-1.5">
@@ -365,7 +365,7 @@ export function WritingEntityPanel({
             </div>
 
             {/* Entity list grouped by cascade stage */}
-            <div className="flex-1 overflow-y-auto px-1 pb-4 sf-custom-scrollbar">
+            <div className="flex-1 overflow-y-auto sf-sb px-1 pb-4 sf-custom-scrollbar">
               {CASCADE_STAGES.map((stage) => {
                 const stageEntities = groupedByCascade[stage];
                 if (!stageEntities || stageEntities.length === 0) return null;

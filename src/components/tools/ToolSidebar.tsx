@@ -11,7 +11,7 @@ interface ToolSidebarProps {
  */
 const ToolSidebar = ({ children }: ToolSidebarProps) => {
   return (
-    <div className="fixed right-4 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-3 z-40 no-print max-h-[85vh] overflow-y-auto">
+    <div className="fixed right-4 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-3 z-40 no-print max-h-[85vh] overflow-y-auto sf-sb">
       {children}
     </div>
   );

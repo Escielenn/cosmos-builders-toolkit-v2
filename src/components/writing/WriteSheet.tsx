@@ -263,7 +263,7 @@ export function WriteSheet({
 
         {/* Content, full viewport, scrollable */}
         <DialogPrimitive.Content
-          className="fixed inset-0 z-50 overflow-y-auto outline-none"
+          className="fixed inset-0 z-50 overflow-y-auto sf-sb outline-none"
           onInteractOutside={(e) => e.preventDefault()}
         >
           <DialogPrimitive.Title className="sr-only">

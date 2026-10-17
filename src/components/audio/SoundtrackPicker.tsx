@@ -37,7 +37,7 @@ export default function SoundtrackPicker({ value, onChange }: SoundtrackPickerPr
       )}
 
       {/* Playlist picker */}
-      <div className="max-h-32 overflow-y-auto border border-sf-line-hairline divide-y divide-sf-line-hairline">
+      <div className="max-h-32 overflow-y-auto sf-sb border border-sf-line-hairline divide-y divide-sf-line-hairline">
         {allPlaylists.map((p) => (
           <PlaylistOption
             key={p.id}

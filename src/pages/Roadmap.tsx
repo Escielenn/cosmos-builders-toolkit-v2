@@ -236,7 +236,7 @@ const Roadmap = () => {
         )}
 
         {/* Status filter tabs */}
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
+        <div className="flex gap-2 mb-6 overflow-x-auto sf-sb pb-1">
           {statusTabs.map(tab => (
             <button
               key={tab.value}

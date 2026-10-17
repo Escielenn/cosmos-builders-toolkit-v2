@@ -481,7 +481,7 @@ const KardashevScale = () => {
               <Label className="text-[12px] uppercase tracking-[1.5px] text-t3">
                 Energy Source Reference
               </Label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-[240px] overflow-y-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-[240px] overflow-y-auto sf-sb">
                 {ENERGY_SOURCES.map((source) => (
                   <button
                     key={source.id}

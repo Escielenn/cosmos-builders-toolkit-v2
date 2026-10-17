@@ -134,7 +134,7 @@ const CalendarEditorDialog = ({
             <DialogTitle>Custom Calendars</DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-2 max-h-[50vh] overflow-y-auto">
+          <div className="space-y-2 max-h-[50vh] overflow-y-auto sf-sb">
             {state.calendars.length === 0 && (
               <p className="text-sm text-t2 text-center py-4">
                 No custom calendars yet. Create one to use alien or fictional date systems.
@@ -191,7 +191,7 @@ const CalendarEditorDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto sf-sb">
         <DialogHeader>
           <DialogTitle>
             {editingCalendar ? "Edit Calendar" : "Create Calendar"}

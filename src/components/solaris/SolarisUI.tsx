@@ -15,7 +15,7 @@ interface SolarisUIProps {
 const S = {
   // Top-right, above the generate panel. Capped so the two cannot overlap.
   panel:
-    "absolute right-3 top-14 z-10 w-56 bg-[rgba(15,15,16,0.92)] border border-sf-line backdrop-blur-[16px] rounded-none p-3.5 space-y-3 max-h-[44%] overflow-y-auto",
+    "absolute right-3 top-14 z-10 w-56 bg-[rgba(15,15,16,0.92)] border border-sf-line backdrop-blur-[16px] rounded-none p-3.5 space-y-3 max-h-[44%] overflow-y-auto sf-sb",
   // Readout contrast: labels were white/30, which is below the tier-3 floor for
   // text you are meant to read rather than skim past.
   sectionLabel:

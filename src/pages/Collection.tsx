@@ -147,7 +147,7 @@ const Collection = () => {
               className="py-10"
             />
           ) : (
-            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
+            <div className="flex gap-3 overflow-x-auto sf-sb pb-2 scrollbar-thin">
               {worlds.slice(0, 6).map((world) => {
                 return (
                   <Link

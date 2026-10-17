@@ -150,7 +150,7 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
                 </p>
               </div>
             ) : (
-              <div className="divide-y divide-border max-h-80 overflow-y-auto">
+              <div className="divide-y divide-border max-h-80 overflow-y-auto sf-sb">
                 {versions.map((v) => (
                   <div
                     key={v.id}

@@ -679,7 +679,7 @@ const EntitySidebar = ({
       </div>
 
       {/* Scrollable content */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
+      <div className="flex-1 overflow-y-auto sf-sb overflow-x-hidden min-h-0">
         {/* Tool view: cascade groups */}
         {viewMode === "tool" &&
           cascadeGroups &&

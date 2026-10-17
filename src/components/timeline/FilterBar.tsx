@@ -184,7 +184,7 @@ const FilterBar = () => {
             <ChevronDown className="w-3 h-3 ml-0.5" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-56 p-2 max-h-64 overflow-y-auto" align="start">
+        <PopoverContent className="w-56 p-2 max-h-64 overflow-y-auto sf-sb" align="start">
           <div className="space-y-2">
             {eventTypeCategories.map((cat) => (
               <div key={cat.label}>
@@ -325,7 +325,7 @@ const FilterBar = () => {
               <ChevronDown className="w-3 h-3 ml-0.5" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-52 p-2 max-h-48 overflow-y-auto" align="start">
+          <PopoverContent className="w-52 p-2 max-h-48 overflow-y-auto sf-sb" align="start">
             <div className="space-y-1">
               {allTags.map((tag) => (
                 <label

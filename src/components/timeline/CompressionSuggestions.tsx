@@ -61,7 +61,7 @@ const CompressionSuggestions = () => {
         {visible.length} gap{visible.length !== 1 ? "s" : ""} detected
       </span>
 
-      <div className="flex items-center gap-1.5 flex-1 min-w-0 overflow-x-auto">
+      <div className="flex items-center gap-1.5 flex-1 min-w-0 overflow-x-auto sf-sb">
         {visible.map((s) => (
           <div
             key={s.id}

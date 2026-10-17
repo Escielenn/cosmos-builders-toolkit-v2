@@ -454,7 +454,7 @@ export default function WorldCompile() {
                   </div>
 
                   {showPreview && (
-                    <div className="max-h-[60vh] overflow-y-auto border border-sf-line bg-white/[0.02] p-6 space-y-6">
+                    <div className="max-h-[60vh] overflow-y-auto sf-sb border border-sf-line bg-white/[0.02] p-6 space-y-6">
                       <div className="text-center pb-6 border-b border-sf-line">
                         <h3 className="font-heading text-xl tracking-wider text-t1">
                           {meta.title}

@@ -723,7 +723,7 @@ const DrakeEquationCalculator = () => {
 
             <div className="mt-8 bg-accent/20 rounded-none p-4 text-left">
               <h4 className="font-medium mb-2">The Equation</h4>
-              <div className="font-mono text-sm overflow-x-auto">
+              <div className="font-mono text-sm overflow-x-auto sf-sb">
                 N = {formState.values.rStar} × {formState.values.fp} × {formState.values.ne} × {formState.values.fl} × {formState.values.fi} × {formState.values.fc} × {formatNumber(formState.values.L)}
               </div>
               <div className="font-mono text-sm mt-1 text-primary">

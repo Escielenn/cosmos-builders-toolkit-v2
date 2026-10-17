@@ -63,7 +63,7 @@ const IconPicker = ({ value, onChange, disabled }: IconPickerProps) => {
           <DialogHeader>
             <DialogTitle className="text-base">Choose an icon</DialogTitle>
           </DialogHeader>
-          <div className="space-y-3 max-h-[65vh] overflow-y-auto pr-1">
+          <div className="space-y-3 max-h-[65vh] overflow-y-auto sf-sb pr-1">
             {ICON_CATEGORIES.map((category) => (
               <div key={category}>
                 <p className="text-xs text-t3 mb-2">{category}</p>

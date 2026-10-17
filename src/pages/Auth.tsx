@@ -149,7 +149,7 @@ const Auth = () => {
     <div className="relative min-h-screen bg-background flex flex-col">
       <PageBursts bursts={AUTH_BURSTS} />
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto sf-sb">
         <div className="container mx-auto px-4 max-w-4xl py-12 md:py-20 space-y-12">
 
           {/* Hero, display-font scale per April 2026 handoff */}

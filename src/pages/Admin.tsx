@@ -355,7 +355,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
       )}
 
       {/* Task List */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto sf-sb">
         {isLoading ? (
           <div className="flex justify-center py-6"><Loader size="sm" /></div>
         ) : pendingTodos.length === 0 && doneTodos.length === 0 ? (
@@ -531,7 +531,7 @@ const UsersTab = () => {
       {loading ? (
         <div className="flex justify-center py-16"><Loader /></div>
       ) : (
-        <GlassPanel className="overflow-x-auto">
+        <GlassPanel className="overflow-x-auto sf-sb">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-sf-line">
@@ -772,7 +772,7 @@ const TicketsTab = () => {
         <FilterBar options={TICKET_CATEGORIES} value={filterCategory} onChange={setFilterCategory} />
       </div>
 
-      <GlassPanel className="overflow-x-auto">
+      <GlassPanel className="overflow-x-auto sf-sb">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-sf-line">
@@ -914,7 +914,7 @@ const ContactsTab = () => {
     <div className="space-y-4">
       <FilterBar options={CONTACT_STATUSES} value={filterStatus} onChange={setFilterStatus} />
 
-      <GlassPanel className="overflow-x-auto">
+      <GlassPanel className="overflow-x-auto sf-sb">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-sf-line">
@@ -1005,7 +1005,7 @@ const SubscriptionsTab = () => {
           {subsLoading ? (
             <div className="flex justify-center py-8"><Loader /></div>
           ) : (
-            <GlassPanel className="overflow-x-auto">
+            <GlassPanel className="overflow-x-auto sf-sb">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-sf-line">

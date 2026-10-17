@@ -1639,7 +1639,7 @@ const PropulsionConsequencesMap = () => {
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <div className="mt-2 p-4 rounded-none bg-muted/30 space-y-4">
-                      <div className="overflow-x-auto">
+                      <div className="overflow-x-auto sf-sb">
                         <table className="w-full text-sm">
                           <thead>
                             <tr className="border-b border-sf-line-interactive">

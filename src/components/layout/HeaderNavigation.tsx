@@ -101,7 +101,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                   <p className="text-[12px] font-medium uppercase tracking-[1.5px] text-t3 px-2 mb-2">
                     Your Worlds
                   </p>
-                  <div className="max-h-[200px] overflow-y-auto space-y-0.5">
+                  <div className="max-h-[200px] overflow-y-auto sf-sb space-y-0.5">
                     {worlds.slice(0, 8).map((world) => (
                       <NavigationMenuLink key={world.id} asChild>
                         <Link

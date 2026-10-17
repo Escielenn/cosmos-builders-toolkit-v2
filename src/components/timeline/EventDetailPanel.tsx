@@ -113,7 +113,7 @@ const EventDetailPanel = ({
 
   return (
     <Sheet open={!!event} onOpenChange={(open) => !open && onClose()}>
-      <SheetContent className="w-full sm:max-w-md overflow-y-auto">
+      <SheetContent className="w-full sm:max-w-md overflow-y-auto sf-sb">
         <SheetHeader>
           <div className="flex items-center gap-2">
             <span

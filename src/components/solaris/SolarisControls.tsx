@@ -34,7 +34,7 @@ interface SolarisControlsProps {
 // the transport controls entirely behind the editor.
 const S = {
   panel:
-    "absolute left-3 top-14 z-10 w-52 bg-[rgba(15,15,16,0.92)] border border-sf-line backdrop-blur-[16px] rounded-none p-3.5 space-y-4 overflow-y-auto max-h-[46%]",
+    "absolute left-3 top-14 z-10 w-52 bg-[rgba(15,15,16,0.92)] border border-sf-line backdrop-blur-[16px] rounded-none p-3.5 space-y-4 overflow-y-auto sf-sb max-h-[46%]",
   // Contrast: the previous values (label teal at 0.35, button text at white/30,
   // borders at 0.06) left every control barely visible against the panel, and
   // the transport row unfindable. Interactive text now sits at tier 2 or above

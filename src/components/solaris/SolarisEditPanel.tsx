@@ -90,7 +90,7 @@ function NameField({
 // the viewer rather than the viewport: the viewer sits below the site header, so
 // a vh-based cap overshot and pushed this panel over the controls above it.
 const PANEL =
-  "absolute left-3 bottom-3 z-20 w-64 bg-[rgba(13,13,15,0.94)] border border-sf-line backdrop-blur-[16px] rounded-none p-3 space-y-3 max-h-[48%] overflow-y-auto";
+  "absolute left-3 bottom-3 z-20 w-64 bg-[rgba(13,13,15,0.94)] border border-sf-line backdrop-blur-[16px] rounded-none p-3 space-y-3 max-h-[48%] overflow-y-auto sf-sb";
 const SEC = "font-mono text-[13px] uppercase tracking-[2px] text-sf-primary-bright/80 mb-1.5 block";
 
 function Slider({

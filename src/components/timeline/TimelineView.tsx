@@ -273,7 +273,7 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
         <TooltipProvider delayDuration={200}>
           <div
             ref={containerRef}
-            className="relative overflow-x-hidden overflow-y-auto select-none"
+            className="relative overflow-x-hidden overflow-y-auto sf-sb select-none"
             style={{
               cursor: isPanning ? "grabbing" : "grab",
               maxHeight: "60vh",

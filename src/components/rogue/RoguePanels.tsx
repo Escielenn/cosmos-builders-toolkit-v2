@@ -32,7 +32,7 @@ import type { EncounterStatus } from "@/lib/simulators/nbody";
 
 const S = {
   panelBase:
-    "absolute z-20 w-[268px] max-w-[calc(100vw-24px)] bg-[rgba(13,13,15,0.94)] border border-sf-line backdrop-blur-[16px] rounded-none p-3 overflow-y-auto",
+    "absolute z-20 w-[268px] max-w-[calc(100vw-24px)] bg-[rgba(13,13,15,0.94)] border border-sf-line backdrop-blur-[16px] rounded-none p-3 overflow-y-auto sf-sb",
   sec: "font-mono text-[13px] uppercase tracking-[2px] text-sf-primary-bright/80 mb-1.5 block",
   chip: "px-2 py-1 text-[12px] uppercase tracking-wide border rounded-none transition-colors min-h-[26px]",
   chipOff:

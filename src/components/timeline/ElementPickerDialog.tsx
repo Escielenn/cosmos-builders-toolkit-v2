@@ -89,7 +89,7 @@ const ElementPickerDialog = ({
         </div>
 
         {/* Worksheet list */}
-        <div className="max-h-80 overflow-y-auto -mx-1 space-y-3">
+        <div className="max-h-80 overflow-y-auto sf-sb -mx-1 space-y-3">
           {groups.length === 0 ? (
             <p className="text-sm text-t2 text-center py-6">
               {worksheets.length === 0

@@ -267,7 +267,7 @@ const WorldBibleDialog = ({
             <Loader />
           </div>
         ) : (
-          <div className="flex-1 overflow-y-auto space-y-4 py-2 pr-1">
+          <div className="flex-1 overflow-y-auto sf-sb space-y-4 py-2 pr-1">
             {/* Structure toggle */}
             <div className="flex items-center gap-1 p-0.5 bg-muted/30 w-fit">
               <button

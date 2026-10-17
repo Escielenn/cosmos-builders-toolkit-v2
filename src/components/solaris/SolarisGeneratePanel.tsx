@@ -49,7 +49,7 @@ const CONDITIONS: { key: keyof GenerateConditions; label: string; hint: string }
 const S = {
   // Bottom-right, under the readout panel. Sits above the status strip.
   panel:
-    "absolute right-3 bottom-10 z-20 w-60 bg-[rgba(13,13,15,0.94)] border border-sf-line backdrop-blur-[16px] rounded-none p-3 space-y-3 max-h-[52%] overflow-y-auto",
+    "absolute right-3 bottom-10 z-20 w-60 bg-[rgba(13,13,15,0.94)] border border-sf-line backdrop-blur-[16px] rounded-none p-3 space-y-3 max-h-[52%] overflow-y-auto sf-sb",
   // Contrast raised to match SolarisControls: chips were white/45 on a 0.02 fill
   // with a 0.06 border, which read as absent rather than merely inactive.
   sec: "font-mono text-[13px] uppercase tracking-[2px] text-sf-primary-bright/80 mb-1.5 block",

@@ -140,7 +140,7 @@ const TemplatePicker = ({
       }
       onOpenChange(v);
     }}>
-      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto sf-sb">
         <DialogHeader>
           <DialogTitle>Timeline Templates</DialogTitle>
         </DialogHeader>

@@ -721,7 +721,7 @@ class TimelineErrorBoundary extends Component<
               <h2 className="text-xl font-medium text-sf-crimson-text mb-4">
                 Timeline failed to render
               </h2>
-              <pre className="text-left text-sm bg-muted/30 p-4 rounded-none overflow-auto max-h-64 mb-4">
+              <pre className="text-left text-sm bg-muted/30 p-4 rounded-none overflow-auto sf-sb max-h-64 mb-4">
                 {this.state.error.message}
                 {"\n\n"}
                 {this.state.error.stack}

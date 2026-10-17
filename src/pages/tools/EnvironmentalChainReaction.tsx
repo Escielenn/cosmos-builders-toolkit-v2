@@ -935,7 +935,7 @@ const EnvironmentalChainReaction = () => {
                       <strong className="text-primary">Core Parameter:</strong>{" "}
                       <span className="text-t2">{example.parameter}</span>
                     </p>
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto sf-sb">
                       <table className="w-full text-sm">
                         <thead>
                           <tr className="border-b border-sf-line-interactive">

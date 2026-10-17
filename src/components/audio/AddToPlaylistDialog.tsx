@@ -52,7 +52,7 @@ export default function AddToPlaylistDialog({ track, children }: AddToPlaylistDi
           Add to playlist
         </p>
 
-        <div className="max-h-40 overflow-y-auto space-y-0.5">
+        <div className="max-h-40 overflow-y-auto sf-sb space-y-0.5">
           {(playlists ?? []).map((p) => {
             const alreadyIn = p.tracks.some((t) => t.id === track.id);
             return (

@@ -110,7 +110,7 @@ const AvatarPickerDialog = ({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-6 sm:grid-cols-8 gap-4 max-h-[60vh] overflow-y-auto py-2 pr-1">
+        <div className="grid grid-cols-6 sm:grid-cols-8 gap-4 max-h-[60vh] overflow-y-auto sf-sb py-2 pr-1">
           {PRESET_AVATARS.map((filename) => {
             const url = `/profile-pics/${filename}`;
             const isSelected = selected === url;

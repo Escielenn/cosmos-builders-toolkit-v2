@@ -137,7 +137,7 @@ const TagInput = ({
 
         {/* Suggestions dropdown */}
         {isFocused && inputValue && suggestions.length > 0 && (
-          <div className="absolute z-10 w-full mt-1 bg-popover border border-sf-line rounded-md shadow-lg max-h-48 overflow-auto">
+          <div className="absolute z-10 w-full mt-1 bg-popover border border-sf-line rounded-md shadow-lg max-h-48 overflow-auto sf-sb">
             {suggestions.map((suggestion, index) => (
               <button
                 key={suggestion.id}
