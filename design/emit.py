@@ -164,7 +164,7 @@ css += f"""
   --sf-selection-bg:   {st['selection_bg']};
 
   /* ═══ TYPE ═══ */
-  --font-display: 'MD Nichrome', 'Space Grotesk', sans-serif;
+  --font-display: 'MD Nichrome', sans-serif;
   --font-heading: 'Jura', 'DM Sans', sans-serif;
   --font-sans:    'DM Sans', system-ui, sans-serif;
   --font-mono:    'JetBrains Mono', ui-monospace, monospace;

@@ -8,7 +8,8 @@
 #
 # Baseline history: 909 (2026-06-11, v0.6642) -> 873 (2026-07-09,
 # v0.6652, cyan retirement sweep) -> 861 (2026-10-17, themes.css
-# excluded as a generated file). The baseline must match the
+# excluded as a generated file) -> 855 (2026-10-17, v0.7404). The
+# baseline must match the
 # enforcement command below; lower it in the same PR that reduces
 # the count.
 #
@@ -73,9 +74,11 @@ jobs:
           deno-version: v2.x
 
       # Pure-logic tests for the Supabase edge functions (Stripe payload
-      # readers, signed OAuth state). No network, no secrets.
+      # readers, signed OAuth state). No network, no secrets. --no-config:
+      # without it Deno adopts the web app's root package.json/tsconfig and,
+      # with no node_modules installed here, fails resolving its types.
       - name: Deno tests
-        run: deno test --allow-env supabase/functions/_shared/
+        run: deno test --allow-env --no-config supabase/functions/_shared/
 
   hex-ratchet:
     name: Raw-hex ratchet
