@@ -117,7 +117,7 @@ const Join = () => {
         <h1 className="font-display text-xl font-light tracking-[0.1em] mb-3">
           YOU'RE ALREADY SIGNED IN
         </h1>
-        <p className="text-sm text-t3 mb-6 text-center max-w-sm">
+        <p className="text-sm text-t2 mb-6 text-center max-w-sm">
           You already have a StellarForge account. Head to your dashboard to start building.
         </p>
         <Link to="/" className="text-sm text-primary hover:underline">
@@ -135,7 +135,7 @@ const Join = () => {
         <h1 className="font-display text-xl font-light tracking-[0.1em] mb-3">
           LINK EXPIRED OR INVALID
         </h1>
-        <p className="text-sm text-t3 mb-6 text-center max-w-sm">
+        <p className="text-sm text-t2 mb-6 text-center max-w-sm">
           This invitation link is no longer valid. If you believe this is an error,
           contact the person who shared it with you.
         </p>
@@ -169,7 +169,7 @@ const Join = () => {
             <h1 className="font-display text-2xl font-light tracking-[0.12em] mb-2">
               ESTABLISH CREDENTIALS
             </h1>
-            <p className="text-sm text-t3">
+            <p className="text-sm text-t2">
               You've been invited to join the early access program.
             </p>
           </div>

@@ -154,7 +154,7 @@ const AboutUs = () => {
             <p className="font-display text-2xl md:text-3xl font-light tracking-sf-title text-t1 mb-8">
               Waiting to be found.
             </p>
-            <p className="text-t3 text-sm leading-relaxed max-w-lg mx-auto">
+            <p className="text-t2 text-sm leading-relaxed max-w-lg mx-auto">
               StellarForge is built for writers who believe that the best science
               fiction begins with a question, not a formula. Our tools help you
               explore the consequences of that question, rigorously and

@@ -1192,7 +1192,7 @@ const EnvironmentalChainReaction = () => {
 
                 {(formState.parameter.types?.length || 0) > 0 && (
                   <div className="mt-4 p-3 bg-primary/10 rounded-none">
-                    <p className="text-sm text-t3">
+                    <p className="text-sm text-t2">
                       <strong className="text-primary">
                         {formState.parameter.types?.length} factor
                         {(formState.parameter.types?.length || 0) !== 1 ? "s" : ""} selected.

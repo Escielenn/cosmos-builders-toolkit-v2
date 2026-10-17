@@ -175,7 +175,7 @@ const WorldImportDialog = ({ open, onOpenChange }: WorldImportDialogProps) => {
                   <p className="text-xs uppercase tracking-wider text-t3 font-heading">
                     Description
                   </p>
-                  <p className="text-sm text-t3 line-clamp-2">
+                  <p className="text-sm text-t2 line-clamp-2">
                     {preview.world.description}
                   </p>
                 </div>

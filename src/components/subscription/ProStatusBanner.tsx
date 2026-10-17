@@ -47,7 +47,7 @@ const ProStatusBanner = ({ isSubscribed }: ProStatusBannerProps) => {
                     Active
                   </Badge>
                 </p>
-                <p className="text-sm text-t3">
+                <p className="text-sm text-t2">
                   All {TOTAL_TOOLS} worldbuilding tools unlocked
                 </p>
               </div>
@@ -86,7 +86,7 @@ const ProStatusBanner = ({ isSubscribed }: ProStatusBannerProps) => {
             <p className="font-medium text-sf-amber dark:text-sf-amber mb-1">
               Unlock All {TOTAL_TOOLS} Worldbuilding Tools
             </p>
-            <p className="text-sm text-t3">
+            <p className="text-sm text-t2">
               Go Pro to access all {PRO_TOOL_IDS.length} premium tools including Planetary Profiles, Star System Builder,
               Empire Designer, Evolutionary Biology, and more.
             </p>

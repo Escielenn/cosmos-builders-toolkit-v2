@@ -893,7 +893,7 @@ const PropulsionConsequencesMap = () => {
                   </>
                 ) : isFTL ? (
                   <div className="p-4 rounded-none bg-accent/10 border border-accent">
-                    <p className="text-sm text-t3 mb-3">
+                    <p className="text-sm text-t2 mb-3">
                       FTL travel times depend on your setting's specific mechanics. Define travel times for key routes:
                     </p>
                     <div className="grid gap-3">

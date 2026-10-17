@@ -198,7 +198,7 @@ export function SimulatorWorldEntityPicker({
                 <p className="font-mono text-[13px] tracking-[0.10em] uppercase text-t4">
                   // {entityTypes.map((t) => t.toUpperCase()).join(" / ")} INDEX: EMPTY
                 </p>
-                <p className="text-sm text-t3 normal-case tracking-normal">
+                <p className="text-sm text-t2 normal-case tracking-normal">
                   Create a {entityTypes[0]} in your world's Codex first, then come back here to bind it to {simulatorType}.
                 </p>
               </div>

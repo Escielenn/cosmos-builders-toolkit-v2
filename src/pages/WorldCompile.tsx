@@ -263,7 +263,7 @@ export default function WorldCompile() {
           <h1 className="font-display text-3xl md:text-4xl tracking-[0.08em] text-t1 mb-1">
             COMPILE MANUSCRIPT
           </h1>
-          <p className="text-sm text-t3 max-w-2xl">
+          <p className="text-sm text-t2 max-w-2xl">
             Stitch your chapters in order and export as a formatted manuscript.
             Toggle chapters on or off, set front matter, then download.
           </p>
@@ -460,7 +460,7 @@ export default function WorldCompile() {
                           {meta.title}
                         </h3>
                         {meta.subtitle && (
-                          <p className="text-sm text-t3 italic mt-1">{meta.subtitle}</p>
+                          <p className="text-sm text-t2 italic mt-1">{meta.subtitle}</p>
                         )}
                         <p className="text-xs text-t4 mt-2">by {meta.author}</p>
                       </div>

@@ -102,7 +102,7 @@ const ToolCard = ({
             {title}
           </h3>
         )}
-        <p className="text-sm text-t3 mt-1">{description}</p>
+        <p className="text-sm text-t2 mt-1">{description}</p>
         {category && (
           <Badge
             variant="outline"

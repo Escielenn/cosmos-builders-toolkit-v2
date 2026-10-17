@@ -878,7 +878,7 @@ const SurfaceGravityCalculator = () => {
                       {result.deltaV.verdict.label}
                     </Badge>
                   </div>
-                  <p className="text-sm text-t3">{result.deltaV.verdict.description}</p>
+                  <p className="text-sm text-t2">{result.deltaV.verdict.description}</p>
 
                   <div className="grid grid-cols-2 gap-3">
                     <GlassPanel className="p-3">
@@ -946,7 +946,7 @@ const SurfaceGravityCalculator = () => {
                       <h3 className="font-heading text-[12px] font-light uppercase tracking-[3px] text-[hsl(var(--sf-section-green))]">{block.heading}</h3>
 
                       {block.paragraphs.map((p, i) => (
-                        <p key={i} className="text-sm text-t3 leading-relaxed">{p}</p>
+                        <p key={i} className="text-sm text-t2 leading-relaxed">{p}</p>
                       ))}
 
                       {block.prompts.length > 0 && (

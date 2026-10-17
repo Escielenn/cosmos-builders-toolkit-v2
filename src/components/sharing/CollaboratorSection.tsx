@@ -64,7 +64,7 @@ const CollaboratorSection = ({ worldId, worldName }: CollaboratorSectionProps) =
           <Label className="font-medium">Invite Collaborators</Label>
           <Badge className="bg-primary/10 text-primary text-xs">Pro</Badge>
         </div>
-        <p className="text-sm text-t3 mb-3">
+        <p className="text-sm text-t2 mb-3">
           Invite others to view or edit your worlds with collaborator invites.
         </p>
         <Button variant="outline" size="sm" asChild>

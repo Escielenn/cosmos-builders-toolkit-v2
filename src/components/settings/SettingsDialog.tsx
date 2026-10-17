@@ -585,7 +585,7 @@ const SettingsDialog = ({
                   </div>
                   <div>
                     <h4 className="font-medium">Notion</h4>
-                    <p className="text-sm text-t3">
+                    <p className="text-sm text-t2">
                       {isNotionConnected
                         ? `Connected to ${notionConnection?.workspace_name || "workspace"}`
                         : "Export worksheets to Notion"}
@@ -708,7 +708,7 @@ const SettingsDialog = ({
                 <Zap className="w-12 h-12 text-sf-amber mx-auto" />
                 <div>
                   <h4 className="font-medium mb-1">Upgrade to Pro</h4>
-                  <p className="text-sm text-t3">
+                  <p className="text-sm text-t2">
                     Unlock all worldbuilding tools and advanced features.
                   </p>
                 </div>
@@ -735,7 +735,7 @@ const SettingsDialog = ({
           <TabsContent value="language" className="mt-4 space-y-4">
             <div>
               <h4 className="text-sm font-medium mb-1">Language</h4>
-              <p className="text-sm text-t3 mb-4">
+              <p className="text-sm text-t2 mb-4">
                 Choose your preferred language. More languages coming soon.
               </p>
             </div>

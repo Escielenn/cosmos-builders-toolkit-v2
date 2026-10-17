@@ -71,7 +71,7 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
           <Loader size="sm" />
         </div>
       ) : comments.length === 0 ? (
-        <p className="font-sans text-sm text-t3 text-center py-6">
+        <p className="font-sans text-sm text-t2 text-center py-6">
           No comments yet. Be the first to share your thoughts.
         </p>
       ) : (

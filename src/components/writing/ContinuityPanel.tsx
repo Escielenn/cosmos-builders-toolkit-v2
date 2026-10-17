@@ -205,7 +205,7 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
   if (facts.length === 0 && slugs.length === 0) {
     return (
       <div className="px-4 py-6">
-        <p className="mb-2 font-serif text-[15px] italic text-t3">
+        <p className="mb-2 font-serif text-[15px] italic text-t2">
           Nothing to check against yet
         </p>
         <p className="text-[13px] leading-relaxed text-t2">

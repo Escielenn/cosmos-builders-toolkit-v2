@@ -30,7 +30,7 @@ const FinalCTASection = () => {
           <span className="gradient-text">ON STANDBY.</span>
         </h2>
 
-        <p className="text-lg text-t3 max-w-2xl mx-auto mb-10 relative">
+        <p className="text-lg text-t2 max-w-2xl mx-auto mb-10 relative">
           Join thousands of science fiction writers creating worlds with
           scientific rigor and narrative depth.
         </p>

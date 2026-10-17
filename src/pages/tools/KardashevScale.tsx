@@ -552,7 +552,7 @@ const KardashevScale = () => {
                 <p className="font-mono text-sm text-t2 mb-3">
                   K = {formatKardashev(results.kardashevNumber)}
                 </p>
-                <p className="text-sm text-t3 max-w-lg mx-auto">
+                <p className="text-sm text-t2 max-w-lg mx-auto">
                   {results.band.description}
                 </p>
               </GlassPanel>

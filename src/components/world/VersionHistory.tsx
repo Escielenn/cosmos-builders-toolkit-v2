@@ -145,7 +145,7 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
               </div>
             ) : versions.length === 0 ? (
               <div className="p-4 text-center">
-                <p className="text-sm text-t3">
+                <p className="text-sm text-t2">
                   No snapshots yet. Versions are created automatically as you work, or manually via the Snapshot button.
                 </p>
               </div>

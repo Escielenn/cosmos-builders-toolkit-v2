@@ -1360,7 +1360,7 @@ const PlanetaryProfile = () => {
           >
             <div className="space-y-6">
               <div className="p-4 rounded-none bg-accent/10 border border-accent">
-                <p className="text-sm text-t3">
+                <p className="text-sm text-t2">
                   <strong className="text-accent">The Three Pressures Framework:</strong> Every environment exerts three types of pressure on its inhabitants, survival pressure (physical challenges), social pressure (how environment shapes society), and psychological pressure (mental and emotional effects).
                 </p>
               </div>

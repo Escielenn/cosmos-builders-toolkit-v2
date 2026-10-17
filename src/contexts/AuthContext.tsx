@@ -205,7 +205,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           <h1 className="mb-3 font-display text-2xl font-light tracking-[0.04em] text-t1">
             Can't reach the forge
           </h1>
-          <p className="mb-6 text-sm leading-relaxed text-t3">
+          <p className="mb-6 text-sm leading-relaxed text-t2">
             StellarForge couldn't reach its servers. This is usually a brief
             network hiccup, not your worlds — they're safe. Give it a moment,
             then try again.

@@ -668,7 +668,7 @@ const ExportDialog = ({
                   alt="Notion"
                   className="w-12 h-12 mx-auto opacity-50"
                 />
-                <p className="text-t3">
+                <p className="text-t2">
                   Connect your Notion workspace to export worksheets directly as pages.
                 </p>
                 <Button onClick={connect} disabled={isConnecting}>

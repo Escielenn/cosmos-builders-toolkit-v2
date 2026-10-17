@@ -526,7 +526,7 @@ export default function WorldShowcase() {
           <h1 className="font-heading text-xl font-light uppercase tracking-[2px] text-t2">
             World Not Found
           </h1>
-          <p className="font-sans text-sm text-t3 max-w-md text-center">
+          <p className="font-sans text-sm text-t2 max-w-md text-center">
             This world may be private, or the link may be incorrect.
           </p>
           <Link
@@ -784,7 +784,7 @@ export default function WorldShowcase() {
         {entities.length === 0 ? (
           <GlassPanel className="p-12 text-center">
             <Globe className="w-10 h-10 text-t4 mx-auto mb-4" />
-            <p className="font-sans text-sm text-t3">
+            <p className="font-sans text-sm text-t2">
               This world has no entities yet.
             </p>
           </GlassPanel>

@@ -157,7 +157,7 @@ const PromptBrowserPage = () => {
             )}
           </div>
 
-          <p className="text-t3 text-sm mt-3 max-w-2xl leading-relaxed">
+          <p className="text-t2 text-sm mt-3 max-w-2xl leading-relaxed">
             Seven prompts rotate each week, one for every day. Act on them before
             Sunday or they vanish. Each prompt is tuned for science fiction
             worldbuilders at different experience levels.

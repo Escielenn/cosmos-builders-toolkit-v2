@@ -23,7 +23,7 @@ const ShowcaseHero = () => {
           </h1>
 
           {/* Subhead — Lora-italic lead-in for the Studio warmth (meld) */}
-          <p className="text-lg md:text-xl text-t3 max-w-3xl mx-auto mb-10 leading-relaxed sf-reveal sf-reveal-3">
+          <p className="text-lg md:text-xl text-t2 max-w-3xl mx-auto mb-10 leading-relaxed sf-reveal sf-reveal-3">
             <span className="font-serif italic text-t1">Every parameter cascades.</span>{" "}
             Every choice has consequences. Build worlds where the physics shapes the
             environment, the environment shapes the biology, and the biology shapes the culture.

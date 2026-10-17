@@ -208,7 +208,7 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
         <h3 className="font-heading text-lg font-medium mb-2">
           NO TRACKS DEFINED
         </h3>
-        <p className="text-sm text-t3 max-w-md">
+        <p className="text-sm text-t2 max-w-md">
           Tracks are swim lanes for different entities: characters, civilizations,
           ships, planets. Add a track, then place events on it.
         </p>

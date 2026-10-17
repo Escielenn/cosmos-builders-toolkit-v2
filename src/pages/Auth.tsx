@@ -182,7 +182,7 @@ const Auth = () => {
               <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-primary-text mb-2">
                 Systematic Worldbuilding
               </h3>
-              <p className="text-sm text-t3">
+              <p className="text-sm text-t2">
                 {TOTAL_TOOL_COUNT} interconnected tools. Environment shapes biology, biology shapes
                 psychology, psychology shapes mythology, mythology shapes culture.
               </p>
@@ -194,7 +194,7 @@ const Auth = () => {
               <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-primary-text mb-2">
                 Cross-Tool Integration
               </h3>
-              <p className="text-sm text-t3">
+              <p className="text-sm text-t2">
                 Data flows between tools. Your spacecraft references your planet's
                 atmosphere automatically.
               </p>
@@ -206,7 +206,7 @@ const Auth = () => {
               <h3 className="font-heading text-[12px] font-medium uppercase tracking-[0.2em] text-sf-primary-text mb-2">
                 Export Everything
               </h3>
-              <p className="text-sm text-t3">
+              <p className="text-sm text-t2">
                 PDF reports, DOCX documents, shared links, and full World Bible exports.
                 Your data is always yours.
               </p>
@@ -234,7 +234,7 @@ const Auth = () => {
               <h2 className="font-heading text-xl font-light tracking-[0.1em] mb-2">
                 CREATE ACCOUNT
               </h2>
-              <p className="text-sm text-t3">
+              <p className="text-sm text-t2">
                 Open early access. Still under construction. Your feedback shapes what we ship.
               </p>
             </div>
@@ -247,7 +247,7 @@ const Auth = () => {
                 <h3 className="font-heading text-sm font-light tracking-[0.1em] uppercase">
                   ACCOUNT CREATED
                 </h3>
-                <p className="text-sm text-t3">
+                <p className="text-sm text-t2">
                   Check your email to confirm. You can sign in once verified.
                 </p>
               </div>

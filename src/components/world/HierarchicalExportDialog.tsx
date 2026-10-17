@@ -174,7 +174,7 @@ const HierarchicalExportDialog = ({
                             {cw.worksheets.length}
                           </Badge>
                         </div>
-                        <p className="text-sm text-t3 mt-0.5">
+                        <p className="text-sm text-t2 mt-0.5">
                           {cw.category.description}
                         </p>
                       </div>

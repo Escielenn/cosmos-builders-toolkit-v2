@@ -968,7 +968,7 @@ const Sensorium = () => {
 
                   <TabsContent value="derive" className="mt-4">
                     <div className="space-y-3 mb-4">
-                      <p className="text-sm text-t3">
+                      <p className="text-sm text-t2">
                         Based on your environment, each sense is scored for plausibility. <strong className="text-t1">Click any card to add it to your species' final sensory suite.</strong> You can select implausible senses too, sometimes the best stories break the rules.
                       </p>
                       <div className="flex flex-wrap gap-3 text-[12px]">
@@ -981,7 +981,7 @@ const Sensorium = () => {
                   </TabsContent>
                   <TabsContent value="validate" className="mt-4">
                     <div className="space-y-3 mb-4">
-                      <p className="text-sm text-t3">
+                      <p className="text-sm text-t2">
                         Pick senses freely without environmental guidance, then validate them. <strong className="text-t1">Click cards to select, then review plausibility scores below.</strong>
                       </p>
                       <div className="flex flex-wrap gap-3 text-[12px]">
@@ -1287,7 +1287,7 @@ const Sensorium = () => {
             >
               <div className="space-y-6">
                 {formState.finalSelection.length === 0 ? (
-                  <p className="text-sm text-t3 italic">
+                  <p className="text-sm text-t2 italic">
                     Select senses in the Sensory Palette to see worldbuilding implications.
                   </p>
                 ) : (
@@ -1370,7 +1370,7 @@ const Sensorium = () => {
             >
               <div className="space-y-4">
                 {formState.finalSelection.length === 0 ? (
-                  <p className="text-sm text-t3 italic">
+                  <p className="text-sm text-t2 italic">
                     Select senses to see perception gaps vs. human baseline.
                   </p>
                 ) : (
@@ -1387,7 +1387,7 @@ const Sensorium = () => {
                             </p>
                           ))
                         ) : (
-                          <p className="text-sm text-t3 italic">
+                          <p className="text-sm text-t2 italic">
                             No alien senses beyond human range
                           </p>
                         )}
@@ -1404,7 +1404,7 @@ const Sensorium = () => {
                             </p>
                           ))
                         ) : (
-                          <p className="text-sm text-t3 italic">
+                          <p className="text-sm text-t2 italic">
                             No human senses missing
                           </p>
                         )}
@@ -1458,7 +1458,7 @@ const Sensorium = () => {
                           Conflict Potential
                         </h4>
                         {perceptionGaps.conflictPotential.map((hook, i) => (
-                          <p key={i} className="text-sm text-t3">
+                          <p key={i} className="text-sm text-t2">
                             • {hook}
                           </p>
                         ))}

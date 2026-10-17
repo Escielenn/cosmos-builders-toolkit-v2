@@ -123,7 +123,7 @@ const CompressionEditorDialog = ({
 
           <div className="space-y-2 max-h-[50vh] overflow-y-auto">
             {state.compressions.length === 0 && (
-              <p className="text-sm text-t3 text-center py-4">
+              <p className="text-sm text-t2 text-center py-4">
                 No compressions yet. Create one to collapse long stretches of uneventful time.
               </p>
             )}

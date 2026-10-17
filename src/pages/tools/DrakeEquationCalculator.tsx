@@ -615,7 +615,7 @@ const DrakeEquationCalculator = () => {
               N = R* × f<sub>p</sub> × n<sub>e</sub> × f<sub>l</sub> × f<sub>i</sub> × f<sub>c</sub> × L
             </div>
 
-            <p className="text-sm text-t3">
+            <p className="text-sm text-t2">
               Each variable represents a step from star formation to detectable civilization.
               Adjust the sliders below to explore different scenarios for your world.
             </p>
@@ -648,7 +648,7 @@ const DrakeEquationCalculator = () => {
                         </TooltipContent>
                       </Tooltip>
                     </div>
-                    <p className="text-sm text-t3 mb-2">{variable.description}</p>
+                    <p className="text-sm text-t2 mb-2">{variable.description}</p>
                   </div>
                   <div className="text-right min-w-[100px]">
                     <span className="text-2xl font-mono font-medium text-primary">
@@ -813,7 +813,7 @@ const DrakeEquationCalculator = () => {
           <div className="space-y-6">
             <div>
               <Label className="text-base font-medium">Your Answer to the Fermi Paradox</Label>
-              <p className="text-sm text-t3 mb-2">
+              <p className="text-sm text-t2 mb-2">
                 If your N is high but your galaxy seems empty, why? If N is low, what does that mean for your characters?
               </p>
               <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
@@ -827,7 +827,7 @@ const DrakeEquationCalculator = () => {
 
             <div>
               <Label className="text-base font-medium">Where Is the Great Filter?</Label>
-              <p className="text-sm text-t3 mb-2">
+              <p className="text-sm text-t2 mb-2">
                 Which step is hardest to pass? This shapes whether your ruins are biological or technological.
               </p>
               <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
@@ -841,7 +841,7 @@ const DrakeEquationCalculator = () => {
 
             <div>
               <Label className="text-base font-medium">Character of Your Galaxy</Label>
-              <p className="text-sm text-t3 mb-2">
+              <p className="text-sm text-t2 mb-2">
                 Based on your N, what's the general feel of space travel in your world?
               </p>
               <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
@@ -855,7 +855,7 @@ const DrakeEquationCalculator = () => {
 
             <div>
               <Label className="text-base font-medium">Story Implications</Label>
-              <p className="text-sm text-t3 mb-2">
+              <p className="text-sm text-t2 mb-2">
                 What kinds of stories does your galactic population enable or prevent?
               </p>
               <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
@@ -869,7 +869,7 @@ const DrakeEquationCalculator = () => {
 
             <div>
               <Label className="text-base font-medium">Types of Civilizations</Label>
-              <p className="text-sm text-t3 mb-2">
+              <p className="text-sm text-t2 mb-2">
                 What kinds of civilizations exist in your galaxy? What are their relationships?
               </p>
               <Suspense fallback={<div className="h-24 rounded-md bg-accent/10 animate-pulse" />}>
@@ -890,7 +890,7 @@ const DrakeEquationCalculator = () => {
           icon={<Info className="w-5 h-5 text-primary" />}
           defaultOpen={true}
         >
-          <p className="text-sm text-t3 mb-4">
+          <p className="text-sm text-t2 mb-4">
             Click a preset to load its values. These represent common science fiction scenarios.
           </p>
           <div className="grid gap-4 md:grid-cols-2">
@@ -901,7 +901,7 @@ const DrakeEquationCalculator = () => {
                 onClick={() => applyPreset(preset)}
               >
                 <h4 className="font-medium mb-1">{preset.name}</h4>
-                <p className="text-sm text-t3 mb-2">{preset.description}</p>
+                <p className="text-sm text-t2 mb-2">{preset.description}</p>
                 <div className="flex flex-wrap gap-1">
                   {preset.storyTypes.map((type) => (
                     <Badge key={type} variant="outline" className="text-xs">

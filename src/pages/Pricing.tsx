@@ -240,7 +240,7 @@ const Pricing = () => {
                 <p className="text-4xl font-light text-t1">${PRICING.pro.monthly.price}</p>
                 <span className="text-lg text-t3">/month</span>
               </div>
-              <p className="text-sm text-t3">or ${PRICING.pro.yearly.price}/year (save {PRICING.pro.yearly.savings})</p>
+              <p className="text-sm text-t2">or ${PRICING.pro.yearly.price}/year (save {PRICING.pro.yearly.savings})</p>
             </div>
 
             <ul className="space-y-3 mb-8">
@@ -280,7 +280,7 @@ const Pricing = () => {
               </div>
             ) : isVanguard ? (
               <div className="p-3 rounded-sm bg-emerald-500/10 text-center">
-                <p className="text-sm text-t3">Included in your Vanguard access</p>
+                <p className="text-sm text-t2">Included in your Vanguard access</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -329,7 +329,7 @@ const Pricing = () => {
                 <p className="text-4xl font-light text-t1">${PRICING.vanguard.monthly.price}</p>
                 <span className="text-lg text-t3">/month</span>
               </div>
-              <p className="text-sm text-t3">or ${PRICING.vanguard.yearly.price}/year (save {PRICING.vanguard.yearly.savings})</p>
+              <p className="text-sm text-t2">or ${PRICING.vanguard.yearly.price}/year (save {PRICING.vanguard.yearly.savings})</p>
             </div>
 
             <ul className="space-y-3 mb-8">

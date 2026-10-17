@@ -95,7 +95,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
         <h3 className="font-heading text-xl font-medium mb-2">
           TICKET LOGGED.
         </h3>
-        <p className="text-t3 mb-4">
+        <p className="text-t2 mb-4">
           Response within 24-48 hours.
         </p>
         <div className="inline-flex items-center gap-2 bg-muted px-4 py-2 rounded-md mb-4">
@@ -104,7 +104,7 @@ const SupportTicketForm = ({ onSuccess }: SupportTicketFormProps) => {
             <Copy className="w-4 h-4" />
           </Button>
         </div>
-        <p className="text-sm text-t3 mb-4">
+        <p className="text-sm text-t2 mb-4">
           Save this ticket number for your reference.
         </p>
         <Button

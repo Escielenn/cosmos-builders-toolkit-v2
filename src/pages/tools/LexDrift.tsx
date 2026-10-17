@@ -553,7 +553,7 @@ const LexDrift = () => {
             icon={<Globe className="w-5 h-5" />}
             defaultOpen={true}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.mission}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.mission}</p>
             <div className="space-y-6">
               {/* Duration */}
               <div className="space-y-3">
@@ -628,7 +628,7 @@ const LexDrift = () => {
             levelNumber={2}
             icon={<Languages className="w-5 h-5" />}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.linguistic}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.linguistic}</p>
             <div className="space-y-6">
               {/* Starting Languages */}
               <div className="space-y-3">
@@ -774,7 +774,7 @@ const LexDrift = () => {
             icon={<GraduationCap className="w-5 h-5" />}
             defaultOpen={true}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.social}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.social}</p>
             <div className="space-y-6">
               {/* Education Policy */}
               <div className="space-y-2">
@@ -1014,7 +1014,7 @@ const LexDrift = () => {
                     <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-2">
                       Sound Changes
                     </p>
-                    <p className="text-sm text-t3 leading-relaxed">
+                    <p className="text-sm text-t2 leading-relaxed">
                       {calculationResult.soundChanges}
                     </p>
                   </GlassPanel>
@@ -1022,7 +1022,7 @@ const LexDrift = () => {
                     <p className="font-mono text-xs uppercase tracking-sf-wide text-t2 mb-2">
                       Grammar Changes
                     </p>
-                    <p className="text-sm text-t3 leading-relaxed">
+                    <p className="text-sm text-t2 leading-relaxed">
                       {calculationResult.grammarChanges}
                     </p>
                   </GlassPanel>
@@ -1039,7 +1039,7 @@ const LexDrift = () => {
                       ({calculationResult.historicalAnalogue.period})
                     </span>
                   </p>
-                  <p className="text-sm text-t3 leading-relaxed">
+                  <p className="text-sm text-t2 leading-relaxed">
                     {calculationResult.historicalAnalogue.description}
                   </p>
                 </GlassPanel>
@@ -1076,7 +1076,7 @@ const LexDrift = () => {
                     <p className="font-mono text-xs uppercase tracking-sf-wide text-sf-amber/60 mb-2">
                       Liturgical Preservation
                     </p>
-                    <p className="text-sm text-t3 leading-relaxed">
+                    <p className="text-sm text-t2 leading-relaxed">
                       {calculationResult.liturgicalNote}
                     </p>
                   </GlassPanel>
@@ -1170,7 +1170,7 @@ const LexDrift = () => {
             levelNumber={5}
             icon={<BookOpen className="w-5 h-5" />}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.samples}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.samples}</p>
             <div className="space-y-4">
               <GlassPanel className="p-4 border-l-4 border-l-primary">
                 <p className="font-mono text-xs uppercase tracking-sf-wide text-primary/60 mb-2">
@@ -1221,7 +1221,7 @@ const LexDrift = () => {
             levelNumber={6}
             icon={<Ship className="w-5 h-5" />}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.multiShip}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.multiShip}</p>
             <div className="space-y-6">
               <div className="flex items-center gap-3">
                 <Switch
@@ -1385,7 +1385,7 @@ const LexDrift = () => {
             levelNumber={7}
             icon={<Users className="w-5 h-5" />}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.story}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.story}</p>
             <div className="space-y-8">
               <div className="space-y-2">
                 <Label>Linguistic Identity</Label>

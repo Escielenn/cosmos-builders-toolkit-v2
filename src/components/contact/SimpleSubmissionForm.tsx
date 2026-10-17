@@ -129,7 +129,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
         <h3 className="font-heading text-xl font-medium mb-2">
           {config.successTitle}
         </h3>
-        <p className="text-t3 mb-4">{config.successMessage}</p>
+        <p className="text-t2 mb-4">{config.successMessage}</p>
         {config.showTicket && ticketNumber && (
           <>
             <div className="inline-flex items-center gap-2 bg-muted px-4 py-2 rounded-md mb-4">
@@ -138,7 +138,7 @@ const SimpleSubmissionForm = ({ type, onSuccess }: SimpleSubmissionFormProps) =>
                 <Copy className="w-4 h-4" />
               </Button>
             </div>
-            <p className="text-sm text-t3 mb-4">
+            <p className="text-sm text-t2 mb-4">
               Save this ticket number for your reference.
             </p>
           </>

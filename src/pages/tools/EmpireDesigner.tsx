@@ -788,7 +788,7 @@ const EmpireDesigner = () => {
               <div className="space-y-6">
                 <div className="space-y-3">
                   <Label>Active Branches/Power Centers</Label>
-                  <p className="text-sm text-t3">
+                  <p className="text-sm text-t2">
                     Select all that have significant independent power
                   </p>
                   <div className="grid md:grid-cols-2 gap-3">
@@ -1486,7 +1486,7 @@ const EmpireDesigner = () => {
                         <Badge variant="outline" className="text-xs mt-1">
                           {example.type}
                         </Badge>
-                        <p className="text-sm text-t3 mt-2">
+                        <p className="text-sm text-t2 mt-2">
                           {example.description}
                         </p>
                         <p className="text-sm text-primary mt-2 italic">

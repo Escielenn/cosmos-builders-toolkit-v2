@@ -91,7 +91,7 @@ const ElementPickerDialog = ({
         {/* Worksheet list */}
         <div className="max-h-80 overflow-y-auto -mx-1 space-y-3">
           {groups.length === 0 ? (
-            <p className="text-sm text-t3 text-center py-6">
+            <p className="text-sm text-t2 text-center py-6">
               {worksheets.length === 0
                 ? "No worksheets in this world yet."
                 : "No worksheets match your search."}

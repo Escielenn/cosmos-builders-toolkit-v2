@@ -474,7 +474,7 @@ const WorldExportDialog = ({
                       alt="Notion"
                       className="w-12 h-12 mx-auto opacity-50"
                     />
-                    <p className="text-t3">
+                    <p className="text-t2">
                       Connect your Notion workspace to export worlds directly as pages.
                     </p>
                     <Button onClick={connect} disabled={isConnecting}>
@@ -504,7 +504,7 @@ const WorldExportDialog = ({
             )}
 
             {worksheets.length === 0 && (
-              <p className="text-sm text-t3 text-center py-2">
+              <p className="text-sm text-t2 text-center py-2">
                 This world has no worksheets to export yet.
               </p>
             )}

@@ -136,7 +136,7 @@ const CalendarEditorDialog = ({
 
           <div className="space-y-2 max-h-[50vh] overflow-y-auto">
             {state.calendars.length === 0 && (
-              <p className="text-sm text-t3 text-center py-4">
+              <p className="text-sm text-t2 text-center py-4">
                 No custom calendars yet. Create one to use alien or fictional date systems.
               </p>
             )}

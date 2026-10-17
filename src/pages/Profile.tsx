@@ -345,7 +345,7 @@ const Profile = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              <p className="text-t3">
+              <p className="text-t2">
                 Standard clearance. Upgrade for full tool access.
               </p>
               <Button

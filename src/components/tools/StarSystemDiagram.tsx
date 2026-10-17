@@ -78,7 +78,7 @@ export default function StarSystemDiagram({
           System Diagram
         </h3>
         <div className="h-[300px] bg-sf-void rounded-none flex items-center justify-center">
-          <p className="text-sm text-t3">
+          <p className="text-sm text-t2">
             Select a spectral class above to visualize your system
           </p>
         </div>

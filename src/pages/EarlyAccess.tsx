@@ -158,7 +158,7 @@ function LandingHero(): JSX.Element {
         star type, or how your species senses the world, and everything downstream moves with it.
         Biology, politics, mythology, language.
       </p>
-      <p className="mb-7 max-w-[540px] text-[17px] leading-[1.55] text-t3">
+      <p className="mb-7 max-w-[540px] text-[17px] leading-[1.55] text-t2">
         Join the list. The first 500 writers get 40% off their first year of Pro.
       </p>
       <WaitlistForm />

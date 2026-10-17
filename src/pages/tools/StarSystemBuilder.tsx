@@ -672,7 +672,7 @@ const StarSystemBuilder = () => {
 
                 <div className="space-y-3">
                   <Label>Spectral Class</Label>
-                  <p className="text-sm text-t3">
+                  <p className="text-sm text-t2">
                     The star's temperature and color determine habitability, planetary formation, and visual atmosphere.
                   </p>
                   <RadioGroup
@@ -714,7 +714,7 @@ const StarSystemBuilder = () => {
                         </li>
                       ))}
                     </ul>
-                    <p className="text-sm text-t3 mt-3 italic">
+                    <p className="text-sm text-t2 mt-3 italic">
                       {selectedStarClass.worldbuilding}
                     </p>
                   </GlassPanel>
@@ -1322,7 +1322,7 @@ const StarSystemBuilder = () => {
 
                 <div className="space-y-3">
                   <Label>Habitability Modifiers</Label>
-                  <p className="text-sm text-t3">
+                  <p className="text-sm text-t2">
                     Factors that extend or contract the habitable zone
                   </p>
                   <div className="grid md:grid-cols-2 gap-3">
@@ -1390,7 +1390,7 @@ const StarSystemBuilder = () => {
               <div className="space-y-6">
                 <div className="space-y-2">
                   <Label>System Character</Label>
-                  <p className="text-sm text-t3">
+                  <p className="text-sm text-t2">
                     If this system were a character, what would its personality be?
                   </p>
                   <Textarea
@@ -1403,7 +1403,7 @@ const StarSystemBuilder = () => {
 
                 <div className="space-y-2">
                   <Label>Visual Signature</Label>
-                  <p className="text-sm text-t3">
+                  <p className="text-sm text-t2">
                     What would you see from a ship entering this system?
                   </p>
                   <Textarea
@@ -1482,7 +1482,7 @@ const StarSystemBuilder = () => {
                         <Badge variant="outline" className="text-xs mt-1">
                           {example.configuration}
                         </Badge>
-                        <p className="text-sm text-t3 mt-2">
+                        <p className="text-sm text-t2 mt-2">
                           {example.description}
                         </p>
                         <p className="text-sm text-primary mt-2 italic">
@@ -1506,7 +1506,7 @@ const StarSystemBuilder = () => {
               <div className="space-y-6">
                 <div className="space-y-3">
                   <Label>Consistency Checks</Label>
-                  <p className="text-sm text-t3">
+                  <p className="text-sm text-t2">
                     Verify your system makes physical sense
                   </p>
                   <div className="space-y-2">

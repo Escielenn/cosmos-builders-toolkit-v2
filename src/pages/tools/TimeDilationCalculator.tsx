@@ -547,7 +547,7 @@ const TimeDilationCalculator = () => {
             icon={<Rocket className="w-5 h-5" />}
             defaultOpen={true}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.journey}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.journey}</p>
             <div className="space-y-6">
               {/* Category select */}
               <div className="space-y-2">
@@ -680,7 +680,7 @@ const TimeDilationCalculator = () => {
             levelNumber={2}
             icon={<Gauge className="w-5 h-5" />}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.propulsion}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.propulsion}</p>
             <div className="space-y-4">
               <RadioGroup
                 value={formState.propulsion.method}
@@ -734,7 +734,7 @@ const TimeDilationCalculator = () => {
             levelNumber={3}
             icon={<Clock className="w-5 h-5" />}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.velocity}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.velocity}</p>
             <div className="space-y-6">
               <RadioGroup
                 value={formState.velocityProfile.mode}
@@ -871,7 +871,7 @@ const TimeDilationCalculator = () => {
                       ? calculationResult.lorentzFactor.toFixed(6)
                       : calculationResult.lorentzFactor.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                   </p>
-                  <p className="text-sm text-t3 mt-3">
+                  <p className="text-sm text-t2 mt-3">
                     Peak velocity:{" "}
                     <span className="font-mono text-t1">
                       {calculationResult.peakVelocityFraction >= 1
@@ -971,7 +971,7 @@ const TimeDilationCalculator = () => {
                   <p className={`font-mono text-3xl font-medium ${sColors.text}`}>
                     {calculationResult.timeDifferenceFormatted}
                   </p>
-                  <p className="text-sm text-t3 mt-2">
+                  <p className="text-sm text-t2 mt-2">
                     {formState.roundTrip ? "Total round-trip difference" : "One-way difference"}
                   </p>
                 </GlassPanel>
@@ -1138,7 +1138,7 @@ const TimeDilationCalculator = () => {
             levelNumber={5}
             icon={<Radio className="w-5 h-5" />}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.reference}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.reference}</p>
             <div className="space-y-4">
               <RadioGroup
                 value={formState.referenceFrame.frame}
@@ -1180,7 +1180,7 @@ const TimeDilationCalculator = () => {
             levelNumber={6}
             icon={<BookOpen className="w-5 h-5" />}
           >
-            <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.story}</p>
+            <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.story}</p>
             <div className="space-y-8">
               <div className="space-y-2">
                 <Label>The Departure Moment</Label>

@@ -518,7 +518,7 @@ const SpaceExpansionModeler = () => {
               title="SF Examples"
               thinkLike="a reader: what stories model these dynamics?"
             >
-              <p className="text-sm text-t3 italic mb-4">
+              <p className="text-sm text-t2 italic mb-4">
                 {SECTION_HELPERS.examples}
               </p>
               <div className="space-y-2">
@@ -554,7 +554,7 @@ const SpaceExpansionModeler = () => {
               title="Quick-Start Templates"
               thinkLike="an architect: choose a blueprint to customize"
             >
-              <p className="text-sm text-t3 italic mb-4">
+              <p className="text-sm text-t2 italic mb-4">
                 {SECTION_HELPERS.templates}
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -587,7 +587,7 @@ const SpaceExpansionModeler = () => {
               thinkLike="a mission planner: what's the starting point?"
               defaultOpen
             >
-              <p className="text-sm text-t3 italic mb-4">
+              <p className="text-sm text-t2 italic mb-4">
                 {SECTION_HELPERS.foundation}
               </p>
               <div className="space-y-4">
@@ -657,7 +657,7 @@ const SpaceExpansionModeler = () => {
               levelNumber={2}
               thinkLike="a historian: what milestones mark each era?"
             >
-              <p className="text-sm text-t3 italic mb-4">
+              <p className="text-sm text-t2 italic mb-4">
                 {SECTION_HELPERS.phases}
               </p>
               <div className="space-y-4">
@@ -783,7 +783,7 @@ const SpaceExpansionModeler = () => {
               levelNumber={3}
               thinkLike="a strategic analyst: what's pushing and pulling?"
             >
-              <p className="text-sm text-t3 italic mb-4">
+              <p className="text-sm text-t2 italic mb-4">
                 {SECTION_HELPERS.forces}
               </p>
 
@@ -893,7 +893,7 @@ const SpaceExpansionModeler = () => {
               levelNumber={4}
               thinkLike="a crisis analyst: what accelerates, blocks, or redirects?"
             >
-              <p className="text-sm text-t3 italic mb-4">
+              <p className="text-sm text-t2 italic mb-4">
                 {SECTION_HELPERS.modifiers}
               </p>
 
@@ -1052,7 +1052,7 @@ const SpaceExpansionModeler = () => {
               levelNumber={5}
               thinkLike="a systems analyst: how do forces interact?"
             >
-              <p className="text-sm text-t3 italic mb-4">
+              <p className="text-sm text-t2 italic mb-4">
                 {SECTION_HELPERS.matrix}
               </p>
 
@@ -1160,7 +1160,7 @@ const SpaceExpansionModeler = () => {
               levelNumber={6}
               thinkLike="a storyteller: what narrative emerges?"
             >
-              <p className="text-sm text-t3 italic mb-4">
+              <p className="text-sm text-t2 italic mb-4">
                 {SECTION_HELPERS.synthesis}
               </p>
               <div className="space-y-4">

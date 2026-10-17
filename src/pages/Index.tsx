@@ -547,7 +547,7 @@ const Index = () => {
 
               {!isLoading && filteredWorlds.length === 0 && (
                 <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center border-dashed border border-muted">
-                  <p className="text-sm text-t3 text-center">
+                  <p className="text-sm text-t2 text-center">
                     {selectedTags.length > 0
                       ? "No worlds match the selected tags."
                       : "Your worlds will appear here once you create them."}
@@ -592,7 +592,7 @@ const Index = () => {
               From the Community
             </h2>
             <GlassPanel className="p-8 flex flex-col items-center text-center gap-4">
-              <p className="text-sm text-t3 max-w-md">
+              <p className="text-sm text-t2 max-w-md">
                 Discover worlds built by the community - explore shared creations, find inspiration, and see what other builders are forging.
               </p>
               <Button size="lg" className="gap-2" asChild>
@@ -765,7 +765,7 @@ const Index = () => {
                   <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
                     Cross-Tool Integration
                   </h3>
-                  <p className="text-sm text-t3">
+                  <p className="text-sm text-t2">
                     Data flows between tools. Your spacecraft references your
                     planet's atmosphere automatically.
                   </p>
@@ -777,7 +777,7 @@ const Index = () => {
                   <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
                     Export & Print
                   </h3>
-                  <p className="text-sm text-t3">
+                  <p className="text-sm text-t2">
                     Generate beautiful PDFs, print-friendly views, and markdown
                     exports of your worldbuilding.
                   </p>
@@ -789,7 +789,7 @@ const Index = () => {
                   <h3 className="font-heading font-light text-lg mb-2 uppercase tracking-wider">
                     Shareable Links
                   </h3>
-                  <p className="text-sm text-t3">
+                  <p className="text-sm text-t2">
                     Share your worlds with collaborators or readers via read-only
                     links.
                   </p>

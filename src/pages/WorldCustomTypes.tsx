@@ -103,7 +103,7 @@ export default function WorldCustomTypes() {
           <h1 className="font-display text-3xl md:text-4xl tracking-[0.08em] text-t1 mb-1">
             CUSTOM ELEMENT TYPES
           </h1>
-          <p className="text-sm text-t3 max-w-2xl">
+          <p className="text-sm text-t2 max-w-2xl">
             Define your own element types with custom fields. Every entity
             created from a template will carry these fields, great for homebrew
             concepts like sword styles, deities, trading routes, or anything

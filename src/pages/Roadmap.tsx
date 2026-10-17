@@ -257,7 +257,7 @@ const Roadmap = () => {
           <div className="text-center py-16 text-t3">Loading roadmap...</div>
         ) : items.length === 0 ? (
           <GlassPanel className="p-8 text-center">
-            <p className="text-t3">No roadmap items match this filter.</p>
+            <p className="text-t2">No roadmap items match this filter.</p>
           </GlassPanel>
         ) : (
           <div className="space-y-4">

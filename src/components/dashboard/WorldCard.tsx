@@ -200,7 +200,7 @@ const WorldCard = ({
 
           <div className="flex-1">
             {description && (
-              <p className="text-sm text-t3 line-clamp-2">
+              <p className="text-sm text-t2 line-clamp-2">
                 {description}
               </p>
             )}

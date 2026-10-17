@@ -554,7 +554,7 @@ const HabitableZoneCalculator = () => {
               icon={<Sun className="w-5 h-5" />}
               defaultOpen={true}
             >
-              <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.star}</p>
+              <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.star}</p>
 
               {/* Star Presets */}
               <div className="space-y-2 mb-6">
@@ -808,7 +808,7 @@ const HabitableZoneCalculator = () => {
               icon={<Globe className="w-5 h-5" />}
               defaultOpen={true}
             >
-              <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.planet}</p>
+              <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.planet}</p>
 
               <div className="space-y-6">
                 {/* Zone Classification */}
@@ -901,7 +901,7 @@ const HabitableZoneCalculator = () => {
                   <Thermometer className="w-5 h-5 text-primary" />
                   Analysis Results
                 </h2>
-                <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.results}</p>
+                <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.results}</p>
 
                 {result.valid ? (
                   <div className="space-y-6">
@@ -1003,13 +1003,13 @@ const HabitableZoneCalculator = () => {
                           Copy
                         </Button>
                       </div>
-                      <p className="text-sm text-t3 italic">
+                      <p className="text-sm text-t2 italic">
                         {result.narrativeSummary}
                       </p>
                     </div>
                   </div>
                 ) : (
-                  <p className="text-sm text-t3">{result.error || "Adjust parameters to see results."}</p>
+                  <p className="text-sm text-t2">{result.error || "Adjust parameters to see results."}</p>
                 )}
               </GlassPanel>
             </div>
@@ -1023,7 +1023,7 @@ const HabitableZoneCalculator = () => {
               icon={<BookOpen className="w-5 h-5" />}
               defaultOpen={true}
             >
-              <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.implications}</p>
+              <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.implications}</p>
 
               {result.valid && (
                 <div className="space-y-4">
@@ -1075,7 +1075,7 @@ const HabitableZoneCalculator = () => {
               levelNumber={6}
               icon={<FileText className="w-5 h-5" />}
             >
-              <p className="text-sm text-t3 italic mb-6">{SECTION_HELPERS.story}</p>
+              <p className="text-sm text-t2 italic mb-6">{SECTION_HELPERS.story}</p>
 
               <div className="space-y-6">
                 <div className="space-y-2">

@@ -185,7 +185,7 @@ const LearnIndex = () => {
                             <h3 className="font-medium group-hover:text-primary transition-colors">
                               {article.title}
                             </h3>
-                            <p className="text-sm text-t3 mt-1">
+                            <p className="text-sm text-t2 mt-1">
                               {article.description}
                             </p>
                           </div>
@@ -198,7 +198,7 @@ const LearnIndex = () => {
               </>
             )}
             {!isSearching && searchResults && searchResults.length === 0 && (
-              <p className="text-center text-t3 py-8">
+              <p className="text-center text-t2 py-8">
                 No articles found for &ldquo;{searchTerm}&rdquo;
               </p>
             )}
@@ -235,7 +235,7 @@ const LearnIndex = () => {
                       <h3 className="font-heading text-xl font-medium mt-3 mb-2 group-hover:text-primary transition-colors">
                         {article.title}
                       </h3>
-                      <p className="text-t3 text-sm mb-4">
+                      <p className="text-t2 text-sm mb-4">
                         {article.description}
                       </p>
                       <div className="flex items-center justify-between">
@@ -285,7 +285,7 @@ const LearnIndex = () => {
                   <h3 className="font-medium group-hover:text-primary transition-colors">
                     ROGUE: The Science
                   </h3>
-                  <p className="text-sm text-t3 mt-1">
+                  <p className="text-sm text-t2 mt-1">
                     The real astrophysics behind gravitational encounters, rogue planets, and N-body dynamics.
                   </p>
                 </GlassPanel>
@@ -303,7 +303,7 @@ const LearnIndex = () => {
                   <h3 className="font-medium group-hover:text-primary transition-colors">
                     TIDELOCK: The Science
                   </h3>
-                  <p className="text-sm text-t3 mt-1">
+                  <p className="text-sm text-t2 mt-1">
                     The science of tidally locked worlds, atmospheric circulation, and habitability around red dwarf stars.
                   </p>
                 </GlassPanel>
@@ -321,7 +321,7 @@ const LearnIndex = () => {
                   <h3 className="font-medium group-hover:text-primary transition-colors">
                     EXOSKY: The Science
                   </h3>
-                  <p className="text-sm text-t3 mt-1">
+                  <p className="text-sm text-t2 mt-1">
                     How real stellar catalogs, parallax, and coordinate transforms create accurate alien night skies.
                   </p>
                 </GlassPanel>
@@ -339,7 +339,7 @@ const LearnIndex = () => {
                   <h3 className="font-medium group-hover:text-primary transition-colors">
                     EXOFORGE: The Science
                   </h3>
-                  <p className="text-sm text-t3 mt-1">
+                  <p className="text-sm text-t2 mt-1">
                     Terrain generation, composition spectra, biome models, and the physics behind procedural exoplanet forging.
                   </p>
                 </GlassPanel>
@@ -357,7 +357,7 @@ const LearnIndex = () => {
                   <h3 className="font-medium group-hover:text-primary transition-colors">
                     SOLARIS: The Science
                   </h3>
-                  <p className="text-sm text-t3 mt-1">
+                  <p className="text-sm text-t2 mt-1">
                     Keplerian orbits, multi-star stability limits, the Kopparapu habitable zone, and the N-body integrator behind every system.
                   </p>
                 </GlassPanel>
@@ -465,7 +465,7 @@ const LearnIndex = () => {
             {/* Discount upsell for non-subscribed users */}
             {!user && (
               <GlassPanel className="p-4 mt-4 border-sf-violet text-center">
-                <p className="text-sm text-t3">
+                <p className="text-sm text-t2">
                   <Zap className="w-3.5 h-3.5 inline-block mr-1 text-sf-amber -mt-0.5" />
                   Pro members save 5–10% on all courses.{" "}
                   <Sparkles className="w-3.5 h-3.5 inline-block mr-1 text-sf-violet -mt-0.5" />
@@ -527,7 +527,7 @@ const LearnIndex = () => {
                           <h3 className="font-medium group-hover:text-primary transition-colors">
                             {article.title}
                           </h3>
-                          <p className="text-sm text-t3 mt-1 line-clamp-2">
+                          <p className="text-sm text-t2 mt-1 line-clamp-2">
                             {article.description}
                           </p>
                         </div>

@@ -285,7 +285,7 @@ const SortableToolCard = ({ tool, worldId }: { tool: typeof TOOLS[number]; world
             )}
             <div>
               <h3 className="font-medium">{tool.name}</h3>
-              <p className="text-sm text-t3 mt-1">{tool.description}</p>
+              <p className="text-sm text-t2 mt-1">{tool.description}</p>
             </div>
           </div>
         </GlassPanel>
@@ -858,7 +858,7 @@ const WorldDashboard = () => {
             canEdit={canEdit}
           />
           <div className="flex items-center gap-3 mt-3 px-1">
-            <p className="text-sm text-t3">
+            <p className="text-sm text-t2">
               Last updated {format(new Date(world.updated_at), "MMMM d, yyyy")}
             </p>
             {worksheets.length > 0 && (
