@@ -56,7 +56,7 @@ export function EntryCard({ entry, onClick }: EntryCardProps) {
           </div>
         )}
 
-        <div className="mt-4 pt-3 border-t border-sf-line flex items-center gap-3 flex-wrap">
+        <div className="mt-4 pt-3 border-t border-sf-line-hairline flex items-center gap-3 flex-wrap">
           <span className="font-mono text-[12px] text-t4">
             {entry.word_count} {entry.word_count === 1 ? "word" : "words"}
           </span>

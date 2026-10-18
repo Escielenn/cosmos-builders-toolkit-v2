@@ -188,7 +188,7 @@ export function Outliner({
           <DropdownMenuTrigger asChild>
             <button
               type="button"
-              className="ml-auto flex min-h-hit items-center gap-1.5 border border-sf-line-interactive px-2.5 text-[12px] text-t3 transition-colors duration-base hover:border-sf-line-emphasis hover:text-t1"
+              className="ml-auto flex min-h-hit items-center gap-1.5 border border-sf-line px-3 text-[12px] text-t3 transition-colors duration-base hover:border-sf-line-emphasis hover:text-t1"
               aria-label="Choose outliner columns"
             >
               <Columns3 className="h-3.5 w-3.5" aria-hidden="true" />
@@ -217,7 +217,7 @@ export function Outliner({
         <div className="sf-sb overflow-x-auto border border-sf-line">
           <table className="w-full min-w-[640px] border-collapse text-left" aria-label="Manuscript outline">
             <thead>
-              <tr className="border-b border-sf-line-interactive bg-sf-surface">
+              <tr className="border-b border-sf-line-hairline bg-sf-surface">
                 <Th className="min-w-[200px]">Title</Th>
                 {show("synopsis") && <Th className="min-w-[220px]">Synopsis</Th>}
                 {show("label") && <Th>Label</Th>}
@@ -252,7 +252,7 @@ export function Outliner({
               ))}
             </tbody>
             <tfoot>
-              <tr className="border-t border-sf-line-interactive bg-sf-surface">
+              <tr className="border-t border-sf-line-hairline bg-sf-surface">
                 <td className="px-3 py-2.5 font-heading text-sf-eyebrow uppercase text-t3">
                   Total · {totals.docs.toLocaleString()} {totals.docs === 1 ? "document" : "documents"}
                 </td>
@@ -473,9 +473,9 @@ function OutlinerRowView({
 
       {show("keywords") && (
         <td className="px-3 py-1.5">
-          <div className="flex min-h-hit flex-wrap items-center gap-1">
+          <div className="flex min-h-hit flex-wrap items-center gap-1.5">
             {(meta?.keywords ?? []).slice(0, 4).map((k) => (
-              <span key={k} className="border border-sf-line-interactive px-1.5 font-mono text-[12px] text-t3">
+              <span key={k} className="border border-sf-line px-2 font-mono text-[12px] text-t3">
                 {k}
               </span>
             ))}
@@ -553,7 +553,7 @@ function SynopsisCell({
           }
         }}
         aria-label={`Synopsis for ${title}`}
-        className="sf-sb w-full resize-y border border-sf-line-interactive bg-sf-surface px-2 py-1 font-serif text-[16px] italic text-t1"
+        className="sf-sb w-full resize-y px-3 py-1 font-serif text-[16px] italic text-t1"
       />
     );
   }

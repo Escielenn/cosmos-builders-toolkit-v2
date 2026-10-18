@@ -61,7 +61,7 @@ export function Scrivenings({
 
   return (
     <div className="mx-auto px-6 py-8" style={{ maxWidth: "var(--sf-writing-measure, 68ch)", ...editorStyle }}>
-      <div className="mb-8 flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-sf-line-interactive pb-3">
+      <div className="mb-8 flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-sf-line-hairline pb-3">
         <span className="font-heading text-sf-eyebrow uppercase text-t4">Scrivenings</span>
         <span className="min-w-[10rem] flex-1 truncate font-serif text-[18px] italic text-t1">{title}</span>
         <span className="hidden shrink-0 font-mono text-[12px] text-t4 sm:inline">
@@ -73,7 +73,7 @@ export function Scrivenings({
           onClick={onClose}
           aria-label="Leave Scrivenings"
           title="Back to the single-document editor"
-          className="flex min-h-hit w-10 shrink-0 items-center justify-center border border-sf-line-interactive text-t3 transition-colors duration-base hover:border-sf-line-emphasis hover:text-t1"
+          className="flex min-h-hit w-10 shrink-0 items-center justify-center border border-transparent text-t3 transition-colors duration-base hover:border-sf-line-emphasis hover:text-t1"
         >
           <X className="h-4 w-4" />
         </button>

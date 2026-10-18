@@ -356,7 +356,7 @@ function PreviewBody({
           ["Documents", counts.documents],
           ["Words", counts.words],
         ].map(([label, n]) => (
-          <div key={label} className="border-r border-sf-line px-3 py-2 last:border-r-0">
+          <div key={label} className="border-r border-sf-line-hairline px-3 py-2 last:border-r-0">
             <dt className="font-heading text-sf-eyebrow uppercase text-t4">{label}</dt>
             <dd className="font-mono text-[18px] text-t1">{Number(n).toLocaleString("en-US")}</dd>
           </div>

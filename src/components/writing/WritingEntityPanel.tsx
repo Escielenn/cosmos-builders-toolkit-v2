@@ -172,7 +172,7 @@ export function WritingEntityPanel({
             shows tab labels + collapse, so we only render the Back button
             when an entity is selected. Otherwise skip the header entirely. */}
         {(!embedded || selectedEntity) && (
-        <div className="flex items-center justify-between border-b border-sf-line px-3 py-2.5">
+        <div className="flex items-center justify-between border-b border-sf-line-hairline px-3 py-2.5">
           {selectedEntity ? (
             <BackLink onClick={handleBack} label="RETURN TO LIST" />
           ) : (
@@ -349,7 +349,7 @@ export function WritingEntityPanel({
             />
 
             {/* Insert buttons */}
-            <div className="flex gap-2 pt-2 border-t border-sf-line">
+            <div className="flex gap-2 pt-2 border-t border-sf-line-hairline">
               <button
                 onClick={() => onInsertMention(selectedEntity)}
                 className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-sans font-medium uppercase tracking-wider text-sf-primary-text bg-sf-primary/[0.06] border border-sf-primary rounded-none hover:bg-sf-primary/[0.12] transition-colors"
@@ -515,7 +515,7 @@ export function WritingEntityPanel({
   return (
     <aside
       className={cn(
-        "h-full flex-shrink-0 border-r border-sf-line bg-sf-surface/90 backdrop-blur-md transition-all duration-slow ease-sf-out overflow-hidden"
+        "h-full flex-shrink-0 border-r border-sf-line-hairline bg-sf-surface/90 backdrop-blur-md transition-all duration-slow ease-sf-out overflow-hidden"
       )}
       style={{ width: open ? PANEL_WIDTH : 0 }}
     >

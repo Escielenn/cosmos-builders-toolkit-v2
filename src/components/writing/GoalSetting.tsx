@@ -69,15 +69,15 @@ export function GoalSetting({ compact = false }: GoalSettingProps) {
             onKeyDown={(e) => {
               if (e.key === "Enter") handleSave(localGoal);
             }}
-            className="bg-transparent rounded-none font-mono text-sm"
+            className="font-mono text-sm"
           />
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             {QUICK_GOALS.map((g) => (
               <Button
                 key={g}
                 variant="outline"
                 size="sm"
-                className={`flex-1 text-[12px] px-0 h-7 ${
+                className={`flex-1 text-[12px] px-2 h-7 ${
                   localGoal === g ? "border-primary text-sf-primary-text" : ""
                 }`}
                 onClick={() => handleSave(g)}

@@ -94,7 +94,7 @@ export function WorldRefsPanel({ pins, onUnpin, onPinSource, onCite, onInsertPla
         </p>
         <Link
           to="/guide/tools"
-          className="inline-flex min-h-hit items-center gap-1.5 border border-sf-line-interactive px-3 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
+          className="inline-flex min-h-hit items-center gap-1.5 border border-sf-line px-3 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
         >
           Browse the tools <ExternalLink className="h-3 w-3" aria-hidden="true" />
         </Link>

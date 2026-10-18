@@ -60,7 +60,7 @@ export function WorldInfluencePanel({
           ))}
         </ul>
       ) : (
-        <div className="mt-3 border border-dashed border-sf-line p-3">
+        <div className="mt-3 border border-dashed border-sf-line p-4">
           <p className="font-serif text-[14px] italic leading-relaxed text-t2">
             Set the POV and where the scene is SET IN on the Card, and the facts that touch this scene gather here:
             the gravity underfoot, the light overhead, what the viewpoint body makes of both.
@@ -69,7 +69,7 @@ export function WorldInfluencePanel({
             <button
               type="button"
               onClick={onEditCard}
-              className="mt-3 inline-flex min-h-hit items-center border border-sf-line-interactive px-3 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
+              className="mt-3 inline-flex min-h-hit items-center border border-sf-line px-3 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
             >
               Open the Card
             </button>
@@ -137,13 +137,13 @@ function CascadeParameters({
         {total > 0 && <span className="ml-auto font-mono">{engaged}/{total}</span>}
       </button>
       {show && total === 0 && (
-        <div className="border border-dashed border-sf-line p-3">
+        <div className="border border-dashed border-sf-line p-4">
           <p className="font-serif text-[13px] italic leading-relaxed text-t3">
             This world hasn't set its environmental parameters yet.
           </p>
           <Link
             to={`/tools/environmental-chain-reaction?worldId=${worldId}`}
-            className="mt-3 inline-flex min-h-hit items-center border border-sf-line-interactive px-3 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
+            className="mt-3 inline-flex min-h-hit items-center border border-sf-line px-3 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
           >
             Open the Cascade tool →
           </Link>
