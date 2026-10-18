@@ -613,14 +613,17 @@ const DrakeEquationCalculator = () => {
           <div className="space-y-8">
             {DRAKE_VARIABLES.map((variable) => (
               <div key={variable.id} className="space-y-3">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                  <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <Label className="text-base font-medium">
                         {variable.symbol}, {variable.name}
                       </Label>
                       <Tooltip>
-                        <TooltipTrigger>
+                        <TooltipTrigger
+                          aria-label={`About ${variable.name}`}
+                          className="-my-3 inline-flex min-h-hit min-w-hit items-center justify-center"
+                        >
                           <HelpCircle className="w-4 h-4 text-t2" />
                         </TooltipTrigger>
                         <TooltipContent className="max-w-xs">
@@ -631,7 +634,7 @@ const DrakeEquationCalculator = () => {
                     </div>
                     <p className="text-sm text-t2 mb-2">{variable.description}</p>
                   </div>
-                  <div className="text-right min-w-[100px]">
+                  <div className="sm:text-right sm:min-w-[100px]">
                     <span className="text-2xl font-mono font-medium text-sf-primary-text">
                       {variable.useLogScale
                         ? formatNumber(formState.values[variable.id as keyof FormState["values"]])

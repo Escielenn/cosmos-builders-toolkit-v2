@@ -55,13 +55,13 @@ const CompressionSuggestions = () => {
   };
 
   return (
-    <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/30 border border-sf-line rounded-none text-xs">
+    <div className="flex flex-wrap items-center gap-2 px-3 py-1.5 bg-muted/30 border border-sf-line rounded-none text-xs">
       <Lightbulb className="w-3.5 h-3.5 text-sf-amber shrink-0" />
       <span className="text-t3 shrink-0">
         {visible.length} gap{visible.length !== 1 ? "s" : ""} detected
       </span>
 
-      <div className="flex items-center gap-1.5 flex-1 min-w-0 overflow-x-auto sf-sb">
+      <div className="order-last flex basis-full items-center gap-3 min-w-0 overflow-x-auto sf-sb sm:order-none sm:basis-auto sm:flex-1 sm:gap-1.5">
         {visible.map((s) => (
           <div
             key={s.id}
@@ -76,7 +76,7 @@ const CompressionSuggestions = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="w-5 h-5 text-sf-primary-text hover:text-t1"
+              className="relative w-5 h-5 text-sf-primary-text hover:text-t1 after:absolute after:-inset-3 after:content-['']"
               onClick={() => handleAccept(s)}
               title="Create compression"
               aria-label="Create compression"
@@ -86,7 +86,7 @@ const CompressionSuggestions = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="w-4 h-4 text-t3 hover:text-t1"
+              className="relative w-4 h-4 text-t3 hover:text-t1 after:absolute after:-inset-3.5 after:content-['']"
               onClick={() => handleDismiss(s.id)}
               title="Dismiss"
               aria-label="Dismiss suggestion"
@@ -100,7 +100,7 @@ const CompressionSuggestions = () => {
       <Button
         variant="ghost"
         size="sm"
-        className="text-[12px] h-5 px-1.5 text-t3 hover:text-t1 shrink-0"
+        className="ml-auto text-[12px] min-h-hit px-1.5 text-t3 hover:text-t1 shrink-0 sm:h-5 sm:min-h-0"
         onClick={handleDismissAll}
       >
         Dismiss all

@@ -967,7 +967,7 @@ const EnvironmentalChainReaction = () => {
         {/* Form Sections with Sidebar */}
         <div className="flex gap-6 mt-6">
           {/* Main Content */}
-          <div className="flex-1 space-y-6">
+          <div className="flex-1 min-w-0 space-y-6">
           {/* Step 1: Planetary Parameter */}
           <CollapsibleSection
             id="section-parameter"
@@ -1007,7 +1007,7 @@ const EnvironmentalChainReaction = () => {
             )}
 
             {/* Mode Toggle */}
-            <div className="flex items-center gap-4 mb-6 p-4 bg-sf-primary/5 rounded-none border border-sf-primary">
+            <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4 mb-6 p-4 bg-sf-primary/5 rounded-none border border-sf-primary">
               <Label className="text-sm font-medium">
                 Selection Mode:
               </Label>
@@ -1019,13 +1019,13 @@ const EnvironmentalChainReaction = () => {
               >
                 <ToggleGroupItem
                   value="single"
-                  className="px-4 py-2 text-sm data-[state=on]:bg-sf-primary data-[state=on]:text-primary-foreground"
+                  className="min-h-hit px-4 py-2 text-sm data-[state=on]:bg-sf-primary data-[state=on]:text-primary-foreground"
                 >
                   Single Factor
                 </ToggleGroupItem>
                 <ToggleGroupItem
                   value="multiple"
-                  className="px-4 py-2 text-sm data-[state=on]:bg-sf-primary data-[state=on]:text-primary-foreground"
+                  className="min-h-hit px-4 py-2 text-sm data-[state=on]:bg-sf-primary data-[state=on]:text-primary-foreground"
                 >
                   Multiple Factors
                 </ToggleGroupItem>

@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+/* Theme bridge: legacy cyan is retired. When embedded same-origin, adopt the
+   host page's --sf-primary role colour; standalone, keep the default teal. */
+(function(){try{var h=window.parent!==window?window.parent.document.documentElement:null;if(!h)return;var cs=getComputedStyle(h);var p=cs.getPropertyValue('--sf-primary').trim();var b=cs.getPropertyValue('--sf-primary-bright').trim();var r=document.documentElement.style;if(p)r.setProperty('--sf-accent',p);if(b)r.setProperty('--sf-accent-bright',b);}catch(e){}})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EXOSKY — Showing Our Work | StellarForge.tools</title>
@@ -12,9 +17,9 @@
   :root {
     --bg-deep: #09090B;
     --bg-panel: rgba(15,15,16,0.92);
-    --cyan: #00D4FF;
+    --sf-accent: #15C17B;
     --cyan-dim: rgba(0,229,160,0.4);
-    --cyan-border: rgba(0,229,160,0.06);
+    --cyan-border: #50555E;
     --gold: #FFD43B;
     --green: #2ECC71;
     --accent-green: #00E5A0;
@@ -24,8 +29,8 @@
     --text-secondary: #C8C8C8;
     --text-muted: rgba(255,255,255,0.35);
     --text-ghost: rgba(255,255,255,0.18);
-    --border: rgba(255,255,255,0.08);
-    --font-display: 'MD Nichrome Test', 'MD Nichrome', 'Space Grotesk', sans-serif;
+    --border: #50555E;
+    --font-display: 'MD Nichrome Test', 'MD Nichrome','Jura', sans-serif;
     --font-body: 'DM Sans', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
   }
@@ -74,7 +79,7 @@
     color: var(--text-primary);
   }
   .header .tool-name span {
-    color: var(--cyan);
+    color: var(--sf-accent);
     font-weight: 300;
   }
   .header .subtitle {
@@ -179,19 +184,19 @@
     font-weight: 400;
   }
   .data-value.highlight { color: var(--gold); }
-  .data-value.cyan { color: var(--cyan); }
+  .data-value.cyan { color: var(--sf-accent); }
   .data-value.green { color: var(--green); }
 
   /* ── CODE / EQUATION BLOCKS ── */
   .equation-block {
     background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.05);
+    border: 1px solid #41454D;
     border-radius: 0;
     padding: 16px 20px;
     margin: 16px 0;
     font-family: var(--font-mono);
     font-size: 12px;
-    color: rgba(0,212,255,0.55);
+    color: rgba(21,193,123,0.55);
     line-height: 1.9;
     overflow-x: auto;
   }
@@ -212,7 +217,7 @@
   }
   .source-list li {
     padding: 10px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.03);
+    border-bottom: 1px solid #41454D;
     display: flex;
     gap: 14px;
     align-items: flex-start;
@@ -232,10 +237,10 @@
     margin-top: 2px;
     font-weight: 300;
   }
-  .source-tag.catalog { background: rgba(0,212,255,0.08); color: var(--cyan); border: 1px solid rgba(0,212,255,0.15); }
-  .source-tag.model { background: rgba(255,165,0,0.08); color: var(--orange); border: 1px solid rgba(255,165,0,0.15); }
-  .source-tag.standard { background: rgba(46,204,113,0.08); color: var(--green); border: 1px solid rgba(46,204,113,0.15); }
-  .source-tag.paper { background: rgba(155,89,182,0.08); color: #9B59B6; border: 1px solid rgba(155,89,182,0.15); }
+  .source-tag.catalog { background: rgba(21,193,123,0.08); color: var(--sf-accent); border: 1px solid #50555E; }
+  .source-tag.model { background: rgba(255,165,0,0.08); color: var(--orange); border: 1px solid rgb(255,165,0); }
+  .source-tag.standard { background: rgba(46,204,113,0.08); color: var(--green); border: 1px solid rgb(46,204,113); }
+  .source-tag.paper { background: rgba(155,89,182,0.08); color: #9B59B6; border: 1px solid #50555E; }
 
   .source-list .source-title {
     color: rgba(255,255,255,0.65);
@@ -251,7 +256,7 @@
   /* ── DIAGRAM PANELS ── */
   .diagram {
     background: rgba(255,255,255,0.015);
-    border: 1px solid rgba(255,255,255,0.05);
+    border: 1px solid #41454D;
     border-radius: 0;
     padding: 20px;
     margin: 20px 0;
@@ -273,8 +278,8 @@
   .val {
     font-family: var(--font-mono);
     font-size: 12px;
-    color: rgba(0,212,255,0.6);
-    background: rgba(0,212,255,0.04);
+    color: rgba(21,193,123,0.6);
+    background: rgba(21,193,123,0.04);
     padding: 1px 6px;
     border-radius: 0;
   }
@@ -315,8 +320,8 @@
     backdrop-filter: blur(8px);
   }
   .flow-node.primary {
-    border-color: rgba(0,212,255,0.2);
-    color: var(--cyan);
+    border-color: #8C909A;
+    color: var(--sf-accent);
   }
   .flow-arrow {
     font-size: 14px;
@@ -344,7 +349,7 @@
   }
   .data-table td {
     padding: 7px 12px;
-    border-bottom: 1px solid rgba(255,255,255,0.02);
+    border-bottom: 1px solid #41454D;
     color: rgba(255,255,255,0.5);
   }
   .data-table td:first-child { color: rgba(255,255,255,0.65); font-weight: 500; }
@@ -795,7 +800,7 @@
   <!-- ════ FOOTER ════ -->
   <footer class="footer">
     © 2025–2026 JASON D. BATT, PH.D. · <a href="https://stellarforge.tools">STELLARFORGE.TOOLS</a><br>
-    <span style="margin-top:6px;display:inline-block;color:rgba(0,212,255,0.15)">These worlds exist in you. Waiting to be found.</span>
+    <span style="margin-top:6px;display:inline-block;color:rgba(21,193,123,0.15)">These worlds exist in you. Waiting to be found.</span>
   </footer>
 
 </div>

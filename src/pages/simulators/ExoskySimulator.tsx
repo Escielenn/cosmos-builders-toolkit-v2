@@ -7,6 +7,8 @@ import { useMetaTags } from "@/hooks/use-meta-tags";
 import { useWorldId } from "@/hooks/use-world-id";
 import { useSimulationSave } from "@/hooks/use-simulation-save";
 import SaveSimulationDialog from "@/components/simulators/SaveSimulationDialog";
+import SimRunExportButton from "@/components/simulators/SimRunExportButton";
+import SimulatorCascadeFooter from "@/components/simulators/SimulatorCascadeFooter";
 import LoadSimulationSheet from "@/components/simulators/LoadSimulationSheet";
 import PublishToWorldDialog from "@/components/simulators/PublishToWorldDialog";
 import Header from "@/components/layout/Header";
@@ -127,7 +129,9 @@ const ExoskySimulator = () => {
     <>
       <div className="min-h-screen bg-background">
         <Header />
-        <div style={{ position: "fixed", top: 64, left: 0, right: 0, bottom: 0 }}>
+        {/* In flow (not fixed) at one viewport tall, so the cascade footer
+            can sit below the sky. */}
+        <div className="relative h-[calc(100dvh-64px)]" style={{ marginTop: 64 }}>
           <Suspense fallback={<SimLoader />}>
             <ExoSkyV2
               narrativeBridgeOpen={narrativeBridge.panelProps.open}
@@ -171,6 +175,13 @@ const ExoskySimulator = () => {
                 <Save className="w-3 h-3 mr-1" />
                 Save
               </Button>
+              {/* Run summary as Markdown or PDF: inputs, outputs, facts for canon. */}
+              <SimRunExportButton
+                simulatorType="exosky"
+                payload={pendingPayload}
+                refreshPayload={refreshPayload}
+                narrativeNotes={narrativeBridge.notes}
+              />
               {/* Brief S1: the writer can see what this run is ON. */}
               <SimSubjectChip worldId={worldId} />
             </div>
@@ -180,6 +191,7 @@ const ExoskySimulator = () => {
             {...narrativeBridge.panelProps}
           />
         </div>
+        <SimulatorCascadeFooter simulatorType="exosky" />
       </div>
       <SaveSimulationDialog
         open={saveDialogOpen}

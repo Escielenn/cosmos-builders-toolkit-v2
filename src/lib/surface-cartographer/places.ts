@@ -288,3 +288,61 @@ export function buildGazetteerMarkdown(
   }
   return lines.join("\n").trimEnd() + "\n";
 }
+
+/** One numbered gazetteer line; `n` matches the marker on the map sheet. */
+export interface GazetteerReportEntry {
+  n: number;
+  id: string;
+  name: string;
+  at: LatLon;
+  coords: string;
+  meta: string;
+  description: string;
+}
+
+export interface GazetteerReport {
+  title: string;
+  subtitle: string;
+  groups: { label: string; entries: GazetteerReportEntry[] }[];
+  unplaced: string[];
+}
+
+/**
+ * The gazetteer as structured data, for the PDF map sheet. Same grouping and
+ * same facts line as buildGazetteerMarkdown; entries are numbered in reading
+ * order so the numbers on the map match the list.
+ */
+export function buildGazetteerReport(
+  bodyName: string,
+  rows: readonly GazetteerRow[],
+  extras: { radiusKm: number | null; locked: boolean; substellarLon: number },
+): GazetteerReport {
+  const facts: string[] = [];
+  if (extras.radiusKm) facts.push(`Radius ${Math.round(extras.radiusKm).toLocaleString("en-US")} km`);
+  facts.push(extras.locked ? `Tidally locked · substellar point ${formatLatLon({ lat: 0, lon: extras.substellarLon })}` : "Free rotation");
+
+  let n = 0;
+  const groups: GazetteerReport["groups"] = [];
+  for (const type of PLACE_TYPES) {
+    const group = rows.filter((r) => r.place.at && r.place.placeType === type);
+    if (!group.length) continue;
+    groups.push({
+      label: PLACE_TYPE_LABELS[type],
+      entries: group.map((r) => ({
+        n: ++n,
+        id: r.place.id,
+        name: r.place.name,
+        at: r.place.at as LatLon,
+        coords: formatLatLon(r.place.at as LatLon),
+        meta: [r.band, r.sky].filter(Boolean).join(" · "),
+        description: r.place.description.trim().replace(/\s*\n\s*/g, " "),
+      })),
+    });
+  }
+  return {
+    title: `${bodyName || "Unnamed body"} Gazetteer`,
+    subtitle: facts.join(" · "),
+    groups,
+    unplaced: rows.filter((r) => !r.place.at).map((r) => r.place.name),
+  };
+}

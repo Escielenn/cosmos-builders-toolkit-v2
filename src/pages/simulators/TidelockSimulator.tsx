@@ -7,6 +7,8 @@ import { Loader } from "@/components/ui/loader";
 import { useWorldId } from "@/hooks/use-world-id";
 import { useSimulationSave } from "@/hooks/use-simulation-save";
 import SaveSimulationDialog from "@/components/simulators/SaveSimulationDialog";
+import SimRunExportButton from "@/components/simulators/SimRunExportButton";
+import SimulatorCascadeFooter from "@/components/simulators/SimulatorCascadeFooter";
 import LoadSimulationSheet from "@/components/simulators/LoadSimulationSheet";
 import PublishToWorldDialog from "@/components/simulators/PublishToWorldDialog";
 import Header from "@/components/layout/Header";
@@ -206,7 +208,9 @@ const TidelockSimulator = () => {
     <>
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
-        <div className="flex-1 relative" style={{ marginTop: 64 }}>
+        {/* One viewport tall rather than flex-1, so the cascade footer sits
+            below the simulator instead of squeezing it. */}
+        <div className="relative h-[calc(100dvh-64px)] shrink-0" style={{ marginTop: 64 }}>
           {!loaded && (
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-background">
               <Loader message="INITIALIZING TIDELOCK" />
@@ -274,6 +278,13 @@ const TidelockSimulator = () => {
                   <Save className="w-3 h-3 mr-1" />
                   Save
                 </Button>
+                {/* Run summary as Markdown or PDF: inputs, outputs, facts for canon. */}
+                <SimRunExportButton
+                  simulatorType="tidelock"
+                  payload={pendingPayload}
+                  refreshPayload={refreshPayload}
+                  narrativeNotes={narrativeBridge.notes}
+                />
                 {/* Brief S1: the writer can see what this run is ON. */}
                 <SimSubjectChip worldId={worldId} />
                 {/* Browses a world's own entities, so it genuinely needs one.
@@ -306,6 +317,7 @@ const TidelockSimulator = () => {
             {...narrativeBridge.panelProps}
           />
         </div>
+        <SimulatorCascadeFooter simulatorType="tidelock" />
       </div>
       <SaveSimulationDialog
         open={saveDialogOpen}

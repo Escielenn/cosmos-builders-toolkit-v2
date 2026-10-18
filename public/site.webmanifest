@@ -4,8 +4,8 @@
   "description": "Science fiction worldbuilding tools for creating rich, lived-in worlds.",
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#00D4FF",
-  "background_color": "#0A0A0F",
+  "theme_color": "#3DFFCD",
+  "background_color": "#0A0E17",
   "icons": [
     {
       "src": "/favicon-16x16.png",

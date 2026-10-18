@@ -6,7 +6,6 @@ import {
 } from "@/components/ui/tooltip";
 import type { TimeCompression } from "@/lib/timeline/types";
 import type { YearMapper } from "@/lib/timeline/utils";
-import { TRACK_HEADER_WIDTH } from "@/lib/timeline/constants";
 import { cn } from "@/lib/utils";
 
 interface CompressionMarkerProps {
@@ -22,8 +21,8 @@ interface CompressionMarkerProps {
  */
 const CompressionMarker = memo(
   ({ compression, mapper, totalHeight, onClick }: CompressionMarkerProps) => {
-    const startX = mapper.yearToX(compression.startYear) - TRACK_HEADER_WIDTH;
-    const endX = mapper.yearToX(compression.endYear) - TRACK_HEADER_WIDTH;
+    const startX = mapper.yearToX(compression.startYear) - mapper.headerWidth;
+    const endX = mapper.yearToX(compression.endYear) - mapper.headerWidth;
     const width = Math.max(endX - startX, compression.displayWidth);
 
     const yearSpan = compression.endYear - compression.startYear;

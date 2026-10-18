@@ -113,6 +113,10 @@ export const NESTED_ROW_HEIGHT = 32; // height per nested child row
 // ─── Layout Constants ──────────────────────────────────────────────
 
 export const TRACK_HEADER_WIDTH = 200;
+/** Track header width on narrow viewports (phones): leaves the lanes room to read. */
+export const TRACK_HEADER_WIDTH_COMPACT = 112;
+/** Timeline viewport widths below this use the compact track header. */
+export const COMPACT_TIMELINE_WIDTH = 560;
 export const TRACK_HEIGHT = 72;
 export const COLLAPSED_TRACK_HEIGHT = 32;
 export const TIME_AXIS_HEIGHT = 40;

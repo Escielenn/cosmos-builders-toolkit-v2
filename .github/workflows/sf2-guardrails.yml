@@ -122,24 +122,25 @@ jobs:
       - name: Cyan retirement watch (HARD BAN — retired 2026-07-09)
         run: |
           set -euo pipefail
-          CYAN=$(grep -rIoiE \
-            --include='*.ts' --include='*.tsx' \
-            --include='*.css' --include='*.js' --include='*.jsx' --include='*.html' \
-            '#00D4FF' src public/rogue | wc -l) || CYAN=0
-          echo "Legacy-cyan occurrences (src + public/rogue): $CYAN"
+          # Scans every shipped surface: src/ and all of public/ (the iframe
+          # simulators in public/tools/* and public/rogue, icons, manifest).
+          # simulators/ holds unshipped source drafts and is not scanned.
+          # Catches the hex, 0x00d4ff, and the rgb triplet in rgba(0,212,255,a).
+          set -f  # $INCLUDES holds globs for grep, not for the shell
+          PATTERN='#00D4FF|0x00D4FF|(^|[^0-9.])0 *, *212 *, *255([^0-9]|$)'
+          INCLUDES="--include=*.ts --include=*.tsx --include=*.css --include=*.js --include=*.jsx --include=*.html --include=*.svg --include=*.json --include=*.webmanifest"
+          CYAN=$(grep -rIoiE $INCLUDES "$PATTERN" src public | wc -l) || CYAN=0
+          echo "Legacy-cyan occurrences (src + public): $CYAN"
           if [ "$CYAN" -gt 0 ]; then
             echo "::error::Legacy cyan is RETIRED (SF-II settled decision #3). Use the teal accent tokens."
-            grep -rniE \
-              --include='*.ts' --include='*.tsx' \
-              --include='*.css' --include='*.js' --include='*.jsx' --include='*.html' \
-              '#00D4FF' src public/rogue || true
+            grep -rniE $INCLUDES "$PATTERN" src public || true
             exit 1
           fi
 
       - name: Space Grotesk retirement watch (HARD BAN — four fonts only)
         run: |
           set -euo pipefail
-          SG=$(grep -rIl "Space Grotesk" src index.html public/rogue --include='*.ts' --include='*.tsx' --include='*.css' --include='*.html' | grep -v 'STELLARFORGE-DESIGN-SYSTEM.md' | wc -l) || SG=0
+          SG=$(grep -rIl "Space Grotesk" src index.html public --include='*.ts' --include='*.tsx' --include='*.css' --include='*.html' | grep -v 'STELLARFORGE-DESIGN-SYSTEM.md' | wc -l) || SG=0
           echo "Files referencing Space Grotesk: $SG"
           if [ "$SG" -gt 0 ]; then
             echo "::error::Space Grotesk is RETIRED (SF-II settled decision #4). Four fonts only: MD Nichrome / Jura / DM Sans / JetBrains Mono."

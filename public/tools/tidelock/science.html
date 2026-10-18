@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+/* Theme bridge: legacy cyan is retired. When embedded same-origin, adopt the
+   host page's --sf-primary role colour; standalone, keep the default teal. */
+(function(){try{var h=window.parent!==window?window.parent.document.documentElement:null;if(!h)return;var cs=getComputedStyle(h);var p=cs.getPropertyValue('--sf-primary').trim();var b=cs.getPropertyValue('--sf-primary-bright').trim();var r=document.documentElement.style;if(p)r.setProperty('--sf-accent',p);if(b)r.setProperty('--sf-accent-bright',b);}catch(e){}})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TIDELOCK — The Science | StellarForge</title>
@@ -9,9 +14,9 @@
 <link href="https://fonts.cdnfonts.com/css/md-nichrome-test" rel="stylesheet">
 <style>
 :root{
-  --accent-cyan:#00D4FF;
+  --sf-accent:#15C17B;
   --accent-green:#00E5A0;
-  --font-display:'MD Nichrome Test','MD Nichrome','Space Grotesk',sans-serif;
+  --font-display:'MD Nichrome Test','MD Nichrome','Jura',sans-serif;
   --font-body:'DM Sans',sans-serif;
   --font-mono:'JetBrains Mono',monospace;
 }
@@ -55,7 +60,7 @@ body{
   margin-top:40px;
   margin-bottom:12px;
   padding-bottom:5px;
-  border-bottom:1px solid rgba(0,229,160,.06);
+  border-bottom:1px solid #50555E;
 }
 .sci-section:first-of-type{margin-top:0}
 .science-page p{
@@ -72,17 +77,17 @@ body{
 .science-page code{
   font-family:var(--font-mono);
   font-size:11px;
-  color:var(--accent-cyan);
-  background:rgba(0,212,255,.06);
+  color:var(--sf-accent);
+  background:rgba(21,193,123,.06);
   padding:1px 5px;
   border-radius:0;
 }
 .eq{
   font-family:var(--font-mono);
   font-size:12.5px;
-  color:rgba(0,212,255,.7);
-  background:rgba(0,212,255,.04);
-  border:1px solid rgba(0,212,255,.06);
+  color:rgba(21,193,123,.7);
+  background:rgba(21,193,123,.04);
+  border:1px solid #50555E;
   border-radius:0;
   padding:14px 18px;
   margin:16px 0;
@@ -98,7 +103,7 @@ body{
   margin:5px 0;
   line-height:1.7;
   padding-left:12px;
-  border-left:2px solid rgba(0,229,160,.08);
+  border-left:2px solid #50555E;
 }
 .src a{color:rgba(0,229,160,.35);text-decoration:none}
 .src a:hover{color:var(--accent-green);text-decoration:underline}
@@ -107,10 +112,10 @@ body{
   font-size:11.5px;
   font-style:italic;
   color:rgba(255,255,255,.35);
-  border-left:2px solid rgba(0,212,255,.12);
+  border-left:2px solid #50555E;
   padding:10px 16px;
   margin:16px 0;
-  background:rgba(0,212,255,.015);
+  background:rgba(21,193,123,.015);
   border-radius:0;
   line-height:1.7;
 }
@@ -128,12 +133,12 @@ body{
   color:rgba(0,229,160,.35);
   text-align:left;
   padding:7px 10px;
-  border-bottom:1px solid rgba(0,229,160,.08);
+  border-bottom:1px solid #50555E;
 }
 .sys-table td{
   color:rgba(255,255,255,.5);
   padding:6px 10px;
-  border-bottom:1px solid rgba(255,255,255,.03);
+  border-bottom:1px solid #41454D;
   line-height:1.6;
 }
 .sys-table td:first-child{
@@ -291,7 +296,7 @@ body{
   <div class="sci-section">For Writers</div>
   <p>TIDELOCK exists to help science fiction writers explore a specific question: <strong>what does the surface of a tidally locked world actually look like?</strong></p>
   <p>The "eyeball Earth" concept—a frozen world with a single liquid ocean facing the star—is just one possibility. Adjust the atmosphere and you get a world with a wide habitable belt, permanent twilight civilizations along the terminator, and weather systems driven by eternal day-night temperature gradients. The scenarios TIDELOCK reveals—terminator forests, substellar deserts, nightside ice caps, ribbon cities along the habitable band—emerge from the physics, not from artistic license.</p>
-  <p>TIDELOCK is part of the <a href="https://stellarforge.tools" style="color:rgba(0,212,255,.5)">StellarForge</a> worldbuilding toolkit. The <strong>Star System Builder</strong> and <strong>Planetary Profile</strong> worksheets can help you develop the worlds you discover here into full settings—following the cascading principle that <em>environment shapes biology, biology shapes psychology, psychology shapes culture, and culture shapes mythology.</em></p>
+  <p>TIDELOCK is part of the <a href="https://stellarforge.tools" style="color:rgba(21,193,123,.5)">StellarForge</a> worldbuilding toolkit. The <strong>Star System Builder</strong> and <strong>Planetary Profile</strong> worksheets can help you develop the worlds you discover here into full settings—following the cascading principle that <em>environment shapes biology, biology shapes psychology, psychology shapes culture, and culture shapes mythology.</em></p>
 </main>
 
 </body>

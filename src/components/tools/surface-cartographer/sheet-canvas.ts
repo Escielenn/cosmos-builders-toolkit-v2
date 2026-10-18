@@ -11,6 +11,7 @@
 
 import type { MapProjection } from "@/lib/atlas/placement";
 import { latLonToSheet } from "@/lib/surface-cartographer/geo";
+import { tokens } from "@/styles/tokens";
 import {
   buildSurfaceModel,
   renderBaseMap,
@@ -96,6 +97,55 @@ export function paintBaseMap(params: BaseMapParams): GeneratedMap {
     ctx.putImageData(new ImageData(pixels, BASEMAP_WIDTH, BASEMAP_HEIGHT), 0, 0);
   }
   return { model, canvas };
+}
+
+/** A numbered pin for the printed map sheet. */
+export interface SheetMarker {
+  n: number;
+  at: { lat: number; lon: number };
+}
+
+/**
+ * The map sheet as a JPEG data URL, with numbered pins matching the printed
+ * gazetteer. Drawn on the image in its own projection, through the same
+ * latLonToSheet the flat map uses, so a pin lands where the writer placed it.
+ * Capped at 1600px wide: plenty for a letter page, small enough for a PDF.
+ */
+export async function composeMapSheet(
+  url: string,
+  projection: MapProjection,
+  markers: readonly SheetMarker[],
+): Promise<string> {
+  const img = await loadImage(url);
+  const w = Math.min(1600, img.naturalWidth || 1600);
+  const h = Math.round(w * ((img.naturalHeight || 800) / (img.naturalWidth || 1600)));
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("MAP COULD NOT BE DRAWN.");
+  ctx.drawImage(img, 0, 0, w, h);
+  const aspect = (img.naturalWidth || 2) / (img.naturalHeight || 1);
+  const r = Math.max(9, Math.round(w / 110));
+  ctx.font = `500 ${Math.round(r * 1.1)}px "JetBrains Mono", monospace`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  for (const m of markers) {
+    const p = latLonToSheet(m.at, projection, aspect);
+    if (p.y < 0 || p.y > 1) continue;
+    const x = p.x * w;
+    const y = p.y * h;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = tokens.surface.void;
+    ctx.fill();
+    ctx.lineWidth = Math.max(2, r / 4);
+    ctx.strokeStyle = tokens.accent.base;
+    ctx.stroke();
+    ctx.fillStyle = tokens.text.t1;
+    ctx.fillText(String(m.n), x, y + 1);
+  }
+  return canvas.toDataURL("image/jpeg", 0.88);
 }
 
 export function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {

@@ -73,7 +73,7 @@ import { useWorksheet, useWorksheets, useWorksheetsByType, useRenameWorksheet } 
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import { useChronicleData } from "@/hooks/use-chronicle";
 import { useWorldEntities } from "@/hooks/use-world-entities";
-import { DossierSummaryTemplate } from "@/lib/pdf/templates";
+import { DossierSummaryTemplate, DossierFullReportTemplate } from "@/lib/pdf/templates";
 import { VOICE } from "@/lib/ship-voice";
 import type { Json } from "@/integrations/supabase/types";
 import type { ChronicleEvent } from "@/services/chronicle-data";
@@ -1076,7 +1076,7 @@ const Dossier = (): JSX.Element => {
         worksheetTitle={formState.identity.name || undefined}
         formState={exportState}
         summaryTemplate={<DossierSummaryTemplate formState={exportState as unknown as Record<string, unknown>} worldName={currentWorld?.name} />}
-        fullTemplate={<DossierSummaryTemplate formState={exportState as unknown as Record<string, unknown>} worldName={currentWorld?.name} />}
+        fullTemplate={<DossierFullReportTemplate formState={exportState as unknown as Record<string, unknown>} worldName={currentWorld?.name} />}
         defaultFilename={`dossier-${(formState.identity.name || "character").toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
       />
 

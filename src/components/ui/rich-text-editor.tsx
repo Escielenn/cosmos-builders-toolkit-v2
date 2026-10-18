@@ -114,7 +114,10 @@ const RichTextEditor = ({
 
   // Sync content from outside (e.g., initial load from DB)
   useEffect(() => {
-    if (editor && content !== editor.getHTML() && !editor.isFocused) {
+    // A destroyed editor (remount, route change mid-effect) has no schema;
+    // getHTML() on it throws and took the whole tool page down with it.
+    if (!editor || editor.isDestroyed) return;
+    if (content !== editor.getHTML() && !editor.isFocused) {
       // An external sync, not an edit: never echo it back through onChange.
       editor.commands.setContent(content || "", { emitUpdate: false });
     }
@@ -122,7 +125,7 @@ const RichTextEditor = ({
 
   // Sync editable state
   useEffect(() => {
-    if (editor) {
+    if (editor && !editor.isDestroyed) {
       editor.setEditable(!readOnly);
     }
   }, [readOnly, editor]);
