@@ -200,7 +200,7 @@ const PromptBrowserPage = () => {
         </section>
 
         {/* ── Stats footer ───────────────────────────────────── */}
-        <div className="mt-12 border-t border-sf-line pt-6">
+        <div className="mt-12 border-t border-sf-line-hairline pt-6">
           <div className="flex flex-wrap items-center gap-6 text-xs text-t4">
             <span className="font-mono">
               {actedOn.size}/{weekPrompts.length} prompts acted on this week
@@ -333,7 +333,7 @@ function PromptCard({
           {dayLabel}
         </span>
         {isToday && (
-          <Badge className="text-xs px-1.5 py-0 rounded-none border border-sf-primary bg-sf-primary/[0.06] text-sf-primary-text">
+          <Badge className="text-xs px-2 py-0 rounded-none border border-sf-primary bg-sf-primary/[0.06] text-sf-primary-text">
             Today
           </Badge>
         )}
@@ -342,12 +342,12 @@ function PromptCard({
       {/* Category + difficulty badges */}
       <div className="flex items-center gap-1.5 mb-2.5">
         <Badge
-          className={`text-xs px-1.5 py-0 rounded-none border ${CATEGORY_COLORS[prompt.category]}`}
+          className={`text-xs px-2 py-0 rounded-none border ${CATEGORY_COLORS[prompt.category]}`}
         >
           {CATEGORY_LABELS[prompt.category]}
         </Badge>
         <Badge
-          className={`text-xs px-1.5 py-0 rounded-none border ${DIFFICULTY_COLORS[prompt.difficulty]}`}
+          className={`text-xs px-2 py-0 rounded-none border ${DIFFICULTY_COLORS[prompt.difficulty]}`}
         >
           {DIFFICULTY_LABELS[prompt.difficulty]}
         </Badge>
@@ -364,7 +364,7 @@ function PromptCard({
       </p>
 
       {/* Footer */}
-      <div className="flex items-center justify-between mt-4 pt-3 border-t border-sf-line">
+      <div className="flex items-center justify-between mt-4 pt-3 border-t border-sf-line-hairline">
         {prompt.wordGoal && (
           <div className="flex items-center gap-1.5">
             <Target className="w-3 h-3 text-t4" />

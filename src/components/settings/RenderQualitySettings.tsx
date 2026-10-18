@@ -58,7 +58,7 @@ const RenderQualitySettings = () => {
                   ? "border-sf-disabled-line bg-sf-disabled-bg text-sf-disabled-text"
                   : selected
                     ? "border-sf-primary"
-                    : "border-sf-line-interactive hover:border-sf-line-emphasis",
+                    : "border-sf-line hover:border-sf-line-emphasis",
               )}
             >
               <span className="font-mono text-sf-mono uppercase text-t2">

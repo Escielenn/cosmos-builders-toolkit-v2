@@ -244,12 +244,12 @@ const TaskItem = ({
       </span>
 
       {todo.linked_ticket_id && (
-        <span className="shrink-0 text-xs font-medium uppercase tracking-wider px-1 py-0.5 rounded-none bg-sf-amber/[0.06] border border-sf-amber text-sf-amber-text">
+        <span className="shrink-0 text-xs font-medium uppercase tracking-wider px-2 py-0.5 rounded-none bg-sf-amber/[0.06] border border-sf-amber text-sf-amber-text">
           TKT
         </span>
       )}
       {todo.linked_contact_id && (
-        <span className="shrink-0 text-xs font-medium uppercase tracking-wider px-1 py-0.5 rounded-none bg-sf-azure/[0.06] border border-sf-azure text-sf-azure-text">
+        <span className="shrink-0 text-xs font-medium uppercase tracking-wider px-2 py-0.5 rounded-none bg-sf-azure/[0.06] border border-sf-azure text-sf-azure-text">
           MSG
         </span>
       )}
@@ -294,7 +294,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center justify-between px-3 py-3 border-b border-sf-line">
+      <div className="flex items-center justify-between px-3 py-3 border-b border-sf-line-hairline">
         <div className="flex items-center gap-2">
           <h3 className="text-xs font-medium uppercase tracking-wide text-t3">
             Tasks
@@ -322,7 +322,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
 
       {/* Quick Add Form */}
       {showAdd && (
-        <div className="px-3 py-2 border-b border-sf-line space-y-2">
+        <div className="px-3 py-2 border-b border-sf-line-hairline space-y-2">
           <input
             ref={inputRef}
             type="text"
@@ -330,14 +330,14 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="w-full bg-sf-surface border border-sf-line rounded-none text-xs text-t2 placeholder:text-t4 px-2 py-1.5 focus:border-sf-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus"
+            className="w-full rounded-none text-xs text-t2 placeholder:text-t4 px-3 py-1.5 focus:border-sf-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus"
           />
           <div className="flex items-center gap-2">
             <select
               value={newPriority}
               onChange={(e) => setNewPriority(e.target.value)}
               title="Priority"
-              className="bg-sf-surface-elevated border border-sf-line rounded-none text-xs text-t3 px-1.5 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus"
+              className="rounded-none text-xs text-t3 px-3 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus"
             >
               <option value="low">Low</option>
               <option value="normal">Normal</option>
@@ -373,7 +373,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
 
             {/* Done tasks */}
             {doneTodos.length > 0 && (
-              <div className="border-t border-sf-line">
+              <div className="border-t border-sf-line-hairline">
                 <button
                   className="w-full flex items-center justify-between px-3 py-2 text-xs font-medium uppercase tracking-wider text-t4 hover:text-t3 transition-colors"
                   onClick={() => setShowDone(!showDone)}
@@ -526,7 +526,7 @@ const UsersTab = () => {
           placeholder="Search by name or email..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 bg-sf-surface border border-sf-line rounded-none text-sm text-t2 placeholder:text-t4 focus:border-sf-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus"
+          className="w-full pl-10 pr-4 py-2.5 rounded-none text-sm text-t2 placeholder:text-t4 focus:border-sf-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus"
         />
       </div>
 
@@ -536,7 +536,7 @@ const UsersTab = () => {
         <GlassPanel className="overflow-x-auto sf-sb">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-sf-line">
+              <tr className="border-b border-sf-line-hairline">
                 <TH className="w-8 px-2" />
                 <TH>Display Name</TH>
                 <TH>Email</TH>
@@ -553,7 +553,7 @@ const UsersTab = () => {
                   <>
                     <tr
                       key={u.id}
-                      className="border-b border-sf-line hover:bg-sf-surface-elevated cursor-pointer"
+                      className="border-b border-sf-line-hairline hover:bg-sf-surface-elevated cursor-pointer"
                       onClick={() => setExpandedId(isExpanded ? null : u.id)}
                     >
                       <td className="px-2 py-3 text-t4">
@@ -575,7 +575,7 @@ const UsersTab = () => {
                       </td>
                     </tr>
                     {isExpanded && userDetail && (
-                      <tr key={`${u.id}-detail`} className="border-b border-sf-line">
+                      <tr key={`${u.id}-detail`} className="border-b border-sf-line-hairline">
                         <td colSpan={7} className="px-6 py-5 bg-sf-void">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Left: Profile */}
@@ -738,7 +738,7 @@ const TicketDetail = ({ ticket }: { ticket: AdminTicket }) => {
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Internal notes..."
           rows={3}
-          className="w-full bg-sf-surface border border-sf-line rounded-none text-sm text-t2 placeholder:text-t4 p-3 focus:border-sf-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus resize-none"
+          className="w-full rounded-none text-sm text-t2 placeholder:text-t4 p-3 focus:border-sf-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus resize-none"
           onClick={(e) => e.stopPropagation()}
         />
         {notesChanged && (
@@ -777,7 +777,7 @@ const TicketsTab = () => {
       <GlassPanel className="overflow-x-auto sf-sb">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-sf-line">
+            <tr className="border-b border-sf-line-hairline">
               <TH className="w-8 px-2" />
               <TH>Ticket #</TH>
               <TH>Subject</TH>
@@ -795,7 +795,7 @@ const TicketsTab = () => {
                 <>
                   <tr
                     key={t.id}
-                    className="border-b border-sf-line hover:bg-sf-surface-elevated cursor-pointer"
+                    className="border-b border-sf-line-hairline hover:bg-sf-surface-elevated cursor-pointer"
                     onClick={() => setExpandedId(isExpanded ? null : t.id)}
                   >
                     <td className="px-2 py-3 text-t4">
@@ -812,7 +812,7 @@ const TicketsTab = () => {
                     <td className="px-3 py-3 text-t4 text-xs">{timeAgo(t.created_at)}</td>
                   </tr>
                   {isExpanded && (
-                    <tr key={`${t.id}-detail`} className="border-b border-sf-line">
+                    <tr key={`${t.id}-detail`} className="border-b border-sf-line-hairline">
                       <td colSpan={7} className="px-6 py-4 bg-sf-void">
                         <TicketDetail ticket={t} />
                       </td>
@@ -884,7 +884,7 @@ const ContactDetail = ({ contact }: { contact: AdminContact }) => {
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Internal notes..."
           rows={3}
-          className="w-full bg-sf-surface border border-sf-line rounded-none text-sm text-t2 placeholder:text-t4 p-3 focus:border-sf-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus resize-none"
+          className="w-full rounded-none text-sm text-t2 placeholder:text-t4 p-3 focus:border-sf-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus resize-none"
           onClick={(e) => e.stopPropagation()}
         />
         {notesChanged && (
@@ -919,7 +919,7 @@ const ContactsTab = () => {
       <GlassPanel className="overflow-x-auto sf-sb">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-sf-line">
+            <tr className="border-b border-sf-line-hairline">
               <TH className="w-8 px-2" />
               <TH>Name</TH>
               <TH>Email</TH>
@@ -936,7 +936,7 @@ const ContactsTab = () => {
                 <>
                   <tr
                     key={c.id}
-                    className="border-b border-sf-line hover:bg-sf-surface-elevated cursor-pointer"
+                    className="border-b border-sf-line-hairline hover:bg-sf-surface-elevated cursor-pointer"
                     onClick={() => setExpandedId(isExpanded ? null : c.id)}
                   >
                     <td className="px-2 py-3 text-t4">
@@ -952,7 +952,7 @@ const ContactsTab = () => {
                     <td className="px-3 py-3 text-t4 text-xs">{timeAgo(c.created_at)}</td>
                   </tr>
                   {isExpanded && (
-                    <tr key={`${c.id}-detail`} className="border-b border-sf-line">
+                    <tr key={`${c.id}-detail`} className="border-b border-sf-line-hairline">
                       <td colSpan={6} className="px-6 py-4 bg-sf-void">
                         <ContactDetail contact={c} />
                       </td>
@@ -1010,7 +1010,7 @@ const SubscriptionsTab = () => {
             <GlassPanel className="overflow-x-auto sf-sb">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-sf-line">
+                  <tr className="border-b border-sf-line-hairline">
                     <TH>User</TH>
                     <TH>Email</TH>
                     <TH>Plan</TH>
@@ -1022,7 +1022,7 @@ const SubscriptionsTab = () => {
                 </thead>
                 <tbody>
                   {subs?.map((s) => (
-                    <tr key={s.id} className="border-b border-sf-line hover:bg-sf-surface-elevated">
+                    <tr key={s.id} className="border-b border-sf-line-hairline hover:bg-sf-surface-elevated">
                       <td className="px-3 py-3 text-t2">
                         {s.display_name || <span className="text-t4 italic">No name</span>}
                       </td>

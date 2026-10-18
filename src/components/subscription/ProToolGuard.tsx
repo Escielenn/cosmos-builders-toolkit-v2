@@ -170,7 +170,7 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
             </div>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-sf-line-interactive">
+          <div className="mt-8 pt-6 border-t border-sf-line-hairline">
             <p className="font-heading text-sf-eyebrow uppercase text-t4 mb-2">Pro includes</p>
             <ul className="text-sm text-t2 space-y-1">
               <li>All {PRO_TOOL_COUNT} Pro worldbuilding tools</li>

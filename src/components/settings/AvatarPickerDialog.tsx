@@ -127,7 +127,7 @@ const AvatarPickerDialog = ({
                     ? "border-primary ring-2 ring-primary/30"
                     : isCurrent
                       ? "border-primary"
-                      : "border-transparent hover:border-muted-foreground/30"
+                      : "border-transparent hover:border-sf-line-emphasis"
                 )}
               >
                 <img

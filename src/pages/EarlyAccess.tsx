@@ -96,7 +96,7 @@ function WaitlistForm(): JSX.Element {
     <div>
       <form
         onSubmit={onSubmit}
-        className="flex max-w-[480px] border border-sf-line-emphasis bg-sf-surface/90"
+        className="sf-field flex max-w-[480px]"
       >
         <label htmlFor="waitlist-email" className="sr-only">
           Email address
@@ -109,7 +109,7 @@ function WaitlistForm(): JSX.Element {
           onChange={(e) => setEmail(e.target.value)}
           disabled={status === "sent"}
           placeholder="FREQUENCY · YOUR@EMAIL.COM"
-          className="min-w-0 flex-1 bg-transparent px-[18px] py-4 font-mono text-[13px] tracking-[0.04em] text-t1 outline-none placeholder:text-xs placeholder:uppercase placeholder:tracking-wide placeholder:text-t4 focus-visible:ring-1 focus-visible:ring-sf-primary"
+          className="min-w-0 flex-1 border-0 bg-transparent px-[18px] py-4 font-mono text-[13px] tracking-[0.04em] text-t1 outline-none placeholder:text-xs placeholder:uppercase placeholder:tracking-wide placeholder:text-t4 focus-visible:ring-1 focus-visible:ring-sf-primary"
         />
         <button
           type="submit"
@@ -181,14 +181,14 @@ function ManifestPanel(): JSX.Element {
         {MANIFEST_ROWS.map((row, i) => (
           <div
             key={row.label}
-            className={`grid grid-cols-2 gap-[18px] py-3.5 ${i > 0 ? "border-t border-sf-line-interactive" : ""}`}
+            className={`grid grid-cols-2 gap-[18px] py-3.5 ${i > 0 ? "border-t border-sf-line-hairline" : ""}`}
           >
             <dt className="m-0 font-mono text-xs uppercase tracking-wide text-t3">{row.label}</dt>
             <dd className={`m-0 font-mono text-[13px] ${row.tone}`}>{row.value}</dd>
           </div>
         ))}
       </dl>
-      <div className="mt-5 border-t border-sf-line-interactive pt-4 font-display text-[15px] italic leading-[1.4] tracking-[0.04em] text-t2">
+      <div className="mt-5 border-t border-sf-line-hairline pt-4 font-display text-[15px] italic leading-[1.4] tracking-[0.04em] text-t2">
         "These worlds exist in you. Waiting to be found."
       </div>
     </GlassPanel>
@@ -197,7 +197,7 @@ function ManifestPanel(): JSX.Element {
 
 function StatStrip(): JSX.Element {
   return (
-    <div className="mt-[100px] grid grid-cols-2 gap-6 border-t border-sf-line-interactive pt-10 md:grid-cols-4">
+    <div className="mt-[100px] grid grid-cols-2 gap-6 border-t border-sf-line-hairline pt-10 md:grid-cols-4">
       {STATS.map((s) => (
         <div key={s.n}>
           <h3 className="mb-1.5 font-display text-[32px] font-light tracking-[0.04em] text-t1">{s.n}</h3>
@@ -216,7 +216,7 @@ function ToolGrid(): JSX.Element {
       </h2>
       <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
         {TOOLS.map((tool) => (
-          <div key={tool.name} className="rounded-none border border-sf-line-interactive bg-sf-surface/90 p-3.5">
+          <div key={tool.name} className="rounded-none border border-sf-line bg-sf-surface/90 p-3.5">
             <div className={`font-mono text-xs uppercase tracking-wide ${CATEGORY_TONE[tool.cat]}`}>
               {tool.cat}
             </div>
@@ -261,7 +261,7 @@ export default function EarlyAccess(): JSX.Element {
       <ToolGrid />
 
       {/* footer */}
-      <div className="mt-20 flex flex-col gap-2 border-t border-sf-line-interactive pt-10 font-mono text-xs tracking-wide text-t4 sm:flex-row sm:justify-between">
+      <div className="mt-20 flex flex-col gap-2 border-t border-sf-line-hairline pt-10 font-mono text-xs tracking-wide text-t4 sm:flex-row sm:justify-between">
         <span>© 2026 STELLARFORGE · ALL RIGHTS RESERVED</span>
         <span>BUILT IN THORNTON, CO · 39.87°N 104.97°W</span>
       </div>

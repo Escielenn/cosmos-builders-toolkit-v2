@@ -168,7 +168,7 @@ export default function WelcomeDialog({ open, onOpenChange, variant }: WelcomeDi
 
           {/* PWA install section (signup only) */}
           {config.showPwaPrompt && !isStandalone && (
-            <div className="border-t border-sf-line pt-4 space-y-2">
+            <div className="border-t border-sf-line-hairline pt-4 space-y-2">
               <p className="text-[12px] font-medium uppercase tracking-wide text-t3">
                 Quick Access
               </p>

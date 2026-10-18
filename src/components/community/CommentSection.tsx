@@ -131,7 +131,7 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
 
       {/* New comment form */}
       {user ? (
-        <div className="space-y-3 border-t border-sf-line pt-4">
+        <div className="space-y-3 border-t border-sf-line-hairline pt-4">
           <Textarea
             value={body}
             onChange={(e) => setBody(e.target.value)}
@@ -156,7 +156,7 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
           </div>
         </div>
       ) : (
-        <p className="font-sans text-xs text-t4 text-center border-t border-sf-line pt-4">
+        <p className="font-sans text-xs text-t4 text-center border-t border-sf-line-hairline pt-4">
           Sign in to leave a comment.
         </p>
       )}

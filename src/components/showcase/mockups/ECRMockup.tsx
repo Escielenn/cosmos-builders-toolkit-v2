@@ -78,7 +78,7 @@ const ECRMockup = () => {
                     {item.examples.map((example) => (
                       <span
                         key={example}
-                        className={`text-xs px-1.5 py-0.5 rounded-none border transition-colors duration-slow ${
+                        className={`text-xs px-2 py-0.5 rounded-none border transition-colors duration-slow ${
                           isActive
                             ? "border-sf-line text-t3"
                             : "border-transparent text-t4"

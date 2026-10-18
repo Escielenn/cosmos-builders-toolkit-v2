@@ -275,7 +275,7 @@ const Auth = () => {
 
                 <div className="relative my-4">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-dashed border-sf-line-interactive"></div>
+                    <div className="w-full border-t border-dashed border-sf-line-hairline"></div>
                   </div>
                   <div className="relative flex justify-center font-mono text-[12px] tracking-wide uppercase">
                     <span className="bg-sf-surface px-2 text-t4">// OR EMAIL</span>
@@ -378,7 +378,7 @@ const Auth = () => {
 
                 <div className="relative my-4">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-dashed border-sf-line-interactive"></div>
+                    <div className="w-full border-t border-dashed border-sf-line-hairline"></div>
                   </div>
                   <div className="relative flex justify-center font-mono text-[12px] tracking-wide uppercase">
                     <span className="bg-sf-surface px-2 text-t4">// OR EMAIL</span>
