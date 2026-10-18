@@ -155,6 +155,7 @@ export async function buildManuscriptDocx(m: Manuscript): Promise<Blob> {
     );
   }
   if (m.appendix) backPage("Appendix: World Reference", m.appendix);
+  for (const b of m.backMatter) backPage(b.title, b.blocks);
 
   const surname = surnameOf(m.author);
   const headerText = [surname, m.title.toUpperCase()].filter(Boolean).join(" / ");

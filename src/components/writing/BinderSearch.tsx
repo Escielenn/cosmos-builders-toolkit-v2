@@ -13,6 +13,8 @@
 //
 // Absorbs (Law VII): the per-document Find (Ctrl+F) stays for find and
 // replace inside one document; this is the binder-wide reach it never had.
+// REPLACE across the manuscript opens from the results (ProjectReplaceDialog):
+// a preview of every match, per-match include, snapshots before applying.
 // ---------------------------------------------------------------------------
 
 import { useDeferredValue, useMemo, useState, type RefObject } from "react";
@@ -29,9 +31,9 @@ import {
   searchBinder,
   type SearchHit,
   type SearchOptions,
+  type SearchableDoc,
 } from "@/lib/binder-search";
 import { collectionDocs, type WritingCollection } from "@/lib/writing-collections";
-import type { WorldEntry } from "@/services/world-data";
 
 // ---------------------------------------------------------------------------
 // Search input (sits at the top of the binder)
@@ -76,6 +78,13 @@ export function BinderSearchInput({
         label="Match case"
       >
         Aa
+      </ToggleChip>
+      <ToggleChip
+        on={!!opts.wholeWord}
+        onClick={() => onOpts({ ...opts, wholeWord: !opts.wholeWord })}
+        label="Whole word"
+      >
+        W
       </ToggleChip>
       <ToggleChip on={opts.regex} onClick={() => onOpts({ ...opts, regex: !opts.regex })} label="Regular expression">
         .*
@@ -123,19 +132,27 @@ export function BinderSearchResults({
   onJump,
   onSave,
   onScrivenings,
+  textLoading = false,
+  onReplace,
 }: {
-  /** Documents in reading order. */
-  docs: WorldEntry[];
+  /** Documents in reading order, with their text once it has loaded. */
+  docs: SearchableDoc[];
+  /** The documents' text is still loading: titles and cards are searched now. */
+  textLoading?: boolean;
   query: string;
   opts: SearchOptions;
   activeDocId?: string;
   onJump: (docId: string, hit: SearchHit) => void;
   onSave: () => void;
   onScrivenings: (ids: string[]) => void;
+  /** Open project-wide replace for this query. */
+  onReplace?: () => void;
 }): JSX.Element {
-  // Deferred: a long manuscript is searched after the keystroke paints.
+  // Deferred: a long manuscript is searched after the keystroke paints, and
+  // text patched in while the writer types elsewhere does not block input.
   const deferred = useDeferredValue(query);
-  const outcome = useMemo(() => searchBinder(docs, deferred, opts), [docs, deferred, opts]);
+  const deferredDocs = useDeferredValue(docs);
+  const outcome = useMemo(() => searchBinder(deferredDocs, deferred, opts), [deferredDocs, deferred, opts]);
 
   if (outcome.error) {
     return (
@@ -149,12 +166,27 @@ export function BinderSearchResults({
     <div>
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1 px-3 py-2">
         <span className="font-mono text-[12px] text-t3" role="status" aria-live="polite">
+          {textLoading ? "SEARCHING TEXT. " : ""}
           {outcome.totalHits === 0
-            ? "NO MATCHES."
+            ? textLoading
+              ? "TITLES AND CARDS: NO MATCHES."
+              : "NO MATCHES."
             : `${outcome.totalHits.toLocaleString()} ${outcome.totalHits === 1 ? "MATCH" : "MATCHES"} · ${outcome.results.length} ${outcome.results.length === 1 ? "DOC" : "DOCS"}`}
         </span>
-        {outcome.results.length > 0 && (
+        {(outcome.results.length > 0 || onReplace) && (
           <span className="ml-auto flex gap-2">
+            {onReplace && (
+              <button
+                type="button"
+                onClick={onReplace}
+                className="min-h-hit border border-sf-line px-3 text-[12px] text-t2 transition-colors duration-base hover:border-sf-primary hover:text-t1"
+                title="Replace across the manuscript, with a preview of every match"
+              >
+                Replace
+              </button>
+            )}
+            {outcome.results.length > 0 && (
+            <>
             <button
               type="button"
               onClick={() => onScrivenings(outcome.results.map((r) => r.docId))}
@@ -171,6 +203,8 @@ export function BinderSearchResults({
             >
               Save
             </button>
+            </>
+            )}
           </span>
         )}
       </div>
@@ -226,10 +260,16 @@ export function CollectionsSection({
   onScrivenings,
   onRunSearch,
   onDelete,
+  onWantText,
+  textReady = true,
 }: {
   collections: WritingCollection[];
-  /** Documents in reading order. */
-  docs: WorldEntry[];
+  /** The documents' text has loaded (saved searches wait for it). */
+  textReady?: boolean;
+  /** Documents in reading order (with text, once loaded, for saved searches). */
+  docs: SearchableDoc[];
+  /** A saved search was opened: its documents' text is needed. */
+  onWantText?: () => void;
   activeDocId?: string;
   /** Collections are stored in this browser until the settings column exists. */
   local: boolean;
@@ -257,14 +297,17 @@ export function CollectionsSection({
             docs={docs}
             expanded={open.has(c.id)}
             activeDocId={activeDocId}
-            onToggle={() =>
+            onToggle={() => {
+              if (c.kind === "search" && !open.has(c.id)) onWantText?.();
               setOpen((prev) => {
                 const next = new Set(prev);
                 if (next.has(c.id)) next.delete(c.id);
                 else next.add(c.id);
                 return next;
-              })
-            }
+              });
+            }}
+            onWantText={onWantText}
+            textReady={textReady}
             onOpenDoc={onOpenDoc}
             onScrivenings={onScrivenings}
             onRunSearch={onRunSearch}
@@ -286,9 +329,13 @@ function CollectionRow({
   onScrivenings,
   onRunSearch,
   onDelete,
+  onWantText,
+  textReady,
 }: {
   collection: WritingCollection;
-  docs: WorldEntry[];
+  docs: SearchableDoc[];
+  onWantText?: () => void;
+  textReady: boolean;
   expanded: boolean;
   activeDocId?: string;
   onToggle: () => void;
@@ -297,7 +344,15 @@ function CollectionRow({
   onRunSearch: (c: WritingCollection) => void;
   onDelete: (c: WritingCollection) => void;
 }): JSX.Element {
-  const members = useMemo(() => collectionDocs(c, docs), [c, docs]);
+  // A saved search is a full-text search: run only while it is open, never
+  // for a collapsed row on every change to the manuscript.
+  const [menuOpen, setMenuOpen] = useState(false);
+  const deferredDocs = useDeferredValue(docs);
+  const search = c.kind === "search";
+  const members = useMemo(
+    () => (search && (!(expanded || menuOpen) || !textReady) ? null : collectionDocs(c, deferredDocs)),
+    [c, search, deferredDocs, expanded, menuOpen, textReady],
+  );
   return (
     <li>
       <div className="group flex min-h-hit items-center pr-1">
@@ -314,9 +369,14 @@ function CollectionRow({
           )}
           {c.kind === "search" && <Search className="h-3 w-3 shrink-0 text-t4" aria-label="Saved search" />}
           <span className="truncate">{c.name}</span>
-          <span className="ml-auto shrink-0 pl-2 font-mono text-[12px] text-t4">{members.length}</span>
+          {members && <span className="ml-auto shrink-0 pl-2 font-mono text-[12px] text-t4">{members.length}</span>}
         </button>
-        <DropdownMenu>
+        <DropdownMenu
+          onOpenChange={(o) => {
+            setMenuOpen(o);
+            if (o && search) onWantText?.();
+          }}
+        >
           <DropdownMenuTrigger asChild>
             <button
               type="button"
@@ -328,10 +388,10 @@ function CollectionRow({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuItem
-              disabled={members.length === 0}
-              onClick={() => onScrivenings(members.map((m) => m.id), c.name)}
+              disabled={!members || members.length === 0}
+              onClick={() => members && onScrivenings(members.map((m) => m.id), c.name)}
             >
-              View as Scrivenings
+              {members ? "View as Scrivenings" : "Reading the manuscript…"}
             </DropdownMenuItem>
             {c.kind === "search" && (
               <DropdownMenuItem onClick={() => onRunSearch(c)}>Show search results</DropdownMenuItem>
@@ -343,7 +403,12 @@ function CollectionRow({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      {expanded && (
+      {expanded && !members && (
+        <p className="px-8 py-1 font-mono text-[12px] uppercase text-t3" role="status">
+          READING THE MANUSCRIPT.
+        </p>
+      )}
+      {expanded && members && (
         <ul className="pb-1">
           {members.length === 0 ? (
             <li className="px-8 py-1 font-serif text-[13px] italic text-t3">

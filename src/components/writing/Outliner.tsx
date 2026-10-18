@@ -51,7 +51,7 @@ import {
   type DocumentMeta,
 } from "@/lib/document-meta";
 import { findLabel, LABEL_SWATCH, type WritingLabel } from "@/lib/writing-labels";
-import type { WorldEntry } from "@/services/world-data";
+import type { BinderRowLike } from "@/lib/writing/doc-scale";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -59,7 +59,7 @@ import type { WorldEntry } from "@/services/world-data";
 
 export interface OutlinerProps {
   worldId: string;
-  tree: BinderNode<WorldEntry>[];
+  tree: BinderNode<BinderRowLike>[];
   labels: WritingLabel[];
   activeDocId?: string;
   onOpen: (docId: string) => void;
@@ -137,7 +137,7 @@ export function Outliner({
     (activeDocId && rows.some((r) => r.entry.id === activeDocId) && activeDocId) ||
     rows[0]?.entry.id;
 
-  const onRowKey = (e: React.KeyboardEvent, row: OutlinerRow<WorldEntry>, i: number) => {
+  const onRowKey = (e: React.KeyboardEvent, row: OutlinerRow<BinderRowLike>, i: number) => {
     // Keys typed into an inline editor belong to it.
     if (e.target !== e.currentTarget) return;
     switch (e.key) {
@@ -310,7 +310,7 @@ function TargetCell({ words, target }: { words: number; target: number }): JSX.E
 }
 
 interface RowViewProps {
-  row: OutlinerRow<WorldEntry>;
+  row: OutlinerRow<BinderRowLike>;
   show: (c: OutlinerColumn) => boolean;
   labels: WritingLabel[];
   active: boolean;

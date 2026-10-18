@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useAllWorksheets } from "@/hooks/use-all-worksheets";
-import { useWritingEntries } from "@/hooks/use-writing-entries";
-import { useWritingStats } from "@/hooks/use-writing-stats";
+import { useStudioDocSummaries, useWritingSessions } from "@/hooks/use-writing-activity";
+import { writingBadgeInputs } from "@/lib/writing-activity";
+import { localDay } from "@/lib/local-day";
 import { useEarnedBadges, useEarnBadge } from "@/hooks/use-badges";
 import { useBadgeContext } from "@/contexts/BadgeContext";
 import { BADGE_DEFINITIONS, type BadgeEvalData } from "@/lib/badges/definitions";
@@ -18,8 +19,10 @@ export function useBadgeEvaluator() {
   const { user } = useAuth();
   const { worlds } = useWorlds();
   const { worksheets } = useAllWorksheets();
-  const { entries } = useWritingEntries();
-  const stats = useWritingStats(entries, 0);
+  // Writing badges read the Studio's own ledgers: documents and the
+  // writing_sessions day rows. The retired /workshop store is not read.
+  const { data: sessions } = useWritingSessions();
+  const { data: docSummaries } = useStudioDocSummaries();
   const { earnedSet, isLoading: badgesLoading } = useEarnedBadges();
   const earnBadge = useEarnBadge();
   const { enqueueEarnedBadge } = useBadgeContext();
@@ -98,6 +101,13 @@ export function useBadgeEvaluator() {
         );
       }
 
+      const writing = writingBadgeInputs(
+        docSummaries?.docs ?? [],
+        sessions ?? [],
+        localDay(),
+        docSummaries?.workshopWorldIds,
+      );
+
       const evalData: BadgeEvalData = {
         worldCount: worlds.length,
         worlds: worlds.map((w) => ({
@@ -107,14 +117,10 @@ export function useBadgeEvaluator() {
         })),
         worksheetCount: worksheets.length,
         worksheetToolTypes: worksheets.map((ws) => ws.tool_type),
-        writingEntryCount: entries.length,
-        currentStreak: stats.currentStreak,
-        longestStreak: stats.longestStreak,
-        totalWords: stats.totalWords,
+        ...writing,
         worksheetCascadePositions: worksheets
           .map((ws) => TOOL_WIKI[ws.tool_type]?.cascade)
           .filter((c): c is string => !!c),
-        writingEntriesWithWorld: entries.filter((e) => e.world_id).length,
         worldWorksheetCounts: (() => {
           const m = new Map<string, Set<string>>();
           for (const ws of worksheets) {
@@ -126,16 +132,6 @@ export function useBadgeEvaluator() {
           return m;
         })(),
         worksheetTags: worksheets.map((ws) => (ws.tags as string[]) ?? []),
-        writingEntryTags: entries.map((e) => e.tags ?? []),
-        writingEntriesByWorld: (() => {
-          const m = new Map<string, number>();
-          for (const e of entries) {
-            if (e.world_id) {
-              m.set(e.world_id, (m.get(e.world_id) ?? 0) + 1);
-            }
-          }
-          return m;
-        })(),
         // Phase 4: Social & Sharing
         ...sharingData,
         // Phase 5: Mastery
@@ -162,9 +158,8 @@ export function useBadgeEvaluator() {
     badgesLoading,
     worlds,
     worksheets,
-    entries,
-    stats.currentStreak,
-    stats.longestStreak,
+    sessions,
+    docSummaries,
     earnedSet,
     earnBadge,
     enqueueEarnedBadge,

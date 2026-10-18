@@ -2,9 +2,10 @@
 // binder-search, search every document in a world: text, titles, synopses,
 // notes and keywords, with optional regex and case sensitivity.
 //
-// Runs client-side over the documents the binder already holds
-// (useWritingDocuments selects full rows, content included), so there is no
-// extra query and no server index to keep in step.
+// Runs client-side. The binder list carries no text; the Studio loads every
+// document's text once, the first time a search (or a saved search) runs
+// (useWorldDocumentContents), and keeps it current in place as the writer
+// types. No server index to keep in step.
 //
 // Text is flattened with "\n" between blocks, the same separator the
 // in-document find uses (src/lib/editor-text-map.ts), so the Nth match here
@@ -18,6 +19,8 @@ import { readDocMeta } from "@/lib/document-meta";
 export interface SearchOptions {
   regex: boolean;
   caseSensitive: boolean;
+  /** Only whole words: no letter, digit or underscore on either side. */
+  wholeWord?: boolean;
 }
 
 export type SearchField = "title" | "synopsis" | "notes" | "keywords" | "text";
@@ -98,7 +101,16 @@ export function buildMatcher(
   if (!query) return { re: null, error: "EMPTY QUERY." };
   try {
     const source = opts.regex ? query : escapeRegex(query);
-    return { re: new RegExp(source, opts.caseSensitive ? "g" : "gi"), error: null };
+    const flags = opts.caseSensitive ? "g" : "gi";
+    if (opts.wholeWord) {
+      // Unicode-aware edges, so "café" and "Ödön" are words too. \b alone
+      // treats every accented letter as a boundary.
+      return {
+        re: new RegExp(`(?<![\\p{L}\\p{N}_])(?:${source})(?![\\p{L}\\p{N}_])`, `${flags}u`),
+        error: null,
+      };
+    }
+    return { re: new RegExp(source, flags), error: null };
   } catch {
     return { re: null, error: "PATTERN INVALID. CHECK THE EXPRESSION." };
   }

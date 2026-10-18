@@ -292,6 +292,74 @@ export async function captureDocumentSnapshot(
   }
 }
 
+/**
+ * Put a given text on file as a named snapshot of a document, outside any
+ * React tree (a save conflict files one side before the other replaces it).
+ * Best effort: resolves false rather than throwing.
+ */
+export async function snapshotDocumentText(
+  documentId: string,
+  userId: string,
+  html: string,
+  name: string,
+): Promise<boolean> {
+  try {
+    if (!html || html === "<p></p>") return true; // nothing to keep
+    const { data: doc } = await db
+      .from("world_entries")
+      .select("world_id, title")
+      .eq("id", documentId)
+      .maybeSingle();
+    if (!doc?.world_id) return false;
+    const { error } = await insertVersion({
+      document_id: documentId,
+      world_id: doc.world_id,
+      user_id: userId,
+      title: doc.title || "Untitled",
+      content_html: html,
+      word_count: countWords(html),
+      snapshot_reason: "manual",
+      name,
+    });
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * File a snapshot of content the caller already holds (not the server's
+ * copy), outside any React tree. Project-wide replace uses it so the snapshot
+ * is exactly the text the replace is about to change. Returns the snapshot
+ * id, or null when it could not be filed (the caller must then not proceed).
+ * Never throws.
+ */
+export async function fileContentSnapshot(input: {
+  documentId: string;
+  worldId: string;
+  userId: string;
+  title: string;
+  content: string;
+  name: string;
+  reason?: SnapshotReason;
+}): Promise<string | null> {
+  try {
+    const { data, error } = await insertVersion({
+      document_id: input.documentId,
+      world_id: input.worldId,
+      user_id: input.userId,
+      title: input.title || "Untitled",
+      content_html: input.content,
+      word_count: countWords(input.content),
+      snapshot_reason: input.reason ?? "manual",
+      name: input.name.trim().slice(0, 80) || null,
+    });
+    return error || !data ? null : data.id;
+  } catch {
+    return null;
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Hook
 // ---------------------------------------------------------------------------

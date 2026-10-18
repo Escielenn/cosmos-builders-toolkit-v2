@@ -21,6 +21,14 @@ import { StudioWorldProvider, useStudioWorldIndex, type StudioWorld } from "@/co
 import { DocumentInspector, type InspectorPane } from "@/components/writing/DocumentInspector";
 import { BinderTree } from "@/components/writing/BinderTree";
 import { SnapshotCompareDialog } from "@/components/writing/SnapshotCompareDialog";
+import {
+  CONFLICT_SNAPSHOT_ID,
+  ReadOnlyNotice,
+  SaveConflictNotice,
+} from "@/components/writing/SaveConflictNotice";
+import { ProjectReplaceDialog } from "@/components/writing/ProjectReplaceDialog";
+import { DocumentComments } from "@/components/writing/DocumentComments";
+import type { ReplaceRecord } from "@/hooks/use-project-replace";
 import { LabelManagerDialog } from "@/components/writing/LabelManagerDialog";
 // Import pulls in the readers (and, on use, jszip and mammoth): load on open.
 const ImportManuscriptDialog = lazy(() => import("@/components/writing/ImportManuscriptDialog"));
@@ -55,11 +63,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  compileManuscriptDocx,
-  compileManuscriptMarkdown,
-  compileManuscriptPlainText,
-} from "@/lib/manuscript-compile";
+import { DEFAULT_COMPILE, buildManuscript, type CompileFormat } from "@/lib/manuscript/compile";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -113,6 +117,16 @@ import {
   type SaveState,
 } from "@/lib/writing/save-journal";
 import { exportAuthor } from "@/lib/writing/export-author";
+import { useMyWorldRole } from "@/hooks/use-collaborators";
+import { dropUnsaved, patchDocContent, useWorldDocumentContents } from "@/hooks/use-document-contents";
+import {
+  isSaveConflict,
+  isSaveDenied,
+  patchRow,
+  withContents,
+  type ServerDocCopy,
+} from "@/lib/writing/doc-scale";
+import type { BinderDoc } from "@/hooks/use-writing-documents";
 
 /**
  * Words found in this device's journal for the open document (see
@@ -128,6 +142,12 @@ interface RecoveryNotice {
   replacedHtml: string;
   /** replacedHtml is on file as a snapshot (once per notice). */
   replacedKept: boolean;
+}
+
+/** The main editor's save found the server copy moved on (another writer). */
+interface MainConflict {
+  docId: string;
+  theirs: ServerDocCopy;
 }
 
 type WriteView = "editor" | "board" | "outline" | "scrivenings";
@@ -297,6 +317,10 @@ export default function Write(): JSX.Element {
   const [searchOpts, setSearchOpts] = useState<SearchOptions>({ regex: false, caseSensitive: false });
   const searchRef = useRef<HTMLInputElement>(null);
   const [jump, setJump] = useState<{ docId: string; hit: SearchHit; query: string; opts: SearchOptions } | null>(null);
+  // Project-wide replace (ProjectReplaceDialog). The last replace is kept
+  // here so REVERT REPLACE outlives the dialog.
+  const [replaceOpen, setReplaceOpen] = useState(false);
+  const [lastReplace, setLastReplace] = useState<ReplaceRecord | null>(null);
   const collections = useWorldSetting<WritingCollection[]>(
     worldId,
     COLLECTIONS_KEY,
@@ -354,10 +378,19 @@ export default function Write(): JSX.Element {
   // Consecutive failed saves (retry backoff), and the timer for the next.
   const failures = useRef(0);
   const [saveFailed, setSaveFailed] = useState(false);
+  const deniedRef = useRef(false);
   const retryTimer = useRef<ReturnType<typeof setTimeout>>();
   const [online, setOnline] = useState(() => (typeof navigator === "undefined" ? true : navigator.onLine !== false));
   // The server updated_at each document's edits sit on (journal base).
   const serverBase = useRef(new Map<string, string | null>());
+  // The content_version each document's edits sit on (the save's check).
+  const versionBase = useRef(new Map<string, number | null>());
+  // A save that found another writer's version on the server: held, offered.
+  const [conflict, setConflict] = useState<MainConflict | null>(null);
+  const conflictRef = useRef<MainConflict | null>(null);
+  conflictRef.current = conflict;
+  // The server refused a save although nothing moved: no write access.
+  const [saveDenied, setSaveDenied] = useState(false);
   const journalTimer = useRef<ReturnType<typeof setTimeout>>();
   const [recovery, setRecovery] = useState<RecoveryNotice | null>(null);
   const recoveryRef = useRef<RecoveryNotice | null>(null);
@@ -367,6 +400,7 @@ export default function Write(): JSX.Element {
   useEffect(() => {
     if (doc) {
       serverBase.current.set(doc.id, doc.updated_at ?? null);
+      versionBase.current.set(doc.id, doc.content_version ?? null);
       setTitle(doc.title ?? "");
       const w = countWords(doc.content);
       setWords(w);
@@ -430,13 +464,45 @@ export default function Write(): JSX.Element {
     [preferences],
   );
 
-  // Whole-manuscript words for the project target: every document's saved
+  // Whole-manuscript words for the project target: every document's stored
   // count, with the open one's live count in its place.
   const manuscriptWords = useMemo(() => {
     let n = 0;
-    for (const d of readingDocs) n += d.id === docId ? words : countWords(d.content);
+    for (const d of readingDocs) n += d.id === docId ? words : d.word_count ?? 0;
     return n;
   }, [readingDocs, docId, words]);
+
+  // VIEWERS ------------------------------------------------------------------
+  // A viewer collaborator gets a read-only editor and one notice, never a
+  // SAVE FAILED toast for a write RLS was always going to refuse.
+  const { data: worldRole } = useMyWorldRole(worldId);
+  const readOnly = worldRole === "viewer" || saveDenied;
+
+  // DOCUMENT TEXT FOR WHOLE-MANUSCRIPT FEATURES ------------------------------
+  // The binder list carries no text. Search, saved searches, canon-changed
+  // badges and the capture scan of other documents read every document, so
+  // the text loads once: at once for a search, otherwise after the Studio
+  // has settled (idle), and is patched in place as the writer types.
+  const [wantText, setWantText] = useState(false);
+  useEffect(() => {
+    setWantText(false);
+    if (!worldId) return;
+    const w = window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number; cancelIdleCallback?: (id: number) => void };
+    if (w.requestIdleCallback) {
+      const id = w.requestIdleCallback(() => setWantText(true), { timeout: 4000 });
+      return () => w.cancelIdleCallback?.(id);
+    }
+    const t = setTimeout(() => setWantText(true), 1500);
+    return () => clearTimeout(t);
+  }, [worldId]);
+  const searching = !!searchQuery.trim();
+  const contents = useWorldDocumentContents(worldId, { enabled: wantText || searching });
+  const textReady = !!contents.data;
+  const searchDocs = useMemo(() => withContents(readingDocs, contents.data), [readingDocs, contents.data]);
+  const entriesWithText = useMemo(
+    () => (contents.data ? withContents(binderEntries, contents.data) : undefined),
+    [binderEntries, contents.data],
+  );
 
   const typewriterMain = preferences.typewriter && (effectiveView === "editor" || effectiveView === "scrivenings");
   const showSplit = split.open && !focus && !!worldId;
@@ -457,7 +523,7 @@ export default function Write(): JSX.Element {
   // CANON CHANGED (charter 2.5) ----------------------------------------------
   // Documents citing a value or a name the world has since moved past. Read
   // off the binder's own content and the index above; no fetch of its own.
-  const canon = useCanonChanges(binderEntries, worldIndex);
+  const canon = useCanonChanges(entriesWithText, worldIndex);
   const canonAffected = canon.affected.size;
   const [canonFilter, setCanonFilter] = useState(false);
   useEffect(() => {
@@ -469,13 +535,10 @@ export default function Write(): JSX.Element {
     [canonFilter, binderTree, canon.affected],
   );
 
-  // The scene as the rail ranks it: the prose as last handed to the binder
-  // cache (the editor's own 1.5s debounce), deferred so ranking yields to
-  // typing.
-  const sceneHtml = useMemo(
-    () => readingDocs.find((d) => d.id === docId)?.content ?? doc?.content ?? "",
-    [readingDocs, docId, doc?.content],
-  );
+  // The scene as the rail ranks it: the prose as last handed over by the
+  // editor (its own 1.5s debounce), deferred so ranking yields to typing.
+  const [liveScene, setLiveScene] = useState<{ docId: string; html: string } | null>(null);
+  const sceneHtml = liveScene && liveScene.docId === docId ? liveScene.html : doc?.content ?? "";
   const deferredSceneHtml = useDeferredValue(sceneHtml);
   const sceneWorld = useMemo(
     () =>
@@ -526,7 +589,7 @@ export default function Write(): JSX.Element {
     editor: editorState?.editor ?? null,
     editorDocId: editorState?.docId ?? null,
     docId: doc?.id,
-    docs: binderEntries,
+    docs: entriesWithText,
     world: worldIndex,
     scene: captureScene,
     resolutions: docMeta.captureResolutions,
@@ -564,6 +627,11 @@ export default function Write(): JSX.Element {
     }
     const p = pending.current;
     if (!p) return Promise.resolve();
+    // Held: a conflict waits for the writer's choice; a refused write is not
+    // retried. The words stay queued and in the device journal.
+    if ((conflictRef.current && conflictRef.current.docId === p.docId) || deniedRef.current) {
+      return Promise.resolve();
+    }
     pending.current = null;
     lastSent.current = { docId: p.docId, html: p.html };
 
@@ -587,13 +655,16 @@ export default function Write(): JSX.Element {
 
     inFlight.current += 1;
     return gate
-      .then(() => saveContent({ docId: p.docId, content: p.html }))
+      .then(() =>
+        saveContent({ docId: p.docId, content: p.html, baseVersion: versionBase.current.get(p.docId) ?? null }),
+      )
       .then((row) => {
         setSavedAt(new Date());
         failures.current = 0;
         setSaveFailed(false);
         // Confirmed: this device's copy of exactly this text can go.
         serverBase.current.set(p.docId, row?.updated_at ?? null);
+        if (row && row.content_version !== null) versionBase.current.set(p.docId, row.content_version);
         settleJournal(deviceStorage(), p.docId, p.html, row?.updated_at ?? null);
         if (user && delta > 0) {
           // Await nothing, but refresh the footer once the ledger is written
@@ -602,10 +673,22 @@ export default function Write(): JSX.Element {
           rollWordSession(user.id, delta).then(() => refreshToday());
         }
       })
-      .catch(() => {
+      .catch((err: unknown) => {
         // Keep the text queued (it is also in the device journal) and retry
         // on a backoff while it is unsaved; at once when the line returns.
         if (!pending.current) pending.current = p;
+        if (isSaveConflict(err)) {
+          // Another writer saved first. Not a failure: offer the choice.
+          const c = { docId: p.docId, theirs: err.theirs };
+          conflictRef.current = c;
+          setConflict(c);
+          return;
+        }
+        if (isSaveDenied(err)) {
+          deniedRef.current = true;
+          setSaveDenied(true);
+          return;
+        }
         failures.current += 1;
         setSaveFailed(true);
         if (failures.current === 1) {
@@ -649,9 +732,11 @@ export default function Write(): JSX.Element {
     }
     pending.current = { docId, html, words: countWords(html) };
     setDirty(true);
+    setLiveScene({ docId, html });
     // On this device before it is sent; cleared when the save is confirmed.
     writeJournal(deviceStorage(), docId, html, serverBase.current.get(docId) ?? null);
-    // The binder list is what Scrivenings and the split pane open from.
+    // Search, the badges and any surface that opens this document next read
+    // these words, not the last saved copy.
     primeDocCaches(qc, worldId, docId, html, false);
     if (debounce.current) clearTimeout(debounce.current);
     debounce.current = setTimeout(flushPending, 1200);
@@ -777,9 +862,25 @@ export default function Write(): JSX.Element {
       lastCount.current = restoredWords;
       setWords(restoredWords);
       try {
-        await updateContent.mutateAsync({ docId: doc.id, content: found.content });
+        const row = await updateContent.mutateAsync({
+          docId: doc.id,
+          content: found.content,
+          baseVersion: versionBase.current.get(doc.id) ?? null,
+        });
+        if (row.content_version !== null) versionBase.current.set(doc.id, row.content_version);
+        serverBase.current.set(doc.id, row.updated_at);
+        settleJournal(deviceStorage(), doc.id, found.content, row.updated_at);
         setSavedAt(new Date());
-      } catch {
+      } catch (err) {
+        if (isSaveConflict(err)) {
+          // The restored text stays on screen and queued; offer the choice.
+          pending.current = { docId: doc.id, html: found.content, words: restoredWords };
+          writeJournal(deviceStorage(), doc.id, found.content, serverBase.current.get(doc.id) ?? null);
+          const c = { docId: doc.id, theirs: err.theirs };
+          conflictRef.current = c;
+          setConflict(c);
+          setDirty(true);
+        }
         return false;
       }
       toast({ title: "VERSION RESTORED.", description: "The text it replaced is on file as a snapshot." });
@@ -795,6 +896,8 @@ export default function Write(): JSX.Element {
   useEffect(() => {
     if (!doc || docFetching) return;
     if (!editorState || editorState.docId !== doc.id || editorState.editor.isDestroyed) return;
+    // A viewer cannot save recovered words; the journal keeps them.
+    if (readOnly) return;
     if (recoveryChecked.current === doc.id) return;
     recoveryChecked.current = doc.id;
 
@@ -818,7 +921,7 @@ export default function Write(): JSX.Element {
     } else {
       setRecovery({ docId: doc.id, kind: "older", journalHtml: entry.html, replacedHtml: live, replacedKept: false });
     }
-  }, [doc, docFetching, editorState]);
+  }, [doc, docFetching, editorState, readOnly]);
 
   // A notice belongs to one document.
   useEffect(() => {
@@ -860,6 +963,84 @@ export default function Write(): JSX.Element {
       if (inFlight.current === 0) setDirty(false);
     }
   }, [createSnapshot, editorState]);
+
+  // SAVE CONFLICT -------------------------------------------------------------
+  // Neither side is ever lost: each choice files the other as a snapshot
+  // first, and refuses (changing nothing) if that snapshot fails.
+
+  /** KEEP MINE: their version goes on file, then mine saves over it. */
+  const keepMine = useCallback(async (): Promise<boolean> => {
+    const c = conflictRef.current;
+    if (!c || !doc || c.docId !== doc.id) return false;
+    const filed = await createSnapshot({
+      name: "Their version, before KEEP MINE",
+      content: c.theirs.content ?? "",
+      title: c.theirs.title || doc.title,
+    }).catch(() => null);
+    if (!filed && (c.theirs.content ?? "").trim()) return false;
+    versionBase.current.set(c.docId, c.theirs.content_version);
+    serverBase.current.set(c.docId, c.theirs.updated_at);
+    // Their words are not this writer's: the ledger counts from theirs.
+    lastCount.current = countWords(c.theirs.content ?? "");
+    conflictRef.current = null;
+    setConflict(null);
+    const live = editorState && editorState.docId === c.docId && !editorState.editor.isDestroyed
+      ? editorState.editor.getHTML()
+      : pending.current?.html;
+    if (live !== undefined) {
+      pending.current = { docId: c.docId, html: live, words: countWords(live) };
+      setDirty(true);
+    }
+    await flushRef.current();
+    return true;
+  }, [doc, createSnapshot, editorState]);
+
+  /** LOAD THEIRS: my version goes on file, then theirs opens. */
+  const loadTheirs = useCallback(async (): Promise<boolean> => {
+    const c = conflictRef.current;
+    if (!c || !doc || c.docId !== doc.id) return false;
+    const ed = editorState && editorState.docId === c.docId && !editorState.editor.isDestroyed ? editorState.editor : null;
+    const mine = ed?.getHTML() ?? pending.current?.html ?? "";
+    const filed = await createSnapshot({ name: "My version, before LOAD THEIRS", content: mine }).catch(() => null);
+    if (!filed && countWords(mine) > 0) return false;
+    const theirs = c.theirs.content ?? "";
+    if (debounce.current) {
+      clearTimeout(debounce.current);
+      debounce.current = undefined;
+    }
+    pending.current = null;
+    editorUnsent.current = false;
+    lastSent.current = { docId: c.docId, html: theirs };
+    ed?.commands.setContent(theirs, { emitUpdate: false });
+    const w = countWords(theirs);
+    lastCount.current = w;
+    setWords(w);
+    setLiveScene({ docId: c.docId, html: theirs });
+    versionBase.current.set(c.docId, c.theirs.content_version);
+    serverBase.current.set(c.docId, c.theirs.updated_at);
+    dropJournal(deviceStorage(), c.docId);
+    dropUnsaved(c.docId);
+    if (worldId) {
+      patchDocContent(qc, worldId, c.docId, {
+        content: theirs,
+        updated_at: c.theirs.updated_at,
+        content_version: c.theirs.content_version,
+      });
+      qc.setQueryData<BinderDoc[]>(["writing-documents", worldId], (list) => patchRow(list, c.docId, { word_count: w }));
+    }
+    conflictRef.current = null;
+    setConflict(null);
+    if (inFlight.current === 0) setDirty(false);
+    return true;
+  }, [doc, createSnapshot, editorState, worldId, qc]);
+
+  // A conflict belongs to one document.
+  useEffect(() => {
+    if (conflictRef.current && conflictRef.current.docId !== docId) {
+      conflictRef.current = null;
+      setConflict(null);
+    }
+  }, [docId]);
 
   const saveState: SaveState = deriveSaveState({
     online,
@@ -1030,10 +1211,11 @@ export default function Write(): JSX.Element {
     return () => window.removeEventListener("keydown", onKey);
   }, [flushPending, focus, focusSearch]);
 
-  // Export just this document, reusing the manuscript exporters with a
-  // single-chapter list so the formatting matches a compiled manuscript.
+  // Export just this document through the compile pipeline
+  // (lib/manuscript), as a one-document manuscript, so a single scene looks
+  // exactly like it does in a compiled book: same blocks, same exporters.
   const exportDoc = useCallback(
-    async (format: "docx" | "md" | "txt") => {
+    async (format: Extract<CompileFormat, "docx" | "pdf" | "md" | "txt">) => {
       if (!doc) return;
       // The words on screen, not the last fetched copy: hand the editor's
       // debounced text over and let the save land before reading.
@@ -1045,34 +1227,23 @@ export default function Write(): JSX.Element {
           : liveHtml();
 
       const name = title.trim() || doc.title || "Untitled";
-      const meta = {
-        title: name,
-        author: exportAuthor(profile?.display_name, user?.user_metadata),
-      };
-      const chapters = [{ id: doc.id, title: name, content: html }];
-      const safeName = name.replace(/[^\w\d-]+/g, "-").replace(/^-+|-+$/g, "") || "document";
+      const manuscript = buildManuscript(
+        [{ id: doc.id, title: name, isFolder: false, html, children: [] }],
+        {
+          ...DEFAULT_COMPILE,
+          format,
+          title: name,
+          author: exportAuthor(profile?.display_name, user?.user_metadata),
+          // One document: its title as the heading, no number, no title page.
+          numbering: "none",
+          titlePage: false,
+          doubleSpaced: format === "docx",
+        },
+      );
 
       try {
-        if (format === "docx") {
-          await compileManuscriptDocx(meta, chapters);
-          return;
-        }
-        const text =
-          format === "md"
-            ? compileManuscriptMarkdown(meta, chapters)
-            : compileManuscriptPlainText(meta, chapters);
-        const blob = new Blob([text], {
-          type: format === "md" ? "text/markdown;charset=utf-8" : "text/plain;charset=utf-8",
-        });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${safeName}.${format}`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        // Revoke late; revoking immediately can cancel the download in some browsers.
-        setTimeout(() => URL.revokeObjectURL(url), 10_000);
+        const { downloadManuscript } = await import("@/lib/manuscript/export");
+        await downloadManuscript(manuscript, format);
       } catch {
         toast({
           title: "EXPORT FAILED.",
@@ -1247,20 +1418,24 @@ export default function Write(): JSX.Element {
       <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto py-2">
         {worldId && searchQuery.trim() ? (
           <BinderSearchResults
-            docs={readingDocs}
+            docs={searchDocs}
+            textLoading={!textReady}
             query={searchQuery}
             opts={searchOpts}
             activeDocId={docId}
             onJump={jumpTo}
             onSave={() => setCollectPrompt({ kind: "search" })}
             onScrivenings={(ids) => openScrivenings(ids, `Search: ${searchQuery}`)}
+            onReplace={() => setReplaceOpen(true)}
           />
         ) : (
         <>
         {worldId && (
           <CollectionsSection
             collections={collections.value}
-            docs={readingDocs}
+            docs={searchDocs}
+            textReady={textReady}
+            onWantText={() => setWantText(true)}
             activeDocId={docId}
             local={collections.isLocal}
             onOpenDoc={openDoc}
@@ -1314,7 +1489,7 @@ export default function Write(): JSX.Element {
               }
             }}
             onDeleteFolder={(id, folderTitle) => {
-              if (window.confirm(`Delete the folder "${folderTitle}"? Everything inside it moves up one level. No document is deleted.`)) {
+              if (window.confirm(`Delete the folder "${folderTitle}"? The folder and everything inside it move to the Trash, recoverable for 90 days.`)) {
                 deleteFolder.mutate(id);
               }
             }}
@@ -1323,7 +1498,7 @@ export default function Write(): JSX.Element {
         {(entries?.length ?? 0) === 0 && (
           <p className="px-3 py-4 font-serif text-[13px] italic text-t4">No documents yet.</p>
         )}
-        {worldId && (entries?.length ?? 0) <= 1 && !(entries ?? []).some((e) => countWords(e.content) > 0) && (
+        {worldId && (entries?.length ?? 0) <= 1 && !(entries ?? []).some((e) => (e.word_count ?? 0) > 0) && (
           <div className="mx-3 mt-3 border-t border-sf-line-hairline pt-3">
             <p className="font-serif text-[14px] italic text-t3">Writing this book somewhere else?</p>
             <button
@@ -1438,6 +1613,15 @@ export default function Write(): JSX.Element {
             povOptions={povOptions}
             placeOptions={placeOptions}
             branchOptions={worldIndex.branches}
+            comments={
+              worldId ? (
+                <DocumentComments
+                  docId={doc.id}
+                  worldId={worldId}
+                  editor={editorState && editorState.docId === doc.id ? editorState.editor : null}
+                />
+              ) : undefined
+            }
           />
         </div>
       )}
@@ -1581,6 +1765,9 @@ export default function Write(): JSX.Element {
             <DropdownMenuContent align="end" className="w-52 rounded-none border-sf-line bg-sf-surface/95">
               <DropdownMenuItem onClick={() => exportDoc("docx")}>
                 Word (.docx)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => exportDoc("pdf")}>
+                PDF (.pdf)
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => exportDoc("md")}>
                 Markdown (.md)
@@ -1733,6 +1920,7 @@ export default function Write(): JSX.Element {
               onOpenDoc={(id) => { switchView("editor"); openDoc(id); }}
               onClose={() => switchView("editor")}
               onWordsLedgered={refreshToday}
+              readOnly={readOnly}
             />
           ) : (
           <div
@@ -1743,6 +1931,7 @@ export default function Write(): JSX.Element {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               onBlur={saveTitle}
+              readOnly={readOnly}
               placeholder="Document title"
               className="w-full border-0 border-b border-sf-line-interactive bg-transparent font-serif text-[30px] italic text-t1 transition-colors duration-base placeholder:text-t4 hover:border-sf-line-emphasis"
               aria-label="Document title"
@@ -1750,6 +1939,16 @@ export default function Write(): JSX.Element {
             {/* The index-card fields (synopsis, label, status, POV...) moved
                 to the inspector's Doc tab, out of the writer's eyeline. */}
             <div className="my-6 text-center text-t4" aria-hidden="true">· · ·</div>
+            {readOnly && doc && <ReadOnlyNotice />}
+            {conflict && doc && conflict.docId === doc.id && (
+              <SaveConflictNotice
+                docId={doc.id}
+                theirs={conflict.theirs}
+                mine={liveHtml}
+                onKeepMine={keepMine}
+                onLoadTheirs={loadTheirs}
+              />
+            )}
             {recovery && doc && recovery.docId === doc.id && (
               <div
                 role="status"
@@ -1806,6 +2005,7 @@ export default function Write(): JSX.Element {
                 onChange={onContentChange}
                 onDirty={onEditorDirty}
                 worldId={worldId}
+                readOnly={readOnly}
                 preset="full"
                 placeholder="Begin writing. Use @ to mention entities, [[ to link wiki pages…"
                 page
@@ -1845,6 +2045,7 @@ export default function Write(): JSX.Element {
                 scrollRef={splitScrollRef}
                 tailSpacer={preferences.typewriter}
                 onWordsLedgered={refreshToday}
+                readOnly={readOnly}
               />
             </div>
           </>
@@ -1947,11 +2148,36 @@ export default function Write(): JSX.Element {
         </div>
       </footer>
 
+      {worldId && (
+        <ProjectReplaceDialog
+          open={replaceOpen}
+          onOpenChange={setReplaceOpen}
+          worldId={worldId}
+          query={searchQuery}
+          opts={searchOpts}
+          scopes={[
+            { id: "all", label: "Every document" },
+            ...folders.map((f) => ({ id: f.id, label: f.path.join(" / ") })),
+          ]}
+          docIdsFor={(scope) =>
+            (scope === "all" ? readingDocs : docsUnderFolder(binderTree, scope)).map((d) => d.id)
+          }
+          editorFor={(id) =>
+            editorState && editorState.docId === id && !editorState.editor.isDestroyed ? editorState.editor : null
+          }
+          beforeApply={async () => {
+            handOffMain();
+            await flushPending();
+          }}
+          lastReplace={lastReplace}
+          onLastReplace={setLastReplace}
+        />
+      )}
       <SnapshotCompareDialog
         snapshot={comparing}
         currentHtml={comparing ? liveHtml() : ""}
         onOpenChange={(o) => !o && setComparing(null)}
-        onRestore={restoreSnapshot}
+        onRestore={(snap) => (snap.id === CONFLICT_SNAPSHOT_ID ? loadTheirs() : restoreSnapshot(snap))}
       />
       <PromptDialog
         open={collectPrompt !== null}

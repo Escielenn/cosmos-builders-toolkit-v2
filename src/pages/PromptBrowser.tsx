@@ -2,10 +2,13 @@
  * /prompts, Weekly Prompt Browser
  *
  * Shows a weekly rotation of 7 writing prompts (one per day, Mon-Sun).
- * Users can act on prompts ("Start Writing") which creates a writing entry
- * and records the prompt as acted-upon. Unacted prompts expire at week's end.
+ * Users can act on prompts ("Start Writing"): they choose a world and a new
+ * Studio document opens, seeded with the prompt in its synopsis and notes
+ * (never in the prose). The prompt is recorded as acted-upon. Unacted
+ * prompts expire at week's end. /workshop redirects here.
  */
 
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   PenTool,
@@ -23,11 +26,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BackLink } from "@/components/ui/back-link";
 import { useAuth } from "@/contexts/AuthContext";
-import { useWorlds } from "@/hooks/use-worlds";
-import { useCreateEntry } from "@/hooks/use-writing-entries";
 import { useWeeklyPrompts } from "@/hooks/use-weekly-prompts";
 import { useMetaTags } from "@/hooks/use-meta-tags";
-import { useToast } from "@/hooks/use-toast";
+import { StartFromPromptDialog } from "@/components/writing/StartFromPromptDialog";
 import {
   CATEGORY_LABELS,
   DIFFICULTY_LABELS,
@@ -56,9 +57,7 @@ const DIFFICULTY_COLORS: Record<string, string> = {
 const PromptBrowserPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { worlds } = useWorlds();
-  const createEntry = useCreateEntry();
-  const { toast } = useToast();
+  const [pending, setPending] = useState<WritingPrompt | null>(null);
 
   useMetaTags({
     title: "Prompt Browser",
@@ -77,36 +76,13 @@ const PromptBrowserPage = () => {
 
   // ── Handle "Start Writing" ──────────────────────────────────────────
 
-  const handleStartWriting = async (prompt: WritingPrompt) => {
+  const handleStartWriting = (prompt: WritingPrompt) => {
     if (!user) {
       navigate("/auth");
       return;
     }
-
-    // Mark acted-on in localStorage
-    markActedOn(prompt.id);
-
-    // Create a writing entry
-    try {
-      const entry = await createEntry.mutateAsync({
-        promptId: prompt.id,
-        title: prompt.title,
-        worldId: worlds.length > 0 ? worlds[0].id : undefined,
-      });
-
-      // Navigate to writing space
-      if (entry.world_id) {
-        navigate(`/worlds/${entry.world_id}/write`);
-      } else {
-        navigate("/workshop");
-      }
-    } catch {
-      toast({
-        title: "COULD NOT CREATE ENTRY.",
-        description: "Please try again.",
-        variant: "destructive",
-      });
-    }
+    // The dialog picks the world, creates the document and opens it.
+    setPending(prompt);
   };
 
   // ── Day labels for cards ────────────────────────────────────────────
@@ -213,6 +189,14 @@ const PromptBrowserPage = () => {
       </main>
 
       <Footer />
+
+      <StartFromPromptDialog
+        prompt={pending}
+        onOpenChange={(open) => {
+          if (!open) setPending(null);
+        }}
+        onStarted={(p) => markActedOn(p.id)}
+      />
     </div>
   );
 };

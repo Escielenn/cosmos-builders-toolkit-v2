@@ -10,10 +10,20 @@
 // documents; they are reachable from the Codex only now. Their trash rows
 // still list in the binder's Trash so nothing trashed earlier is stranded.
 // Provides CRUD operations with tanstack-query cache invalidation.
+//
+// SCALE: the list selects metadata and the stored word_count only, never
+// content (a 100k-word manuscript used to come down whole on every load and
+// again after every autosave). Text is loaded where it is read; see
+// src/hooks/use-document-contents.ts. A save patches the caches in place
+// (setQueryData) instead of invalidating the list.
+//
+// CONCURRENCY: a save carries the content_version its edits sit on. Zero
+// rows updated raises SaveConflictError (another writer saved first) or
+// SaveDeniedError (no write access); see src/lib/writing/doc-scale.ts.
 // ---------------------------------------------------------------------------
 
 import { useMemo } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -22,12 +32,35 @@ import { writeDocMeta, type DocumentMeta } from "@/lib/document-meta";
 import { mapError } from "@/lib/ship-voice";
 import { buildBinderTree, flattenFolders, type BinderNode, type MovePlan } from "@/lib/binder-tree";
 import { captureDocumentSnapshot } from "@/hooks/use-document-versions";
+import { patchDocContent, settleUnsaved } from "@/hooks/use-document-contents";
+import { countWords } from "@/lib/text";
+import {
+  SaveConflictError,
+  SaveDeniedError,
+  classifyZeroRowSave,
+  isSaveConflict,
+  isSaveDenied,
+  patchRow,
+  type ServerDocCopy,
+} from "@/lib/writing/doc-scale";
+import { planFolderTrash } from "@/lib/folder-trash";
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-export type WritingDocument = WorldEntry;
+/**
+ * A binder row: every column but content, plus the stored word count and
+ * the content version. Content is deliberately absent from the type, so a
+ * surface that needs text has to load it (use-document-contents.ts).
+ */
+export type BinderDoc = Omit<WorldEntry, "content"> & {
+  word_count: number;
+  /** -1 when unknown (column not deployed): saves then skip the check. */
+  content_version: number;
+};
+
+export type WritingDocument = BinderDoc;
 
 export interface WritingFolder {
   id: string;
@@ -57,22 +90,56 @@ const docKeys = {
 // Fetch all writing documents + folders for a world
 // ---------------------------------------------------------------------------
 
-export function useWritingDocuments(worldId: string | undefined) {
-  const query = useQuery<WorldEntry[]>({
-    queryKey: docKeys.all(worldId!),
-    queryFn: async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data, error } = await (supabase as any)
-        .from("world_entries")
-        .select("*")
-        .eq("world_id", worldId!)
-        .in("entry_type", ["document", "folder"])
-        .is("trashed_at", null)
-        .order("updated_at", { ascending: false });
+/** Every column the binder reads. Never content. */
+const LIST_COLUMNS =
+  "id, world_id, entry_type, title, metadata, sort_order, parent_id, icon, color, tool_source, tool_data_id, layer, cover_image_url, tags, created_by, created_at, updated_at, word_count, content_version";
 
-      if (error) throw error;
-      return (data ?? []) as WorldEntry[];
-    },
+/** word_count / content_version are absent until 20261019_writing_scale.sql. */
+let scaleColumns: boolean | null = null;
+
+function isMissingColumn(error: unknown): boolean {
+  if (!error || typeof error !== "object") return false;
+  const e = error as { code?: string; message?: string };
+  if (e.code === "42703" || e.code === "PGRST204") return true;
+  return typeof e.message === "string" && /column .* does not exist/i.test(e.message);
+}
+
+/** The binder rows of a world: metadata and word counts, no text. */
+export async function fetchBinderRows(worldId: string): Promise<BinderDoc[]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const db = supabase as any;
+  const base = (cols: string) =>
+    db
+      .from("world_entries")
+      .select(cols)
+      .eq("world_id", worldId)
+      .in("entry_type", ["document", "folder"])
+      .is("trashed_at", null)
+      .order("updated_at", { ascending: false });
+
+  if (scaleColumns !== false) {
+    const { data, error } = await base(LIST_COLUMNS);
+    if (!error) {
+      scaleColumns = true;
+      return (data ?? []) as BinderDoc[];
+    }
+    if (!isMissingColumn(error)) throw error;
+    scaleColumns = false;
+  }
+  // Pre-migration database: count here once, then drop the text.
+  const { data, error } = await base("*");
+  if (error) throw error;
+  return ((data ?? []) as WorldEntry[]).map(({ content, ...rest }) => ({
+    ...rest,
+    word_count: countWords(content),
+    content_version: -1,
+  }));
+}
+
+export function useWritingDocuments(worldId: string | undefined) {
+  const query = useQuery<BinderDoc[]>({
+    queryKey: docKeys.all(worldId!),
+    queryFn: () => fetchBinderRows(worldId!),
     enabled: !!worldId,
     staleTime: 30_000,
   });
@@ -82,7 +149,7 @@ export function useWritingDocuments(worldId: string | undefined) {
   const structured = useMemo(() => {
     const allEntries = query.data ?? [];
     const tree = buildBinderTree(allEntries);
-    const docsOf = (n: BinderNode<WorldEntry>) =>
+    const docsOf = (n: BinderNode<BinderDoc>) =>
       n.children.filter((c) => !c.isFolder).map((c) => c.entry);
 
     // Every folder, depth-first, so nested chapters compile in reading order.
@@ -104,8 +171,8 @@ export function useWritingDocuments(worldId: string | undefined) {
     // documents interleaved exactly as the binder shows them), with the
     // folder that holds it. This is the order a compile must follow.
     const folderById = new Map(folders.map((f) => [f.id, f]));
-    const orderedDocs: { doc: WorldEntry; folder: WritingFolder | null }[] = [];
-    const walk = (nodes: BinderNode<WorldEntry>[], folder: WritingFolder | null) => {
+    const orderedDocs: { doc: BinderDoc; folder: WritingFolder | null }[] = [];
+    const walk = (nodes: BinderNode<BinderDoc>[], folder: WritingFolder | null) => {
       for (const n of nodes) {
         if (n.isFolder) walk(n.children, folderById.get(n.entry.id) ?? null);
         else orderedDocs.push({ doc: n.entry, folder });
@@ -172,7 +239,7 @@ export function useCreateDocument(worldId: string | undefined) {
           content: "",
           metadata: {},
           sort_order: nextSortOrder(
-            (qc.getQueryData<WorldEntry[]>(docKeys.all(worldId!)) ?? []).filter(
+            (qc.getQueryData<BinderDoc[]>(docKeys.all(worldId!)) ?? []).filter(
               (e) => (e.parent_id ?? null) === (parentId ?? null),
             ),
           ),
@@ -203,6 +270,126 @@ export function useCreateDocument(worldId: string | undefined) {
 // Update document content (auto-save)
 // ---------------------------------------------------------------------------
 
+/** What a confirmed save hands back (no text: the caller has it). */
+export interface SavedDoc {
+  id: string;
+  updated_at: string;
+  word_count: number;
+  /** null when the column is not deployed yet. */
+  content_version: number | null;
+}
+
+export interface SaveContentVars {
+  docId: string;
+  content: string;
+  /**
+   * The content_version the edits were made on. When given, the update only
+   * lands if the server copy is still on it; otherwise SaveConflictError.
+   * Omit (or null, or -1 for unknown) to write unconditionally.
+   */
+  baseVersion?: number | null;
+}
+
+const SAVED_COLUMNS = "id, updated_at, word_count, content_version";
+
+/**
+ * Write a document's text. Pure data layer (no React): the version check,
+ * the zero-row diagnosis, and the pre-migration fallback.
+ */
+export async function saveDocumentContent({ docId, content, baseVersion }: SaveContentVars): Promise<SavedDoc> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const db = supabase as any;
+  const checked = typeof baseVersion === "number" && baseVersion >= 0;
+
+  if (scaleColumns !== false) {
+    let q = db.from("world_entries").update({ content }).eq("id", docId);
+    if (checked) q = q.eq("content_version", baseVersion);
+    const { data, error } = await q.select(SAVED_COLUMNS);
+    if (!error) {
+      const row = (data ?? [])[0] as SavedDoc | undefined;
+      if (row) return row;
+      return diagnoseZeroRows(docId, content, checked ? baseVersion : null);
+    }
+    if (!isMissingColumn(error)) throw error;
+    scaleColumns = false;
+  }
+
+  // Pre-migration database: no version to check against.
+  const { data, error } = await db
+    .from("world_entries")
+    .update({ content })
+    .eq("id", docId)
+    .select("id, updated_at");
+  if (error) throw error;
+  const row = (data ?? [])[0] as { id: string; updated_at: string } | undefined;
+  if (!row) return diagnoseZeroRows(docId, content, null);
+  return { ...row, word_count: countWords(content), content_version: null };
+}
+
+async function diagnoseZeroRows(docId: string, mine: string, baseVersion: number | null): Promise<SavedDoc> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const db = supabase as any;
+  const cols =
+    scaleColumns === false
+      ? "id, title, content, updated_at"
+      : "id, title, content, updated_at, content_version, word_count";
+  const { data } = await db.from("world_entries").select(cols).eq("id", docId).maybeSingle();
+  const server: ServerDocCopy | null = data
+    ? {
+        id: data.id,
+        title: data.title ?? null,
+        content: data.content ?? null,
+        updated_at: data.updated_at ?? null,
+        content_version: typeof data.content_version === "number" ? data.content_version : null,
+      }
+    : null;
+  const verdict = classifyZeroRowSave(server, baseVersion, mine);
+  if (verdict === "same" && server) {
+    return {
+      id: server.id,
+      updated_at: server.updated_at ?? new Date().toISOString(),
+      word_count: typeof data.word_count === "number" ? data.word_count : countWords(mine),
+      content_version: server.content_version,
+    };
+  }
+  if (verdict === "conflict" && server) throw new SaveConflictError(docId, server, mine);
+  throw new SaveDeniedError(docId);
+}
+
+/**
+ * After a confirmed save: patch every cache that shows this document, in
+ * place. The list is NOT invalidated (that refetched every row of a long
+ * manuscript after each autosave).
+ */
+export function applySavedToCaches(
+  qc: QueryClient,
+  worldId: string | undefined,
+  docId: string,
+  content: string,
+  row: SavedDoc,
+): void {
+  settleUnsaved(docId, content);
+  if (worldId) {
+    qc.setQueryData<BinderDoc[]>(docKeys.all(worldId), (list) =>
+      patchRow(list, docId, {
+        updated_at: row.updated_at,
+        word_count: row.word_count,
+        ...(row.content_version !== null ? { content_version: row.content_version } : {}),
+      }),
+    );
+    patchDocContent(qc, worldId, docId, {
+      updated_at: row.updated_at,
+      content_version: row.content_version,
+    });
+  }
+  // The editor header and the snapshot hook read the single-doc query; it
+  // gets the saved copy without a round-trip.
+  qc.setQueryData<{ content: string | null; updated_at: string; content_version?: number | null } | null>(
+    ["write-doc", docId],
+    (old) => (old ? { ...old, content, updated_at: row.updated_at, content_version: row.content_version } : old),
+  );
+}
+
 export function useUpdateDocumentContent(
   worldId: string | undefined,
   opts: {
@@ -218,32 +405,15 @@ export function useUpdateDocumentContent(
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: async ({
-      docId,
-      content,
-    }: {
-      docId: string;
-      content: string;
-    }) => {
-      const { data, error } = await supabase
-        .from("world_entries")
-        .update({ content })
-        .eq("id", docId)
-        .select()
-        .single();
-
-      if (error) throw error;
-      return data as WorldEntry;
-    },
-    onSuccess: (_data, variables) => {
-      qc.invalidateQueries({ queryKey: docKeys.all(worldId!) });
-      // The editor header and tab title read the single-doc query; without
-      // this they keep showing pre-save values until an unrelated refetch.
-      qc.invalidateQueries({ queryKey: ["write-doc", variables.docId] });
+    mutationFn: saveDocumentContent,
+    onSuccess: (row, variables) => {
+      applySavedToCaches(qc, worldId, variables.docId, variables.content, row);
     },
     // A failed autosave used to be completely silent.
-    onError: () => {
+    onError: (error) => {
       if (opts.silentErrors) return;
+      // A conflict or a viewer is not a failed save: the caller shows them.
+      if (isSaveConflict(error) || isSaveDenied(error)) return;
       toast({
         title: "SAVE FAILED.",
         description: "Your words are held on this device. Retrying.",
@@ -484,7 +654,7 @@ export function useCreateFolder(worldId: string | undefined) {
           content: "",
           metadata: {},
           sort_order: nextSortOrder(
-            (qc.getQueryData<WorldEntry[]>(docKeys.all(worldId!)) ?? []).filter(
+            (qc.getQueryData<BinderDoc[]>(docKeys.all(worldId!)) ?? []).filter(
               (e) => (e.parent_id ?? null) === parentId,
             ),
           ),
@@ -573,10 +743,10 @@ export function useReorderDocuments(worldId: string | undefined) {
     onMutate: async (orderedIds: string[]) => {
       // optimistic: reflect the new order immediately
       await qc.cancelQueries({ queryKey: docKeys.all(worldId!) });
-      const prev = qc.getQueryData<WorldEntry[]>(docKeys.all(worldId!));
+      const prev = qc.getQueryData<BinderDoc[]>(docKeys.all(worldId!));
       if (prev) {
         const pos = new Map(orderedIds.map((id, i) => [id, i * 10]));
-        qc.setQueryData<WorldEntry[]>(
+        qc.setQueryData<BinderDoc[]>(
           docKeys.all(worldId!),
           prev.map((e) => (pos.has(e.id) ? { ...e, sort_order: pos.get(e.id)! } : e)),
         );
@@ -629,10 +799,10 @@ export function useMoveBinderItem(worldId: string | undefined) {
     },
     onMutate: async (plan: MovePlan) => {
       await qc.cancelQueries({ queryKey: docKeys.all(worldId!) });
-      const prev = qc.getQueryData<WorldEntry[]>(docKeys.all(worldId!));
+      const prev = qc.getQueryData<BinderDoc[]>(docKeys.all(worldId!));
       if (prev) {
         const pos = new Map(plan.orderedIds.map((id, i) => [id, i * 10]));
-        qc.setQueryData<WorldEntry[]>(
+        qc.setQueryData<BinderDoc[]>(
           docKeys.all(worldId!),
           prev.map((e) => {
             const next = pos.has(e.id) ? { ...e, sort_order: pos.get(e.id)! } : e;
@@ -694,41 +864,83 @@ export function useRenameFolder(worldId: string | undefined) {
 }
 
 // ---------------------------------------------------------------------------
-// Delete a folder (moves children to unfiled first)
+// Delete a folder: the folder and its contents move to the Trash
+// (plan and rationale in src/lib/folder-trash.ts)
 // ---------------------------------------------------------------------------
 
 export function useDeleteFolder(worldId: string | undefined) {
   const { toast } = useToast();
+  const { user } = useAuth();
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: async (folderId: string) => {
-      // Step 1: Move all children (documents AND nested folders) up to the
-      // folder's own parent, so nothing inside it is ever orphaned.
-      const { data: folder, error: readError } = await supabase
+    mutationFn: async (folderId: string): Promise<{ documents: number }> => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const db = supabase as any;
+      // Plan from the server's rows, not the cache: a stale cache could miss
+      // a document and leave it parented to a trashed folder.
+      const { data: rows, error: readError } = await db
         .from("world_entries")
-        .select("parent_id")
-        .eq("id", folderId)
-        .maybeSingle();
+        .select("id, parent_id, entry_type, sort_order, title, metadata")
+        .eq("world_id", worldId!)
+        .in("entry_type", ["document", "folder"])
+        .is("trashed_at", null);
       if (readError) throw readError;
-      const { error: moveError } = await supabase
-        .from("world_entries")
-        .update({ parent_id: folder?.parent_id ?? null })
-        .eq("parent_id", folderId);
+      const all = (rows ?? []) as (WorldEntry & { metadata: unknown })[];
+      const plan = planFolderTrash(all, folderId);
+      if (!plan) throw new Error("FOLDER NOT ON FILE.");
 
-      if (moveError) throw moveError;
+      // Never lose words: snapshot every document before it moves.
+      if (user) {
+        for (const id of plan.documentIds) await captureDocumentSnapshot(id, user.id, "trash");
+      }
 
-      // Step 2: Delete the folder itself
-      const { error: deleteError } = await supabase
+      const now = new Date().toISOString();
+      const metaOf = new Map(all.map((e) => [e.id, e.metadata]));
+      const asObject = (m: unknown): Record<string, unknown> =>
+        m && typeof m === "object" && !Array.isArray(m) ? (m as Record<string, unknown>) : {};
+      const inside: { error: unknown }[] = await Promise.all(
+        plan.inside.map((r) =>
+          db
+            .from("world_entries")
+            .update({
+              trashed_at: now,
+              parent_id: null,
+              metadata: { ...asObject(metaOf.get(r.id)), trashedFromParentId: r.formerParentId },
+            })
+            .eq("id", r.id),
+        ),
+      );
+      const insideFailed = inside.find((r) => r.error);
+      if (insideFailed?.error) throw insideFailed.error;
+
+      const { error: folderError } = await db
         .from("world_entries")
-        .delete()
+        .update({ trashed_at: now })
         .eq("id", folderId);
+      if (folderError) throw folderError;
 
-      if (deleteError) throw deleteError;
+      // Close the gap the folder left and clear colliding sort_orders.
+      const renumbered = await Promise.all(
+        plan.siblingOrder.map((id, i) =>
+          supabase.from("world_entries").update({ sort_order: i * 10 }).eq("id", id),
+        ),
+      );
+      const renumberFailed = renumbered.find((r) => r.error);
+      if (renumberFailed?.error) throw renumberFailed.error;
+
+      return { documents: plan.documentIds.length };
     },
-    onSuccess: () => {
+    onSuccess: ({ documents }) => {
       qc.invalidateQueries({ queryKey: docKeys.all(worldId!) });
-      toast({ title: "FOLDER DELETED.", description: "Its contents moved up one level." });
+      qc.invalidateQueries({ queryKey: ["trashed-documents", worldId] });
+      toast({
+        title: "FOLDER MOVED TO TRASH.",
+        description:
+          documents === 0
+            ? "Recoverable for 90 days."
+            : `${documents} ${documents === 1 ? "document" : "documents"} recoverable for 90 days. A restored document returns to the top level.`,
+      });
     },
     onError: (error) => {
       toast({

@@ -63,8 +63,7 @@ import {
 } from "@/lib/binder-tree";
 import { readDocMeta, STATUS_LABELS, STATUS_TONE } from "@/lib/document-meta";
 import { findLabel, LABEL_SWATCH, type WritingLabel } from "@/lib/writing-labels";
-import { countWords } from "@/lib/text";
-import type { WorldEntry } from "@/services/world-data";
+import { rowWords, type BinderRowLike } from "@/lib/writing/doc-scale";
 import { canonCountLine, canonTotal, type CanonCount } from "@/lib/writing/canon-changes";
 
 // ---------------------------------------------------------------------------
@@ -73,9 +72,9 @@ import { canonCountLine, canonTotal, type CanonCount } from "@/lib/writing/canon
 
 export interface BinderTreeProps {
   worldId: string;
-  tree: BinderNode<WorldEntry>[];
+  tree: BinderNode<BinderRowLike>[];
   /** Flat folders + documents, the planner input. */
-  entries: WorldEntry[];
+  entries: BinderRowLike[];
   activeDocId?: string;
   labels: WritingLabel[];
   onOpen: (id: string) => void;
@@ -188,7 +187,7 @@ export function BinderTree({
   // Word counts, once per data change rather than per row render.
   const wordCounts = useMemo(() => {
     const m = new Map<string, number>();
-    for (const e of entries) if (e.entry_type !== "folder") m.set(e.id, countWords(e.content));
+    for (const e of entries) if (e.entry_type !== "folder") m.set(e.id, rowWords(e));
     return m;
   }, [entries]);
 
@@ -225,7 +224,7 @@ export function BinderTree({
   // Click: open (and clear any selection). Cmd/Ctrl-click: toggle one
   // document in the selection. Shift-click: select the visible range from the
   // last clicked (or the open) document.
-  const activate = (node: BinderNode<WorldEntry>, e: React.MouseEvent) => {
+  const activate = (node: BinderNode<BinderRowLike>, e: React.MouseEvent) => {
     const id = node.entry.id;
     const multi = e.metaKey || e.ctrlKey;
     if (!node.isFolder && onSelectionChange && (multi || e.shiftKey)) {
@@ -390,9 +389,9 @@ export function BinderTree({
 // ---------------------------------------------------------------------------
 
 interface BinderRowProps {
-  node: BinderNode<WorldEntry>;
+  node: BinderNode<BinderRowLike>;
   depth: number;
-  entries: WorldEntry[];
+  entries: BinderRowLike[];
   active: boolean;
   selected: boolean;
   expanded: boolean;
@@ -674,7 +673,7 @@ function MoveTargets({
   id,
   onPick,
 }: {
-  entries: WorldEntry[];
+  entries: BinderRowLike[];
   id: string;
   onPick: (folderId: string) => void;
 }): JSX.Element {

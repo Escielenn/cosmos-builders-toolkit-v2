@@ -32,6 +32,8 @@ interface SnapshotCompareDialogProps {
   onOpenChange: (open: boolean) => void;
   /** Resolves true when the restore went through. */
   onRestore: (snapshot: DocumentSnapshot) => Promise<boolean>;
+  /** The restore action's name (a save conflict calls it LOAD THEIRS). */
+  restoreLabel?: string;
 }
 
 export function SnapshotCompareDialog({
@@ -39,6 +41,7 @@ export function SnapshotCompareDialog({
   currentHtml,
   onOpenChange,
   onRestore,
+  restoreLabel = "Restore this version",
 }: SnapshotCompareDialogProps): JSX.Element {
   const [view, setView] = useState<"changes" | "snapshot">("changes");
   const [confirming, setConfirming] = useState(false);
@@ -184,7 +187,7 @@ export function SnapshotCompareDialog({
                 onClick={() => setConfirming(true)}
                 disabled={!!diff?.identical}
               >
-                Restore this version
+                {restoreLabel}
               </Button>
             </>
           )}

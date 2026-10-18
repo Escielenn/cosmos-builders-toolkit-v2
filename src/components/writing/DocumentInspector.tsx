@@ -6,6 +6,8 @@
 //              text), SET IN (a place), WHEN + TIMELINE, keywords, target.
 //              POV and SET IN drive the rail ranking and the World tab.
 //   NOTES      per-document notes, distinct from the synopsis
+//   COMMENTS   inline comments anchored to words (DocumentComments), when
+//              the parent supplies the pane
 //   SNAPSHOTS  take / compare / restore versions of this document
 //
 // Absorbs (Law VII) DocumentMetaBar, the collapsed card strip that sat
@@ -44,7 +46,7 @@ import {
 import { isNamedSnapshot } from "@/lib/snapshot-cap";
 
 
-export type InspectorPane = "card" | "notes" | "snapshots";
+export type InspectorPane = "card" | "notes" | "comments" | "snapshots";
 
 /** A character the POV can be bound to: a Dossier, a character entity, or both. */
 export interface PovOption {
@@ -89,6 +91,8 @@ interface DocumentInspectorProps {
   povOptions?: PovOption[];
   placeOptions?: PlaceOption[];
   branchOptions?: BranchOption[];
+  /** The COMMENTS pane (DocumentComments). Absent: no Comments tab. */
+  comments?: React.ReactNode;
 }
 
 const FIELD_LABEL = "font-sans text-[12px] font-medium uppercase tracking-wide text-t3";
@@ -98,7 +102,7 @@ export function DocumentInspector(props: DocumentInspectorProps): JSX.Element {
   return (
     <div className="flex h-full min-h-0 flex-col">
       <div className="flex border-b border-sf-line-hairline" role="tablist" aria-label="Document inspector">
-        {(["card", "notes", "snapshots"] as const).map((p) => (
+        {(props.comments ? (["card", "notes", "comments", "snapshots"] as const) : (["card", "notes", "snapshots"] as const)).map((p) => (
           <button
             key={p}
             type="button"
@@ -109,13 +113,20 @@ export function DocumentInspector(props: DocumentInspectorProps): JSX.Element {
               pane === p ? "bg-sf-surface-elevated text-t1" : "text-t3 hover:text-t1"
             }`}
           >
-            {p === "card" ? "Card" : p === "notes" ? "Notes" : `Snaps${props.snapshots.length ? ` ${props.snapshots.length}` : ""}`}
+            {p === "card"
+              ? "Card"
+              : p === "notes"
+                ? "Notes"
+                : p === "comments"
+                  ? "Comments"
+                  : `Snaps${props.snapshots.length ? ` ${props.snapshots.length}` : ""}`}
           </button>
         ))}
       </div>
       <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto">
         {pane === "card" && <CardPane {...props} />}
         {pane === "notes" && <NotesPane meta={props.meta} onChange={props.onChange} />}
+        {pane === "comments" && props.comments}
         {pane === "snapshots" && <SnapshotsPane {...props} />}
       </div>
     </div>

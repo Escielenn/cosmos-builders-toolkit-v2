@@ -34,8 +34,7 @@ import {
   STATUS_LABELS,
   STATUS_TONE,
 } from "@/lib/document-meta";
-import { countWords } from "@/lib/text";
-import type { WorldEntry } from "@/services/world-data";
+import { rowWords, type BinderRowLike } from "@/lib/writing/doc-scale";
 import type { WritingFolder } from "@/hooks/use-writing-documents";
 import { EmptyState } from "@/components/ui/empty-state";
 
@@ -45,7 +44,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 
 interface CorkboardProps {
   folders: WritingFolder[];
-  unfiled: WorldEntry[];
+  unfiled: BinderRowLike[];
   activeDocId?: string;
   onOpen: (id: string) => void;
   /** Persist a new order for one group (folder's scenes, or unfiled). */
@@ -61,14 +60,14 @@ function Card({
   active,
   onOpen,
 }: {
-  doc: WorldEntry;
+  doc: BinderRowLike;
   active: boolean;
   onOpen: () => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: doc.id });
   const meta = readDocMeta(doc.metadata);
-  const words = countWords(doc.content);
+  const words = rowWords(doc);
 
   return (
     <div
@@ -127,7 +126,7 @@ function Group({
   onReorder,
 }: {
   title: string;
-  docs: WorldEntry[];
+  docs: BinderRowLike[];
   activeDocId?: string;
   onOpen: (id: string) => void;
   onReorder: (ids: string[]) => void;
@@ -138,7 +137,7 @@ function Group({
   );
 
   const totalWords = useMemo(
-    () => docs.reduce((n, d) => n + countWords(d.content), 0),
+    () => docs.reduce((n, d) => n + rowWords(d), 0),
     [docs],
   );
 

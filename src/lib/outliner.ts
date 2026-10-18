@@ -11,7 +11,7 @@
 
 import type { BinderEntry, BinderNode } from "@/lib/binder-tree";
 import { readDocMeta, type DocumentMeta } from "@/lib/document-meta";
-import { countWords } from "@/lib/text";
+import { rowWords } from "@/lib/writing/doc-scale";
 
 export const OUTLINER_COLUMNS = [
   "synopsis",
@@ -62,6 +62,8 @@ export function toggleColumn(cols: OutlinerColumn[], col: OutlinerColumn): Outli
 
 export interface OutlinerEntry extends BinderEntry {
   content?: string | null;
+  /** Stored word count (the binder list); counted from content when absent. */
+  word_count?: number | null;
   metadata?: unknown;
   updated_at?: string | null;
 }
@@ -96,7 +98,7 @@ export function buildOutlinerRows<T extends OutlinerEntry>(
   const visit = (node: BinderNode<T>, emit: boolean): [number, number, number] => {
     if (!node.isFolder) {
       const meta = readDocMeta(node.entry.metadata);
-      const words = countWords(node.entry.content ?? "");
+      const words = rowWords(node.entry);
       if (emit) {
         out.push({
           entry: node.entry,

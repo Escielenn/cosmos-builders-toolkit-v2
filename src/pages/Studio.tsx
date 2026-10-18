@@ -16,6 +16,7 @@ import {
   type StudioWorld,
 } from "@/hooks/useStudioData";
 import { useMetaTags } from "@/hooks/use-meta-tags";
+import { WordHistoryChart } from "@/components/writing/WordHistoryChart";
 
 // ── small helpers ───────────────────────────────────────────────────
 
@@ -215,6 +216,9 @@ export default function Studio(): JSX.Element {
               ))}
             </div>
           </div>
+
+          {/* word-count history (writing_sessions ledger) */}
+          <WordHistoryChart />
 
           {/* continue-writing card */}
           <section className="mt-10 border border-sf-line bg-sf-surface/90">

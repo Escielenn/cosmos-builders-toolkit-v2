@@ -198,25 +198,16 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
               </NavigationMenuLink>
               <NavigationMenuLink asChild>
                 <Link
-                  to="/workshop"
+                  to="/prompts"
                   className="flex items-start gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-sf-surface-elevated rounded-none transition-colors"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-sf-primary-text mt-0.5" />
                   <div>
                     <span>Daily Prompt</span>
                     <span className="block text-[12px] text-t4 font-normal normal-case tracking-normal">
-                      Practice prompts &amp; entries, separate from your manuscript
+                      This week's prompts. Each opens a new Studio document
                     </span>
                   </div>
-                </Link>
-              </NavigationMenuLink>
-              <NavigationMenuLink asChild>
-                <Link
-                  to="/prompts"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-sf-surface-elevated rounded-none transition-colors"
-                >
-                  <BookOpen className="w-3.5 h-3.5 text-sf-primary-text" />
-                  Prompt Browser
                 </Link>
               </NavigationMenuLink>
             </div>

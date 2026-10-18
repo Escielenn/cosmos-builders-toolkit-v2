@@ -39,7 +39,9 @@ import { GlassPanel } from "@/components/ui/glass-panel";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BackLink } from "@/components/ui/back-link";
 import { useMetaTags } from "@/hooks/use-meta-tags";
-import { useReorderDocuments, useWritingDocuments } from "@/hooks/use-writing-documents";
+import { useReorderDocuments, useWritingDocuments, type BinderDoc } from "@/hooks/use-writing-documents";
+import { useWorldDocumentContents } from "@/hooks/use-document-contents";
+import type { ContentRecord } from "@/lib/writing/doc-scale";
 import { useWorldSetting } from "@/hooks/use-world-setting";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useAuth } from "@/contexts/AuthContext";
@@ -52,7 +54,6 @@ import { sanitizeHtml } from "@/lib/sanitize";
 import { countWords } from "@/lib/text";
 import { cn } from "@/lib/utils";
 import type { BinderNode } from "@/lib/binder-tree";
-import type { WorldEntry } from "@/services/world-data";
 import { blocksToXhtml } from "@/lib/manuscript/blocks";
 import {
   COMPILE_FORMATS,
@@ -73,6 +74,9 @@ import {
   type SeparatorStyle,
 } from "@/lib/manuscript/compile";
 import { FORMAT_LABELS, downloadManuscript } from "@/lib/manuscript/export";
+import { backMatterData } from "@/lib/manuscript/back-matter-data";
+import { useEntities } from "@/hooks/use-entity-graph";
+import { useCanonFacts } from "@/canon/hooks";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -108,13 +112,14 @@ function escapeHtml(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
-function toCompileNodes(nodes: BinderNode<WorldEntry>[]): CompileNode[] {
+/** The binder list carries no text: each document's comes from `text`. */
+function toCompileNodes(nodes: BinderNode<BinderDoc>[], text: ContentRecord | undefined): CompileNode[] {
   return nodes.map((n) => ({
     id: n.entry.id,
     title: n.entry.title || (n.isFolder ? "Untitled folder" : "Untitled"),
     isFolder: n.isFolder,
-    html: n.isFolder ? "" : n.entry.content ?? "",
-    children: toCompileNodes(n.children),
+    html: n.isFolder ? "" : text?.[n.entry.id]?.content ?? "",
+    children: toCompileNodes(n.children, text),
   }));
 }
 
@@ -127,7 +132,10 @@ export default function WorldCompile() {
   const { user } = useAuth();
   const { worlds } = useWorlds();
   const { toast } = useToast();
-  const { data: documents, tree, isLoading } = useWritingDocuments(worldId);
+  const { data: documents, tree, isLoading: listLoading } = useWritingDocuments(worldId);
+  // Compile reads every document's text: loaded here, where it is used.
+  const contents = useWorldDocumentContents(worldId, { enabled: true });
+  const isLoading = listLoading || contents.isLoading;
   const stored = useWorldSetting(worldId, "compile", sanitizeCompileSettings, "COMPILE SETTINGS NOT SAVED.");
 
   useMetaTags({ title: "Compile Manuscript" });
@@ -166,7 +174,7 @@ export default function WorldCompile() {
   // Binder → compile tree. Compile follows the binder's order (decision
   // 2026-10-17: one order, not two); reordering here moves the binder.
   // Any compile-only order saved by 0.7456 is ignored.
-  const compileTree = useMemo(() => toCompileNodes(tree ?? []), [tree]);
+  const compileTree = useMemo(() => toCompileNodes(tree ?? [], contents.data), [tree, contents.data]);
   const orderedTree = compileTree;
   const buildSettings = useMemo(() => ({ ...s, order: {} }), [s]);
   const excluded = useMemo(() => new Set(s.excluded), [s.excluded]);
@@ -190,9 +198,20 @@ export default function WorldCompile() {
       .join("");
   }, [worksheets]);
 
+  // Generated back matter (Studio Charter 2.7): Codex entries for the
+  // glossary and dramatis personae, canon facts for the series bible.
+  // Read only when one of them is on.
+  const wantsCodex = s.includeGlossary || s.includeDramatis;
+  const { data: entities } = useEntities(wantsCodex || s.includeSeriesBible ? worldId : undefined);
+  const { data: canonFacts } = useCanonFacts(s.includeSeriesBible ? worldId : undefined);
+  const backMatter = useMemo(
+    () => backMatterData(entities ?? [], canonFacts ?? []),
+    [entities, canonFacts],
+  );
+
   const manuscript = useMemo(
-    () => buildManuscript(compileTree, buildSettings, { appendixHtml, fallbackTitle, fallbackAuthor }),
-    [compileTree, buildSettings, appendixHtml, fallbackTitle, fallbackAuthor],
+    () => buildManuscript(compileTree, buildSettings, { appendixHtml, fallbackTitle, fallbackAuthor, backMatter }),
+    [compileTree, buildSettings, appendixHtml, fallbackTitle, fallbackAuthor, backMatter],
   );
   const docCount = manuscript.sections.reduce((n, sec) => n + sec.docs.length, 0);
 
@@ -360,6 +379,24 @@ export default function WorldCompile() {
                     A final section listing the values recorded in this world's tools.
                   </Toggle>
                 )}
+                <Toggle checked={s.includeDramatis} onChange={(v) => update({ includeDramatis: v })} label="Dramatis personae">
+                  Every character the compiled text mentions, by first appearance, with role and summary.
+                </Toggle>
+                <Toggle checked={s.includeGlossary} onChange={(v) => update({ includeGlossary: v })} label="Glossary">
+                  Every Codex entry the compiled text mentions, alphabetical, with its summary.
+                </Toggle>
+                <Toggle checked={s.includeSeriesBible} onChange={(v) => update({ includeSeriesBible: v })} label="Series bible appendix">
+                  The world's canon facts, grouped by cascade layer. Proposed and derived values are left out.
+                </Toggle>
+                {(s.includeGlossary || s.includeDramatis || s.includeSeriesBible) && (
+                  <p className="font-mono text-[12px] text-t3" role="status">
+                    {manuscript.backMatter.length
+                      ? manuscript.backMatter
+                          .map((b) => `${b.title.toUpperCase()} ${b.id === "bible" ? b.blocks.filter((x) => x.type === "li").length : b.blocks.length}`)
+                          .join(" · ")
+                      : "NOTHING ON FILE FOR THE CHOSEN BACK MATTER."}
+                  </p>
+                )}
               </div>
             </GlassPanel>
 
@@ -481,7 +518,7 @@ export default function WorldCompile() {
                   <Stat label="Words" value={manuscript.words} />
                   <Stat label="Pages at 250 words" value={Math.ceil(manuscript.words / 250)} />
                 </dl>
-                <Button variant="sf-primary" className="w-full" onClick={handleExport} disabled={docCount === 0 || isExporting}>
+                <Button variant="sf-primary" className="w-full" onClick={handleExport} disabled={docCount === 0 || isExporting || !contents.data}>
                   <Download className="mr-2 h-4 w-4" aria-hidden="true" />
                   {isExporting ? "Compiling" : `Compile .${FORMAT_LABELS[s.format].ext}`}
                 </Button>
@@ -765,6 +802,12 @@ function ManuscriptPreview({ manuscript: m }: { manuscript: ReturnType<typeof bu
           <div className="prose prose-invert prose-sm max-w-none text-t2" dangerouslySetInnerHTML={{ __html: sanitizeHtml(blocksToXhtml(m.appendix)) }} />
         </section>
       )}
+      {m.backMatter.map((b) => (
+        <section key={b.id} className="space-y-2">
+          <h3 className="text-center font-serif text-lg italic text-t1">{b.title}</h3>
+          <div className="prose prose-invert prose-sm max-w-none text-t2" dangerouslySetInnerHTML={{ __html: sanitizeHtml(blocksToXhtml(b.blocks)) }} />
+        </section>
+      ))}
     </div>
   );
 }
