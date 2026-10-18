@@ -75,6 +75,8 @@ import { useWorldSetting } from "@/hooks/use-world-setting";
 import { useTypewriterScroll } from "@/hooks/use-typewriter-scroll";
 import { primeDocCaches } from "@/hooks/use-doc-autosave";
 import { docsUnderFolder, inReadingOrder } from "@/lib/binder-tree";
+import { useCanonChanges } from "@/hooks/use-canon-changes";
+import { canonSummaryLine, pruneTree } from "@/lib/writing/canon-changes";
 import { buildMatcher, type SearchHit, type SearchOptions } from "@/lib/binder-search";
 import { selectMatch } from "@/lib/editor-text-map";
 import {
@@ -448,6 +450,21 @@ export default function Write(): JSX.Element {
   // world palette in every editor, and the hover cards. Rebuilt when data
   // changes, never per keystroke.
   const worldIndex = useStudioWorldIndex(worldId);
+
+  // CANON CHANGED (charter 2.5) ----------------------------------------------
+  // Documents citing a value or a name the world has since moved past. Read
+  // off the binder's own content and the index above; no fetch of its own.
+  const canon = useCanonChanges(binderEntries, worldIndex);
+  const canonAffected = canon.affected.size;
+  const [canonFilter, setCanonFilter] = useState(false);
+  useEffect(() => {
+    if (canonAffected === 0) setCanonFilter(false);
+  }, [canonAffected]);
+  useEffect(() => setCanonFilter(false), [worldId]);
+  const shownTree = useMemo(
+    () => (canonFilter ? pruneTree(binderTree, canon.affected) : binderTree),
+    [canonFilter, binderTree, canon.affected],
+  );
 
   // The scene as the rail ranks it: the prose as last handed to the binder
   // cache (the editor's own 1.5s debounce), deferred so ranking yields to
@@ -1164,6 +1181,33 @@ export default function Write(): JSX.Element {
           onClear={() => setSelection([])}
         />
       )}
+      {worldId && canonAffected > 0 && !searchQuery.trim() && (
+        // Charter 2.5: a small mono marker and a filter, not a modal.
+        <div className="flex items-center gap-2 border-b border-sf-line-hairline px-3">
+          <button
+            type="button"
+            onClick={() => setCanonFilter((f) => !f)}
+            aria-pressed={canonFilter}
+            className={`flex min-h-hit min-w-0 flex-1 items-center gap-1.5 text-left font-mono text-[12px] uppercase transition-colors duration-fast ${
+              canonFilter ? "text-sf-amber-text" : "text-t3 hover:text-t1"
+            }`}
+          >
+            <span className="text-sf-amber-text" aria-hidden="true">//</span>
+            <span className="truncate">
+              {canonFilter ? `Canon-changed only (${canonAffected})` : `Show canon-changed (${canonAffected})`}
+            </span>
+          </button>
+          {canonFilter && (
+            <button
+              type="button"
+              onClick={() => setCanonFilter(false)}
+              className="min-h-hit shrink-0 px-1 font-mono text-[12px] uppercase text-t3 transition-colors duration-fast hover:text-sf-primary-text"
+            >
+              Show all
+            </button>
+          )}
+        </div>
+      )}
       <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto py-2">
         {worldId && searchQuery.trim() ? (
           <BinderSearchResults
@@ -1209,7 +1253,9 @@ export default function Write(): JSX.Element {
               );
             }}
             worldId={worldId}
-            tree={binderTree}
+            tree={shownTree}
+            canonCounts={canon.counts}
+            expandAll={canonFilter}
             entries={binderEntries}
             activeDocId={docId}
             labels={labels}
@@ -1775,6 +1821,25 @@ export default function Write(): JSX.Element {
                     : "READY"}
           </span>
         </div>
+        {/* World-level canon line: documents citing what the world has since
+            revised. Click filters the binder to them. */}
+        {canonAffected > 0 && !focus && (
+          <button
+            type="button"
+            onClick={() => {
+              setSearchQuery("");
+              setCanonFilter(true);
+              if (typeof window !== "undefined" && window.matchMedia("(max-width: 1023px)").matches) {
+                setMobilePanel("binder");
+              }
+            }}
+            title="Show the affected documents in the binder"
+            className="hidden min-h-hit min-w-0 items-center gap-1.5 px-2 font-mono text-[12px] uppercase text-sf-amber-text transition-colors duration-fast hover:text-t1 md:flex"
+          >
+            <AlertTriangle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+            <span className="truncate">{canonSummaryLine(canonAffected)}</span>
+          </button>
+        )}
         {/* Progress toward today's goal, not an astronomical date. The editor
             already wrote session words to writing_sessions and never read them
             back, so the writer's own number was invisible while writing. */}

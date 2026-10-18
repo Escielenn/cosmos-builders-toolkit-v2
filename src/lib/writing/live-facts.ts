@@ -30,6 +30,7 @@ export function setLiveFacts(next: ReadonlyMap<string, LiveFact>, isLoaded = tru
 }
 
 export function clearLiveFacts(): void {
+  entityNames = new Map();
   setLiveFacts(new Map(), false);
 }
 
@@ -42,6 +43,23 @@ export function subscribeLiveFacts(fn: () => void): () => void {
 export function liveStatus(attrs: FactRefAttrs): FactRefStatus | null {
   if (!loaded) return null;
   return factRefStatus(attrs, facts.get(factRefId(attrs)));
+}
+
+// ---------------------------------------------------------------------------
+// Entity names, for @mention chips (NAME CHANGED marker)
+// ---------------------------------------------------------------------------
+
+let entityNames: ReadonlyMap<string, string> = new Map();
+
+/** Publish the world's entity names (id → current name). Notifies the same listeners. */
+export function setLiveEntityNames(next: ReadonlyMap<string, string>): void {
+  entityNames = next;
+  for (const fn of listeners) fn();
+}
+
+/** The published name map; empty until the Studio publishes it. */
+export function liveEntityNames(): ReadonlyMap<string, string> {
+  return entityNames;
 }
 
 // ---------------------------------------------------------------------------
