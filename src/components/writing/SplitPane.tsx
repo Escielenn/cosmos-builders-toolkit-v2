@@ -261,7 +261,7 @@ function DocBody({
   const initial = useRef<string | null>(null);
   if (initial.current === null) {
     initial.current = doc.content ?? "";
-    autosave.register(doc.id, doc.content);
+    autosave.register(doc.id, doc.content, doc.updated_at);
   }
   return (
     <div className="mx-auto px-6 py-6" style={{ maxWidth: "var(--sf-writing-measure, 68ch)", ...editorStyle }}>

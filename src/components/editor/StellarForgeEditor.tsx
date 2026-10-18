@@ -56,6 +56,7 @@ import { useEntities } from "@/hooks/use-entity-graph";
 import { useWritingPreferences } from "@/hooks/use-writing-preferences";
 import { WRITING_THEMES } from "@/lib/writing/themes";
 import { countWordsInText } from "@/lib/text";
+import { useExternalContentSync } from "@/components/editor/use-external-content";
 import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
 
 /** Mirrors @tiptap/extension-heading's (unexported) Level union. */
@@ -109,6 +110,12 @@ export interface StellarForgeEditorProps {
    * brackets; the toolbar sits above the prose on one solid hairline rule.
    */
   page?: boolean;
+  /**
+   * Called on every keystroke that changes the document, before the
+   * debounced onChange. Lets the owner know words are unsaved the instant
+   * they exist (the footer, the close-tab guard, the device journal).
+   */
+  onDirty?: () => void;
 }
 
 /** The frame-less shell for `bare` editors. */
@@ -196,6 +203,7 @@ export function StellarForgeEditor({
   onEditorReady,
   bare = false,
   page = false,
+  onDirty,
 }: StellarForgeEditorProps) {
   const config = PRESET_CONFIG[preset];
   const resolvedMinHeight = minHeight || config.defaultMinHeight;
@@ -206,6 +214,10 @@ export function StellarForgeEditor({
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
+  const onDirtyRef = useRef(onDirty);
+  onDirtyRef.current = onDirty;
+  /** Edits typed here that onChange has not been handed yet. */
+  const unsentRef = useRef(false);
 
   const { preferences, updatePreferences } = useWritingPreferences();
 
@@ -273,8 +285,13 @@ export function StellarForgeEditor({
     extensions,
     content,
     editable: !readOnly,
-    onUpdate: ({ editor: ed }) => {
+    onUpdate: ({ editor: ed, transaction }) => {
       const html = ed.getHTML();
+      // A real edit (not the update setEditable emits on mount).
+      if (transaction.docChanged) {
+        unsentRef.current = true;
+        onDirtyRef.current?.();
+      }
 
       // Update word count. textBetween with a " " block separator, NOT
       // doc.textContent — textContent glues paragraphs together and loses one
@@ -287,6 +304,8 @@ export function StellarForgeEditor({
       // Debounced onChange
       if (debounceRef.current) clearTimeout(debounceRef.current);
       debounceRef.current = setTimeout(() => {
+        debounceRef.current = null;
+        unsentRef.current = false;
         onChangeRef.current(html);
       }, DEBOUNCE_MS);
     },
@@ -300,6 +319,7 @@ export function StellarForgeEditor({
         clearTimeout(debounceRef.current);
         debounceRef.current = null;
       }
+      unsentRef.current = false;
       onChangeRef.current(ed.getHTML());
     },
     editorProps: {
@@ -322,12 +342,10 @@ export function StellarForgeEditor({
     },
   });
 
-  // Sync content from outside (e.g., initial load from DB)
-  useEffect(() => {
-    if (editor && content !== editor.getHTML() && !editor.isFocused) {
-      editor.commands.setContent(content || "");
-    }
-  }, [content, editor]);
+  // Sync content from outside (initial load, document switch, a remote
+  // change), never over local edits a refetch has not caught up with, and
+  // never as an update that would be saved back (see lib/editor-sync.ts).
+  useExternalContentSync(editor, content);
 
   // Sync editable state
   useEffect(() => {
@@ -356,6 +374,38 @@ export function StellarForgeEditor({
           onChangeRef.current(html);
         }
       }
+    };
+  }, []);
+
+  // The tab is closing, hidden or being frozen: hand the debounced words over
+  // now, so the owner's own guard and save path see them. Without this the
+  // last 1.5s of typing never reached anyone's beforeunload check.
+  useEffect(() => {
+    const flushUnsent = (): boolean => {
+      if (!unsentRef.current) return false;
+      const ed = editorRef.current;
+      if (!ed || ed.isDestroyed) return false;
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+        debounceRef.current = null;
+      }
+      unsentRef.current = false;
+      onChangeRef.current(ed.getHTML());
+      return true;
+    };
+    const onBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (flushUnsent()) e.preventDefault();
+    };
+    const onHide = () => {
+      if (document.visibilityState === "hidden") flushUnsent();
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    window.addEventListener("pagehide", flushUnsent);
+    document.addEventListener("visibilitychange", onHide);
+    return () => {
+      window.removeEventListener("beforeunload", onBeforeUnload);
+      window.removeEventListener("pagehide", flushUnsent);
+      document.removeEventListener("visibilitychange", onHide);
     };
   }, []);
 

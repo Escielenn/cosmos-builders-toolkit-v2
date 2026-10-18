@@ -203,7 +203,17 @@ export function useCreateDocument(worldId: string | undefined) {
 // Update document content (auto-save)
 // ---------------------------------------------------------------------------
 
-export function useUpdateDocumentContent(worldId: string | undefined) {
+export function useUpdateDocumentContent(
+  worldId: string | undefined,
+  opts: {
+    /**
+     * The caller reports failures itself (the Studio footer's UNSAVED,
+     * RETRYING state, and one toast per failure run). Without this a timed
+     * retry would toast every few seconds.
+     */
+    silentErrors?: boolean;
+  } = {},
+) {
   const qc = useQueryClient();
   const { toast } = useToast();
 
@@ -233,10 +243,10 @@ export function useUpdateDocumentContent(worldId: string | undefined) {
     },
     // A failed autosave used to be completely silent.
     onError: () => {
+      if (opts.silentErrors) return;
       toast({
         title: "SAVE FAILED.",
-        description:
-          "Your last change did not reach the server. Copy your text before closing this tab.",
+        description: "Your words are held on this device. Retrying.",
         variant: "destructive",
       });
     },
@@ -547,13 +557,18 @@ export function useMoveDocument(worldId: string | undefined) {
 
 export function useReorderDocuments(worldId: string | undefined) {
   const qc = useQueryClient();
+  const { toast } = useToast();
   return useMutation({
     mutationFn: async (orderedIds: string[]) => {
-      await Promise.all(
+      // Each row is its own request; a failed one used to be ignored, so the
+      // binder showed an order the server never stored.
+      const results = await Promise.all(
         orderedIds.map((id, i) =>
           supabase.from("world_entries").update({ sort_order: i * 10 }).eq("id", id),
         ),
       );
+      const failed = results.find((r) => r.error);
+      if (failed?.error) throw failed.error;
     },
     onMutate: async (orderedIds: string[]) => {
       // optimistic: reflect the new order immediately
@@ -568,8 +583,20 @@ export function useReorderDocuments(worldId: string | undefined) {
       }
       return { prev };
     },
-    onError: (_e, _v, ctx) => {
-      if (ctx?.prev) qc.setQueryData(docKeys.all(worldId!), ctx.prev);
+    onError: async (error, orderedIds, ctx) => {
+      toast({ title: "REORDER FAILED.", description: mapError(error), variant: "destructive" });
+      if (!ctx?.prev) return;
+      qc.setQueryData(docKeys.all(worldId!), ctx.prev);
+      // Some rows may have landed. Put them back to their previous order so
+      // the server matches the rolled-back binder, not half of each.
+      const before = new Map(ctx.prev.map((e) => [e.id, e.sort_order]));
+      await Promise.all(
+        orderedIds
+          .filter((id) => before.has(id))
+          .map((id) =>
+            supabase.from("world_entries").update({ sort_order: before.get(id)! }).eq("id", id),
+          ),
+      ).catch(() => undefined);
     },
     onSettled: () => {
       qc.invalidateQueries({ queryKey: docKeys.all(worldId!) });

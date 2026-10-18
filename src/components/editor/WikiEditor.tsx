@@ -31,6 +31,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useExternalContentSync } from "@/components/editor/use-external-content";
 
 interface WikiEditorProps {
   worldId: string;
@@ -102,12 +103,9 @@ export function WikiEditor({
     },
   });
 
-  // Sync content from outside
-  useEffect(() => {
-    if (editor && content !== editor.getHTML() && !editor.isFocused) {
-      editor.commands.setContent(content || "");
-    }
-  }, [content, editor]);
+  // Sync content from outside: never over local edits a refetch has not
+  // caught up with, never emitted as an edit (see lib/editor-sync.ts).
+  useExternalContentSync(editor, content);
 
   // Sync editable state
   useEffect(() => {
