@@ -1,7 +1,20 @@
 # StellarForge Changelog
 
-## 0.7405
-Uplift: consistency overhaul and quality of life. Same visual direction,
+## 0.7415
+Design decisions settled (see docs/stellarforge/AMENDMENTS.md, 2026-10-17).
+- Cascade colours made consistent: Psychology magenta, Culture violet on
+  About and Getting Started, matching the tool categories.
+- Ordered scales use a distinct hue per step: Time Dilation, LexDrift,
+  Drake, Space Expansion barriers, surface-gravity escape regimes.
+- Archived worlds keep the normal card with a dashed edge, instead of the
+  disabled look.
+- Tool-page cascade footer moved off the writer serif onto DM Sans.
+- Docs: Lora defined as the writer voice; simulators square (rounded-lg
+  exception retired); cascade colour line corrected.
+
+## 0.7414
+Uplift: consistency overhaul and quality of life. (Shipped as 0.7405;
+renumbered to the +10 feature-scale convention in src/config/version.ts.) Same visual direction,
 applied everywhere it had drifted. About 330 files.
 
 Look

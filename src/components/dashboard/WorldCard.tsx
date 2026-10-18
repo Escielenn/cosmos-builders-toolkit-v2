@@ -107,7 +107,7 @@ const WorldCard = ({
 
   return (
     <>
-      <GlassPanel hover className={cn("flex flex-col min-h-[200px]", isArchived && "bg-sf-disabled-bg border-sf-disabled-line")}>
+      <GlassPanel hover className={cn("flex flex-col min-h-[200px]", isArchived && "border-dashed")}>
         {/* Header Image */}
         <div className="relative">
           {headerImageUrl ? (

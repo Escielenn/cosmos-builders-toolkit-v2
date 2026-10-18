@@ -152,7 +152,7 @@ Interactive accent elements keep the old shape with solid edges:
 | **DM Sans** | `font-sans` | Body, labels, **ALL BUTTONS** |
 | **JetBrains Mono** | `font-mono` | Numbers, coordinates, IDs, timestamps. Never body copy. |
 
-Four fonts only. **NEVER** use MD Nichrome on buttons. **NEVER** use Inter. Space Grotesk is retired (CI hard-fails on it).
+Four interface fonts, plus **Lora** (`font-serif`, italic) as the writer voice. Lora belongs to the writing surfaces (Studio, Write, Codex, Chronicle, Corkboard, shelves) and to the marketing "Studio meld" accents (a hero phrase, a lead-in, the tagline). It never appears on instrument or ops chrome (tool pages, simulators' controls, settings) or on buttons. **NEVER** use MD Nichrome on buttons. **NEVER** use Inter. Space Grotesk is retired (CI hard-fails on it). *(Decision 2026-10-17.)*
 
 #### Type Scale
 
@@ -178,10 +178,9 @@ Never 700/bold. Display and headings sit at 300 or 400, body at 400, labels and 
 
 ### Border Radius
 
-**Zero radius everywhere** (`rounded-none`). Two documented exceptions:
+**Zero radius everywhere** (`rounded-none`). One documented exception:
 
 - **Tag**: `rounded-sf-tag` (2px).
-- **Simulator chrome**: `rounded-lg`, per the Tidelock reference (see Simulator-Specific Guidelines).
 
 `rounded-md`/`rounded-sm`/`rounded-xs` still exist in `tailwind.config.ts` only because unmigrated shadcn primitives use them. Do not use them in new code.
 
@@ -333,7 +332,7 @@ The site has many always-on overlays. Use this stack so new chrome doesn't fight
 
 When building interactive canvas-based tools:
 
-Simulators follow the site-wide token rules (solid `sf-line-*` borders, four text tiers, `sf-primary` for interactive state, 120–280ms motion). Only two things are simulator-specific: the deeper canvas (`#09090B`) and `rounded-lg` chrome, per the Tidelock reference. Legacy cyan `#00D4FF` is retired product-wide (SF-II settled decision #3); CI hard-fails on it.
+Simulators follow the site-wide token rules (solid `sf-line-*` borders, four text tiers, `sf-primary` for interactive state, 120–280ms motion). Only one thing is simulator-specific: the deeper canvas (`#09090B`). Simulator panels are square like everything else (decision 2026-10-17: every simulator already shipped square, so the old `rounded-lg` exception was retired rather than applied). Legacy cyan `#00D4FF` is retired product-wide (SF-II settled decision #3); CI hard-fails on it.
 
 #### Canvas Setup
 
@@ -350,7 +349,7 @@ ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 #### Simulator Colors
 
-No `--sim-*` CSS variables exist and none should be added. DOM chrome uses the Tailwind tokens (`sf-primary`, `sf-line-*`, `t1`–`t4`, `sf-crimson` / `sf-amber` for status). Canvas and three.js draw loops, which cannot read CSS variables, import hex from `src/styles/tokens.ts` (`tokens.surface.simCanvas`, `tokens.surface.simPanel`, `tokens.sim.*`, `tokens.status.*`). `tokens.ts` is a hand-kept mirror; its text and panel values predate the solved palette, so prefer reading the CSS variable at runtime where you can. Data palettes (spectral classes, albedos) are not theme colours and belong in `src/lib/palettes/`. The old `#FFA500` / `#2ECC71` / `#E74C3C` / `#FFD43B` status hexes are legacy; do not add new uses.
+No `--sim-*` CSS variables exist and none should be added. DOM chrome uses the Tailwind tokens (`sf-primary`, `sf-line-*`, `t1`–`t4`, `sf-crimson` / `sf-amber` for status). Canvas and three.js draw loops, which cannot read CSS variables, import hex from `src/styles/tokens.ts` (`tokens.surface.simCanvas`, `tokens.surface.simPanel`, `tokens.sim.*`, `tokens.status.*`). `tokens.ts` is a hand-kept mirror of the default Void·Teal theme (synced 2026-10-17); it does not follow the user's theme, so prefer `getToken()` (reads the live CSS variable) where you can. Data palettes (spectral classes, albedos) are not theme colours and belong in `src/lib/palettes/`. The old `#FFA500` / `#2ECC71` / `#E74C3C` / `#FFD43B` status hexes are legacy; do not add new uses.
 
 #### Panel Placement
 
@@ -365,8 +364,8 @@ Bottom-center: Timeline scrubber (if time-based)
 #### Simulator Panels
 
 ```tsx
-<div className="rounded-lg border border-sf-line bg-sf-surface/90 backdrop-blur-sf-panel px-[18px] py-[14px]">
-  {/* rounded-lg is the documented simulator exception; everything else is site-wide */}
+<div className="rounded-none border border-sf-line bg-sf-surface/90 backdrop-blur-sf-panel px-[18px] py-[14px]">
+  {/* square, like every other panel */}
 </div>
 ```
 
@@ -551,7 +550,7 @@ function CardIcon({ category }: { category: ToolCategory }) {
 - Use Jura for section headers and nav
 - Use DM Sans for body text AND all buttons
 - Use JetBrains Mono for data, readouts, numbered badges
-- Use zero border-radius everywhere (exceptions: Tag 2px, simulator chrome `rounded-lg`)
+- Use zero border-radius everywhere (one exception: Tag 2px)
 - Include hover states with bottom-edge fill bar animation
 - Make all worksheets exportable
 - Show cascade relationships between tools
@@ -701,12 +700,12 @@ export function NewSimulator(): JSX.Element {
 
       <Canvas ref={canvasRef} />
 
-      {/* Simulator chrome keeps rounded-lg; interactive state uses sf-primary */}
-      <ControlPanel className="rounded-lg">
+      {/* Square chrome; interactive state uses sf-primary */}
+      <ControlPanel>
         {/* Sliders, buttons use sf-primary like every other surface */}
       </ControlPanel>
 
-      <DataPanel className="rounded-lg">
+      <DataPanel>
         {/* Readouts in JetBrains Mono */}
       </DataPanel>
 
@@ -730,7 +729,7 @@ export function NewSimulator(): JSX.Element {
 | Primary accent | `sf-primary` | `sf-primary` (cyan retired) |
 | Glow | `sf-primary-bright` | `sf-primary-bright` |
 | Background | `sf-void` | `#09090B` canvas (`tokens.surface.simCanvas`) |
-| Panel radius | `rounded-none` | `rounded-lg` |
+| Panel radius | `rounded-none` | `rounded-none` |
 | Panel border | `sf-line` | `sf-line` |
 
 ---
@@ -859,7 +858,7 @@ font-sans     DM Sans         body, buttons
 font-mono     JetBrains Mono  data
 
 /* Radius */
-rounded-none everywhere · rounded-sf-tag (2px) Tag · rounded-lg simulator chrome
+rounded-none everywhere · rounded-sf-tag (2px) Tag
 
 /* Motion */
 duration-fast 120ms · duration-base 180ms · duration-slow 280ms · ease-sf-out
@@ -1013,22 +1012,25 @@ batched.
 The visual language is governed by the `stellarforge-design` skill and the
 design handoff README. Summary of the rules most often broken:
 
-- Zero radius everywhere. Two documented exceptions: Tag (2px), and
-  simulator canvases (product teal on #09090B, `rounded-lg`, per the
-  Tidelock reference chrome — legacy cyan #00D4FF is retired product-wide,
-  SF-II settled decision #3, and must never reappear). The site/simulator
-  radius split is intentional and is a known source of drift — do not "fix"
-  it by unifying without asking.
+- Zero radius everywhere, simulators included. One documented exception:
+  Tag (2px). (The old simulator `rounded-lg` exception was retired
+  2026-10-17; no simulator ever shipped rounded.) Simulator canvases are
+  #09090B with product teal; legacy cyan #00D4FF is retired product-wide,
+  SF-II settled decision #3, and must never reappear.
 - MD Nichrome for H1 only. Jura for eyebrows and section labels. DM Sans for
   body and buttons. JetBrains Mono for numbers, coordinates, IDs, timestamps
-  — never body copy.
+  — never body copy. Lora italic is the writer voice: writing surfaces and
+  marketing accents only, never instrument chrome or buttons.
 - Three surface layers maximum: void → surface → elevated. Modals sit on
   `elevated` above `--sf-scrim`; there is no fourth plane.
 - One focal moment per screen.
 - Motion 120–280ms. No springs. No reveals over 300ms outside ambient
   telemetry.
-- Colour is a cascade layer: amber = Physics, stellar blue = Worlds,
-  violet = Lore, crimson = Stop, teal = Integration. These never move.
+- Colour is a cascade layer, matching the tool categories: amber = Physics,
+  azure = Environment/Worlds, emerald = Biology/Life, magenta = Psychology,
+  stellar = Mythology, violet = Culture/Civilizations, teal = Integration,
+  crimson = Stop. These never move. (Corrected 2026-10-17: this line used
+  to say stellar = Worlds, which the code never did.)
 - **`sf-primary` is a role, `sf-teal` is a meaning.** Buttons, focus, selection,
   active nav, links use `sf-primary` — the user chooses it (60 themes, all
   contrast-solved, `design/themes.py`). Never put a role on a named hue.

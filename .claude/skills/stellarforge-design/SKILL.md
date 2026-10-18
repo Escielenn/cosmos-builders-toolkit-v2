@@ -27,7 +27,7 @@ With one hard constraint learned the expensive way: *darkness is the mood, not t
 
 Two rules make this safe:
 - **`sf-primary` is a role; `sf-teal` is a meaning.** Button fills, focus, selection, active nav, links use `--sf-primary`. Cascade edges and the Integration category use `--sf-teal`. Never put a *role* on a named hue.
-- **The four semantic accents never move.** Amber = Physics, crimson = Stop, stellar = Worlds, violet = Lore, in every theme, re-solved per base for contrast but never reassigned.
+- **The semantic accents never move.** Amber = Physics, azure = Environment/Worlds, emerald = Biology, magenta = Psychology, stellar = Mythology, violet = Culture, teal = Integration, crimson = Stop, in every theme, re-solved per base for contrast but never reassigned.
 
 Values below are the **default theme**. Every other theme has the same token names with different values.
 
@@ -89,7 +89,7 @@ Hues are the brand and never change. Each carries a canonical stop and a lifted 
 
 **Primary role tokens:** `--sf-primary` · `--sf-primary-text` · `--sf-primary-bright` · `--sf-on-primary`. In the default theme these equal the teal tokens. Use these — not `sf-teal` — for anything whose colour means "this is the action", not "this is Integration". Cyan, emerald, azure, violet, amber and magenta are available as *primary* choices via `data-theme` — that is the user's pick of a role, and does not reintroduce `sf-cyan` as a distinct meaning hue.
 
-**Colour is a cascade layer, never decoration.** Teal = Integration · Amber = Physics · Stellar = Worlds · Violet = Lore · Crimson = Stop.
+**Colour is a cascade layer, never decoration.** Amber = Physics · Azure = Environment · Emerald = Biology · Magenta = Psychology · Stellar = Mythology · Violet = Culture · Teal = Integration · Crimson = Stop. Ordered scales use distinct hues per step (emerald → amber → crimson → magenta); never put amber and amber-warm on adjacent steps.
 
 **`--sf-cyan` is retired, not listed above.** Legacy cyan `#00D4FF` was killed product-wide before this package existed (SF-II settled decision #3, already shipped). The token still exists as an alias to teal — so a lingering `text-sf-cyan` reference degrades to the brand colour instead of losing all styling — but it is never a distinct hue again. Never write `#00D4FF`, and never describe simulator canvases as "keeping legacy cyan."
 
@@ -136,7 +136,7 @@ Hues are the brand and never change. Each carries a canonical stop and a lifted 
 
 ## Structure
 
-- **Zero radius.** Two exceptions: `Tag` at 2px, and simulator canvases (`rounded-lg`, product teal on `#09090B`, per the Tidelock reference — legacy cyan is retired, see above).
+- **Zero radius.** One exception: `Tag` at 2px. Simulators are square too (their canvas is `#09090B` with product teal; legacy cyan is retired, see above).
 - **44px minimum hit target** (`min-h-hit`). Icon-only buttons carry an `aria-label`.
 - **Running prose bounded** by `.sf-measure` (68ch) or `.sf-measure-wide` (84ch).
 - **Every interactive element shows a `:focus-visible` ring.** No component may suppress the global default.

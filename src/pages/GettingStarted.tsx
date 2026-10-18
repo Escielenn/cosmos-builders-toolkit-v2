@@ -48,7 +48,7 @@ const CASCADE_STAGES = [
     id: "psychology",
     label: "Psychology",
     sublabels: ["Cognition", "Emotion", "Communication"],
-    color: "var(--sf-violet-text)",
+    color: "var(--sf-magenta-text)",
     description: "Minds shaped by bodies and environments.",
   },
   {
@@ -62,7 +62,7 @@ const CASCADE_STAGES = [
     id: "culture",
     label: "Culture",
     sublabels: ["Society", "Economy", "Technology"],
-    color: "var(--sf-amber-warm-text)",
+    color: "var(--sf-violet-text)",
     description: "How intelligent life organizes itself.",
   },
 ] as const;

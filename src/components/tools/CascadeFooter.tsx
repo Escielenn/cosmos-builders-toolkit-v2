@@ -108,7 +108,7 @@ export function CascadeFooter({ toolType }: { toolType: string }): JSX.Element |
           </div>
         )}
       </div>
-      <p className="mt-6 font-serif text-[13px] italic text-t4">
+      <p className="mt-6 font-sans text-sm text-t4">
         Change one thing upstream, and everything downstream shifts.
       </p>
     </section>

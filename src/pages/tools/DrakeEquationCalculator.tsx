@@ -306,12 +306,12 @@ const DrakeEquationCalculator = () => {
   const getInterpretation = (n: number): { label: string; color: string; description: string } => {
     if (n < 1) return {
       label: "Very Lonely",
-      color: "text-sf-azure-text",
+      color: "text-sf-violet-text",
       description: "Fewer than one civilization expected. We may be alone in the galaxy, or civilizations are so rare that contact is essentially impossible."
     };
     if (n < 10) return {
       label: "Lonely",
-      color: "text-sf-teal-text",
+      color: "text-sf-azure-text",
       description: "A handful of civilizations might exist. Finding each other would be like finding needles in a cosmic haystack."
     };
     if (n < 100) return {
@@ -326,12 +326,12 @@ const DrakeEquationCalculator = () => {
     };
     if (n < 10000) return {
       label: "Crowded",
-      color: "text-sf-amber-warm-text",
+      color: "text-sf-crimson-text",
       description: "Thousands of civilizations. Regional groupings, alliances, and conflicts become possible. Classic space opera territory."
     };
     return {
       label: "Teeming",
-      color: "text-sf-crimson-text",
+      color: "text-sf-magenta-text",
       description: "A galaxy full of life. Civilizations bump into each other regularly. Think Star Trek or Star Wars. The Fermi Paradox becomes very pressing."
     };
   };
