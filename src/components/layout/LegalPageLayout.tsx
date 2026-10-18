@@ -97,7 +97,7 @@ const LegalPageLayout = ({
       <main className="relative container mx-auto px-4 pt-24 pb-16 max-w-4xl">
         {bursts && <PageBursts bursts={bursts} />}
         {/* Back Link */}
-        <BackLink to="/" label="RETURN TO BRIDGE" className="mb-6" />
+        <BackLink to="/" label="RETURN HOME" className="mb-6" />
 
         {/* Header */}
         <header className="mb-8">

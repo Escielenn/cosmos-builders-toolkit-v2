@@ -1014,7 +1014,7 @@ const Dossier = (): JSX.Element => {
           {worldId && (
             <p className="font-sans text-sm text-t3 sf-measure">
               Saved dossiers reach the{" "}
-              <Link to={`/worlds/${worldId}/write`} className="text-sf-primary-text underline-offset-4 hover:underline">Studio</Link>
+              <Link to={`/worlds/${worldId}/write`} className="text-sf-primary-text underline-offset-4 hover:underline">Manuscript</Link>
               : their facts appear in the Refs and Check tabs with the tool each value came from, and the character becomes a Codex entity you can @mention.
             </p>
           )}

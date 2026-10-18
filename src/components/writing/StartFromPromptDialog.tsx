@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useStartFromPrompt } from "@/hooks/use-start-from-prompt";
+import { manuscriptPath } from "@/lib/manuscript-path";
 import type { WritingPrompt } from "@/lib/writing/prompts";
 
 interface Props {
@@ -47,7 +48,7 @@ export function StartFromPromptDialog({ prompt, onOpenChange, onStarted }: Props
         onSuccess: (doc) => {
           onStarted?.(prompt);
           onOpenChange(false);
-          navigate(`/write/${doc.id}`);
+          navigate(manuscriptPath(worldId, doc.id));
         },
       },
     );

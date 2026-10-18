@@ -415,7 +415,7 @@ const SurfaceGravityCalculator = () => {
       moodboardCount={formState.moodboard?.length || 0}
       extraActions={
         <QuickExportButton
-          toolName="Atlas"
+          toolName="Ballast"
           worldName={worldNameForExport}
           formState={formState}
           summaryTemplate={<SurfaceGravitySummaryTemplate formState={formState} worldName={worldNameForExport} />}
@@ -933,7 +933,7 @@ const SurfaceGravityCalculator = () => {
       <ExportDialog
         open={exportDialogOpen}
         onOpenChange={setExportDialogOpen}
-        toolName="Atlas"
+        toolName="Ballast"
         worldName={worldNameForExport}
         worksheetTitle={currentWorksheetTitle || undefined}
         formState={formState}
@@ -959,7 +959,7 @@ const SurfaceGravityCalculator = () => {
       <WorksheetSelectorDialog
         {...worksheet.selectorProps}
         worldName={worldName}
-        toolDisplayName="Atlas"
+        toolDisplayName="Ballast"
       />
 
       <WorksheetNotesSheet

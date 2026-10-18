@@ -5,6 +5,11 @@ export interface WorldLayoutContextValue {
   worldName: string;
   worldIcon: string;
   isWorldLayout: true;
+  /**
+   * Hide the world chrome (the four-space nav). The Manuscript's focus mode
+   * calls it, because focus hides everything but the prose.
+   */
+  setChromeHidden?: (hidden: boolean) => void;
 }
 
 const WorldLayoutContext = createContext<WorldLayoutContextValue | null>(null);

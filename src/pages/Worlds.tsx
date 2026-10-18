@@ -88,7 +88,7 @@ const Worlds = () => {
       <main className="container mx-auto px-4 pt-24 pb-16 relative z-10">
         <PageBursts bursts={WORLDS_BURSTS} />
         {/* Back Navigation */}
-        <BackLink to="/" label="RETURN TO BRIDGE" className="mb-6" />
+        <BackLink to="/" label="RETURN HOME" className="mb-6" />
 
         {/* Header, parallax telemetry backdrop */}
         <div className="relative overflow-hidden mb-12">

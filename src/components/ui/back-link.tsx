@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
  * across the app (Jura caps, serif italic, sans micro, ghost Button, some with
  * an ArrowLeft icon AND a typed "←").
  *
- * Ship's Voice: the label is uppercase, imperative ("RETURN TO BRIDGE").
+ * Ship's Voice: the label is uppercase, imperative ("RETURN HOME").
  * One icon, never a second arrow glyph in the text. Pass `to` for a route or
  * `onClick` for an in-page step back (e.g. "RETURN TO LIST").
  */

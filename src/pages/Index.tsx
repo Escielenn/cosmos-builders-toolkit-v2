@@ -145,7 +145,7 @@ const toolsByCategory: {
       },
       {
         id: "surface-gravity-calculator",
-        title: "Atlas: Surface Gravity Calculator",
+        title: "Ballast: Surface Gravity Calculator",
         description:
           "Calculate surface gravity for any planet and trace how weight shapes biology, psychology, mythology, and culture.",
         icon: Weight,

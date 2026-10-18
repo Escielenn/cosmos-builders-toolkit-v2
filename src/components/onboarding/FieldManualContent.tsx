@@ -100,9 +100,9 @@ export function FieldManualContent({ scale = "sheet" }: { scale?: ManualScale } 
     <ManualScaleContext.Provider value={scale}>
       <ManualDivider label="Navigation Systems" />
 
-      <ManualSection title="Registry">
+      <ManualSection title="Worksheets">
         <p>
-          Primary world index. Tracks all elements across seven cascade
+          The sidebar's worksheet index. Tracks every worksheet across seven cascade
           layers: environment, biology, psychology, culture, mythology,
           technology, and narrative. Click entries to navigate between
           tools and wiki pages.
@@ -114,7 +114,7 @@ export function FieldManualContent({ scale = "sheet" }: { scale?: ManualScale } 
 
       <ManualSection title="Default View">
         <p>
-          Registry footer toggle. TOOL mode opens the worksheet editor.
+          Worksheets footer toggle. TOOL mode opens the worksheet editor.
           WIKI mode opens the encyclopedia page. Setting persists per world.
           Custom entries without a tool source default to wiki.
         </p>

@@ -50,7 +50,8 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
   const isEarlyAccess = access === "early-access";
   const embedded = world !== null;
   const backTo = world ? `/worlds/${world.worldId}` : "/";
-  const backLabel = world ? "Return to World" : "Return to Bridge";
+  // "Bridge" is the world dashboard (13-THE-LIFT §1); outside a world it is home.
+  const backLabel = world ? "Return to Bridge" : "Return Home";
   const here = `${location.pathname}${location.search}`;
   const signInTo = `/auth?tab=login&redirect=${encodeURIComponent(here)}`;
 

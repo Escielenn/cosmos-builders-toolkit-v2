@@ -140,7 +140,7 @@ export const TOOL_PAGE_CONFIGS: Record<string, ToolPageConfig> = {
   ),
   "surface-gravity-calculator": config(
     "surface-gravity-calculator",
-    "Atlas",
+    "Ballast",
     "Surface Gravity Calculator",
     "Calculate surface gravity for any planet and trace how weight shapes biology, psychology, and culture.",
   ),

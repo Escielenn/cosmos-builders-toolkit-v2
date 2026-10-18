@@ -1,12 +1,16 @@
 /**
- * /write/:docId — the ONE writing surface (Studio editor).
+ * /worlds/:worldId/write/:docId — the ONE writing surface (Studio editor),
+ * the world's MANUSCRIPT space. It renders inside WorldLayout's slim chrome
+ * so the four-space nav stays in reach (1.5 #26); /write/:docId redirects.
  * Operates on world_entries documents (the manuscript store), with the
  * full entity/reference tool in the inspector. Register: WRITER (Lora).
- * Supersedes the old /worlds/:id/write "Writing Space" (which now
- * redirects here). SF-II: one writing model, no parallel tables.
+ * Supersedes the old "Writing Space" (bare /worlds/:id/write now opens the
+ * world's latest document here). SF-II: one writing model, no parallel tables.
  */
 import { Suspense, lazy, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { Link, Navigate, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { manuscriptPath } from "@/lib/manuscript-path";
+import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { writingSurfaceStyle } from "@/lib/writing-surface-style";
@@ -197,17 +201,25 @@ function writeSplit(worldId: string, s: SplitState): void {
 }
 
 export default function Write(): JSX.Element {
-  const { docId } = useParams<{ docId: string }>();
+  const { docId, worldId: routeWorldId } = useParams<{ docId: string; worldId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, profile, loading } = useAuth();
   const { toast } = useToast();
+  const worldChrome = useWorldLayoutContext();
 
   const { data: doc, isLoading: docLoading, isFetching: docFetching } = useWriteDoc(docId);
   // Sticky while the next document loads, so a click in the binder does not
-  // blank the binder, the split pane and Scrivenings for a round-trip.
+  // blank the binder, the split pane and Scrivenings for a round-trip. The
+  // route names the world too, so even a cold load knows it at once.
   const lastWorldId = useRef<string | undefined>(undefined);
   if (doc?.world_id) lastWorldId.current = doc.world_id;
-  const worldId = doc?.world_id ?? (docLoading ? lastWorldId.current : undefined);
+  const worldId = doc?.world_id ?? (docLoading ? lastWorldId.current ?? routeWorldId : undefined);
+  /** Open a document of this world (binder, search, mentions, new doc). */
+  const docHref = useCallback(
+    (id: string) => (worldId ? manuscriptPath(worldId, id) : `/write/${id}`),
+    [worldId],
+  );
 
   // `data` excludes folders by design, so folders/unfiledDocs must come from
   // the hook too. Re-deriving folders from `data` (as this once did) always
@@ -280,6 +292,12 @@ export default function Write(): JSX.Element {
   const [docPane, setDocPane] = useState<InspectorPane>("card");
 
   const [focus, setFocus] = useState(false);
+  // Focus mode hides ALL chrome (Studio Charter), the world's space nav too.
+  const setWorldChromeHidden = worldChrome?.setChromeHidden;
+  useEffect(() => {
+    setWorldChromeHidden?.(focus);
+    return () => setWorldChromeHidden?.(false);
+  }, [focus, setWorldChromeHidden]);
   const [findOpen, setFindOpen] = useState(false);
   // Editor (one document), Board (index cards), Outline (table) or
   // Scrivenings (several documents as one text). Editor/Board/Outline persist
@@ -409,7 +427,7 @@ export default function Write(): JSX.Element {
   }, [doc?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Live title: follows the open document. Renders "<doc> | StellarForge".
-  useMetaTags({ title: doc?.title || "Write" });
+  useMetaTags({ title: doc?.title || "Manuscript" });
 
   // "Saved · Ns ago" was computed during render with nothing scheduling a
   // re-render, so it froze at the first value and still read "1s ago" an hour
@@ -1106,7 +1124,7 @@ export default function Write(): JSX.Element {
     setJump({ docId: targetId, hit, query: searchQuery, opts: searchOpts });
     if (targetId !== docId) {
       handOffMain();
-      navigate(`/write/${targetId}`);
+      navigate(docHref(targetId));
     }
     setMobilePanel(null);
   };
@@ -1304,9 +1322,10 @@ export default function Write(): JSX.Element {
   const unpin = useCallback((p: PinnedItem) => removePin(p.id, p.type), [removePin]);
 
   // CLICKING A MENTION ------------------------------------------------------
-  // @mentions and [[wiki links]] dispatch sf-navigate-entity/-element. Only
-  // WorldLayout listened, and /write sits outside it, so a click did nothing.
-  // Here it opens the entity beside the prose, read only, with OPEN CODEX.
+  // @mentions and [[wiki links]] dispatch sf-navigate-entity/-element. In the
+  // Manuscript they open the entity beside the prose, read only, with OPEN
+  // CODEX. WorldLayout also listens (it navigates to the Codex page) and
+  // stands aside on the Manuscript route, so the prose never jumps away.
   const openBeside = useCallback(
     (id: string) => {
       if (!worldId) return;
@@ -1314,7 +1333,7 @@ export default function Write(): JSX.Element {
       const isEntity = worldIndex.entityById.has(id);
       const isDoc = !isEntity && id !== docId && readingDocs.some((d) => d.id === id);
       if (narrow || (!isEntity && !isDoc)) {
-        navigate(isDoc ? `/write/${id}` : `/worlds/${worldId}/codex/${id}`);
+        navigate(isDoc ? docHref(id) : `/worlds/${worldId}/codex/${id}`);
         return;
       }
       if (!split.open && effectiveView === "editor") handOffMain();
@@ -1322,7 +1341,7 @@ export default function Write(): JSX.Element {
       updateSplit({ open: true, source: isEntity ? { kind: "entity", id } : { kind: "doc", id } });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [worldId, worldIndex.entityById, docId, readingDocs, split.open, effectiveView, updateSplit, navigate],
+    [worldId, worldIndex.entityById, docId, readingDocs, split.open, effectiveView, updateSplit, navigate, docHref],
   );
   const openBesideRef = useRef(openBeside);
   openBesideRef.current = openBeside;
@@ -1350,12 +1369,17 @@ export default function Write(): JSX.Element {
     if (!worldId) return;
     createDoc.mutate(
       { title: "Untitled", parentId: null },
-      { onSuccess: (d: WorldEntry) => navigate(`/write/${d.id}`) },
+      { onSuccess: (d: WorldEntry) => navigate(manuscriptPath(worldId, d.id)) },
     );
   }
 
   if (!loading && !user) return <Navigate to="/auth" replace />;
   if (!docLoading && doc === null) return <Navigate to="/studio" replace />;
+  // A document opened under the wrong world (an old link, a hand-typed URL)
+  // moves to its own world, so the nav and the binder agree with the page.
+  if (doc && routeWorldId && doc.world_id !== routeWorldId) {
+    return <Navigate to={`${manuscriptPath(doc.world_id, doc.id)}${location.search}${location.hash}`} replace />;
+  }
 
   // open a doc from the binder; on mobile also close the sheet
   // Opening one document leaves Scrivenings (the binder's click means "this
@@ -1363,7 +1387,7 @@ export default function Write(): JSX.Element {
   const openDoc = (id: string) => {
     if (effectiveView === "scrivenings") switchView("editor");
     else if (effectiveView === "editor" && id !== docId) handOffMain();
-    navigate(`/write/${id}`);
+    navigate(docHref(id));
     setMobilePanel(null);
   };
   openDocRef.current = openDoc;
@@ -1707,7 +1731,7 @@ export default function Write(): JSX.Element {
 
   return (
     <StudioWorldProvider value={studioWorld}>
-    <div className="relative z-10 grid h-screen grid-rows-[44px_1fr_44px] bg-[hsl(var(--sf-void-hsl))]">
+    <div className={`relative z-10 grid ${worldChrome ? "h-full" : "h-screen"} grid-rows-[44px_1fr_44px] bg-[hsl(var(--sf-void-hsl))]`}>
       {/* topbar */}
       <header className="flex items-center gap-3 border-b border-sf-line-hairline px-4">
         {/* explicit way back to the Studio overview */}
@@ -2224,10 +2248,25 @@ export function WriteIndex(): JSX.Element {
   const { data: latest, isLoading } = useLatestDoc();
   if (!loading && !user) return <Navigate to="/auth" replace />;
   if (isLoading || loading) return <div />;
-  return <Navigate to={latest ? `/write/${latest.id}` : "/studio"} replace />;
+  return <Navigate to={latest ? manuscriptPath(latest.world_id, latest.id) : "/studio"} replace />;
 }
 
-/** Legacy /worlds/:worldId/write → Studio editor on that world's latest doc.
+/** Legacy /write/:docId → the same document inside its world (1.5 #26).
+ *  Old bookmarks, shared links and anything not yet migrated keep working;
+ *  the query, the hash and the import flag travel with it. */
+export function LegacyWriteRedirect(): JSX.Element {
+  const { docId } = useParams<{ docId: string }>();
+  const location = useLocation();
+  const { user, loading } = useAuth();
+  // Same query key the editor reads, so the redirect costs no second fetch.
+  const { data: doc, isLoading } = useWriteDoc(docId);
+  if (!loading && !user) return <Navigate to="/auth" replace />;
+  if (isLoading || loading) return <div />;
+  if (!doc) return <Navigate to="/studio" replace />;
+  return <Navigate to={`${manuscriptPath(doc.world_id, doc.id)}${location.search}${location.hash}`} replace />;
+}
+
+/** /worlds/:worldId/write → that world's latest document, in place.
  *  Unifies the old "Writing Space" into Studio (one writing surface). */
 export function WorldWriteRedirect(): JSX.Element {
   const { worldId } = useParams<{ worldId: string }>();
@@ -2238,7 +2277,7 @@ export function WorldWriteRedirect(): JSX.Element {
   const kicked = useRef(false);
   // Carry ?import=1 through (the Studio's "Bring a manuscript" link).
   const [params] = useSearchParams();
-  const suffix = params.get("import") === "1" ? "?import=1" : "";
+  const importing = params.get("import") === "1";
 
   useEffect(() => {
     // Wait for auth. useWritingDocuments is gated only on worldId, so without
@@ -2250,7 +2289,7 @@ export function WorldWriteRedirect(): JSX.Element {
     const docs = (entries ?? []).filter((e) => e.entry_type !== "folder");
     if (docs.length > 0) {
       kicked.current = true;
-      navigate(`/write/${docs[0].id}${suffix}`, { replace: true });
+      navigate(manuscriptPath(worldId, docs[0].id, { import: importing }), { replace: true });
       return;
     }
     // Only latch once the create is under way, so a failure can retry instead
@@ -2259,7 +2298,7 @@ export function WorldWriteRedirect(): JSX.Element {
     createDoc.mutate(
       { title: "Untitled", parentId: null },
       {
-        onSuccess: (d) => navigate(`/write/${d.id}${suffix}`, { replace: true }),
+        onSuccess: (d) => navigate(manuscriptPath(worldId, d.id, { import: importing }), { replace: true }),
         onError: () => { kicked.current = false; },
       },
     );

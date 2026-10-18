@@ -14,6 +14,7 @@
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
+import { manuscriptPath } from "@/lib/manuscript-path";
 import { AlertTriangle, Check, ChevronLeft, ChevronRight, Shuffle, SkipForward } from "lucide-react";
 import {
   Dialog,
@@ -184,9 +185,9 @@ export default function BeginSurveyDialog({
       survey.mutate(
         { choices, icon: worldIcon, description: worldDescription },
         {
-          onSuccess: ({ documentId }) => {
+          onSuccess: ({ worldId, documentId }) => {
             onOpenChange(false);
-            navigate(`/write/${documentId}`);
+            navigate(manuscriptPath(worldId, documentId));
           },
         },
       );

@@ -69,7 +69,9 @@ export const density: Derivation = {
 export const manifest: ToolManifest = {
   id: "atlas",
   tool: "surface-gravity-calculator",
-  name: "Atlas: Surface Gravity Calculator",
+  // Brand renamed from "Atlas" (1.5 #27): Atlas is the Codex map view
+  // (13-THE-LIFT §1). The id stays "atlas" (derivation ids are canon).
+  name: "Ballast: Surface Gravity Calculator",
   kind: "calculator",
   category: "worlds",
   accent: "amber",

@@ -266,7 +266,7 @@ export default function WorldCompile() {
     <div className="min-h-screen bg-sf-void">
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <div className="mb-8">
-          <BackLink to={`/worlds/${worldId}/write`} label="RETURN TO WRITING SPACE" className="mb-3" />
+          <BackLink to={`/worlds/${worldId}/write`} label="RETURN TO MANUSCRIPT" className="mb-3" />
           <h1 className="mb-1 font-display text-sf-h1 tracking-title text-t1">COMPILE MANUSCRIPT</h1>
           <p className="sf-measure text-sf-body text-t2">
             Choose what goes in and in what order, dress it for where it is going, and download. The binder

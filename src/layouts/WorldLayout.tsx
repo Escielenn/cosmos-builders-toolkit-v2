@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useRef, useEffect } from "react";
-import { Outlet, useParams, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useParams, useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import { Loader } from "@/components/ui/loader";
 import { LoadingState } from "@/components/ui/loading-state";
@@ -14,8 +14,17 @@ import { WorldLayoutProvider } from "@/contexts/WorldLayoutContext";
 import { WorldThemeProvider } from "@/contexts/WorldThemeContext";
 import { BookOpen, Network } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { isWorldManuscriptPath } from "@/lib/manuscript-path";
 
 type SidebarTab = "codex" | "entities";
+
+/** The sidebar's two tabs. Ids stay as stored in localStorage; labels follow
+ *  13-THE-LIFT §1 (the worksheet list is "Worksheets", the things in a world
+ *  are Codex "Entries"). */
+const SIDEBAR_TABS: { id: SidebarTab; label: string; title: string; Icon: typeof BookOpen }[] = [
+  { id: "codex", label: "Worksheets", title: "Worksheets in this world", Icon: BookOpen },
+  { id: "entities", label: "Entries", title: "Codex entries in this world", Icon: Network },
+];
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -34,7 +43,15 @@ const COLLAPSED_WIDTH = 48;
 const WorldLayout = () => {
   const { worldId } = useParams<{ worldId: string }>();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { data: world, isLoading, error } = useWorld(worldId);
+  // The Manuscript (1.5 #26) renders in slim chrome: the space nav over the
+  // full-height Studio, no site header, no Codex sidebar. Focus mode hides
+  // the nav too.
+  const manuscript = !!worldId && isWorldManuscriptPath(pathname, worldId);
+  const manuscriptRef = useRef(manuscript);
+  manuscriptRef.current = manuscript;
+  const [chromeHidden, setChromeHidden] = useState(false);
   const { isSubscribed } = useSubscription();
 
   // Sidebar tab, codex vs entities
@@ -114,6 +131,8 @@ const WorldLayout = () => {
   useEffect(() => {
     if (!worldId) return;
     const handler = (e: Event) => {
+      // The Manuscript opens a mention beside the prose instead (Write.tsx).
+      if (manuscriptRef.current) return;
       const detail = (e as CustomEvent).detail;
       const id = detail?.elementId ?? detail?.entityId;
       if (id) navigate(`/worlds/${worldId}/codex/${id}`);
@@ -163,6 +182,14 @@ const WorldLayout = () => {
   }, []);
 
   // Loading / error states
+  if ((isLoading || !worldId) && manuscript) {
+    return (
+      <div className="flex h-[100dvh] items-center justify-center bg-background">
+        <LoadingState message="LOADING WORLD FILE..." />
+      </div>
+    );
+  }
+
   if (isLoading || !worldId) {
     return (
       <div className="min-h-screen bg-background">
@@ -187,8 +214,33 @@ const WorldLayout = () => {
     );
   }
 
+  const layoutValue = {
+    worldId,
+    worldName: world.name,
+    worldIcon: world.icon || "globe",
+    isWorldLayout: true as const,
+    setChromeHidden,
+  };
+
+  if (manuscript) {
+    // Slim world chrome: the four spaces stay one click away, and the Studio
+    // keeps its own full-height grid (topbar, binder, page, rail, footer).
+    // No WorldThemeProvider: its accent override is scoped to
+    // .sf-world-layout, which the Studio never sat inside.
+    return (
+      <WorldLayoutProvider value={layoutValue}>
+        <div className="grid h-[100dvh] grid-rows-[auto_minmax(0,1fr)] bg-background">
+          {chromeHidden ? <div /> : <WorldSpaceNav worldId={worldId} />}
+          <div className="min-h-0">
+            <Outlet />
+          </div>
+        </div>
+      </WorldLayoutProvider>
+    );
+  }
+
   return (
-    <WorldLayoutProvider value={{ worldId, worldName: world.name, worldIcon: world.icon || "globe", isWorldLayout: true }}>
+    <WorldLayoutProvider value={layoutValue}>
       <WorldThemeProvider theme={world.theme} isPro={isSubscribed}>
         <div className="min-h-screen bg-background">
           <Header />
@@ -204,37 +256,50 @@ const WorldLayout = () => {
             >
               {/* Tab toggle, hidden when collapsed */}
               {!collapsed && (
-                <div className="flex border-b border-sf-line-hairline">
-                  <button
-                    onClick={() => handleSidebarTabChange("codex")}
-                    className={cn(
-                      "flex-1 flex items-center justify-center gap-1.5 px-2 py-2 font-heading text-[12px] font-medium uppercase tracking-wide transition-colors duration-base",
-                      sidebarTab === "codex"
-                        ? "text-sf-primary-text border-b-2 border-sf-primary bg-sf-primary/[0.06]"
-                        : "text-t4 hover:text-t3"
-                    )}
-                    title="Registry (worksheets)"
-                  >
-                    <BookOpen className="w-3 h-3" />
-                    Registry
-                  </button>
-                  <button
-                    onClick={() => handleSidebarTabChange("entities")}
-                    className={cn(
-                      "flex-1 flex items-center justify-center gap-1.5 px-2 py-2 font-heading text-[12px] font-medium uppercase tracking-wide transition-colors duration-base",
-                      sidebarTab === "entities"
-                        ? "text-sf-primary-text border-b-2 border-sf-primary bg-sf-primary/[0.06]"
-                        : "text-t4 hover:text-t3"
-                    )}
-                    title="Entity graph"
-                  >
-                    <Network className="w-3 h-3" />
-                    Entities
-                  </button>
+                <div className="flex border-b border-sf-line-hairline" role="tablist" aria-label="World sidebar">
+                  {SIDEBAR_TABS.map(({ id, label, title, Icon }) => {
+                    const selected = sidebarTab === id;
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        role="tab"
+                        id={`sf-sidebar-tab-${id}`}
+                        aria-selected={selected}
+                        aria-controls="sf-sidebar-panel"
+                        tabIndex={selected ? 0 : -1}
+                        onClick={() => handleSidebarTabChange(id)}
+                        onKeyDown={(e) => {
+                          // Arrow keys move between the two tabs (WAI-ARIA tabs).
+                          if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+                          e.preventDefault();
+                          const next = SIDEBAR_TABS[(SIDEBAR_TABS.findIndex((t) => t.id === id) + 1) % SIDEBAR_TABS.length];
+                          handleSidebarTabChange(next.id);
+                          document.getElementById(`sf-sidebar-tab-${next.id}`)?.focus();
+                        }}
+                        className={cn(
+                          "flex min-h-hit flex-1 items-center justify-center gap-1.5 border-b-2 px-2 font-heading text-[12px] font-medium uppercase tracking-wide transition-colors duration-base",
+                          selected
+                            ? "border-sf-primary bg-sf-primary/[0.06] text-sf-primary-text"
+                            : "border-transparent text-t3 hover:text-t1"
+                        )}
+                        title={title}
+                      >
+                        <Icon className="h-3 w-3" aria-hidden />
+                        {label}
+                      </button>
+                    );
+                  })}
                 </div>
               )}
 
               {/* Active sidebar content */}
+              <div
+                id="sf-sidebar-panel"
+                role={collapsed ? undefined : "tabpanel"}
+                aria-labelledby={collapsed ? undefined : `sf-sidebar-tab-${sidebarTab}`}
+                className="h-full"
+              >
               {sidebarTab === "codex" ? (
                 <Codex
                   worldId={worldId}
@@ -257,6 +322,7 @@ const WorldLayout = () => {
                   />
                 )
               )}
+              </div>
             </aside>
 
             {/* Resize handle */}

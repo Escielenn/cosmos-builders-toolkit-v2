@@ -451,7 +451,7 @@ export const TOOL_DISPLAY_NAMES: Record<string, string> = {
   "space-expansion-modeler": "Exodus",
   "habitable-zone-calculator": "Goldilocks",
   "lexdrift": "Lexdrift",
-  "surface-gravity-calculator": "Atlas",
+  "surface-gravity-calculator": "Ballast",
   "timeline": "Timeline",
   "gravitas": "Gravitas",
   "sensorium": "Sensorium",

@@ -46,7 +46,7 @@ const Community = () => {
       <Header />
       <main className="container mx-auto px-4 pt-24 pb-16 relative z-10">
         {/* Back Navigation */}
-        <BackLink to="/" label="Return to Bridge" className="mb-6" />
+        <BackLink to="/" label="Return Home" className="mb-6" />
 
         {/* Page Header */}
         <div className="flex flex-col gap-2 mb-2">

@@ -107,7 +107,7 @@ export const TOOL_DISPLAY_NAMES: Record<string, string> = {
   'space-expansion-modeler': 'Exodus: Space Expansion Modeler',
   'habitable-zone-calculator': 'Goldilocks: Habitable Zone Calculator',
   'lexdrift': 'Lexdrift: Language Evolution',
-  'surface-gravity-calculator': 'Atlas: Surface Gravity Calculator',
+  'surface-gravity-calculator': 'Ballast: Surface Gravity Calculator',
   'timeline': 'Epoch: Timeline',
   'sensorium': 'Sensorium: Alien Sensory Systems',
   'gravitas': 'Gravitas: Spacecraft & Habitat Gravity Simulator',

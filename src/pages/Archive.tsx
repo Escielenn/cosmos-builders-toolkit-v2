@@ -55,7 +55,7 @@ const Archive = () => {
       <PageBursts bursts={ARCHIVE_BURSTS} />
       <main className="container mx-auto px-4 pt-24 pb-16 relative z-10">
         {/* Back Navigation */}
-        <BackLink to="/" label="RETURN TO BRIDGE" className="mb-6" />
+        <BackLink to="/" label="RETURN HOME" className="mb-6" />
 
         {/* Header */}
         <div className="flex items-center gap-3 mb-8">

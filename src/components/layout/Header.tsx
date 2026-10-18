@@ -65,7 +65,7 @@ const MOBILE_NAV: {
     heading: "Studio",
     items: [
       { label: "Studio", to: "/studio", icon: PenTool },
-      { label: "Daily Prompt", to: "/prompts", icon: Sparkles },
+      { label: "Writing Prompts", to: "/prompts", icon: Sparkles },
     ],
   },
   {

@@ -123,7 +123,7 @@ export function ownerToolOf(predicate: string): string | undefined {
   return ownerOf(predicate)?.tool;
 }
 
-/** "Atlas: Surface Gravity Calculator" → "Atlas". */
+/** "Ballast: Surface Gravity Calculator" → "Ballast". */
 export function manifestBrand(m: Pick<ToolManifest, "name">): string {
   const i = m.name.indexOf(":");
   return i > 0 ? m.name.slice(0, i) : m.name;

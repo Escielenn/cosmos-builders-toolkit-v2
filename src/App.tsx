@@ -41,6 +41,7 @@ const Studio = lazy(() => import("./pages/Studio"));
 const Write = lazy(() => import("./pages/Write"));
 const WriteIndex = lazy(() => import("./pages/Write").then((m) => ({ default: m.WriteIndex })));
 const WorldWriteRedirect = lazy(() => import("./pages/Write").then((m) => ({ default: m.WorldWriteRedirect })));
+const LegacyWriteRedirect = lazy(() => import("./pages/Write").then((m) => ({ default: m.LegacyWriteRedirect })));
 const Roadmap = lazy(() => import("./pages/Roadmap"));
 const Features = lazy(() => import("./pages/Features"));
 const Guide = lazy(() => import("./pages/Guide"));
@@ -201,9 +202,10 @@ const App = () => (
                 <Route path="/early" element={<EarlyAccess />} />
                 {/* Writer-register studio home (Cowork Implementation Guide §3) */}
                 <Route path="/studio" element={<Studio />} />
-                {/* Manuscript editor (Implementation Guide §4) */}
+                {/* Manuscript editor (Implementation Guide §4). It lives inside
+                    its world now (1.5 #26); these two only redirect there. */}
                 <Route path="/write" element={<WriteIndex />} />
-                <Route path="/write/:docId" element={<Write />} />
+                <Route path="/write/:docId" element={<LegacyWriteRedirect />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/auth/reset" element={<ResetPassword />} />
                 <Route path="/profile" element={<Profile />} />
@@ -239,8 +241,10 @@ const App = () => (
                   {/* F3: one graph. Both retired routes land on the Codex Web view. */}
                   <Route path="graph" element={<WorldWebRedirect />} />
                   <Route path="connections" element={<WorldWebRedirect />} />
-                  {/* Legacy Writing Space unified into Studio (redirects) */}
+                  {/* MANUSCRIPT: the editor, inside the world (1.5 #26).
+                      Bare /write opens the world's latest document. */}
                   <Route path="write" element={<WorldWriteRedirect />} />
+                  <Route path="write/:docId" element={<Write />} />
                   <Route path="custom-types" element={<WorldCustomTypes />} />
                   <Route path="compile" element={<WorldCompile />} />
                 </Route>

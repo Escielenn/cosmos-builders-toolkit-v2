@@ -34,6 +34,7 @@ import {
 } from "@/services/entity-graph-types";
 import FactInfobox from "./FactInfobox";
 import { EntityMentionsSection, EntityChronicleSection } from "./EntityRecordSections";
+import { manuscriptPath } from "@/lib/manuscript-path";
 import { useCodexEntity } from "@/hooks/use-codex-entity";
 import { useUpdateEntityMetadata } from "@/hooks/use-world-entities";
 import { entityAliases, parseAliases, entityEpochRange, formatEpochRange } from "@/lib/codex-entity";
@@ -148,9 +149,9 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
   const isProseDoc = entry?.entry_type === "document" || entry?.entry_type === "lore";
   useEffect(() => {
     if (isProseDoc && entry) {
-      navigate(`/write/${entry.id}`, { replace: true });
+      navigate(manuscriptPath(worldId, entry.id), { replace: true });
     }
-  }, [isProseDoc, entry, navigate]);
+  }, [isProseDoc, entry, navigate, worldId]);
 
   const isDraft = entry && !entry.content;
   const toolSource = entry?.tool_source;
@@ -680,7 +681,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
       )}
 
       {/* Mentioned in — manuscript documents linked to this entity */}
-      <EntityMentionsSection mentions={codex.mentions} />
+      <EntityMentionsSection worldId={worldId} mentions={codex.mentions} />
 
       {/* Chronicle — events touching this entity */}
       <EntityChronicleSection worldId={worldId} events={codex.events} />

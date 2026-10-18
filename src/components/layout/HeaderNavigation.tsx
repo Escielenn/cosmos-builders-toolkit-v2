@@ -191,7 +191,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                   <div>
                     <span>Studio</span>
                     <span className="block text-[12px] text-t4 font-normal normal-case tracking-normal">
-                      Write your worlds &middot; drafts, scenes, manuscripts
+                      Your writing desk &middot; every world's manuscript
                     </span>
                   </div>
                 </button>
@@ -203,7 +203,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                 >
                   <Sparkles className="w-3.5 h-3.5 text-sf-primary-text mt-0.5" />
                   <div>
-                    <span>Daily Prompt</span>
+                    <span>Writing Prompts</span>
                     <span className="block text-[12px] text-t4 font-normal normal-case tracking-normal">
                       This week's prompts. Each opens a new Studio document
                     </span>

@@ -2,9 +2,9 @@
 // WorldSpaceNav — the four spaces (F6, 13-THE-LIFT.md §1).
 //
 //   BRIDGE       the state of the world
-//   CODEX        every entity. List · Web · Atlas
-//   INSTRUMENTS  the tools and sims, opened ON an entity
-//   MANUSCRIPT   the Studio
+//   CODEX        every entry. List · Web · Atlas · Timeline
+//   INSTRUMENTS  the tools and sims, opened ON an entry
+//   MANUSCRIPT   the Studio editor, this world's documents
 //
 // Today a world is reachable through a dashboard, a sidebar, a quick-access
 // card and a scatter of inline links, and none of them agree on what the
@@ -13,6 +13,9 @@
 // It ADDS no destination: every space here already existed. What it removes is
 // the need to know which surface happens to link to which other surface.
 //
+// The Manuscript lives inside the world (1.5 #26): /worlds/:id/write/:docId
+// renders under this nav, so opening a document no longer leaves the world.
+//
 // Deliberately NOT done here: F6 also folds the dashboard into the Bridge and
 // Notes/Pages into the Manuscript. Those delete surfaces, and a deletion wants
 // the owner looking. This is the navigation half.
@@ -20,6 +23,7 @@
 
 import { NavLink, useLocation } from "react-router-dom";
 import { Compass, BookOpen, Gauge, PenLine } from "lucide-react";
+import { isWorldManuscriptPath } from "@/lib/manuscript-path";
 
 interface WorldSpaceNavProps {
   worldId: string;
@@ -28,6 +32,8 @@ interface WorldSpaceNavProps {
 interface Space {
   id: string;
   label: string;
+  /** What the space holds; the link's tooltip. */
+  hint: string;
   to: string;
   Icon: typeof Compass;
   /** Which paths count as "you are here". */
@@ -38,6 +44,7 @@ const SPACES: Space[] = [
   {
     id: "bridge",
     label: "Bridge",
+    hint: "The state of this world",
     to: "",
     Icon: Gauge,
     match: (p, id) =>
@@ -48,6 +55,7 @@ const SPACES: Space[] = [
   {
     id: "codex",
     label: "Codex",
+    hint: "Every entry in this world",
     to: "/codex",
     Icon: BookOpen,
     match: (p, id) => p.startsWith(`/worlds/${id}/codex`),
@@ -55,6 +63,7 @@ const SPACES: Space[] = [
   {
     id: "instruments",
     label: "Instruments",
+    hint: "Tools and simulators, opened on an entry",
     to: "/tools",
     Icon: Compass,
     match: (p, id) => p.startsWith(`/worlds/${id}/tools`),
@@ -62,10 +71,11 @@ const SPACES: Space[] = [
   {
     id: "manuscript",
     label: "Manuscript",
+    hint: "This world's documents, in the Studio editor",
     to: "/write",
     Icon: PenLine,
     match: (p, id) =>
-      p.startsWith(`/worlds/${id}/write`) ||
+      isWorldManuscriptPath(p, id) ||
       p.startsWith(`/worlds/${id}/compile`),
   },
 ];
@@ -78,13 +88,16 @@ export function WorldSpaceNav({ worldId }: WorldSpaceNavProps) {
       aria-label="World"
       className="flex items-stretch border-b border-sf-line-hairline bg-sf-surface"
     >
-      {SPACES.map(({ id, label, to, Icon, match }) => {
+      {SPACES.map(({ id, label, hint, to, Icon, match }) => {
         const active = match(pathname, worldId);
         return (
           <NavLink
             key={id}
             to={`/worlds/${worldId}${to}`}
             end={to === ""}
+            // Below `sm` only the icon shows; the name must still be spoken.
+            aria-label={label}
+            title={hint}
             aria-current={active ? "page" : undefined}
             className={`flex min-h-hit flex-1 items-center justify-center gap-1.5 border-b-2 px-3 font-heading text-[12px] uppercase tracking-wide transition-colors ${
               active
