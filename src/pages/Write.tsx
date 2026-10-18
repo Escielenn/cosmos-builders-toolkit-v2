@@ -290,6 +290,7 @@ export default function Write(): JSX.Element {
   const lastCount = useRef<number | null>(null);
   const debounce = useRef<ReturnType<typeof setTimeout>>();
   const pending = useRef<{ docId: string; html: string; words: number } | null>(null);
+  const lastSent = useRef<{ docId: string; html: string } | null>(null);
 
   useEffect(() => {
     if (doc) {
@@ -392,6 +393,7 @@ export default function Write(): JSX.Element {
     const p = pending.current;
     if (!p) return Promise.resolve();
     pending.current = null;
+    lastSent.current = { docId: p.docId, html: p.html };
 
     const delta =
       p.docId === docId && lastCount.current !== null ? p.words - lastCount.current : 0;
@@ -419,6 +421,17 @@ export default function Write(): JSX.Element {
 
   function onContentChange(html: string) {
     if (!docId) return;
+    // Tiptap reports an "update" on mount (setEditable) and the editor
+    // reports on every blur; neither is a change worth a write.
+    // Compared with the last text sent (or, before any, the loaded text), so
+    // typing back to an earlier state after a save is still written.
+    const lastText =
+      lastSent.current?.docId === docId
+        ? lastSent.current.html
+        : doc?.id === docId
+          ? doc.content ?? ""
+          : null;
+    if (!pending.current && html === lastText) return;
     pending.current = { docId, html, words: countWords(html) };
     // The binder list is what Scrivenings and the split pane open from.
     primeDocCaches(qc, worldId, docId, html, false);
@@ -741,7 +754,7 @@ export default function Write(): JSX.Element {
 
   // Shared binder content (renders in the desktop column AND the mobile sheet)
   const binderContent = (
-    <div className="flex h-full min-h-0 flex-col border-r border-sf-line-interactive">
+    <div className="flex h-full min-h-0 w-full min-w-0 flex-col border-r border-sf-line-interactive">
       {worldId && (
         <BinderSearchInput
           query={searchQuery}
@@ -1050,6 +1063,26 @@ export default function Write(): JSX.Element {
           </DropdownMenu>
           {/* View switch. Scrivenings opens from the binder (a folder, a
               selection, a collection) and shows here while it is active. */}
+          {/* Phones: the same choice as one menu, to keep the bar on one line. */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className="border border-sf-line-interactive px-2.5 py-1 text-[12px] text-t3 transition-colors hover:text-t1 sm:hidden"
+                aria-label={`View: ${effectiveView === "scrivenings" ? "Scrivenings" : VIEW_LABELS[effectiveView].label}. Change view.`}
+              >
+                {effectiveView === "scrivenings" ? "Scrivenings" : VIEW_LABELS[effectiveView].label}
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-40">
+              {(Object.keys(VIEW_LABELS) as Exclude<WriteView, "scrivenings">[]).map((v) => (
+                <DropdownMenuItem key={v} onClick={() => switchView(v)}>
+                  {VIEW_LABELS[v].label}
+                  {effectiveView === v && <span className="ml-auto font-mono text-[12px] text-t4">ON</span>}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
           <div className="hidden items-center sm:flex" role="group" aria-label="View">
             {(Object.keys(VIEW_LABELS) as Exclude<WriteView, "scrivenings">[]).map((v, i) => (
               <button
@@ -1115,7 +1148,7 @@ export default function Write(): JSX.Element {
       <div className={`grid min-h-0 ${focus ? "grid-cols-1" : "grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)_320px]"}`}>
         {/* binder (desktop column) */}
         {!focus && (
-          <aside className="hidden min-h-0 lg:flex">{binderContent}</aside>
+          <aside className="hidden min-h-0 min-w-0 lg:flex">{binderContent}</aside>
         )}
 
         {/* editor, and the split pane beside or below it */}
@@ -1237,7 +1270,7 @@ export default function Write(): JSX.Element {
       </div>
 
       {/* status bar */}
-      <footer className="flex items-center justify-between border-t border-sf-line-interactive px-4">
+      <footer className="flex items-center justify-between border-t border-sf-line-interactive pl-4 pr-20">
         <div className="flex items-center gap-2.5">
           <span className={`h-1.5 w-1.5 rounded-full bg-sf-primary ${updateContent.isPending ? "animate-sf-pulse" : ""}`} aria-hidden="true" />
           <span className="font-serif text-[12px] italic text-t3">

@@ -56,6 +56,7 @@ export function BinderSearchInput({
       <input
         ref={inputRef}
         type="search"
+        size={1}
         value={query}
         onChange={(e) => onQuery(e.target.value)}
         onKeyDown={(e) => {
@@ -65,7 +66,7 @@ export function BinderSearchInput({
             onQuery("");
           }
         }}
-        placeholder="Search the binder"
+        placeholder="Search binder"
         aria-label="Search every document in this world"
         className="min-h-hit min-w-0 flex-1 bg-transparent px-1 text-[16px] text-t1 placeholder:text-t3"
       />

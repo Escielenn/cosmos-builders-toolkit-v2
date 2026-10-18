@@ -61,9 +61,9 @@ export function Scrivenings({
 
   return (
     <div className="mx-auto px-6 py-8" style={{ maxWidth: "var(--sf-writing-measure, 68ch)", ...editorStyle }}>
-      <div className="mb-8 flex items-center gap-3 border-b border-sf-line-interactive pb-3">
+      <div className="mb-8 flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-sf-line-interactive pb-3">
         <span className="font-heading text-sf-eyebrow uppercase text-t4">Scrivenings</span>
-        <span className="min-w-0 flex-1 truncate font-serif text-[18px] italic text-t1">{title}</span>
+        <span className="min-w-[10rem] flex-1 truncate font-serif text-[18px] italic text-t1">{title}</span>
         <span className="hidden shrink-0 font-mono text-[12px] text-t4 sm:inline">
           {docs.length} {docs.length === 1 ? "DOC" : "DOCS"} · {total.toLocaleString()} W ·{" "}
           {autosave.saving ? "SAVING…" : autosave.savedAt ? "SAVED" : "READY"}
