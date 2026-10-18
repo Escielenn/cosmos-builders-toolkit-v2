@@ -42,6 +42,15 @@ export interface DocumentMeta {
    * the on-ramp to future set_in/POV binding.
    */
   subjectEntityId: string;
+  /**
+   * The located place this scene is SET IN — a `location` entity filed by the
+   * Surface Cartographer, carrying lat/lon on its body. Empty string means
+   * unset. Distinct from subjectEntityId: a scene can be ABOUT a planet and
+   * set in one city on it. This is the `set_in` target 05-NEW-SYSTEMS Tier C
+   * says the Planet Cartographer makes real; the Studio UI that sets it is
+   * not built yet.
+   */
+  setInPlaceId: string;
 }
 
 export const EMPTY_DOC_META: DocumentMeta = {
@@ -50,6 +59,7 @@ export const EMPTY_DOC_META: DocumentMeta = {
   status: "",
   when: "",
   subjectEntityId: "",
+  setInPlaceId: "",
 };
 
 export const STATUS_LABELS: Record<DocStatus, string> = {
@@ -97,6 +107,7 @@ export function readDocMeta(metadata: unknown): DocumentMeta {
     status: isStatus(m.status) ? m.status : "",
     when: str(m.when),
     subjectEntityId: str(m.subjectEntityId),
+    setInPlaceId: str(m.setInPlaceId),
   };
 }
 

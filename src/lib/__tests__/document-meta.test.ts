@@ -7,7 +7,7 @@ import {
 } from "@/lib/document-meta";
 
 describe("readDocMeta", () => {
-  it("reads the five fields", () => {
+  it("reads the six fields", () => {
     expect(
       readDocMeta({
         synopsis: "Ix meets the Talto.",
@@ -15,6 +15,7 @@ describe("readDocMeta", () => {
         status: "draft",
         when: "Sol 2412",
         subjectEntityId: "11111111-1111-1111-1111-111111111111",
+        setInPlaceId: "22222222-2222-2222-2222-222222222222",
       }),
     ).toEqual({
       synopsis: "Ix meets the Talto.",
@@ -22,7 +23,13 @@ describe("readDocMeta", () => {
       status: "draft",
       when: "Sol 2412",
       subjectEntityId: "11111111-1111-1111-1111-111111111111",
+      setInPlaceId: "22222222-2222-2222-2222-222222222222",
     });
+  });
+
+  it("treats a missing set_in place as unset, so older documents still read", () => {
+    expect(readDocMeta({ synopsis: "x" }).setInPlaceId).toBe("");
+    expect(readDocMeta({ setInPlaceId: 7 }).setInPlaceId).toBe("");
   });
 
   it("returns empty for the {} every existing document was created with", () => {
