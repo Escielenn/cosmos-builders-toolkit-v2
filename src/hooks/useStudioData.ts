@@ -1,14 +1,16 @@
 /**
  * Studio Home data (Cowork Implementation Guide §3), mapped onto the
- * LIVE schema: projects→worlds, manuscript→writing_entries,
+ * LIVE schema: projects→worlds, manuscript→world_entries documents,
  * cast→world_entries(character), scratchpad→world_notes.
- * Streaks derive from writing_entries activity dates (approximation
- * until the sessions/word_events rollup lands with the Phase-4 editor).
+ * The 14-day strip derives from document edit dates, keyed by the
+ * writer's LOCAL day (not UTC). The word-count history chart reads the
+ * writing_sessions ledger (useWritingSessions).
  */
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { rowToEntity } from "@/services/entity-graph-mapping";
+import { localDay } from "@/lib/local-day";
 export { lastSentence } from "@/lib/text";
 
 export interface StudioWorld {
@@ -60,8 +62,9 @@ export interface StudioData {
   entriesThisMonth: number;
 }
 
+/** The writer's local calendar day (a UTC key rolled over at 6 pm in Denver). */
 function dayKey(d: Date): string {
-  return d.toISOString().slice(0, 10);
+  return localDay(d);
 }
 
 export function useStudioData() {
@@ -145,7 +148,7 @@ export function useStudioData() {
       const notes = (notesRes.data ?? []) as StudioNote[];
 
       // Activity cells + streak from entry-touch dates
-      const touched = new Set(entries.map((e) => e.updated_at.slice(0, 10)));
+      const touched = new Set(entries.map((e) => dayKey(new Date(e.updated_at))));
       const cells: boolean[] = [];
       for (let i = 13; i >= 0; i--) {
         const d = new Date();
@@ -165,10 +168,10 @@ export function useStudioData() {
       const todayKey = dayKey(new Date());
       const monthKey = todayKey.slice(0, 7);
       const wordsToday = entries
-        .filter((e) => e.updated_at.slice(0, 10) === todayKey)
+        .filter((e) => dayKey(new Date(e.updated_at)) === todayKey)
         .reduce((n, e) => n + (e.word_count ?? 0), 0);
       const totalWords = entries.reduce((n, e) => n + (e.word_count ?? 0), 0);
-      const entriesThisMonth = entries.filter((e) => e.updated_at.slice(0, 7) === monthKey).length;
+      const entriesThisMonth = entries.filter((e) => dayKey(new Date(e.updated_at)).slice(0, 7) === monthKey).length;
 
       return {
         worlds,

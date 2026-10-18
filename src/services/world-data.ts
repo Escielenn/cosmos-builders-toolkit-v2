@@ -477,8 +477,11 @@ export function getTypeForTool(toolType: string): string {
 // ---------------------------------------------------------------------------
 
 export async function getCodexData(worldId: string): Promise<CodexData> {
-  // Fetch world + worksheets + entries + writing entries + world notes in parallel
-  const [worldRes, worksheetsRes, entriesRes, writingEntriesRes, worldNotesRes] = await Promise.all([
+  // Fetch world + worksheets + entries + world notes in parallel.
+  // writing_entries (the retired /workshop store) is no longer read: its rows
+  // were copied into Studio documents (20261019_workshop_into_studio.sql),
+  // which arrive here as world_entries like every other document.
+  const [worldRes, worksheetsRes, entriesRes, worldNotesRes] = await Promise.all([
     supabase
       .from("worlds")
       .select("id, name")
@@ -496,12 +499,6 @@ export async function getCodexData(worldId: string): Promise<CodexData> {
       .eq("world_id", worldId)
       .order("sort_order", { ascending: true }),
     supabase
-      .from("writing_entries")
-      .select("id, title, word_count, tags, created_at, updated_at")
-      .eq("world_id", worldId)
-      .is("archived_at", null)
-      .order("updated_at", { ascending: false }),
-    supabase
       .from("world_notes")
       .select("id, title, content, tags, updated_at")
       .eq("world_id", worldId)
@@ -511,8 +508,7 @@ export async function getCodexData(worldId: string): Promise<CodexData> {
   if (worldRes.error) throw worldRes.error;
   if (worksheetsRes.error) throw worksheetsRes.error;
   if (entriesRes.error) throw entriesRes.error;
-  // Writing entries and world notes are non-critical, gracefully handle errors
-  const writingEntries = writingEntriesRes.data ?? [];
+  // World notes are non-critical, gracefully handle errors
   const worldNotes = worldNotesRes.data ?? [];
 
   const world = worldRes.data;
@@ -623,29 +619,6 @@ export async function getCodexData(worldId: string): Promise<CodexData> {
         allCodexElements.push(el);
       }
     }
-  }
-
-  // Add writing entries linked to this world into the narrative layer
-  for (const we of writingEntries) {
-    const wordCount = we.word_count ?? 0;
-    const el: CodexElement = {
-      id: we.id,
-      title: we.title || "Untitled Entry",
-      kind: "writing",
-      type: "writing_entry",
-      layer: "narrative",
-      toolSource: "writing-workshop",
-      toolDataId: null,
-      entryId: null,
-      status: wordCount >= 100 ? "complete" : wordCount > 0 ? "partial" : "empty",
-      isDraft: wordCount === 0,
-      children: [],
-      tags: we.tags ?? [],
-      updatedAt: we.updated_at,
-      sortOrder: 0,
-    };
-    sectionElements.narrative.push(el);
-    allCodexElements.push(el);
   }
 
   // Add world notes as codex elements

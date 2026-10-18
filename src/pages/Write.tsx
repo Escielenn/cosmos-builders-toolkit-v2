@@ -1495,7 +1495,7 @@ export default function Write(): JSX.Element {
               }
             }}
             onDeleteFolder={(id, folderTitle) => {
-              if (window.confirm(`Delete the folder "${folderTitle}"? Everything inside it moves up one level. No document is deleted.`)) {
+              if (window.confirm(`Delete the folder "${folderTitle}"? The folder and everything inside it move to the Trash, recoverable for 90 days.`)) {
                 deleteFolder.mutate(id);
               }
             }}

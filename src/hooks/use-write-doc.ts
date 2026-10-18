@@ -1,12 +1,13 @@
 /**
  * Studio editor data layer — operates on the MANUSCRIPT store
  * (world_entries documents), the single canonical writing model.
- * Replaces the earlier writing_entries-based useManuscript for the
- * main editor (SF-II: one writing model, no parallel tables).
+ * The writing_entries store (/workshop) is retired; its rows were copied
+ * into Studio documents (SF-II: one writing model, no parallel tables).
  */
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { localDay } from "@/lib/local-day";
 
 export interface WriteDoc {
   id: string;
@@ -80,7 +81,8 @@ export function useLatestDoc() {
 }
 
 /**
- * Add `delta` words to today's session total (streaks).
+ * Add `delta` words to today's session total (streaks). "Today" is the
+ * browser's local date (src/lib/local-day.ts), passed to the RPC as p_day.
  *
  * Uses the atomic RPC `increment_writing_session`, applied 2026-08-10 (see
  * supabase/migrations/20260809_atomic_writing_session_increment.sql). The
@@ -94,7 +96,9 @@ export function useLatestDoc() {
  */
 export async function rollWordSession(userId: string, delta: number): Promise<void> {
   if (delta <= 0) return;
-  const day = new Date().toISOString().slice(0, 10);
+  // The writer's local calendar day, not the UTC one: keyed by UTC, the daily
+  // goal reset at 6 pm in Denver. useSessionWords reads with the same key.
+  const day = localDay();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const db = supabase as any;
 
