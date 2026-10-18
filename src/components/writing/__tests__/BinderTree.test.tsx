@@ -97,6 +97,27 @@ describe("BinderTree", () => {
     expect(props.onOpen).toHaveBeenCalledWith("Prologue");
   });
 
+  it("Cmd/Ctrl-click adds to the selection instead of opening", () => {
+    const props = mount({ onSelectionChange: vi.fn(), selection: [] });
+    fireEvent.click(screen.getByText("Prologue"), { metaKey: true });
+    expect(props.onOpen).not.toHaveBeenCalled();
+    // Starts from the open document, so the pick is "this one too".
+    expect(props.onSelectionChange).toHaveBeenCalledWith(["Scene B", "Prologue"]);
+  });
+
+  it("Shift-click selects the visible range of documents", () => {
+    const props = mount({ onSelectionChange: vi.fn(), selection: [], activeDocId: "Scene A" });
+    fireEvent.click(screen.getByText("Prologue"), { shiftKey: true });
+    expect(props.onSelectionChange).toHaveBeenCalledWith(["Scene A", "Scene B", "Prologue"]);
+  });
+
+  it("a plain click clears the selection and opens", () => {
+    const props = mount({ onSelectionChange: vi.fn(), selection: ["Scene A", "Prologue"] });
+    fireEvent.click(screen.getByText("Scene B"));
+    expect(props.onSelectionChange).toHaveBeenCalledWith([]);
+    expect(props.onOpen).toHaveBeenCalledWith("Scene B");
+  });
+
   it("moves a row with Alt+Arrow (keyboard alternative to dragging)", () => {
     const props = mount();
     fireEvent.keyDown(screen.getByText("Scene A").closest("button")!, { key: "ArrowDown", altKey: true });

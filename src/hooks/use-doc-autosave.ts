@@ -14,13 +14,43 @@
 // ---------------------------------------------------------------------------
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useQueryClient, type QueryClient } from "@tanstack/react-query";
+import type { WorldEntry } from "@/services/world-data";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUpdateDocumentContent } from "@/hooks/use-writing-documents";
-import { rollWordSession } from "@/hooks/use-write-doc";
+import { rollWordSession, type WriteDoc } from "@/hooks/use-write-doc";
 import { countWords } from "@/lib/text";
 import { reportWordsWritten } from "@/lib/session-words-bus";
 
 const DEBOUNCE_MS = 1200;
+
+/**
+ * Put a document's newest HTML into the caches other surfaces open from, the
+ * moment it is typed rather than after the save round-trip:
+ *   - the binder list (["writing-documents", worldId]), which Scrivenings,
+ *     the split pane, the Outliner and the Board read;
+ *   - optionally the single-document query (["write-doc", id]) the main
+ *     editor opens from. The main editor never primes its OWN document here:
+ *     its content prop would then chase the caret.
+ * Without this, switching surfaces inside the debounce window would open an
+ * older copy, and the next save from that surface would drop the difference.
+ */
+export function primeDocCaches(
+  qc: QueryClient,
+  worldId: string | undefined,
+  docId: string,
+  html: string,
+  includeWriteDoc: boolean,
+): void {
+  if (worldId) {
+    qc.setQueryData<WorldEntry[]>(["writing-documents", worldId], (list) =>
+      list ? list.map((e) => (e.id === docId ? { ...e, content: html } : e)) : list,
+    );
+  }
+  if (includeWriteDoc) {
+    qc.setQueryData<WriteDoc | null>(["write-doc", docId], (old) => (old ? { ...old, content: html } : old));
+  }
+}
 
 interface Pending {
   html: string;
@@ -29,10 +59,13 @@ interface Pending {
 
 export function useDocAutosave(worldId: string | undefined, onWordsLedgered?: () => void) {
   const { user } = useAuth();
+  const qc = useQueryClient();
   const updateContent = useUpdateDocumentContent(worldId);
   const pending = useRef(new Map<string, Pending>());
   const timers = useRef(new Map<string, ReturnType<typeof setTimeout>>());
   const baseline = useRef(new Map<string, number>());
+  /** Newest HTML seen per document (opening text, then every queue). */
+  const latest = useRef(new Map<string, string>());
   const inFlight = useRef(0);
   const mounted = useRef(true);
   const [saving, setSaving] = useState(false);
@@ -49,6 +82,7 @@ export function useDocAutosave(worldId: string | undefined, onWordsLedgered?: ()
   /** Record the word count a document opened with (not counted as writing). */
   const register = useCallback((docId: string, html: string | null | undefined) => {
     if (!baseline.current.has(docId)) baseline.current.set(docId, countWords(html ?? ""));
+    if (!latest.current.has(docId)) latest.current.set(docId, html ?? "");
   }, []);
 
   const flushDoc = useCallback((docId: string): Promise<void> => {
@@ -96,7 +130,13 @@ export function useDocAutosave(worldId: string | undefined, onWordsLedgered?: ()
   /** Queue a document's latest HTML. Cheap; safe on every keystroke. */
   const queue = useCallback(
     (docId: string, html: string) => {
+      // A blur with nothing new (the editor reports on every blur) is not a save.
+      if (latest.current.get(docId) === html) return;
+      latest.current.set(docId, html);
       pending.current.set(docId, { html, words: countWords(html) });
+      // Any editor that mounts this document next (the main editor, after
+      // leaving Scrivenings) must open on these words, not a stale fetch.
+      primeDocCaches(qc, worldId, docId, html, true);
       // An editor unmounting after this hook's owner (React tears parents
       // down first) still hands over its last words: save them now.
       if (!mounted.current) {
@@ -110,7 +150,7 @@ export function useDocAutosave(worldId: string | undefined, onWordsLedgered?: ()
         setTimeout(() => void flushDoc(docId), DEBOUNCE_MS),
       );
     },
-    [flushDoc],
+    [flushDoc, qc, worldId],
   );
 
   const hasPending = useCallback(() => pending.current.size > 0, []);

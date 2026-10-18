@@ -7,6 +7,7 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { writingSurfaceStyle } from "@/lib/writing-surface-style";
 import { TypographyMenu } from "@/components/writing/TypographyMenu";
@@ -22,7 +23,23 @@ import { LabelManagerDialog } from "@/components/writing/LabelManagerDialog";
 import { ContinuityPanel } from "@/components/writing/ContinuityPanel";
 import { FindReplaceBar } from "@/components/writing/FindReplaceBar";
 import { Corkboard } from "@/components/writing/Corkboard";
-import { GoalSetting } from "@/components/writing/GoalSetting";
+import { Outliner } from "@/components/writing/Outliner";
+import { Scrivenings } from "@/components/writing/Scrivenings";
+import {
+  SplitDivider,
+  SplitPane,
+  clampRatio,
+  type SplitOrientation,
+  type SplitSource,
+} from "@/components/writing/SplitPane";
+import {
+  BinderSearchInput,
+  BinderSearchResults,
+  CollectionsSection,
+  SelectionBar,
+} from "@/components/writing/BinderSearch";
+import { TargetsStatus } from "@/components/writing/TargetsPopover";
+import { PromptDialog } from "@/components/ui/prompt-dialog";
 import type { Editor } from "@tiptap/react";
 import {
   DropdownMenu,
@@ -47,9 +64,23 @@ import {
 } from "@/hooks/use-writing-documents";
 import { useDocumentVersions, type DocumentSnapshot } from "@/hooks/use-document-versions";
 import { useWritingLabels } from "@/hooks/use-writing-labels";
-import { Trash2, RotateCcw, X, ArrowLeft } from "lucide-react";
+import { Trash2, RotateCcw, X, ArrowLeft, Columns2 } from "lucide-react";
 import { useWriteDoc, useLatestDoc, rollWordSession, countWords } from "@/hooks/use-write-doc";
-import { useSessionWords } from "@/hooks/use-session-words";
+import { useSessionTarget } from "@/hooks/use-session-target";
+import { useWorldSetting } from "@/hooks/use-world-setting";
+import { useTypewriterScroll } from "@/hooks/use-typewriter-scroll";
+import { primeDocCaches } from "@/hooks/use-doc-autosave";
+import { docsUnderFolder, inReadingOrder } from "@/lib/binder-tree";
+import { buildMatcher, type SearchHit, type SearchOptions } from "@/lib/binder-search";
+import { selectMatch } from "@/lib/editor-text-map";
+import {
+  COLLECTIONS_KEY,
+  newCollectionId,
+  sanitizeCollections,
+  type WritingCollection,
+} from "@/lib/writing-collections";
+import { PROJECT_KEY, sanitizeProjectTarget, type ProjectTarget } from "@/lib/writing-targets";
+import { reportWordsWritten } from "@/lib/session-words-bus";
 import { useWritingPreferences } from "@/hooks/use-writing-preferences";
 import { useWritingPins } from "@/hooks/use-writing-pins";
 import { readDocMeta } from "@/lib/document-meta";
@@ -65,6 +96,52 @@ function insertIntoEditor(text: string) {
   setTimeout(() => document.execCommand("insertText", false, text), 40);
 }
 
+type WriteView = "editor" | "board" | "outline" | "scrivenings";
+
+const VIEW_LABELS: Record<Exclude<WriteView, "scrivenings">, { label: string; hint: string }> = {
+  editor: { label: "Editor", hint: "One document at a time" },
+  board: { label: "Board", hint: "Index cards for every scene, to see the shape of the manuscript" },
+  outline: { label: "Outline", hint: "The binder as a table: synopsis, label, status, words, targets" },
+};
+
+interface SplitState {
+  open: boolean;
+  orientation: SplitOrientation;
+  ratio: number;
+  source: SplitSource | null;
+}
+
+const DEFAULT_SPLIT: SplitState = { open: false, orientation: "side", ratio: 0.5, source: null };
+
+function readSplit(worldId: string): SplitState {
+  try {
+    const raw = JSON.parse(localStorage.getItem(`sf-write-split:${worldId}`) ?? "null") as Partial<SplitState> | null;
+    if (!raw || typeof raw !== "object") return DEFAULT_SPLIT;
+    const src = raw.source;
+    const source =
+      src && typeof src === "object" && typeof src.id === "string" &&
+      (src.kind === "doc" || src.kind === "entity" || src.kind === "worksheet")
+        ? (src as SplitSource)
+        : null;
+    return {
+      open: raw.open === true,
+      orientation: raw.orientation === "stacked" ? "stacked" : "side",
+      ratio: clampRatio(typeof raw.ratio === "number" ? raw.ratio : 0.5),
+      source,
+    };
+  } catch {
+    return DEFAULT_SPLIT;
+  }
+}
+
+function writeSplit(worldId: string, s: SplitState): void {
+  try {
+    localStorage.setItem(`sf-write-split:${worldId}`, JSON.stringify(s));
+  } catch {
+    /* no storage */
+  }
+}
+
 export default function Write(): JSX.Element {
   const { docId } = useParams<{ docId: string }>();
   const navigate = useNavigate();
@@ -72,7 +149,11 @@ export default function Write(): JSX.Element {
   const { toast } = useToast();
 
   const { data: doc, isLoading: docLoading } = useWriteDoc(docId);
-  const worldId = doc?.world_id;
+  // Sticky while the next document loads, so a click in the binder does not
+  // blank the binder, the split pane and Scrivenings for a round-trip.
+  const lastWorldId = useRef<string | undefined>(undefined);
+  if (doc?.world_id) lastWorldId.current = doc.world_id;
+  const worldId = doc?.world_id ?? (docLoading ? lastWorldId.current : undefined);
 
   // `data` excludes folders by design, so folders/unfiledDocs must come from
   // the hook too. Re-deriving folders from `data` (as this once did) always
@@ -83,7 +164,12 @@ export default function Write(): JSX.Element {
     unfiledDocs,
     tree: binderTree,
     entries: binderEntries,
+    orderedDocs,
   } = useWritingDocuments(worldId);
+  // Every document in binder reading order: Scrivenings, search, the split
+  // pane's picker and collections all walk this.
+  const readingDocs = useMemo(() => orderedDocs.map((o) => o.doc), [orderedDocs]);
+  const qc = useQueryClient();
   const updateContent = useUpdateDocumentContent(worldId);
   const createDoc = useCreateDocument(worldId);
   const createFolder = useCreateFolder(worldId);
@@ -122,19 +208,79 @@ export default function Write(): JSX.Element {
 
   const [focus, setFocus] = useState(false);
   const [findOpen, setFindOpen] = useState(false);
-  // Manuscript (single scene) vs Board (all scenes as index cards). Persisted
-  // because a writer restructuring an act stays on the board across reloads.
-  const [view, setView] = useState<"editor" | "board">(() => {
+  // Editor (one document), Board (index cards), Outline (table) or
+  // Scrivenings (several documents as one text). Editor/Board/Outline persist
+  // because a writer restructuring an act stays there across reloads;
+  // Scrivenings needs a selection, so a reload returns to the editor.
+  const [view, setViewState] = useState<WriteView>(() => {
     try {
-      return localStorage.getItem("sf-write-view") === "board" ? "board" : "editor";
+      const v = localStorage.getItem("sf-write-view");
+      return v === "board" || v === "outline" ? v : "editor";
     } catch {
       return "editor";
     }
   });
   useEffect(() => {
-    try { localStorage.setItem("sf-write-view", view); } catch { /* no storage */ }
+    try { localStorage.setItem("sf-write-view", view === "scrivenings" ? "editor" : view); } catch { /* no storage */ }
   }, [view]);
-  const [editorInstance, setEditorInstance] = useState<Editor | null>(null);
+  const [scriv, setScriv] = useState<{ ids: string[]; title: string } | null>(null);
+  const effectiveView: WriteView = view === "scrivenings" && !scriv ? "editor" : view;
+
+  // The main editor, with the document it was mounted for. The pair matters:
+  // for one render after a navigation the old instance is still on hand, and
+  // a search jump must never select text in the wrong document.
+  const docIdRef = useRef(docId);
+  docIdRef.current = docId;
+  const [editorState, setEditorState] = useState<{ editor: Editor; docId: string } | null>(null);
+  const onEditorReady = useCallback(
+    (ed: Editor | null) => setEditorState(ed ? { editor: ed, docId: docIdRef.current ?? "" } : null),
+    [],
+  );
+  const editorInstance = editorState?.editor ?? null;
+
+  // Binder multi-selection, binder search, collections.
+  const [selection, setSelection] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchOpts, setSearchOpts] = useState<SearchOptions>({ regex: false, caseSensitive: false });
+  const searchRef = useRef<HTMLInputElement>(null);
+  const [jump, setJump] = useState<{ docId: string; hit: SearchHit; query: string; opts: SearchOptions } | null>(null);
+  const collections = useWorldSetting<WritingCollection[]>(
+    worldId,
+    COLLECTIONS_KEY,
+    sanitizeCollections,
+    "COLLECTION NOT SAVED.",
+  );
+  const [collectPrompt, setCollectPrompt] = useState<
+    null | { kind: "search" } | { kind: "manual"; ids: string[] }
+  >(null);
+  useEffect(() => {
+    setSelection([]);
+    setScriv(null);
+  }, [worldId]);
+
+  // Targets: session (the daily goal, unified) and project (on the world).
+  const session = useSessionTarget();
+  const refreshToday = session.refreshToday;
+  const project = useWorldSetting<ProjectTarget>(worldId, PROJECT_KEY, sanitizeProjectTarget, "TARGET NOT SAVED.");
+
+  // Split editor: per world, per browser.
+  const [split, setSplit] = useState<SplitState>(DEFAULT_SPLIT);
+  useEffect(() => {
+    if (!worldId) return;
+    setSplit(readSplit(worldId));
+  }, [worldId]);
+  const updateSplit = useCallback(
+    (patch: Partial<SplitState>) =>
+      setSplit((prev) => {
+        const next = { ...prev, ...patch };
+        if (worldId) writeSplit(worldId, next);
+        return next;
+      }),
+    [worldId],
+  );
+  const mainRef = useRef<HTMLElement>(null);
+  const splitScrollRef = useRef<HTMLDivElement>(null);
+  const splitBoxRef = useRef<HTMLDivElement>(null);
   const [inspector, setInspector] = useState<"doc" | "entities" | "world" | "reference" | "continuity">("doc");
   const [mobilePanel, setMobilePanel] = useState<"binder" | "inspector" | null>(null);
   const [trashOpen, setTrashOpen] = useState(false);
@@ -199,10 +345,7 @@ export default function Write(): JSX.Element {
     return [...seen.values()].sort((a, b) => a.localeCompare(b));
   }, [entries]);
 
-  // Today's progress against the goal the writer already set in Studio.
-  const { sessionWords, refresh: refreshSessionWords } = useSessionWords();
   const { preferences, updatePreferences } = useWritingPreferences();
-  const dailyGoalWords = preferences.dailyGoalWords || 500;
 
   // Spacing, font and column width, as CSS custom properties. They are read
   // by `.sf-writing-serif .ProseMirror` rather than inherited: a declaration
@@ -212,8 +355,20 @@ export default function Write(): JSX.Element {
     () => writingSurfaceStyle(preferences) as CSSProperties,
     [preferences],
   );
-  const goalPct = Math.min(100, Math.round((sessionWords / dailyGoalWords) * 100));
-  const goalMet = sessionWords >= dailyGoalWords;
+
+  // Whole-manuscript words for the project target: every document's saved
+  // count, with the open one's live count in its place.
+  const manuscriptWords = useMemo(() => {
+    let n = 0;
+    for (const d of readingDocs) n += d.id === docId ? words : countWords(d.content);
+    return n;
+  }, [readingDocs, docId, words]);
+
+  const typewriterMain = preferences.typewriter && (effectiveView === "editor" || effectiveView === "scrivenings");
+  const showSplit = split.open && !focus && !!worldId;
+  useTypewriterScroll(mainRef, typewriterMain);
+  useTypewriterScroll(splitScrollRef, preferences.typewriter && showSplit);
+  const fadeClass = preferences.fadeOthers ? " sf-fade-others" : "";
 
   // Card fields for the open document. metadata is untyped, so this tolerates
   // whatever is already in the column.
@@ -251,7 +406,8 @@ export default function Write(): JSX.Element {
         if (user && delta > 0) {
           // Await nothing, but refresh the footer once the ledger is written
           // so today's total advances as you type instead of on next refetch.
-          rollWordSession(user.id, delta).then(() => refreshSessionWords());
+          reportWordsWritten(delta);
+          rollWordSession(user.id, delta).then(() => refreshToday());
         }
       })
       .catch(() => {
@@ -259,11 +415,13 @@ export default function Write(): JSX.Element {
         // queued so the next flush retries instead of dropping it.
         if (!pending.current) pending.current = p;
       });
-  }, [docId, updateContent, user, refreshSessionWords]);
+  }, [docId, updateContent, user, refreshToday]);
 
   function onContentChange(html: string) {
     if (!docId) return;
     pending.current = { docId, html, words: countWords(html) };
+    // The binder list is what Scrivenings and the split pane open from.
+    primeDocCaches(qc, worldId, docId, html, false);
     if (debounce.current) clearTimeout(debounce.current);
     debounce.current = setTimeout(flushPending, 1200);
   }
@@ -357,6 +515,112 @@ export default function Write(): JSX.Element {
     [docId, flushPending, trashDoc],
   );
 
+  // VIEWS --------------------------------------------------------------------
+
+  /**
+   * Hand the main editor's newest words over before it unmounts: its own
+   * debounce may still hold up to 1.5s of typing, and the next surface
+   * (Scrivenings, a split pane) opens from the binder cache.
+   */
+  const handOffMain = useCallback(() => {
+    if (doc && editorInstance && !editorInstance.isDestroyed) {
+      const html = editorInstance.getHTML();
+      if (html !== (pending.current?.html ?? doc.content ?? "")) onContentChange(html);
+    }
+    void flushPending();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [doc, editorInstance, flushPending]);
+
+  const switchView = (v: Exclude<WriteView, "scrivenings">) => {
+    if (effectiveView === "editor" && v !== "editor") handOffMain();
+    setScriv(null);
+    setViewState(v);
+  };
+
+  const openScrivenings = (ids: string[], scrivTitle: string) => {
+    const docs = inReadingOrder(binderTree, ids);
+    if (docs.length === 0) {
+      toast({ title: "NOTHING TO SHOW.", description: "That selection holds no documents." });
+      return;
+    }
+    if (effectiveView === "editor") handOffMain();
+    setScriv({ ids: docs.map((d) => d.id), title: scrivTitle });
+    setViewState("scrivenings");
+    setSelection([]);
+    setMobilePanel(null);
+  };
+  const scrivDocs = useMemo(
+    () => (scriv ? inReadingOrder(binderTree, scriv.ids) : []),
+    [scriv, binderTree],
+  );
+
+  // SEARCH -------------------------------------------------------------------
+
+  const jumpTo = (targetId: string, hit: SearchHit) => {
+    if (effectiveView !== "editor") switchView("editor");
+    setJump({ docId: targetId, hit, query: searchQuery, opts: searchOpts });
+    if (targetId !== docId) {
+      handOffMain();
+      navigate(`/write/${targetId}`);
+    }
+    setMobilePanel(null);
+  };
+
+  // Land on the match once the target document's editor is mounted. Card
+  // fields open the inspector pane that holds them instead.
+  useEffect(() => {
+    if (!jump || jump.docId !== docId) return;
+    const field = jump.hit.field;
+    if (field !== "text") {
+      if (field === "synopsis" || field === "keywords") {
+        setInspector("doc");
+        setDocPane("card");
+      } else if (field === "notes") {
+        setInspector("doc");
+        setDocPane("notes");
+      }
+      setJump(null);
+      return;
+    }
+    if (!editorState || editorState.docId !== jump.docId) return;
+    const { re } = buildMatcher(jump.query, jump.opts);
+    const ed = editorState.editor;
+    const occurrence = jump.hit.occurrence;
+    setJump(null);
+    // After the editor's own first content sync, which resets the selection.
+    setTimeout(() => {
+      if (re && !ed.isDestroyed) selectMatch(ed, re, occurrence);
+    }, 80);
+  }, [jump, docId, editorState]);
+
+  const focusSearch = useCallback(() => {
+    setFocus(false);
+    if (typeof window !== "undefined" && window.matchMedia("(max-width: 1023px)").matches) {
+      setMobilePanel("binder");
+    }
+    setTimeout(() => searchRef.current?.focus(), 60);
+  }, []);
+
+  const saveCollection = (name: string) => {
+    const clean = name.trim();
+    if (!clean || !collectPrompt) return;
+    const c: WritingCollection =
+      collectPrompt.kind === "search"
+        ? {
+            id: newCollectionId(),
+            name: clean,
+            kind: "search",
+            query: searchQuery,
+            regex: searchOpts.regex,
+            caseSensitive: searchOpts.caseSensitive,
+          }
+        : { id: newCollectionId(), name: clean, kind: "manual", docIds: collectPrompt.ids };
+    collections.save([...collections.value, c]);
+    toast({ title: "COLLECTION SAVED.", description: clean });
+    if (collectPrompt.kind === "manual") setSelection([]);
+    setCollectPrompt(null);
+  };
+
   // The live editor bound no shortcuts at all: Ctrl+S did nothing and focus
   // mode had no way out but the mouse.
   useEffect(() => {
@@ -382,6 +646,12 @@ export default function Write(): JSX.Element {
         flushPending();
         return;
       }
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === "f") {
+        // Ctrl/Cmd+Shift+F: search the whole binder.
+        e.preventDefault();
+        focusSearch();
+        return;
+      }
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "f") {
         // Override the browser's find: it cannot replace, and a writer asking
         // for find in an editor means find-in-document.
@@ -393,7 +663,7 @@ export default function Write(): JSX.Element {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [flushPending, focus]);
+  }, [flushPending, focus, focusSearch]);
 
   // Export just this document, reusing the manuscript exporters with a
   // single-chapter list so the formatting matches a compiled manuscript.
@@ -460,7 +730,11 @@ export default function Write(): JSX.Element {
   if (!docLoading && doc === null) return <Navigate to="/studio" replace />;
 
   // open a doc from the binder; on mobile also close the sheet
+  // Opening one document leaves Scrivenings (the binder's click means "this
+  // one"); Board and Outline stay put, as before.
   const openDoc = (id: string) => {
+    if (effectiveView === "scrivenings") switchView("editor");
+    else if (effectiveView === "editor" && id !== docId) handOffMain();
     navigate(`/write/${id}`);
     setMobilePanel(null);
   };
@@ -468,9 +742,67 @@ export default function Write(): JSX.Element {
   // Shared binder content (renders in the desktop column AND the mobile sheet)
   const binderContent = (
     <div className="flex h-full min-h-0 flex-col border-r border-sf-line-interactive">
+      {worldId && (
+        <BinderSearchInput
+          query={searchQuery}
+          onQuery={setSearchQuery}
+          opts={searchOpts}
+          onOpts={setSearchOpts}
+          inputRef={searchRef}
+        />
+      )}
+      {selection.length > 0 && (
+        <SelectionBar
+          count={selection.length}
+          onScrivenings={() => openScrivenings(selection, `${selection.length} selected documents`)}
+          onSave={() => setCollectPrompt({ kind: "manual", ids: inReadingOrder(binderTree, selection).map((d) => d.id) })}
+          onClear={() => setSelection([])}
+        />
+      )}
       <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto py-2">
+        {worldId && searchQuery.trim() ? (
+          <BinderSearchResults
+            docs={readingDocs}
+            query={searchQuery}
+            opts={searchOpts}
+            activeDocId={docId}
+            onJump={jumpTo}
+            onSave={() => setCollectPrompt({ kind: "search" })}
+            onScrivenings={(ids) => openScrivenings(ids, `Search: ${searchQuery}`)}
+          />
+        ) : (
+        <>
+        {worldId && (
+          <CollectionsSection
+            collections={collections.value}
+            docs={readingDocs}
+            activeDocId={docId}
+            local={collections.isLocal}
+            onOpenDoc={openDoc}
+            onScrivenings={openScrivenings}
+            onRunSearch={(c) => {
+              if (c.kind !== "search") return;
+              setSearchOpts({ regex: c.regex, caseSensitive: c.caseSensitive });
+              setSearchQuery(c.query);
+            }}
+            onDelete={(c) => {
+              if (window.confirm(`Delete the collection "${c.name}"? No document is affected.`)) {
+                collections.save(collections.value.filter((x) => x.id !== c.id));
+              }
+            }}
+          />
+        )}
         {worldId && (
           <BinderTree
+            selection={selection}
+            onSelectionChange={setSelection}
+            onScrivenings={(folderId) => {
+              const folder = binderEntries.find((e) => e.id === folderId);
+              openScrivenings(
+                docsUnderFolder(binderTree, folderId).map((d) => d.id),
+                folder?.title || "Untitled folder",
+              );
+            }}
             worldId={worldId}
             tree={binderTree}
             entries={binderEntries}
@@ -539,6 +871,8 @@ export default function Write(): JSX.Element {
               </div>
             )}
           </div>
+        )}
+        </>
         )}
       </div>
       {worldId && (
@@ -639,7 +973,7 @@ export default function Write(): JSX.Element {
   ) : null;
 
   return (
-    <div className="relative z-10 grid h-screen grid-rows-[44px_1fr_32px] bg-[hsl(var(--sf-void-hsl))]">
+    <div className="relative z-10 grid h-screen grid-rows-[44px_1fr_44px] bg-[hsl(var(--sf-void-hsl))]">
       {/* topbar */}
       <header className="flex items-center gap-3 border-b border-sf-line-interactive px-4">
         {/* explicit way back to the Studio overview */}
@@ -714,12 +1048,48 @@ export default function Write(): JSX.Element {
               )}
             </DropdownMenuContent>
           </DropdownMenu>
-          <button
-            onClick={() => setView(view === "board" ? "editor" : "board")}
-            title="Index cards for every scene, to see the shape of the manuscript"
-            className={`border px-2.5 py-1 text-[12px] transition-colors ${view === "board" ? "border-sf-primary text-sf-primary-text" : "border-sf-line-interactive text-t3 hover:text-t1"}`}>
-            Board
-          </button>
+          {/* View switch. Scrivenings opens from the binder (a folder, a
+              selection, a collection) and shows here while it is active. */}
+          <div className="hidden items-center sm:flex" role="group" aria-label="View">
+            {(Object.keys(VIEW_LABELS) as Exclude<WriteView, "scrivenings">[]).map((v, i) => (
+              <button
+                key={v}
+                type="button"
+                onClick={() => switchView(v)}
+                aria-pressed={effectiveView === v}
+                title={VIEW_LABELS[v].hint}
+                className={`border px-2.5 py-1 text-[12px] transition-colors ${i > 0 ? "-ml-px" : ""} ${
+                  effectiveView === v
+                    ? "relative z-[1] border-sf-primary text-sf-primary-text"
+                    : "border-sf-line-interactive text-t3 hover:text-t1"
+                }`}
+              >
+                {VIEW_LABELS[v].label}
+              </button>
+            ))}
+            {effectiveView === "scrivenings" && (
+              <span className="relative z-[1] -ml-px border border-sf-primary px-2.5 py-1 text-[12px] text-sf-primary-text">
+                Scrivenings
+              </span>
+            )}
+          </div>
+          {!focus && worldId && (
+            <button
+              type="button"
+              onClick={() => {
+                if (!split.open && effectiveView === "editor") handOffMain();
+                updateSplit({ open: !split.open });
+              }}
+              aria-pressed={split.open}
+              aria-label={split.open ? "Close the split editor" : "Split the editor"}
+              title="Split: a second document, Codex entry or worksheet beside this one"
+              className={`hidden items-center gap-1.5 border px-2.5 py-1 text-[12px] transition-colors md:flex ${
+                split.open ? "border-sf-primary text-sf-primary-text" : "border-sf-line-interactive text-t3 hover:text-t1"
+              }`}
+            >
+              <Columns2 className="h-3.5 w-3.5" aria-hidden="true" /> Split
+            </button>
+          )}
           <button onClick={() => setFocus(!focus)}
             title={focus ? "Leave focus mode (Esc)" : "Focus mode hides the binder and inspector. Press Esc to come back."}
             className={`border px-2.5 py-1 text-[12px] transition-colors ${focus ? "border-sf-primary text-sf-primary-text" : "border-sf-line-interactive text-t3 hover:text-t1"}`}>
@@ -742,28 +1112,57 @@ export default function Write(): JSX.Element {
       </Sheet>
 
       {/* body */}
-      <div className={`grid min-h-0 ${focus ? "grid-cols-1" : "grid-cols-1 lg:grid-cols-[260px_1fr_320px]"}`}>
+      <div className={`grid min-h-0 ${focus ? "grid-cols-1" : "grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)_320px]"}`}>
         {/* binder (desktop column) */}
         {!focus && (
           <aside className="hidden min-h-0 lg:flex">{binderContent}</aside>
         )}
 
-        {/* editor */}
-        <main className="sf-sb min-h-0 overflow-y-auto">
-          {findOpen && view === "editor" && (
+        {/* editor, and the split pane beside or below it */}
+        <div
+          ref={splitBoxRef}
+          className={`flex min-h-0 min-w-0 ${showSplit && split.orientation === "stacked" ? "flex-col" : "flex-row"}`}
+        >
+        <main
+          ref={mainRef}
+          className={`sf-sb min-h-0 min-w-0 overflow-y-auto${fadeClass}`}
+          style={showSplit ? { flex: `0 0 calc(${split.ratio * 100}% - 6px)` } : { flex: "1 1 auto" }}
+        >
+          {findOpen && effectiveView === "editor" && (
             <FindReplaceBar
               editor={editorInstance}
               onClose={() => setFindOpen(false)}
             />
           )}
 
-          {view === "board" ? (
+          {effectiveView === "board" ? (
             <Corkboard
               folders={folders}
               unfiled={unfiled}
               activeDocId={docId}
-              onOpen={(id) => { setView("editor"); openDoc(id); }}
+              onOpen={(id) => { switchView("editor"); openDoc(id); }}
               onReorder={(ids) => reorderDocs.mutate(ids)}
+            />
+          ) : effectiveView === "outline" && worldId ? (
+            <Outliner
+              worldId={worldId}
+              tree={binderTree}
+              labels={labels}
+              activeDocId={docId}
+              onOpen={(id) => { switchView("editor"); openDoc(id); }}
+              onChangeMeta={(id, patch) => updateMeta.mutate({ docId: id, patch })}
+            />
+          ) : effectiveView === "scrivenings" && worldId && scriv ? (
+            <Scrivenings
+              key={scriv.ids.join(",")}
+              worldId={worldId}
+              docs={scrivDocs}
+              title={scriv.title}
+              editorClassName="sf-writing-serif"
+              editorStyle={editorStyle}
+              onOpenDoc={(id) => { switchView("editor"); openDoc(id); }}
+              onClose={() => switchView("editor")}
+              onWordsLedgered={refreshToday}
             />
           ) : (
           <div
@@ -783,7 +1182,7 @@ export default function Write(): JSX.Element {
             <div className="my-6 text-center text-t4" aria-hidden="true">· · ·</div>
             {doc && (
               <StellarForgeEditor
-                onEditorReady={setEditorInstance}
+                onEditorReady={onEditorReady}
                 key={doc.id}
                 content={doc.content ?? ""}
                 onChange={onContentChange}
@@ -799,7 +1198,37 @@ export default function Write(): JSX.Element {
             )}
           </div>
           )}
+          {/* Typewriter scrolling needs room under the last line. */}
+          {typewriterMain && <div aria-hidden="true" style={{ height: "50vh" }} />}
         </main>
+        {showSplit && worldId && (
+          <>
+            <SplitDivider
+              orientation={split.orientation}
+              ratio={split.ratio}
+              onRatio={(ratio) => updateSplit({ ratio })}
+              containerRef={splitBoxRef}
+            />
+            <div className={`min-h-0 min-w-0 flex-1${fadeClass}`}>
+              <SplitPane
+                worldId={worldId}
+                docs={readingDocs}
+                excludeIds={effectiveView === "scrivenings" && scriv ? [...scriv.ids, ...(docId ? [docId] : [])] : docId ? [docId] : []}
+                source={split.source}
+                onSourceChange={(source) => updateSplit({ source })}
+                orientation={split.orientation}
+                onOrientationChange={(orientation) => updateSplit({ orientation })}
+                onClose={() => updateSplit({ open: false })}
+                editorClassName="sf-writing-serif"
+                editorStyle={editorStyle}
+                scrollRef={splitScrollRef}
+                tailSpacer={preferences.typewriter}
+                onWordsLedgered={refreshToday}
+              />
+            </div>
+          </>
+        )}
+        </div>
 
         {/* inspector — the full entity/reference tool (desktop column) */}
         {!focus && worldId && (
@@ -821,22 +1250,17 @@ export default function Write(): JSX.Element {
         <div className="flex items-center gap-3 font-mono text-[12px] tracking-wide text-t4">
           <span>{words.toLocaleString()} WORDS</span>
           <span aria-hidden="true">·</span>
-          <span
-            className={goalMet ? "text-sf-primary-text" : "text-t4"}
-            title={`${sessionWords.toLocaleString()} words written today, goal ${dailyGoalWords.toLocaleString()}`}
-          >
-            {sessionWords.toLocaleString()} / {dailyGoalWords.toLocaleString()} TODAY
-          </span>
-          {/* The goal shown above used to be view-only — adjusting it meant
-              leaving Studio for /workshop. GoalSetting is self-contained
-              (own hook, own popover) so dropping it in costs nothing. */}
-          <GoalSetting compact />
-          <span className="hidden h-1 w-24 bg-sf-surface-elevated sm:block" aria-hidden="true">
-            <span
-              className={`block h-full ${goalMet ? "bg-sf-primary" : "bg-sf-primary/50"}`}
-              style={{ width: `${goalPct}%` }}
-            />
-          </span>
+          {/* Session (the daily goal, now with a per-session reset), document
+              and project targets. Absorbs the old GoalSetting popover. */}
+          <TargetsStatus
+            session={session}
+            docWords={words}
+            docTarget={docMeta.target}
+            manuscriptWords={manuscriptWords}
+            project={project.value}
+            projectLocal={project.isLocal}
+            onProjectChange={(t) => project.save(t)}
+          />
         </div>
       </footer>
 
@@ -845,6 +1269,21 @@ export default function Write(): JSX.Element {
         currentHtml={comparing ? liveHtml() : ""}
         onOpenChange={(o) => !o && setComparing(null)}
         onRestore={restoreSnapshot}
+      />
+      <PromptDialog
+        open={collectPrompt !== null}
+        onOpenChange={(o) => !o && setCollectPrompt(null)}
+        title={collectPrompt?.kind === "search" ? "SAVE SEARCH AS COLLECTION" : "COLLECT SELECTED DOCUMENTS"}
+        description={
+          collectPrompt?.kind === "search"
+            ? "A saved search re-runs every time, so it stays current as the manuscript changes."
+            : "A named set of documents, kept at the top of the binder."
+        }
+        label="Collection name"
+        placeholder={collectPrompt?.kind === "search" ? searchQuery : "Act two"}
+        defaultValue={collectPrompt?.kind === "search" ? searchQuery : ""}
+        confirmLabel="Save collection"
+        onSubmit={saveCollection}
       />
       <LabelManagerDialog
         open={labelsOpen}

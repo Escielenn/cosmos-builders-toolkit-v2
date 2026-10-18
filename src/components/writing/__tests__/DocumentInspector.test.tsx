@@ -68,7 +68,9 @@ describe("DocumentInspector", () => {
     const p = mount("snapshots");
     fireEvent.click(screen.getByText("Before the rewrite"));
     expect(p.onCompare).toHaveBeenCalledWith(snap);
-    expect(screen.getByText(/1 \/ 20 ON FILE/)).toBeInTheDocument();
+    // A named snapshot does not count toward the 20 unnamed (P2).
+    expect(screen.getByText(/0 \/ 20 UNNAMED/)).toBeInTheDocument();
+    expect(screen.getByText(/1 NAMED, KEPT/)).toBeInTheDocument();
   });
 
   it("takes a named snapshot", async () => {
