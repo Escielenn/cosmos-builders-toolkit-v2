@@ -13,7 +13,7 @@ import type { WritingLabel } from "@/lib/writing-labels";
 import { markdownToHtml } from "./markdown";
 import { plainTextToHtml, sanitizeImportHtml } from "./html";
 import { rtfToHtml } from "./rtf";
-import { importScrivener } from "./scrivener";
+import { type ImportEntity, importScrivener } from "./scrivener";
 import { findScrivx, sourceFromFiles, sourceFromZip, type FileSource } from "./sources";
 import {
   countImport,
@@ -28,6 +28,8 @@ import {
 } from "./tree";
 
 export * from "./tree";
+export type { ImportEntity } from "./scrivener";
+export { entityTypeForFolder } from "./scrivener";
 export { markdownToHtml } from "./markdown";
 export { sanitizeImportHtml, plainTextToHtml } from "./html";
 export { rtfToHtml, rtfToText } from "./rtf";
@@ -44,6 +46,8 @@ export interface ImportPreview {
   /** Short name of what was picked, for the dialog header. */
   sourceName: string;
   nodes: ImportNode[];
+  /** Scrivener only: Codex entries from Characters, Places, … folders. */
+  entities: ImportEntity[];
   counts: ImportCounts;
   /** Scrivener only: the world's label set after merging (when labels were created). */
   labels?: WritingLabel[];
@@ -164,6 +168,7 @@ export async function buildImportFromSource(
       kind: "scrivener",
       sourceName: s.projectName,
       nodes: s.nodes,
+      entities: s.entities,
       counts: countImport(s.nodes),
       ...(s.labelsCreated ? { labels: s.labels } : {}),
       labelsCreated: s.labelsCreated,
@@ -178,6 +183,7 @@ export async function buildImportFromSource(
     kind: "files",
     sourceName,
     nodes,
+    entities: [],
     counts: countImport(nodes),
     labelsCreated: 0,
     skipped: { media: 0, unsupported, missingContent: 0 },

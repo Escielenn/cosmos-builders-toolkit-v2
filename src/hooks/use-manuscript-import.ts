@@ -25,6 +25,7 @@ import { nextSortOrder } from "@/hooks/use-writing-documents";
 import { updateWorldSettingKey } from "@/hooks/use-world-setting";
 import { chunkRows, countImport, dedupeTopLevel, planImportRows, type ImportPreview } from "@/lib/manuscript-import";
 import { sanitizeLabels } from "@/lib/writing-labels";
+import { invalidateWorldEntries } from "@/services/entity-graph-keys";
 import { sanitizeCompileSettings, withExcluded } from "@/lib/manuscript/compile";
 
 export interface ImportProgress {
@@ -34,6 +35,8 @@ export interface ImportProgress {
 
 export interface ImportOutcome {
   firstDocId: string | null;
+  /** Codex entries created from Characters, Places, … folders (Scrivener). */
+  entities: number;
   documents: number;
   folders: number;
   words: number;
@@ -75,7 +78,8 @@ export function useManuscriptImport(worldId: string | undefined) {
         rootSortStart: nextSortOrder(root),
         newId,
       });
-      const total = rows.length;
+      const entities = preview.entities ?? [];
+      const total = rows.length + entities.length;
       let written = 0;
       setProgress({ written, total });
 
@@ -102,6 +106,37 @@ export function useManuscriptImport(worldId: string | undefined) {
         setProgress({ written, total });
         await yieldToBrowser();
       }
+
+      // Codex entries (Scrivener Characters, Places, …): new world_entries
+      // rows at the top level of the Codex, never inside the manuscript.
+      const entityRows = entities.map((e) => ({ ...e, id: newId() }));
+      for (let i = 0; i < entityRows.length; i += 50) {
+        const chunk = entityRows.slice(i, i + 50);
+        const { error } = await supabase.from("world_entries").insert(
+          chunk.map((e) => ({
+            id: e.id,
+            world_id: worldId,
+            title: e.title,
+            entry_type: e.entryType,
+            content: e.html || null,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            metadata: { ...(e.summary ? { summary: e.summary } : {}), ...(e.notes ? { notes: e.notes } : {}), imported_from: "scrivener" } as any,
+            tags: e.tags,
+            sort_order: 0,
+            parent_id: null,
+            created_by: user.id,
+          })),
+        );
+        if (error) {
+          qc.invalidateQueries({ queryKey: ["writing-documents", worldId] });
+          invalidateWorldEntries(qc, worldId);
+          throw new ImportHaltedError(written, total, error);
+        }
+        written += chunk.length;
+        setProgress({ written, total });
+        await yieldToBrowser();
+      }
+      if (entities.length) invalidateWorldEntries(qc, worldId);
 
       // Labels and compile exclusions are best-effort: the words are in.
       if (preview.labels && preview.labelsCreated > 0) {
@@ -147,6 +182,7 @@ export function useManuscriptImport(worldId: string | undefined) {
       };
       return {
         firstDocId: firstDoc(null),
+        entities: entities.length,
         documents: counts.documents,
         folders: counts.folders,
         words: counts.words,

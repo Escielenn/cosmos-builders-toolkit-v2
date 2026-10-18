@@ -32,6 +32,7 @@ import { ImportHaltedError, useManuscriptImport, type ImportOutcome } from "@/ho
 import { buildImport, importResultLine, type ImportNode, type ImportPreview } from "@/lib/manuscript-import";
 import { countWords } from "@/lib/text";
 import { mapError } from "@/lib/ship-voice";
+import { ENTITY_TYPE_LABELS } from "@/services/world-data";
 
 type Step =
   | { kind: "pick" }
@@ -257,6 +258,11 @@ export function ImportManuscriptDialog({ worldId, open, onOpenChange, onOpenDocu
             <p className="font-sans text-[14px] text-t3">
               {step.outcome.folders.toLocaleString("en-US")} folders added at the end of the binder.
             </p>
+            {step.outcome.entities > 0 && (
+              <p className="font-sans text-[14px] text-t3">
+                {step.outcome.entities.toLocaleString("en-US")} Codex entr{step.outcome.entities === 1 ? "y" : "ies"} filed from your character and setting folders.
+              </p>
+            )}
           </div>
         )}
 
@@ -327,6 +333,13 @@ function PreviewBody({
   const { counts, skipped } = preview;
   const notes: string[] = [];
   if (preview.kind === "scrivener") notes.push(`Scrivener project: ${preview.sourceName}.`);
+  const entities = preview.entities ?? [];
+  if (entities.length) {
+    const byType = new Map<string, number>();
+    for (const e of entities) byType.set(e.entryType, (byType.get(e.entryType) ?? 0) + 1);
+    const parts = [...byType].map(([t, n]) => `${n} ${ENTITY_TYPE_LABELS[t]?.toLowerCase() ?? t}`).join(", ");
+    notes.push(`${entities.length} item${entities.length === 1 ? "" : "s"} from your other folders become Codex entries (${parts}), not manuscript documents.`);
+  }
   if (preview.labelsCreated) notes.push(`${preview.labelsCreated} new label${preview.labelsCreated === 1 ? "" : "s"} added to this world.`);
   if (excluded) notes.push(`${excluded} item${excluded === 1 ? "" : "s"} marked not to compile, as in Scrivener.`);
   if (skipped.media) notes.push(`${skipped.media} media item${skipped.media === 1 ? "" : "s"} (PDF, image, web page) left behind.`);
