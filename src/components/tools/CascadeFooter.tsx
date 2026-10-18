@@ -45,7 +45,7 @@ function RelCard({ rel }: { rel: ToolRelationship }): JSX.Element {
   return (
     <Link
       to={getToolRoute(rel.toolId) ?? `/tools/${rel.toolId}`}
-      className="group block border border-sf-line-interactive bg-sf-surface/60 p-3.5 transition-colors hover:border-sf-primary hover:bg-sf-surface"
+      className="group block border border-sf-line bg-sf-surface/60 p-3.5 transition-colors hover:border-sf-primary hover:bg-sf-surface"
     >
       <div className="flex items-center gap-2">
         <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${CATEGORY_DOT[cat]}`} aria-hidden="true" />

@@ -267,7 +267,7 @@ const ImportFromECRModal = ({
                       className={`w-full p-3 rounded-none border text-left transition-colors ${
                         selectedWorksheetId === worksheet.id
                           ? "border-sf-primary bg-sf-primary/5"
-                          : "border-sf-line-interactive hover:border-sf-primary"
+                          : "border-sf-line hover:border-sf-primary"
                       }`}
                     >
                       <div className="flex items-center justify-between">

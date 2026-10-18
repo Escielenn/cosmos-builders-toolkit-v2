@@ -849,7 +849,7 @@ const SurfaceCartographer = () => {
                           ? "cursor-not-allowed border-sf-disabled-line bg-sf-disabled-bg text-sf-disabled-text"
                           : active
                             ? "border-sf-primary bg-sf-primary/[0.06] text-sf-primary-text"
-                            : "border-sf-line-interactive text-t2 hover:border-sf-line-emphasis"
+                            : "border-sf-line text-t2 hover:border-sf-line-emphasis"
                       }`}
                     >
                       {src === "sheet" ? <MapIcon className="h-4 w-4" aria-hidden /> : <Shuffle className="h-4 w-4" aria-hidden />}
@@ -868,7 +868,7 @@ const SurfaceCartographer = () => {
                     className={`flex min-h-hit items-center gap-2 border px-4 font-sans text-[13px] font-medium uppercase transition-colors duration-fast ease-sf-out ${
                       state.view === v
                         ? "border-sf-primary bg-sf-primary/[0.06] text-sf-primary-text"
-                        : "border-sf-line-interactive text-t2 hover:border-sf-line-emphasis"
+                        : "border-sf-line text-t2 hover:border-sf-line-emphasis"
                     }`}
                   >
                     {v === "flat" ? <MapIcon className="h-4 w-4" aria-hidden /> : <Globe2 className="h-4 w-4" aria-hidden />}
@@ -907,7 +907,7 @@ const SurfaceCartographer = () => {
                   className={`flex min-h-hit cursor-pointer items-center justify-center gap-2 border px-4 font-sans text-[13px] font-medium uppercase transition-colors duration-fast ${
                     busy === "upload"
                       ? "border-sf-disabled-line bg-sf-disabled-bg text-sf-disabled-text"
-                      : "border-sf-line-interactive text-t1 hover:border-sf-primary hover:text-sf-primary-text"
+                      : "border-sf-line text-t1 hover:border-sf-primary hover:text-sf-primary-text"
                   }`}
                 >
                   {sheet ? <Upload className="h-4 w-4" aria-hidden /> : <ImagePlus className="h-4 w-4" aria-hidden />}

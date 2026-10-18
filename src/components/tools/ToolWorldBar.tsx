@@ -41,7 +41,7 @@ const FRAME: Record<NonNullable<ToolWorldBarProps["accent"]>, string> = {
 };
 
 const linkClass =
-  "inline-flex min-h-hit items-center gap-2 border border-sf-line-interactive px-4 font-sans text-sm font-medium uppercase text-t1 transition-colors duration-base ease-sf-out hover:border-sf-primary hover:text-sf-primary-text";
+  "inline-flex min-h-hit items-center gap-2 border border-sf-line px-4 font-sans text-sm font-medium uppercase text-t1 transition-colors duration-base ease-sf-out hover:border-sf-primary hover:text-sf-primary-text";
 
 export function ToolWorldBar({ reason, accent = "teal", className }: ToolWorldBarProps): JSX.Element {
   const { user } = useAuth();
