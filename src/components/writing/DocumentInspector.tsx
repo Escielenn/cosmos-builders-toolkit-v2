@@ -169,8 +169,8 @@ function CardPane({
   const met = meta.target > 0 && words >= meta.target;
 
   return (
-    <div className="flex flex-col gap-4 p-3">
-      <label className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-5 p-4">
+      <label className="flex flex-col gap-2">
         <span className={FIELD_LABEL}>Synopsis</span>
         <textarea
           value={synopsis}
@@ -188,7 +188,7 @@ function CardPane({
           <DropdownMenuTrigger asChild>
             <button
               type="button"
-              className="flex min-h-hit items-center gap-2 border border-sf-line-interactive px-3 text-left font-sans text-[14px] text-t2 transition-colors duration-fast hover:border-sf-line-emphasis"
+              className="sf-field flex min-h-hit items-center gap-2 px-3 text-left font-sans text-[14px] text-t2"
             >
               {label ? (
                 <>
@@ -220,17 +220,17 @@ function CardPane({
 
       <div className="flex flex-col gap-1.5">
         <span className={FIELD_LABEL}>Status</span>
-        <div className="grid grid-cols-4 gap-1">
+        <div className="grid grid-cols-2 gap-2">
           {DOC_STATUSES.map((s) => (
             <button
               key={s}
               type="button"
               onClick={() => onChange({ status: meta.status === s ? "" : s })}
               aria-pressed={meta.status === s}
-              className={`min-h-hit border px-1 font-mono text-[12px] uppercase transition-colors duration-fast ${
+              className={`min-h-hit border px-3 font-mono text-[12px] uppercase transition-colors duration-fast ${
                 meta.status === s
                   ? `border-sf-primary bg-sf-primary/[0.06] ${STATUS_TONE[s]}`
-                  : "border-sf-line-interactive text-t3 hover:text-t1"
+                  : "border-sf-line text-t3 hover:border-sf-line-emphasis hover:text-t1"
               }`}
             >
               {STATUS_LABELS[s]}
@@ -251,7 +251,7 @@ function CardPane({
             onBlur={commitPov}
             onKeyDown={(e) => e.key === "Enter" && (e.target as HTMLInputElement).blur()}
             placeholder="Whose eyes?"
-            className="min-h-hit min-w-0 flex-1 px-2 font-serif text-[16px] text-t2"
+            className="min-h-hit min-w-0 flex-1 px-3 font-serif text-[16px] text-t2"
           />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -259,7 +259,7 @@ function CardPane({
                 type="button"
                 aria-label="Pick the POV character"
                 title="Pick a character on file"
-                className="-ml-px flex min-h-hit w-11 shrink-0 items-center justify-center border border-sf-line-interactive text-t3 transition-colors duration-fast hover:border-sf-line-emphasis hover:text-t1"
+                className="sf-field -ml-px flex min-h-hit w-11 shrink-0 items-center justify-center text-t3 hover:text-t1"
               >
                 <UserRound className="h-4 w-4" aria-hidden="true" />
               </button>
@@ -312,7 +312,7 @@ function CardPane({
             <button
               type="button"
               aria-labelledby="sf-doc-setin-label"
-              className="flex min-h-hit items-center gap-2 border border-sf-line-interactive px-3 text-left font-sans text-[14px] text-t2 transition-colors duration-fast hover:border-sf-line-emphasis"
+              className="sf-field flex min-h-hit items-center gap-2 px-3 text-left font-sans text-[14px] text-t2"
             >
               <MapPin className="h-3.5 w-3.5 shrink-0 text-t4" aria-hidden="true" />
               {meta.setInPlaceId ? (
@@ -344,7 +344,7 @@ function CardPane({
         {place && <span className="font-mono text-[12px] text-t4">{place.sub}</span>}
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-3">
         <label className="flex min-w-0 flex-col gap-1.5">
           <span className={FIELD_LABEL}>When</span>
           <input
@@ -352,7 +352,7 @@ function CardPane({
             onChange={(e) => setWhen(e.target.value)}
             onBlur={() => commit("when", when.trim())}
             placeholder="In-world date"
-            className="min-h-hit w-full px-2 font-serif text-[16px] text-t2"
+            className="min-h-hit w-full px-3 font-serif text-[16px] text-t2"
           />
         </label>
         <div className="flex min-w-0 flex-col gap-1.5">
@@ -364,7 +364,7 @@ function CardPane({
               <button
                 type="button"
                 aria-labelledby="sf-doc-timeline-label"
-                className="flex min-h-hit min-w-0 items-center gap-1 border border-sf-line-interactive px-2 text-left font-sans text-[14px] text-t2 transition-colors duration-fast hover:border-sf-line-emphasis"
+                className="sf-field flex min-h-hit min-w-0 items-center gap-1 px-3 text-left font-sans text-[14px] text-t2"
               >
                 <span className="min-w-0 flex-1 truncate">
                   {meta.branchId ? branch?.name ?? "Unknown branch" : "Prime"}
@@ -420,7 +420,7 @@ function CardPane({
             onBlur={() => commit("target", Math.max(0, Math.round(Number(target) || 0)))}
             onKeyDown={(e) => e.key === "Enter" && (e.target as HTMLInputElement).blur()}
             placeholder="None"
-            className="min-h-hit w-28 px-2 font-mono text-[16px] text-t1"
+            className="min-h-hit w-28 px-3 font-mono text-[16px] text-t1"
           />
           <span className="font-mono text-[12px] text-t4">WORDS</span>
         </div>
@@ -479,7 +479,7 @@ function NotesPane({
   useEffect(() => () => flush(), []);
 
   return (
-    <div className="flex h-full min-h-[280px] flex-col gap-1.5 p-3">
+    <div className="flex h-full min-h-[280px] flex-col gap-2 p-4">
       <label htmlFor="sf-doc-notes" className={FIELD_LABEL}>
         Document notes
       </label>
@@ -530,7 +530,7 @@ function SnapshotsPane({
   };
 
   return (
-    <div className="flex flex-col gap-3 p-3">
+    <div className="flex flex-col gap-4 p-4">
       <form
         className="flex flex-col gap-2"
         onSubmit={(e) => {
@@ -547,7 +547,7 @@ function SnapshotsPane({
           maxLength={80}
           onChange={(e) => setName(e.target.value)}
           placeholder="Before the rewrite"
-          className="min-h-hit w-full px-2 font-serif text-[16px] text-t2"
+          className="min-h-hit w-full px-3 font-serif text-[16px] text-t2"
         />
         <Button type="submit" variant="sf-primary" size="sf-sm" disabled={busy}>
           <Camera className="h-4 w-4" aria-hidden="true" />
@@ -560,7 +560,7 @@ function SnapshotsPane({
       </form>
 
       {snapshotsLocal && (
-        <p className="border border-sf-amber px-2 py-1.5 font-sans text-[12px] text-sf-amber-text">
+        <p className="border border-sf-amber px-3 py-1.5 font-sans text-[12px] text-sf-amber-text">
           {"// SNAPSHOTS STORED IN THIS BROWSER UNTIL THE SERVER TABLE IS AVAILABLE."}
         </p>
       )}

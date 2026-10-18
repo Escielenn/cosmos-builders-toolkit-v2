@@ -119,7 +119,7 @@ export function SplitPane({
 
   return (
     <div className="flex h-full min-h-0 min-w-0 flex-col bg-sf-void">
-      <div className="flex shrink-0 items-center gap-1 border-b border-sf-line-interactive px-2">
+      <div className="flex shrink-0 items-center gap-2 border-b border-sf-line-hairline px-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
@@ -305,9 +305,9 @@ function EntityBody({ worldId, entity }: { worldId: string; entity: Entity }): J
         </>
       )}
       {entity.tags.length > 0 && (
-        <div className="mt-4 flex flex-wrap gap-1.5">
+        <div className="mt-4 flex flex-wrap gap-2">
           {entity.tags.map((t) => (
-            <span key={t} className="border border-sf-line-interactive px-1.5 font-mono text-[12px] text-t3">
+            <span key={t} className="border border-sf-line px-2 font-mono text-[12px] text-t3">
               {t}
             </span>
           ))}
@@ -331,7 +331,7 @@ function EntityBody({ worldId, entity }: { worldId: string; entity: Entity }): J
       )}
       <Link
         to={`/worlds/${worldId}/codex/${entity.id}`}
-        className="mt-6 inline-flex min-h-hit items-center gap-1.5 border border-sf-line-interactive px-3 text-[13px] text-t2 transition-colors duration-base hover:border-sf-primary hover:text-t1"
+        className="mt-6 inline-flex min-h-hit items-center gap-1.5 border border-sf-line px-3 text-[13px] text-t2 transition-colors duration-base hover:border-sf-primary hover:text-t1"
       >
         Open Codex <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
       </Link>
@@ -372,7 +372,7 @@ function WorksheetBody({
       {route && (
         <Link
           to={`${route}?worldId=${worldId}&worksheetId=${sheet.id}`}
-          className="mt-6 inline-flex min-h-hit items-center gap-1.5 border border-sf-line-interactive px-3 text-[13px] text-t2 transition-colors duration-base hover:border-sf-primary hover:text-t1"
+          className="mt-6 inline-flex min-h-hit items-center gap-1.5 border border-sf-line px-3 text-[13px] text-t2 transition-colors duration-base hover:border-sf-primary hover:text-t1"
         >
           Edit in the tool <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
         </Link>

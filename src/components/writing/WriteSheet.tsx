@@ -304,7 +304,7 @@ export function WriteSheet({
                 onBlur={handleTitleBlur}
                 placeholder="Untitled Entry"
                 className={cn(
-                  "w-full bg-transparent border-0 border-b border-sf-line focus:border-primary font-display uppercase tracking-title text-t1 transition-all duration-slow ease-sf-out pb-3",
+                  "w-full bg-transparent border-0 border-b border-sf-line-interactive hover:border-sf-line-emphasis focus:border-primary font-display uppercase tracking-title text-t1 transition-all duration-slow ease-sf-out pb-3",
                   isWriting
                     ? "text-lg md:text-xl mb-2"
                     : "text-3xl md:text-5xl mb-3"
@@ -398,7 +398,7 @@ export function WriteSheet({
           </div>
 
           {/* ─── Fixed footer ──────────────────────────────────────────── */}
-          <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-sf-line">
+          <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-sf-line-hairline">
             <div className="max-w-3xl mx-auto px-6 py-3 flex items-center justify-between">
               {/* Left: word count + daily goal */}
               <div className="flex items-center gap-3">

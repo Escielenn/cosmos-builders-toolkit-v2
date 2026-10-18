@@ -238,7 +238,7 @@ export function WorldPalette({ editor, state, onClose }: WorldPaletteProps): JSX
                 </>
               )}
               {reason && (
-                <span className="shrink-0 border border-sf-line-interactive px-1 font-mono text-[12px] text-t3">{reason}</span>
+                <span className="shrink-0 border border-sf-line px-2 font-mono text-[12px] text-t3">{reason}</span>
               )}
             </div>
           );

@@ -16,7 +16,7 @@ import type { WorldFact } from "@/lib/writing/world-index";
 
 export function ReasonTag({ reason }: { reason: RankReason }): JSX.Element {
   return (
-    <span className="shrink-0 border border-sf-line-interactive px-1 font-mono text-[12px] leading-[18px] text-t2">
+    <span className="shrink-0 border border-sf-line px-1.5 font-mono text-[12px] leading-[18px] text-t2">
       {reason}
     </span>
   );
@@ -50,7 +50,7 @@ export function PinnedGroup({ pins, types, onUnpin, onOpen }: PinnedGroupProps):
   const shown = types ? pins.filter((p) => types.includes(p.type)) : pins;
   if (shown.length === 0) return null;
   return (
-    <section aria-label="Pinned" className="border-b border-sf-line-interactive pb-1">
+    <section aria-label="Pinned" className="border-b border-sf-line-hairline pb-1">
       <h3 className="px-3 pb-1 pt-2 font-heading text-sf-eyebrow uppercase text-t4">
         // Pinned <span className="font-mono">{shown.length}</span>
       </h3>

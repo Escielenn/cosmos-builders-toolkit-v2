@@ -52,7 +52,7 @@ const COVER_GRADIENTS = [
 
 function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
   return (
-    <aside className="sf-sb sf-sb--slim hidden w-[230px] shrink-0 overflow-y-auto border-r border-sf-line-interactive py-6 pl-6 pr-4 lg:block">
+    <aside className="sf-sb sf-sb--slim hidden w-[230px] shrink-0 overflow-y-auto border-r border-sf-line-hairline py-6 pl-6 pr-4 lg:block">
       <div className="mb-2 font-serif text-[13px] italic text-t4">Worlds</div>
       <nav className="mb-7 space-y-0.5">
         {worlds.slice(0, 6).map((w) => (
@@ -178,7 +178,7 @@ export default function Studio(): JSX.Element {
           </div>
 
           {/* streak strip */}
-          <div className="mt-8 flex flex-wrap items-end justify-between gap-6 border-y border-sf-line-interactive py-5">
+          <div className="mt-8 flex flex-wrap items-end justify-between gap-6 border-y border-sf-line-hairline py-5">
             <div>
               <div className="mb-1.5 font-serif text-[13px] italic text-t4">The last fourteen days</div>
               <div className="flex h-8 items-end gap-1">
@@ -217,7 +217,7 @@ export default function Studio(): JSX.Element {
           </div>
 
           {/* continue-writing card */}
-          <section className="mt-10 border border-sf-line-interactive bg-sf-surface/90">
+          <section className="mt-10 border border-sf-line bg-sf-surface/90">
             <div className="p-7 md:p-8">
               {entry ? (
                 <>
@@ -244,7 +244,7 @@ export default function Studio(): JSX.Element {
                     {entry.world_id && (
                       <Link
                         to={`/worlds/${entry.world_id}`}
-                        className="border border-sf-line-emphasis px-5 py-2.5 font-sans text-[13px] tracking-wider text-t2 transition-colors hover:border-sf-primary hover:text-t1"
+                        className="border border-sf-line px-5 py-2.5 font-sans text-[13px] tracking-wider text-t2 transition-colors hover:border-sf-primary hover:text-t1"
                       >
                         Open the world
                       </Link>
@@ -271,7 +271,7 @@ export default function Studio(): JSX.Element {
                     {data?.worlds[0] && (
                       <Link
                         to={`/worlds/${data.worlds[0].id}/write?import=1`}
-                        className="inline-flex min-h-hit items-center border border-sf-line-emphasis px-5 font-sans text-[13px] tracking-wider text-t2 transition-colors hover:border-sf-primary hover:text-t1"
+                        className="inline-flex min-h-hit items-center border border-sf-line px-5 font-sans text-[13px] tracking-wider text-t2 transition-colors hover:border-sf-primary hover:text-t1"
                       >
                         Bring a manuscript into {data.worlds[0].name}
                       </Link>
@@ -289,7 +289,7 @@ export default function Studio(): JSX.Element {
               {(data?.worlds ?? []).slice(0, 4).map((w, i) => (
                 <Link key={w.id} to={`/worlds/${w.id}`} className="group block">
                   <div
-                    className="relative aspect-[3/4] overflow-hidden border border-sf-line-interactive transition-transform group-hover:-translate-y-0.5"
+                    className="relative aspect-[3/4] overflow-hidden border border-sf-line transition-transform group-hover:-translate-y-0.5"
                     style={w.header_image_url ? undefined : { background: COVER_GRADIENTS[i % COVER_GRADIENTS.length] }}
                   >
                     {/* the world's chosen header image as the cover, if set */}
@@ -304,7 +304,7 @@ export default function Studio(): JSX.Element {
                     )}
                     {/* readability gradient so the title reads over any image */}
                     <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--sf-void-hsl))]/85 via-[hsl(var(--sf-void-hsl))]/20 to-transparent" aria-hidden="true" />
-                    <div className="absolute inset-2 border border-sf-line" aria-hidden="true" />
+                    <div className="absolute inset-2 border border-sf-line-hairline" aria-hidden="true" />
                     <div className="relative flex h-full items-end p-3">
                       <span className="font-serif text-[15px] italic leading-snug text-t1 drop-shadow">{w.name}</span>
                     </div>
@@ -333,7 +333,7 @@ export default function Studio(): JSX.Element {
                     <Link
                       key={c.id}
                       to={`/worlds/${c.world_id}/codex/${c.id}`}
-                      className="border border-sf-line-interactive bg-sf-surface/90 p-4 transition-colors hover:border-sf-primary"
+                      className="border border-sf-line bg-sf-surface/90 p-4 transition-colors hover:border-sf-primary"
                     >
                       <div
                         className="mb-3 flex h-10 w-10 items-center justify-center rounded-full border border-sf-line font-serif text-[16px] italic text-t1"
@@ -367,7 +367,7 @@ export default function Studio(): JSX.Element {
                       <Link
                         key={n.id}
                         to={`/worlds/${n.world_id}`}
-                        className="block border border-sf-line-interactive bg-sf-surface/90 p-4 transition-colors hover:border-sf-primary"
+                        className="block border border-sf-line bg-sf-surface/90 p-4 transition-colors hover:border-sf-primary"
                       >
                         <div className="flex items-center gap-2">
                           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-sf-amber" aria-hidden="true" />
@@ -393,7 +393,7 @@ export default function Studio(): JSX.Element {
           {data && data.recentEntries.length > 1 && (
             <section className="mt-12">
               <h2 className="mb-4 font-serif text-[20px] italic text-t1">The log</h2>
-              <div className="divide-y divide-sf-line-interactive border-y border-sf-line-interactive">
+              <div className="divide-y divide-sf-line-hairline border-y border-sf-line-hairline">
                 {data.recentEntries.map((e) => {
                   const w = data.worlds.find((x) => x.id === e.world_id);
                   return (
@@ -416,7 +416,7 @@ export default function Studio(): JSX.Element {
           )}
 
           {/* footer — the ONLY ambient telemetry on the page */}
-          <footer className="mt-16 flex flex-wrap items-center justify-between gap-3 border-t border-sf-line-interactive py-5">
+          <footer className="mt-16 flex flex-wrap items-center justify-between gap-3 border-t border-sf-line-hairline py-5">
             <div className="flex items-center gap-2.5">
               <span className="relative flex h-2 w-2">
                 <span className="absolute h-full w-full animate-sf-pulse bg-sf-primary opacity-60" />

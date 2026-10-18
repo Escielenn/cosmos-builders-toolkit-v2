@@ -74,8 +74,8 @@ function Card({
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`group relative flex min-h-[150px] flex-col border bg-sf-surface/70 p-3 transition-colors ${
-        active ? "border-sf-primary" : "border-sf-line-interactive hover:border-sf-primary"
+      className={`group relative flex min-h-[150px] flex-col border bg-sf-surface/70 p-4 transition-colors ${
+        active ? "border-sf-primary" : "border-sf-line hover:border-sf-primary"
       } ${isDragging ? "z-10 opacity-80" : ""}`}
     >
       <button
@@ -103,7 +103,7 @@ function Card({
         )}
       </button>
 
-      <div className="mt-2 flex flex-wrap items-center gap-2 border-t border-sf-line pt-2 font-mono text-[12px] uppercase tracking-wide">
+      <div className="mt-2 flex flex-wrap items-center gap-2 border-t border-sf-line-hairline pt-2 font-mono text-[12px] uppercase tracking-wide">
         {meta.status && (
           <span className={STATUS_TONE[meta.status]}>{STATUS_LABELS[meta.status]}</span>
         )}
@@ -146,7 +146,7 @@ function Group({
 
   return (
     <section className="mb-8">
-      <div className="mb-3 flex items-baseline gap-3 border-b border-sf-line pb-1.5">
+      <div className="mb-3 flex items-baseline gap-3 border-b border-sf-line-hairline pb-1.5">
         <h3 className="font-serif text-[17px] italic text-sf-emerald">{title}</h3>
         <span className="font-mono text-[12px] uppercase tracking-wide text-t4">
           {docs.length} {docs.length === 1 ? "scene" : "scenes"} ·{" "}

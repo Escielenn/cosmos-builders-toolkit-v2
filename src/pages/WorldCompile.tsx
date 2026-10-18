@@ -297,7 +297,7 @@ export default function WorldCompile() {
               <div className="p-4">
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                   <PanelHeading>Contents</PanelHeading>
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-wrap gap-2">
                     <Button variant="ghost" size="sm" className="min-h-hit text-xs" onClick={() => update({ excluded: [] })}>
                       Include all
                     </Button>
@@ -384,7 +384,7 @@ export default function WorldCompile() {
             <GlassPanel>
               <div className="space-y-4 p-4">
                 <PanelHeading>Preset</PanelHeading>
-                <div role="radiogroup" aria-label="Preset" className="grid gap-1">
+                <div role="radiogroup" aria-label="Preset" className="grid gap-2">
                   {PRESETS.filter((p) => p !== "custom").map((p) => (
                     <ChoiceButton key={p} checked={s.preset === p} onClick={() => update(applyPreset(s, p))}>
                       {PRESET_LABELS[p]}
@@ -396,7 +396,7 @@ export default function WorldCompile() {
                 </div>
 
                 <PanelHeading>Format</PanelHeading>
-                <div role="radiogroup" aria-label="Format" className="grid gap-1">
+                <div role="radiogroup" aria-label="Format" className="grid gap-2">
                   {COMPILE_FORMATS.map((f) => (
                     <ChoiceButton key={f} checked={s.format === f} onClick={() => updateFormat("format", f)}>
                       <span>{FORMAT_LABELS[f].label}</span>
@@ -545,7 +545,7 @@ function ChoiceButton({ checked, onClick, children }: { checked: boolean; onClic
         "flex min-h-hit w-full items-center gap-2 border px-3 text-left font-sans text-sm transition-colors duration-fast ease-sf-out",
         checked
           ? "border-sf-primary bg-sf-primary/[0.06] text-sf-primary-text"
-          : "border-sf-line-interactive text-t2 hover:border-sf-line-emphasis hover:text-t1",
+          : "border-sf-line text-t2 hover:border-sf-line-emphasis hover:text-t1",
       )}
     >
       <span
@@ -724,7 +724,7 @@ function ManuscriptPreview({ manuscript: m }: { manuscript: ReturnType<typeof bu
   return (
     <div className="sf-sb max-h-[60vh] space-y-8 overflow-y-auto border border-sf-line bg-sf-surface p-6">
       {m.titlePage && (
-        <div className="border-b border-sf-line pb-6 text-center">
+        <div className="border-b border-sf-line-hairline pb-6 text-center">
           <p className="font-serif text-xl italic text-t1">{m.title}</p>
           {m.subtitle && <p className="mt-1 font-serif text-sm italic text-t2">{m.subtitle}</p>}
           {m.author && <p className="mt-2 text-sm text-t2">by {m.author}</p>}

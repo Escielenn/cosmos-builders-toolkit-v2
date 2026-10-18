@@ -51,7 +51,7 @@ export function BinderSearchInput({
   inputRef: RefObject<HTMLInputElement>;
 }): JSX.Element {
   return (
-    <div className="flex items-center gap-1 border-b border-sf-line-interactive px-2 py-1.5">
+    <div className="flex items-center gap-2 border-b border-sf-line-hairline px-3 py-2">
       <Search className="h-3.5 w-3.5 shrink-0 text-t4" aria-hidden="true" />
       <input
         ref={inputRef}
@@ -103,7 +103,7 @@ function ToggleChip({
       title={label}
       onClick={onClick}
       className={`flex min-h-hit w-9 shrink-0 items-center justify-center border font-mono text-[12px] transition-colors duration-fast ${
-        on ? "border-sf-primary text-sf-primary-text" : "border-transparent text-t4 hover:text-t1"
+        on ? "border-sf-primary text-sf-primary-text" : "border-transparent text-t4 hover:border-sf-line-emphasis hover:text-t1"
       }`}
     >
       {children}
@@ -154,11 +154,11 @@ export function BinderSearchResults({
             : `${outcome.totalHits.toLocaleString()} ${outcome.totalHits === 1 ? "MATCH" : "MATCHES"} · ${outcome.results.length} ${outcome.results.length === 1 ? "DOC" : "DOCS"}`}
         </span>
         {outcome.results.length > 0 && (
-          <span className="ml-auto flex gap-1">
+          <span className="ml-auto flex gap-2">
             <button
               type="button"
               onClick={() => onScrivenings(outcome.results.map((r) => r.docId))}
-              className="min-h-hit border border-sf-line-interactive px-2 text-[12px] text-t2 transition-colors duration-base hover:border-sf-primary hover:text-t1"
+              className="min-h-hit border border-sf-line px-3 text-[12px] text-t2 transition-colors duration-base hover:border-sf-primary hover:text-t1"
               title="Read every matching document as one text"
             >
               Scrivenings
@@ -166,7 +166,7 @@ export function BinderSearchResults({
             <button
               type="button"
               onClick={onSave}
-              className="min-h-hit border border-sf-line-interactive px-2 text-[12px] text-t2 transition-colors duration-base hover:border-sf-primary hover:text-t1"
+              className="min-h-hit border border-sf-line px-3 text-[12px] text-t2 transition-colors duration-base hover:border-sf-primary hover:text-t1"
               title="Save this search as a collection"
             >
               Save
@@ -242,7 +242,7 @@ export function CollectionsSection({
   if (collections.length === 0) return null;
 
   return (
-    <div className="border-b border-sf-line-interactive pb-1">
+    <div className="border-b border-sf-line-hairline pb-1">
       <p className="flex items-center gap-1.5 px-3 pb-1 pt-2 font-heading text-sf-eyebrow uppercase text-t4">
         <Layers className="h-3.5 w-3.5" aria-hidden="true" /> Collections
       </p>
@@ -384,19 +384,19 @@ export function SelectionBar({
   onClear: () => void;
 }): JSX.Element {
   return (
-    <div className="flex flex-wrap items-center gap-1 border-b border-sf-line-interactive bg-sf-surface px-2 py-1.5">
+    <div className="flex flex-wrap items-center gap-2 border-b border-sf-line-hairline bg-sf-surface px-3 py-2">
       <span className="px-1 font-mono text-[12px] text-t3">{count} SELECTED</span>
       <button
         type="button"
         onClick={onScrivenings}
-        className="min-h-hit border border-sf-primary px-2 text-[12px] text-sf-primary-text transition-colors duration-base hover:bg-sf-primary/[0.08]"
+        className="min-h-hit border border-sf-primary px-3 text-[12px] text-sf-primary-text transition-colors duration-base hover:bg-sf-primary/[0.08]"
       >
         View as Scrivenings
       </button>
       <button
         type="button"
         onClick={onSave}
-        className="min-h-hit border border-sf-line-interactive px-2 text-[12px] text-t2 transition-colors duration-base hover:border-sf-primary hover:text-t1"
+        className="min-h-hit border border-sf-line px-3 text-[12px] text-t2 transition-colors duration-base hover:border-sf-primary hover:text-t1"
       >
         Collect
       </button>
