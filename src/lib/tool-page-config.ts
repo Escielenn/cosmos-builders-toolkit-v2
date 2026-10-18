@@ -175,6 +175,12 @@ export const TOOL_PAGE_CONFIGS: Record<string, ToolPageConfig> = {
     "Kardashev Scale Calculator",
     "Classify your civilization's energy consumption and explore the cascade implications of each level.",
   ),
+  "dossier": config(
+    "dossier",
+    "Dossier",
+    "Character Development",
+    "Characters who inherit their bodies, senses and beliefs from your world, with every departure marked as yours.",
+  ),
 };
 
 /** Look up config by tool slug. Throws if not found. */

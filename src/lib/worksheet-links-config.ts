@@ -455,6 +455,7 @@ export const TOOL_DISPLAY_NAMES: Record<string, string> = {
   "timeline": "Timeline",
   "gravitas": "Gravitas",
   "sensorium": "Sensorium",
+  "dossier": "Dossier",
 };
 
 // Get display name for a tool type

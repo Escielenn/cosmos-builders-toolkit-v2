@@ -146,6 +146,12 @@ const proTools = [
     status: "available",
   },
   {
+    id: "dossier",
+    title: "Dossier: Character Development",
+    description: "Characters born into your world. Pick a homeworld, species, polity and culture; lifespan, senses, native gravity, phonology and funeral customs arrive pre-filled, with every override marked.",
+    status: "available",
+  },
+  {
     id: "stellar-cartographer",
     title: "Stellar Cartographer: Galaxy Mapper",
     description: "Interactive galaxy mapping tool. Generate procedural galaxies with 3D projection, empire territories, trade routes, and wormholes.",
@@ -192,8 +198,6 @@ const comingSoonByCategory = [
   {
     category: "Tools",
     items: [
-      { title: "Character Development", subtitle: "Individual characters connected to your world" },
-
       { title: "AI Development", subtitle: "Explore artificial intelligence in your universe" },
       { title: "Generation Ship Designer", subtitle: "Design self-sustaining interstellar arks" },
       { title: "Quantum and Beyond", subtitle: "Technology beyond our understanding" },

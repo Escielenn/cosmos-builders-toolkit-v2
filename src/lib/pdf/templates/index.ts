@@ -44,3 +44,4 @@ export const GravitasSummaryTemplate = lazyPdfTemplate(() => import("./GravitasS
 export const GravitasFullReportTemplate = lazyPdfTemplate(() => import("./GravitasFullReportTemplate"));
 export const KardashevSummaryTemplate = lazyPdfTemplate(() => import("./KardashevSummaryTemplate"));
 export const KardashevFullReportTemplate = lazyPdfTemplate(() => import("./KardashevFullReportTemplate"));
+export const DossierSummaryTemplate = lazyPdfTemplate(() => import("./DossierSummaryTemplate"));

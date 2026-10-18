@@ -122,6 +122,7 @@ const TOOL_LABELS: Record<string, string> = {
   "environmental-chain-reaction": "Environmental Chain",
   "technology-consequences": "Technology Consequences",
   timeline: "Timeline",
+  dossier: "Dossier",
 };
 
 // ---------------------------------------------------------------------------
