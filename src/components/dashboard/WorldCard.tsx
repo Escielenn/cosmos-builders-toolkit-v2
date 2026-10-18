@@ -224,7 +224,7 @@ const WorldCard = ({
             )}
           </div>
 
-          <div className="pt-2 border-t border-sf-line-interactive mt-auto flex items-center justify-between">
+          <div className="pt-2 border-t border-sf-line-hairline mt-auto flex items-center justify-between">
             <p className="text-xs text-t3">
               Last updated: {formattedDate}
             </p>

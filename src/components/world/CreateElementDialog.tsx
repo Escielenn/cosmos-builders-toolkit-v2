@@ -302,7 +302,7 @@ export default function CreateElementDialog({
                     onClick={() => handleTypePick(type)}
                     className={cn(
                       "flex flex-col items-center gap-1.5 p-3",
-                      "border border-sf-line-interactive bg-sf-surface",
+                      "border border-sf-line bg-sf-surface",
                       "hover:bg-primary/5 hover:border-primary",
                       "transition-colors group"
                     )}
@@ -318,7 +318,7 @@ export default function CreateElementDialog({
 
             {/* Your custom templates */}
             {templates.length > 0 && (
-              <div className="pt-3 border-t border-sf-line">
+              <div className="pt-3 border-t border-sf-line-hairline">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-[12px] font-heading uppercase tracking-wide text-sf-emerald-text">
                     Your custom types
@@ -336,7 +336,7 @@ export default function CreateElementDialog({
                       key={t.id}
                       type="button"
                       onClick={() => handleTemplatePick(t)}
-                      className="flex flex-col items-center gap-1.5 p-3 border border-sf-line-interactive bg-sf-surface hover:bg-primary/5 hover:border-primary transition-colors"
+                      className="flex flex-col items-center gap-1.5 p-3 border border-sf-line bg-sf-surface hover:bg-primary/5 hover:border-primary transition-colors"
                       title={t.description ?? undefined}
                     >
                       <Shapes
@@ -464,7 +464,7 @@ export default function CreateElementDialog({
 
               {/* Template-driven fields */}
               {selectedTemplate && selectedTemplate.fields.length > 0 && (
-                <div className="pt-3 border-t border-sf-line space-y-3">
+                <div className="pt-3 border-t border-sf-line-hairline space-y-3">
                   <div className="flex items-center gap-2">
                     <div className="h-px flex-1 bg-sf-line-hairline" />
                     <span className="text-[12px] uppercase tracking-wide text-sf-emerald-text font-heading">
@@ -533,7 +533,7 @@ export default function CreateElementDialog({
                 </div>
               )}
 
-              <div className="pt-2 border-t border-sf-line flex flex-col gap-1.5">
+              <div className="pt-2 border-t border-sf-line-hairline flex flex-col gap-1.5">
                 <Button
                   variant="ghost"
                   className="justify-start h-9"

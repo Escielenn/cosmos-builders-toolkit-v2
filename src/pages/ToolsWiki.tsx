@@ -418,7 +418,7 @@ const ToolsWiki = () => {
 
         {/* View tabs */}
         <Tabs defaultValue="category" className="w-full">
-          <TabsList className="bg-transparent border-b border-sf-line rounded-none w-full justify-start gap-0 h-auto p-0 mb-6">
+          <TabsList className="bg-transparent border-b border-sf-line-hairline rounded-none w-full justify-start gap-0 h-auto p-0 mb-6">
             <TabsTrigger
               value="category"
               className="rounded-none border-b-2 border-transparent data-[state=active]:border-sf-primary data-[state=active]:text-sf-primary-text data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-wide font-heading px-4 py-2.5"

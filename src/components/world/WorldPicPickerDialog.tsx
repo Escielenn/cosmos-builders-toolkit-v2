@@ -135,7 +135,7 @@ const WorldPicPickerDialog = ({
         </div>
 
         {/* Count */}
-        <div className="text-xs text-t3 text-center pt-1 border-t">
+        <div className="text-xs text-t3 text-center pt-1 border-t border-sf-line-hairline">
           {filteredPics.length} illustration{filteredPics.length !== 1 ? "s" : ""}
           {search.trim() ? ` matching "${search}"` : ""}
         </div>

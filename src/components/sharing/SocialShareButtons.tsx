@@ -65,14 +65,14 @@ export function SocialShareButtons({
         Share
       </p>
 
-      <div className="flex flex-wrap gap-1.5">
+      <div className="flex flex-wrap gap-2">
         {shareLinks.map((link) => (
           <a
             key={link.name}
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex min-h-hit items-center gap-1.5 px-2.5 py-1.5 text-[12px] font-sans text-t2 hover:text-t1 border border-sf-line-interactive hover:border-sf-line-emphasis transition-colors"
+            className="inline-flex min-h-hit items-center gap-1.5 px-3 py-1.5 text-[12px] font-sans text-t2 hover:text-t1 border border-sf-line hover:border-sf-line-emphasis transition-colors"
             style={{ borderLeftColor: `${link.color}40`, borderLeftWidth: 2 }}
           >
             <ExternalLink className="w-3 h-3" />
@@ -83,7 +83,7 @@ export function SocialShareButtons({
         <button
           type="button"
           onClick={handleCopy}
-          className="inline-flex min-h-hit items-center gap-1.5 px-2.5 py-1.5 text-[12px] font-sans text-t2 hover:text-sf-primary-text border border-sf-line-interactive hover:border-sf-primary transition-colors"
+          className="inline-flex min-h-hit items-center gap-1.5 px-3 py-1.5 text-[12px] font-sans text-t2 hover:text-sf-primary-text border border-sf-line hover:border-sf-primary transition-colors"
         >
           {copied ? (
             <Check className="w-3 h-3 text-sf-emerald" />

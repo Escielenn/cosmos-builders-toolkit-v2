@@ -124,7 +124,7 @@ const WorldSnapshotDialog = ({
               className={`w-full flex items-start gap-3 p-3 rounded-none border transition-colors text-left ${
                 action === id
                   ? "border-primary bg-primary/5"
-                  : "border-sf-line-interactive hover:border-sf-line-interactive hover:bg-accent/5"
+                  : "border-sf-line hover:border-sf-line-emphasis hover:bg-accent/5"
               }`}
             >
               <Icon className={`w-5 h-5 mt-0.5 flex-shrink-0 ${action === id ? "text-sf-primary-text" : "text-t3"}`} />

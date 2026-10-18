@@ -137,7 +137,7 @@ function ColorDotPicker({
       <PopoverContent
         side="right"
         align="start"
-        className="w-48 p-3 bg-sf-void border-sf-line-interactive"
+        className="w-48 p-4 bg-sf-void border-sf-line"
         onClick={(e) => e.stopPropagation()}
       >
         <p className="font-sans text-[12px] uppercase tracking-wide text-t3 mb-2">
@@ -177,19 +177,19 @@ function ColorDotPicker({
         </button>
 
         {/* Custom hex input */}
-        <div className="flex gap-1.5">
+        <div className="flex gap-2">
           <input
             type="text"
             value={customHex}
             onChange={(e) => setCustomHex(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleCustomSubmit()}
             placeholder="#FF00AA"
-            className="flex-1 bg-sf-surface border border-sf-line-interactive rounded-none px-2 py-1 text-[12px] font-mono text-t2 placeholder:text-t4 focus:border-sf-primary"
+            className="flex-1 px-3 py-1 text-[12px] font-mono text-t2 placeholder:text-t4"
           />
           <button
             type="button"
             onClick={handleCustomSubmit}
-            className="px-2 py-1 text-[12px] text-sf-primary-text bg-sf-primary/[0.06] border border-sf-primary hover:bg-sf-primary/[0.12] transition-colors"
+            className="px-3 py-1 text-[12px] text-sf-primary-text bg-sf-primary/[0.06] border border-sf-primary hover:bg-sf-primary/[0.12] transition-colors"
           >
             Set
           </button>
@@ -287,7 +287,7 @@ function SortableEntityRow({
             </span>
           </button>
         </ContextMenuTrigger>
-        <ContextMenuContent className="w-44 bg-sf-void border-sf-line-interactive">
+        <ContextMenuContent className="w-44 bg-sf-void border-sf-line">
           <ContextMenuItem
             onClick={() => onEntityClick(entity.id)}
             className="text-xs gap-2"
@@ -368,7 +368,7 @@ function StaticEntityRow({
           </span>
         </button>
       </ContextMenuTrigger>
-      <ContextMenuContent className="w-44 bg-sf-void border-sf-line-interactive">
+      <ContextMenuContent className="w-44 bg-sf-void border-sf-line">
         <ContextMenuItem
           onClick={() => onEntityClick(entity.id)}
           className="text-xs gap-2"
@@ -627,7 +627,7 @@ const EntitySidebar = ({
       <div className="px-3 pt-3 pb-1">
         <button
           onClick={onCreateEntity}
-          className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center gap-1.5 px-3 py-1.5 border border-sf-line-interactive text-[12px] font-heading uppercase tracking-wider text-t3 hover:text-sf-primary-text hover:border-primary transition-colors"
+          className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center gap-1.5 px-3 py-1.5 border border-sf-line text-[12px] font-heading uppercase tracking-wider text-t3 hover:text-sf-primary-text hover:border-primary transition-colors"
         >
           <Plus className="w-3 h-3" />
           Create Entity
@@ -643,20 +643,20 @@ const EntitySidebar = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search entities..."
-            className="w-full bg-sf-surface border border-sf-line-interactive rounded-none pl-7 pr-2 py-1.5 text-[13px] font-sans text-t2 placeholder:text-t4 focus:border-sf-primary"
+            className="w-full pl-7 pr-3 py-1.5 text-[13px] font-sans text-t2 placeholder:text-t4"
           />
         </div>
       </div>
 
       {/* View mode toggle */}
-      <div className="px-3 pb-1 flex items-center gap-1">
+      <div className="px-3 pb-1 flex items-center gap-2">
         <button
           onClick={() => handleViewChange("tool")}
           className={cn(
             "flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-wide transition-colors",
             viewMode === "tool"
               ? "text-sf-primary-text bg-sf-primary/8 border border-sf-primary"
-              : "text-t4 hover:text-t3"
+              : "border border-sf-line text-t4 hover:text-t3 hover:border-sf-line-emphasis"
           )}
           title="Group by cascade stage"
         >
@@ -669,7 +669,7 @@ const EntitySidebar = ({
             "flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-wide transition-colors",
             viewMode === "wiki"
               ? "text-sf-primary-text bg-sf-primary/8 border border-sf-primary"
-              : "text-t4 hover:text-t3"
+              : "border border-sf-line text-t4 hover:text-t3 hover:border-sf-line-emphasis"
           )}
           title="Alphabetical list"
         >
@@ -729,7 +729,7 @@ const EntitySidebar = ({
       </div>
 
       {/* Entity count footer */}
-      <div className="px-3 py-2 border-t border-sf-line-interactive">
+      <div className="px-3 py-2 border-t border-sf-line-hairline">
         <span className="font-mono text-[12px] uppercase tracking-wider text-t4">
           {entities?.length ?? 0} entities
         </span>

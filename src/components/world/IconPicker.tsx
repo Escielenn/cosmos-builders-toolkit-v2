@@ -93,7 +93,7 @@ const IconPicker = ({ value, onChange, disabled }: IconPickerProps) => {
             ))}
 
             {/* Illustration previews */}
-            <div className="pt-2 border-t">
+            <div className="pt-2 border-t border-sf-line-hairline">
               <p className="text-xs text-t3 mb-2">Illustrations</p>
               <div className="grid grid-cols-10 gap-1">
                 {PREVIEW_PICS.map((filename) => (

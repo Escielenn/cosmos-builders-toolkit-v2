@@ -148,7 +148,7 @@ const WorldImportDialog = ({ open, onOpenChange }: WorldImportDialogProps) => {
         ) : (
           <div className="space-y-4">
             {/* File info */}
-            <div className="flex items-center gap-3 p-3 rounded-none bg-accent/5 border border-sf-line-interactive">
+            <div className="flex items-center gap-3 p-3 rounded-none bg-accent/5 border border-sf-line">
               {selectedFile?.name.endsWith(".zip") ? (
                 <FolderArchive className="w-5 h-5 text-t3 flex-shrink-0" />
               ) : (

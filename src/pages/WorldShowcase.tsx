@@ -269,7 +269,7 @@ function EntityCard({
 
       {/* Expanded detail */}
       {isExpanded && (
-        <div className="mt-4 space-y-4 border-t border-sf-line pt-4">
+        <div className="mt-4 space-y-4 border-t border-sf-line-hairline pt-4">
           {/* Summary */}
           {entity.summary && (
             <p className="font-sans text-sm text-t2 leading-relaxed">
@@ -378,7 +378,7 @@ function VisibilitySelector({
   disabled?: boolean;
 }) {
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-2">
       {VISIBILITY_CONFIG.map((opt) => {
         const Icon = opt.icon;
         const isActive = current === opt.value;
@@ -390,7 +390,7 @@ function VisibilitySelector({
             className="flex items-center gap-1.5 px-3 py-1.5 font-sans text-[12px] font-medium uppercase tracking-wider transition-all duration-base"
             style={{
               backgroundColor: isActive ? `${opt.color}0F` : "transparent",
-              border: `1px solid ${isActive ? `${opt.color}26` : "var(--sf-line-interactive)"}`,
+              border: `1px solid ${isActive ? `${opt.color}26` : "var(--sf-line)"}`,
               color: isActive ? opt.color : "var(--t4)",
             }}
           >
