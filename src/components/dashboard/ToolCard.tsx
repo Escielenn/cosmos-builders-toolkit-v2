@@ -6,6 +6,7 @@ import { ProBadge } from "@/components/ui/pro-badge";
 import { isProTool, getToolRoute } from "@/lib/tools-config";
 import { useSubscription } from "@/hooks/use-subscription";
 import { getToolIcon } from "@/components/icons/tool-icons";
+import { hueEdge } from "@/lib/hue-edge";
 
 interface ToolCardProps {
   id: string;
@@ -105,7 +106,7 @@ const ToolCard = ({
           <Badge
             variant="outline"
             className="mt-2 text-[12px] px-2 py-0 border-transparent"
-            style={{ color: category.color, borderColor: `${category.color}30` }}
+            style={{ color: category.color, borderColor: hueEdge(category.color) }}
           >
             {category.label}
           </Badge>

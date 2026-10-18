@@ -61,7 +61,7 @@ export function TargetsStatus(props: TargetsProps): JSX.Element {
       <PopoverTrigger asChild>
         <button
           type="button"
-          className="flex min-h-[32px] items-center gap-3 px-1 font-mono text-[12px] text-t4 transition-colors duration-base hover:text-t2"
+          className="flex sf-hit min-h-[32px] items-center gap-3 px-1 font-mono text-[12px] text-t4 transition-colors duration-base hover:text-t2"
           aria-label="Targets: session, document and project"
           title="Targets"
         >

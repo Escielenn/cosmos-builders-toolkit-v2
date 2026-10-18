@@ -46,6 +46,7 @@ import CubeLogo from "@/components/icons/CubeLogo";
 import { GuideNav } from "@/components/layout/GuideNav";
 import { CascadeRibbon } from "@/components/tools/CascadeRibbon";
 import { useMetaTags } from "@/hooks/use-meta-tags";
+import { hueEdge } from "@/lib/hue-edge";
 
 // ── Tool Card ──────────────────────────────────────────────
 
@@ -86,7 +87,7 @@ function ToolWikiCard({
           <Badge
             variant="outline"
             className="text-xs border-transparent px-1.5 py-0"
-            style={{ color: catMeta.color, borderColor: `${catMeta.color}30` }}
+            style={{ color: catMeta.color, borderColor: hueEdge(catMeta.color) }}
           >
             {catMeta.label}
           </Badge>
@@ -134,7 +135,7 @@ function ToolDetail({
         <Badge
           variant="outline"
           className="text-xs px-2 py-0.5"
-          style={{ color: catMeta.color, borderColor: `${catMeta.color}30` }}
+          style={{ color: catMeta.color, borderColor: hueEdge(catMeta.color) }}
         >
           {catMeta.label}
         </Badge>

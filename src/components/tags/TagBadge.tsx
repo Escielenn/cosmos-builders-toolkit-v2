@@ -1,5 +1,6 @@
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { hueEdge } from "@/lib/hue-edge";
 
 interface TagBadgeProps {
   name: string;
@@ -26,7 +27,7 @@ const TagBadge = ({
       style={{
         backgroundColor: `${color}20`,
         color: color,
-        borderColor: `${color}40`,
+        borderColor: hueEdge(color),
         borderWidth: 1,
       }}
     >

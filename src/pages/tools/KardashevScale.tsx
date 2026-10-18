@@ -82,6 +82,7 @@ import {
   GROWTH_RATES,
   type GrowthRateKey,
 } from "@/lib/kardashev/data";
+import { hueEdge } from "@/lib/hue-edge";
 import {
   calculateKardashev,
   formatPower,
@@ -817,9 +818,9 @@ const KardashevScale = () => {
                                   color: KARDASHEV_BANDS.find(
                                     (b) => b.level === imp.level
                                   )?.color,
-                                  borderColor: `${KARDASHEV_BANDS.find(
+                                  borderColor: hueEdge(KARDASHEV_BANDS.find(
                                     (b) => b.level === imp.level
-                                  )?.color}30`,
+                                  )?.color),
                                 }}
                               >
                                 {imp.level.toUpperCase()}

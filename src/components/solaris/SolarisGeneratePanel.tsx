@@ -53,7 +53,7 @@ const S = {
   // Contrast raised to match SolarisControls: chips were white/45 on a 0.02 fill
   // with a 0.06 border, which read as absent rather than merely inactive.
   sec: "font-mono text-[13px] uppercase tracking-wide text-sf-primary-text mb-1.5 block",
-  chip: "px-3 py-1 text-[12px] uppercase tracking-wide border rounded-none transition-colors duration-base min-h-[26px]",
+  chip: "px-3 py-1 text-[12px] uppercase tracking-wide border rounded-none transition-colors duration-base sf-hit min-h-[26px]",
   chipOff:
     "bg-sf-surface border-sf-line text-t2 hover:border-sf-primary hover:bg-sf-primary/[0.12] hover:text-t1",
   chipOn: "bg-sf-primary/[0.12] border-sf-primary text-t1",

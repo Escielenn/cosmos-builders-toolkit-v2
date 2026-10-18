@@ -534,7 +534,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
             Default view:
           </span>
           <Select value={defaultView} onValueChange={handleDefaultViewChange}>
-            <SelectTrigger className="h-5 text-[12px] flex-1">
+            <SelectTrigger className="sf-hit h-9 min-h-0 text-[12px] flex-1">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

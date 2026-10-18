@@ -76,6 +76,7 @@ import {
 } from "@/lib/habitable-zone/calculations";
 import type { FormStateForCalc } from "@/lib/habitable-zone/calculations";
 import { writeStandaloneBackup } from "@/lib/standalone-backup";
+import { hueEdge } from "@/lib/hue-edge";
 
 // ─── FormState ───────────────────────────────────────────────────────
 
@@ -596,7 +597,7 @@ const HabitableZoneCalculator = () => {
                         style={{
                           backgroundColor: `${colors.fill}20`,
                           color: colors.fill,
-                          border: `1px solid ${colors.fill}40`,
+                          border: `1px solid ${hueEdge(colors.fill)}`,
                         }}
                       >
                         {type}
@@ -733,7 +734,7 @@ const HabitableZoneCalculator = () => {
 
                 {/* Live temperature readout, connected to distance slider */}
                 {result.valid && (
-                  <div className="mt-4 rounded-none border p-3" style={{ borderColor: `${zoneColor}30`, backgroundColor: `${zoneColor}08` }}>
+                  <div className="mt-4 rounded-none border p-3" style={{ borderColor: hueEdge(zoneColor), backgroundColor: `${zoneColor}08` }}>
                     <div className="flex items-center justify-between gap-4 flex-wrap">
                       <div className="space-y-0.5">
                         <div className="text-[12px] font-mono uppercase tracking-wider text-t4">Equilibrium</div>

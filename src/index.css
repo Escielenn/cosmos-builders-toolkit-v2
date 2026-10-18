@@ -223,6 +223,21 @@
     border-color: var(--sf-line);
     border-bottom-color: var(--sf-line-emphasis);
   }
+  /* .sf-hit: a compact control in a dense toolbar keeps its visual size
+     but gets a 44px touch target (CLAUDE.md hit rule, WCAG 2.5.8). The
+     invisible ::after grows the hit box; it never paints. Do not combine
+     with another ::after decoration on the same element. */
+  .sf-hit { position: relative; }
+  .sf-hit::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+  }
+
   .sf-quiet {
     border: 1px solid var(--sf-line);
     border-radius: 0;

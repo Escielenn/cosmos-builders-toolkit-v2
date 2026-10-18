@@ -232,7 +232,7 @@ export default function SolarisEditPanel({
               <span className={SEC + " mb-0"}>Moons ({planet.moons.length})</span>
               <button
                 onClick={() => onAddMoon(selectedIndex)}
-                className="text-[12px] uppercase tracking-wider text-sf-primary-text border border-sf-primary bg-sf-primary/[0.08] hover:bg-sf-primary/[0.2] px-3 py-0.5 min-h-[32px] rounded-none transition-colors duration-base"
+                className="text-[12px] uppercase tracking-wider text-sf-primary-text border border-sf-primary bg-sf-primary/[0.08] hover:bg-sf-primary/[0.2] px-3 py-0.5 sf-hit min-h-[32px] rounded-none transition-colors duration-base"
               >
                 + Add
               </button>
