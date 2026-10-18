@@ -379,7 +379,7 @@ function SnapshotsPane({
           {busy ? "Taking…" : "Take snapshot"}
         </Button>
         <p className="font-mono text-[12px] text-t4">
-          {isMac ? "⌘⇧S" : "CTRL+SHIFT+S"} · {snapshots.length} / {MAX_SNAPSHOTS} ON FILE
+          {isMac ? "⌘⌥S" : "CTRL+ALT+S"} · {snapshots.length} / {MAX_SNAPSHOTS} ON FILE
         </p>
       </form>
 

@@ -77,7 +77,7 @@ export default function WorldCompile() {
   const { user } = useAuth();
   const { worlds } = useWorlds();
   const { toast } = useToast();
-  const { data: documents, folders, unfiledDocs, isLoading } =
+  const { data: documents, folders, unfiledDocs, orderedDocs, isLoading } =
     useWritingDocuments(worldId);
 
   useMetaTags({ title: "Compile Manuscript" });
@@ -164,26 +164,18 @@ export default function WorldCompile() {
       .join("");
   }, [worksheets]);
 
-  // Build chapter list in order: folders first (in sort_order), then unfiled
+  // Build the chapter list in binder reading order. Folders nest and can sit
+  // between loose documents, so walking folders-then-unfiled would put a
+  // prologue at the end of the book.
   const chapters = useMemo((): ManuscriptChapter[] => {
     const result: ManuscriptChapter[] = [];
-    for (const folder of folders) {
-      for (const doc of folder.documents) {
-        if (!includedIds.has(doc.id)) continue;
-        result.push({
-          id: doc.id,
-          title: doc.title || "Untitled",
-          content: doc.content || "",
-          folderName: folder.title,
-        });
-      }
-    }
-    for (const doc of unfiledDocs) {
+    for (const { doc, folder } of orderedDocs) {
       if (!includedIds.has(doc.id)) continue;
       result.push({
         id: doc.id,
         title: doc.title || "Untitled",
         content: doc.content || "",
+        ...(folder ? { folderName: folder.title } : {}),
       });
     }
 
@@ -197,7 +189,7 @@ export default function WorldCompile() {
       });
     }
     return result;
-  }, [folders, unfiledDocs, includedIds, includeAppendix, appendixHtml]);
+  }, [orderedDocs, includedIds, includeAppendix, appendixHtml]);
 
   const totalWords = useMemo(
     () => chapters.reduce((sum, c) => sum + countWords(c.content), 0),

@@ -100,7 +100,20 @@ export function useWritingDocuments(worldId: string | undefined) {
     const unfiledDocs = tree.filter((n) => !n.isFolder).map((n) => n.entry);
     const allDocs = allEntries.filter((e) => e.entry_type !== "folder");
 
-    return { tree, folders, unfiledDocs, allDocs, allEntries };
+    // Every document in binder reading order (depth-first, folders and
+    // documents interleaved exactly as the binder shows them), with the
+    // folder that holds it. This is the order a compile must follow.
+    const folderById = new Map(folders.map((f) => [f.id, f]));
+    const orderedDocs: { doc: WorldEntry; folder: WritingFolder | null }[] = [];
+    const walk = (nodes: BinderNode<WorldEntry>[], folder: WritingFolder | null) => {
+      for (const n of nodes) {
+        if (n.isFolder) walk(n.children, folderById.get(n.entry.id) ?? null);
+        else orderedDocs.push({ doc: n.entry, folder });
+      }
+    };
+    walk(tree, null);
+
+    return { tree, folders, unfiledDocs, allDocs, allEntries, orderedDocs };
   }, [query.data]);
 
   return {
@@ -115,6 +128,8 @@ export function useWritingDocuments(worldId: string | undefined) {
     tree: structured.tree,
     /** Folders and documents, flat (input for binder-tree planners) */
     entries: structured.allEntries,
+    /** Documents in binder reading order, with their folder (compile order) */
+    orderedDocs: structured.orderedDocs,
   };
 }
 

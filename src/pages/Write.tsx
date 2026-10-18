@@ -361,9 +361,18 @@ export default function Write(): JSX.Element {
   // mode had no way out but the mouse.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      // Ctrl/Cmd+Shift+S: take a snapshot (Scrivener's Cmd+5 is a browser
-      // tab switch, so it is not available). Checked before plain Ctrl+S.
-      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === "s") {
+      // Ctrl/Cmd+Alt+S: take a snapshot. Scrivener's Cmd+5 is a browser tab
+      // switch; Mod+Shift+S is Tiptap's strikethrough (and Firefox's
+      // screenshot). Matched on e.code because Option+S types "ß" on a Mac,
+      // and skipped for AltGr so a writer typing "ś" on a Polish layout is
+      // never intercepted. Checked before plain Ctrl+S.
+      if (
+        (e.metaKey || e.ctrlKey) &&
+        e.altKey &&
+        !e.shiftKey &&
+        e.code === "KeyS" &&
+        !e.getModifierState?.("AltGraph")
+      ) {
         e.preventDefault();
         void takeSnapshotRef.current();
         return;

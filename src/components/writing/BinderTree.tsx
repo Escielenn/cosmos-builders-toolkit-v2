@@ -393,8 +393,7 @@ function BinderRow({
   const meta = isFolder ? null : readDocMeta(entry.metadata);
   const label = meta ? findLabel(labels, meta.labelId) : null;
   const status = meta?.status || "";
-  const targets = useMemo(() => moveTargets(entries, entry.id), [entries, entry.id]);
-  const atRoot = !effectiveParents(entries).get(entry.id);
+  const atRoot = depth === 0;
 
   const move = (plan: MovePlan | null) => plan && onMove(plan);
 
@@ -565,19 +564,7 @@ function BinderRow({
               <DropdownMenuItem disabled={atRoot} onClick={() => move(planMoveInto(entries, entry.id, null))}>
                 Top level
               </DropdownMenuItem>
-              {targets.map((t) => (
-                <DropdownMenuItem
-                  key={t.id}
-                  disabled={t.disabled}
-                  onClick={() => move(planMoveInto(entries, entry.id, t.id))}
-                  style={{ paddingLeft: 8 + t.depth * 12 }}
-                >
-                  <span className="truncate">{t.title}</span>
-                </DropdownMenuItem>
-              ))}
-              {targets.length === 0 && (
-                <p className="px-2 py-1.5 font-serif text-[13px] italic text-t3">No folders yet.</p>
-              )}
+              <MoveTargets entries={entries} id={entry.id} onPick={(t) => move(planMoveInto(entries, entry.id, t))} />
             </DropdownMenuSubContent>
           </DropdownMenuSub>
           <DropdownMenuSeparator />
@@ -593,6 +580,36 @@ function BinderRow({
         </DropdownMenuContent>
       </DropdownMenu>
     </li>
+  );
+}
+
+/** Folder targets for "Move to". Mounted only while the submenu is open. */
+function MoveTargets({
+  entries,
+  id,
+  onPick,
+}: {
+  entries: WorldEntry[];
+  id: string;
+  onPick: (folderId: string) => void;
+}): JSX.Element {
+  const targets = useMemo(() => moveTargets(entries, id), [entries, id]);
+  if (targets.length === 0) {
+    return <p className="px-2 py-1.5 font-serif text-[13px] italic text-t3">No folders yet.</p>;
+  }
+  return (
+    <>
+      {targets.map((t) => (
+        <DropdownMenuItem
+          key={t.id}
+          disabled={t.disabled}
+          onClick={() => onPick(t.id)}
+          style={{ paddingLeft: 8 + t.depth * 12 }}
+        >
+          <span className="truncate">{t.title}</span>
+        </DropdownMenuItem>
+      ))}
+    </>
   );
 }
 
