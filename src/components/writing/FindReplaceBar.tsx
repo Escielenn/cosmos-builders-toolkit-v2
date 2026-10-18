@@ -15,6 +15,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Editor } from "@tiptap/react";
 import { X, ChevronUp, ChevronDown } from "lucide-react";
 import { findMatches, nextMatchIndex, type Match } from "@/lib/find-replace";
+import { flattenEditor, offsetToPos, type TextBlock } from "@/lib/editor-text-map";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -26,49 +27,13 @@ interface FindReplaceBarProps {
 }
 
 // ---------------------------------------------------------------------------
-// Document text ↔ ProseMirror positions
+// Document text ↔ ProseMirror positions (shared with the binder search jump).
+// Text nodes are separated by "\n" so a match cannot span two blocks — you
+// don't want a rename to bridge the gap between two paragraphs.
 // ---------------------------------------------------------------------------
 
-interface TextBlock {
-  /** Offset of this block's text within the flattened document string. */
-  offset: number;
-  /** ProseMirror position of the text node's first character. */
-  pos: number;
-  length: number;
-}
-
-/**
- * Flatten the document to a plain string, keeping a map back to positions.
- *
- * Text nodes are separated by "\n" so a match cannot span two blocks — you
- * don't want a rename to bridge the gap between two paragraphs.
- */
-function flatten(editor: Editor): { text: string; blocks: TextBlock[] } {
-  const blocks: TextBlock[] = [];
-  let text = "";
-
-  editor.state.doc.descendants((node, pos) => {
-    if (node.isText && node.text) {
-      blocks.push({ offset: text.length, pos, length: node.text.length });
-      text += node.text;
-    } else if (node.isBlock && text.length > 0 && !text.endsWith("\n")) {
-      text += "\n";
-    }
-    return true;
-  });
-
-  return { text, blocks };
-}
-
-/** Map a flattened offset back to a ProseMirror position. */
-function toPos(blocks: TextBlock[], offset: number): number | null {
-  for (const b of blocks) {
-    if (offset >= b.offset && offset <= b.offset + b.length) {
-      return b.pos + (offset - b.offset);
-    }
-  }
-  return null;
-}
+const flatten = flattenEditor;
+const toPos = offsetToPos;
 
 // ---------------------------------------------------------------------------
 // Component

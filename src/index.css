@@ -973,6 +973,19 @@ html {
   line-height: var(--sf-writing-leading, 1.78);
   color: var(--t2);
 }
+/* Fade other paragraphs (Write → View). A reading aid: the paragraph being
+   written stays at t1, every other top-level block drops to t4. Text colour
+   from the tier scale, never opacity, and only while the editor has focus,
+   so a writer reading back sees the whole page at full strength.
+   `.sf-current-block` comes from CurrentBlockExtension (a decoration). */
+.sf-fade-others .ProseMirror-focused > * {
+  color: var(--t4);
+  transition: color 180ms cubic-bezier(0.2, 0, 0, 1);
+}
+.sf-fade-others .ProseMirror-focused > .sf-current-block {
+  color: var(--t1);
+}
+
 .sf-writing-dropcap .ProseMirror > p:first-of-type::first-letter {
   font-size: 2.6em;
   float: left;

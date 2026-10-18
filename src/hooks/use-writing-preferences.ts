@@ -27,6 +27,16 @@ export interface WritingPreferences {
   writingMeasure: WritingMeasure;
   /** Enlarged first letter on a document's opening paragraph. */
   dropCap: boolean;
+  /** Typewriter scrolling: keep the caret line vertically centred. */
+  typewriter: boolean;
+  /** Dim every paragraph but the one being written (a reading aid). */
+  fadeOthers: boolean;
+  /**
+   * When the session target (dailyGoalWords) resets: at midnight, from the
+   * writing_sessions ledger ("day"), or when the writer starts a new session
+   * ("session"). See src/lib/writing-targets.ts.
+   */
+  sessionReset: "day" | "session";
 }
 
 const DEFAULTS: WritingPreferences = {
@@ -41,6 +51,9 @@ const DEFAULTS: WritingPreferences = {
   // that open on dialogue, where an enlarged quotation mark is just wrong. It
   // is a chapter-opening flourish, so the writer turns it on per taste.
   dropCap: false,
+  typewriter: false,
+  fadeOthers: false,
+  sessionReset: "day",
 };
 
 const LOCAL_KEY = "stellarforge-writing-preferences-v1";
