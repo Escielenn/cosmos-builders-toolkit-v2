@@ -20,13 +20,13 @@ export function markdownInline(src: string): string {
   const codes: string[] = [];
   let s = src.replace(/`([^`]+)`/g, (_m, c: string) => {
     codes.push(escapeHtml(c));
-    return `\u0000${codes.length - 1}\u0000`;
+    return `\uE000${codes.length - 1}\uE000`;
   });
   // Backslash escapes.
   const escapes: string[] = [];
   s = s.replace(/\\([\\`*_{}[\]()#+\-.!~>])/g, (_m, c: string) => {
     escapes.push(escapeHtml(c));
-    return `\u0001${escapes.length - 1}\u0001`;
+    return `\uE001${escapes.length - 1}\uE001`;
   });
   s = escapeHtml(s);
   // Links [text](url "title")
@@ -40,8 +40,8 @@ export function markdownInline(src: string): string {
   s = s.replace(/~~(?=\S)([\s\S]*?\S)~~/g, "<s>$1</s>");
   // Hard breaks.
   s = s.replace(/( {2,}|\\)\n/g, "<br>").replace(/\n/g, " ");
-  s = s.replace(/\u0001(\d+)\u0001/g, (_m, i: string) => escapes[Number(i)]);
-  s = s.replace(/\u0000(\d+)\u0000/g, (_m, i: string) => codes[Number(i)]);
+  s = s.replace(/\uE001(\d+)\uE001/g, (_m, i: string) => escapes[Number(i)]);
+  s = s.replace(/\uE000(\d+)\uE000/g, (_m, i: string) => codes[Number(i)]);
   return s.trim();
 }
 
@@ -54,7 +54,7 @@ const FENCE = /^ {0,3}(```|~~~)/;
 
 /** Block Markdown to HTML (headings capped at h3, the editor's limit). */
 export function markdownToHtml(md: string): string {
-  let text = md.replace(/\r\n?/g, "\n").replace(/^﻿/, "");
+  let text = md.replace(/\r\n?/g, "\n").replace(/^\uFEFF/, "");
   // YAML front matter.
   if (/^---\n[\s\S]*?\n(---|\.\.\.)\n/.test(text)) text = text.replace(/^---\n[\s\S]*?\n(---|\.\.\.)\n/, "");
   const lines = text.split("\n");

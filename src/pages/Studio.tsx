@@ -261,13 +261,21 @@ export default function Studio(): JSX.Element {
                     Open a world and start writing. The studio remembers where you stopped,
                     keeps your streak going, and leaves your last sentence right here.
                   </p>
-                  <div className="mt-6">
+                  <div className="mt-6 flex flex-wrap items-center gap-2.5">
                     <Link
                       to="/worlds"
                       className="bg-sf-primary px-5 py-2.5 font-sans text-[13px] font-medium tracking-wider text-[hsl(var(--accent-on-accent))] transition-shadow hover:shadow-sf-glow-teal"
                     >
                       Choose a world
                     </Link>
+                    {data?.worlds[0] && (
+                      <Link
+                        to={`/worlds/${data.worlds[0].id}/write?import=1`}
+                        className="inline-flex min-h-hit items-center border border-sf-line-emphasis px-5 font-sans text-[13px] tracking-wider text-t2 transition-colors hover:border-sf-primary hover:text-t1"
+                      >
+                        Bring a manuscript into {data.worlds[0].name}
+                      </Link>
+                    )}
                   </div>
                 </>
               )}

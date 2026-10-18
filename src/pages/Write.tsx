@@ -5,8 +5,8 @@
  * Supersedes the old /worlds/:id/write "Writing Space" (which now
  * redirects here). SF-II: one writing model, no parallel tables.
  */
-import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import { Suspense, lazy, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { Link, Navigate, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { writingSurfaceStyle } from "@/lib/writing-surface-style";
@@ -22,6 +22,8 @@ import { DocumentInspector, type InspectorPane } from "@/components/writing/Docu
 import { BinderTree } from "@/components/writing/BinderTree";
 import { SnapshotCompareDialog } from "@/components/writing/SnapshotCompareDialog";
 import { LabelManagerDialog } from "@/components/writing/LabelManagerDialog";
+// Import pulls in the readers (and, on use, jszip and mammoth): load on open.
+const ImportManuscriptDialog = lazy(() => import("@/components/writing/ImportManuscriptDialog"));
 import { ContinuityPanel } from "@/components/writing/ContinuityPanel";
 import { FindReplaceBar } from "@/components/writing/FindReplaceBar";
 import { Corkboard } from "@/components/writing/Corkboard";
@@ -190,6 +192,18 @@ export default function Write(): JSX.Element {
     isSaving: labelsSaving,
   } = useWritingLabels(worldId);
   const [labelsOpen, setLabelsOpen] = useState(false);
+  // IMPORT: binder action, the fresh-world prompt, and /write/:id?import=1
+  // (the Studio's "Bring a manuscript" link lands here).
+  const [importOpen, setImportOpen] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    if (searchParams.get("import") === "1") {
+      setImportOpen(true);
+      const next = new URLSearchParams(searchParams);
+      next.delete("import");
+      setSearchParams(next, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   // Snapshots. The hook's content argument is the last SAVED text (auto
   // snapshots every 5 minutes use it); manual snapshots and restores pass the
@@ -981,6 +995,18 @@ export default function Write(): JSX.Element {
         {(entries?.length ?? 0) === 0 && (
           <p className="px-3 py-4 font-serif text-[13px] italic text-t4">No documents yet.</p>
         )}
+        {worldId && (entries?.length ?? 0) <= 1 && !(entries ?? []).some((e) => countWords(e.content) > 0) && (
+          <div className="mx-3 mt-3 border-t border-sf-line-interactive pt-3">
+            <p className="font-serif text-[14px] italic text-t3">Writing this book somewhere else?</p>
+            <button
+              type="button"
+              onClick={() => setImportOpen(true)}
+              className="mt-1 min-h-hit text-left font-sans text-[13px] text-sf-primary-text underline-offset-4 transition-colors duration-fast hover:underline"
+            >
+              Bring the manuscript in: Scrivener, Word, Markdown
+            </button>
+          </div>
+        )}
         {(trashed?.length ?? 0) > 0 && (
           <div className="mt-3 border-t border-sf-line-interactive pt-2">
             <button
@@ -1024,6 +1050,14 @@ export default function Write(): JSX.Element {
         <div className="flex gap-1 border-t border-sf-line-interactive p-2">
           <button onClick={newDocument} className="min-h-hit flex-1 border border-sf-line-interactive px-2 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">+ Document</button>
           <button onClick={() => createFolder.mutate("New folder")} className="min-h-hit flex-1 border border-sf-line-interactive px-2 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">+ Folder</button>
+          <button
+            type="button"
+            onClick={() => setImportOpen(true)}
+            title="Import a manuscript: Scrivener, Word, Markdown, text"
+            className="min-h-hit flex-1 border border-sf-line-interactive px-2 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
+          >
+            Import
+          </button>
         </div>
       )}
     </div>
@@ -1482,6 +1516,16 @@ export default function Write(): JSX.Element {
         saving={labelsSaving}
         local={labelsLocal}
       />
+      {worldId && importOpen && (
+        <Suspense fallback={null}>
+          <ImportManuscriptDialog
+            worldId={worldId}
+            open={importOpen}
+            onOpenChange={setImportOpen}
+            onOpenDocument={(id) => openDoc(id)}
+          />
+        </Suspense>
+      )}
       <InlineRefCards onOpenBeside={openBeside} />
     </div>
     </StudioWorldProvider>
@@ -1506,6 +1550,9 @@ export function WorldWriteRedirect(): JSX.Element {
   const createDoc = useCreateDocument(worldId);
   const navigate = useNavigate();
   const kicked = useRef(false);
+  // Carry ?import=1 through (the Studio's "Bring a manuscript" link).
+  const [params] = useSearchParams();
+  const suffix = params.get("import") === "1" ? "?import=1" : "";
 
   useEffect(() => {
     // Wait for auth. useWritingDocuments is gated only on worldId, so without
@@ -1517,7 +1564,7 @@ export function WorldWriteRedirect(): JSX.Element {
     const docs = (entries ?? []).filter((e) => e.entry_type !== "folder");
     if (docs.length > 0) {
       kicked.current = true;
-      navigate(`/write/${docs[0].id}`, { replace: true });
+      navigate(`/write/${docs[0].id}${suffix}`, { replace: true });
       return;
     }
     // Only latch once the create is under way, so a failure can retry instead
@@ -1526,7 +1573,7 @@ export function WorldWriteRedirect(): JSX.Element {
     createDoc.mutate(
       { title: "Untitled", parentId: null },
       {
-        onSuccess: (d) => navigate(`/write/${d.id}`, { replace: true }),
+        onSuccess: (d) => navigate(`/write/${d.id}${suffix}`, { replace: true }),
         onError: () => { kicked.current = false; },
       },
     );

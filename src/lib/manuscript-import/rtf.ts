@@ -200,7 +200,7 @@ export function rtfToParagraphs(rtf: string): RtfParagraph[] {
         continue;
       }
       if (next === "~") {
-        emit(" ");
+        emit("\u00A0");
         i += 2;
         continue;
       }
@@ -210,7 +210,7 @@ export function rtfToParagraphs(rtf: string): RtfParagraph[] {
         continue;
       }
       if (next === "_") {
-        emit("‑");
+        emit("\u2011");
         i += 2;
         continue;
       }

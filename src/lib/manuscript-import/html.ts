@@ -171,7 +171,7 @@ export function sanitizeImportHtml(html: string): string {
 /** Plain text to paragraphs. Blank lines separate paragraphs when present;
  *  otherwise every line is its own paragraph (one-paragraph-per-line files). */
 export function plainTextToHtml(text: string): string {
-  const norm = text.replace(/\r\n?/g, "\n").replace(/^﻿/, "");
+  const norm = text.replace(/\r\n?/g, "\n").replace(/^\uFEFF/, "");
   if (!norm.trim()) return "";
   const hasBlank = /\n[ \t]*\n/.test(norm);
   const paras = hasBlank ? norm.split(/\n[ \t]*\n+/) : norm.split("\n");
