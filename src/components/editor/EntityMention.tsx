@@ -8,12 +8,22 @@
 // Stored in HTML as:
 //   <entity-mention data-id="uuid" data-label="Name"
 //     data-entity-type="character" data-color="#00FF88">Name</entity-mention>
+//
+// The label is the name AS WRITTEN; it is prose and never changes on its own.
+// When the Codex renames the entity, the chip carries a quiet NAME CHANGED
+// marker (data-state="renamed"); the hover card offers UPDATE NAME (rewrites
+// this one node's label, on click) and IGNORE (records the current Codex name
+// in data-ack-label, so the marker returns only on a further rename).
+// Rename detection is lib/writing/canon-changes.ts (pure, tested).
 // ---------------------------------------------------------------------------
 
 import { Node, mergeAttributes } from "@tiptap/core";
+import type { Node as PMNode } from "@tiptap/pm/model";
 import { useState, useCallback, useEffect } from "react";
 import type { Editor } from "@tiptap/react";
 import { selectionHandlers, wireInlineRefHover } from "@/components/editor/inline-ref-events";
+import { liveEntityNames, subscribeLiveFacts } from "@/lib/writing/live-facts";
+import { mentionRename } from "@/lib/writing/canon-changes";
 import {
   ENTITY_TYPE_COLORS,
   ENTITY_TYPE_LABELS,
@@ -52,6 +62,13 @@ export const EntityMention = Node.create({
         parseHTML: (el) => el.getAttribute("data-color"),
         renderHTML: (attrs) => ({ "data-color": attrs.color }),
       },
+      // IGNORE on a renamed mention: the Codex name the writer chose to keep
+      // the written name against. Absent on every mention never ignored.
+      ackLabel: {
+        default: null,
+        parseHTML: (el) => el.getAttribute("data-ack-label"),
+        renderHTML: (attrs) => (attrs.ackLabel ? { "data-ack-label": attrs.ackLabel } : {}),
+      },
     };
   },
 
@@ -68,29 +85,52 @@ export const EntityMention = Node.create({
   },
 
   addNodeView() {
-    return ({ node, editor, getPos }) => {
+    return ({ node: initial, editor, getPos }) => {
+      let node = initial;
       const dom = document.createElement("span");
-      const entityType = node.attrs.entityType as EntityType;
-      const color =
-        node.attrs.color ||
-        ENTITY_TYPE_COLORS[entityType] ||
-        ENTITY_TYPE_COLORS.custom;
-
       dom.className = "sf-entity-mention";
-      dom.setAttribute("data-entity-type", entityType);
-      dom.style.setProperty("--mention-color", color);
 
       // Color dot
       const dot = document.createElement("span");
       dot.className = "sf-entity-mention-dot";
-      dot.style.backgroundColor = color;
       dom.appendChild(dot);
 
       // Label text
       const text = document.createElement("span");
       text.className = "sf-entity-mention-label";
-      text.textContent = node.attrs.label || "Unknown";
       dom.appendChild(text);
+
+      const paint = () => {
+        const entityType = node.attrs.entityType as EntityType;
+        const color =
+          node.attrs.color ||
+          ENTITY_TYPE_COLORS[entityType] ||
+          ENTITY_TYPE_COLORS.custom;
+        dom.setAttribute("data-entity-type", entityType);
+        dom.style.setProperty("--mention-color", color);
+        dot.style.backgroundColor = color;
+        text.textContent = node.attrs.label || "Unknown";
+        // NAME CHANGED: shape (the marker) plus an accessible description,
+        // never colour alone. Outside the Studio no names are published and
+        // the chip stays plain.
+        const renamed = mentionRename(
+          {
+            id: (node.attrs.id as string | null) ?? null,
+            label: String(node.attrs.label ?? ""),
+            ackLabel: (node.attrs.ackLabel as string | null) ?? null,
+          },
+          liveEntityNames(),
+        );
+        if (renamed) {
+          dom.dataset.state = "renamed";
+          dom.setAttribute("aria-description", `Name changed. Now ${renamed.now}.`);
+        } else {
+          delete dom.dataset.state;
+          dom.removeAttribute("aria-description");
+        }
+      };
+      paint();
+      const unsubscribe = subscribeLiveFacts(paint);
 
       // Hover card (the Studio listens; elsewhere nobody does).
       const refCtx = { attrs: () => node.attrs as Record<string, unknown>, editor, getPos };
@@ -104,7 +144,7 @@ export const EntityMention = Node.create({
             new CustomEvent("sf-navigate-entity", {
               detail: {
                 entityId: node.attrs.id,
-                entityType,
+                entityType: node.attrs.entityType as EntityType,
                 anchor: {
                   top: rect.bottom + window.scrollY,
                   left: rect.left + window.scrollX,
@@ -117,7 +157,17 @@ export const EntityMention = Node.create({
         }
       });
 
-      return { dom, ...selectionHandlers(dom, "entity", refCtx) };
+      return {
+        dom,
+        ...selectionHandlers(dom, "entity", refCtx),
+        update: (next: PMNode) => {
+          if (next.type !== node.type) return false;
+          node = next;
+          paint();
+          return true;
+        },
+        destroy: unsubscribe,
+      };
     };
   },
 });

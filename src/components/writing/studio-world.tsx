@@ -20,7 +20,7 @@ import { useEntities, useEntityConnections } from "@/hooks/use-entity-graph";
 import { useChronicleData } from "@/hooks/use-chronicle";
 import { useChronicleBranches } from "@/hooks/use-chronicle-branches";
 import { buildWorldFacts, indexFacts, type WorldFact } from "@/lib/writing/world-index";
-import { setLiveFacts, clearLiveFacts } from "@/lib/writing/live-facts";
+import { setLiveFacts, setLiveEntityNames, clearLiveFacts } from "@/lib/writing/live-facts";
 import type { SceneContext } from "@/lib/writing/scene-context";
 import type { Entity, EntityConnection } from "@/services/entity-graph-types";
 
@@ -109,6 +109,11 @@ export function useStudioWorldIndex(worldId: string | undefined): Omit<StudioWor
     if (loading) return;
     setLiveFacts(new Map(facts.map((f) => [f.ref, { insert: f.insert }])), true);
   }, [facts, loading]);
+  // Publish current names for @mention chips (NAME CHANGED markers).
+  useEffect(() => {
+    if (loading) return;
+    setLiveEntityNames(new Map(entities.map((e) => [e.id, e.name])));
+  }, [entities, loading]);
   useEffect(() => () => clearLiveFacts(), []);
 
   return useMemo(

@@ -7,7 +7,9 @@
 //            an explicit click) rewrites that one ref's stored value. That is
 //            the writer editing their own text; nothing else here touches it.
 //   ENTITY   type, one line of description, the three most relevant facts,
-//            OPEN CODEX → and OPEN BESIDE (the split pane, read only).
+//            OPEN CODEX → and OPEN BESIDE (the split pane, read only). A
+//            @mention written before a Codex rename says NAME CHANGED, with
+//            UPDATE NAME (that one node's label, on click) and IGNORE.
 //
 // Opens on hover (after a short pause) or when the chip becomes the
 // selection (a click, or arrowing onto it). From a selected chip, Tab moves
@@ -26,6 +28,7 @@ import {
 } from "@/components/editor/inline-ref-events";
 import { factRefId, factRefStatus, sanitizeFactRefAttrs, staleLine, type FactRefAttrs } from "@/lib/writing/fact-ref";
 import { entityOneLine, entityTypeLabel, sourceLine, toolBrand } from "@/lib/writing/world-index";
+import { mentionRename } from "@/lib/writing/canon-changes";
 import { useToast } from "@/hooks/use-toast";
 
 interface Open {
@@ -170,7 +173,7 @@ export function InlineRefCards({ onOpenBeside }: InlineRefCardsProps): JSX.Eleme
       {detail.kind === "fact" ? (
         <FactCard detail={detail} onDone={close} />
       ) : (
-        <EntityCard detail={detail} onOpenBeside={(id) => { close(); onOpenBeside(id); }} />
+        <EntityCard detail={detail} onClose={close} onOpenBeside={(id) => { close(); onOpenBeside(id); }} />
       )}
     </div>
   );
@@ -260,9 +263,11 @@ function FactCard({ detail, onDone }: { detail: InlineRefDetail; onDone: () => v
 function EntityCard({
   detail,
   onOpenBeside,
+  onClose,
 }: {
   detail: InlineRefDetail;
   onOpenBeside: (id: string) => void;
+  onClose: () => void;
 }): JSX.Element {
   const world = useStudioWorld()!;
   const a = detail.attrs;
@@ -271,6 +276,50 @@ function EntityCard({
   const fallbackName = String((detail.kind === "wiki" ? a.title : a.label) ?? "");
   const facts = (entity ? world.factsByEntity.get(entity.id) ?? [] : []).slice(0, 3);
   const line = entity ? entityOneLine(entity) : "";
+  const { toast } = useToast();
+  // A @mention written before the Codex renamed its entity. Wiki links carry
+  // their own title semantics and are not judged here.
+  const renamed =
+    detail.kind === "entity" && entity
+      ? mentionRename(
+          {
+            id,
+            label: String(a.label ?? ""),
+            ackLabel: typeof a.ackLabel === "string" && a.ackLabel ? a.ackLabel : null,
+          },
+          new Map([[entity.id, entity.name]]),
+        )
+      : null;
+
+  // The two writer actions on a renamed mention. Each changes this one node
+  // only, only on click, and undo reverts it. The node must still be the one
+  // the card was opened on, with the name it had then.
+  const changeMention = (patch: Record<string, unknown>, title: string, description: string) => {
+    if (!renamed) return;
+    const ed = detail.editor;
+    const pos = detail.getPos();
+    const node = typeof pos === "number" ? ed.state.doc.nodeAt(pos) : null;
+    if (
+      typeof pos !== "number" ||
+      !node ||
+      node.type.name !== "entityMention" ||
+      node.attrs.id !== renamed.entityId ||
+      node.attrs.label !== renamed.was
+    ) {
+      toast({ title: "MENTION MOVED. NOTHING CHANGED.", description: "Hover the name again to review it." });
+      onClose();
+      return;
+    }
+    ed.chain()
+      .focus()
+      .command(({ tr }) => {
+        tr.setNodeMarkup(pos, undefined, { ...node.attrs, ...patch });
+        return true;
+      })
+      .run();
+    toast({ title, description });
+    onClose();
+  };
 
   return (
     <div className="flex flex-col gap-2">
@@ -278,6 +327,47 @@ function EntityCard({
         {entity ? entityTypeLabel(entity) : detail.kind === "wiki" ? "Wiki link" : "Mention"}
       </p>
       <p className="font-serif text-[18px] italic text-t1">{entity?.name ?? (fallbackName || "Unknown")}</p>
+      {renamed && (
+        <p className="flex items-start gap-1.5 font-mono text-[12px] text-sf-amber-text">
+          <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+          <span>
+            {"// NAME CHANGED. WAS "}
+            {renamed.was}
+            {" · NOW "}
+            {renamed.now}
+          </span>
+        </p>
+      )}
+      {renamed && (
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() =>
+              changeMention(
+                { label: renamed.now, ackLabel: null },
+                "NAME UPDATED.",
+                `${renamed.was} → ${renamed.now}`,
+              )
+            }
+            className="inline-flex min-h-hit items-center gap-1.5 border border-sf-primary bg-sf-primary/[0.06] px-3 font-sans text-[12px] font-medium uppercase text-sf-primary-text transition-colors duration-fast hover:bg-sf-primary/[0.12]"
+          >
+            <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" /> Update name
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              changeMention(
+                { ackLabel: renamed.now },
+                "NAME KEPT AS WRITTEN.",
+                `Flags again if ${renamed.now} is renamed.`,
+              )
+            }
+            className="inline-flex min-h-hit items-center gap-1.5 border border-sf-line px-3 font-sans text-[12px] font-medium uppercase text-t1 transition-colors duration-fast hover:border-sf-primary hover:text-sf-primary-text"
+          >
+            Ignore
+          </button>
+        </div>
+      )}
       {line && <p className="font-serif text-[14px] leading-relaxed text-t2">{line}</p>}
       {!entity && id && (
         <p className="font-mono text-[12px] text-t3">// NOT IN THE CODEX. IT MAY BE A DOCUMENT OR A DELETED ENTRY.</p>
