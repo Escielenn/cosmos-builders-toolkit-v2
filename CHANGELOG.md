@@ -1,5 +1,25 @@
 # StellarForge Changelog
 
+## 0.7436
+Writing space phase 2 of 4: Scrivener views.
+- Outliner beside Editor and Board: binder in reading order with label,
+  status, POV, keywords, words, target; toggleable columns; inline edit;
+  totals row; keyboard navigation.
+- Scrivenings: view a folder, a multi-selection, search results or a
+  collection as one scrolling manuscript; every section saves to its own
+  document.
+- Split editor: second pane (side by side or stacked, resizable from the
+  keyboard) with another document or a read-only Codex/worksheet reference.
+- Binder search (Ctrl/Cmd+Shift+F) across text, titles, synopses, notes,
+  keywords; regex and case; saved collections at the top of the binder.
+- Targets: session goal (daily or per session), document target, project
+  target with deadline and words-per-day pacing.
+- Typewriter scrolling and "fade other paragraphs" in the Type menu.
+- Named snapshots are never trimmed by the 20-snapshot cap.
+- Fixes: views opened right after typing could show stale text; the
+  editor saved on every page load; switching documents could hand the
+  wrong text to the next one.
+
 ## 0.7426
 - Dossier, Surface Cartographer and Ark: the "NO WORLD OPEN" notice now
   carries a world picker (and NEW WORLD / SIGN IN), instead of telling the

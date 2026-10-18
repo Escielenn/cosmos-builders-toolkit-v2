@@ -39,6 +39,7 @@ import {
   formatSnapshotTime,
   type DocumentSnapshot,
 } from "@/hooks/use-document-versions";
+import { isNamedSnapshot } from "@/lib/snapshot-cap";
 
 
 export type InspectorPane = "card" | "notes" | "snapshots";
@@ -342,6 +343,8 @@ function SnapshotsPane({
 }: DocumentInspectorProps): JSX.Element {
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
+  const namedCount = snapshots.filter(isNamedSnapshot).length;
+  const unnamedCount = snapshots.length - namedCount;
   const isMac = useMemo(
     () => typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform),
     [],
@@ -379,7 +382,8 @@ function SnapshotsPane({
           {busy ? "Taking…" : "Take snapshot"}
         </Button>
         <p className="font-mono text-[12px] text-t4">
-          {isMac ? "⌘⌥S" : "CTRL+ALT+S"} · {snapshots.length} / {MAX_SNAPSHOTS} ON FILE
+          {isMac ? "⌘⌥S" : "CTRL+ALT+S"} · {unnamedCount} / {MAX_SNAPSHOTS} UNNAMED
+          {namedCount > 0 ? ` · ${namedCount} NAMED, KEPT` : ""}
         </p>
       </form>
 
@@ -440,9 +444,9 @@ function SnapshotsPane({
             })}
           </ul>
         )}
-        {snapshots.length >= MAX_SNAPSHOTS && (
+        {unnamedCount >= MAX_SNAPSHOTS && (
           <p className="pt-2 font-sans text-[12px] text-t3">
-            The oldest snapshot rolls off when a new one is taken.
+            The oldest unnamed snapshot rolls off when a new one is taken. Named snapshots are always kept.
           </p>
         )}
       </div>

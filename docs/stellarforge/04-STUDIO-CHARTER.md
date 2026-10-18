@@ -31,15 +31,15 @@ Match the 80% writers actually use. Ship these before adding graph cleverness, b
 |---|---|---|
 | Binder hierarchy, drag-reorder | done 2026-10-18 (any depth, drag anywhere, keyboard Move to) | P0 |
 | **Corkboard** — index cards with synopsis, drag to reorder | `Board` button exists | P0 |
-| **Outliner** — table view with metadata columns | missing | P0 |
+| **Outliner** — table view with metadata columns | done 2026-10-18 (Outline view: reading order, toggleable columns, inline status/label/synopsis, totals) | P0 |
 | **Document metadata** — label, status, POV, target words, notes | done 2026-10-18 (inspector Doc tab; keywords too) | P0 |
 | **Compile** — manuscript output (DOCX, PDF, EPUB, MD) with format presets, front/back matter, separators | `Export` exists, scope unknown | P0 |
 | **Snapshots** — versioned captures with diff and restore | done 2026-10-18 (named, word diff, restore snapshots first) | P1 |
-| **Collections** — saved sets of documents | missing | P1 |
-| **Split view** — two documents, or document + reference | missing | P1 |
+| **Collections** — saved sets of documents | done 2026-10-18 (saved searches and hand-picked sets, top of the binder; open as Scrivenings) | P1 |
+| **Split view** — two documents, or document + reference | done 2026-10-18 (Split: document, Codex entry or worksheet; side by side or stacked; plus Scrivenings) | P1 |
 | **Focus / composition mode** | `Focus` exists | done |
-| **Targets** — session, document, project, with deadline pacing | daily target exists | P1 |
-| **Search across the binder**, with regex | missing | P1 |
+| **Targets** — session, document, project, with deadline pacing | done 2026-10-18 (session goal resets per day or per session; document; project + deadline pacing) | P1 |
+| **Search across the binder**, with regex | done 2026-10-18 (Ctrl/Cmd+Shift+F: text, titles, synopses, notes, keywords; regex, case) | P1 |
 | Import from DOCX / Markdown / Scrivener `.scriv` | missing | P2 |
 
 **On import:** a `.scriv` importer is worth more than three new worksheets. Writers do not abandon a manuscript in progress to try a new tool. Let them bring the book.

@@ -43,6 +43,8 @@ import { WikiLink } from "@/components/editor/WikiLinkExtension";
 import { WikiLinkAutocomplete } from "@/components/editor/WikiLinkAutocomplete";
 import { useWikiLinkTrigger } from "@/components/editor/useWikiLinkTrigger";
 import { EntityMention, useEntityMentionTrigger } from "@/components/editor/EntityMention";
+import { CurrentBlock } from "@/components/editor/CurrentBlockExtension";
+import type { AnyExtension } from "@tiptap/core";
 import { EntityMentionList } from "@/components/editor/EntityMentionList";
 import { useEntities } from "@/hooks/use-entity-graph";
 import { useWritingPreferences } from "@/hooks/use-writing-preferences";
@@ -90,6 +92,17 @@ export interface StellarForgeEditorProps {
    * into one opaque change and lose the cursor.
    */
   onEditorReady?: (editor: Editor | null) => void;
+  /**
+   * No toolbar, no frame, no footer: just the prose. For surfaces that stack
+   * several editors (Scrivenings) or sit beside another (the split pane),
+   * where a toolbar per editor would be noise. Shortcuts still work.
+   */
+  bare?: boolean;
+}
+
+/** The frame-less shell for `bare` editors. */
+function BareShell({ children }: { children: React.ReactNode; color?: string }): JSX.Element {
+  return <>{children}</>;
 }
 
 // ---------------------------------------------------------------------------
@@ -170,6 +183,7 @@ export function StellarForgeEditor({
   className,
   minHeight,
   onEditorReady,
+  bare = false,
 }: StellarForgeEditorProps) {
   const config = PRESET_CONFIG[preset];
   const resolvedMinHeight = minHeight || config.defaultMinHeight;
@@ -188,7 +202,7 @@ export function StellarForgeEditor({
 
   // Build extensions based on preset
   const extensions = useMemo(() => {
-    const exts = [
+    const exts: AnyExtension[] = [
       StarterKit.configure({
         heading:
           config.headingLevels.length > 0
@@ -204,6 +218,12 @@ export function StellarForgeEditor({
       exts.push(Underline);
     }
 
+    // Manuscript surfaces: mark the caret's paragraph for the writing
+    // space's "fade other paragraphs" aid (CSS-only; inert elsewhere).
+    if (preset === "full") {
+      exts.push(CurrentBlock);
+    }
+
     if (config.showLink) {
       exts.push(
         Link.configure({
@@ -214,7 +234,7 @@ export function StellarForgeEditor({
     }
 
     return exts;
-  }, [config.headingLevels, config.showUnderline, config.showLink, placeholder]);
+  }, [config.headingLevels, config.showUnderline, config.showLink, placeholder, preset]);
 
   const editor = useEditor({
     extensions,
@@ -334,17 +354,19 @@ export function StellarForgeEditor({
 
   if (!editor) return null;
 
+  const Shell = bare ? BareShell : BracketPanel;
+
   return (
-    <BracketPanel color="stellar">
+    <Shell color="stellar">
       <div
         className={cn(
-          "rounded-none border border-sf-stellar bg-background overflow-hidden relative",
+          bare ? "relative" : "rounded-none border border-sf-stellar bg-background overflow-hidden relative",
           focusMode && "sf-focus-mode",
           className
         )}
       >
         {/* Toolbar */}
-        {!readOnly && (
+        {!readOnly && !bare && (
           <div className="sf-writing-toolbar flex items-center gap-0.5 p-1.5 border-b border-sf-line bg-muted/30 flex-wrap">
             {/* Bold + Italic (always shown) */}
             <ToolbarBtn
@@ -597,7 +619,7 @@ export function StellarForgeEditor({
         />
 
         {/* Word Count Footer (full preset only) */}
-        {config.showWordCount && !readOnly && (
+        {config.showWordCount && !readOnly && !bare && (
           <div className="flex items-center justify-end px-3 py-1.5 border-t border-sf-line bg-muted/20">
             <span className="font-mono text-[12px] tracking-wide uppercase text-t4">
               {wordCount.toLocaleString()} {wordCount === 1 ? "word" : "words"}
@@ -627,7 +649,7 @@ export function StellarForgeEditor({
           />
         )}
       </div>
-    </BracketPanel>
+    </Shell>
   );
 }
 

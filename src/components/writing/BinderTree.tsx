@@ -56,6 +56,7 @@ import {
   planMoveInto,
   planShift,
   effectiveParents,
+  rangeBetween,
   type BinderNode,
   type DropPosition,
   type MovePlan,
@@ -83,6 +84,14 @@ export interface BinderTreeProps {
   onCreateFolder: (parentId: string | null) => void;
   onRename: (id: string, kind: "doc" | "folder", title: string) => void;
   onDeleteFolder: (id: string, title: string) => void;
+  /**
+   * Multi-selection (Cmd/Ctrl-click toggles a document, Shift-click selects a
+   * range). Documents only. Feeds Scrivenings and manual collections.
+   */
+  selection?: string[];
+  onSelectionChange?: (ids: string[]) => void;
+  /** Open a folder's documents as Scrivenings. */
+  onScrivenings?: (folderId: string) => void;
 }
 
 interface DropState {
@@ -92,6 +101,7 @@ interface DropState {
 }
 
 const INDENT = 14;
+const NO_SELECTION: string[] = [];
 const STATUS_INITIAL = { outline: "O", draft: "D", revised: "R", final: "F" } as const;
 
 // ---------------------------------------------------------------------------
@@ -148,6 +158,9 @@ export function BinderTree({
   onCreateFolder,
   onRename,
   onDeleteFolder,
+  selection = NO_SELECTION,
+  onSelectionChange,
+  onScrivenings,
 }: BinderTreeProps): JSX.Element {
   const [collapsed, setCollapsed] = useCollapsed(worldId);
   const rows = useMemo(() => flattenVisible(tree, collapsed), [tree, collapsed]);
@@ -156,6 +169,8 @@ export function BinderTree({
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
   const expandTimer = useRef<ReturnType<typeof setTimeout>>();
+  const anchor = useRef<string | null>(null);
+  const selected = useMemo(() => new Set(selection), [selection]);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
@@ -195,6 +210,34 @@ export function BinderTree({
       else next.add(id);
       return next;
     });
+
+  // Click: open (and clear any selection). Cmd/Ctrl-click: toggle one
+  // document in the selection. Shift-click: select the visible range from the
+  // last clicked (or the open) document.
+  const activate = (node: BinderNode<WorldEntry>, e: React.MouseEvent) => {
+    const id = node.entry.id;
+    const multi = e.metaKey || e.ctrlKey;
+    if (!node.isFolder && onSelectionChange && (multi || e.shiftKey)) {
+      e.preventDefault();
+      const base = selection.length > 0 ? selection : activeDocId ? [activeDocId] : [];
+      if (e.shiftKey) {
+        const visibleDocs = rows.filter((r) => !r.node.isFolder).map((r) => r.node.entry.id);
+        const range = rangeBetween(visibleDocs, anchor.current ?? activeDocId ?? null, id);
+        onSelectionChange(multi ? [...new Set([...base, ...range])] : range);
+      } else {
+        onSelectionChange(base.includes(id) ? base.filter((x) => x !== id) : [...base, id]);
+        anchor.current = id;
+      }
+      return;
+    }
+    if (node.isFolder) {
+      toggle(id);
+      return;
+    }
+    anchor.current = id;
+    if (selection.length > 0) onSelectionChange?.([]);
+    onOpen(id);
+  };
 
   // ---- drag and drop ------------------------------------------------------
 
@@ -280,6 +323,7 @@ export function BinderTree({
             depth={depth}
             entries={entries}
             active={node.entry.id === activeDocId}
+            selected={selected.has(node.entry.id)}
             expanded={node.isFolder && !collapsed.has(node.entry.id)}
             drop={drop?.overId === node.entry.id ? drop : null}
             dragging={dragId === node.entry.id}
@@ -292,7 +336,8 @@ export function BinderTree({
             onRenameCancel={() => setRenamingId(null)}
             onBeginRename={() => beginRename(node.entry.id, node.entry.title || "Untitled")}
             onToggle={(open) => toggle(node.entry.id, open)}
-            onOpen={() => (node.isFolder ? toggle(node.entry.id) : onOpen(node.entry.id))}
+            onOpen={(e) => activate(node, e)}
+            onScrivenings={node.isFolder && onScrivenings ? () => onScrivenings(node.entry.id) : undefined}
             onMove={onMove}
             onTrash={() => onTrash(node.entry.id)}
             onCreateDoc={() => {
@@ -337,6 +382,7 @@ interface BinderRowProps {
   depth: number;
   entries: WorldEntry[];
   active: boolean;
+  selected: boolean;
   expanded: boolean;
   drop: DropState | null;
   dragging: boolean;
@@ -349,7 +395,8 @@ interface BinderRowProps {
   onRenameCancel: () => void;
   onBeginRename: () => void;
   onToggle: (open?: boolean) => void;
-  onOpen: () => void;
+  onOpen: (e: React.MouseEvent) => void;
+  onScrivenings?: () => void;
   onMove: (plan: MovePlan) => void;
   onTrash: () => void;
   onCreateDoc: () => void;
@@ -362,6 +409,7 @@ function BinderRow({
   depth,
   entries,
   active,
+  selected,
   expanded,
   drop,
   dragging,
@@ -375,6 +423,7 @@ function BinderRow({
   onBeginRename,
   onToggle,
   onOpen,
+  onScrivenings,
   onMove,
   onTrash,
   onCreateDoc,
@@ -441,11 +490,13 @@ function BinderRow({
       role="treeitem"
       aria-level={depth + 1}
       aria-expanded={isFolder ? expanded : undefined}
-      aria-selected={active}
+      aria-selected={active || selected}
       className={`group relative flex min-h-hit items-center border-l-2 pr-1 transition-colors duration-fast ${
         active
           ? "border-sf-primary bg-sf-primary/[0.06]"
-          : dragging
+          : selected
+            ? "border-sf-line-emphasis bg-sf-surface-elevated"
+            : dragging
             ? "border-transparent bg-sf-disabled-bg"
             : "border-transparent hover:bg-sf-surface-elevated"
       } ${dropClass}`}
@@ -501,7 +552,7 @@ function BinderRow({
             onBeginRename();
           }}
           onKeyDown={onKeyDown}
-          title={`${hint}. Double-click or F2 to rename. Alt+Arrow to move.`}
+          title={`${hint}. Double-click or F2 to rename. Alt+Arrow to move.${isFolder ? "" : " Cmd/Ctrl-click or Shift-click to select several."}`}
           aria-current={active ? "page" : undefined}
           className={`flex min-h-hit min-w-0 flex-1 touch-none items-center gap-2 pr-1 text-left ${
             isFolder
@@ -547,6 +598,9 @@ function BinderRow({
         <DropdownMenuContent align="end" className="w-56">
           {isFolder && (
             <>
+              {onScrivenings && (
+                <DropdownMenuItem onClick={onScrivenings}>View as Scrivenings</DropdownMenuItem>
+              )}
               <DropdownMenuItem onClick={onCreateDoc}>New document here</DropdownMenuItem>
               <DropdownMenuItem onClick={onCreateFolder}>New folder here</DropdownMenuItem>
               <DropdownMenuSeparator />
