@@ -2,70 +2,121 @@
 // WorldCompile, manuscript compile + export page.
 //
 // Route: /worlds/:worldId/compile
-// Reads the chapter tree, lets user reorder/toggle which docs are included,
-// preview the stitched manuscript, and export to .docx / Markdown / text.
+//
+// The writer picks what goes in (per document or folder), the order it goes
+// in (drag, or Up / Down on a row's handle; compile order only, the binder
+// never moves), how it is dressed (preset, separators, chapter headings and
+// numbering, title page, back matter) and the format: Word in Standard
+// Manuscript Format, PDF, EPUB, Markdown or plain text.
+//
+// Selection, order and settings persist per world at worlds.settings.compile
+// (browser storage until that column exists). Cited facts print their stored
+// value; mentions and wiki links print their display text.
+//
+// Absorbs (Law VII) the old one-panel compile (title/author/subtitle, a flat
+// checkbox list, three download buttons).
 // ---------------------------------------------------------------------------
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
-  BookOpen,
-  Check,
-  Download,
-  Eye,
-  FileText,
-  Folder,
-  Minus,
-} from "lucide-react";
+  DndContext,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { BookOpen, Download, Eye, FileText, Folder, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { GlassPanel } from "@/components/ui/glass-panel";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { BackLink } from "@/components/ui/back-link";
 import { useMetaTags } from "@/hooks/use-meta-tags";
-import { useWritingDocuments, type WritingFolder } from "@/hooks/use-writing-documents";
+import { useWritingDocuments } from "@/hooks/use-writing-documents";
+import { useWorldSetting } from "@/hooks/use-world-setting";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import {
-  compileManuscriptDocx,
-  compileManuscriptMarkdown,
-  compileManuscriptPlainText,
-  type ManuscriptChapter,
-  type ManuscriptMeta,
-} from "@/lib/manuscript-compile";
-import type { WorldEntry } from "@/services/world-data";
-import { cn } from "@/lib/utils";
-import { sanitizeHtml } from "@/lib/sanitize";
 import { useWorksheets } from "@/hooks/use-worksheets";
 import { getToolDisplayName } from "@/lib/tools-config";
 import { extractWorksheetFacts } from "@/lib/worksheet-facts";
 import { mapError } from "@/lib/ship-voice";
+import { sanitizeHtml } from "@/lib/sanitize";
+import { countWords } from "@/lib/text";
+import { cn } from "@/lib/utils";
+import type { BinderNode } from "@/lib/binder-tree";
+import type { WorldEntry } from "@/services/world-data";
+import { blocksToXhtml } from "@/lib/manuscript/blocks";
+import {
+  COMPILE_FORMATS,
+  NUMBERINGS,
+  PRESETS,
+  PRESET_LABELS,
+  SEPARATORS,
+  applyCompileOrder,
+  applyPreset,
+  approxWordsLine,
+  buildManuscript,
+  sanitizeCompileSettings,
+  sectionHeading,
+  showDocTitle,
+  type CompileFormat,
+  type CompileNode,
+  type CompileSettings,
+  type NumberingStyle,
+  type SeparatorStyle,
+} from "@/lib/manuscript/compile";
+import { FORMAT_LABELS, downloadManuscript } from "@/lib/manuscript/export";
 
-import { BackLink } from "@/components/ui/back-link";
 // ---------------------------------------------------------------------------
-// Helpers
+// Constants
 // ---------------------------------------------------------------------------
 
-function countWords(html: string | null | undefined): number {
-  if (!html) return 0;
-  const text = html.replace(/<[^>]*>/g, " ").trim();
-  if (!text) return 0;
-  return text.split(/\s+/).length;
+const SEPARATOR_LABELS: Record<SeparatorStyle, string> = {
+  none: "None",
+  blank: "Blank line",
+  hash: "#",
+  stars: "* * *",
+  custom: "Custom",
+};
+
+const NUMBERING_LABELS: Record<NumberingStyle, string> = {
+  none: "No numbers",
+  chapter: "Chapter 1",
+  words: "One",
+  roman: "I, II, III",
+};
+
+const FORMAT_NOTES: Record<CompileFormat, string> = {
+  docx: "Word · submission ready",
+  pdf: "Print and read",
+  epub: "E-readers",
+  md: "Markdown",
+  txt: "Plain text",
+};
+
+/** Formatting keys: changing one by hand makes the preset Custom. */
+type FormatKey = "format" | "separator" | "customSeparator" | "folderHeadings" | "numbering" | "folderTitles" | "docTitles" | "titlePage" | "font" | "doubleSpaced";
+
+function escapeHtml(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
-function downloadText(content: string, filename: string, mime: string) {
-  const blob = new Blob([content], { type: `${mime};charset=utf-8` });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(() => {
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }, 200);
+function toCompileNodes(nodes: BinderNode<WorldEntry>[]): CompileNode[] {
+  return nodes.map((n) => ({
+    id: n.entry.id,
+    title: n.entry.title || (n.isFolder ? "Untitled folder" : "Untitled"),
+    isFolder: n.isFolder,
+    html: n.isFolder ? "" : n.entry.content ?? "",
+    children: toCompileNodes(n.children),
+  }));
 }
 
 // ---------------------------------------------------------------------------
@@ -77,73 +128,48 @@ export default function WorldCompile() {
   const { user } = useAuth();
   const { worlds } = useWorlds();
   const { toast } = useToast();
-  const { data: documents, folders, unfiledDocs, orderedDocs, isLoading } =
-    useWritingDocuments(worldId);
+  const { data: documents, tree, isLoading } = useWritingDocuments(worldId);
+  const stored = useWorldSetting(worldId, "compile", sanitizeCompileSettings, "COMPILE SETTINGS NOT SAVED.");
 
   useMetaTags({ title: "Compile Manuscript" });
 
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
+  const fallbackTitle = currentWorld?.name ?? "Untitled Manuscript";
+  const fallbackAuthor = (user?.user_metadata?.display_name as string | undefined) ?? "";
 
-  // Front matter
-  const [title, setTitle] = useState(currentWorld?.name ?? "Untitled Manuscript");
-  const [author, setAuthor] = useState(user?.user_metadata?.display_name ?? "");
-  const [subtitle, setSubtitle] = useState("");
+  // Local draft, seeded once from storage, saved back after a pause.
+  const [draft, setDraft] = useState<CompileSettings | null>(null);
+  useEffect(() => {
+    if (!draft && !stored.isLoading) setDraft(stored.value);
+  }, [draft, stored.isLoading, stored.value]);
+  const dirty = useRef(false);
+  const saveRef = useRef(stored.save);
+  saveRef.current = stored.save;
+  useEffect(() => {
+    if (!draft || !dirty.current) return;
+    const t = setTimeout(() => {
+      dirty.current = false;
+      saveRef.current(draft);
+    }, 800);
+    return () => clearTimeout(t);
+  }, [draft]);
 
-  // Track which docs are included
-  const allDocIds = useMemo(() => {
-    const ids: string[] = [];
-    for (const f of folders) {
-      for (const d of f.documents) ids.push(d.id);
-    }
-    for (const d of unfiledDocs) ids.push(d.id);
-    return ids;
-  }, [folders, unfiledDocs]);
-
-  const [includedIds, setIncludedIds] = useState<Set<string>>(
-    () => new Set(allDocIds)
+  const s = draft ?? stored.value;
+  const update = useCallback((patch: Partial<CompileSettings>) => {
+    dirty.current = true;
+    setDraft((d) => ({ ...(d ?? sanitizeCompileSettings({})), ...patch }));
+  }, []);
+  const updateFormat = useCallback(
+    <K extends FormatKey>(key: K, value: CompileSettings[K]) => update({ [key]: value, preset: "custom" } as Partial<CompileSettings>),
+    [update],
   );
 
-  // Sync when allDocIds changes (new docs created while page is open)
-  useMemo(() => {
-    setIncludedIds((prev) => {
-      const next = new Set(prev);
-      for (const id of allDocIds) {
-        if (!next.has(id)) next.add(id);
-      }
-      return next;
-    });
-  }, [allDocIds]);
+  // Binder → compile tree, in compile order (exclusion shown, not applied).
+  const compileTree = useMemo(() => toCompileNodes(tree ?? []), [tree]);
+  const orderedTree = useMemo(() => applyCompileOrder(compileTree, s.order), [compileTree, s.order]);
+  const excluded = useMemo(() => new Set(s.excluded), [s.excluded]);
 
-  const toggleDoc = (id: string) => {
-    setIncludedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
-
-  const toggleFolder = (folder: WritingFolder) => {
-    const folderDocIds = folder.documents.map((d) => d.id);
-    const allIncluded = folderDocIds.every((id) => includedIds.has(id));
-    setIncludedIds((prev) => {
-      const next = new Set(prev);
-      for (const id of folderDocIds) {
-        if (allIncluded) next.delete(id);
-        else next.add(id);
-      }
-      return next;
-    });
-  };
-
-  const selectAll = () => setIncludedIds(new Set(allDocIds));
-  const selectNone = () => setIncludedIds(new Set());
-
-  // Preview state
-  const [showPreview, setShowPreview] = useState(false);
-
-  // World appendix, off by default so existing exports are unchanged.
-  const [includeAppendix, setIncludeAppendix] = useState(false);
+  // World appendix (off by default).
   const { worksheets } = useWorksheets(worldId);
   const appendixHtml = useMemo(() => {
     const sections = (worksheets ?? [])
@@ -151,402 +177,324 @@ export default function WorldCompile() {
         title: ws.title || getToolDisplayName(ws.tool_type),
         facts: extractWorksheetFacts(ws.tool_type, ws.data),
       }))
-      .filter((s) => s.facts.length > 0);
-    if (sections.length === 0) return "";
-    // Markup, not raw newlines: the preview renders through sanitizeHtml.
+      .filter((sec) => sec.facts.length > 0);
     return sections
       .map(
-        (s) =>
-          `<h3>${s.title}</h3><ul>${s.facts
-            .map((f) => `<li><strong>${f.label}:</strong> ${f.value}</li>`)
+        (sec) =>
+          `<h3>${escapeHtml(sec.title)}</h3><ul>${sec.facts
+            .map((f) => `<li><strong>${escapeHtml(f.label)}:</strong> ${escapeHtml(String(f.value))}</li>`)
             .join("")}</ul>`,
       )
       .join("");
   }, [worksheets]);
 
-  // Build the chapter list in binder reading order. Folders nest and can sit
-  // between loose documents, so walking folders-then-unfiled would put a
-  // prologue at the end of the book.
-  const chapters = useMemo((): ManuscriptChapter[] => {
-    const result: ManuscriptChapter[] = [];
-    for (const { doc, folder } of orderedDocs) {
-      if (!includedIds.has(doc.id)) continue;
-      result.push({
-        id: doc.id,
-        title: doc.title || "Untitled",
-        content: doc.content || "",
-        ...(folder ? { folderName: folder.title } : {}),
-      });
-    }
-
-    // Optional world appendix. The compile previously carried only prose, so
-    // none of the worldbuilding reached the exported manuscript.
-    if (includeAppendix && appendixHtml) {
-      result.push({
-        id: "__world-appendix",
-        title: "Appendix: World Reference",
-        content: appendixHtml,
-      });
-    }
-    return result;
-  }, [orderedDocs, includedIds, includeAppendix, appendixHtml]);
-
-  const totalWords = useMemo(
-    () => chapters.reduce((sum, c) => sum + countWords(c.content), 0),
-    [chapters]
+  const manuscript = useMemo(
+    () => buildManuscript(compileTree, s, { appendixHtml, fallbackTitle, fallbackAuthor }),
+    [compileTree, s, appendixHtml, fallbackTitle, fallbackAuthor],
   );
+  const docCount = manuscript.sections.reduce((n, sec) => n + sec.docs.length, 0);
 
-  const meta: ManuscriptMeta = useMemo(
-    () => ({
-      title: title || "Untitled Manuscript",
-      author: author || "Unknown Author",
-      subtitle: subtitle || undefined,
-    }),
-    [title, author, subtitle]
-  );
+  // Selection
+  const toggle = (id: string) => {
+    const next = new Set(excluded);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    update({ excluded: Array.from(next) });
+  };
+  const allIds = useMemo(() => {
+    const out: string[] = [];
+    const walk = (list: CompileNode[]) => list.forEach((n) => (out.push(n.id), walk(n.children)));
+    walk(compileTree);
+    return out;
+  }, [compileTree]);
 
-  // Export handlers
+  // Reorder (compile only)
+  const [announce, setAnnounce] = useState("");
+  const reorder = (parentKey: string, ids: string[], label: string, index: number) => {
+    update({ order: { ...s.order, [parentKey]: ids } });
+    setAnnounce(`${label} MOVED. POSITION ${index + 1} OF ${ids.length}.`);
+  };
+
+  // Preview
+  const [showPreview, setShowPreview] = useState(false);
+
+  // Export
   const [isExporting, setIsExporting] = useState(false);
-
-  const handleExportDocx = useCallback(async () => {
+  const handleExport = useCallback(async () => {
     setIsExporting(true);
     try {
-      await compileManuscriptDocx(meta, chapters);
-      toast({ title: "EXPORT COMPLETE.", description: "Manuscript downloaded as .docx." });
-    } catch (err) {
-      console.error("Docx export failed:", err);
+      const filename = await downloadManuscript(manuscript, s.format);
       toast({
-        title: "EXPORT FAILED.",
-        description: mapError(err),
-        variant: "destructive",
+        title: "MANUSCRIPT COMPILED.",
+        description: `${filename} · ${docCount} documents · ${manuscript.words.toLocaleString("en-US")} words.`,
       });
+    } catch (err) {
+      console.error("Compile failed:", err);
+      toast({ title: "COMPILE FAILED.", description: mapError(err), variant: "destructive" });
     } finally {
       setIsExporting(false);
     }
-  }, [meta, chapters, toast]);
-
-  const handleExportMarkdown = useCallback(() => {
-    const md = compileManuscriptMarkdown(meta, chapters);
-    const slug = meta.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-    downloadText(md, `${slug || "manuscript"}.md`, "text/markdown");
-    toast({ title: "EXPORT COMPLETE.", description: "Manuscript downloaded as Markdown." });
-  }, [meta, chapters, toast]);
-
-  const handleExportText = useCallback(() => {
-    const txt = compileManuscriptPlainText(meta, chapters);
-    const slug = meta.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-    downloadText(txt, `${slug || "manuscript"}.txt`, "text/plain");
-    toast({ title: "EXPORT COMPLETE.", description: "Manuscript downloaded as plain text." });
-  }, [meta, chapters, toast]);
+  }, [manuscript, s.format, docCount, toast]);
 
   if (!worldId) return null;
 
+  const fontApplies = s.format === "docx" || s.format === "pdf";
+
   return (
-    <div className="min-h-screen bg-[hsl(222_30%_5%)]">
-      <div className="max-w-5xl mx-auto px-6 py-8">
-        {/* Header */}
+    <div className="min-h-screen bg-sf-void">
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <div className="mb-8">
           <BackLink to={`/worlds/${worldId}/write`} label="RETURN TO WRITING SPACE" className="mb-3" />
-          <h1 className="font-display text-3xl md:text-4xl tracking-[0.08em] text-t1 mb-1">
-            COMPILE MANUSCRIPT
-          </h1>
-          <p className="text-sm text-t2 max-w-2xl">
-            Stitch your chapters in order and export as a formatted manuscript.
-            Toggle chapters on or off, set front matter, then download.
+          <h1 className="mb-1 font-display text-sf-h1 tracking-title text-t1">COMPILE MANUSCRIPT</h1>
+          <p className="sf-measure text-sf-body text-t2">
+            Choose what goes in and in what order, dress it for where it is going, and download. The binder
+            is never rearranged by anything here.
           </p>
+          {stored.isLocal && (
+            <p className="mt-2 font-mono text-[12px] text-t4">SETTINGS HELD IN THIS BROWSER UNTIL THE WORLD SETTINGS UPDATE LANDS.</p>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
-          {/* Left: chapter list + preview */}
-          <div className="space-y-6">
-            {/* Front matter */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px]">
+          {/* Left: front matter, contents, back matter, preview */}
+          <div className="min-w-0 space-y-6">
             <GlassPanel>
-              <div className="p-4 space-y-3">
-                <h2 className="font-heading text-sm uppercase tracking-wide text-sf-emerald-text mb-3">
-                  Front Matter
-                </h2>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <Label htmlFor="ms-title">Manuscript title</Label>
-                    <Input
-                      id="ms-title"
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                      placeholder="My Novel"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="ms-author">Author</Label>
-                    <Input
-                      id="ms-author"
-                      value={author}
-                      onChange={(e) => setAuthor(e.target.value)}
-                      placeholder="Your name"
-                    />
-                  </div>
+              <div className="space-y-3 p-4">
+                <PanelHeading>Front matter</PanelHeading>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <Field id="ms-title" label="Title">
+                    <Input id="ms-title" value={s.title} onChange={(e) => update({ title: e.target.value })} placeholder={fallbackTitle} />
+                  </Field>
+                  <Field id="ms-author" label="Author">
+                    <Input id="ms-author" value={s.author} onChange={(e) => update({ author: e.target.value })} placeholder={fallbackAuthor || "Your name"} />
+                  </Field>
                 </div>
-                <div className="space-y-1">
-                  <Label htmlFor="ms-subtitle">
-                    Subtitle{" "}
-                    <span className="text-t4 font-normal normal-case tracking-normal">(optional)</span>
-                  </Label>
-                  <Input
-                    id="ms-subtitle"
-                    value={subtitle}
-                    onChange={(e) => setSubtitle(e.target.value)}
-                    placeholder="A Novel of the Deep Reaches"
-                  />
-                </div>
-
-                {appendixHtml && (
-                  <label className="mt-2 flex cursor-pointer items-start gap-2.5 border-t border-sf-line-interactive pt-3">
-                    <Checkbox
-                      checked={includeAppendix}
-                      onCheckedChange={(v) => setIncludeAppendix(v === true)}
-                      aria-label="Append a world reference chapter"
+                <Field id="ms-subtitle" label="Subtitle (optional)">
+                  <Input id="ms-subtitle" value={s.subtitle} onChange={(e) => update({ subtitle: e.target.value })} placeholder="A Novel of the Deep Reaches" />
+                </Field>
+                <Toggle checked={s.titlePage} onChange={(v) => updateFormat("titlePage", v)} label="Title page">
+                  Contact block top left, {approxWordsLine(manuscript.words)} top right, title and byline centred.
+                </Toggle>
+                {s.titlePage && (
+                  <Field id="ms-contact" label="Contact block">
+                    <Textarea
+                      id="ms-contact"
+                      value={s.contact}
+                      onChange={(e) => update({ contact: e.target.value })}
+                      rows={3}
+                      placeholder={"Street address\nCity, State ZIP\nemail@example.com"}
+                      className="sf-sb text-[16px]"
                     />
-                    <span className="min-w-0">
-                      <span className="block text-sm text-t2">
-                        Append world reference
-                      </span>
-                      <span className="block text-xs text-t3">
-                        Adds a final chapter listing the values recorded in this
-                        world's tools.
-                      </span>
-                    </span>
-                  </label>
+                  </Field>
                 )}
               </div>
             </GlassPanel>
 
-            {/* Chapter selection */}
             <GlassPanel>
               <div className="p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <h2 className="font-heading text-sm uppercase tracking-wide text-sf-emerald-text">
-                    Chapters
-                  </h2>
-                  <div className="flex gap-2">
-                    <Button variant="ghost" size="sm" onClick={selectAll} className="text-xs h-7 min-h-hit">
-                      All
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                  <PanelHeading>Contents</PanelHeading>
+                  <div className="flex flex-wrap gap-1">
+                    <Button variant="ghost" size="sm" className="min-h-hit text-xs" onClick={() => update({ excluded: [] })}>
+                      Include all
                     </Button>
-                    <Button variant="ghost" size="sm" onClick={selectNone} className="text-xs h-7 min-h-hit">
-                      None
+                    <Button variant="ghost" size="sm" className="min-h-hit text-xs" onClick={() => update({ excluded: allIds })}>
+                      Exclude all
                     </Button>
-                  </div>
-                </div>
-
-                {isLoading ? (
-                  <div className="text-xs text-t4 py-4 text-center">Loading documents...</div>
-                ) : (
-                  <div className="space-y-1">
-                    {folders.map((folder) => {
-                      const folderDocIds = folder.documents.map((d) => d.id);
-                      const allIn = folderDocIds.length > 0 && folderDocIds.every((id) => includedIds.has(id));
-                      const someIn = folderDocIds.some((id) => includedIds.has(id));
-
-                      return (
-                        <div key={folder.id}>
-                          <button
-                            type="button"
-                            onClick={() => toggleFolder(folder)}
-                            className="w-full flex items-center gap-2 px-2 py-1.5 hover:bg-sf-surface-elevated transition-colors"
-                          >
-                            <div className="w-4 h-4 flex items-center justify-center">
-                              {allIn ? (
-                                <Check className="w-3.5 h-3.5 text-sf-primary-text" />
-                              ) : someIn ? (
-                                <Minus className="w-3.5 h-3.5 text-t3" />
-                              ) : (
-                                <div className="w-3 h-3 border border-sf-line" />
-                              )}
-                            </div>
-                            <Folder className="w-3.5 h-3.5 text-sf-amber-warm-text" />
-                            <span className="text-xs font-medium text-t2 flex-1 text-left">
-                              {folder.title}
-                            </span>
-                            <span className="text-[12px] font-mono text-t4">
-                              {folderDocIds.filter((id) => includedIds.has(id)).length}/{folderDocIds.length}
-                            </span>
-                          </button>
-                          <div className="pl-8 space-y-0.5">
-                            {folder.documents.map((doc) => (
-                              <DocToggleRow
-                                key={doc.id}
-                                doc={doc}
-                                included={includedIds.has(doc.id)}
-                                onToggle={() => toggleDoc(doc.id)}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      );
-                    })}
-
-                    {unfiledDocs.length > 0 && (
-                      <>
-                        {folders.length > 0 && (
-                          <div className="pt-2 border-t border-sf-line">
-                            <span className="text-[12px] uppercase tracking-wide text-t4 font-heading px-2">
-                              Unfiled
-                            </span>
-                          </div>
-                        )}
-                        {unfiledDocs.map((doc) => (
-                          <DocToggleRow
-                            key={doc.id}
-                            doc={doc}
-                            included={includedIds.has(doc.id)}
-                            onToggle={() => toggleDoc(doc.id)}
-                          />
-                        ))}
-                      </>
-                    )}
-
-                    {(documents?.length ?? 0) === 0 && (
-                      <div className="text-xs text-t4 text-center py-6">
-                        <BookOpen className="w-8 h-8 mx-auto mb-2 text-t4" aria-hidden="true" />
-                        No documents in this world yet.
-                        <br />
-                        <Link
-                          to={`/worlds/${worldId}/write`}
-                          className="text-sf-primary-text hover:underline"
-                        >
-                          Start writing
-                        </Link>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </GlassPanel>
-
-            {/* Preview toggle */}
-            {chapters.length > 0 && (
-              <GlassPanel>
-                <div className="p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h2 className="font-heading text-sm uppercase tracking-wide text-sf-emerald-text">
-                      Preview
-                    </h2>
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setShowPreview((p) => !p)}
-                      className="text-xs h-7 min-h-hit"
+                      className="min-h-hit text-xs"
+                      disabled={Object.keys(s.order).length === 0}
+                      onClick={() => {
+                        update({ order: {} });
+                        setAnnounce("BINDER ORDER RESTORED.");
+                      }}
                     >
-                      <Eye className="w-3.5 h-3.5 mr-1.5" />
+                      Binder order
+                    </Button>
+                  </div>
+                </div>
+                <p className="mb-3 text-sm text-t3">
+                  Drag a row by its handle, or focus the handle and press Up or Down. Unchecked items and
+                  everything inside an unchecked folder stay out.
+                </p>
+                <div aria-live="polite" className="sr-only">
+                  {announce}
+                </div>
+
+                {isLoading ? (
+                  <div className="py-4 text-center text-xs text-t4">LOADING DOCUMENTS.</div>
+                ) : (documents?.length ?? 0) === 0 ? (
+                  <div className="py-6 text-center text-sm text-t3">
+                    <BookOpen className="mx-auto mb-2 h-8 w-8 text-t4" aria-hidden="true" />
+                    No documents in this world yet.{" "}
+                    <Link to={`/worlds/${worldId}/write`} className="text-sf-primary-text hover:underline">
+                      Start writing
+                    </Link>
+                  </div>
+                ) : (
+                  <CompileBranch
+                    nodes={orderedTree}
+                    parentKey="root"
+                    depth={0}
+                    excluded={excluded}
+                    ancestorExcluded={false}
+                    onToggle={toggle}
+                    onReorder={reorder}
+                  />
+                )}
+              </div>
+            </GlassPanel>
+
+            <GlassPanel>
+              <div className="space-y-3 p-4">
+                <PanelHeading>Back matter</PanelHeading>
+                <Toggle checked={s.includeAbout} onChange={(v) => update({ includeAbout: v })} label="About the author">
+                  A closing page in your own words.
+                </Toggle>
+                {s.includeAbout && (
+                  <Field id="ms-about" label="About the author">
+                    <Textarea
+                      id="ms-about"
+                      value={s.aboutAuthor}
+                      onChange={(e) => update({ aboutAuthor: e.target.value })}
+                      rows={4}
+                      className="sf-sb text-[16px]"
+                    />
+                  </Field>
+                )}
+                {appendixHtml && (
+                  <Toggle checked={s.includeAppendix} onChange={(v) => update({ includeAppendix: v })} label="World reference appendix">
+                    A final section listing the values recorded in this world's tools.
+                  </Toggle>
+                )}
+              </div>
+            </GlassPanel>
+
+            {docCount > 0 && (
+              <GlassPanel>
+                <div className="p-4">
+                  <div className="mb-3 flex items-center justify-between">
+                    <PanelHeading>Preview</PanelHeading>
+                    <Button variant="ghost" size="sm" onClick={() => setShowPreview((p) => !p)} className="min-h-hit text-xs">
+                      <Eye className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
                       {showPreview ? "Hide" : "Show"} preview
                     </Button>
                   </div>
-
-                  {showPreview && (
-                    <div className="max-h-[60vh] overflow-y-auto sf-sb border border-sf-line bg-sf-surface p-6 space-y-6">
-                      <div className="text-center pb-6 border-b border-sf-line">
-                        <h3 className="font-heading text-xl tracking-wider text-t1">
-                          {meta.title}
-                        </h3>
-                        {meta.subtitle && (
-                          <p className="text-sm text-t2 italic mt-1">{meta.subtitle}</p>
-                        )}
-                        <p className="text-xs text-t4 mt-2">by {meta.author}</p>
-                      </div>
-                      {chapters.map((ch, i) => (
-                        <div key={ch.id}>
-                          <h4 className="font-heading text-base tracking-wider text-t2 mb-3">
-                            {ch.title}
-                          </h4>
-                          <div
-                            className="prose prose-invert prose-sm max-w-none text-t2 leading-relaxed"
-                            dangerouslySetInnerHTML={{ __html: sanitizeHtml(ch.content) }}
-                          />
-                          {i < chapters.length - 1 && (
-                            <div className="mt-6 border-t border-dashed border-sf-line" />
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  {showPreview && <ManuscriptPreview manuscript={manuscript} />}
                 </div>
               </GlassPanel>
             )}
           </div>
 
-          {/* Right sidebar: stats + export */}
-          <div className="space-y-4">
+          {/* Right: preset, format, formatting, stats, compile */}
+          <div className="min-w-0 space-y-4">
             <GlassPanel>
-              <div className="p-4 space-y-3">
-                <h2 className="font-heading text-sm uppercase tracking-wide text-sf-emerald-text">
-                  Manuscript Stats
-                </h2>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-t3">Chapters included</span>
-                    <span className="font-mono text-t1">{chapters.length}</span>
-                  </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-t3">Total words</span>
-                    <span className="font-mono text-t1">{totalWords.toLocaleString()}</span>
-                  </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-t3">Est. pages (250 w/p)</span>
-                    <span className="font-mono text-t1">
-                      {Math.ceil(totalWords / 250)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-t3">Reading time</span>
-                    <span className="font-mono text-t1">
-                      {Math.ceil(totalWords / 250)} min
-                    </span>
-                  </div>
+              <div className="space-y-4 p-4">
+                <PanelHeading>Preset</PanelHeading>
+                <div role="radiogroup" aria-label="Preset" className="grid gap-1">
+                  {PRESETS.filter((p) => p !== "custom").map((p) => (
+                    <ChoiceButton key={p} checked={s.preset === p} onClick={() => update(applyPreset(s, p))}>
+                      {PRESET_LABELS[p]}
+                    </ChoiceButton>
+                  ))}
+                  {s.preset === "custom" && (
+                    <p className="px-1 font-mono text-[12px] text-t4">CUSTOM SETTINGS IN USE.</p>
+                  )}
+                </div>
+
+                <PanelHeading>Format</PanelHeading>
+                <div role="radiogroup" aria-label="Format" className="grid gap-1">
+                  {COMPILE_FORMATS.map((f) => (
+                    <ChoiceButton key={f} checked={s.format === f} onClick={() => updateFormat("format", f)}>
+                      <span>{FORMAT_LABELS[f].label}</span>
+                      <span className="ml-auto pl-2 font-mono text-[12px] text-t4">.{FORMAT_LABELS[f].ext}</span>
+                      <span className="sr-only">, {FORMAT_NOTES[f]}</span>
+                    </ChoiceButton>
+                  ))}
                 </div>
               </div>
             </GlassPanel>
 
             <GlassPanel>
-              <div className="p-4 space-y-3">
-                <h2 className="font-heading text-sm uppercase tracking-wide text-sf-emerald-text">
-                  Export
-                </h2>
-
-                <div className="space-y-2">
-                  <Button
-                    className="w-full justify-start"
-                    onClick={handleExportDocx}
-                    disabled={chapters.length === 0 || isExporting}
-                  >
-                    <FileText className="w-4 h-4 mr-2" />
-                    Download .docx
-                    <span className="ml-auto text-[12px] text-t4">Standard manuscript</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start"
-                    onClick={handleExportMarkdown}
-                    disabled={chapters.length === 0}
-                  >
-                    <Download className="w-4 h-4 mr-2" />
-                    Download Markdown
-                    <span className="ml-auto text-[12px] text-t4">.md</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start"
-                    onClick={handleExportText}
-                    disabled={chapters.length === 0}
-                  >
-                    <Download className="w-4 h-4 mr-2" />
-                    Download plain text
-                    <span className="ml-auto text-[12px] text-t4">.txt / Scrivener</span>
-                  </Button>
-                </div>
-
-                {chapters.length === 0 && (
-                  <p className="text-[12px] text-t4 text-center py-2">
-                    Select at least one chapter to export.
-                  </p>
+              <div className="space-y-3 p-4">
+                <PanelHeading>Formatting</PanelHeading>
+                <Field id="ms-sep" label="Scene separator">
+                  <Select value={s.separator} onValueChange={(v) => updateFormat("separator", v as SeparatorStyle)}>
+                    <SelectTrigger id="ms-sep" className="min-h-hit">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {SEPARATORS.map((sep) => (
+                        <SelectItem key={sep} value={sep}>
+                          {SEPARATOR_LABELS[sep]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Field>
+                {s.separator === "custom" && (
+                  <Field id="ms-sep-custom" label="Custom separator">
+                    <Input id="ms-sep-custom" value={s.customSeparator} maxLength={80} onChange={(e) => updateFormat("customSeparator", e.target.value)} placeholder="~" />
+                  </Field>
                 )}
+                <Toggle checked={s.folderHeadings} onChange={(v) => updateFormat("folderHeadings", v)} label="Chapter headings from folders" />
+                {s.folderHeadings && (
+                  <>
+                    <Field id="ms-num" label="Numbering">
+                      <Select value={s.numbering} onValueChange={(v) => updateFormat("numbering", v as NumberingStyle)}>
+                        <SelectTrigger id="ms-num" className="min-h-hit">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {NUMBERINGS.map((n) => (
+                            <SelectItem key={n} value={n}>
+                              {NUMBERING_LABELS[n]}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </Field>
+                    {s.numbering !== "none" && (
+                      <Toggle checked={s.folderTitles} onChange={(v) => updateFormat("folderTitles", v)} label="Folder titles after the number" />
+                    )}
+                  </>
+                )}
+                <Toggle checked={s.docTitles} onChange={(v) => updateFormat("docTitles", v)} label="Document titles as scene headings" />
+                {fontApplies && (
+                  <>
+                    <Field id="ms-font" label="Font">
+                      <Select value={s.font} onValueChange={(v) => updateFormat("font", v as CompileSettings["font"])}>
+                        <SelectTrigger id="ms-font" className="min-h-hit">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="times">Times New Roman</SelectItem>
+                          <SelectItem value="courier">Courier</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </Field>
+                    <Toggle checked={s.doubleSpaced} onChange={(v) => updateFormat("doubleSpaced", v)} label="Double spaced" />
+                  </>
+                )}
+              </div>
+            </GlassPanel>
+
+            <GlassPanel>
+              <div className="space-y-3 p-4">
+                <PanelHeading>Manuscript</PanelHeading>
+                <dl className="space-y-2">
+                  <Stat label="Sections" value={manuscript.sections.length} />
+                  <Stat label="Documents" value={docCount} />
+                  <Stat label="Words" value={manuscript.words} />
+                  <Stat label="Pages at 250 words" value={Math.ceil(manuscript.words / 250)} />
+                </dl>
+                <Button variant="sf-primary" className="w-full" onClick={handleExport} disabled={docCount === 0 || isExporting}>
+                  <Download className="mr-2 h-4 w-4" aria-hidden="true" />
+                  {isExporting ? "Compiling" : `Compile .${FORMAT_LABELS[s.format].ext}`}
+                </Button>
+                {docCount === 0 && <p className="text-center text-[12px] text-t4">INCLUDE AT LEAST ONE DOCUMENT.</p>}
               </div>
             </GlassPanel>
           </div>
@@ -557,38 +505,275 @@ export default function WorldCompile() {
 }
 
 // ---------------------------------------------------------------------------
-// DocToggleRow, checkbox + title + word count for a single doc
+// Pieces
 // ---------------------------------------------------------------------------
 
-function DocToggleRow({
-  doc,
-  included,
-  onToggle,
+function PanelHeading({ children }: { children: React.ReactNode }) {
+  return <h2 className="font-heading text-sf-eyebrow uppercase text-t4">{children}</h2>;
+}
+
+function Field({ id, label, children }: { id: string; label: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-1">
+      <Label htmlFor={id}>{label}</Label>
+      {children}
+    </div>
+  );
+}
+
+function Toggle({
+  checked,
+  onChange,
+  label,
+  children,
 }: {
-  doc: WorldEntry;
-  included: boolean;
-  onToggle: () => void;
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  label: string;
+  children?: React.ReactNode;
 }) {
-  const words = countWords(doc.content);
+  return (
+    <label className="flex min-h-hit cursor-pointer items-start gap-2.5 py-1">
+      <Checkbox checked={checked} onCheckedChange={(v) => onChange(v === true)} aria-label={label} className="mt-0.5" />
+      <span className="min-w-0">
+        <span className="block text-sm text-t2">{label}</span>
+        {children && <span className="block text-xs text-t3">{children}</span>}
+      </span>
+    </label>
+  );
+}
+
+function ChoiceButton({ checked, onClick, children }: { checked: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
     <button
       type="button"
-      onClick={onToggle}
+      role="radio"
+      aria-checked={checked}
+      onClick={onClick}
       className={cn(
-        "w-full flex items-center gap-2 px-2 py-1 transition-colors hover:bg-sf-surface-elevated",
-        !included && "text-t4"
+        "flex min-h-hit w-full items-center gap-2 border px-3 text-left font-sans text-sm transition-colors duration-fast ease-sf-out",
+        checked
+          ? "border-sf-primary bg-sf-primary/[0.06] text-sf-primary-text"
+          : "border-sf-line-interactive text-t2 hover:border-sf-line-emphasis hover:text-t1",
       )}
     >
-      <Checkbox checked={included} className="pointer-events-none" aria-label={`Include ${doc.title}`} />
-      <FileText className={cn("w-3 h-3 shrink-0", included ? "text-t3" : "text-t4")} />
-      <span className={cn("text-xs flex-1 text-left truncate", included ? "text-t2" : "text-t4")}>
-        {doc.title || "Untitled"}
-      </span>
-      {words > 0 && (
-        <span className="text-[12px] font-mono text-t4 shrink-0">
-          {words < 1000 ? words : `${Math.round(words / 100) / 10}k`}
-        </span>
-      )}
+      <span
+        aria-hidden="true"
+        className={cn("h-2.5 w-2.5 shrink-0 border", checked ? "border-sf-primary bg-sf-primary" : "border-sf-line-interactive")}
+      />
+      {children}
     </button>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="flex justify-between text-xs">
+      <dt className="text-t3">{label}</dt>
+      <dd className="font-mono text-t1">{value.toLocaleString("en-US")}</dd>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Contents tree: one sortable list per sibling group
+// ---------------------------------------------------------------------------
+
+interface BranchProps {
+  nodes: CompileNode[];
+  parentKey: string;
+  depth: number;
+  excluded: Set<string>;
+  ancestorExcluded: boolean;
+  onToggle: (id: string) => void;
+  onReorder: (parentKey: string, ids: string[], label: string, index: number) => void;
+}
+
+function CompileBranch({ nodes, parentKey, depth, excluded, ancestorExcluded, onToggle, onReorder }: BranchProps) {
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }));
+  const ids = nodes.map((n) => n.id);
+  const onDragEnd = (e: DragEndEvent) => {
+    if (!e.over || e.active.id === e.over.id) return;
+    const from = ids.indexOf(String(e.active.id));
+    const to = ids.indexOf(String(e.over.id));
+    if (from < 0 || to < 0) return;
+    onReorder(parentKey, arrayMove(ids, from, to), nodes[from].title.toUpperCase(), to);
+  };
+  const move = (id: string, delta: number) => {
+    const from = ids.indexOf(id);
+    const to = from + delta;
+    if (from < 0 || to < 0 || to >= ids.length) return;
+    onReorder(parentKey, arrayMove(ids, from, to), nodes[from].title.toUpperCase(), to);
+  };
+  return (
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+      <SortableContext items={ids} strategy={verticalListSortingStrategy}>
+        <ul className="space-y-0.5" aria-label={depth === 0 ? "Manuscript contents" : undefined}>
+          {nodes.map((n, i) => (
+            <CompileRow
+              key={n.id}
+              node={n}
+              depth={depth}
+              position={i}
+              count={nodes.length}
+              excluded={excluded}
+              ancestorExcluded={ancestorExcluded}
+              onToggle={onToggle}
+              onMove={(delta) => move(n.id, delta)}
+              onReorder={onReorder}
+            />
+          ))}
+        </ul>
+      </SortableContext>
+    </DndContext>
+  );
+}
+
+function CompileRow({
+  node,
+  depth,
+  position,
+  count,
+  excluded,
+  ancestorExcluded,
+  onToggle,
+  onMove,
+  onReorder,
+}: {
+  node: CompileNode;
+  depth: number;
+  position: number;
+  count: number;
+  excluded: Set<string>;
+  ancestorExcluded: boolean;
+  onToggle: (id: string) => void;
+  onMove: (delta: number) => void;
+  onReorder: BranchProps["onReorder"];
+}) {
+  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({ id: node.id });
+  const selfExcluded = excluded.has(node.id);
+  const out = selfExcluded || ancestorExcluded;
+  const words = node.isFolder ? 0 : countWords(node.html);
+  return (
+    <li
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      className={cn(isDragging && "relative z-10")}
+    >
+      <div
+        className={cn(
+          "flex min-h-hit items-center gap-1 border border-transparent pr-2",
+          isDragging ? "border-sf-line-emphasis bg-sf-surface-elevated" : "hover:bg-sf-surface-elevated",
+        )}
+        style={{ paddingLeft: depth * 20 }}
+      >
+        <button
+          type="button"
+          ref={setActivatorNodeRef}
+          {...attributes}
+          {...listeners}
+          // Keyboard reorder: Up / Down (with or without Alt) on the focused handle.
+          onKeyDown={(e) => {
+            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+              e.preventDefault();
+              onMove(e.key === "ArrowUp" ? -1 : 1);
+              const el = e.currentTarget;
+              requestAnimationFrame(() => el.focus());
+            }
+          }}
+          aria-label={`Reorder ${node.title}, position ${position + 1} of ${count}. Press Up or Down to move.`}
+          className="flex min-h-hit w-8 shrink-0 cursor-grab items-center justify-center text-t4 transition-colors duration-fast hover:text-t1 active:cursor-grabbing"
+        >
+          <GripVertical className="h-4 w-4" aria-hidden="true" />
+        </button>
+        <label className="flex min-h-hit min-w-0 flex-1 cursor-pointer items-center gap-2">
+          <Checkbox
+            checked={!selfExcluded}
+            disabled={ancestorExcluded}
+            onCheckedChange={() => onToggle(node.id)}
+            aria-label={`${selfExcluded ? "Include" : "Exclude"} ${node.title}`}
+          />
+          {node.isFolder ? (
+            <Folder className={cn("h-3.5 w-3.5 shrink-0", out ? "text-sf-disabled-text" : "text-sf-amber-warm-text")} aria-hidden="true" />
+          ) : (
+            <FileText className={cn("h-3.5 w-3.5 shrink-0", out ? "text-sf-disabled-text" : "text-t3")} aria-hidden="true" />
+          )}
+          <span
+            className={cn(
+              "min-w-0 flex-1 truncate text-sm",
+              out ? "text-sf-disabled-text line-through" : node.isFolder ? "font-medium text-t1" : "text-t2",
+            )}
+          >
+            {node.title}
+          </span>
+          {words > 0 && <span className="shrink-0 font-mono text-[12px] text-t4">{words.toLocaleString("en-US")}</span>}
+          {selfExcluded && <span className="shrink-0 font-mono text-[12px] text-t4">OUT</span>}
+        </label>
+      </div>
+      {node.isFolder && node.children.length > 0 && (
+        <CompileBranch
+          nodes={node.children}
+          parentKey={node.id}
+          depth={depth + 1}
+          excluded={excluded}
+          ancestorExcluded={out}
+          onToggle={onToggle}
+          onReorder={onReorder}
+        />
+      )}
+    </li>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Preview
+// ---------------------------------------------------------------------------
+
+function ManuscriptPreview({ manuscript: m }: { manuscript: ReturnType<typeof buildManuscript> }) {
+  return (
+    <div className="sf-sb max-h-[60vh] space-y-8 overflow-y-auto border border-sf-line bg-sf-surface p-6">
+      {m.titlePage && (
+        <div className="border-b border-sf-line pb-6 text-center">
+          <p className="font-serif text-xl italic text-t1">{m.title}</p>
+          {m.subtitle && <p className="mt-1 font-serif text-sm italic text-t2">{m.subtitle}</p>}
+          {m.author && <p className="mt-2 text-sm text-t2">by {m.author}</p>}
+          <p className="mt-2 font-mono text-[12px] text-t4">{approxWordsLine(m.words).toUpperCase()}</p>
+        </div>
+      )}
+      {m.sections.map((sec) => {
+        const h = sectionHeading(sec);
+        return (
+          <section key={sec.id} className="space-y-4">
+            {h && <h3 className={cn("text-center font-serif italic text-t1", sec.kind === "part" ? "text-xl" : "text-lg")}>{h}</h3>}
+            {sec.docs.map((d, i) => (
+              <div key={d.id} className="space-y-3">
+                {i > 0 && m.separator !== null && (
+                  <p className="text-center font-serif text-t3" aria-label="Scene separator">
+                    {m.separator || "\u00A0"}
+                  </p>
+                )}
+                {showDocTitle(m, sec, d) && <h4 className="text-center font-serif italic text-t2">{d.title}</h4>}
+                <div
+                  className="prose prose-invert prose-sm max-w-none font-serif leading-relaxed text-t2"
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(blocksToXhtml(d.blocks)) }}
+                />
+              </div>
+            ))}
+          </section>
+        );
+      })}
+      {m.about && (
+        <section className="space-y-2">
+          <h3 className="text-center font-serif text-lg italic text-t1">About the Author</h3>
+          <p className="whitespace-pre-line font-serif text-sm text-t2">{m.about}</p>
+        </section>
+      )}
+      {m.appendix && (
+        <section className="space-y-2">
+          <h3 className="text-center font-serif text-lg italic text-t1">Appendix: World Reference</h3>
+          <div className="prose prose-invert prose-sm max-w-none text-t2" dangerouslySetInnerHTML={{ __html: sanitizeHtml(blocksToXhtml(m.appendix)) }} />
+        </section>
+      )}
+    </div>
   );
 }

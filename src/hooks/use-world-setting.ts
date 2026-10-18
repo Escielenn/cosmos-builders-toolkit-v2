@@ -137,3 +137,48 @@ export function useWorldSetting<T>(
     isSaving: save.isPending,
   };
 }
+
+/**
+ * Read-merge-write one settings key outside a component (the manuscript
+ * import marks compile exclusions and adds labels this way). Falls back to
+ * the same browser storage the hooks read while the column is missing.
+ * `localStorageKey` overrides the fallback key (labels keep their own).
+ */
+export async function updateWorldSettingKey(
+  worldId: string,
+  key: string,
+  update: (raw: unknown) => unknown,
+  localStorageKey?: string,
+): Promise<{ local: boolean }> {
+  const lk = localStorageKey ?? localKey(key, worldId);
+  const readFallback = (): unknown => {
+    try {
+      const raw = localStorage.getItem(lk);
+      return raw ? JSON.parse(raw) : undefined;
+    } catch {
+      return undefined;
+    }
+  };
+  const writeFallback = (value: unknown) => {
+    try {
+      localStorage.setItem(lk, JSON.stringify(value));
+    } catch {
+      /* storage unavailable */
+    }
+  };
+  const { data: row, error: readErr } = await db.from("worlds").select("settings").eq("id", worldId).maybeSingle();
+  if (readErr) {
+    if (!isMissingColumn(readErr)) throw readErr;
+    writeFallback(update(readFallback()));
+    return { local: true };
+  }
+  const current = readSettingsKey(row?.settings, key);
+  const next = writeSettingsKey(row?.settings, key, update(current === undefined ? readFallback() : current));
+  const { error } = await db.from("worlds").update({ settings: next }).eq("id", worldId);
+  if (error) {
+    if (!isMissingColumn(error)) throw error;
+    writeFallback(update(readFallback()));
+    return { local: true };
+  }
+  return { local: false };
+}
