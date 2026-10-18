@@ -90,6 +90,7 @@ const TimelineTool = lazy(() => import("./pages/tools/Timeline"));
 const Sensorium = lazy(() => import("./pages/tools/Sensorium"));
 const Gravitas = lazy(() => import("./pages/tools/Gravitas"));
 const KardashevScale = lazy(() => import("./pages/tools/KardashevScale"));
+const SurfaceCartographer = lazy(() => import("./pages/tools/SurfaceCartographer"));
 const Dossier = lazy(() => import("./pages/tools/Dossier"));
 const GenerationShipDesigner = lazy(() => import("./pages/tools/GenerationShipDesigner"));
 
@@ -416,6 +417,14 @@ const App = () => (
                   element={
                     <ProToolGuard toolId="dossier">
                       <Dossier />
+                    </ProToolGuard>
+                  }
+                />
+                <Route
+                  path="/tools/surface-cartographer"
+                  element={
+                    <ProToolGuard toolId="surface-cartographer">
+                      <SurfaceCartographer />
                     </ProToolGuard>
                   }
                 />

@@ -16,6 +16,7 @@
 import { ENTITY_MASTER_FIELDS } from "@/lib/entity-config";
 import { getNestedValue } from "@/lib/entity-prepopulate";
 import { extractTimelineFacts } from "@/lib/timeline-facts";
+import { extractSurfaceMapFacts } from "@/lib/surface-cartographer/facts";
 import { annotateDossierFacts } from "@/lib/dossier/facts";
 
 // ---------------------------------------------------------------------------
@@ -96,6 +97,8 @@ function toDisplay(raw: unknown): string {
  */
 const BESPOKE_EXTRACTORS: Record<string, (data: unknown) => WorksheetFact[]> = {
   timeline: extractTimelineFacts,
+  // A gazetteer is a list of located places, not scalars at paths.
+  "surface-cartographer": extractSurfaceMapFacts,
 };
 
 /**

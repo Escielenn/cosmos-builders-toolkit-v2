@@ -40,6 +40,7 @@ const LAYER_TOOLS: Record<string, string[]> = {
     "planetary-profile",
     "surface-gravity-calculator",
     "gravitas",
+    "surface-cartographer",
   ],
   life: [
     "evolutionary-biology",

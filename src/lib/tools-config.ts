@@ -45,6 +45,7 @@ export const PRO_TOOL_IDS = [
   'solaris',
   // Cartographers
   'stellar-cartographer',
+  'surface-cartographer',
   // Workshop
   'writing-workshop',
 ];
@@ -107,6 +108,7 @@ export const TOOL_DISPLAY_NAMES: Record<string, string> = {
   'generation-ship': 'Ark: Generation Ship Designer',
   // Cartographers
   'stellar-cartographer': 'Stellar Cartographer: Galaxy Mapper',
+  'surface-cartographer': 'Surface Cartographer: Planet & Moon Maps',
   // Workshop
   'writing-workshop': 'Writing Prompts',
 };
@@ -144,6 +146,7 @@ export const TOOL_ROUTES: Record<string, string> = {
   'exoforge': '/tools/exoforge',
   'solaris': '/tools/solaris',
   'stellar-cartographer': '/tools/stellar-cartographer',
+  'surface-cartographer': '/tools/surface-cartographer',
   'writing-workshop': '/workshop',
 };
 

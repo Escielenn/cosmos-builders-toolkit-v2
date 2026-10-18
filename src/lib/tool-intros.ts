@@ -815,4 +815,38 @@ export const TOOL_INTROS: Record<string, ToolIntroData> = {
       },
     ],
   },
+  "surface-cartographer": {
+    title: "Where the Story Stands",
+    purpose:
+      "Give a planet or moon its map, then drop the places your scenes happen. Every place reads its climate band, daylight or fixed star, and its distance in days from every other place straight from the world's canon.",
+    examples: [
+      {
+        bookTitle: "Mission of Gravity",
+        author: "Hal Clement",
+        year: "1954",
+        isbn: "9780345353139",
+        quotes: [],
+        explanation:
+          "Mesklin spins so fast that gravity runs from about 3 g at the equator to hundreds of g at the poles. The whole novel is a voyage by latitude: Barlennan sails the Bree poleward, and every degree of the map changes what his crew can survive.",
+      },
+      {
+        bookTitle: "The Left Hand of Darkness",
+        author: "Ursula K. Le Guin",
+        year: "1969",
+        isbn: "9780441478125",
+        quotes: [],
+        explanation:
+          "Genly Ai and Estraven cross the Gobrin Ice on foot, counting days and rations against distance. The crossing works because Gethen's geography is fixed and measurable: the reader feels every kilometre because Le Guin knew how many there were.",
+      },
+      {
+        bookTitle: "Dune",
+        author: "Frank Herbert",
+        year: "1965",
+        isbn: "9780441172719",
+        quotes: [],
+        explanation:
+          "Arrakis is a map before it is a plot. The Shield Wall, the deep desert, the polar ice and the settlements sheltered at high latitudes decide where water is, where worms are, and therefore where every faction has to stand.",
+      },
+    ],
+  },
 };

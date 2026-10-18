@@ -43,6 +43,15 @@ export interface DocumentMeta {
    */
   subjectEntityId: string;
   /**
+   * The located place this scene is SET IN — a `location` entity filed by the
+   * Surface Cartographer, carrying lat/lon on its body. Empty string means
+   * unset. Distinct from subjectEntityId: a scene can be ABOUT a planet and
+   * set in one city on it. This is the `set_in` target 05-NEW-SYSTEMS Tier C
+   * says the Planet Cartographer makes real; the Studio UI that sets it is
+   * not built yet.
+   */
+  setInPlaceId: string;
+  /**
    * Optional chronicle_branches id: which timeline `when` is read on, for
    * time-travel stories. Absent = the prime timeline. Type-and-read only for
    * now; the Studio UI for it is a follow-up.
@@ -56,6 +65,7 @@ export const EMPTY_DOC_META: DocumentMeta = {
   status: "",
   when: "",
   subjectEntityId: "",
+  setInPlaceId: "",
 };
 
 export const STATUS_LABELS: Record<DocStatus, string> = {
@@ -103,6 +113,7 @@ export function readDocMeta(metadata: unknown): DocumentMeta {
     status: isStatus(m.status) ? m.status : "",
     when: str(m.when),
     subjectEntityId: str(m.subjectEntityId),
+    setInPlaceId: str(m.setInPlaceId),
     // Only present when set, so documents without a branch read unchanged.
     ...(str(m.branchId) ? { branchId: str(m.branchId) } : {}),
   };

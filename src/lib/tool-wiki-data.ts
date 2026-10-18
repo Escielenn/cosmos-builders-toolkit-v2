@@ -672,6 +672,26 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
       { toolId: 'propulsion-consequences-map', strength: 'optional', note: 'Route planning' },
     ],
   },
+  'surface-cartographer': {
+    id: 'surface-cartographer',
+    tagline: 'Map a planet or moon: your own sheet or a generated one, places with coordinates, and the sky, climate and travel time each place inherits from canon.',
+    category: 'worlds',
+    complexity: 'intermediate',
+    type: 'cartographer',
+    cascade: 'environment',
+    workshopWeek: 2,
+    timeEstimate: '20-45 min',
+    buildsOn: [
+      { toolId: 'planetary-profile', strength: 'required', note: 'Radius, tilt, day length and climate drive every readout' },
+      { toolId: 'tidelock', strength: 'optional', note: 'A locked world bands around its substellar point' },
+      { toolId: 'species-interaction-matrix', strength: 'optional', note: 'Biomes to place on the surface' },
+    ],
+    feedsInto: [
+      { toolId: 'propulsion-consequences-map', strength: 'optional', note: 'Distances between places set travel time' },
+      { toolId: 'empire-designer', strength: 'optional', note: 'Located settlements anchor territory' },
+      { toolId: 'xenomythology-framework-builder', strength: 'optional', note: 'Sacred sites and a fixed sun shape belief' },
+    ],
+  },
 };
 
 // ── HELPER FUNCTIONS ────────────────────────────────────────

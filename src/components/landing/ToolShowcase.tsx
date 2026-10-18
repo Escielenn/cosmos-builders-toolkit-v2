@@ -173,6 +173,12 @@ const proTools = [
     description: "Interactive galaxy mapping tool. Generate procedural galaxies with 3D projection, empire territories, trade routes, and wormholes.",
     status: "available",
   },
+  {
+    id: "surface-cartographer",
+    title: "Surface Cartographer: Planet & Moon Maps",
+    description: "Put your own map on a planet or moon, or generate one from its climate. Drop places with real coordinates and read each one's sky, climate band and travel time.",
+    status: "available",
+  },
 ];
 
 // Simulators render in their own section below; they are Pro tools too, so
@@ -224,8 +230,7 @@ const comingSoonByCategory = [
   {
     category: "Cartographers",
     items: [
-      { title: "Solar System Cartographer", subtitle: "Map solar systems" },
-      { title: "Planet / Moon Cartographer", subtitle: "Map planetary and lunar surfaces" },
+      { title: "Solar System Cartographer", subtitle: "Arriving as a zoom level of the Stellar Cartographer" },
     ],
   },
   {

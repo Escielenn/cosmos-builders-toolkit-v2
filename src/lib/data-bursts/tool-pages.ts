@@ -163,4 +163,11 @@ export const TOOL_PAGE_BURSTS: Record<string, DataBurstConfig[]> = {
     { content: "REF: Forster, Aspects of the Novel, 1927", position: { top: "52%", right: "2%" }, variant: "coordinates", parallax: -0.06 },
     { content: "LINEAGE: RESOLVING", position: { top: "68%", left: "1%" }, variant: "margin", animation: "live", parallax: -0.1 },
   ],
+  "surface-cartographer": [
+    { content: "SURFACE // CARTOGRAPHIC SURVEY", position: { top: "8%", right: "3%" }, variant: "status", parallax: -0.05 },
+    { content: "d = 2R·asin√(hav Δφ + cos φ₁cos φ₂ hav Δλ)", position: { top: "18%", left: "1%" }, variant: "margin", animation: "breathe", parallax: -0.08 },
+    { content: "cos H₀ = −tan φ · tan δ", position: { top: "34%", left: "1%" }, variant: "margin", animation: "live", parallax: -0.12 },
+    { content: "REF: Mercator, Nova et Aucta Orbis Terrae, 1569", position: { top: "52%", right: "2%" }, variant: "coordinates", parallax: -0.06 },
+    { content: "GRATICULE: 30° · EQUIRECT", position: { top: "68%", left: "1%" }, variant: "margin", animation: "breathe", parallax: -0.1 },
+  ],
 };

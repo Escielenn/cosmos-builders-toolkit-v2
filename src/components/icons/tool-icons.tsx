@@ -38,6 +38,7 @@ const ICON_FILES: Record<string, string> = {
   "kardashev-scale": "011-sun.svg",
   "generation-ship": "036-space colony.svg",
   "solaris": "022-solar system.svg",
+  "surface-cartographer": "001-compass.svg",
 };
 
 function createImgIcon(filename: string): React.FC<ToolIconProps> {

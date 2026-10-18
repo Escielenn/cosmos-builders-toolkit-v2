@@ -187,6 +187,12 @@ export const TOOL_PAGE_CONFIGS: Record<string, ToolPageConfig> = {
     "Character Development",
     "Characters who inherit their bodies, senses and beliefs from your world, with every departure marked as yours.",
   ),
+  "surface-cartographer": config(
+    "surface-cartographer",
+    "Surface Cartographer",
+    "Planet & Moon Maps",
+    "Put your own map on a planet or moon, drop the places your story happens, and read their sky, climate and distances from canon.",
+  ),
 };
 
 /** Look up config by tool slug. Throws if not found. */
