@@ -105,7 +105,7 @@ export function TypographyMenu({ preferences, onChange }: TypographyMenuProps) {
         align="end"
         // Settings, not commands: keep it open while the writer tries options.
         onCloseAutoFocus={(e) => e.preventDefault()}
-        className="w-64 rounded-none border-sf-line-interactive bg-sf-surface-elevated p-0"
+        className="sf-sb max-h-[80vh] w-64 overflow-y-auto rounded-none border-sf-line-interactive bg-sf-surface-elevated p-0"
       >
         <Row label="Spacing">
           <Segmented
@@ -143,6 +143,23 @@ export function TypographyMenu({ preferences, onChange }: TypographyMenuProps) {
           </button>
         </Row>
 
+        <Row label="View">
+          <div className="flex flex-col gap-1">
+            <SwitchRow
+              on={preferences.typewriter}
+              onClick={() => onChange({ typewriter: !preferences.typewriter })}
+              label="Typewriter scrolling"
+              hint="Keeps the line you are typing at the middle of the screen."
+            />
+            <SwitchRow
+              on={preferences.fadeOthers}
+              onClick={() => onChange({ fadeOthers: !preferences.fadeOthers })}
+              label="Fade other paragraphs"
+              hint="Dims every paragraph but the one you are writing."
+            />
+          </div>
+        </Row>
+
         <Row label="Font">
           <div className="flex flex-col">
             {WRITING_FONTS.map((font: WritingFont) => (
@@ -166,6 +183,34 @@ export function TypographyMenu({ preferences, onChange }: TypographyMenuProps) {
         </Row>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+function SwitchRow({
+  on,
+  onClick,
+  label,
+  hint,
+}: {
+  on: boolean;
+  onClick: () => void;
+  label: string;
+  hint: string;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={on}
+      onClick={onClick}
+      title={hint}
+      className={`flex min-h-hit w-full items-center justify-between gap-2 border px-2 text-left text-[13px] transition-colors ${
+        on ? "border-sf-primary text-sf-primary-text" : "border-sf-line-interactive text-t3 hover:text-t1"
+      }`}
+    >
+      <span>{label}</span>
+      <span className="font-mono text-[12px]">{on ? "ON" : "OFF"}</span>
+    </button>
   );
 }
 

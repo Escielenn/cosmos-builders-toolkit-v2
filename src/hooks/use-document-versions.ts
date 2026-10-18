@@ -1,7 +1,8 @@
 // ---------------------------------------------------------------------------
 // useDocumentVersions, snapshots (version history) for manuscript documents.
 //
-// Primary storage: Supabase `document_versions` table (20-row cap per doc
+// Primary storage: Supabase `document_versions` table (20 UNNAMED rows per doc;
+// named snapshots are exempt since 20261018_writing_p2.sql; cap
 // enforced by a server-side trigger, 20260415_add_document_versions.sql).
 // 20261018_writing_p1.sql adds an optional `name` and the 'trash' reason;
 // until it lands, inserts and reads fall back to the old column set.
@@ -22,6 +23,7 @@ import { useAuth } from "@/contexts/AuthContext";
 // Shared counter — the local copy here did not decode &nbsp;, so snapshot word
 // counts drifted from the ones shown in the editor.
 import { countWords } from "@/lib/text";
+import { capSnapshots, MAX_UNNAMED_SNAPSHOTS, SNAPSHOT_FETCH_LIMIT } from "@/lib/snapshot-cap";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -68,8 +70,11 @@ export function formatSnapshotTime(iso: string): string {
 // ---------------------------------------------------------------------------
 
 const STORAGE_PREFIX = "sf-doc-versions:";
-/** Mirrors the server trigger's OFFSET 20. */
-export const MAX_SNAPSHOTS = 20;
+/**
+ * Unnamed snapshots kept per document (the server trigger's OFFSET 20).
+ * Named snapshots are exempt from the cap: see src/lib/snapshot-cap.ts.
+ */
+export const MAX_SNAPSHOTS = MAX_UNNAMED_SNAPSHOTS;
 const AUTO_SNAPSHOT_INTERVAL = 5 * 60 * 1000; // 5 minutes
 
 const COLS_FULL = "id, document_id, title, name, snapshot_reason, content_html, word_count, created_at";
@@ -198,7 +203,7 @@ async function selectVersions(documentId: string) {
       .select(COLS_FULL)
       .eq("document_id", documentId)
       .order("created_at", { ascending: false })
-      .limit(MAX_SNAPSHOTS);
+      .limit(SNAPSHOT_FETCH_LIMIT);
     if (!res.error) {
       nameColumn = true;
       return res as { data: DbVersionRow[] | null; error: unknown };
@@ -211,7 +216,7 @@ async function selectVersions(documentId: string) {
     .select(COLS_LEGACY)
     .eq("document_id", documentId)
     .order("created_at", { ascending: false })
-    .limit(MAX_SNAPSHOTS)) as { data: DbVersionRow[] | null; error: unknown };
+    .limit(SNAPSHOT_FETCH_LIMIT)) as { data: DbVersionRow[] | null; error: unknown };
 }
 
 interface InsertRow {
@@ -341,7 +346,7 @@ export function useDocumentVersions(
 
       if (error) {
         if (isMissingTableError(error)) {
-          setSnapshots(loadLocalSnapshots(documentId));
+          setSnapshots(capSnapshots(loadLocalSnapshots(documentId)));
           setUsingFallback(true);
           lastAutoSnapshotContentRef.current = contentRef.current;
           return;
@@ -352,7 +357,7 @@ export function useDocumentVersions(
         return;
       }
 
-      const dbSnapshots = (data ?? []).map(rowToSnapshot);
+      const dbSnapshots = capSnapshots((data ?? []).map(rowToSnapshot));
       setUsingFallback(false);
 
       // Opportunistic migration: upload localStorage snapshots to DB.
@@ -382,7 +387,7 @@ export function useDocumentVersions(
               });
             }
             const { data: refetched } = await selectVersions(documentId);
-            if (!cancelled && refetched) setSnapshots(refetched.map(rowToSnapshot));
+            if (!cancelled && refetched) setSnapshots(capSnapshots(refetched.map(rowToSnapshot)));
           })();
         }
         clearLocalSnapshots(documentId);
@@ -430,7 +435,7 @@ export function useDocumentVersions(
           wordCount,
           timestamp: new Date().toISOString(),
         };
-        const next = [snapshot, ...snapshotsRef.current].slice(0, MAX_SNAPSHOTS);
+        const next = capSnapshots([snapshot, ...snapshotsRef.current]);
         saveLocalSnapshots(documentId, next);
         snapshotsRef.current = next;
         setSnapshots(next);
@@ -468,7 +473,7 @@ export function useDocumentVersions(
 
       // If the name column is still pending, keep the name visible this session.
       const snapshot = { ...rowToSnapshot(inserted), name: inserted.name ?? cleanName };
-      const next = [snapshot, ...snapshotsRef.current].slice(0, MAX_SNAPSHOTS);
+      const next = capSnapshots([snapshot, ...snapshotsRef.current]);
       snapshotsRef.current = next;
       setSnapshots(next);
       lastAutoSnapshotContentRef.current = content;

@@ -305,3 +305,58 @@ export function dropPositionFor(
   }
   return f < 0.5 ? "before" : "after";
 }
+
+// ---------------------------------------------------------------------------
+// Reading order (Scrivenings, Outliner, Collections)
+// ---------------------------------------------------------------------------
+
+/** Every document in binder reading order (depth-first), folders skipped. */
+export function readingOrderDocs<T extends BinderEntry>(tree: BinderNode<T>[]): T[] {
+  const out: T[] = [];
+  const walk = (nodes: BinderNode<T>[]) => {
+    for (const n of nodes) {
+      if (n.isFolder) walk(n.children);
+      else out.push(n.entry);
+    }
+  };
+  walk(tree);
+  return out;
+}
+
+/** Documents inside a folder at any depth, in reading order. [] if unknown. */
+export function docsUnderFolder<T extends BinderEntry>(tree: BinderNode<T>[], folderId: string): T[] {
+  const find = (nodes: BinderNode<T>[]): BinderNode<T> | null => {
+    for (const n of nodes) {
+      if (n.entry.id === folderId) return n;
+      if (n.isFolder) {
+        const hit = find(n.children);
+        if (hit) return hit;
+      }
+    }
+    return null;
+  };
+  const folder = find(tree);
+  return folder && folder.isFolder ? readingOrderDocs(folder.children) : [];
+}
+
+/**
+ * The documents named by `ids`, in binder reading order regardless of the
+ * order they were picked in. Unknown ids (trashed, deleted) drop out.
+ */
+export function inReadingOrder<T extends BinderEntry>(tree: BinderNode<T>[], ids: Iterable<string>): T[] {
+  const want = new Set(ids);
+  return readingOrderDocs(tree).filter((d) => want.has(d.id));
+}
+
+/**
+ * Shift-click range: every id between `anchor` and `target` (inclusive) in
+ * the visible order. Falls back to just `target` when the anchor is gone.
+ */
+export function rangeBetween(visibleIds: string[], anchor: string | null, target: string): string[] {
+  const b = visibleIds.indexOf(target);
+  if (b === -1) return [];
+  const a = anchor ? visibleIds.indexOf(anchor) : -1;
+  if (a === -1) return [target];
+  const [lo, hi] = a <= b ? [a, b] : [b, a];
+  return visibleIds.slice(lo, hi + 1);
+}
