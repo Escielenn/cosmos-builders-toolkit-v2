@@ -250,6 +250,7 @@ export type Database = {
           created_at: string
           document_id: string
           id: string
+          name: string | null
           snapshot_reason: string
           title: string
           user_id: string
@@ -261,6 +262,7 @@ export type Database = {
           created_at?: string
           document_id: string
           id?: string
+          name?: string | null
           snapshot_reason?: string
           title?: string
           user_id: string
@@ -272,6 +274,7 @@ export type Database = {
           created_at?: string
           document_id?: string
           id?: string
+          name?: string | null
           snapshot_reason?: string
           title?: string
           user_id?: string
@@ -1841,6 +1844,7 @@ export type Database = {
           is_example: boolean
           license: string
           name: string
+          settings: Json
           snapshot_at: string | null
           tags: string[] | null
           theme: Json | null
@@ -1862,6 +1866,7 @@ export type Database = {
           is_example?: boolean
           license?: string
           name: string
+          settings?: Json
           snapshot_at?: string | null
           tags?: string[] | null
           theme?: Json | null
@@ -1883,6 +1888,7 @@ export type Database = {
           is_example?: boolean
           license?: string
           name?: string
+          settings?: Json
           snapshot_at?: string | null
           tags?: string[] | null
           theme?: Json | null
