@@ -29,8 +29,21 @@ export type DocStatus = (typeof DOC_STATUSES)[number];
 export interface DocumentMeta {
   /** One-or-two sentence card summary. The corkboard's whole payload. */
   synopsis: string;
-  /** Viewpoint character for this scene. Free text — writers use odd names. */
+  /**
+   * Viewpoint character for this scene, as the writer reads it. Free text —
+   * writers use odd names, and documents from before the POV picker carry
+   * only this. When the picker sets a character it writes the name here too,
+   * so every card, outline and export keeps working off `pov`.
+   */
   pov: string;
+  /**
+   * The POV as an entity (a character world_entries id), when picked rather
+   * than typed. Absent for free-text POVs. Drives the rail ranking and the
+   * World tab (Studio Charter §2.4).
+   */
+  povEntityId?: string;
+  /** The POV's Dossier worksheet id, when the picked character has one. */
+  povDossierId?: string;
   /** Where this document sits in the drafting cycle. */
   status: DocStatus | "";
   /** Optional in-world date or beat marker, for chronology views. */
@@ -48,13 +61,13 @@ export interface DocumentMeta {
    * unset. Distinct from subjectEntityId: a scene can be ABOUT a planet and
    * set in one city on it. This is the `set_in` target 05-NEW-SYSTEMS Tier C
    * says the Planet Cartographer makes real; the Studio UI that sets it is
-   * not built yet.
+   * the Card's SET IN picker.
    */
   setInPlaceId: string;
   /**
    * Optional chronicle_branches id: which timeline `when` is read on, for
-   * time-travel stories. Absent = the prime timeline. Type-and-read only for
-   * now; the Studio UI for it is a follow-up.
+   * time-travel stories. Absent = the prime timeline. Set from the Card's
+   * TIMELINE picker.
    */
   branchId?: string;
   /**
@@ -146,6 +159,9 @@ export function readDocMeta(metadata: unknown): DocumentMeta {
   return {
     synopsis: str(m.synopsis),
     pov: str(m.pov),
+    // Only present when set, so a free-text POV reads exactly as before.
+    ...(str(m.povEntityId) ? { povEntityId: str(m.povEntityId) } : {}),
+    ...(str(m.povDossierId) ? { povDossierId: str(m.povDossierId) } : {}),
     status: isStatus(m.status) ? m.status : "",
     when: str(m.when),
     subjectEntityId: str(m.subjectEntityId),

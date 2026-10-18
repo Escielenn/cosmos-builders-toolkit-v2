@@ -2,7 +2,9 @@
 // DocumentInspector, Scrivener's Inspector for the open document.
 //
 // Three panes in the right rail's "Doc" tab:
-//   CARD       synopsis, label, status, POV, when, keywords, word target
+//   CARD       synopsis, label, status, POV (a character on file, or free
+//              text), SET IN (a place), WHEN + TIMELINE, keywords, target.
+//              POV and SET IN drive the rail ranking and the World tab.
 //   NOTES      per-document notes, distinct from the synopsis
 //   SNAPSHOTS  take / compare / restore versions of this document
 //
@@ -15,7 +17,7 @@
 // ---------------------------------------------------------------------------
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Camera, Tag as TagIcon, Trash2 } from "lucide-react";
+import { Camera, ChevronDown, MapPin, Tag as TagIcon, Trash2, UserRound } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,6 +46,28 @@ import { isNamedSnapshot } from "@/lib/snapshot-cap";
 
 export type InspectorPane = "card" | "notes" | "snapshots";
 
+/** A character the POV can be bound to: a Dossier, a character entity, or both. */
+export interface PovOption {
+  key: string;
+  name: string;
+  /** "Dossier", "Codex · Character", … */
+  sub: string;
+  entityId?: string;
+  dossierId?: string;
+}
+
+export interface PlaceOption {
+  id: string;
+  name: string;
+  /** "Kellis · 12.4°N 33.1°E", or "Unplaced". */
+  sub: string;
+}
+
+export interface BranchOption {
+  id: string;
+  name: string;
+}
+
 interface DocumentInspectorProps {
   meta: DocumentMeta;
   onChange: (patch: Partial<DocumentMeta>) => void;
@@ -61,6 +85,10 @@ interface DocumentInspectorProps {
   onTakeSnapshot: (name: string) => Promise<boolean>;
   onCompare: (snapshot: DocumentSnapshot) => void;
   onDeleteSnapshot: (snapshot: DocumentSnapshot) => void;
+  // scene context (all optional: absent lists degrade to the free-text card)
+  povOptions?: PovOption[];
+  placeOptions?: PlaceOption[];
+  branchOptions?: BranchOption[];
 }
 
 const FIELD_LABEL = "font-sans text-[12px] font-medium uppercase tracking-wide text-t3";
@@ -105,6 +133,9 @@ function CardPane({
   labels,
   onManageLabels,
   keywordSuggestions,
+  povOptions = [],
+  placeOptions = [],
+  branchOptions = [],
 }: DocumentInspectorProps): JSX.Element {
   const [synopsis, setSynopsis] = useState(meta.synopsis);
   const [pov, setPov] = useState(meta.pov);
@@ -123,6 +154,17 @@ function CardPane({
   };
 
   const label = findLabel(labels, meta.labelId);
+  const povLinked = !!(meta.povEntityId || meta.povDossierId);
+  const place = meta.setInPlaceId ? placeOptions.find((p) => p.id === meta.setInPlaceId) ?? null : null;
+  const branch = meta.branchId ? branchOptions.find((b) => b.id === meta.branchId) ?? null : null;
+
+  // Typing a name that is not the picked character's unbinds it: a typed
+  // name is free text, and free text is not an identity.
+  const commitPov = () => {
+    const next = pov.trim();
+    if (next === meta.pov) return;
+    onChange({ pov: next, ...(povLinked ? { povEntityId: "", povDossierId: "" } : {}) });
+  };
   const progress = targetProgress(words, meta.target);
   const met = meta.target > 0 && words >= meta.target;
 
@@ -197,17 +239,112 @@ function CardPane({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
-        <label className="flex min-w-0 flex-col gap-1.5">
-          <span className={FIELD_LABEL}>POV</span>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="sf-doc-pov" className={FIELD_LABEL}>
+          POV
+        </label>
+        <div className="flex">
           <input
+            id="sf-doc-pov"
             value={pov}
             onChange={(e) => setPov(e.target.value)}
-            onBlur={() => commit("pov", pov.trim())}
+            onBlur={commitPov}
+            onKeyDown={(e) => e.key === "Enter" && (e.target as HTMLInputElement).blur()}
             placeholder="Whose eyes?"
-            className="min-h-hit w-full px-2 font-serif text-[16px] text-t2"
+            className="min-h-hit min-w-0 flex-1 px-2 font-serif text-[16px] text-t2"
           />
-        </label>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                aria-label="Pick the POV character"
+                title="Pick a character on file"
+                className="-ml-px flex min-h-hit w-11 shrink-0 items-center justify-center border border-sf-line-interactive text-t3 transition-colors duration-fast hover:border-sf-line-emphasis hover:text-t1"
+              >
+                <UserRound className="h-4 w-4" aria-hidden="true" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="sf-sb sf-sb--slim max-h-80 w-64 overflow-y-auto">
+              {povOptions.length === 0 ? (
+                <p className="px-2 py-1.5 font-serif text-[13px] italic text-t3">
+                  No characters on file. Make one in Dossier, or type a name.
+                </p>
+              ) : (
+                povOptions.map((o) => {
+                  const on =
+                    (o.dossierId && o.dossierId === meta.povDossierId) ||
+                    (!o.dossierId && o.entityId && o.entityId === meta.povEntityId);
+                  return (
+                    <DropdownMenuItem
+                      key={o.key}
+                      onClick={() =>
+                        onChange({ pov: o.name, povEntityId: o.entityId ?? "", povDossierId: o.dossierId ?? "" })
+                      }
+                    >
+                      <span className="min-w-0 flex-1 truncate">{o.name}</span>
+                      <span className="ml-2 shrink-0 font-mono text-[12px] text-t4">{on ? "ON" : o.sub}</span>
+                    </DropdownMenuItem>
+                  );
+                })
+              )}
+              {(meta.pov || povLinked) && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => onChange({ pov: "", povEntityId: "", povDossierId: "" })}>
+                    Clear POV
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        {povLinked && (
+          <span className="font-mono text-[12px] text-sf-magenta-text">// ON FILE. DRIVES THE RAIL AND THE WORLD TAB.</span>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <span className={FIELD_LABEL} id="sf-doc-setin-label">
+          Set in
+        </span>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              aria-labelledby="sf-doc-setin-label"
+              className="flex min-h-hit items-center gap-2 border border-sf-line-interactive px-3 text-left font-sans text-[14px] text-t2 transition-colors duration-fast hover:border-sf-line-emphasis"
+            >
+              <MapPin className="h-3.5 w-3.5 shrink-0 text-t4" aria-hidden="true" />
+              {meta.setInPlaceId ? (
+                <span className="min-w-0 flex-1 truncate font-serif text-[16px] text-t1">{place?.name ?? "A place no longer on file"}</span>
+              ) : (
+                <span className="min-w-0 flex-1 text-t3">Not set</span>
+              )}
+              <ChevronDown className="h-3.5 w-3.5 shrink-0 text-t4" aria-hidden="true" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="sf-sb sf-sb--slim max-h-80 w-72 overflow-y-auto">
+            <DropdownMenuItem onClick={() => commit("setInPlaceId", "")}>Not set</DropdownMenuItem>
+            {placeOptions.length === 0 ? (
+              <p className="px-2 py-1.5 font-serif text-[13px] italic text-t3">
+                No places on file. Place them on a map in the Surface Cartographer.
+              </p>
+            ) : (
+              placeOptions.map((p) => (
+                <DropdownMenuItem key={p.id} onClick={() => commit("setInPlaceId", p.id)}>
+                  <span className="min-w-0 flex-1 truncate">{p.name}</span>
+                  <span className="ml-2 max-w-[50%] shrink-0 truncate font-mono text-[12px] text-t4">
+                    {p.id === meta.setInPlaceId ? "ON" : p.sub}
+                  </span>
+                </DropdownMenuItem>
+              ))
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        {place && <span className="font-mono text-[12px] text-t4">{place.sub}</span>}
+      </div>
+
+      <div className="grid grid-cols-2 gap-2">
         <label className="flex min-w-0 flex-col gap-1.5">
           <span className={FIELD_LABEL}>When</span>
           <input
@@ -218,6 +355,41 @@ function CardPane({
             className="min-h-hit w-full px-2 font-serif text-[16px] text-t2"
           />
         </label>
+        <div className="flex min-w-0 flex-col gap-1.5">
+          <span className={FIELD_LABEL} id="sf-doc-timeline-label">
+            Timeline
+          </span>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                aria-labelledby="sf-doc-timeline-label"
+                className="flex min-h-hit min-w-0 items-center gap-1 border border-sf-line-interactive px-2 text-left font-sans text-[14px] text-t2 transition-colors duration-fast hover:border-sf-line-emphasis"
+              >
+                <span className="min-w-0 flex-1 truncate">
+                  {meta.branchId ? branch?.name ?? "Unknown branch" : "Prime"}
+                </span>
+                <ChevronDown className="h-3.5 w-3.5 shrink-0 text-t4" aria-hidden="true" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="sf-sb sf-sb--slim max-h-80 w-56 overflow-y-auto">
+              <DropdownMenuItem onClick={() => onChange({ branchId: "" })}>
+                Prime timeline
+                {!meta.branchId && <span className="ml-auto font-mono text-[12px] text-t4">ON</span>}
+              </DropdownMenuItem>
+              {branchOptions.length === 0 ? (
+                <p className="px-2 py-1.5 font-serif text-[13px] italic text-t3">No branches. Fork one in the Chronicle.</p>
+              ) : (
+                branchOptions.map((b) => (
+                  <DropdownMenuItem key={b.id} onClick={() => onChange({ branchId: b.id })}>
+                    <span className="min-w-0 flex-1 truncate">{b.name || "Unnamed branch"}</span>
+                    {b.id === meta.branchId && <span className="ml-2 font-mono text-[12px] text-t4">ON</span>}
+                  </DropdownMenuItem>
+                ))
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       <div className="flex flex-col gap-1.5">

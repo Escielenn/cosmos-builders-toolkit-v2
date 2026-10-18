@@ -37,6 +37,7 @@ import { useWorksheets } from "@/hooks/use-worksheets";
 import { extractWorksheetFacts } from "@/lib/worksheet-facts";
 import { getToolDisplayName, getToolRoute } from "@/lib/tools-config";
 import { ENTITY_TYPE_LABELS, type Entity } from "@/services/entity-graph-types";
+import { useStudioWorld } from "@/components/writing/studio-world";
 import type { WorldEntry } from "@/services/world-data";
 
 // ---------------------------------------------------------------------------
@@ -285,6 +286,8 @@ function DocBody({
 }
 
 function EntityBody({ worldId, entity }: { worldId: string; entity: Entity }): JSX.Element {
+  // Every value on file about this entity, from the Studio's world index.
+  const facts = useStudioWorld()?.factsByEntity.get(entity.id) ?? [];
   return (
     <article className="px-6 py-6">
       <p className="font-heading text-sf-eyebrow uppercase text-t4">
@@ -313,11 +316,24 @@ function EntityBody({ worldId, entity }: { worldId: string; entity: Entity }): J
       {!entity.summary && !entity.description && !entity.notes && (
         <p className="mt-3 font-serif text-[15px] italic text-t3">Nothing written about this entry yet.</p>
       )}
+      {facts.length > 0 && (
+        <>
+          <p className="mt-5 font-heading text-sf-eyebrow uppercase text-t4">On file</p>
+          <dl className="mt-1 border-t border-sf-line-hairline">
+            {facts.slice(0, 16).map((f) => (
+              <div key={f.ref} className="flex items-baseline gap-3 border-b border-sf-line-hairline py-2">
+                <dt className="w-[42%] shrink-0 text-[12px] font-medium uppercase text-t3">{f.label}</dt>
+                <dd className="min-w-0 flex-1 break-words font-mono text-[13px] text-t1">{f.insert}</dd>
+              </div>
+            ))}
+          </dl>
+        </>
+      )}
       <Link
         to={`/worlds/${worldId}/codex/${entity.id}`}
         className="mt-6 inline-flex min-h-hit items-center gap-1.5 border border-sf-line-interactive px-3 text-[13px] text-t2 transition-colors duration-base hover:border-sf-primary hover:text-t1"
       >
-        Edit in the Codex <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+        Open Codex <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
       </Link>
     </article>
   );
