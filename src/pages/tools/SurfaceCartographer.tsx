@@ -739,6 +739,8 @@ const SurfaceCartographer = () => {
       }}
       worksheetLoading={worksheetLoading}
       isLoggedIn={!!user}
+      // The world bar sits in the Body section, where the body picker goes.
+      worldBar={false}
     >
       <div className="fixed bottom-4 right-4 z-40 flex flex-col gap-2 no-print xl:hidden">
         <MobileSectionNav sections={SECTIONS} />

@@ -1,8 +1,25 @@
 import { useState, useEffect, useMemo, useCallback, lazy, Suspense } from "react";
-import { useWorldId } from "@/hooks/use-world-id";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { ExternalLink, Globe, ChevronDown, Info, Check, AlertCircle } from "lucide-react";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
+// FormState, defaults and codec: lib/tool-worksheets/genesis.
+import {
+  codec as genesisCodec,
+  type FormState,
+  TOOL_TYPE,
+  LOCAL_STORAGE_KEY,
+  type StellarEnvironment,
+  type PhysicalCharacteristics,
+  type AtmosphericComposition,
+  type Hydrosphere,
+  type TemperatureProfile,
+  type HabitabilityAssessment,
+  type GeologicalFeatures,
+  type ThreePressures,
+  type NarrativeIntegration,
+  type ConsistencyCheck,
+} from "@/lib/tool-worksheets/genesis";
+import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,7 +40,6 @@ import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import QuestionSection from "@/components/tools/QuestionSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import { useToast } from "@/hooks/use-toast";
-import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
@@ -32,7 +48,6 @@ import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import { useEntityPrepopulate } from "@/hooks/use-entity-prepopulate";
 import { manifest as genesisManifest } from "@/tools/genesis/manifest";
@@ -41,12 +56,10 @@ import { spectralLetter } from "@/canon/codecs";
 import { CanonProvenance } from "@/components/canon/CanonProvenance";
 import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
-import { useTags } from "@/hooks/use-tags";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import { PlanetarySummaryTemplate, PlanetaryFullReportTemplate } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
-import { Json } from "@/integrations/supabase/types";
 import {
   STAR_TYPES,
   ATMOSPHERIC_GASES,
@@ -57,7 +70,6 @@ import {
   EXOPLANET_EXAMPLES,
   PLANETARY_PROFILE_SECTIONS,
 } from "@/lib/planetary-profile-data";
-import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 
@@ -69,217 +81,43 @@ const SECTIONS: Section[] = [
   })),
 ];
 
-// Types for form state
-interface StellarEnvironment {
-  starType: string;
-  starTypeNotes: string;
-  luminosity: string;
-  habitableZonePosition: string;
-  orbitalPeriod: string;
-  orbitalEccentricity: string;
-  tidalLocking: string;
-  tidalLockingNotes: string;
-}
-
-interface PhysicalCharacteristics {
-  planetaryMass: string;
-  surfaceGravity: string;
-  planetaryRadius: string;
-  dayLength: string;
-  axialTilt: string;
-  seasonalVariation: string;
-}
-
-interface AtmosphericComposition {
-  primaryGases: string[];
-  secondaryGases: string[];
-  atmosphericPressure: string;
-  greenhouseEffect: string;
-  skyColor: string;
-  weatherPatterns: string;
-}
-
-interface Hydrosphere {
-  waterPresence: string;
-  oceanCoverage: string;
-  waterComposition: string;
-  icePresence: string;
-  hydrosphereNotes: string;
-}
-
-interface TemperatureProfile {
-  averageSurfaceTemp: string;
-  temperatureRange: string;
-  climateZones: string;
-  temperatureNotes: string;
-}
-
-interface HabitabilityAssessment {
-  habitabilityTier: string;
-  tierJustification: string;
-  requiredAdaptations: string[];
-  adaptationNotes: string;
-}
-
-interface GeologicalFeatures {
-  tectonicActivity: string;
-  volcanism: string;
-  mountainRanges: string;
-  uniqueFormations: string;
-  naturalResources: string;
-  geologicalHazards: string;
-}
-
-interface ThreePressures {
-  survivalPressure: string;
-  survivalManifestations: string;
-  socialPressure: string;
-  socialManifestations: string;
-  psychologicalPressure: string;
-  psychologicalManifestations: string;
-  pressureInteractions: string;
-}
-
-interface NarrativeIntegration {
-  environmentAsCharacter: string;
-  conflictSources: string;
-  plotOpportunities: string;
-  sensoryDetails: string;
-  uniqueMoments: string;
-}
-
-interface ConsistencyCheck {
-  starGravityConsistent: boolean;
-  atmosphereTempConsistent: boolean;
-  waterTempConsistent: boolean;
-  gravityBiologyConsistent: boolean;
-  pressuresEnvironmentConsistent: boolean;
-  consistencyNotes: string;
-}
-
-interface FormState {
-  stellarEnvironment: StellarEnvironment;
-  physicalCharacteristics: PhysicalCharacteristics;
-  atmosphericComposition: AtmosphericComposition;
-  hydrosphere: Hydrosphere;
-  temperatureProfile: TemperatureProfile;
-  habitability: HabitabilityAssessment;
-  geological: GeologicalFeatures;
-  threePressures: ThreePressures;
-  narrative: NarrativeIntegration;
-  consistencyCheck: ConsistencyCheck;
-  generalNotes: string;
-  moodboard: MoodboardImage[];
-}
-
-const initialFormState: FormState = {
-  stellarEnvironment: {
-    starType: "",
-    starTypeNotes: "",
-    luminosity: "",
-    habitableZonePosition: "",
-    orbitalPeriod: "",
-    orbitalEccentricity: "",
-    tidalLocking: "",
-    tidalLockingNotes: "",
-  },
-  physicalCharacteristics: {
-    planetaryMass: "",
-    surfaceGravity: "",
-    planetaryRadius: "",
-    dayLength: "",
-    axialTilt: "",
-    seasonalVariation: "",
-  },
-  atmosphericComposition: {
-    primaryGases: [],
-    secondaryGases: [],
-    atmosphericPressure: "",
-    greenhouseEffect: "",
-    skyColor: "",
-    weatherPatterns: "",
-  },
-  hydrosphere: {
-    waterPresence: "",
-    oceanCoverage: "",
-    waterComposition: "",
-    icePresence: "",
-    hydrosphereNotes: "",
-  },
-  temperatureProfile: {
-    averageSurfaceTemp: "",
-    temperatureRange: "",
-    climateZones: "",
-    temperatureNotes: "",
-  },
-  habitability: {
-    habitabilityTier: "",
-    tierJustification: "",
-    requiredAdaptations: [],
-    adaptationNotes: "",
-  },
-  geological: {
-    tectonicActivity: "",
-    volcanism: "",
-    mountainRanges: "",
-    uniqueFormations: "",
-    naturalResources: "",
-    geologicalHazards: "",
-  },
-  threePressures: {
-    survivalPressure: "",
-    survivalManifestations: "",
-    socialPressure: "",
-    socialManifestations: "",
-    psychologicalPressure: "",
-    psychologicalManifestations: "",
-    pressureInteractions: "",
-  },
-  narrative: {
-    environmentAsCharacter: "",
-    conflictSources: "",
-    plotOpportunities: "",
-    sensoryDetails: "",
-    uniqueMoments: "",
-  },
-  consistencyCheck: {
-    starGravityConsistent: false,
-    atmosphereTempConsistent: false,
-    waterTempConsistent: false,
-    gravityBiologyConsistent: false,
-    pressuresEnvironmentConsistent: false,
-    consistencyNotes: "",
-  },
-  generalNotes: "",
-  moodboard: [],
-};
-
 const EXTERNAL_RESOURCES = [
   { name: "NASA Exoplanet Archive", url: "https://exoplanetarchive.ipac.caltech.edu/", description: "Real exoplanet data" },
   { name: "Habitable Zone Calculator", url: "https://www.planetarybiology.com/calculating_habitable_zone.html", description: "Calculate habitable zones" },
   { name: "Atomic Rockets - Planets", url: "http://www.projectrho.com/public_html/rocket/worldbuilding.php", description: "Hard SF worldbuilding" },
 ];
 
-const TOOL_TYPE = "planetary-profile";
-
 /** star.spectral_class letter → this picker's STAR_TYPES id. Classes it has no card for are not prefilled. */
 const GENESIS_STAR_TYPE: Record<string, string> = { m: "m-dwarf", k: "k-dwarf", g: "g-type", f: "f-type" };
 
 const PlanetaryProfile = () => {
-  const [formState, setFormState] = useState<FormState>(initialFormState);
-  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
-  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
   const { worlds } = useWorlds();
-  const { updateWorksheetTags } = useTags();
 
   // Get URL params for worldId and worksheetId
   const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = useWorldId();
-  const worksheetId = searchParams.get("worksheetId");
+
+  const worksheet = useToolWorksheet(TOOL_TYPE, {
+    ...genesisCodec,
+    displayName: "Planetary Profile",
+    localKey: LOCAL_STORAGE_KEY,
+    loadedToast: true,
+    // Opened on an entity: a sheet created on first save takes its name.
+    titleFor: () => entityPrep.entityName,
+    onDraftCreated: (id, title) => entityMatch.check(id, title),
+    // Auto-link a new worksheet to the entity it was launched from.
+    onCreated: (id) => {
+      if (entityPrep.hasEntityId) void entityPrep.linkWorksheet(id);
+    },
+    onSaved: (saved, { worksheetId: savedId }) =>
+      canonEmit.emit(saved, { subjectId: canonSubjectId, worksheetId: savedId }),
+  });
+  const { state: formState, setState: setFormState, worldId } = worksheet;
+  const currentWorksheetId = worksheet.worksheetId;
+  const currentWorksheetTitle = worksheet.worksheetTitle;
+  const worksheetId = worksheet.worksheetId;
 
   // Get world name from worldId
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
@@ -301,63 +139,10 @@ const PlanetaryProfile = () => {
 
   // Supabase hooks
   const entityMatch = useEntityMatch(worldId);
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
-    onDraftCreated: entityMatch.check,
-  });
-  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
-  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
-  const renameWorksheet = useRenameWorksheet();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [notesSheetOpen, setNotesSheetOpen] = useState(false);
   const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
-  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
-
-  // Handle worksheet rename
-  const handleRename = async (newTitle: string) => {
-    const wsId = currentWorksheetId || worksheetId;
-    if (!wsId) return;
-
-    await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
-    setCurrentWorksheetTitle(newTitle);
-  };
-
-  const handleTagsChange = (newTags: string[]) => {
-    setWorksheetTags(newTags);
-    const wsId = currentWorksheetId || worksheetId;
-    if (wsId) {
-      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
-    }
-  };
-
-  // Show worksheet selector when worldId is present but no worksheetId
-  useEffect(() => {
-    if (worldId && !worksheetId && !worksheetsLoading && user) {
-      // Show selector to choose existing worksheet or create new one
-      setWorksheetSelectorOpen(true);
-    }
-  }, [worldId, worksheetId, worksheetsLoading, user]);
-
-  // Load existing worksheet from Supabase if worksheetId is provided
-  useEffect(() => {
-    if (existingWorksheet && existingWorksheet.data) {
-      try {
-        const data = existingWorksheet.data as unknown as FormState;
-        setFormState(data);
-        setCurrentWorksheetId(existingWorksheet.id);
-        setCurrentWorksheetTitle(existingWorksheet.title);
-        if (existingWorksheet?.tags) {
-          setWorksheetTags(existingWorksheet.tags);
-        }
-        toast({
-          title: "WORKSHEET LOADED.",
-          description: "WORK RESTORED FROM CLOUD.",
-        });
-      } catch {
-        // Ignore parse errors
-      }
-    }
-  }, [existingWorksheet]);
 
   // Pre-fill from entity when launched via ?entityId= (no existing worksheet)
   useEffect(() => {
@@ -381,22 +166,6 @@ const PlanetaryProfile = () => {
       }
     }
   }, [entityPrep.entity, entityPrep.formPatch, worksheetId, currentWorksheetId]);
-
-  // Fallback to localStorage if no worldId (standalone mode)
-  useEffect(() => {
-    if (!worldId && !worksheetId) {
-      const saved = localStorage.getItem("planetary-profile");
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          setFormState(parsed);
-        } catch {
-          // Ignore parse errors
-        }
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [worldId, worksheetId]);
 
   // Update functions for each section
   const updateStellarEnvironment = (field: keyof StellarEnvironment, value: string) => {
@@ -484,63 +253,6 @@ const PlanetaryProfile = () => {
         [section]: { ...prev[section], [field]: newArray },
       };
     });
-  };
-
-  const handleSave = async () => {
-    // Browser backup in standalone mode only (see lib/standalone-backup)
-    writeStandaloneBackup("planetary-profile", formState, { worldId, signedIn: !!user });
-
-    // If we have a worldId and user is authenticated, save to Supabase
-    if (worldId && user) {
-      const worksheetData = formState as unknown as Json;
-
-      try {
-        if (currentWorksheetId || worksheetId) {
-          // Update existing worksheet - preserve existing title
-          await updateWorksheet.mutateAsync({
-            worksheetId: currentWorksheetId || worksheetId!,
-            data: worksheetData,
-          });
-          await canonEmit.emit(formState, { subjectId: canonSubjectId, worksheetId: currentWorksheetId || worksheetId });
-        } else {
-          // Should not reach here - worksheet selector ensures title is set first
-          console.warn("Attempting to save without worksheet selection");
-        }
-      } catch {
-        // Error already handled by the mutation
-      }
-    } else {
-      toast({
-        title: "DRAFT SAVED.",
-        description: "WORK SECURED TO LOCAL STORAGE.",
-      });
-    }
-  };
-
-  // Handle worksheet selection from dialog
-  const handleWorksheetSelect = (selectedWorksheetId: string) => {
-    setSearchParams({ worldId: worldId!, worksheetId: selectedWorksheetId });
-    setWorksheetSelectorOpen(false);
-  };
-
-  // Handle new worksheet creation from dialog
-  const handleWorksheetCreate = async (name: string): Promise<string> => {
-    const worksheetData = formState as unknown as Json;
-    const title = name || entityPrep.entityName || "Untitled";
-    const result = await createWorksheet.mutateAsync({
-      worldId: worldId!,
-      toolType: TOOL_TYPE,
-      title,
-      data: worksheetData,
-    });
-    setCurrentWorksheetId(result.id);
-    setCurrentWorksheetTitle(result.title);
-    setSearchParams({ worldId: worldId!, worksheetId: result.id });
-    // Auto-link worksheet to entity when launched from entity context
-    if (entityPrep.hasEntityId) {
-      void entityPrep.linkWorksheet(result.id);
-    }
-    return result.id;
   };
 
   const handleExport = () => {
@@ -642,14 +354,12 @@ const PlanetaryProfile = () => {
 
   return (
     <ToolPageLayout
+      {...worksheet.layoutProps}
       toolType="planetary-profile"
-      onSave={handleSave}
-      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
       onPrint={handlePrint}
       onExport={handleExport}
       onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
       isShared={!!shareConfig?.enabled}
-      isCloudEnabled={!!(worldId && user)}
       onNotesClick={() => setNotesSheetOpen(true)}
       onMoodboardClick={() => setMoodboardSheetOpen(true)}
       moodboardCount={formState.moodboard?.length || 0}
@@ -663,14 +373,7 @@ const PlanetaryProfile = () => {
           defaultFilename="planetary-profile"
         />
       }
-      worksheetId={currentWorksheetId || worksheetId}
-      worksheetTitle={currentWorksheetTitle}
-      onRenameWorksheet={handleRename}
-      worksheetLoading={worksheetLoading}
-      worksheetTags={worksheetTags}
-      onTagsChange={handleTagsChange}
       worksheetIcon={<Globe className="w-5 h-5 text-sf-primary-text" />}
-      isLoggedIn={!!user}
     >
 
         {/* Introduction */}
@@ -1798,16 +1501,9 @@ const PlanetaryProfile = () => {
 
       {worldId && (
         <WorksheetSelectorDialog
-          open={worksheetSelectorOpen}
-          onOpenChange={setWorksheetSelectorOpen}
-          worldId={worldId}
+          {...worksheet.selectorProps}
           worldName={worldName}
-          toolType={TOOL_TYPE}
           toolDisplayName="Genesis"
-          worksheets={existingWorksheets}
-          isLoading={worksheetsLoading}
-          onSelect={handleWorksheetSelect}
-          onCreate={handleWorksheetCreate}
         />
       )}
 

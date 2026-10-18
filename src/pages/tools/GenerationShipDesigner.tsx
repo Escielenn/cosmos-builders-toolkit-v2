@@ -32,9 +32,8 @@
  *    support fields, Paradox and LexDrift. It adds no new always-on chrome;
  *    it renders inside ToolPageLayout like every other instrument.
  */
-import { useCallback, useEffect, useMemo, useRef, useState, lazy, Suspense } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import { ToolWorldBar } from "@/components/tools/ToolWorldBar";
+import { useCallback, useMemo, useRef, useState, lazy, Suspense } from "react";
+import { Link } from "react-router-dom";
 import { Copy, Download, FileText, History, Ship } from "lucide-react";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
@@ -72,29 +71,32 @@ import {
 import { LAYER_LABEL, LAYER_TEXT } from "@/components/tools/generation-ship/layers";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { useWorldId } from "@/hooks/use-world-id";
 import { useWorlds } from "@/hooks/use-worlds";
-import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
+import { useWorksheetsByType } from "@/hooks/use-worksheets";
+import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
-import { useTags } from "@/hooks/use-tags";
 import { useChronicleData, useCreateChronicleEvent } from "@/hooks/use-chronicle";
 import { estimateSortValue, type ChronicleEvent } from "@/services/chronicle-data";
-import { writeStandaloneBackup } from "@/lib/standalone-backup";
 import { mapError, VOICE } from "@/lib/ship-voice";
 import { cn } from "@/lib/utils";
 import type { Json } from "@/integrations/supabase/types";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { GenerationShipSummaryTemplate, GenerationShipFullReportTemplate } from "@/lib/pdf/templates";
 import {
-  INITIAL_GENSHIP_STATE,
   buildDerivedSnapshot,
   computeGenShip,
   normalizeGenShipState,
   DAYS_PER_YEAR,
   type GenShipFormState,
 } from "@/lib/generation-ship/calculations";
+import {
+  codec as arkCodec,
+  dirtyKey as arkDirtyKey,
+  titleFor as arkTitleFor,
+  TOOL_TYPE,
+  LOCAL_STORAGE_KEY,
+} from "@/lib/tool-worksheets/ark";
 import { buildDriftEvents, chronicleYear, type DriftEvent } from "@/lib/generation-ship/drift-events";
 import { IMPORT_READERS, IMPORT_SOURCES, applyPatch } from "@/lib/generation-ship/imports";
 import { buildGenShipMarkdown, fmt, fmtYears } from "@/lib/generation-ship/markdown";
@@ -114,18 +116,10 @@ import {
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 
-const TOOL_TYPE = "generation-ship";
-const LOCAL_STORAGE_KEY = "generation-ship";
-
 interface SourceWorksheet {
   id: string;
   title: string | null;
   data: Json | null;
-}
-
-/** Everything that counts as an unsaved edit: the inputs, not the bookkeeping. */
-function editableJson(f: GenShipFormState): string {
-  return JSON.stringify({ ...f, loggedEvents: {}, derived: undefined });
 }
 
 /** Every chronicle event id in the world, including nested children. */
@@ -175,14 +169,9 @@ function ImportMenu({
 // ─── Page ───────────────────────────────────────────────────────────────
 
 const GenerationShipDesigner = () => {
-  const [form, setForm] = useState<GenShipFormState>(INITIAL_GENSHIP_STATE);
-  const [savedJson, setSavedJson] = useState<string>(editableJson(INITIAL_GENSHIP_STATE));
+  /** The row as last saved, so logging a Chronicle event can record its link without saving other edits. */
   const savedDataRef = useRef<GenShipFormState | null>(null);
-  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
-  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
-  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [notesSheetOpen, setNotesSheetOpen] = useState(false);
   const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
@@ -192,20 +181,28 @@ const GenerationShipDesigner = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const { worlds } = useWorlds();
-  const worldId = useWorldId();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const worksheetId = searchParams.get("worksheetId");
+  const worksheet = useToolWorksheet(TOOL_TYPE, {
+    ...arkCodec,
+    displayName: "Generation Ship",
+    localKey: LOCAL_STORAGE_KEY,
+    titleFor: arkTitleFor,
+    dirtyKey: arkDirtyKey,
+    onDraftCreated: (id, title) => entityMatch.check(id, title),
+    onLoaded: (_ws, loaded) => {
+      savedDataRef.current = loaded;
+    },
+    onSaved: (saved) => {
+      savedDataRef.current = saved;
+    },
+  });
+  const { state: form, setState: setForm, worldId, updateWorksheet } = worksheet;
+  const currentWorksheetId = worksheet.worksheetId;
+  const currentWorksheetTitle = worksheet.worksheetTitle;
+  const worksheetId = worksheet.worksheetId;
   const worldName = worldId ? worlds.find((w) => w.id === worldId)?.name : undefined;
 
   const entityMatch = useEntityMatch(worldId);
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
-    onDraftCreated: entityMatch.check,
-  });
-  const renameWorksheet = useRenameWorksheet();
-  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
-  const { data: ownWorksheets = [], isLoading: ownLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
-  const { updateWorksheetTags } = useTags();
 
   // Upstream worksheets this tool can read.
   const { data: paradoxSheets = [] } = useWorksheetsByType(worldId || undefined, "time-dilation");
@@ -222,9 +219,6 @@ const GenerationShipDesigner = () => {
   const events = useMemo(() => buildDriftEvents(form, results), [form, results]);
   const selectedEvent = events.find((e) => e.id === selectedEventId) ?? null;
 
-  const dirty = editableJson(form) !== savedJson;
-  useUnsavedChangesGuard(dirty);
-
   const chronicleIds = useMemo(
     () => (chronicle ? collectEventIds(chronicle.events.concat(chronicle.eras ?? [])) : null),
     [chronicle],
@@ -239,36 +233,6 @@ const GenerationShipDesigner = () => {
     [form.loggedEvents, chronicleIds],
   );
 
-  // ── Load ─────────────────────────────────────────────────────────────
-  useEffect(() => {
-    if (worldId && !worksheetId && !ownLoading && user) setWorksheetSelectorOpen(true);
-  }, [worldId, worksheetId, ownLoading, user]);
-
-  useEffect(() => {
-    if (!existingWorksheet) return;
-    const next = normalizeGenShipState(existingWorksheet.data);
-    setForm(next);
-    savedDataRef.current = next;
-    setSavedJson(editableJson(next));
-    setCurrentWorksheetId(existingWorksheet.id);
-    setCurrentWorksheetTitle(existingWorksheet.title);
-    setWorksheetTags(existingWorksheet.tags ?? []);
-  }, [existingWorksheet]);
-
-  useEffect(() => {
-    if (worldId || worksheetId) return;
-    try {
-      const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (raw) {
-        const next = normalizeGenShipState(JSON.parse(raw));
-        setForm(next);
-        setSavedJson(editableJson(next));
-      }
-    } catch {
-      // Storage blocked or corrupt: start from defaults.
-    }
-  }, [worldId, worksheetId]);
-
   // ── Field updates ────────────────────────────────────────────────────
   /** Set one value by path. A hand edit drops that field's provenance: it is the writer's now. */
   const setField = useCallback((path: string, value: string | number | boolean) => {
@@ -281,7 +245,7 @@ const GenerationShipDesigner = () => {
       }
       return next;
     });
-  }, []);
+  }, [setForm]);
 
   const handleImport = useCallback(
     (tool: string, ws: SourceWorksheet) => {
@@ -301,60 +265,12 @@ const GenerationShipDesigner = () => {
       });
       toast({ title: `${keys.length} VALUE${keys.length === 1 ? "" : "S"} IMPORTED FROM ${brand.toUpperCase()}.` });
     },
-    [toast],
+    [toast, setForm],
   );
 
   // ── Save ─────────────────────────────────────────────────────────────
-  const buildRow = useCallback(
-    (f: GenShipFormState) => ({ ...f, derived: buildDerivedSnapshot(computeGenShip(f)) }) as unknown as Json,
-    [],
-  );
-
-  const handleSave = useCallback(async () => {
-    try {
-      writeStandaloneBackup(LOCAL_STORAGE_KEY, form, { worldId, signedIn: !!user });
-    } catch {
-      // Storage unavailable; the cloud path below still runs.
-    }
-    const wsId = currentWorksheetId || worksheetId;
-    if (worldId && user) {
-      try {
-        if (wsId) {
-          await updateWorksheet.mutateAsync({ worksheetId: wsId, data: buildRow(form) });
-        } else {
-          const created = await createWorksheet.mutateAsync({
-            worldId,
-            toolType: TOOL_TYPE,
-            title: form.identity.shipName.trim() || "Generation Ship",
-            data: buildRow(form),
-          });
-          setCurrentWorksheetId(created.id);
-          setCurrentWorksheetTitle(created.title);
-          setSearchParams({ worldId, worksheetId: created.id });
-        }
-        savedDataRef.current = form;
-        setSavedJson(editableJson(form));
-      } catch {
-        // The mutation reports its own failure in Ship's Voice.
-      }
-    } else {
-      setSavedJson(editableJson(form));
-      toast({ title: "DRAFT SAVED.", description: "WORK SECURED TO LOCAL STORAGE." });
-    }
-  }, [form, currentWorksheetId, worksheetId, worldId, user, updateWorksheet, createWorksheet, buildRow, setSearchParams, toast]);
-
-  const handleWorksheetCreate = async (name: string): Promise<string> => {
-    const result = await createWorksheet.mutateAsync({
-      worldId: worldId!,
-      toolType: TOOL_TYPE,
-      title: name,
-      data: buildRow(INITIAL_GENSHIP_STATE),
-    });
-    setCurrentWorksheetId(result.id);
-    setCurrentWorksheetTitle(result.title);
-    setSearchParams({ worldId: worldId!, worksheetId: result.id });
-    return result.id;
-  };
+  // The row shape (inputs + derived snapshot) is the codec's, so a logged event writes what a save would.
+  const buildRow = arkCodec.serialize;
 
   // ── Chronicle ────────────────────────────────────────────────────────
   const handleLogEvent = useCallback(
@@ -395,7 +311,7 @@ const GenerationShipDesigner = () => {
         setLoggingId(null);
       }
     },
-    [worldId, user, isOnFile, form, createEvent, currentWorksheetId, worksheetId, updateWorksheet, buildRow, toast],
+    [worldId, user, isOnFile, form, setForm, createEvent, currentWorksheetId, worksheetId, updateWorksheet, buildRow, toast],
   );
 
   // ── Export ───────────────────────────────────────────────────────────
@@ -458,16 +374,12 @@ const GenerationShipDesigner = () => {
 
   return (
     <ToolPageLayout
+      {...worksheet.layoutProps}
       toolType={TOOL_TYPE}
-      onSave={handleSave}
-      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
       onPrint={() => window.print()}
       onExport={() => setExportDialogOpen(true)}
       onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
       isShared={!!shareConfig?.enabled}
-      hasUnsavedChanges={dirty}
-      isSaving={updateWorksheet.isPending || createWorksheet.isPending}
-      isCloudEnabled={cloud}
       onNotesClick={() => setNotesSheetOpen(true)}
       onMoodboardClick={() => setMoodboardSheetOpen(true)}
       moodboardCount={form.moodboard.length}
@@ -481,27 +393,9 @@ const GenerationShipDesigner = () => {
           defaultFilename={fileBase}
         />
       }
-      worksheetId={currentWorksheetId || worksheetId}
-      worksheetTitle={currentWorksheetTitle}
-      onRenameWorksheet={async (title) => {
-        const wsId = currentWorksheetId || worksheetId;
-        if (!wsId) return;
-        await renameWorksheet.mutateAsync({ worksheetId: wsId, title });
-        setCurrentWorksheetTitle(title);
-      }}
-      worksheetLoading={worksheetLoading}
-      worksheetTags={worksheetTags}
-      onTagsChange={(tags) => {
-        setWorksheetTags(tags);
-        const wsId = currentWorksheetId || worksheetId;
-        if (wsId) updateWorksheetTags.mutate({ worksheetId: wsId, tags });
-      }}
       worksheetIcon={<Ship className="h-4 w-4 text-sf-primary-text" aria-hidden="true" />}
-      isLoggedIn={!!user}
+      worldBar={{ accent: "teal", reason: "IMPORTS AND CHRONICLE LOGGING NEED A WORLD. CHOOSE ONE." }}
     >
-      {!worldId && (
-        <ToolWorldBar accent="teal" reason="IMPORTS AND CHRONICLE LOGGING NEED A WORLD. CHOOSE ONE." />
-      )}
       <div className="space-y-6">
         {/* ── 1. Voyage ──────────────────────────────────────────────── */}
         <CollapsibleSection
@@ -1025,19 +919,9 @@ const GenerationShipDesigner = () => {
       )}
       {worldId && (
         <WorksheetSelectorDialog
-          open={worksheetSelectorOpen}
-          onOpenChange={setWorksheetSelectorOpen}
-          worldId={worldId}
+          {...worksheet.selectorProps}
           worldName={worldName}
-          toolType={TOOL_TYPE}
           toolDisplayName="Ark"
-          worksheets={ownWorksheets}
-          isLoading={ownLoading}
-          onSelect={(id) => {
-            setSearchParams({ worldId, worksheetId: id });
-            setWorksheetSelectorOpen(false);
-          }}
-          onCreate={handleWorksheetCreate}
         />
       )}
       <EntityMatchDialog {...entityMatch.dialogProps} />

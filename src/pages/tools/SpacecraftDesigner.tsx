@@ -1,6 +1,4 @@
-import { useState, useEffect, useMemo, useCallback, lazy, Suspense } from "react";
-import { useWorldId } from "@/hooks/use-world-id";
-import { useTags } from "@/hooks/use-tags";
+import { useState, useMemo, useCallback, lazy, Suspense } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Download, Save, Info, ExternalLink, Printer, Rocket, FileText, ChevronDown, Image as ImageIcon } from "lucide-react";
 import {
@@ -20,7 +18,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
-import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
@@ -28,6 +25,20 @@ import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
+// FormState, defaults and codec: lib/tool-worksheets/vessel.
+import {
+  codec as vesselCodec,
+  type FormState,
+  TOOL_TYPE,
+  LOCAL_STORAGE_KEY,
+  type ShipIdentity,
+  type PropulsionIntegration,
+  type LifeSupport,
+  type LivingSpaces,
+  type CulturalElements,
+  type ShipCharacter,
+} from "@/lib/tool-worksheets/vessel";
+import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
@@ -35,15 +46,12 @@ import QuestionSection from "@/components/tools/QuestionSection";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import { SpacecraftSummaryTemplate, SpacecraftFullReportTemplate } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
-import { Json } from "@/integrations/supabase/types";
-import { writeStandaloneBackup } from "@/lib/standalone-backup";
 import { manifest as vesselManifest } from "@/tools/vessel/manifest";
 import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
 import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
@@ -61,172 +69,6 @@ const SECTIONS: Section[] = [
   { id: "section-examples", title: "SF Examples" },
   { id: "section-synthesis", title: "Synthesis" },
 ];
-
-// Types for form state
-interface ShipIdentity {
-  name: string;
-  class: string;
-  customClass: string;
-  role: string;
-  customRole: string;
-  size: string;
-  age: string;
-  origin: string;
-  currentOwner: string;
-  history: string;
-}
-
-interface PropulsionIntegration {
-  driveType: string;
-  accelerationProfile: string;
-  fuelSource: string;
-  rangeLimit: string;
-  architecturalConsequences: string;
-  thrustOrientation: string;
-  noiseVibration: string;
-}
-
-interface LifeSupport {
-  atmosphere: string;
-  water: string;
-  food: string;
-  waste: string;
-  temperature: string;
-  radiation: string;
-  gravity: string;
-  medical: string;
-  emergencyBackups: string;
-  failureModes: string;
-}
-
-interface LivingSpaces {
-  /** Head count. vessel.crew_size has its home here (1.5 item 10). */
-  crewSize?: string;
-  crewQuarters: string;
-  commonAreas: string;
-  privateSpace: string;
-  storage: string;
-  recreation: string;
-  workspaces: string;
-  traffic: string;
-  soundscape: string;
-  lighting: string;
-  smells: string;
-}
-
-interface CulturalElements {
-  originCulture: string;
-  decorations: string;
-  modifications: string;
-  rituals: string;
-  taboos: string;
-  naming: string;
-  superstitions: string;
-  memorials: string;
-  conflicts: string;
-}
-
-interface ShipCharacter {
-  personality: string;
-  quirks: string;
-  secrets: string;
-  reputation: string;
-  relationships: string;
-  evolution: string;
-  metaphor: string;
-}
-
-interface FormState {
-  identity: ShipIdentity;
-  propulsion: PropulsionIntegration;
-  lifeSupport: LifeSupport;
-  living: LivingSpaces;
-  cultural: CulturalElements;
-  character: ShipCharacter;
-  synthesis: {
-    livedInDetails: string;
-    storyHooks: string;
-    sensorySignature: string;
-  };
-  generalNotes: string;
-  moodboard: MoodboardImage[];
-}
-
-const initialFormState: FormState = {
-  identity: {
-    name: "",
-    class: "",
-    customClass: "",
-    role: "",
-    customRole: "",
-    size: "",
-    age: "",
-    origin: "",
-    currentOwner: "",
-    history: "",
-  },
-  propulsion: {
-    driveType: "",
-    accelerationProfile: "",
-    fuelSource: "",
-    rangeLimit: "",
-    architecturalConsequences: "",
-    thrustOrientation: "",
-    noiseVibration: "",
-  },
-  lifeSupport: {
-    atmosphere: "",
-    water: "",
-    food: "",
-    waste: "",
-    temperature: "",
-    radiation: "",
-    gravity: "",
-    medical: "",
-    emergencyBackups: "",
-    failureModes: "",
-  },
-  living: {
-    crewSize: "",
-    crewQuarters: "",
-    commonAreas: "",
-    privateSpace: "",
-    storage: "",
-    recreation: "",
-    workspaces: "",
-    traffic: "",
-    soundscape: "",
-    lighting: "",
-    smells: "",
-  },
-  cultural: {
-    originCulture: "",
-    decorations: "",
-    modifications: "",
-    rituals: "",
-    taboos: "",
-    naming: "",
-    superstitions: "",
-    memorials: "",
-    conflicts: "",
-  },
-  character: {
-    personality: "",
-    quirks: "",
-    secrets: "",
-    reputation: "",
-    relationships: "",
-    evolution: "",
-    metaphor: "",
-  },
-  synthesis: {
-    livedInDetails: "",
-    storyHooks: "",
-    sensorySignature: "",
-  },
-  generalNotes: "",
-  moodboard: [],
-};
 
 const SHIP_CLASSES = [
   { value: "fighter", label: "Fighter/Interceptor", description: "Small, fast, 1-2 crew" },
@@ -324,22 +166,28 @@ const EXTERNAL_RESOURCES = [
   { name: "Spaceship Handbook", url: "https://www.amazon.com/Spaceship-Handbook-Rocket-Science-Future/dp/0976836394", description: "Classic reference" },
 ];
 
-const TOOL_TYPE = "spacecraft-designer";
-
 const SpacecraftDesigner = () => {
-  const [formState, setFormState] = useState<FormState>(initialFormState);
-  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
-  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
   const { worlds } = useWorlds();
 
   // Get URL params for worldId and worksheetId
   const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = useWorldId();
-  const worksheetId = searchParams.get("worksheetId");
+
+  const worksheet = useToolWorksheet(TOOL_TYPE, {
+    ...vesselCodec,
+    displayName: "Vessel",
+    localKey: LOCAL_STORAGE_KEY,
+    loadedToast: true,
+    onDraftCreated: (id, title) => entityMatch.check(id, title),
+    onSaved: (saved, { worksheetId: savedId }) =>
+      canonEmit.emit(saved, { subjectId: canonSubjectId, worksheetId: savedId }),
+  });
+  const { state: formState, setState: setFormState, worldId } = worksheet;
+  const currentWorksheetId = worksheet.worksheetId;
+  const currentWorksheetTitle = worksheet.worksheetTitle;
+  const worksheetId = worksheet.worksheetId;
 
   // One home per value (1.5 item 10): crew size is Vessel's (asserted on save); the drive is Impulse's, read here.
   const canonSubjectId = useToolSubject(currentWorksheetId || worksheetId);
@@ -354,62 +202,10 @@ const SpacecraftDesigner = () => {
 
   // Supabase hooks
   const entityMatch = useEntityMatch(worldId);
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
-    onDraftCreated: entityMatch.check,
-  });
-  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
-  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
-  const renameWorksheet = useRenameWorksheet();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [notesSheetOpen, setNotesSheetOpen] = useState(false);
   const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
-  const { updateWorksheetTags } = useTags();
-  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
-
-  // Show worksheet selector when worldId is present but no worksheetId
-  useEffect(() => {
-    if (worldId && !worksheetId && !worksheetsLoading && user) {
-      setWorksheetSelectorOpen(true);
-    }
-  }, [worldId, worksheetId, worksheetsLoading, user]);
-
-  // Load existing worksheet from Supabase if worksheetId is provided
-  useEffect(() => {
-    if (existingWorksheet && existingWorksheet.data) {
-      try {
-        const data = existingWorksheet.data as unknown as FormState;
-        setFormState(data);
-        setCurrentWorksheetId(existingWorksheet.id);
-        setCurrentWorksheetTitle(existingWorksheet.title);
-        if (existingWorksheet.tags) {
-          setWorksheetTags(existingWorksheet.tags);
-        }
-        toast({
-          title: "WORKSHEET LOADED.",
-          description: "WORK RESTORED FROM CLOUD.",
-        });
-      } catch {
-        // Ignore parse errors
-      }
-    }
-  }, [existingWorksheet]);
-
-  // Fallback to localStorage if no worldId (standalone mode)
-  useEffect(() => {
-    if (!worldId && !worksheetId) {
-      const saved = localStorage.getItem("spacecraft-designer");
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          setFormState(parsed);
-        } catch {
-          // Ignore parse errors
-        }
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [worldId, worksheetId]);
 
   // Generate key choices for sidebar
   const keyChoicesSections: KeyChoicesSection[] = useMemo(() => {
@@ -518,77 +314,6 @@ const SpacecraftDesigner = () => {
     }));
   };
 
-  const handleSave = async () => {
-    // Browser backup in standalone mode only (see lib/standalone-backup)
-    writeStandaloneBackup("spacecraft-designer", formState, { worldId, signedIn: !!user });
-
-    // If we have a worldId and user is authenticated, save to Supabase
-    if (worldId && user) {
-      const worksheetData = formState as unknown as Json;
-
-      try {
-        if (currentWorksheetId || worksheetId) {
-          // Update existing worksheet - preserve user-provided title
-          await updateWorksheet.mutateAsync({
-            worksheetId: currentWorksheetId || worksheetId!,
-            data: worksheetData,
-          });
-          await canonEmit.emit(formState, { subjectId: canonSubjectId, worksheetId: currentWorksheetId || worksheetId });
-        } else {
-          // Should not reach here - worksheet must be created via selector first
-          toast({
-            title: "OPERATION FAILED.",
-            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
-            variant: "destructive",
-          });
-        }
-      } catch {
-        // Error already handled by the mutation
-      }
-    } else {
-      toast({
-        title: "DRAFT SAVED.",
-        description: "WORK SECURED TO LOCAL STORAGE.",
-      });
-    }
-  };
-
-  const handleWorksheetSelect = (selectedWorksheetId: string) => {
-    setSearchParams({ worldId: worldId!, worksheetId: selectedWorksheetId });
-    setWorksheetSelectorOpen(false);
-  };
-
-  const handleWorksheetCreate = async (name: string): Promise<string> => {
-    const worksheetData = initialFormState as unknown as Json;
-    const result = await createWorksheet.mutateAsync({
-      worldId: worldId!,
-      toolType: TOOL_TYPE,
-      title: name,
-      data: worksheetData,
-    });
-    setCurrentWorksheetId(result.id);
-    setCurrentWorksheetTitle(result.title);
-    setSearchParams({ worldId: worldId!, worksheetId: result.id });
-    return result.id;
-  };
-
-  // Handle worksheet rename
-  const handleRename = async (newTitle: string) => {
-    const wsId = currentWorksheetId || worksheetId;
-    if (!wsId) return;
-
-    await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
-    setCurrentWorksheetTitle(newTitle);
-  };
-
-  const handleTagsChange = (newTags: string[]) => {
-    setWorksheetTags(newTags);
-    const wsId = currentWorksheetId || worksheetId;
-    if (wsId) {
-      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
-    }
-  };
-
   const handleExport = () => {
     setExportDialogOpen(true);
   };
@@ -599,14 +324,12 @@ const SpacecraftDesigner = () => {
 
   return (
     <ToolPageLayout
+      {...worksheet.layoutProps}
       toolType={TOOL_TYPE}
-      onSave={handleSave}
-      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
       onPrint={handlePrint}
       onExport={handleExport}
       onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
       isShared={!!shareConfig?.enabled}
-      isCloudEnabled={!!(worldId && user)}
       onNotesClick={() => setNotesSheetOpen(true)}
       onMoodboardClick={() => setMoodboardSheetOpen(true)}
       moodboardCount={formState.moodboard?.length || 0}
@@ -620,14 +343,7 @@ const SpacecraftDesigner = () => {
           defaultFilename={`spacecraft-${formState.identity.name || "unnamed"}`}
         />
       }
-      worksheetId={currentWorksheetId || worksheetId}
-      worksheetTitle={currentWorksheetTitle}
-      onRenameWorksheet={handleRename}
-      worksheetLoading={worksheetLoading}
-      worksheetTags={worksheetTags}
-      onTagsChange={handleTagsChange}
       worksheetIcon={<FileText className="w-4 h-4 text-sf-primary-text" />}
-      isLoggedIn={!!user}
     >
 
         {/* Introduction */}
@@ -1557,16 +1273,9 @@ const SpacecraftDesigner = () => {
       {/* Worksheet Selector Dialog */}
       {worldId && (
         <WorksheetSelectorDialog
-          open={worksheetSelectorOpen}
-          onOpenChange={setWorksheetSelectorOpen}
-          worldId={worldId}
+          {...worksheet.selectorProps}
           worldName={worldName}
-          toolType={TOOL_TYPE}
           toolDisplayName="Vessel"
-          worksheets={existingWorksheets}
-          isLoading={worksheetsLoading}
-          onSelect={handleWorksheetSelect}
-          onCreate={handleWorksheetCreate}
         />
       )}
 

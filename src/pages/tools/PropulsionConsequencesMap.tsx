@@ -1,8 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, useRef, lazy, Suspense } from "react";
-import { useWorldId } from "@/hooks/use-world-id";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
-import { useTags } from "@/hooks/use-tags";
 import { useSearchParams } from "react-router-dom";
 import { Info, ExternalLink, Atom, FileText, ChevronDown, Image as ImageIcon } from "lucide-react";
 import {
@@ -23,7 +21,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
-import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
@@ -31,20 +28,29 @@ import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
+// FormState, defaults and codec: lib/tool-worksheets/impulse.
+import {
+  codec as impulseCodec,
+  type FormState,
+  TOOL_TYPE,
+  LOCAL_STORAGE_KEY,
+  type PropulsionSystem,
+  type TravelBenchmark,
+  type EconomicCosts,
+  type DomainResponses,
+} from "@/lib/tool-worksheets/impulse";
+import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import QuestionSection from "@/components/tools/QuestionSection";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import { PropulsionSummaryTemplate, PropulsionFullReportTemplate } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
-import { Json } from "@/integrations/supabase/types";
-import { writeStandaloneBackup } from "@/lib/standalone-backup";
 import { manifest as impulseManifest } from "@/tools/impulse/manifest";
 import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
 import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
@@ -63,111 +69,6 @@ const SECTIONS: Section[] = [
   { id: "section-examples", title: "SF Examples" },
   { id: "section-synthesis", title: "Final Synthesis" },
 ];
-
-// Types for form state
-interface PropulsionSystem {
-  type: string;
-  customType: string;
-  maxVelocity: string;
-  acceleration: string;
-  energySource: string;
-  communicationSpeed: string;
-  costComparison: string;
-}
-
-interface TravelBenchmark {
-  earthMars: string;
-  earthJupiter: string;
-  earthNeptune: string;
-  solAlphaCentauri: string;
-  solProximaB: string;
-  customRoute: string;
-  customRouteTime: string;
-}
-
-interface EconomicCosts {
-  fuelEnergy: string;
-  construction: string;
-  maintenance: string;
-  crewCapacity: string;
-  cargoCapacity: string;
-  serviceLife: string;
-}
-
-interface DomainResponses {
-  [key: string]: string | string[];
-}
-
-interface FormState {
-  system: PropulsionSystem;
-  benchmarks: TravelBenchmark;
-  costs: EconomicCosts;
-  economic: DomainResponses;
-  political: DomainResponses;
-  military: DomainResponses;
-  social: DomainResponses;
-  psychological: DomainResponses;
-  synthesis: {
-    consistencyChecks: string[];
-    inconsistency: string;
-    unexpectedConsequences: string;
-    economicConflicts: string;
-    politicalConflicts: string;
-    socialConflicts: string;
-    propulsionThesis: string;
-    mostImportant: string;
-    storyConflict: string;
-  };
-  generalNotes: string;
-  moodboard: MoodboardImage[];
-}
-
-const initialFormState: FormState = {
-  system: {
-    type: "",
-    customType: "",
-    maxVelocity: "",
-    acceleration: "",
-    energySource: "",
-    communicationSpeed: "",
-    costComparison: "",
-  },
-  benchmarks: {
-    earthMars: "",
-    earthJupiter: "",
-    earthNeptune: "",
-    solAlphaCentauri: "",
-    solProximaB: "",
-    customRoute: "",
-    customRouteTime: "",
-  },
-  costs: {
-    fuelEnergy: "",
-    construction: "",
-    maintenance: "",
-    crewCapacity: "",
-    cargoCapacity: "",
-    serviceLife: "",
-  },
-  economic: {},
-  political: {},
-  military: {},
-  social: {},
-  psychological: {},
-  synthesis: {
-    consistencyChecks: [],
-    inconsistency: "",
-    unexpectedConsequences: "",
-    economicConflicts: "",
-    politicalConflicts: "",
-    socialConflicts: "",
-    propulsionThesis: "",
-    mostImportant: "",
-    storyConflict: "",
-  },
-  generalNotes: "",
-  moodboard: [],
-};
 
 // The propulsion list is canon/codecs PROPULSION_TYPES: Impulse owns
 // propulsion.type, so its list is the vocabulary other tools read through.
@@ -412,22 +313,36 @@ const SF_EXAMPLES = [
   },
 ];
 
-const TOOL_TYPE = "propulsion-consequences-map";
-
 const PropulsionConsequencesMap = () => {
-  const [formState, setFormState] = useState<FormState>(initialFormState);
-  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
-  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
   const { worlds } = useWorlds();
 
   // Get URL params for worldId and worksheetId
   const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = useWorldId();
-  const worksheetId = searchParams.get("worksheetId");
+
+  const worksheet = useToolWorksheet(TOOL_TYPE, {
+    ...impulseCodec,
+    displayName: "Impulse",
+    localKey: LOCAL_STORAGE_KEY,
+    loadedToast: true,
+    onDraftCreated: (id, title) => entityMatch.check(id, title),
+    onSaved: (saved, { worksheetId: savedId }) =>
+      canonEmit.emit(saved, {
+        subjectId: canonSubjectId,
+        worksheetId: savedId,
+        // A drive outside the list is asserted in the writer's own words.
+        overrides:
+          saved.system.type === "other"
+            ? { "propulsion.type": saved.system.customType?.trim() ? { kind: "text", value: saved.system.customType.trim() } : null }
+            : undefined,
+      }),
+  });
+  const { state: formState, setState: setFormState, worldId } = worksheet;
+  const currentWorksheetId = worksheet.worksheetId;
+  const currentWorksheetTitle = worksheet.worksheetTitle;
+  const worksheetId = worksheet.worksheetId;
 
   // One home per value (1.5 item 10): Impulse owns the drive (asserted on save); crew size is Vessel's, read here.
   const canonSubjectId = useToolSubject(currentWorksheetId || worksheetId);
@@ -442,62 +357,10 @@ const PropulsionConsequencesMap = () => {
 
   // Supabase hooks
   const entityMatch = useEntityMatch(worldId);
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
-    onDraftCreated: entityMatch.check,
-  });
-  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
-  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
-  const renameWorksheet = useRenameWorksheet();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [notesSheetOpen, setNotesSheetOpen] = useState(false);
   const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
-  const { updateWorksheetTags } = useTags();
-  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
-
-  // Show worksheet selector when worldId is present but no worksheetId
-  useEffect(() => {
-    if (worldId && !worksheetId && !worksheetsLoading && user) {
-      setWorksheetSelectorOpen(true);
-    }
-  }, [worldId, worksheetId, worksheetsLoading, user]);
-
-  // Load existing worksheet from Supabase if worksheetId is provided
-  useEffect(() => {
-    if (existingWorksheet && existingWorksheet.data) {
-      try {
-        const data = existingWorksheet.data as unknown as FormState;
-        setFormState(data);
-        setCurrentWorksheetId(existingWorksheet.id);
-        setCurrentWorksheetTitle(existingWorksheet.title);
-        if (existingWorksheet.tags) {
-          setWorksheetTags(existingWorksheet.tags);
-        }
-        toast({
-          title: "WORKSHEET LOADED.",
-          description: "WORK RESTORED FROM CLOUD.",
-        });
-      } catch {
-        // Ignore parse errors
-      }
-    }
-  }, [existingWorksheet]);
-
-  // Fallback to localStorage if no worldId (standalone mode)
-  useEffect(() => {
-    if (!worldId && !worksheetId) {
-      const saved = localStorage.getItem("pcm-worksheet");
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          setFormState(parsed);
-        } catch {
-          // Ignore parse errors
-        }
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [worldId, worksheetId]);
 
   // Generate key choices for sidebar
   const keyChoicesSections: KeyChoicesSection[] = useMemo(() => {
@@ -644,85 +507,6 @@ const PropulsionConsequencesMap = () => {
     }));
   };
 
-  const handleSave = async () => {
-    // Browser backup in standalone mode only (see lib/standalone-backup)
-    writeStandaloneBackup("pcm-worksheet", formState, { worldId, signedIn: !!user });
-
-    // If we have a worldId and user is authenticated, save to Supabase
-    if (worldId && user) {
-      const worksheetData = formState as unknown as Json;
-
-      try {
-        if (currentWorksheetId || worksheetId) {
-          // Update existing worksheet - preserve user-provided title
-          await updateWorksheet.mutateAsync({
-            worksheetId: currentWorksheetId || worksheetId!,
-            data: worksheetData,
-          });
-          await canonEmit.emit(formState, {
-            subjectId: canonSubjectId,
-            worksheetId: currentWorksheetId || worksheetId,
-            // A drive outside the list is asserted in the writer's own words.
-            overrides:
-              formState.system.type === "other"
-                ? { "propulsion.type": formState.system.customType?.trim() ? { kind: "text", value: formState.system.customType.trim() } : null }
-                : undefined,
-          });
-        } else {
-          // Should not reach here - worksheet must be created via selector first
-          toast({
-            title: "OPERATION FAILED.",
-            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
-            variant: "destructive",
-          });
-        }
-      } catch {
-        // Error already handled by the mutation
-      }
-    } else {
-      toast({
-        title: "DRAFT SAVED.",
-        description: "WORK SECURED TO LOCAL STORAGE.",
-      });
-    }
-  };
-
-  const handleWorksheetSelect = (selectedWorksheetId: string) => {
-    setSearchParams({ worldId: worldId!, worksheetId: selectedWorksheetId });
-    setWorksheetSelectorOpen(false);
-  };
-
-  const handleWorksheetCreate = async (name: string): Promise<string> => {
-    const worksheetData = initialFormState as unknown as Json;
-    const result = await createWorksheet.mutateAsync({
-      worldId: worldId!,
-      toolType: TOOL_TYPE,
-      title: name,
-      data: worksheetData,
-    });
-    setCurrentWorksheetId(result.id);
-    setCurrentWorksheetTitle(result.title);
-    setSearchParams({ worldId: worldId!, worksheetId: result.id });
-    return result.id;
-  };
-
-  // Handle worksheet rename
-  const handleRename = async (newTitle: string) => {
-    const wsId = currentWorksheetId || worksheetId;
-    if (!wsId) return;
-
-    await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
-    setCurrentWorksheetTitle(newTitle);
-  };
-
-  const handleTagsChange = (newTags: string[]) => {
-    setWorksheetTags(newTags);
-    const wsId = currentWorksheetId || worksheetId;
-    if (wsId) {
-      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
-    }
-  };
-
   const handleExport = () => {
     setExportDialogOpen(true);
   };
@@ -733,14 +517,12 @@ const PropulsionConsequencesMap = () => {
 
   return (
     <ToolPageLayout
+      {...worksheet.layoutProps}
       toolType={TOOL_TYPE}
-      onSave={handleSave}
-      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
       onPrint={handlePrint}
       onExport={handleExport}
       onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
       isShared={!!shareConfig?.enabled}
-      isCloudEnabled={!!(worldId && user)}
       onNotesClick={() => setNotesSheetOpen(true)}
       onMoodboardClick={() => setMoodboardSheetOpen(true)}
       moodboardCount={formState.moodboard?.length || 0}
@@ -754,14 +536,7 @@ const PropulsionConsequencesMap = () => {
           defaultFilename="propulsion-consequences-map"
         />
       }
-      worksheetId={currentWorksheetId || worksheetId}
-      worksheetTitle={currentWorksheetTitle}
-      onRenameWorksheet={handleRename}
-      worksheetLoading={worksheetLoading}
-      worksheetTags={worksheetTags}
-      onTagsChange={handleTagsChange}
       worksheetIcon={<FileText className="w-4 h-4 text-sf-primary-text" />}
-      isLoggedIn={!!user}
     >
 
         {/* Introduction */}
@@ -1818,16 +1593,9 @@ const PropulsionConsequencesMap = () => {
       {/* Worksheet Selector Dialog */}
       {worldId && (
         <WorksheetSelectorDialog
-          open={worksheetSelectorOpen}
-          onOpenChange={setWorksheetSelectorOpen}
-          worldId={worldId}
+          {...worksheet.selectorProps}
           worldName={worldName}
-          toolType={TOOL_TYPE}
           toolDisplayName="Impulse"
-          worksheets={existingWorksheets}
-          isLoading={worksheetsLoading}
-          onSelect={handleWorksheetSelect}
-          onCreate={handleWorksheetCreate}
         />
       )}
 

@@ -1,9 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback, lazy, Suspense } from "react";
-import { useWorldId } from "@/hooks/use-world-id";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
-import { useTags } from "@/hooks/use-tags";
-import { useSearchParams } from "react-router-dom";
 import {
   Copy,
   Dna,
@@ -40,14 +37,7 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import {
-  useWorksheets,
-  useWorksheet,
-  useWorksheetsByType,
-  useRenameWorksheet,
-} from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
-import { useAuth } from "@/contexts/AuthContext";
 import { MobileSectionNav } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import SectionNavigation from "@/components/tools/SectionNavigation";
@@ -62,7 +52,6 @@ import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
-import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import {
@@ -70,7 +59,6 @@ import {
   SurfaceGravityFullReportTemplate,
 } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
-import { Json } from "@/integrations/supabase/types";
 
 import {
   COMPOSITION_PRESETS,
@@ -87,12 +75,18 @@ import {
   formatGravity,
   formatVelocity,
 } from "@/lib/surface-gravity/calculations";
-import type { FormStateForCalc } from "@/lib/surface-gravity/calculations";
 
 import PlanetSizeComparison from "@/components/tools/PlanetSizeComparison";
 import GravityScaleBar from "@/components/tools/GravityScaleBar";
 import AtmosphericRetentionChart from "@/components/tools/AtmosphericRetentionChart";
-import { writeStandaloneBackup } from "@/lib/standalone-backup";
+import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
+import {
+  codec as atlasCodec,
+  initialFormState,
+  type FormState,
+  TOOL_TYPE,
+  LOCAL_STORAGE_KEY,
+} from "@/lib/tool-worksheets/atlas";
 import { manifest as atlasManifest } from "@/tools/atlas/manifest";
 import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
 import { CanonProvenance } from "@/components/canon/CanonProvenance";
@@ -112,56 +106,7 @@ const PRESET_ICONS: Record<string, LucideIcon> = {
   pandora: Leaf,
 };
 
-// ─── FormState ───────────────────────────────────────────────────────
-
-interface FormState extends FormStateForCalc {
-  cascade: {
-    biology: string;
-    psychology: string;
-    culture: string;
-    mythology: string;
-  };
-  storyNotes: {
-    physicalExperience: string;
-    dailyLife: string;
-    architecture: string;
-    culturalIdentity: string;
-  };
-  generalNotes: string;
-  moodboard: MoodboardImage[];
-}
-
-const initialFormState: FormState = {
-  primary: {
-    mass: 1.0,
-    radius: 1.0,
-    compositionPreset: "rocky",
-    planetPreset: "earth",
-    linked: true,
-  },
-  advanced: {
-    surfaceTemp: 288,
-    molecularWeightPreset: "earth",
-    molecularWeight: 29,
-  },
-  cascade: {
-    biology: "",
-    psychology: "",
-    culture: "",
-    mythology: "",
-  },
-  storyNotes: {
-    physicalExperience: "",
-    dailyLife: "",
-    architecture: "",
-    culturalIdentity: "",
-  },
-  generalNotes: "",
-  moodboard: [],
-};
-
-const TOOL_TYPE = "surface-gravity-calculator";
-const LOCAL_STORAGE_KEY = "surface-gravity-calculator-v1";
+// FormState, defaults and codec: lib/tool-worksheets/atlas.
 
 // Cascade tab icons
 const CASCADE_ICONS = {
@@ -283,35 +228,36 @@ function BallDropAnimation({ earthG, planetG, planetLabel }: { earthG: number; p
 // ─── Component ───────────────────────────────────────────────────────
 
 const SurfaceGravityCalculator = () => {
-  const [formState, setFormState] = useState<FormState>(initialFormState);
-  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
-  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [notesSheetOpen, setNotesSheetOpen] = useState(false);
   const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
   const { toast } = useToast();
-  const { user } = useAuth();
   const { worlds } = useWorlds();
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = useWorldId();
-  const worksheetId = searchParams.get("worksheetId");
+  const worksheet = useToolWorksheet(TOOL_TYPE, {
+    ...atlasCodec,
+    // Title of a sheet created on first save (unchanged).
+    displayName: "Surface Gravity Calculator",
+    localKey: LOCAL_STORAGE_KEY,
+    onDraftCreated: (id, title) => entityMatch.check(id, title),
+    onSaved: (saved, { worksheetId: savedId }) =>
+      canonEmit.emit(saved, {
+        subjectId: canonSubjectId,
+        worksheetId: savedId,
+        inputs: { "planet.mass": saved.primary.mass, "planet.radius": saved.primary.radius },
+      }),
+  });
+  const { state: formState, setState: setFormState, worldId } = worksheet;
+  const currentWorksheetId = worksheet.worksheetId;
+  const currentWorksheetTitle = worksheet.worksheetTitle;
+  const worksheetId = worksheet.worksheetId;
 
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
   const worldName = currentWorld?.name;
 
   const entityMatch = useEntityMatch(worldId);
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
-    onDraftCreated: entityMatch.check,
-  });
-  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
-  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
-  const renameWorksheet = useRenameWorksheet();
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
-  const { updateWorksheetTags } = useTags();
-  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
 
   // One home per value (1.5 item 10): mass and radius are Genesis's; Atlas
   // reads them from canon and owns the gravity it derives from them.
@@ -326,51 +272,9 @@ const SurfaceGravityCalculator = () => {
     if (!Number.isFinite(n) || n <= 0) return;
     // Unlinked, so taking canon's mass does not move the radius (or back).
     setFormState((prev) => ({ ...prev, primary: { ...prev.primary, [key]: n, linked: false, planetPreset: "" } }));
-  }, []);
+  }, [setFormState]);
   const applyCanonMass = useCallback((raw: unknown) => applyCanonPrimary("mass", raw), [applyCanonPrimary]);
   const applyCanonRadius = useCallback((raw: unknown) => applyCanonPrimary("radius", raw), [applyCanonPrimary]);
-  const emitCanon = (wsId: string) =>
-    canonEmit.emit(formState, {
-      subjectId: canonSubjectId,
-      worksheetId: wsId,
-      inputs: { "planet.mass": formState.primary.mass, "planet.radius": formState.primary.radius },
-    });
-
-  // Show worksheet selector
-  useEffect(() => {
-    if (worldId && !worksheetId && !worksheetsLoading && user) {
-      setWorksheetSelectorOpen(true);
-    }
-  }, [worldId, worksheetId, worksheetsLoading, user]);
-
-  // Load from Supabase
-  useEffect(() => {
-    if (existingWorksheet && existingWorksheet.data) {
-      try {
-        const data = existingWorksheet.data as unknown as FormState;
-        setFormState(data);
-        setCurrentWorksheetId(existingWorksheet.id);
-        setCurrentWorksheetTitle(existingWorksheet.title);
-        if (existingWorksheet.tags) setWorksheetTags(existingWorksheet.tags);
-        toast({ title: "WORKSHEET LOADED.", description: "WORK RESTORED." });
-      } catch {
-        console.error("Failed to load worksheet data");
-      }
-    }
-  }, [existingWorksheet]);
-
-  // Load from localStorage fallback
-  useEffect(() => {
-    if (!worldId && !worksheetId) {
-      try {
-        const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-        if (saved) setFormState(JSON.parse(saved));
-      } catch {
-        // ignore
-      }
-    }
-  }, [worldId, worksheetId]);
-
   // ─── Calculations ──────────────────────────────────────────────────
   const result = useMemo(() => calculateSurfaceGravity(formState), [formState]);
 
@@ -494,89 +398,18 @@ const SurfaceGravityCalculator = () => {
     toast({ title: "COPIED TO CLIPBOARD.", description: "RESULTS COPIED TO CLIPBOARD." });
   };
 
-  // ─── Save ──────────────────────────────────────────────────────────
-
-  const handleSave = async () => {
-    // Browser backup in standalone mode only (see lib/standalone-backup)
-    writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
-
-    if (worldId && user) {
-      const wsId = currentWorksheetId || worksheetId;
-      if (wsId) {
-        await updateWorksheet.mutateAsync({
-          worksheetId: wsId,
-          data: formState as unknown as Json,
-        });
-        toast({ title: "FILE SECURED.", description: "WORKSHEET SECURED TO CLOUD." });
-        await emitCanon(wsId);
-      } else {
-        const ws = await createWorksheet.mutateAsync({
-          worldId,
-          toolType: TOOL_TYPE,
-          title: "Surface Gravity Calculator",
-          data: formState as unknown as Json,
-        });
-        setCurrentWorksheetId(ws.id);
-        setCurrentWorksheetTitle(ws.title);
-        setSearchParams({ worldId, worksheetId: ws.id });
-        toast({ title: "CREATED.", description: "NEW WORKSHEET ON FILE." });
-        await emitCanon(ws.id);
-      }
-    } else {
-      toast({ title: "SAVED LOCALLY.", description: "WORK SECURED TO THIS BROWSER." });
-    }
-  };
-
-  const handleWorksheetSelect = (wsId: string) => {
-    setSearchParams({ worldId: worldId!, worksheetId: wsId });
-    setWorksheetSelectorOpen(false);
-  };
-
-  const handleWorksheetCreate = async (name: string): Promise<string> => {
-    const worksheetData = initialFormState as unknown as Json;
-    const ws = await createWorksheet.mutateAsync({
-      worldId: worldId!,
-      toolType: TOOL_TYPE,
-      title: name,
-      data: worksheetData,
-    });
-    setCurrentWorksheetId(ws.id);
-    setCurrentWorksheetTitle(ws.title);
-    setSearchParams({ worldId: worldId!, worksheetId: ws.id });
-    return ws.id;
-  };
-
-  const handleRename = async (newTitle: string) => {
-    const wsId = currentWorksheetId || worksheetId;
-    if (wsId) {
-      await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
-      setCurrentWorksheetTitle(newTitle);
-    }
-  };
-
-  const handleTagsChange = async (tags: string[]) => {
-    const wsId = currentWorksheetId || worksheetId;
-    if (wsId) {
-      await updateWorksheetTags.mutateAsync({ worksheetId: wsId, tags });
-      setWorksheetTags(tags);
-    }
-  };
-
   const worldNameForExport = worldId ? worldName : undefined;
 
   // ─── Render ────────────────────────────────────────────────────────
 
   return (
     <ToolPageLayout
+      {...worksheet.layoutProps}
       toolType={TOOL_TYPE}
-      onSave={handleSave}
-      isSaving={updateWorksheet.isPending || createWorksheet.isPending}
-      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
       onPrint={() => window.print()}
       onExport={() => setExportDialogOpen(true)}
       onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
       isShared={!!shareConfig?.enabled}
-      isCloudEnabled={!!(worldId && user)}
       onNotesClick={() => setNotesSheetOpen(true)}
       onMoodboardClick={() => setMoodboardSheetOpen(true)}
       moodboardCount={formState.moodboard?.length || 0}
@@ -589,13 +422,6 @@ const SurfaceGravityCalculator = () => {
           fullTemplate={<SurfaceGravityFullReportTemplate formState={formState} worldName={worldNameForExport} />}
         />
       }
-      worksheetId={currentWorksheetId || worksheetId}
-      worksheetTitle={currentWorksheetTitle}
-      onRenameWorksheet={handleRename}
-      worksheetLoading={worksheetLoading}
-      worksheetTags={worksheetTags}
-      onTagsChange={handleTagsChange}
-      isLoggedIn={!!user}
     >
 
         {/* Main Content Grid */}
@@ -1131,16 +957,9 @@ const SurfaceGravityCalculator = () => {
       )}
 
       <WorksheetSelectorDialog
-        open={worksheetSelectorOpen}
-        onOpenChange={setWorksheetSelectorOpen}
-        worldId={worldId || ""}
+        {...worksheet.selectorProps}
         worldName={worldName}
-        toolType={TOOL_TYPE}
         toolDisplayName="Atlas"
-        worksheets={existingWorksheets}
-        isLoading={worksheetsLoading}
-        onSelect={handleWorksheetSelect}
-        onCreate={handleWorksheetCreate}
       />
 
       <WorksheetNotesSheet
