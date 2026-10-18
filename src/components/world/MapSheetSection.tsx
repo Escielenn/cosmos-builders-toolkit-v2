@@ -13,7 +13,6 @@
 
 import { useCallback, useState } from "react";
 import { ImagePlus, Trash2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -22,9 +21,13 @@ import {
   type MapProjection,
 } from "@/lib/atlas/placement";
 import { mapError } from "@/lib/ship-voice";
+import { uploadMapSheet } from "@/services/storage-urls";
+import { useStorageUrl } from "@/hooks/use-storage-url";
 
 interface MapSheetSectionProps {
   entryId: string;
+  /** The entry's world. Map sheets are filed under it so world readers can see them. */
+  worldId: string;
   /** Current sheet, if any. */
   url: string | null;
   projection: MapProjection;
@@ -36,16 +39,17 @@ interface MapSheetSectionProps {
 }
 
 /**
- * Reuses the existing public `world-headers` bucket under a `map-sheets/`
- * prefix. A dedicated bucket would need a storage migration for no behavioural
- * gain; the asset is the same kind of thing — an image the writer uploaded
- * about their world.
+ * Sheets are filed in the PRIVATE `map-sheets` bucket at
+ * <user>/<world>/<entry>-<ts>.<ext> (migration 20261018_private_storage_buckets).
+ * The owner, collaborators and readers of a community world see them through
+ * signed URLs. Older sheets in the public `world-headers` bucket keep loading
+ * as they are.
  */
-const BUCKET = "world-headers";
 const MAX_BYTES = 12 * 1024 * 1024;
 
 export function MapSheetSection({
   entryId,
+  worldId,
   url,
   projection,
   canEdit,
@@ -54,6 +58,7 @@ export function MapSheetSection({
   const { user } = useAuth();
   const { toast } = useToast();
   const [busy, setBusy] = useState(false);
+  const display = useStorageUrl(url);
 
   const upload = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,14 +85,14 @@ export function MapSheetSection({
 
       setBusy(true);
       try {
-        const ext = file.name.split(".").pop() || "png";
-        const path = `${user.id}/map-sheets/${entryId}-${Date.now()}.${ext}`;
-        const { error } = await supabase.storage.from(BUCKET).upload(path, file);
-        if (error) throw error;
-        const {
-          data: { publicUrl },
-        } = supabase.storage.from(BUCKET).getPublicUrl(path);
-        onChange({ map_sheet_url: publicUrl });
+        const storedUrl = await uploadMapSheet({
+          userId: user.id,
+          worldId,
+          entityId: entryId,
+          body: file,
+          ext: file.name.split(".").pop() || "png",
+        });
+        onChange({ map_sheet_url: storedUrl });
         toast({ title: "MAP SHEET ATTACHED." });
       } catch (err) {
         toast({
@@ -99,7 +104,7 @@ export function MapSheetSection({
         setBusy(false);
       }
     },
-    [user, entryId, onChange, toast],
+    [user, worldId, entryId, onChange, toast],
   );
 
   if (!url && !canEdit) return null;
@@ -110,11 +115,20 @@ export function MapSheetSection({
 
       {url ? (
         <div className="space-y-2">
-          <img
-            src={url}
-            alt="Surface map sheet"
-            className="w-full border border-sf-line"
-          />
+          {display.url ? (
+            <img
+              src={display.url}
+              alt="Surface map sheet"
+              className="w-full border border-sf-line"
+            />
+          ) : (
+            <div
+              className="flex aspect-[2/1] w-full items-center justify-center border border-sf-line bg-sf-surface text-[12px] uppercase text-t3"
+              aria-busy={display.isLoading}
+            >
+              {display.isError ? "// SHEET UNAVAILABLE." : "RETRIEVING SHEET."}
+            </div>
+          )}
           <div className="flex flex-wrap items-center gap-2">
             <span className="font-mono text-[12px] uppercase tracking-wider text-t4">
               Projection

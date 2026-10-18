@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useAllMoodboardImages, type MoodboardImageWithContext } from "@/hooks/use-all-moodboard-images";
+import { useStorageUrl } from "@/hooks/use-storage-url";
 
 interface MoodboardPickerDialogProps {
   open: boolean;
@@ -109,11 +110,7 @@ export function MoodboardPickerDialog({
                             : "border-sf-line hover:border-primary"
                         )}
                       >
-                        <img
-                          src={image.url}
-                          alt={image.caption || "Moodboard image"}
-                          className="w-full h-full object-cover"
-                        />
+                        <PickerThumb url={image.url} alt={image.caption || "Moodboard image"} />
                         {currentImageUrl === image.url && (
                           <div className="absolute top-1 right-1 w-5 h-5 rounded-none bg-primary flex items-center justify-center">
                             <Check className="w-3 h-3 text-primary-foreground" />
@@ -135,4 +132,11 @@ export function MoodboardPickerDialog({
       </DialogContent>
     </Dialog>
   );
+}
+
+/** One picker thumbnail. Moodboard images live in a private bucket, so each resolves to a signed URL. */
+function PickerThumb({ url, alt }: { url: string; alt: string }) {
+  const display = useStorageUrl(url);
+  if (!display.url) return <div className="w-full h-full bg-muted" aria-busy={display.isLoading} />;
+  return <img src={display.url} alt={alt} className="w-full h-full object-cover" />;
 }

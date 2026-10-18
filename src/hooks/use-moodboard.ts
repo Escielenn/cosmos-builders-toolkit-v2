@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { removeStoredObjects, uploadStorageObject } from "@/services/storage-urls";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { v4 as uuidv4 } from "uuid";
@@ -69,24 +69,16 @@ export function useMoodboard({ worksheetId, currentImages, onUpdate }: UseMoodbo
       const fileExt = file.name.split(".").pop();
       const fileName = `${user.id}/${worksheetId}/${uuidv4()}.${fileExt}`;
 
-      // Upload to Supabase storage
-      const { data, error } = await supabase.storage
-        .from("moodboard-images")
-        .upload(fileName, file, {
-          cacheControl: "3600",
-          upsert: false,
-        });
-
-      if (error) throw error;
-
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from("moodboard-images")
-        .getPublicUrl(data.path);
+      // Private bucket: the stored URL is an address, resolved to a signed
+      // URL on display (src/services/storage-urls.ts).
+      const storedUrl = await uploadStorageObject("moodboard-images", fileName, file, {
+        cacheControl: "3600",
+        upsert: false,
+      });
 
       const newImage: MoodboardImage = {
         id: uuidv4(),
-        url: publicUrl,
+        url: storedUrl,
         source: "upload",
         createdAt: new Date().toISOString(),
       };
@@ -163,14 +155,8 @@ export function useMoodboard({ worksheetId, currentImages, onUpdate }: UseMoodbo
 
       // Only try to delete from storage if it was an upload
       if (imageToDelete?.source === "upload" && user) {
-        // Extract the path from the URL
-        const url = new URL(imageToDelete.url);
-        const pathParts = url.pathname.split("/");
-        const bucketIndex = pathParts.indexOf("moodboard-images");
-        if (bucketIndex !== -1) {
-          const filePath = pathParts.slice(bucketIndex + 1).join("/");
-          await supabase.storage.from("moodboard-images").remove([filePath]);
-        }
+        // A leftover file is better than an image the writer cannot remove.
+        await removeStoredObjects([imageToDelete.url]).catch(() => {});
       }
 
       return imageId;
