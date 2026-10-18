@@ -41,7 +41,7 @@ interface BranchDialogProps {
 }
 
 const selectClass =
-  "min-h-hit w-full border border-sf-line-interactive bg-sf-surface px-2 text-[16px] text-t1 hover:border-sf-line-emphasis";
+  "min-h-hit w-full px-3 text-[16px] text-t1";
 
 function descendantsOf(id: string, branches: BranchRecord[]): Set<string> {
   const out = new Set<string>([id]);
@@ -215,7 +215,7 @@ export function BranchDialog({
                     "min-h-hit flex-1 border px-3 text-[14px] transition-colors duration-fast ease-sf-out",
                     mode === m
                       ? "border-sf-primary bg-sf-primary/[0.06] text-sf-primary-text"
-                      : "border-sf-line-interactive text-t2 hover:border-sf-line-emphasis",
+                      : "border-sf-line text-t2 hover:border-sf-line-emphasis",
                   )}
                 >
                   {m === "event" ? "At an event" : "At a date"}
@@ -303,7 +303,7 @@ export function BranchDialog({
                     "flex min-h-hit items-center gap-2 border px-2 text-[14px] transition-colors duration-fast ease-sf-out",
                     color === h
                       ? "border-sf-line-emphasis bg-sf-surface-elevated text-t1"
-                      : "border-sf-line-interactive text-t2 hover:border-sf-line-emphasis",
+                      : "border-sf-line text-t2 hover:border-sf-line-emphasis",
                   )}
                 >
                   <span className={cn("h-3 w-3", HUE_CLASSES[h].bg)} aria-hidden />

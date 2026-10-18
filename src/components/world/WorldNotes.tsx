@@ -95,7 +95,7 @@ function NoteCard({
 
   return (
     <>
-      <div className="border border-sf-line-interactive bg-sf-surface">
+      <div className="border border-sf-line bg-sf-surface">
         {/* Note header */}
         <div className="flex items-center gap-2 px-4 py-2">
           <button
@@ -280,7 +280,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
                     type="button"
                     onClick={() => createNote.mutate()}
                     disabled={createNote.isPending}
-                    className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center gap-2 px-3 py-2 border border-sf-line-interactive text-[12px] font-heading uppercase tracking-wider text-t3 hover:text-sf-primary-text hover:border-sf-primary transition-colors"
+                    className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center gap-2 px-3 py-2 border border-sf-line text-[12px] font-heading uppercase tracking-wider text-t3 hover:text-sf-primary-text hover:border-sf-primary transition-colors"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     Add Note

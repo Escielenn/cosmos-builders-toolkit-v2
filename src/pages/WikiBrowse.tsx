@@ -321,17 +321,17 @@ export default function WikiBrowse() {
               <span className="font-serif text-[13px] italic text-t4 block mb-1.5">
                 Cascade layer
               </span>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-2">
                 {availableLayers.map((layer) => (
                   <button
                     key={layer}
                     onClick={() =>
                       setActiveLayer(activeLayer === layer ? null : layer)
                     }
-                    className={`px-2.5 py-1 text-[12px] uppercase tracking-wider border transition-colors ${
+                    className={`px-3 py-1 text-[12px] uppercase tracking-wider border transition-colors ${
                       activeLayer === layer
                         ? "bg-sf-primary/10 border-sf-primary text-sf-primary-text"
-                        : "border-sf-line-interactive text-t3 hover:text-t2"
+                        : "border-sf-line text-t3 hover:text-t2 hover:border-sf-line-emphasis"
                     }`}
                   >
                     {LAYER_LABELS[layer as CascadeLayer] || layer}
@@ -347,17 +347,17 @@ export default function WikiBrowse() {
               <span className="font-serif text-[13px] italic text-t4 block mb-1.5">
                 Entity type
               </span>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-2">
                 {availableTypes.map((type) => (
                   <button
                     key={type}
                     onClick={() =>
                       setActiveType(activeType === type ? null : type)
                     }
-                    className={`px-2.5 py-1 text-[12px] uppercase tracking-wider border transition-colors ${
+                    className={`px-3 py-1 text-[12px] uppercase tracking-wider border transition-colors ${
                       activeType === type
                         ? "bg-sf-primary/10 border-sf-primary text-sf-primary-text"
-                        : "border-sf-line-interactive text-t3 hover:text-t2"
+                        : "border-sf-line text-t3 hover:text-t2 hover:border-sf-line-emphasis"
                     }`}
                   >
                     {ENTITY_TYPE_LABELS[type] || type}
@@ -373,7 +373,7 @@ export default function WikiBrowse() {
               <span className="font-serif text-[13px] italic text-t4 block mb-1.5">
                 Tags
               </span>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-2">
                 {codexData.worldTags.map((tag, i) => (
                   <button
                     key={tag}
@@ -384,10 +384,10 @@ export default function WikiBrowse() {
                           : [...prev, tag]
                       )
                     }
-                    className={`px-2.5 py-1 text-[12px] tracking-wider border transition-colors ${
+                    className={`px-3 py-1 text-[12px] tracking-wider border transition-colors ${
                       activeTags.includes(tag)
                         ? "bg-sf-primary/10 border-sf-primary text-sf-primary-text"
-                        : "border-sf-line-interactive text-t3 hover:text-t2"
+                        : "border-sf-line text-t3 hover:text-t2 hover:border-sf-line-emphasis"
                     }`}
                   >
                     {tag}

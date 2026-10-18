@@ -192,7 +192,7 @@ export function TemplateFieldsForm({
             return (
               <div key={f.id} className="space-y-1">
                 {labelEl}
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-2">
                   {f.options.map((opt) => {
                     const isOn = arr.includes(opt);
                     return (
@@ -208,8 +208,8 @@ export function TemplateFieldsForm({
                         }}
                         className={
                           isOn
-                            ? "text-xs px-2 py-1 border border-primary bg-primary/10 text-sf-primary-text"
-                            : "text-xs px-2 py-1 border border-sf-line text-t3 hover:border-primary"
+                            ? "text-xs px-3 py-1 border border-primary bg-primary/10 text-sf-primary-text"
+                            : "text-xs px-3 py-1 border border-sf-line text-t3 hover:border-primary"
                         }
                       >
                         {opt}

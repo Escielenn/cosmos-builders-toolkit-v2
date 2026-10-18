@@ -269,14 +269,14 @@ const WorldBibleDialog = ({
         ) : (
           <div className="flex-1 overflow-y-auto sf-sb space-y-4 py-2 pr-1">
             {/* Structure toggle */}
-            <div className="flex items-center gap-1 p-0.5 bg-muted/30 w-fit">
+            <div className="flex items-center gap-2 p-0.5 bg-muted/30 w-fit">
               <button
                 onClick={() => setExportStructure("cascade")}
                 className={cn(
                   "px-3 py-1.5 text-[12px] uppercase tracking-wider font-heading transition-colors",
                   exportStructure === "cascade"
                     ? "bg-primary/10 text-sf-primary-text border border-primary"
-                    : "text-t4 hover:text-t3"
+                    : "border border-sf-line text-t4 hover:text-t3 hover:border-sf-line-emphasis"
                 )}
               >
                 Cascade
@@ -287,7 +287,7 @@ const WorldBibleDialog = ({
                   "px-3 py-1.5 text-[12px] uppercase tracking-wider font-heading transition-colors",
                   exportStructure === "entity"
                     ? "bg-primary/10 text-sf-primary-text border border-primary"
-                    : "text-t4 hover:text-t3"
+                    : "border border-sf-line text-t4 hover:text-t3 hover:border-sf-line-emphasis"
                 )}
               >
                 Entity
@@ -316,7 +316,7 @@ const WorldBibleDialog = ({
 
             {/* World Notes toggle */}
             {worldNotes && (
-              <div className="flex items-center space-x-2 p-3 rounded-none border border-sf-line-interactive bg-accent/5">
+              <div className="flex items-center space-x-2 p-3 rounded-none border border-sf-line bg-accent/5">
                 <Checkbox
                   id="include-notes"
                   checked={includeWorldNotes}
@@ -347,7 +347,7 @@ const WorldBibleDialog = ({
                   return (
                     <div
                       key={cw.chapter.id}
-                      className="rounded-none border border-sf-line-interactive overflow-hidden"
+                      className="rounded-none border border-sf-line overflow-hidden"
                     >
                       {/* Chapter header */}
                       <div className="flex items-center space-x-2 p-3 bg-muted/30">
@@ -368,7 +368,7 @@ const WorldBibleDialog = ({
                       </div>
 
                       {/* Worksheets */}
-                      <div className="divide-y divide-border">
+                      <div className="divide-y divide-sf-line-hairline">
                         {cw.worksheets.map((ws) => (
                           <div
                             key={ws.id}
@@ -405,7 +405,7 @@ const WorldBibleDialog = ({
         )}
 
         {/* Inline theme picker */}
-        <div className="pt-3 border-t border-sf-line-interactive">
+        <div className="pt-3 border-t border-sf-line-hairline">
           <Label className="text-xs text-t3 mb-2 block">PDF Theme</Label>
           <div className="flex gap-2 flex-wrap">
             {EXPORT_THEMES.map((theme) => {
@@ -420,13 +420,13 @@ const WorldBibleDialog = ({
                     "flex gap-0.5 p-1.5 rounded-none border transition-all",
                     isSelected
                       ? "border-primary ring-1 ring-primary/50"
-                      : "border-sf-line-interactive hover:border-primary"
+                      : "border-sf-line hover:border-primary"
                   )}
                 >
                   {theme.swatch.map((color, i) => (
                     <div
                       key={i}
-                      className="w-4 h-4 rounded-none border border-sf-line-interactive"
+                      className="w-4 h-4 rounded-none border border-sf-line"
                       style={{ backgroundColor: color }}
                     />
                   ))}

@@ -33,7 +33,7 @@ export function BranchesWorldPicker({ worlds }: BranchesWorldPickerProps) {
             <li key={w.id}>
               <Link
                 to={`/worlds/${w.id}/chronicle?view=branches`}
-                className="inline-flex min-h-hit items-center border border-sf-line-interactive bg-sf-surface px-3 text-[14px] text-t1 transition-colors duration-fast ease-sf-out hover:border-sf-primary hover:text-sf-primary-text"
+                className="inline-flex min-h-hit items-center border border-sf-line bg-sf-surface px-3 text-[14px] text-t1 transition-colors duration-fast ease-sf-out hover:border-sf-primary hover:text-sf-primary-text"
               >
                 {w.name}
               </Link>

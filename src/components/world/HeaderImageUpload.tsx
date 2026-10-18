@@ -109,7 +109,7 @@ const HeaderImageUpload = ({
       />
 
       {currentImageUrl ? (
-        <div className="relative w-full aspect-[3/1] rounded-none overflow-hidden border border-sf-line-interactive">
+        <div className="relative w-full aspect-[3/1] rounded-none overflow-hidden border border-sf-line">
           <img
             src={currentImageUrl}
             alt="World header"

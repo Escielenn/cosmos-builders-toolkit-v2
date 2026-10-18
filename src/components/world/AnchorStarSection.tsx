@@ -118,7 +118,7 @@ export function AnchorStarSection({
               <button
                 type="button"
                 onClick={() => onChange({ anchor_star: null })}
-                className="ml-auto flex min-h-hit items-center gap-1 border border-sf-line-interactive px-2 font-mono text-[12px] uppercase tracking-wider text-t3 transition-colors hover:border-sf-crimson hover:text-sf-crimson-text"
+                className="ml-auto flex min-h-hit items-center gap-1 border border-sf-line px-3 font-mono text-[12px] uppercase tracking-wider text-t3 transition-colors hover:border-sf-crimson hover:text-sf-crimson-text"
               >
                 <X className="h-3 w-3" aria-hidden />
                 Unanchor
@@ -202,7 +202,7 @@ export function AnchorStarSection({
                 <button
                   type="button"
                   onClick={() => setShowSky(true)}
-                  className="mt-2 flex min-h-hit items-center gap-1.5 border border-sf-line-interactive px-2 font-mono text-[12px] uppercase tracking-wider text-t3 transition-colors hover:border-sf-line-emphasis hover:text-t1"
+                  className="mt-2 flex min-h-hit items-center gap-1.5 border border-sf-line px-3 font-mono text-[12px] uppercase tracking-wider text-t3 transition-colors hover:border-sf-line-emphasis hover:text-t1"
                 >
                   <Eye className="h-3 w-3" aria-hidden />
                   Look at it
@@ -243,7 +243,7 @@ export function AnchorStarSection({
           </div>
 
           {results.length > 0 && (
-            <ul className="border border-sf-line-interactive">
+            <ul className="border border-sf-line divide-y divide-sf-line-hairline">
               {results.map((star) => (
                 <li key={star.name}>
                   <button

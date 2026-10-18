@@ -309,7 +309,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
             <button
               type="button"
               onClick={() => setIsEditing(!isEditing)}
-              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-sf-line-interactive text-[12px] uppercase tracking-wider"
+              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-sf-line hover:border-sf-line-emphasis text-[12px] uppercase tracking-wider"
             >
               {isEditing ? (
                 <>
@@ -325,7 +325,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
           {toolSource && (
             <button
               onClick={handleViewInTool}
-              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-sf-line-interactive text-[12px] uppercase tracking-wider"
+              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-sf-line hover:border-sf-line-emphasis text-[12px] uppercase tracking-wider"
             >
               <ExternalLink className="w-3 h-3" /> View in Tool
             </button>
@@ -381,7 +381,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
                 value={cascadeStage}
                 onChange={(e) => commitCascadeStage(e.target.value)}
                 aria-label="Cascade stage"
-                className="border border-sf-line-interactive bg-transparent px-1.5 py-0.5 text-[12px] uppercase tracking-wider text-t2"
+                className="px-3 py-0.5 text-[12px] uppercase tracking-wider text-t2"
               >
                 {CASCADE_STAGES.map((stage) => (
                   <option key={stage} value={stage}>
@@ -403,7 +403,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
         )}
         {/* Cover upload, compact inline button in edit mode */}
         {canEdit && isEditing && (
-          <label className="ml-auto flex items-center gap-1 px-2 py-0.5 border border-sf-line-interactive text-[12px] uppercase tracking-wider text-t3 hover:text-t3 cursor-pointer transition-colors">
+          <label className="ml-auto flex items-center gap-1 px-3 py-0.5 border border-sf-line hover:border-sf-line-emphasis text-[12px] uppercase tracking-wider text-t3 hover:text-t2 cursor-pointer transition-colors">
             <ImagePlus className="w-3 h-3" />
             {entry.cover_image_url ? "Change cover" : "Add cover"}
             <input
@@ -418,7 +418,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
 
       {/* Aliases · epoch range (Brief F1 §1). Stored on metadata; edited inline. */}
       {(aliases.length > 0 || (canEdit && isEditing)) && (
-        <div className="mt-1 flex flex-wrap items-center gap-1.5 font-mono text-[12px] uppercase tracking-wider text-t3">
+        <div className="mt-1 flex flex-wrap items-center gap-2 font-mono text-[12px] uppercase tracking-wider text-t3">
           <span className="text-t4">AKA</span>
           {canEdit && isEditing ? (
             <input
@@ -429,7 +429,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
               onBlur={commitAliases}
               onKeyDown={(e) => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }}
               placeholder="Other names, comma separated"
-              className="min-h-[36px] min-w-[240px] flex-1 border border-sf-line-interactive bg-sf-surface px-2 text-[13px] normal-case tracking-normal text-t1"
+              className="min-h-[36px] min-w-[240px] flex-1 px-3 text-[13px] normal-case tracking-normal text-t1"
             />
           ) : (
             aliases.map((a) => (
@@ -439,7 +439,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
         </div>
       )}
       {canEdit && isEditing && (
-        <div className="mt-1 flex flex-wrap items-center gap-1.5 font-mono text-[12px] uppercase tracking-wider text-t3">
+        <div className="mt-1 flex flex-wrap items-center gap-2 font-mono text-[12px] uppercase tracking-wider text-t3">
           <span className="text-t4">EPOCH</span>
           <input
             type="text"
@@ -448,7 +448,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
             onChange={(e) => setEpochDraft({ from: e.target.value, to: epochDraft?.to ?? entityEpochRange(entryMeta).to ?? "" })}
             onBlur={commitEpoch}
             placeholder="from"
-            className="min-h-[36px] w-32 border border-sf-line-interactive bg-sf-surface px-2 text-[13px] normal-case tracking-normal text-t1"
+            className="min-h-[36px] w-32 px-3 text-[13px] normal-case tracking-normal text-t1"
           />
           <span className="text-t4">—</span>
           <input
@@ -458,7 +458,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
             onChange={(e) => setEpochDraft({ from: epochDraft?.from ?? entityEpochRange(entryMeta).from ?? "", to: e.target.value })}
             onBlur={commitEpoch}
             placeholder="to"
-            className="min-h-[36px] w-32 border border-sf-line-interactive bg-sf-surface px-2 text-[13px] normal-case tracking-normal text-t1"
+            className="min-h-[36px] w-32 px-3 text-[13px] normal-case tracking-normal text-t1"
           />
           <span className="text-t4">IN THE WORLD'S OWN CALENDAR · BLANK = ALWAYS</span>
         </div>
@@ -688,7 +688,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
           <div className="flex gap-2">
             <button
               onClick={handleViewInTool}
-              className="sf-fill-sweep sf-fill-sweep--secondary px-3 py-1.5 border border-sf-line-interactive text-[12px] uppercase tracking-wider"
+              className="sf-fill-sweep sf-fill-sweep--secondary px-3 py-1.5 border border-sf-line hover:border-sf-line-emphasis text-[12px] uppercase tracking-wider"
             >
               View in {typeLabel}
             </button>
@@ -722,7 +722,7 @@ function ConnectionSuggestionBar({
   const [connType, setConnType] = useState("related_to");
 
   return (
-    <div className="flex items-center gap-2 px-3 py-2 bg-sf-surface border border-sf-line-interactive text-[12px]">
+    <div className="flex items-center gap-2 px-3 py-2 bg-sf-surface border border-sf-line text-[12px]">
       <span className="font-mono uppercase tracking-wider text-t4">
         Link detected:
       </span>
@@ -734,7 +734,7 @@ function ConnectionSuggestionBar({
         value={connType}
         onChange={(e) => setConnType(e.target.value)}
         aria-label="Relation"
-        className="border border-sf-line-interactive bg-transparent px-1.5 py-0.5 text-[12px] uppercase tracking-wider text-t2"
+        className="px-3 py-0.5 text-[12px] uppercase tracking-wider text-t2"
       >
         {Object.entries(RELATIONSHIP_TYPES_BY_STAGE).map(([stage, types]) => (
           <optgroup
@@ -756,7 +756,7 @@ function ConnectionSuggestionBar({
       <button
         type="button"
         onClick={() => onAccept(suggestion, connType)}
-        className="sf-fill-sweep sf-fill-sweep--secondary px-2 py-0.5 border border-sf-primary text-sf-primary-text text-[12px] uppercase tracking-wider"
+        className="sf-fill-sweep sf-fill-sweep--secondary px-3 py-0.5 border border-sf-primary text-sf-primary-text text-[12px] uppercase tracking-wider"
       >
         Add
       </button>

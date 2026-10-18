@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 const SharedPageHeader = () => {
   return (
-    <header className="sticky top-0 z-50 border-b border-sf-line bg-background/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-sf-line-hairline bg-background/80 backdrop-blur-xl">
       <div className="container mx-auto px-4 h-14 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 hover:text-sf-primary-text transition-colors">
           <CubeLogo size={28} />
