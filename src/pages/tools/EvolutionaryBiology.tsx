@@ -1,6 +1,4 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from "react";
-import { useWorldId } from "@/hooks/use-world-id";
-import { useTags } from "@/hooks/use-tags";
+import { useState, useMemo, lazy, Suspense } from "react";
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 import { useSearchParams } from "react-router-dom";
 import {
@@ -34,7 +32,6 @@ import {
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import { useToast } from "@/hooks/use-toast";
-import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import WorksheetLinkSelector from "@/components/tools/WorksheetLinkSelector";
 import SpeciesMatrixImportModal from "@/components/tools/SpeciesMatrixImportModal";
@@ -42,18 +39,24 @@ import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
+// FormState, defaults and codec: lib/tool-worksheets/phylo.
+import {
+  codec as phyloCodec,
+  type FormState,
+  TOOL_TYPE,
+  LOCAL_STORAGE_KEY,
+} from "@/lib/tool-worksheets/phylo";
+import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import { EvolutionarySummaryTemplate, EvolutionaryFullReportTemplate } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
-import { Json } from "@/integrations/supabase/types";
 import { LinkedWorksheetRef, getLinkConfigsForTool } from "@/lib/worksheet-links-config";
 import {
   EVOLUTIONARY_BIOLOGY_SECTIONS,
@@ -111,299 +114,6 @@ const SECTIONS: Section[] = [
   })),
 ];
 
-// Types for form state
-interface AdaptationEntry {
-  trait: string;
-  selectivePressure: string;
-  tradeoff: string;
-}
-
-interface LimbEntry {
-  type: string;
-  count: string;
-  function: string;
-}
-
-interface SensoryOrganEntry {
-  sense: string;
-  location: string;
-  capabilities: string;
-}
-
-interface LifeStageEntry {
-  stage: string;
-  duration: string;
-  characteristics: string;
-}
-
-interface VestigialTraitEntry {
-  trait: string;
-  ancestralFunction: string;
-  currentState: string;
-}
-
-interface FormState {
-  // Species Identity
-  speciesName: string;
-
-  // Section 1: Foundations
-  foundations: {
-    primarySurvivalPressures: string[];
-    extremophileInspiration: string;
-    survivalPressuresNotes: string;
-  };
-
-  // Section 2: Biochemistry & Metabolism
-  biochemistry: {
-    biochemicalBasis: string;
-    solvent: string;
-    energySource: string;
-    metabolicRate: string;
-    respirationType: string;
-    wasteProducts: string;
-    temperatureRange: { min: string; max: string; optimal: string };
-    biochemistryNotes: string;
-  };
-
-  // Section 3: Evolutionary Adaptations
-  adaptations: {
-    keyAdaptations: AdaptationEntry[];
-    convergentEvolution: string;
-    uniqueAdaptations: string;
-    adaptationsNotes: string;
-  };
-
-  // Section 4: Body Plan & Morphology
-  bodyPlan: {
-    symmetry: string;
-    bodySegments: string;
-    limbs: LimbEntry[];
-    sizeRange: { min: string; max: string };
-    integument: string;
-    coloration: string;
-    colorationFunction: string;
-    internalStructure: string;
-    bodyPlanNotes: string;
-  };
-
-  // Section 5: Sensory Systems
-  sensory: {
-    primarySenses: string[];
-    sensoryOrgans: SensoryOrganEntry[];
-    blindSpots: string;
-    environmentalTuning: string;
-    sensoryNotes: string;
-  };
-
-  // Section 6: Reproduction & Life Cycle
-  reproduction: {
-    reproductionMode: string;
-    matingSystem: string;
-    fertilizationType: string;
-    gestationType: string;
-    offspringCount: string;
-    parentalCare: string;
-    lifeStages: LifeStageEntry[];
-    lifespan: string;
-    senescence: string;
-    reproductionNotes: string;
-  };
-
-  // Section 7: Social Evolution & Structure
-  social: {
-    groupSize: string;
-    socialStructure: string;
-    hierarchyType: string;
-    cooperationMechanisms: string[];
-    conflictResolution: string;
-    kinRecognition: string;
-    territoriality: string;
-    socialNotes: string;
-  };
-
-  // Section 8: Intelligence & Cognition
-  cognition: {
-    brainAnalog: string;
-    cognitionType: string;
-    problemSolving: string;
-    memoryType: string;
-    learningMechanisms: string[];
-    toolUse: string;
-    abstractThinking: string;
-    cognitionNotes: string;
-  };
-
-  // Section 9: Communication Biology
-  communication: {
-    primaryChannel: string;
-    secondaryChannels: string[];
-    signalRange: string;
-    informationCapacity: string;
-    deception: string;
-    culturalTransmission: string;
-    communicationNotes: string;
-  };
-
-  // Section 10: Psychology from Biology
-  psychology: {
-    emotionAnalogs: string[];
-    motivationalDrives: string[];
-    fearResponses: string;
-    pleasureResponses: string;
-    stressResponse: string;
-    curiosityLevel: string;
-    psychologyNotes: string;
-  };
-
-  // Section 11: Vestigial & Transitional Traits
-  vestigial: {
-    vestigialTraits: VestigialTraitEntry[];
-    transitionalFeatures: string;
-    evolutionaryHistory: string;
-    vestigialNotes: string;
-  };
-
-  // Section 12: Non-Human Viewpoint Test
-  viewpointTest: {
-    alienPerceptionDifferences: string;
-    humanAssumptionsAvoided: string[];
-    uniqueWorldview: string;
-    viewpointNotes: string;
-  };
-
-  // Section 13: Integration & Consistency
-  integration: {
-    traitInteractions: string;
-    ecologicalNiche: string;
-    evolutionaryPlausibility: string;
-    potentialContradictions: string;
-    integrationNotes: string;
-  };
-
-  // Worksheet linking
-  _linkedWorksheets?: {
-    planet?: LinkedWorksheetRef;
-    ecr?: LinkedWorksheetRef;
-  };
-  generalNotes: string;
-  moodboard: MoodboardImage[];
-}
-
-const DEFAULT_FORM_STATE: FormState = {
-  speciesName: "",
-  foundations: {
-    primarySurvivalPressures: [],
-    extremophileInspiration: "",
-    survivalPressuresNotes: "",
-  },
-  biochemistry: {
-    biochemicalBasis: "",
-    solvent: "",
-    energySource: "",
-    metabolicRate: "",
-    respirationType: "",
-    wasteProducts: "",
-    temperatureRange: { min: "", max: "", optimal: "" },
-    biochemistryNotes: "",
-  },
-  adaptations: {
-    keyAdaptations: [],
-    convergentEvolution: "",
-    uniqueAdaptations: "",
-    adaptationsNotes: "",
-  },
-  bodyPlan: {
-    symmetry: "",
-    bodySegments: "",
-    limbs: [],
-    sizeRange: { min: "", max: "" },
-    integument: "",
-    coloration: "",
-    colorationFunction: "",
-    internalStructure: "",
-    bodyPlanNotes: "",
-  },
-  sensory: {
-    primarySenses: [],
-    sensoryOrgans: [],
-    blindSpots: "",
-    environmentalTuning: "",
-    sensoryNotes: "",
-  },
-  reproduction: {
-    reproductionMode: "",
-    matingSystem: "",
-    fertilizationType: "",
-    gestationType: "",
-    offspringCount: "",
-    parentalCare: "",
-    lifeStages: [],
-    lifespan: "",
-    senescence: "",
-    reproductionNotes: "",
-  },
-  social: {
-    groupSize: "",
-    socialStructure: "",
-    hierarchyType: "",
-    cooperationMechanisms: [],
-    conflictResolution: "",
-    kinRecognition: "",
-    territoriality: "",
-    socialNotes: "",
-  },
-  cognition: {
-    brainAnalog: "",
-    cognitionType: "",
-    problemSolving: "",
-    memoryType: "",
-    learningMechanisms: [],
-    toolUse: "",
-    abstractThinking: "",
-    cognitionNotes: "",
-  },
-  communication: {
-    primaryChannel: "",
-    secondaryChannels: [],
-    signalRange: "",
-    informationCapacity: "",
-    deception: "",
-    culturalTransmission: "",
-    communicationNotes: "",
-  },
-  psychology: {
-    emotionAnalogs: [],
-    motivationalDrives: [],
-    fearResponses: "",
-    pleasureResponses: "",
-    stressResponse: "",
-    curiosityLevel: "",
-    psychologyNotes: "",
-  },
-  vestigial: {
-    vestigialTraits: [],
-    transitionalFeatures: "",
-    evolutionaryHistory: "",
-    vestigialNotes: "",
-  },
-  viewpointTest: {
-    alienPerceptionDifferences: "",
-    humanAssumptionsAvoided: [],
-    uniqueWorldview: "",
-    viewpointNotes: "",
-  },
-  integration: {
-    traitInteractions: "",
-    ecologicalNiche: "",
-    evolutionaryPlausibility: "",
-    potentialContradictions: "",
-    integrationNotes: "",
-  },
-  generalNotes: "",
-  moodboard: [],
-};
-
-const TOOL_TYPE = "evolutionary-biology";
 const TOOL_DISPLAY_NAME = "Phylo";
 
 const EvolutionaryBiology = () => {
@@ -411,29 +121,28 @@ const EvolutionaryBiology = () => {
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const worldId = useWorldId();
-  const worksheetId = searchParams.get("worksheetId") || undefined;
+  const worksheet = useToolWorksheet(TOOL_TYPE, {
+    ...phyloCodec,
+    displayName: TOOL_DISPLAY_NAME,
+    localKey: LOCAL_STORAGE_KEY,
+    // The draft used to be written on every edit; a short debounce keeps that.
+    autosaveDraftMs: 300,
+    onDraftCreated: (id, title) => entityMatch.check(id, title),
+  });
+  const { state: formState, setState: setFormState, worldId } = worksheet;
+  const currentWorksheetId = worksheet.worksheetId;
+  const currentWorksheetTitle = worksheet.worksheetTitle;
+  const worksheetId = worksheet.worksheetId;
+  const worksheetTitle = worksheet.worksheetTitle;
 
   // Worksheet management
   const { worlds } = useWorlds();
   const currentWorld = worlds.find((w) => w.id === worldId);
   const entityMatch = useEntityMatch(worldId);
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId, false, {
-    onDraftCreated: entityMatch.check,
-  });
-  const { data: worksheets = [], isLoading: loadingWorksheets } = useWorksheetsByType(worldId, TOOL_TYPE);
-  const { data: currentWorksheet, isLoading: loadingWorksheet } = useWorksheet(worksheetId);
-  const renameWorksheet = useRenameWorksheet();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const { data: shareConfig } = useWorksheetShare(worksheetId || undefined);
-  const { updateWorksheetTags } = useTags();
-  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
 
   // UI state
-  const [formState, setFormState] = useState<FormState>(DEFAULT_FORM_STATE);
-  const [worksheetTitle, setWorksheetTitle] = useState<string>("");
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const [showWorksheetSelector, setShowWorksheetSelector] = useState(false);
   const [showExportDialog, setShowExportDialog] = useState(false);
   const [showSpeciesMatrixImport, setShowSpeciesMatrixImport] = useState(false);
   const [notesSheetOpen, setNotesSheetOpen] = useState(false);
@@ -445,47 +154,7 @@ const EvolutionaryBiology = () => {
   // Link configurations for this tool
   const linkConfigs = getLinkConfigsForTool(TOOL_TYPE);
 
-  // Show worksheet selector when worldId is present but no worksheetId
-  useEffect(() => {
-    if (worldId && !worksheetId && !loadingWorksheets) {
-      setShowWorksheetSelector(true);
-    }
-  }, [worldId, worksheetId, loadingWorksheets]);
 
-  // Load worksheet data when worksheetId changes
-  useEffect(() => {
-    if (currentWorksheet) {
-      const data = currentWorksheet.data as unknown as FormState;
-      setFormState({ ...DEFAULT_FORM_STATE, ...data });
-      setWorksheetTitle(currentWorksheet.title || "");
-      setHasUnsavedChanges(false);
-      if (currentWorksheet.tags) {
-        setWorksheetTags(currentWorksheet.tags);
-      }
-    }
-  }, [currentWorksheet]);
-
-  // Load from localStorage for non-cloud sessions
-  useEffect(() => {
-    if (!worldId && !worksheetId) {
-      const saved = localStorage.getItem("evolutionary-biology-local");
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          setFormState({ ...DEFAULT_FORM_STATE, ...parsed });
-        } catch {
-          // Ignore parse errors
-        }
-      }
-    }
-  }, [worldId, worksheetId]);
-
-  // Auto-save to localStorage for non-cloud sessions
-  useEffect(() => {
-    if (!worldId && !worksheetId && hasUnsavedChanges) {
-      localStorage.setItem("evolutionary-biology-local", JSON.stringify(formState));
-    }
-  }, [formState, hasUnsavedChanges, worldId, worksheetId]);
 
   const updateFormState = <K extends keyof FormState>(
     section: K,
@@ -495,62 +164,8 @@ const EvolutionaryBiology = () => {
       ...prev,
       [section]: { ...prev[section], ...updates },
     }));
-    setHasUnsavedChanges(true);
   };
 
-  const handleSave = async () => {
-    if (!worksheetId || !worldId) {
-      toast({
-        title: "CANNOT SAVE.",
-        description: "NO WORKSHEET SELECTED.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      await updateWorksheet.mutateAsync({
-        worksheetId,
-        data: formState as unknown as Json,
-      });
-      setHasUnsavedChanges(false);
-    } catch (error) {
-      // Error handled by mutation
-    }
-  };
-
-  const handleCreateWorksheet = async (name: string): Promise<string> => {
-    if (!worldId) throw new Error("No world selected");
-
-    const result = await createWorksheet.mutateAsync({
-      worldId,
-      toolType: TOOL_TYPE,
-      title: name,
-      data: DEFAULT_FORM_STATE as unknown as Json,
-    });
-
-    return result.id;
-  };
-
-  const handleSelectWorksheet = (id: string) => {
-    setSearchParams({ worldId: worldId!, worksheetId: id });
-    setShowWorksheetSelector(false);
-  };
-
-  // Handle worksheet rename
-  const handleRename = async (newTitle: string) => {
-    if (!worksheetId) return;
-
-    await renameWorksheet.mutateAsync({ worksheetId, title: newTitle });
-    setWorksheetTitle(newTitle);
-  };
-
-  const handleTagsChange = (newTags: string[]) => {
-    setWorksheetTags(newTags);
-    if (worksheetId) {
-      updateWorksheetTags.mutate({ worksheetId, tags: newTags });
-    }
-  };
 
   const toggleSection = (sectionId: string) => {
     // Preserve scroll position to prevent jumping to top
@@ -581,7 +196,6 @@ const EvolutionaryBiology = () => {
         [key]: ref,
       },
     }));
-    setHasUnsavedChanges(true);
   };
 
   const handleSpeciesMatrixImport = (data: {
@@ -621,7 +235,6 @@ const EvolutionaryBiology = () => {
       return { ...prev, ...updates };
     });
 
-    setHasUnsavedChanges(true);
 
     toast({
       title: "SPECIES IMPORTED.",
@@ -875,16 +488,12 @@ const EvolutionaryBiology = () => {
 
   return (
     <ToolPageLayout
+      {...worksheet.layoutProps}
       toolType={TOOL_TYPE}
-      onSave={handleSave}
-      onOpen={worldId ? () => setShowWorksheetSelector(true) : undefined}
       onPrint={handlePrint}
       onExport={() => setShowExportDialog(true)}
       onShare={worksheetId ? () => setShareDialogOpen(true) : undefined}
       isShared={!!shareConfig?.enabled}
-      hasUnsavedChanges={hasUnsavedChanges}
-      isSaving={updateWorksheet.isPending}
-      isCloudEnabled={!!(worldId && user)}
       onNotesClick={() => setNotesSheetOpen(true)}
       onMoodboardClick={() => setMoodboardSheetOpen(true)}
       moodboardCount={formState.moodboard?.length || 0}
@@ -898,14 +507,7 @@ const EvolutionaryBiology = () => {
           defaultFilename="evolutionary-biology"
         />
       }
-      worksheetId={worksheetId}
-      worksheetTitle={worksheetTitle || null}
-      onRenameWorksheet={handleRename}
-      worksheetLoading={loadingWorksheet}
-      worksheetTags={worksheetTags}
-      onTagsChange={handleTagsChange}
       worksheetIcon={<Dna className="w-5 h-5 text-sf-primary-text" />}
-      isLoggedIn={!!user}
     >
 
         {/* Introduction */}
@@ -2658,19 +2260,11 @@ const EvolutionaryBiology = () => {
           <MobileKeyChoices sections={keyChoicesSections} title="Species Summary" />
         </div>
 
-
         {/* Worksheet Selector Dialog */}
         <WorksheetSelectorDialog
-          open={showWorksheetSelector}
-          onOpenChange={setShowWorksheetSelector}
-          worldId={worldId || ""}
+          {...worksheet.selectorProps}
           worldName={currentWorld?.name}
-          toolType={TOOL_TYPE}
           toolDisplayName={TOOL_DISPLAY_NAME}
-          worksheets={worksheets}
-          isLoading={loadingWorksheets}
-          onSelect={handleSelectWorksheet}
-          onCreate={handleCreateWorksheet}
         />
 
         {/* Export Dialog */}

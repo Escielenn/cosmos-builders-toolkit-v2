@@ -35,6 +35,18 @@ export function castCodec<S>(defaults: S): ToolWorksheetCodec<S> {
   };
 }
 
+/**
+ * Rows store the form as-is, but older rows may lack top-level keys added
+ * since: they open with the defaults for those keys (a shallow merge).
+ */
+export function mergeCodec<S extends object>(defaults: S): ToolWorksheetCodec<S> {
+  return {
+    defaults,
+    hydrate: (data, d) => ({ ...d, ...((data ?? {}) as Partial<S>) }),
+    serialize: (state) => state as unknown as Json,
+  };
+}
+
 /** Shown when a save can only reach this browser. */
 export const LOCAL_MODE_NOTICE = "LOCAL MODE. SIGN IN TO FILE THIS WORKSHEET.";
 

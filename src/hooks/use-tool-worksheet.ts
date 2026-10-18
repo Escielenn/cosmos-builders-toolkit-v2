@@ -148,6 +148,10 @@ export function useToolWorksheet<S>(toolType: string, options: UseToolWorksheetO
 
   const keyOf = useCallback((s: S) => (opts.current.dirtyKey ?? stateKey)(s), []);
   const [savedKey, setSavedKey] = useState<string>(() => keyOf(defaults));
+  const [defaultsKey] = useState<string>(() => keyOf(defaults));
+  /** Still showing the untouched defaults (so a browser draft may replace it). */
+  const pristine = useRef(true);
+  pristine.current = keyOf(state) === defaultsKey;
 
   const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
     onDraftCreated: (id, t) => opts.current.onDraftCreated?.(id, t),
@@ -192,6 +196,8 @@ export function useToolWorksheet<S>(toolType: string, options: UseToolWorksheetO
     draftLoadedFor.current = k;
     const raw = readDraft(localKey);
     if (raw == null) return;
+    // Never replace edits already made on this page.
+    if (pristine.current === false) return;
     try {
       const next = (opts.current.hydrateDraft ?? opts.current.hydrate)(raw, opts.current.defaults);
       setState(next);
@@ -253,8 +259,12 @@ export function useToolWorksheet<S>(toolType: string, options: UseToolWorksheetO
   }, [autoOpenSelector, worldId, urlWorksheetId, sheetsLoading, signedIn, migrate]);
 
   // ── Debounced browser-draft autosave ───────────────────────────────
+  // Only real edits are written, and never before auth has settled and the
+  // draft has had its chance to load: an early write of the defaults would
+  // overwrite the very draft about to be restored.
+  const pendingEdit = keyOf(state) !== savedKey;
   useEffect(() => {
-    if (!localKey || !autosaveDraftMs) return;
+    if (!localKey || !autosaveDraftMs || authLoading || !pendingEdit) return;
     const t = window.setTimeout(() => {
       writeDraft(localKey, state, { worldId, signedIn });
     }, autosaveDraftMs);
