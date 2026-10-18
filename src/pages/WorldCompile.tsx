@@ -74,6 +74,9 @@ import {
   type SeparatorStyle,
 } from "@/lib/manuscript/compile";
 import { FORMAT_LABELS, downloadManuscript } from "@/lib/manuscript/export";
+import { backMatterData } from "@/lib/manuscript/back-matter-data";
+import { useEntities } from "@/hooks/use-entity-graph";
+import { useCanonFacts } from "@/canon/hooks";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -195,9 +198,20 @@ export default function WorldCompile() {
       .join("");
   }, [worksheets]);
 
+  // Generated back matter (Studio Charter 2.7): Codex entries for the
+  // glossary and dramatis personae, canon facts for the series bible.
+  // Read only when one of them is on.
+  const wantsCodex = s.includeGlossary || s.includeDramatis;
+  const { data: entities } = useEntities(wantsCodex || s.includeSeriesBible ? worldId : undefined);
+  const { data: canonFacts } = useCanonFacts(s.includeSeriesBible ? worldId : undefined);
+  const backMatter = useMemo(
+    () => backMatterData(entities ?? [], canonFacts ?? []),
+    [entities, canonFacts],
+  );
+
   const manuscript = useMemo(
-    () => buildManuscript(compileTree, buildSettings, { appendixHtml, fallbackTitle, fallbackAuthor }),
-    [compileTree, buildSettings, appendixHtml, fallbackTitle, fallbackAuthor],
+    () => buildManuscript(compileTree, buildSettings, { appendixHtml, fallbackTitle, fallbackAuthor, backMatter }),
+    [compileTree, buildSettings, appendixHtml, fallbackTitle, fallbackAuthor, backMatter],
   );
   const docCount = manuscript.sections.reduce((n, sec) => n + sec.docs.length, 0);
 
@@ -364,6 +378,24 @@ export default function WorldCompile() {
                   <Toggle checked={s.includeAppendix} onChange={(v) => update({ includeAppendix: v })} label="World reference appendix">
                     A final section listing the values recorded in this world's tools.
                   </Toggle>
+                )}
+                <Toggle checked={s.includeDramatis} onChange={(v) => update({ includeDramatis: v })} label="Dramatis personae">
+                  Every character the compiled text mentions, by first appearance, with role and summary.
+                </Toggle>
+                <Toggle checked={s.includeGlossary} onChange={(v) => update({ includeGlossary: v })} label="Glossary">
+                  Every Codex entry the compiled text mentions, alphabetical, with its summary.
+                </Toggle>
+                <Toggle checked={s.includeSeriesBible} onChange={(v) => update({ includeSeriesBible: v })} label="Series bible appendix">
+                  The world's canon facts, grouped by cascade layer. Proposed and derived values are left out.
+                </Toggle>
+                {(s.includeGlossary || s.includeDramatis || s.includeSeriesBible) && (
+                  <p className="font-mono text-[12px] text-t3" role="status">
+                    {manuscript.backMatter.length
+                      ? manuscript.backMatter
+                          .map((b) => `${b.title.toUpperCase()} ${b.id === "bible" ? b.blocks.filter((x) => x.type === "li").length : b.blocks.length}`)
+                          .join(" · ")
+                      : "NOTHING ON FILE FOR THE CHOSEN BACK MATTER."}
+                  </p>
                 )}
               </div>
             </GlassPanel>
@@ -770,6 +802,12 @@ function ManuscriptPreview({ manuscript: m }: { manuscript: ReturnType<typeof bu
           <div className="prose prose-invert prose-sm max-w-none text-t2" dangerouslySetInnerHTML={{ __html: sanitizeHtml(blocksToXhtml(m.appendix)) }} />
         </section>
       )}
+      {m.backMatter.map((b) => (
+        <section key={b.id} className="space-y-2">
+          <h3 className="text-center font-serif text-lg italic text-t1">{b.title}</h3>
+          <div className="prose prose-invert prose-sm max-w-none text-t2" dangerouslySetInnerHTML={{ __html: sanitizeHtml(blocksToXhtml(b.blocks)) }} />
+        </section>
+      ))}
     </div>
   );
 }

@@ -2676,6 +2676,21 @@ html {
 }
 
 /* ------------------------------------------------------------------ */
+/* Inline comment anchor (CommentMark): a faint amber wash with a     */
+/* solid amber baseline. Resolved anchors stay in the document but    */
+/* show nothing. Never changes the type: the prose reads as written.  */
+/* ------------------------------------------------------------------ */
+
+.sf-comment {
+  background-color: rgb(var(--sf-amber-rgb) / 0.10);
+  box-shadow: inset 0 -1px 0 var(--sf-amber);
+}
+.sf-comment[data-resolved="true"] {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+/* ------------------------------------------------------------------ */
 /* Cited fact (fact-ref): the value in the prose's own type, with a   */
 /* quiet dotted underline in the producing tool's cascade colour.     */
 /* ------------------------------------------------------------------ */

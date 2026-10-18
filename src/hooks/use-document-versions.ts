@@ -327,6 +327,39 @@ export async function snapshotDocumentText(
   }
 }
 
+/**
+ * File a snapshot of content the caller already holds (not the server's
+ * copy), outside any React tree. Project-wide replace uses it so the snapshot
+ * is exactly the text the replace is about to change. Returns the snapshot
+ * id, or null when it could not be filed (the caller must then not proceed).
+ * Never throws.
+ */
+export async function fileContentSnapshot(input: {
+  documentId: string;
+  worldId: string;
+  userId: string;
+  title: string;
+  content: string;
+  name: string;
+  reason?: SnapshotReason;
+}): Promise<string | null> {
+  try {
+    const { data, error } = await insertVersion({
+      document_id: input.documentId,
+      world_id: input.worldId,
+      user_id: input.userId,
+      title: input.title || "Untitled",
+      content_html: input.content,
+      word_count: countWords(input.content),
+      snapshot_reason: input.reason ?? "manual",
+      name: input.name.trim().slice(0, 80) || null,
+    });
+    return error || !data ? null : data.id;
+  } catch {
+    return null;
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Hook
 // ---------------------------------------------------------------------------

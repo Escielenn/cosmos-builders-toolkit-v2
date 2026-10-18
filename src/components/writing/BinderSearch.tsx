@@ -13,6 +13,8 @@
 //
 // Absorbs (Law VII): the per-document Find (Ctrl+F) stays for find and
 // replace inside one document; this is the binder-wide reach it never had.
+// REPLACE across the manuscript opens from the results (ProjectReplaceDialog):
+// a preview of every match, per-match include, snapshots before applying.
 // ---------------------------------------------------------------------------
 
 import { useDeferredValue, useMemo, useState, type RefObject } from "react";
@@ -77,6 +79,13 @@ export function BinderSearchInput({
       >
         Aa
       </ToggleChip>
+      <ToggleChip
+        on={!!opts.wholeWord}
+        onClick={() => onOpts({ ...opts, wholeWord: !opts.wholeWord })}
+        label="Whole word"
+      >
+        W
+      </ToggleChip>
       <ToggleChip on={opts.regex} onClick={() => onOpts({ ...opts, regex: !opts.regex })} label="Regular expression">
         .*
       </ToggleChip>
@@ -124,6 +133,7 @@ export function BinderSearchResults({
   onSave,
   onScrivenings,
   textLoading = false,
+  onReplace,
 }: {
   /** Documents in reading order, with their text once it has loaded. */
   docs: SearchableDoc[];
@@ -135,6 +145,8 @@ export function BinderSearchResults({
   onJump: (docId: string, hit: SearchHit) => void;
   onSave: () => void;
   onScrivenings: (ids: string[]) => void;
+  /** Open project-wide replace for this query. */
+  onReplace?: () => void;
 }): JSX.Element {
   // Deferred: a long manuscript is searched after the keystroke paints, and
   // text patched in while the writer types elsewhere does not block input.
@@ -161,8 +173,20 @@ export function BinderSearchResults({
               : "NO MATCHES."
             : `${outcome.totalHits.toLocaleString()} ${outcome.totalHits === 1 ? "MATCH" : "MATCHES"} · ${outcome.results.length} ${outcome.results.length === 1 ? "DOC" : "DOCS"}`}
         </span>
-        {outcome.results.length > 0 && (
+        {(outcome.results.length > 0 || onReplace) && (
           <span className="ml-auto flex gap-2">
+            {onReplace && (
+              <button
+                type="button"
+                onClick={onReplace}
+                className="min-h-hit border border-sf-line px-3 text-[12px] text-t2 transition-colors duration-base hover:border-sf-primary hover:text-t1"
+                title="Replace across the manuscript, with a preview of every match"
+              >
+                Replace
+              </button>
+            )}
+            {outcome.results.length > 0 && (
+            <>
             <button
               type="button"
               onClick={() => onScrivenings(outcome.results.map((r) => r.docId))}
@@ -179,6 +203,8 @@ export function BinderSearchResults({
             >
               Save
             </button>
+            </>
+            )}
           </span>
         )}
       </div>

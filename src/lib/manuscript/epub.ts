@@ -112,6 +112,14 @@ export function buildEpubFiles(m: Manuscript, opts: { id: string; lang?: string;
       body: `<h2>Appendix: World Reference</h2>${blocksToXhtml(m.appendix as Block[])}`,
     });
   }
+  for (const b of m.backMatter) {
+    chapters.push({
+      id: `back-${b.id}`,
+      file: `back-${b.id}.xhtml`,
+      title: b.title,
+      body: `<h2>${escapeXml(b.title)}</h2>${blocksToXhtml(b.blocks)}`,
+    });
+  }
 
   const container = `<?xml version="1.0" encoding="UTF-8"?>
 <container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
