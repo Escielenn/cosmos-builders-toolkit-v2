@@ -4,6 +4,7 @@ import { Loader } from "@/components/ui/loader";
 import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 import { getToolDisplayName } from "@/lib/tools-config";
+import ProToolGuard from "@/components/subscription/ProToolGuard";
 
 // Lazy-loaded tool components (same as App.tsx)
 const EnvironmentalChainReaction = lazy(() => import("./tools/EnvironmentalChainReaction"));
@@ -57,6 +58,9 @@ const TOOL_COMPONENTS: Record<string, React.LazyExoticComponent<React.ComponentT
   "generation-ship": GenerationShipDesigner,
 };
 
+/** Slugs reachable at /worlds/:worldId/tools/:toolName (exported for the gating test). */
+export const WORLD_TOOL_SLUGS = Object.keys(TOOL_COMPONENTS);
+
 /**
  * Router component for /worlds/:worldId/tools/:toolName
  * Resolves the tool component and injects worldId into search params
@@ -78,16 +82,22 @@ const WorldToolPage = () => {
   // the worldId is available via context. Tool pages will use useWorldId() hook
   // to resolve it. No need to inject into searchParams, the hook handles both.
 
+  // Same gate as the standalone /tools/* routes: the guard reads the tier
+  // from tools-config (free tools pass straight through, unlisted ids fail
+  // closed). Inside WorldLayout it renders in the content column and its
+  // back link returns to the world dashboard.
   return (
-    <Suspense
-      fallback={
-        <div className="flex items-center justify-center h-64">
-          <Loader size="sm" />
-        </div>
-      }
-    >
-      <ToolComponent />
-    </Suspense>
+    <ProToolGuard key={toolName} toolId={toolName}>
+      <Suspense
+        fallback={
+          <div className="flex items-center justify-center h-64">
+            <Loader size="sm" />
+          </div>
+        }
+      >
+        <ToolComponent />
+      </Suspense>
+    </ProToolGuard>
   );
 };
 

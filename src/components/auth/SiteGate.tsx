@@ -8,7 +8,7 @@ export default function SiteGate({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation();
 
   // Auth and join pages are always accessible
-  if (!PRIVATE_MODE || pathname === "/auth" || pathname.startsWith("/join/")) {
+  if (!PRIVATE_MODE || pathname === "/auth" || pathname.startsWith("/auth/") || pathname.startsWith("/join/")) {
     return <>{children}</>;
   }
 

@@ -1,8 +1,9 @@
 import { ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
-import { isProTool, isEarlyAccessTool, PRO_TOOL_COUNT } from "@/lib/tools-config";
+import { getToolAccess, PRO_TOOL_COUNT } from "@/lib/tools-config";
+import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { BackLink } from "@/components/ui/back-link";
@@ -15,22 +16,56 @@ interface ProToolGuardProps {
   children: ReactNode;
 }
 
+/**
+ * Page chrome for the lock screens. Standalone routes get the full page with
+ * Header; inside WorldLayout (which already draws Header + Codex sidebar) the
+ * panel renders in the content column only, so the world stays in view.
+ */
+function GuardShell({ embedded, children }: { embedded: boolean; children: ReactNode }) {
+  if (embedded) {
+    return (
+      <div className="sf-tool-content flex items-center justify-center py-16">
+        {children}
+      </div>
+    );
+  }
+  return (
+    <div className="min-h-screen bg-sf-void">
+      <Header />
+      <main className="container mx-auto px-4 pt-24 pb-16 flex items-center justify-center">
+        {children}
+      </main>
+    </div>
+  );
+}
+
 const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
   const { user, loading: authLoading } = useAuth();
   const { isSubscribed, isLoading: subLoading, hasLapsedSubscription, isVanguard } = useSubscription();
   const navigate = useNavigate();
+  const location = useLocation();
+  const world = useWorldLayoutContext();
 
-  const isPro = isProTool(toolId);
-  const isEarlyAccess = isEarlyAccessTool(toolId);
+  const access = getToolAccess(toolId);
+  const isEarlyAccess = access === "early-access";
+  const embedded = world !== null;
+  const backTo = world ? `/worlds/${world.worldId}` : "/";
+  const backLabel = world ? "Return to World" : "Return to Bridge";
+  const here = `${location.pathname}${location.search}`;
+  const signInTo = `/auth?tab=login&redirect=${encodeURIComponent(here)}`;
 
-  // If not a pro or early-access tool, render children directly
-  if (!isPro && !isEarlyAccess) {
+  // Free tools render directly
+  if (access === "free") {
     return <>{children}</>;
   }
 
   // Show loading state
   if (authLoading || subLoading) {
-    return (
+    return embedded ? (
+      <div className="flex items-center justify-center h-64">
+        <Loader size="sm" />
+      </div>
+    ) : (
       <div className="min-h-screen bg-sf-void flex items-center justify-center">
         <Loader />
       </div>
@@ -40,9 +75,7 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
   // Early access tools require Vanguard tier
   if (isEarlyAccess && !isVanguard) {
     return (
-      <div className="min-h-screen bg-sf-void">
-        <Header />
-        <main className="container mx-auto px-4 pt-24 pb-16 flex items-center justify-center">
+      <GuardShell embedded={embedded}>
           <GlassPanel className="max-w-md p-8 text-center">
             <div className="w-16 h-16 mx-auto mb-6 rounded-none bg-sf-violet/[0.06] border border-sf-violet flex items-center justify-center">
               <Sparkles className="w-8 h-8 text-sf-violet" />
@@ -70,12 +103,11 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
               </Button>
 
               <div className="flex justify-center">
-                <BackLink to="/" label="Return to Bridge" />
+                <BackLink to={backTo} label={backLabel} />
               </div>
             </div>
           </GlassPanel>
-        </main>
-      </div>
+      </GuardShell>
     );
   }
 
@@ -87,9 +119,7 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
   // Lapsed subscriber, warmer re-subscribe message
   if (hasLapsedSubscription && user) {
     return (
-      <div className="min-h-screen bg-sf-void">
-        <Header />
-        <main className="container mx-auto px-4 pt-24 pb-16 flex items-center justify-center">
+      <GuardShell embedded={embedded}>
           <GlassPanel className="max-w-md p-8 text-center">
             <div className="w-16 h-16 mx-auto mb-6 rounded-none bg-sf-primary/[0.06] border border-sf-primary flex items-center justify-center">
               <Clock className="w-8 h-8 text-sf-primary-text" />
@@ -117,20 +147,17 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
               </Button>
 
               <div className="flex justify-center">
-                <BackLink to="/" label="Return to Bridge" />
+                <BackLink to={backTo} label={backLabel} />
               </div>
             </div>
           </GlassPanel>
-        </main>
-      </div>
+      </GuardShell>
     );
   }
 
   // Never subscribed, upgrade prompt
   return (
-    <div className="min-h-screen bg-sf-void">
-      <Header />
-      <main className="container mx-auto px-4 pt-24 pb-16 flex items-center justify-center">
+    <GuardShell embedded={embedded}>
         <GlassPanel className="max-w-md p-8 text-center">
           <div className="w-16 h-16 mx-auto mb-6 rounded-none bg-sf-amber/[0.06] border border-sf-amber flex items-center justify-center">
             <Lock className="w-8 h-8 text-sf-amber-text" />
@@ -159,14 +186,14 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
                 variant="outline"
                 size="lg"
                 className="w-full gap-2"
-                onClick={() => navigate("/auth")}
+                onClick={() => navigate(signInTo)}
               >
                 SIGN IN
               </Button>
             )}
 
             <div className="flex justify-center">
-              <BackLink to="/" label="Return to Bridge" />
+              <BackLink to={backTo} label={backLabel} />
             </div>
           </div>
 
@@ -180,8 +207,7 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
             </ul>
           </div>
         </GlassPanel>
-      </main>
-    </div>
+    </GuardShell>
   );
 };
 
