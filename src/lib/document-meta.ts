@@ -42,6 +42,12 @@ export interface DocumentMeta {
    * the on-ramp to future set_in/POV binding.
    */
   subjectEntityId: string;
+  /**
+   * Optional chronicle_branches id: which timeline `when` is read on, for
+   * time-travel stories. Absent = the prime timeline. Type-and-read only for
+   * now; the Studio UI for it is a follow-up.
+   */
+  branchId?: string;
 }
 
 export const EMPTY_DOC_META: DocumentMeta = {
@@ -97,6 +103,8 @@ export function readDocMeta(metadata: unknown): DocumentMeta {
     status: isStatus(m.status) ? m.status : "",
     when: str(m.when),
     subjectEntityId: str(m.subjectEntityId),
+    // Only present when set, so documents without a branch read unchanged.
+    ...(str(m.branchId) ? { branchId: str(m.branchId) } : {}),
   };
 }
 

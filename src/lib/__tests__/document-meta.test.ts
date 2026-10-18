@@ -37,6 +37,12 @@ describe("readDocMeta", () => {
     expect(readDocMeta([1, 2, 3])).toEqual(EMPTY_DOC_META);
   });
 
+  it("reads branchId only when set, so older documents are unchanged", () => {
+    expect(readDocMeta({ branchId: "b-1" }).branchId).toBe("b-1");
+    expect("branchId" in readDocMeta({})).toBe(false);
+    expect("branchId" in readDocMeta({ branchId: 7 })).toBe(false);
+  });
+
   it("drops a status that is not in the vocabulary", () => {
     expect(readDocMeta({ status: "banana" }).status).toBe("");
   });

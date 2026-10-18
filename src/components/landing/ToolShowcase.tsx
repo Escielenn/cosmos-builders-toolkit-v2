@@ -128,6 +128,16 @@ const proTools = [
     status: "available",
   },
   {
+    // A Chronicle view, not a /tools route (Law VII): opens a world's
+    // Chronicle on the BRANCHES view, via world selection.
+    id: "time-travel-timelines",
+    title: "Time Travel Timelines",
+    description: "Branch your Chronicle into alternate timelines, log the travellers who jump between them, and catch causal loops.",
+    status: "available",
+    href: "/worlds?open=chronicle-branches",
+    iconId: "timeline",
+  },
+  {
     id: "sensorium",
     title: "Sensorium: Alien Sensory Systems",
     description: "Design evolutionarily plausible sensory systems for alien species. Derive senses from environmental constraints or validate custom selections.",
@@ -229,11 +239,15 @@ interface ToolPreviewCardProps {
   description: string;
   status: string;
   isPro?: boolean;
+  /** Destination when the entry is not a /tools route. */
+  href?: string;
+  /** Borrow another tool's icon. */
+  iconId?: string;
 }
 
-const ToolPreviewCard = ({ id, title, description, status, isPro }: ToolPreviewCardProps) => {
-  const CustomIcon = getToolIcon(id);
-  const route = getToolRoute(id);
+const ToolPreviewCard = ({ id, title, description, status, isPro, href, iconId }: ToolPreviewCardProps) => {
+  const CustomIcon = getToolIcon(iconId ?? id);
+  const route = href ?? getToolRoute(id);
 
   const card = (
     <GlassPanel lightArc hover className="p-5 h-full">

@@ -126,8 +126,73 @@ export type Database = {
           },
         ]
       }
+      chronicle_branches: {
+        Row: {
+          color: string
+          created_at: string
+          description: string | null
+          divergence_event_id: string | null
+          divergence_sort_value: number | null
+          id: string
+          name: string
+          parent_branch_id: string | null
+          sort_order: number
+          updated_at: string
+          world_id: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          description?: string | null
+          divergence_event_id?: string | null
+          divergence_sort_value?: number | null
+          id?: string
+          name: string
+          parent_branch_id?: string | null
+          sort_order?: number
+          updated_at?: string
+          world_id: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          description?: string | null
+          divergence_event_id?: string | null
+          divergence_sort_value?: number | null
+          id?: string
+          name?: string
+          parent_branch_id?: string | null
+          sort_order?: number
+          updated_at?: string
+          world_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chronicle_branches_divergence_event_id_fkey"
+            columns: ["divergence_event_id"]
+            isOneToOne: false
+            referencedRelation: "chronicle_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chronicle_branches_parent_branch_id_fkey"
+            columns: ["parent_branch_id"]
+            isOneToOne: false
+            referencedRelation: "chronicle_branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chronicle_branches_world_id_fkey"
+            columns: ["world_id"]
+            isOneToOne: false
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chronicle_events: {
         Row: {
+          branch_id: string | null
           color: string | null
           created_at: string
           description: string | null
@@ -147,6 +212,7 @@ export type Database = {
           world_id: string
         }
         Insert: {
+          branch_id?: string | null
           color?: string | null
           created_at?: string
           description?: string | null
@@ -166,6 +232,7 @@ export type Database = {
           world_id: string
         }
         Update: {
+          branch_id?: string | null
           color?: string | null
           created_at?: string
           description?: string | null
@@ -186,6 +253,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "chronicle_events_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "chronicle_branches"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "chronicle_events_linked_entry_id_fkey"
             columns: ["linked_entry_id"]
             isOneToOne: false
@@ -201,6 +275,83 @@ export type Database = {
           },
           {
             foreignKeyName: "chronicle_events_world_id_fkey"
+            columns: ["world_id"]
+            isOneToOne: false
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chronicle_jumps: {
+        Row: {
+          created_at: string
+          from_branch_id: string | null
+          from_sort_value: number
+          id: string
+          method: string
+          notes: string | null
+          proper_duration: string | null
+          to_branch_id: string | null
+          to_sort_value: number
+          traveler_entry_id: string | null
+          traveler_label: string
+          updated_at: string
+          world_id: string
+        }
+        Insert: {
+          created_at?: string
+          from_branch_id?: string | null
+          from_sort_value?: number
+          id?: string
+          method?: string
+          notes?: string | null
+          proper_duration?: string | null
+          to_branch_id?: string | null
+          to_sort_value?: number
+          traveler_entry_id?: string | null
+          traveler_label?: string
+          updated_at?: string
+          world_id: string
+        }
+        Update: {
+          created_at?: string
+          from_branch_id?: string | null
+          from_sort_value?: number
+          id?: string
+          method?: string
+          notes?: string | null
+          proper_duration?: string | null
+          to_branch_id?: string | null
+          to_sort_value?: number
+          traveler_entry_id?: string | null
+          traveler_label?: string
+          updated_at?: string
+          world_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chronicle_jumps_from_branch_id_fkey"
+            columns: ["from_branch_id"]
+            isOneToOne: false
+            referencedRelation: "chronicle_branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chronicle_jumps_to_branch_id_fkey"
+            columns: ["to_branch_id"]
+            isOneToOne: false
+            referencedRelation: "chronicle_branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chronicle_jumps_traveler_entry_id_fkey"
+            columns: ["traveler_entry_id"]
+            isOneToOne: false
+            referencedRelation: "world_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chronicle_jumps_world_id_fkey"
             columns: ["world_id"]
             isOneToOne: false
             referencedRelation: "worlds"
