@@ -886,12 +886,14 @@ html {
   }
 
   /* Writing toolbar — dark frame, stellar blue accents */
+  /* Softening pass: one solid hairline under every writing toolbar, and
+     the role colour on hover (was a dashed stellar rule and a raw hex). */
   .sf-writing-toolbar {
-    border-bottom: 1px dashed var(--sf-stellar) !important;
+    border-bottom: 1px solid var(--sf-line-hairline) !important;
   }
 
   .sf-writing-toolbar button:hover {
-    color: #5B8DEF !important;
+    color: var(--sf-primary-text) !important;
   }
 
   /* ---- Note resize wrapper: editor fills container ---- */
