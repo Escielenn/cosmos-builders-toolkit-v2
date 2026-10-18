@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
-import { ChevronDown, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye, Camera, Palette, Library, GripVertical, PenLine } from "lucide-react";
+import { ChevronDown, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye, Camera, Palette, Library, GripVertical, PenLine, Ship, ContactRound } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { CosmicTelemetry } from "@/components/layout/CosmicVelocityTicker";
 import CascadeProgressBar from "@/components/dashboard/CascadeProgressBar";
@@ -247,6 +247,20 @@ const TOOLS = [
     description: "Classify civilizations by energy consumption with cascade implications",
     icon: Zap,
     path: "/tools/kardashev-scale",
+  },
+  {
+    id: "generation-ship",
+    name: "Ark: Generation Ship Designer",
+    description: "Crew genetics, closed-loop life support and spin habitat for a multi-generational voyage",
+    icon: Ship,
+    path: "/tools/generation-ship",
+  },
+  {
+    id: "dossier",
+    name: "Dossier: Character Development",
+    description: "Characters who inherit their bodies, senses and beliefs from this world",
+    icon: ContactRound,
+    path: "/tools/dossier",
   },
 ];
 

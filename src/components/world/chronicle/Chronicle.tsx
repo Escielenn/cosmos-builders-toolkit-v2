@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import {
@@ -19,6 +20,19 @@ import { useToast } from "@/hooks/use-toast";
 import FirstTimeHint from "@/components/onboarding/FirstTimeHint";
 import { ScrollText } from "lucide-react";
 import { EmptyState } from "@/components/ui/empty-state";
+import { cn } from "@/lib/utils";
+import { mapError } from "@/lib/ship-voice";
+import { BRANCHES_OFFLINE } from "@/services/chronicle-branches";
+import type { ChronicleWriteResult } from "@/services/chronicle-data";
+import { useChronicleBranches } from "@/hooks/use-chronicle-branches";
+import { BranchesView } from "./branches/BranchesView";
+
+/** Chronicle views. BRANCHES = time-travel timelines (?view=branches). */
+const VIEWS = [
+  { id: "list", label: "Chronicle" },
+  { id: "branches", label: "Branches" },
+] as const;
+type ChronicleView = (typeof VIEWS)[number]["id"];
 
 interface ChronicleProps {
   worldId: string;
@@ -30,6 +44,26 @@ export function Chronicle({ worldId }: ChronicleProps) {
   const updateEvent = useUpdateChronicleEvent(worldId);
   const deleteEvent = useDeleteChronicleEvent(worldId);
   const { toast } = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const view: ChronicleView = searchParams.get("view") === "branches" ? "branches" : "list";
+  const setView = useCallback(
+    (v: ChronicleView) => {
+      const next = new URLSearchParams(searchParams);
+      if (v === "list") next.delete("view");
+      else next.set("view", v);
+      setSearchParams(next, { replace: true });
+    },
+    [searchParams, setSearchParams],
+  );
+  const branchQuery = useChronicleBranches(worldId);
+  const branchOptions = useMemo(
+    () =>
+      branchQuery.data?.available
+        ? branchQuery.data.branches.map((b) => ({ id: b.id, name: b.name }))
+        : undefined,
+    [branchQuery.data],
+  );
+  const [defaultBranchId, setDefaultBranchId] = useState<string | null>(null);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState<ChronicleEvent | null>(
@@ -65,8 +99,27 @@ export function Chronicle({ worldId }: ChronicleProps) {
 
   const handleAddEvent = useCallback(() => {
     setEditingEvent(null);
+    setDefaultBranchId(null);
     setDialogOpen(true);
   }, []);
+
+  const handleLogOnBranch = useCallback((branchId: string | null) => {
+    setEditingEvent(null);
+    setDefaultBranchId(branchId);
+    setDialogOpen(true);
+  }, []);
+
+  const reportWrite = useCallback(
+    (result: ChronicleWriteResult, confirmation: string) => {
+      if (result.error) {
+        toast({ variant: "destructive", description: mapError(result.error) });
+        return;
+      }
+      toast({ description: confirmation });
+      if (result.branchesOffline) toast({ description: BRANCHES_OFFLINE });
+    },
+    [toast]
+  );
 
   const handleEditEvent = useCallback((event: ChronicleEvent) => {
     setEditingEvent(event);
@@ -79,24 +132,16 @@ export function Chronicle({ worldId }: ChronicleProps) {
         updateEvent.mutate(
           { eventId: editingEvent.id, updates: input },
           {
-            onSuccess: () => {
-              toast({
-                description: `EVENT UPDATED: ${input.title}`,
-              });
-            },
+            onSuccess: (result) => reportWrite(result, `EVENT UPDATED: ${input.title}`),
           }
         );
       } else {
         createEvent.mutate(input, {
-          onSuccess: () => {
-            toast({
-              description: `EVENT LOGGED: ${input.title}`,
-            });
-          },
+          onSuccess: (result) => reportWrite(result, `EVENT LOGGED: ${input.title}`),
         });
       }
     },
-    [editingEvent, createEvent, updateEvent, toast]
+    [editingEvent, createEvent, updateEvent, reportWrite]
   );
 
   const handleRequestDelete = useCallback((eventId: string) => {
@@ -166,11 +211,40 @@ export function Chronicle({ worldId }: ChronicleProps) {
         </button>
       </div>
 
+      {/* View toggle */}
+      <div className="mb-6 flex border-b border-sf-line-hairline" role="group" aria-label="Chronicle view">
+        {VIEWS.map((v) => (
+          <button
+            key={v.id}
+            type="button"
+            aria-pressed={view === v.id}
+            onClick={() => setView(v.id)}
+            className={cn(
+              "-mb-px min-h-hit border-b-2 px-4 font-heading text-sf-eyebrow uppercase transition-colors duration-fast ease-sf-out",
+              view === v.id
+                ? "border-sf-primary-bright text-t1"
+                : "border-transparent text-t3 hover:text-t1"
+            )}
+          >
+            {v.label}
+          </button>
+        ))}
+      </div>
+
       {/* Chronicle hint */}
       <FirstTimeHint hintId="chronicle" icon={ScrollText} className="mb-4" />
 
+      {view === "branches" && (
+        <BranchesView
+          worldId={worldId}
+          data={data}
+          onOpenEvent={handleEditEvent}
+          onLogEvent={handleLogOnBranch}
+        />
+      )}
+
       {/* Empty state */}
-      {isEmpty && (
+      {view === "list" && isEmpty && (
         <EmptyState
           warm
           hideDial
@@ -182,7 +256,7 @@ export function Chronicle({ worldId }: ChronicleProps) {
       )}
 
       {/* Timeline */}
-      {!isEmpty && (
+      {view === "list" && !isEmpty && (
         <div className="sf-chronicle-timeline">
           {/* Spine */}
           <div className="sf-chronicle-spine" />
@@ -272,6 +346,8 @@ export function Chronicle({ worldId }: ChronicleProps) {
         parentEvents={parentOptions}
         onSubmit={handleSubmit}
         onDelete={handleRequestDelete}
+        branches={branchOptions}
+        defaultBranchId={defaultBranchId}
       />
 
       {/* Delete confirmation */}

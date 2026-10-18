@@ -87,7 +87,8 @@ export function useStudioData() {
           .from("world_entries")
           .select("id, title, content, updated_at, world_id")
           .eq("created_by", uid)
-          .in("entry_type", ["document", "lore"])
+          // Lore entries are Codex material, not manuscript (writing P1).
+          .eq("entry_type", "document")
           .order("updated_at", { ascending: false })
           .limit(60),
         // Characters: world_entries rows typed `character` (F3 — the entity

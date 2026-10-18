@@ -30,7 +30,16 @@ interface ChronicleEventDialogProps {
   parentEvents?: ChronicleEvent[];
   onSubmit: (input: CreateEventInput) => void;
   onDelete?: (eventId: string) => void;
+  /**
+   * Timelines the event may sit on. Omit (or pass undefined) when branches
+   * are unavailable; the Branch select is then hidden and branch is untouched.
+   */
+  branches?: Array<{ id: string; name: string }>;
+  /** Branch for a new event, e.g. when logging from a branch lane. */
+  defaultBranchId?: string | null;
 }
+
+const PRIME_VALUE = "prime";
 
 export function ChronicleEventDialog({
   open,
@@ -40,6 +49,8 @@ export function ChronicleEventDialog({
   parentEvents = [],
   onSubmit,
   onDelete,
+  branches,
+  defaultBranchId = null,
 }: ChronicleEventDialogProps) {
   const isEditing = !!event;
 
@@ -54,6 +65,7 @@ export function ChronicleEventDialog({
   const [description, setDescription] = useState("");
   const [linkedEntryId, setLinkedEntryId] = useState("");
   const [parentId, setParentId] = useState("");
+  const [branchId, setBranchId] = useState(PRIME_VALUE);
   const [entrySearch, setEntrySearch] = useState("");
   const [entryResults, setEntryResults] = useState<
     Array<{ id: string; title: string }>
@@ -76,6 +88,7 @@ export function ChronicleEventDialog({
       setLinkedEntryId(event.linkedEntryId || "");
       setLinkedEntryTitle(event.linkedEntryTitle || "");
       setParentId(event.parentId || "");
+      setBranchId(event.branchId || PRIME_VALUE);
     } else {
       setTitle("");
       setEventDate("");
@@ -89,9 +102,12 @@ export function ChronicleEventDialog({
       setLinkedEntryId("");
       setLinkedEntryTitle("");
       setParentId("");
+      setBranchId(defaultBranchId || PRIME_VALUE);
     }
     setEntrySearch("");
     setEntryResults([]);
+    // defaultBranchId only seeds a new event at open time.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, event]);
 
   const handleDateChange = useCallback((val: string) => {
@@ -136,6 +152,7 @@ export function ChronicleEventDialog({
       layer: layer || undefined,
       parentId: parentId || undefined,
       linkedEntryId: linkedEntryId || undefined,
+      ...(branches ? { branchId: branchId === PRIME_VALUE ? null : branchId } : {}),
     });
     onOpenChange(false);
   };
@@ -224,6 +241,28 @@ export function ChronicleEventDialog({
                   className="rounded-none bg-transparent border-sf-line-interactive font-mono text-sm"
                 />
               </div>
+            </div>
+          )}
+
+          {/* Branch (time-travel timelines) */}
+          {branches && (
+            <div>
+              <label className="sf-chronicle-form-label">Timeline</label>
+              <Select value={branchId} onValueChange={setBranchId}>
+                <SelectTrigger className="rounded-none bg-transparent border-sf-line-interactive" aria-label="Timeline">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="rounded-none">
+                  <SelectItem value={PRIME_VALUE} className="rounded-none">
+                    PRIME TIMELINE
+                  </SelectItem>
+                  {branches.map((b) => (
+                    <SelectItem key={b.id} value={b.id} className="rounded-none">
+                      {b.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           )}
 

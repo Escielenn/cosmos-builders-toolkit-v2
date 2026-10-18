@@ -1,4 +1,5 @@
 import { TOOL_TYPE_MAP, ENTITY_TYPE_LABELS, ENTITY_TYPE_ICONS } from "@/services/world-data";
+import { DOSSIER_MASTER_FIELDS } from "@/lib/dossier/fields";
 
 // ---------------------------------------------------------------------------
 // Creatable entity types (user-facing, excludes output-only/system types)
@@ -40,9 +41,11 @@ export const ENTITY_TYPE_TO_TOOLS = buildEntityTypeToTools();
 // Additional tools relevant to an entity type even if they don't directly
 // produce that type (e.g. a planet also benefits from habitable-zone-calculator)
 const EXTRA_TOOLS: Partial<Record<string, string[]>> = {
-  planet: ["habitable-zone-calculator", "surface-gravity-calculator"],
+  planet: ["habitable-zone-calculator", "surface-gravity-calculator", "surface-cartographer"],
   species: ["sensorium", "species-interaction-matrix"],
-  vessel: ["propulsion-consequences-map", "gravitas"],
+  vessel: ["propulsion-consequences-map", "gravitas", "generation-ship"],
+  location: ["surface-cartographer"],
+  moon: ["surface-cartographer"],
   faction: ["space-expansion-modeler"],
   star_system: ["habitable-zone-calculator"],
 };
@@ -554,6 +557,53 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
       type: "text",
       worksheetPaths: { gravitas: "artificial.failure_mode" },
     },
+    // ── Ark: Generation Ship Designer ──
+    // Inputs at their own paths; computed values from the `derived` snapshot
+    // the tool writes on every save, rounded the way a writer would quote them.
+    // Distance, speed and spin are deliberately not mapped here: Paradox,
+    // Impulse and Gravitas own those, and Ark imports them with provenance.
+    {
+      label: "Founding Population",
+      key: "foundingPopulation",
+      type: "number",
+      worksheetPaths: { "generation-ship": "population.founding" },
+    },
+    {
+      label: "Voyage Duration (ship-years)",
+      key: "voyageShipYears",
+      type: "number",
+      worksheetPaths: { "generation-ship": "derived.shipYears" },
+    },
+    {
+      label: "Voyage Duration (home years)",
+      key: "voyageHomeYears",
+      type: "number",
+      worksheetPaths: { "generation-ship": "derived.earthYears" },
+    },
+    {
+      label: "Generations Aboard",
+      key: "generationsAboard",
+      type: "number",
+      worksheetPaths: { "generation-ship": "derived.generations" },
+    },
+    {
+      label: "Effective Population (Ne)",
+      key: "effectivePopulation",
+      type: "number",
+      worksheetPaths: { "generation-ship": "derived.effectivePopulation" },
+    },
+    {
+      label: "Inbreeding at Arrival (F)",
+      key: "inbreedingAtArrival",
+      type: "number",
+      worksheetPaths: { "generation-ship": "derived.inbreedingAtArrival" },
+    },
+    {
+      label: "Closed-Loop Efficiency (%)",
+      key: "closedLoopEfficiency",
+      type: "number",
+      worksheetPaths: { "generation-ship": "derived.closedLoopEfficiencyPct" },
+    },
   ],
 
   technology: [
@@ -694,8 +744,23 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
     },
   ],
 
-  character: [...GENERIC_FIELDS],
-  location: [...GENERIC_FIELDS],
+  // ── Dossier ── a character's own decisions plus the traits it inherited
+  // from Phylo, Sensorium, Mythos, Dominion, Lexdrift and Genesis, read from
+  // the save-time snapshot. See src/lib/dossier/fields.ts.
+  character: [...GENERIC_FIELDS, ...DOSSIER_MASTER_FIELDS],
+  // Written by the Surface Cartographer onto each place it files. No
+  // worksheetPaths: these live on the entity, not in a worksheet blob.
+  location: [
+    ...GENERIC_FIELDS,
+    { label: "Latitude (°N)", key: "lat", type: "number" },
+    { label: "Longitude (°E)", key: "lon", type: "number" },
+    {
+      label: "Place Type",
+      key: "placeType",
+      type: "select",
+      options: ["city", "settlement", "region", "landmark", "biome", "ruin", "station", "port", "sacred", "hazard"],
+    },
+  ],
   artifact: [...GENERIC_FIELDS],
   custom: [...GENERIC_FIELDS],
 };

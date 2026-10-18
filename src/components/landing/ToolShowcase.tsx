@@ -128,6 +128,16 @@ const proTools = [
     status: "available",
   },
   {
+    // A Chronicle view, not a /tools route (Law VII): opens a world's
+    // Chronicle on the BRANCHES view, via world selection.
+    id: "time-travel-timelines",
+    title: "Time Travel Timelines",
+    description: "Branch your Chronicle into alternate timelines, log the travellers who jump between them, and catch causal loops.",
+    status: "available",
+    href: "/worlds?open=chronicle-branches",
+    iconId: "timeline",
+  },
+  {
     id: "sensorium",
     title: "Sensorium: Alien Sensory Systems",
     description: "Design evolutionarily plausible sensory systems for alien species. Derive senses from environmental constraints or validate custom selections.",
@@ -146,9 +156,27 @@ const proTools = [
     status: "available",
   },
   {
+    id: "generation-ship",
+    title: "Ark: Generation Ship Designer",
+    description: "Design self-sustaining interstellar arks from real numbers: crew genetics, closed-loop life support, spin habitats, and the drift events a centuries-long voyage writes into your Chronicle.",
+    status: "available",
+  },
+  {
+    id: "dossier",
+    title: "Dossier: Character Development",
+    description: "Characters born into your world. Pick a homeworld, species, polity and culture; lifespan, senses, native gravity, phonology and funeral customs arrive pre-filled, with every override marked.",
+    status: "available",
+  },
+  {
     id: "stellar-cartographer",
     title: "Stellar Cartographer: Galaxy Mapper",
     description: "Interactive galaxy mapping tool. Generate procedural galaxies with 3D projection, empire territories, trade routes, and wormholes.",
+    status: "available",
+  },
+  {
+    id: "surface-cartographer",
+    title: "Surface Cartographer: Planet & Moon Maps",
+    description: "Put your own map on a planet or moon, or generate one from its climate. Drop places with real coordinates and read each one's sky, climate band and travel time.",
     status: "available",
   },
 ];
@@ -192,10 +220,7 @@ const comingSoonByCategory = [
   {
     category: "Tools",
     items: [
-      { title: "Character Development", subtitle: "Individual characters connected to your world" },
-
       { title: "AI Development", subtitle: "Explore artificial intelligence in your universe" },
-      { title: "Generation Ship Designer", subtitle: "Design self-sustaining interstellar arks" },
       { title: "Quantum and Beyond", subtitle: "Technology beyond our understanding" },
       { title: "BDO: Big Dumb Object", subtitle: "Create megastructures and cosmic artifacts" },
       { title: "Warp Travel Calculator", subtitle: "Calculate warp-based journey parameters" },
@@ -205,8 +230,7 @@ const comingSoonByCategory = [
   {
     category: "Cartographers",
     items: [
-      { title: "Solar System Cartographer", subtitle: "Map solar systems" },
-      { title: "Planet / Moon Cartographer", subtitle: "Map planetary and lunar surfaces" },
+      { title: "Solar System Cartographer", subtitle: "Arriving as a zoom level of the Stellar Cartographer" },
     ],
   },
   {
@@ -229,11 +253,15 @@ interface ToolPreviewCardProps {
   description: string;
   status: string;
   isPro?: boolean;
+  /** Destination when the entry is not a /tools route. */
+  href?: string;
+  /** Borrow another tool's icon. */
+  iconId?: string;
 }
 
-const ToolPreviewCard = ({ id, title, description, status, isPro }: ToolPreviewCardProps) => {
-  const CustomIcon = getToolIcon(id);
-  const route = getToolRoute(id);
+const ToolPreviewCard = ({ id, title, description, status, isPro, href, iconId }: ToolPreviewCardProps) => {
+  const CustomIcon = getToolIcon(iconId ?? id);
+  const route = href ?? getToolRoute(id);
 
   const card = (
     <GlassPanel lightArc hover className="p-5 h-full">

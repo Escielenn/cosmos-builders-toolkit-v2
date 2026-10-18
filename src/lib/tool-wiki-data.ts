@@ -606,6 +606,53 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
     ],
   },
 
+  // ── PRO CALCULATOR (Integration) ───────────────────────────
+  'generation-ship': {
+    id: 'generation-ship',
+    tagline: 'Size a multi-generational voyage: crew genetics, closed-loop air and water, spin habitat, and the drift events the trip writes into your Chronicle.',
+    category: 'integration',
+    complexity: 'advanced',
+    type: 'calculator',
+    cascade: 'meta',
+    workshopWeek: 4,
+    timeEstimate: '20-40 min',
+    buildsOn: [
+      { toolId: 'time-dilation', strength: 'recommended', note: 'Distance and cruise speed set the voyage length' },
+      { toolId: 'propulsion-consequences-map', strength: 'recommended', note: 'Drive speed and acceleration' },
+      { toolId: 'spacecraft-designer', strength: 'recommended', note: 'The lived-in ship this voyage happens aboard' },
+      { toolId: 'evolutionary-biology', strength: 'optional', note: 'Lifespan and mating system set generation length and Ne' },
+      { toolId: 'gravitas', strength: 'optional', note: 'Spin radius and rate for the habitat ring' },
+    ],
+    feedsInto: [
+      { toolId: 'timeline', strength: 'recommended', note: 'Drift events log to the Chronicle' },
+      { toolId: 'lexdrift', strength: 'recommended', note: 'Centuries of isolation drive language drift' },
+      { toolId: 'xenomythology-framework-builder', strength: 'optional', note: 'A ship that forgets it is a ship needs a cosmology' },
+    ],
+  },
+
+  // ── PRO: PSYCHOLOGY ─────────────────────────────────────────
+  dossier: {
+    id: 'dossier',
+    tagline: 'Characters who inherit their bodies, senses, language and beliefs from your world, with overrides.',
+    category: 'civilizations',
+    complexity: 'intermediate',
+    type: 'worksheet',
+    cascade: 'psychology',
+    workshopWeek: 6,
+    timeEstimate: '15-30 min',
+    buildsOn: [
+      { toolId: 'evolutionary-biology', strength: 'recommended', note: 'Species sets lifespan, body and cognition' },
+      { toolId: 'sensorium', strength: 'recommended', note: 'What this person can and cannot perceive' },
+      { toolId: 'planetary-profile', strength: 'recommended', note: 'Native gravity and the length of a local year' },
+      { toolId: 'xenomythology-framework-builder', strength: 'optional', note: 'Gods sworn by, taboos, funeral customs' },
+      { toolId: 'empire-designer', strength: 'optional', note: 'The polity and house they were raised under' },
+      { toolId: 'lexdrift', strength: 'optional', note: 'Native language and phonology' },
+    ],
+    feedsInto: [
+      { toolId: 'timeline', strength: 'optional', note: 'Arc beats bound to events in the world\'s history' },
+    ],
+  },
+
   // ── PRO CARTOGRAPHER ────────────────────────────────────────
   'stellar-cartographer': {
     id: 'stellar-cartographer',
@@ -623,6 +670,26 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
     feedsInto: [
       { toolId: 'empire-designer', strength: 'recommended', note: 'Territory visualization' },
       { toolId: 'propulsion-consequences-map', strength: 'optional', note: 'Route planning' },
+    ],
+  },
+  'surface-cartographer': {
+    id: 'surface-cartographer',
+    tagline: 'Map a planet or moon: your own sheet or a generated one, places with coordinates, and the sky, climate and travel time each place inherits from canon.',
+    category: 'worlds',
+    complexity: 'intermediate',
+    type: 'cartographer',
+    cascade: 'environment',
+    workshopWeek: 2,
+    timeEstimate: '20-45 min',
+    buildsOn: [
+      { toolId: 'planetary-profile', strength: 'required', note: 'Radius, tilt, day length and climate drive every readout' },
+      { toolId: 'tidelock', strength: 'optional', note: 'A locked world bands around its substellar point' },
+      { toolId: 'species-interaction-matrix', strength: 'optional', note: 'Biomes to place on the surface' },
+    ],
+    feedsInto: [
+      { toolId: 'propulsion-consequences-map', strength: 'optional', note: 'Distances between places set travel time' },
+      { toolId: 'empire-designer', strength: 'optional', note: 'Located settlements anchor territory' },
+      { toolId: 'xenomythology-framework-builder', strength: 'optional', note: 'Sacred sites and a fixed sun shape belief' },
     ],
   },
 };

@@ -175,6 +175,24 @@ export const TOOL_PAGE_CONFIGS: Record<string, ToolPageConfig> = {
     "Kardashev Scale Calculator",
     "Classify your civilization's energy consumption and explore the cascade implications of each level.",
   ),
+  "generation-ship": config(
+    "generation-ship",
+    "Ark",
+    "Generation Ship Designer",
+    "Size a multi-generational voyage from real numbers: the genetics of a sealed crew, the air and water loops, the spin habitat, and the history the trip will write.",
+  ),
+  "dossier": config(
+    "dossier",
+    "Dossier",
+    "Character Development",
+    "Characters who inherit their bodies, senses and beliefs from your world, with every departure marked as yours.",
+  ),
+  "surface-cartographer": config(
+    "surface-cartographer",
+    "Surface Cartographer",
+    "Planet & Moon Maps",
+    "Put your own map on a planet or moon, drop the places your story happens, and read their sky, climate and distances from canon.",
+  ),
 };
 
 /** Look up config by tool slug. Throws if not found. */

@@ -402,6 +402,11 @@ const Timeline = () => {
                 Chronicle
               </Link>
               . Timeline stays for track-based scheduling within a single worksheet.
+              Branching and time-travel timelines live in the{" "}
+              <Link to={`/worlds/${worldId}/chronicle?view=branches`} className="text-sf-primary-text underline underline-offset-2 hover:text-sf-primary-bright">
+                Chronicle Branches view
+              </Link>
+              .
             </p>
             <button
               onClick={dismissChronicleHint}

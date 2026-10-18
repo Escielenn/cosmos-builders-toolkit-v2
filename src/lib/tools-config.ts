@@ -35,6 +35,8 @@ export const PRO_TOOL_IDS = [
   'sensorium',
   'gravitas',
   'kardashev-scale',
+  'dossier',
+  'generation-ship',
   // Simulators
   'rogue',
   'tidelock',
@@ -43,6 +45,7 @@ export const PRO_TOOL_IDS = [
   'solaris',
   // Cartographers
   'stellar-cartographer',
+  'surface-cartographer',
   // Workshop
   'writing-workshop',
 ];
@@ -100,9 +103,12 @@ export const TOOL_DISPLAY_NAMES: Record<string, string> = {
   'exosky': 'Exosky: Alien Night Sky',
   'exoforge': 'ExoForge: Procedural Exoplanet Forge',
   'solaris': 'Solaris: Procedural Star System Simulator',
+  'dossier': 'Dossier: Character Development',
   'kardashev-scale': 'K-Scale: Kardashev Scale Calculator',
+  'generation-ship': 'Ark: Generation Ship Designer',
   // Cartographers
   'stellar-cartographer': 'Stellar Cartographer: Galaxy Mapper',
+  'surface-cartographer': 'Surface Cartographer: Planet & Moon Maps',
   // Workshop
   'writing-workshop': 'Writing Prompts',
 };
@@ -130,14 +136,17 @@ export const TOOL_ROUTES: Record<string, string> = {
   'surface-gravity-calculator': '/tools/surface-gravity-calculator',
   'timeline': '/tools/timeline',
   'sensorium': '/tools/sensorium',
+  'dossier': '/tools/dossier',
   'gravitas': '/tools/gravitas',
   'kardashev-scale': '/tools/kardashev-scale',
+  'generation-ship': '/tools/generation-ship',
   'rogue': '/rogue',
   'tidelock': '/tools/tidelock',
   'exosky': '/tools/exosky',
   'exoforge': '/tools/exoforge',
   'solaris': '/tools/solaris',
   'stellar-cartographer': '/tools/stellar-cartographer',
+  'surface-cartographer': '/tools/surface-cartographer',
   'writing-workshop': '/workshop',
 };
 

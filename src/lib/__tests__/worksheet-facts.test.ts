@@ -4,6 +4,12 @@ import {
   hasFactMapping,
   summarizeFacts,
 } from "@/lib/worksheet-facts";
+import {
+  INITIAL_GENSHIP_STATE,
+  buildDerivedSnapshot,
+  computeGenShip,
+  normalizeGenShipState,
+} from "@/lib/generation-ship/calculations";
 
 describe("extractWorksheetFacts", () => {
   it("pairs the master-field label with the value at the tool's mapped path", () => {
@@ -226,5 +232,89 @@ describe("summarizeFacts", () => {
 
   it("returns an empty string when there is nothing to show", () => {
     expect(summarizeFacts([])).toBe("");
+  });
+});
+
+describe("generation-ship (Ark)", () => {
+  // Build the row exactly as the page saves it: normalized inputs plus the
+  // rounded `derived` snapshot, so a stale path fails here, not in the Studio.
+  it("surfaces the founders and the computed voyage numbers", () => {
+    const form = normalizeGenShipState(JSON.parse(JSON.stringify(INITIAL_GENSHIP_STATE)));
+    const row = { ...form, derived: buildDerivedSnapshot(computeGenShip(form)) };
+
+    const facts = extractWorksheetFacts("generation-ship", row);
+    const byKey = Object.fromEntries(facts.map((f) => [f.key, f.value]));
+
+    expect(byKey.foundingPopulation).toBe("1000");
+    expect(byKey.effectivePopulation).toBe("500");
+    expect(Number(byKey.voyageHomeYears)).toBeGreaterThan(424);
+    expect(Number(byKey.voyageShipYears)).toBeLessThanOrEqual(Number(byKey.voyageHomeYears));
+    expect(Number(byKey.generationsAboard)).toBeCloseTo(15.2, 0);
+    expect(byKey.closedLoopEfficiency).toMatch(/^\d+(\.\d{1,2})?$/);
+    expect(byKey.inbreedingAtArrival).toBeDefined();
+  });
+
+  it("reports nothing computed before the first save writes a snapshot", () => {
+    const facts = extractWorksheetFacts("generation-ship", { population: { founding: 120 } });
+    expect(facts.map((f) => f.key)).toEqual(["foundingPopulation"]);
+    expect(hasFactMapping("generation-ship")).toBe(true);
+  });
+});
+
+describe("dossier facts", () => {
+  const dossier = {
+    identity: { name: "Kael", aliases: "the Ash", role: "Protagonist", pronouns: "" },
+    origins: { house: "House Adran", birth: { eventId: null, label: "The Long Thaw, 2290" } },
+    body: { heightCm: "158", massKg: "70" },
+    psychology: { want: "Command of the trench fleet", fear: "Silence" },
+    voice: { dialect: "Trench cant" },
+    resolved: {
+      homeworld: "Kellis",
+      species: "Verrid",
+      lifespan: "Long (centuries)",
+      gravityAdaptation: "1.4 g",
+      dominantSense: "Touch",
+      funeralCustoms: "",
+    },
+    provenance: {
+      homeworld: "planetary-profile",
+      species: "evolutionary-biology",
+      lifespan: "evolutionary-biology",
+      gravityAdaptation: "planetary-profile",
+      dominantSense: "override",
+    },
+  };
+
+  it("surfaces a character's decisions and inherited traits", () => {
+    const byKey = Object.fromEntries(extractWorksheetFacts("dossier", dossier).map((f) => [f.key, f]));
+    expect(byKey.characterName.value).toBe("Kael");
+    expect(byKey.characterHomeworld.value).toBe("Kellis");
+    expect(byKey.characterHouse.value).toBe("House Adran");
+    expect(byKey.characterLifespan.value).toBe("Long (centuries)");
+    expect(byKey.characterNativeGravity.value).toBe("1.4 g");
+    expect(byKey.characterWant.value).toBe("Command of the trench fleet");
+    expect(byKey.characterBorn.value).toContain("Long Thaw");
+    // A blank snapshot value is not a fact.
+    expect(byKey.characterFuneralCustoms).toBeUndefined();
+  });
+
+  it("names the tool an inherited value came from", () => {
+    const byKey = Object.fromEntries(extractWorksheetFacts("dossier", dossier).map((f) => [f.key, f]));
+    expect(byKey.characterLifespan.source).toBe("Phylo, inherited by Kael's dossier");
+    expect(byKey.characterNativeGravity.source).toBe("Genesis, inherited by Kael's dossier");
+    expect(byKey.characterDominantSense.source).toBe("Kael's dossier (writer override)");
+    expect(byKey.characterWant.source).toBe("Kael's dossier");
+  });
+
+  it("keeps character keys apart from the species' own facts", () => {
+    // The species' dominantSense and the character's must never pool.
+    const keys = extractWorksheetFacts("dossier", dossier).map((f) => f.key);
+    expect(keys).not.toContain("dominantSense");
+    expect(keys.every((k) => k.startsWith("character"))).toBe(true);
+  });
+
+  it("reports the tool as mapped and returns nothing for an empty dossier", () => {
+    expect(hasFactMapping("dossier")).toBe(true);
+    expect(extractWorksheetFacts("dossier", {})).toEqual([]);
   });
 });

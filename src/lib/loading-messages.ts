@@ -20,13 +20,27 @@ const loadingMessages: Record<string, string[]> = {
     "COMPUTING ATMOSPHERIC MODEL...",
     "SCANNING STELLAR NEIGHBORHOOD...",
   ],
+  "tools/surface-cartographer": [
+    "SURVEYING SURFACE...",
+    "PROJECTING GRATICULE...",
+    "PLOTTING SETTLEMENTS...",
+  ],
   "tools/gravitas": [
     "COMPUTING GRAVITATIONAL FIELD...",
     "RESOLVING SURFACE CONDITIONS...",
   ],
+  "tools/dossier": [
+    "RETRIEVING PERSONNEL FILE...",
+    "RESOLVING LINEAGE AGAINST CANON...",
+  ],
   "tools/kardashev-scale": [
     "CALIBRATING ENERGY SENSORS...",
     "SCANNING CIVILIZATIONAL OUTPUT...",
+  ],
+  "tools/generation-ship": [
+    "PRESSURIZING HABITAT RING...",
+    "CENSUSING THE CREW MANIFEST...",
+    "BALANCING THE CLOSED LOOP...",
   ],
   "tools/evolutionary-biology": [
     "SURVEYING BIOSPHERE...",

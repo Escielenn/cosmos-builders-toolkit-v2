@@ -40,6 +40,7 @@ const LAYER_TOOLS: Record<string, string[]> = {
     "planetary-profile",
     "surface-gravity-calculator",
     "gravitas",
+    "surface-cartographer",
   ],
   life: [
     "evolutionary-biology",
@@ -55,6 +56,7 @@ const LAYER_TOOLS: Record<string, string[]> = {
     "lexdrift",
     "kardashev-scale",
     "space-expansion-modeler",
+    "generation-ship",
   ],
   mythology: [
     "xenomythology-framework-builder",
@@ -62,6 +64,7 @@ const LAYER_TOOLS: Record<string, string[]> = {
   narrative: [
     "environmental-chain-reaction",
     "timeline",
+    "dossier",
   ],
 };
 
@@ -85,6 +88,7 @@ const DOWNSTREAM_SUGGESTIONS: Record<string, CascadeSuggestion[]> = {
   mythology: [
     { toolType: "environmental-chain-reaction", brandName: "Cascade", fullName: "Environmental Chain Reaction", prompt: "Trace the full cascade from physics to culture. Verify internal consistency." },
     { toolType: "timeline", brandName: "Epoch", fullName: "Timeline", prompt: "Plot how these elements play out across deep time." },
+    { toolType: "dossier", brandName: "Dossier", fullName: "Character Development", prompt: "The world is decided. Now meet someone who was born in it." },
   ],
   narrative: [],
 };

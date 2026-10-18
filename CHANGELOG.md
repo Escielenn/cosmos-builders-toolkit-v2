@@ -1,5 +1,39 @@
 # StellarForge Changelog
 
+## 0.7425
+Writing space phase 1, time-travel timelines, three new tools.
+
+Writing (phase 1 of 4: trust and structure)
+- Snapshots: take (Ctrl/Cmd+Alt+S), name, compare word by word, restore.
+  Restoring and trashing snapshot the current text first. Never lose words.
+- Binder: folders nest to any depth; drag any row before, after or into a
+  folder; keyboard moves (Alt+Arrow, Move to, F2 rename). Codex lore no
+  longer appears in the manuscript.
+- Inspector Doc tab: synopsis, notes, label (world label set), status,
+  POV, when, keywords, per-document word target.
+- Compile follows binder reading order.
+
+Chronicle: Branches (time-travel timelines)
+- Parallel timeline lanes forking at divergence points; jumps drawn as
+  arcs with the traveller's own elapsed time (Time Dilation maths).
+- Advisories for causal loops, events before divergence, impossible
+  jumps; cited, highlighted, never auto-fixed.
+- Event saves no longer report success when they fail.
+
+New tools
+- Dossier (Psychology, Pro): characters inherit lifespan, senses, native
+  gravity, beliefs, phonology from the world, every value sourced and
+  overridable; relationships, arc beats, dramatis personae.
+- Ark: Generation Ship Designer (Pro): voyage, population genetics,
+  closed-loop life support, spin habitat, social drift; drift events log
+  to the Chronicle on click.
+- Surface Cartographer (Pro): upload or generate a planet/moon map, place
+  locations (Codex entities), globe view on forge-gl, distances and
+  daylight by latitude.
+
+Database: worlds.settings, document_versions.name and 'trash' reason,
+chronicle_branches, chronicle_jumps, chronicle_events.branch_id.
+
 ## 0.7415
 Design decisions settled (see docs/stellarforge/AMENDMENTS.md, 2026-10-17).
 - Cascade colours made consistent: Psychology magenta, Culture violet on

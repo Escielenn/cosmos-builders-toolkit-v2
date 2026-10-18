@@ -52,6 +52,8 @@ const TOOL_ROUTES: Record<string, string> = {
   "sensorium": "sensorium",
   "gravitas": "gravitas",
   "kardashev-scale": "kardashev-scale",
+  "dossier": "dossier",
+  "generation-ship": "generation-ship",
 };
 
 // ---------------------------------------------------------------------------

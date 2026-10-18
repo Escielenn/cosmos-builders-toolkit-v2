@@ -1,6 +1,6 @@
 /** Register: WRITER (Lora) — a library a writer browses, not an instrument readout. */
 import { useState, useMemo, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Upload, Globe } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
@@ -24,11 +24,13 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { SectionHero } from "@/components/ui/section-hero";
 
 import { BackLink } from "@/components/ui/back-link";
+import { BranchesWorldPicker } from "@/components/world/chronicle/branches/BranchesWorldPicker";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 const Worlds = () => {
   useMetaTags({ title: "Worlds" });
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [showArchived, setShowArchived] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
@@ -129,6 +131,11 @@ const Worlds = () => {
           )}
           </div>
         </div>
+
+        {/* Arrived from the Time Travel Timelines entry: pick a world first. */}
+        {searchParams.get("open") === "chronicle-branches" && !isLoading && (
+          <BranchesWorldPicker worlds={worlds} />
+        )}
 
         {/* Example World Banner */}
         <ExampleWorldBanner />

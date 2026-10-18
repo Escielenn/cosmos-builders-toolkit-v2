@@ -248,7 +248,7 @@ describe("coverage across the catalogue", () => {
       expect(hasFactMapping(slug), slug).toBe(true);
     }
     // Named so a regression is loud: these were mapped and must stay mapped.
-    for (const slug of ["gravitas", "space-expansion-modeler"]) {
+    for (const slug of ["gravitas", "space-expansion-modeler", "generation-ship"]) {
       expect(hasFactMapping(slug), slug).toBe(true);
     }
   });

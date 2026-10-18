@@ -1,45 +1,79 @@
 // ---------------------------------------------------------------------------
-// useDocumentVersions, version history for writing-space documents.
+// useDocumentVersions, snapshots (version history) for manuscript documents.
 //
 // Primary storage: Supabase `document_versions` table (20-row cap per doc
-// enforced by a server-side trigger).
+// enforced by a server-side trigger, 20260415_add_document_versions.sql).
+// 20261018_writing_p1.sql adds an optional `name` and the 'trash' reason;
+// until it lands, inserts and reads fall back to the old column set.
 //
-// Fallback: localStorage, used when the Supabase table doesn't exist yet
-// (pre-migration deploys) OR when an unauthenticated offline request fails.
-// Keeps the same public API as the original localStorage-only hook so no
-// caller changes are needed.
+// Fallback: localStorage, used when the table doesn't exist yet
+// (pre-migration deploys). On first successful fetch, any snapshots found in
+// localStorage for this document are uploaded as 'migrate' rows and the
+// localStorage bucket is cleared.
 //
-// Opportunistic migration: on first successful fetch, any snapshots found
-// in localStorage for this document get uploaded as 'migrate' rows, then
-// the localStorage bucket is cleared.
+// "Never lose words" (Studio Charter): restore always captures the current
+// text first, and trashing a document captures it too (see
+// captureDocumentSnapshot, called from useDeleteDocument).
 // ---------------------------------------------------------------------------
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+// Shared counter — the local copy here did not decode &nbsp;, so snapshot word
+// counts drifted from the ones shown in the editor.
+import { countWords } from "@/lib/text";
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
+export type SnapshotReason = "manual" | "auto" | "rename" | "restore" | "migrate" | "trash";
+
 export interface DocumentSnapshot {
   id: string;
   documentId: string;
+  /** Document title at capture time. */
   title: string;
+  /** Writer-given name, or null for automatic snapshots. */
+  name: string | null;
+  reason: SnapshotReason;
   content: string;
   wordCount: number;
   timestamp: string; // ISO
 }
 
-type SnapshotReason = "manual" | "auto" | "rename" | "restore" | "migrate";
+export const SNAPSHOT_REASON_LABEL: Record<SnapshotReason, string> = {
+  manual: "MANUAL",
+  auto: "AUTO",
+  rename: "RENAME",
+  restore: "BEFORE RESTORE",
+  migrate: "IMPORTED",
+  trash: "BEFORE TRASH",
+};
+
+/** "Oct 17, 09:42" in the writer's locale. */
+export function formatSnapshotTime(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
 
 const STORAGE_PREFIX = "sf-doc-versions:";
-const MAX_SNAPSHOTS = 20;
+/** Mirrors the server trigger's OFFSET 20. */
+export const MAX_SNAPSHOTS = 20;
 const AUTO_SNAPSHOT_INTERVAL = 5 * 60 * 1000; // 5 minutes
+
+const COLS_FULL = "id, document_id, title, name, snapshot_reason, content_html, word_count, created_at";
+const COLS_LEGACY = "id, document_id, title, snapshot_reason, content_html, word_count, created_at";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -53,29 +87,36 @@ function generateLocalId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-// Shared counter — the local copy here did not decode &nbsp;, so snapshot word
-// counts drifted from the ones shown in the editor.
-import { countWords } from "@/lib/text";
+function isReason(v: unknown): v is SnapshotReason {
+  return typeof v === "string" && v in SNAPSHOT_REASON_LABEL;
+}
 
 function loadLocalSnapshots(documentId: string): DocumentSnapshot[] {
   try {
     const raw = localStorage.getItem(storageKey(documentId));
     if (!raw) return [];
-    return JSON.parse(raw) as DocumentSnapshot[];
+    const parsed = JSON.parse(raw) as Partial<DocumentSnapshot>[];
+    return parsed.map((s) => ({
+      id: String(s.id),
+      documentId,
+      title: s.title ?? "",
+      name: s.name ?? null,
+      reason: isReason(s.reason) ? s.reason : "manual",
+      content: s.content ?? "",
+      wordCount: s.wordCount ?? countWords(s.content),
+      timestamp: s.timestamp ?? new Date().toISOString(),
+    }));
   } catch {
     return [];
   }
 }
 
-function saveLocalSnapshots(
-  documentId: string,
-  snapshots: DocumentSnapshot[]
-): void {
+function saveLocalSnapshots(documentId: string, snapshots: DocumentSnapshot[]): void {
   try {
     localStorage.setItem(storageKey(documentId), JSON.stringify(snapshots));
   } catch {
     // localStorage full, evict oldest half and retry
-    const trimmed = snapshots.slice(Math.floor(snapshots.length / 2));
+    const trimmed = snapshots.slice(0, Math.ceil(snapshots.length / 2));
     try {
       localStorage.setItem(storageKey(documentId), JSON.stringify(trimmed));
     } catch {
@@ -96,6 +137,8 @@ type DbVersionRow = {
   id: string;
   document_id: string;
   title: string;
+  name?: string | null;
+  snapshot_reason?: string | null;
   content_html: string;
   word_count: number;
   created_at: string;
@@ -106,6 +149,8 @@ function rowToSnapshot(row: DbVersionRow): DocumentSnapshot {
     id: row.id,
     documentId: row.document_id,
     title: row.title,
+    name: row.name ?? null,
+    reason: isReason(row.snapshot_reason) ? row.snapshot_reason : "manual",
     content: row.content_html,
     wordCount: row.word_count,
     timestamp: row.created_at,
@@ -113,77 +158,197 @@ function rowToSnapshot(row: DbVersionRow): DocumentSnapshot {
 }
 
 /**
- * Returns true if this error indicates the document_versions table doesn't
- * exist yet (pre-migration). Supabase/PostgREST returns PGRST205 or code 42P01.
+ * True if the document_versions table doesn't exist yet (pre-migration).
+ * Supabase/PostgREST returns PGRST205 or code 42P01.
  */
 function isMissingTableError(error: unknown): boolean {
   if (!error || typeof error !== "object") return false;
   const e = error as { code?: string; message?: string };
   if (e.code === "42P01" || e.code === "PGRST205") return true;
-  if (typeof e.message === "string" && /document_versions/i.test(e.message) && /does not exist/i.test(e.message)) {
-    return true;
+  return (
+    typeof e.message === "string" &&
+    /document_versions/i.test(e.message) &&
+    /does not exist/i.test(e.message)
+  );
+}
+
+/** True if a column the client sent/selected is unknown (migration pending). */
+function isMissingColumnError(error: unknown): boolean {
+  if (!error || typeof error !== "object") return false;
+  const e = error as { code?: string; message?: string };
+  if (e.code === "42703" || e.code === "PGRST204") return true;
+  return typeof e.message === "string" && /column .*name/i.test(e.message);
+}
+
+/** CHECK violation: the 'trash' reason before 20261018 widened the list. */
+function isCheckViolation(error: unknown): boolean {
+  return !!error && typeof error === "object" && (error as { code?: string }).code === "23514";
+}
+
+// Learned once per session so we stop paying for a failing first attempt.
+let nameColumn: boolean | null = null;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const db = supabase as any;
+
+async function selectVersions(documentId: string) {
+  if (nameColumn !== false) {
+    const res = await db
+      .from("document_versions")
+      .select(COLS_FULL)
+      .eq("document_id", documentId)
+      .order("created_at", { ascending: false })
+      .limit(MAX_SNAPSHOTS);
+    if (!res.error) {
+      nameColumn = true;
+      return res as { data: DbVersionRow[] | null; error: unknown };
+    }
+    if (!isMissingColumnError(res.error)) return res as { data: DbVersionRow[] | null; error: unknown };
+    nameColumn = false;
   }
-  return false;
+  return (await db
+    .from("document_versions")
+    .select(COLS_LEGACY)
+    .eq("document_id", documentId)
+    .order("created_at", { ascending: false })
+    .limit(MAX_SNAPSHOTS)) as { data: DbVersionRow[] | null; error: unknown };
+}
+
+interface InsertRow {
+  document_id: string;
+  world_id: string;
+  user_id: string;
+  title: string;
+  content_html: string;
+  word_count: number;
+  snapshot_reason: SnapshotReason;
+  name?: string | null;
+  created_at?: string;
+}
+
+/** Insert one version row, degrading to the pre-20261018 shape if needed. */
+async function insertVersion(row: InsertRow): Promise<{ data: DbVersionRow | null; error: unknown }> {
+  let attempt: InsertRow = { ...row };
+  if (nameColumn === false) delete attempt.name;
+  for (let tries = 0; tries < 3; tries++) {
+    const res = await db
+      .from("document_versions")
+      .insert(attempt)
+      .select(nameColumn === false ? COLS_LEGACY : COLS_FULL)
+      .maybeSingle();
+    if (!res.error) return res;
+    if (isMissingColumnError(res.error) && "name" in attempt) {
+      nameColumn = false;
+      attempt = { ...attempt };
+      delete attempt.name;
+      continue;
+    }
+    if (isCheckViolation(res.error) && attempt.snapshot_reason !== "manual") {
+      attempt = { ...attempt, snapshot_reason: "manual" };
+      continue;
+    }
+    return res;
+  }
+  return { data: null, error: new Error("snapshot insert failed") };
+}
+
+/**
+ * Capture the server's current copy of a document as a snapshot, outside any
+ * React tree. Used before structural operations (trash). Best effort: never
+ * throws, never blocks the operation it protects for longer than one insert.
+ */
+export async function captureDocumentSnapshot(
+  documentId: string,
+  userId: string,
+  reason: SnapshotReason,
+  name?: string,
+): Promise<boolean> {
+  try {
+    const { data: doc } = await db
+      .from("world_entries")
+      .select("world_id, title, content")
+      .eq("id", documentId)
+      .maybeSingle();
+    const content: string = doc?.content ?? "";
+    if (!doc?.world_id || !content || content === "<p></p>") return false;
+    const { error } = await insertVersion({
+      document_id: documentId,
+      world_id: doc.world_id,
+      user_id: userId,
+      title: doc.title || "Untitled",
+      content_html: content,
+      word_count: countWords(content),
+      snapshot_reason: reason,
+      name: name ?? null,
+    });
+    return !error;
+  } catch {
+    return false;
+  }
 }
 
 // ---------------------------------------------------------------------------
 // Hook
 // ---------------------------------------------------------------------------
 
+export interface CreateSnapshotOptions {
+  /** Writer-given name. */
+  name?: string;
+  /** Live editor HTML; defaults to the content passed to the hook. */
+  content?: string;
+  title?: string;
+}
+
 export function useDocumentVersions(
   documentId: string | null,
   currentTitle: string,
-  currentContent: string
+  currentContent: string,
 ) {
   const { user } = useAuth();
   const [snapshots, setSnapshots] = useState<DocumentSnapshot[]>([]);
+  const [loading, setLoading] = useState(false);
   const [usingFallback, setUsingFallback] = useState(false);
 
-  // Refs so the interval callback always sees fresh values
+  // Refs so callbacks and the interval always see fresh values
   const contentRef = useRef(currentContent);
   contentRef.current = currentContent;
   const titleRef = useRef(currentTitle);
   titleRef.current = currentTitle;
+  const snapshotsRef = useRef(snapshots);
+  snapshotsRef.current = snapshots;
   const lastAutoSnapshotContentRef = useRef<string>("");
   const fallbackRef = useRef(false);
   fallbackRef.current = usingFallback;
+  const worldIdRef = useRef<string | null>(null);
 
   // --------------------------------------------------
   // Load snapshots when documentId changes
-  // Tries Supabase first; falls back to localStorage if the table is missing.
-  // On successful DB fetch, opportunistically migrates any localStorage rows.
   // --------------------------------------------------
 
   useEffect(() => {
     let cancelled = false;
+    worldIdRef.current = null;
     if (!documentId || !user) {
       setSnapshots([]);
       return;
     }
+    setLoading(true);
 
     (async () => {
-      const { data, error } = await supabase
-        .from("document_versions")
-        .select("id, document_id, title, content_html, word_count, created_at")
-        .eq("document_id", documentId)
-        .order("created_at", { ascending: false })
-        .limit(MAX_SNAPSHOTS);
-
+      const { data, error } = await selectVersions(documentId);
       if (cancelled) return;
+      setLoading(false);
 
       if (error) {
         if (isMissingTableError(error)) {
-          // Pre-migration: use localStorage
-          const local = loadLocalSnapshots(documentId);
-          setSnapshots(local);
+          setSnapshots(loadLocalSnapshots(documentId));
           setUsingFallback(true);
-          lastAutoSnapshotContentRef.current = currentContent;
+          lastAutoSnapshotContentRef.current = contentRef.current;
           return;
         }
-        // Other errors: show empty but don't crash
         console.warn("[document-versions] fetch failed", error);
         setSnapshots([]);
-        lastAutoSnapshotContentRef.current = currentContent;
+        lastAutoSnapshotContentRef.current = contentRef.current;
         return;
       }
 
@@ -192,60 +357,45 @@ export function useDocumentVersions(
 
       // Opportunistic migration: upload localStorage snapshots to DB.
       const local = loadLocalSnapshots(documentId);
-      if (local.length > 0 && !cancelled) {
-        const existingTimestamps = new Set(
-          dbSnapshots.map((s) => s.timestamp)
-        );
-        const toUpload = local.filter(
-          (s) => !existingTimestamps.has(s.timestamp)
-        );
+      if (local.length > 0) {
+        const existing = new Set(dbSnapshots.map((s) => s.timestamp));
+        const toUpload = local.filter((s) => !existing.has(s.timestamp));
         if (toUpload.length > 0) {
-          // Best-effort; ignore failures
           void (async () => {
-            const rows = toUpload.map((s) => ({
-              document_id: documentId,
-              world_id: null as string | null, // filled in below
-              user_id: user.id,
-              title: s.title,
-              content_html: s.content,
-              word_count: s.wordCount,
-              snapshot_reason: "migrate" as SnapshotReason,
-              created_at: s.timestamp,
-            }));
-            // Look up world_id for the parent document
-            const { data: doc } = await supabase
+            const { data: doc } = await db
               .from("world_entries")
               .select("world_id")
               .eq("id", documentId)
               .maybeSingle();
-            if (doc?.world_id) {
-              for (const r of rows) r.world_id = doc.world_id;
-              await supabase.from("document_versions").insert(rows);
-              // Refetch so UI reflects migrated rows
-              const { data: refetched } = await supabase
-                .from("document_versions")
-                .select("id, document_id, title, content_html, word_count, created_at")
-                .eq("document_id", documentId)
-                .order("created_at", { ascending: false })
-                .limit(MAX_SNAPSHOTS);
-              if (!cancelled && refetched) {
-                setSnapshots(refetched.map(rowToSnapshot));
-              }
+            if (!doc?.world_id) return;
+            for (const s of toUpload) {
+              await insertVersion({
+                document_id: documentId,
+                world_id: doc.world_id,
+                user_id: user.id,
+                title: s.title,
+                name: s.name,
+                content_html: s.content,
+                word_count: s.wordCount,
+                snapshot_reason: "migrate",
+                created_at: s.timestamp,
+              });
             }
+            const { data: refetched } = await selectVersions(documentId);
+            if (!cancelled && refetched) setSnapshots(refetched.map(rowToSnapshot));
           })();
         }
-        // Clear localStorage either way, DB is now canonical
         clearLocalSnapshots(documentId);
       }
 
       setSnapshots(dbSnapshots);
-      lastAutoSnapshotContentRef.current = currentContent;
+      lastAutoSnapshotContentRef.current = contentRef.current;
     })();
 
     return () => {
       cancelled = true;
     };
-  }, [documentId, user]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [documentId, user]);
 
   // --------------------------------------------------
   // Create a snapshot
@@ -255,84 +405,87 @@ export function useDocumentVersions(
     async (
       content: string,
       title: string,
-      reason: SnapshotReason
+      reason: SnapshotReason,
+      name?: string,
     ): Promise<DocumentSnapshot | null> => {
       if (!documentId || !user) return null;
       if (!content || content === "<p></p>") return null;
 
+      // Automatic captures skip an identical latest snapshot. A manual one is
+      // the writer saying "remember this", so it is always kept.
+      const mostRecent = snapshotsRef.current[0];
+      if (reason !== "manual" && mostRecent && mostRecent.content === content) return null;
+
       const wordCount = countWords(content);
+      const cleanName = name?.trim().slice(0, 80) || null;
 
-      // Skip duplicates against the most recent snapshot (cheap client-side check)
-      const mostRecent = snapshots[0];
-      if (mostRecent && mostRecent.content === content) return null;
-
-      // Fallback mode: localStorage only
       if (fallbackRef.current) {
         const snapshot: DocumentSnapshot = {
           id: generateLocalId(),
           documentId,
           title: title || "Untitled",
+          name: cleanName,
+          reason,
           content,
           wordCount,
           timestamp: new Date().toISOString(),
         };
-        setSnapshots((prev) => {
-          const next = [snapshot, ...prev].slice(0, MAX_SNAPSHOTS);
-          saveLocalSnapshots(documentId, next);
-          return next;
-        });
+        const next = [snapshot, ...snapshotsRef.current].slice(0, MAX_SNAPSHOTS);
+        saveLocalSnapshots(documentId, next);
+        snapshotsRef.current = next;
+        setSnapshots(next);
         lastAutoSnapshotContentRef.current = content;
         return snapshot;
       }
 
-      // DB mode
-      // Look up world_id once; cached on the document
-      const { data: doc, error: docErr } = await supabase
-        .from("world_entries")
-        .select("world_id")
-        .eq("id", documentId)
-        .maybeSingle();
-      if (docErr || !doc?.world_id) {
-        console.warn("[document-versions] could not resolve world_id", docErr);
-        return null;
+      if (!worldIdRef.current) {
+        const { data: doc, error: docErr } = await db
+          .from("world_entries")
+          .select("world_id")
+          .eq("id", documentId)
+          .maybeSingle();
+        if (docErr || !doc?.world_id) {
+          console.warn("[document-versions] could not resolve world_id", docErr);
+          return null;
+        }
+        worldIdRef.current = doc.world_id;
       }
 
-      const { data: inserted, error } = await supabase
-        .from("document_versions")
-        .insert({
-          document_id: documentId,
-          world_id: doc.world_id,
-          user_id: user.id,
-          title: title || "Untitled",
-          content_html: content,
-          word_count: wordCount,
-          snapshot_reason: reason,
-        })
-        .select("id, document_id, title, content_html, word_count, created_at")
-        .maybeSingle();
-
+      const { data: inserted, error } = await insertVersion({
+        document_id: documentId,
+        world_id: worldIdRef.current!,
+        user_id: user.id,
+        title: title || "Untitled",
+        content_html: content,
+        word_count: wordCount,
+        snapshot_reason: reason,
+        name: cleanName,
+      });
       if (error || !inserted) {
         console.warn("[document-versions] insert failed", error);
         return null;
       }
 
-      const snapshot = rowToSnapshot(inserted);
-      setSnapshots((prev) => [snapshot, ...prev].slice(0, MAX_SNAPSHOTS));
+      // If the name column is still pending, keep the name visible this session.
+      const snapshot = { ...rowToSnapshot(inserted), name: inserted.name ?? cleanName };
+      const next = [snapshot, ...snapshotsRef.current].slice(0, MAX_SNAPSHOTS);
+      snapshotsRef.current = next;
+      setSnapshots(next);
       lastAutoSnapshotContentRef.current = content;
       return snapshot;
     },
-    [documentId, user, snapshots]
+    [documentId, user],
   );
 
   const createSnapshot = useCallback(
-    async (): Promise<DocumentSnapshot | null> => {
-      return createSnapshotInternal(
-        contentRef.current,
-        titleRef.current,
-        "manual"
-      );
-    },
-    [createSnapshotInternal]
+    async (opts: CreateSnapshotOptions = {}): Promise<DocumentSnapshot | null> =>
+      createSnapshotInternal(
+        opts.content ?? contentRef.current,
+        opts.title ?? titleRef.current,
+        "manual",
+        opts.name,
+      ),
+    [createSnapshotInternal],
   );
 
   // --------------------------------------------------
@@ -341,14 +494,12 @@ export function useDocumentVersions(
 
   useEffect(() => {
     if (!documentId) return;
-
     const interval = setInterval(() => {
       const content = contentRef.current;
       if (content && content !== lastAutoSnapshotContentRef.current) {
         void createSnapshotInternal(content, titleRef.current, "auto");
       }
     }, AUTO_SNAPSHOT_INTERVAL);
-
     return () => clearInterval(interval);
   }, [documentId, createSnapshotInternal]);
 
@@ -356,21 +507,25 @@ export function useDocumentVersions(
   // Restore a version
   // --------------------------------------------------
 
+  /**
+   * Capture the current text (reason 'restore'), then hand back the chosen
+   * snapshot for the caller to load. Returns null, and restores nothing, if
+   * the safety capture failed: never trade the writer's current words for an
+   * older version without a copy on file.
+   */
   const restoreVersion = useCallback(
-    async (snapshotId: string): Promise<DocumentSnapshot | null> => {
-      const found = snapshots.find((s) => s.id === snapshotId);
+    async (snapshotId: string, liveContent?: string): Promise<DocumentSnapshot | null> => {
+      const found = snapshotsRef.current.find((s) => s.id === snapshotId);
       if (!found) return null;
-
-      // Snapshot current content first so the restore is undoable
-      await createSnapshotInternal(
-        contentRef.current,
-        titleRef.current,
-        "restore"
-      );
-
+      const current = liveContent ?? contentRef.current;
+      const alreadyOnFile = snapshotsRef.current.some((s) => s.content === current);
+      if (current && current !== "<p></p>" && !alreadyOnFile) {
+        const safety = await createSnapshotInternal(current, titleRef.current, "restore");
+        if (!safety) return null;
+      }
       return found;
     },
-    [snapshots, createSnapshotInternal]
+    [createSnapshotInternal],
   );
 
   // --------------------------------------------------
@@ -378,29 +533,26 @@ export function useDocumentVersions(
   // --------------------------------------------------
 
   const deleteSnapshot = useCallback(
-    async (snapshotId: string) => {
-      if (!documentId) return;
-
+    async (snapshotId: string): Promise<boolean> => {
+      if (!documentId) return false;
       if (fallbackRef.current) {
-        setSnapshots((prev) => {
-          const next = prev.filter((s) => s.id !== snapshotId);
-          saveLocalSnapshots(documentId, next);
-          return next;
-        });
-        return;
+        const next = snapshotsRef.current.filter((s) => s.id !== snapshotId);
+        saveLocalSnapshots(documentId, next);
+        snapshotsRef.current = next;
+        setSnapshots(next);
+        return true;
       }
-
-      const { error } = await supabase
-        .from("document_versions")
-        .delete()
-        .eq("id", snapshotId);
+      const { error } = await db.from("document_versions").delete().eq("id", snapshotId);
       if (error) {
         console.warn("[document-versions] delete failed", error);
-        return;
+        return false;
       }
-      setSnapshots((prev) => prev.filter((s) => s.id !== snapshotId));
+      const next = snapshotsRef.current.filter((s) => s.id !== snapshotId);
+      snapshotsRef.current = next;
+      setSnapshots(next);
+      return true;
     },
-    [documentId]
+    [documentId],
   );
 
   // --------------------------------------------------
@@ -409,17 +561,12 @@ export function useDocumentVersions(
 
   const clearSnapshots = useCallback(async () => {
     if (!documentId) return;
-
     if (fallbackRef.current) {
       setSnapshots([]);
       clearLocalSnapshots(documentId);
       return;
     }
-
-    const { error } = await supabase
-      .from("document_versions")
-      .delete()
-      .eq("document_id", documentId);
+    const { error } = await db.from("document_versions").delete().eq("document_id", documentId);
     if (error) {
       console.warn("[document-versions] clear failed", error);
       return;
@@ -429,11 +576,12 @@ export function useDocumentVersions(
 
   return {
     snapshots,
+    loading,
     createSnapshot,
     restoreVersion,
     deleteSnapshot,
     clearSnapshots,
-    /** True when operating from localStorage (table missing or unauthenticated). */
+    /** True when operating from localStorage (table missing). */
     usingFallback,
   };
 }

@@ -6,6 +6,7 @@
  */
 
 import { supabase } from "@/integrations/supabase/client";
+import { isSchemaMissingError } from "@/services/chronicle-branches";
 
 // ──────────────────────────────────────────────
 // Types
@@ -30,6 +31,8 @@ export interface ChronicleEvent {
   parentId: string | null;
   linkedEntryId: string | null;
   linkedEntryTitle: string | null;
+  /** chronicle_branches id; null = prime timeline (and always null pre-migration). */
+  branchId: string | null;
   icon: string | null;
   color: string | null;
   tags: string[];
@@ -175,6 +178,7 @@ function mapEvent(e: Record<string, unknown>): ChronicleEvent {
     parentId: (e.parent_id as string) || null,
     linkedEntryId: linked?.id as string || (e.linked_entry_id as string) || null,
     linkedEntryTitle: (linked?.title as string) || null,
+    branchId: (e.branch_id as string) || null,
     icon: (e.icon as string) || null,
     color: (e.color as string) || null,
     tags: (e.tags as string[]) || [],
@@ -197,35 +201,61 @@ export interface CreateEventInput {
   layer?: string;
   parentId?: string;
   linkedEntryId?: string;
+  /** Branch the event sits on; null/undefined = prime timeline. */
+  branchId?: string | null;
   icon?: string;
   color?: string;
   tags?: string[];
 }
 
+/**
+ * Result of an event write. `branchesOffline` is true when the event was
+ * saved but its branch could not be (branch_id column not migrated yet), so
+ * it landed on the prime timeline.
+ */
+export interface ChronicleWriteResult {
+  error: unknown;
+  branchesOffline: boolean;
+  /** The written row, when the write returned one. */
+  data?: { id: string } | null;
+}
+
 export async function createChronicleEvent(
   worldId: string,
   input: CreateEventInput
-) {
-  return supabase
-    .from("chronicle_events")
-    .insert({
-      world_id: worldId,
-      title: input.title,
-      description: input.description || null,
-      event_date: input.eventDate,
-      sort_value: input.sortValue,
-      end_date: input.endDate || null,
-      end_sort_value: input.endSortValue ?? null,
-      event_type: input.eventType || "event",
-      layer: input.layer || null,
-      parent_id: input.parentId || null,
-      linked_entry_id: input.linkedEntryId || null,
-      icon: input.icon || null,
-      color: input.color || null,
-      tags: input.tags || [],
-    })
-    .select()
-    .single();
+): Promise<ChronicleWriteResult> {
+  const row = {
+    world_id: worldId,
+    title: input.title,
+    description: input.description || null,
+    event_date: input.eventDate,
+    sort_value: input.sortValue,
+    end_date: input.endDate || null,
+    end_sort_value: input.endSortValue ?? null,
+    event_type: input.eventType || "event",
+    layer: input.layer || null,
+    parent_id: input.parentId || null,
+    linked_entry_id: input.linkedEntryId || null,
+    icon: input.icon || null,
+    color: input.color || null,
+    tags: input.tags || [],
+  };
+  // Only send branch_id when the event is on a branch, so prime-timeline
+  // writes keep working before the migration lands.
+  if (input.branchId) {
+    const res = await supabase
+      .from("chronicle_events")
+      .insert({ ...row, branch_id: input.branchId })
+      .select()
+      .single();
+    if (!res.error || !isSchemaMissingError(res.error)) {
+      return { error: res.error, branchesOffline: false, data: res.data };
+    }
+    const retry = await supabase.from("chronicle_events").insert(row).select().single();
+    return { error: retry.error, branchesOffline: true, data: retry.data };
+  }
+  const res = await supabase.from("chronicle_events").insert(row).select().single();
+  return { error: res.error, branchesOffline: false, data: res.data };
 }
 
 export interface UpdateEventInput {
@@ -239,6 +269,7 @@ export interface UpdateEventInput {
   layer?: string | null;
   parentId?: string | null;
   linkedEntryId?: string | null;
+  branchId?: string | null;
   icon?: string | null;
   color?: string | null;
   tags?: string[];
@@ -247,7 +278,7 @@ export interface UpdateEventInput {
 export async function updateChronicleEvent(
   eventId: string,
   updates: UpdateEventInput
-) {
+): Promise<ChronicleWriteResult> {
   const dbUpdates: Record<string, unknown> = {};
   if (updates.title !== undefined) dbUpdates.title = updates.title;
   if (updates.description !== undefined)
@@ -268,11 +299,22 @@ export async function updateChronicleEvent(
   if (updates.icon !== undefined) dbUpdates.icon = updates.icon;
   if (updates.color !== undefined) dbUpdates.color = updates.color;
   if (updates.tags !== undefined) dbUpdates.tags = updates.tags;
+  if (updates.branchId !== undefined) dbUpdates.branch_id = updates.branchId || null;
 
-  return supabase
+  const res = await supabase
     .from("chronicle_events")
     .update(dbUpdates)
     .eq("id", eventId);
+  if (res.error && "branch_id" in dbUpdates && isSchemaMissingError(res.error)) {
+    // Column not migrated yet: save everything else, keep the event on prime.
+    const { branch_id: wanted, ...rest } = dbUpdates;
+    const retry = await supabase
+      .from("chronicle_events")
+      .update(rest)
+      .eq("id", eventId);
+    return { error: retry.error, branchesOffline: !!wanted };
+  }
+  return { error: res.error, branchesOffline: false };
 }
 
 export async function deleteChronicleEvent(eventId: string) {

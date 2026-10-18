@@ -59,7 +59,10 @@ export function useLatestDoc() {
         .from("world_entries")
         .select("id, world_id, updated_at")
         .in("world_id", ids)
-        .in("entry_type", ["document", "lore"])
+        // Manuscript documents only: lore belongs to the Codex, and a
+        // trashed document is not the one to reopen.
+        .eq("entry_type", "document")
+        .is("trashed_at", null)
         .order("updated_at", { ascending: false })
         .limit(1)
         .maybeSingle();

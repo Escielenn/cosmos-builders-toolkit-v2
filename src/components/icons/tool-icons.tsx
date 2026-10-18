@@ -2,6 +2,7 @@
 // Uses SVG illustration files from /public/icons/
 
 import React from "react";
+import { ContactRound } from "lucide-react";
 
 interface ToolIconProps {
   className?: string;
@@ -35,7 +36,9 @@ const ICON_FILES: Record<string, string> = {
   "gravitas": "045-planet.svg",
   "stellar-cartographer": "003-map.svg",
   "kardashev-scale": "011-sun.svg",
+  "generation-ship": "036-space colony.svg",
   "solaris": "022-solar system.svg",
+  "surface-cartographer": "001-compass.svg",
 };
 
 function createImgIcon(filename: string): React.FC<ToolIconProps> {
@@ -46,10 +49,18 @@ function createImgIcon(filename: string): React.FC<ToolIconProps> {
   return Component;
 }
 
-// Map tool IDs to their icon components
-export const TOOL_ICONS: Record<string, React.FC<ToolIconProps>> = Object.fromEntries(
-  Object.entries(ICON_FILES).map(([id, file]) => [id, createImgIcon(file)])
+// Tools drawn with a lucide glyph rather than an illustration. The glyph
+// takes the tool's cascade colour (Dossier is Psychology, magenta).
+const DossierIcon = ({ className = "" }: ToolIconProps) => (
+  <ContactRound className={`text-sf-magenta ${className}`} aria-hidden="true" strokeWidth={1.25} />
 );
+DossierIcon.displayName = "ToolIcon(dossier)";
+
+// Map tool IDs to their icon components
+export const TOOL_ICONS: Record<string, React.FC<ToolIconProps>> = {
+  ...Object.fromEntries(Object.entries(ICON_FILES).map(([id, file]) => [id, createImgIcon(file)])),
+  dossier: DossierIcon,
+};
 
 export const getToolIcon = (toolId: string): React.FC<ToolIconProps> | null => {
   return TOOL_ICONS[toolId] || null;

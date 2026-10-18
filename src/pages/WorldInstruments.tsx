@@ -29,6 +29,9 @@ import { useMetaTags } from "@/hooks/use-meta-tags";
 
 const ALL_TOOL_IDS = [...FREE_TOOL_IDS, ...PRO_TOOL_IDS];
 
+/** Time-travel timelines are a Chronicle view, not a /tools route (Law VII). */
+const TIME_TRAVEL_NAME = "Time Travel Timelines";
+
 export default function WorldInstruments() {
   useMetaTags({ title: "Instruments" });
   const { worldId } = useParams<{ worldId: string }>();
@@ -145,6 +148,22 @@ export default function WorldInstruments() {
       </div>
 
       <ul className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        {(!query.trim() || TIME_TRAVEL_NAME.toLowerCase().includes(query.trim().toLowerCase()) ||
+          "branches".includes(query.trim().toLowerCase())) && (
+          <li>
+            <Link
+              to={`/worlds/${worldId}/chronicle?view=branches`}
+              className="flex min-h-hit flex-col justify-center border border-sf-line bg-sf-surface px-3 py-2 transition-colors hover:border-sf-primary"
+            >
+              <span className="text-[14px] text-t1">{TIME_TRAVEL_NAME}</span>
+              <span className="mt-0.5 flex items-center gap-2">
+                <span className="border border-sf-teal px-1 font-mono text-[12px] uppercase tracking-wider text-sf-teal-text">
+                  Chronicle view
+                </span>
+              </span>
+            </Link>
+          </li>
+        )}
         {tools.map((tool) => (
           <li key={tool.id}>
             <Link

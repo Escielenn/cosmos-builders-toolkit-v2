@@ -23,6 +23,8 @@ import {
   ChevronDown,
   Map as MapIcon,
   Zap,
+  ContactRound,
+  Ship,
 } from "lucide-react";
 import {
   TOOL_WIKI,
@@ -292,6 +294,14 @@ const toolsByCategory: {
         icon: Zap,
         status: "available",
       },
+      {
+        id: "dossier",
+        title: "Dossier: Character Development",
+        description:
+          "Characters born into your world. Lifespan, senses, native gravity, phonology and funeral customs inherited from your tools, with every override marked.",
+        icon: ContactRound,
+        status: "available",
+      },
     ],
   },
   {
@@ -324,6 +334,14 @@ const toolsByCategory: {
         description:
           "Plot events across deep time. Build multi-track timelines that reveal how characters, civilizations, and technologies intersect.",
         icon: Clock,
+        status: "available",
+      },
+      {
+        id: "generation-ship",
+        title: "Ark: Generation Ship Designer",
+        description:
+          "Size a multi-generational voyage: crew genetics, closed-loop life support, spin habitat, and drift events for the Chronicle.",
+        icon: Ship,
         status: "available",
       },
     ],
@@ -365,7 +383,6 @@ const comingSoonItems = [
 
   { title: "Quantum and Beyond", subtitle: "Technology beyond our understanding" },
   { title: "Generation Ship Designer", subtitle: "Design self-sustaining interstellar arks" },
-  { title: "Character Development", subtitle: "Individual characters connected to your world" },
   { title: "AI Development", subtitle: "Explore artificial intelligence in your universe" },
   { title: "Warp Travel Calculator", subtitle: "Calculate warp-based journey parameters" },
   { title: "Orbital Mechanics / Year Calculator", subtitle: "Compute orbital periods and mechanics" },

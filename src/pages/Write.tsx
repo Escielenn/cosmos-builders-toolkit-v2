@@ -15,7 +15,10 @@ import { Wordmark } from "@/components/brand/Wordmark";
 import { WritingEntityPanel } from "@/components/writing/WritingEntityPanel";
 import { WorldInfluencePanel } from "@/components/writing/WorldInfluencePanel";
 import { WorksheetFactsPanel } from "@/components/writing/WorksheetFactsPanel";
-import { DocumentMetaBar } from "@/components/writing/DocumentMetaBar";
+import { DocumentInspector, type InspectorPane } from "@/components/writing/DocumentInspector";
+import { BinderTree } from "@/components/writing/BinderTree";
+import { SnapshotCompareDialog } from "@/components/writing/SnapshotCompareDialog";
+import { LabelManagerDialog } from "@/components/writing/LabelManagerDialog";
 import { ContinuityPanel } from "@/components/writing/ContinuityPanel";
 import { FindReplaceBar } from "@/components/writing/FindReplaceBar";
 import { Corkboard } from "@/components/writing/Corkboard";
@@ -25,7 +28,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -35,27 +37,20 @@ import {
   compileManuscriptPlainText,
 } from "@/lib/manuscript-compile";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import {
-  DndContext, closestCenter, PointerSensor, KeyboardSensor,
-  useSensor, useSensors,
-} from "@dnd-kit/core";
-import {
-  SortableContext, verticalListSortingStrategy, arrayMove,
-  useSortable, sortableKeyboardCoordinates,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { useToast } from "@/hooks/use-toast";
 import {
   useWritingDocuments, useCreateDocument, useUpdateDocumentContent,
   useCreateFolder, useRenameDocument, useReorderDocuments,
   useDeleteDocument, useTrashedDocuments, useRestoreDocument,
-  usePurgeDocument, purgeExpiredTrash, useUpdateDocumentMeta, useMoveDocument,
+  usePurgeDocument, purgeExpiredTrash, useUpdateDocumentMeta, useMoveBinderItem,
   useRenameFolder, useDeleteFolder,
 } from "@/hooks/use-writing-documents";
-import { Trash2, RotateCcw, X, FolderInput, MoreVertical, Plus, ArrowLeft } from "lucide-react";
+import { useDocumentVersions, type DocumentSnapshot } from "@/hooks/use-document-versions";
+import { useWritingLabels } from "@/hooks/use-writing-labels";
+import { Trash2, RotateCcw, X, ArrowLeft } from "lucide-react";
 import { useWriteDoc, useLatestDoc, rollWordSession, countWords } from "@/hooks/use-write-doc";
 import { useSessionWords } from "@/hooks/use-session-words";
-import { useWritingPreferences, type WritingFont } from "@/hooks/use-writing-preferences";
+import { useWritingPreferences } from "@/hooks/use-writing-preferences";
 import { useWritingPins } from "@/hooks/use-writing-pins";
 import { readDocMeta } from "@/lib/document-meta";
 import type { Entity } from "@/services/entity-graph-types";
@@ -82,7 +77,13 @@ export default function Write(): JSX.Element {
   // `data` excludes folders by design, so folders/unfiledDocs must come from
   // the hook too. Re-deriving folders from `data` (as this once did) always
   // yielded an empty list, which made the folder UI dead code.
-  const { data: entries, folders: folderRows, unfiledDocs } = useWritingDocuments(worldId);
+  const {
+    data: entries,
+    folders: folderRows,
+    unfiledDocs,
+    tree: binderTree,
+    entries: binderEntries,
+  } = useWritingDocuments(worldId);
   const updateContent = useUpdateDocumentContent(worldId);
   const createDoc = useCreateDocument(worldId);
   const createFolder = useCreateFolder(worldId);
@@ -91,41 +92,33 @@ export default function Write(): JSX.Element {
   const restoreDoc = useRestoreDocument(worldId);
   const purgeDoc = usePurgeDocument(worldId);
   const { data: trashed } = useTrashedDocuments(worldId);
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
-  );
   const renameDoc = useRenameDocument(worldId);
   const renameFolder = useRenameFolder(worldId);
   const deleteFolder = useDeleteFolder(worldId);
   const updateMeta = useUpdateDocumentMeta(worldId);
   const { addPin } = useWritingPins(worldId ?? "");
-  const moveDoc = useMoveDocument(worldId);
+  const moveItem = useMoveBinderItem(worldId);
+  const {
+    labels,
+    isLocal: labelsLocal,
+    saveLabels,
+    isSaving: labelsSaving,
+  } = useWritingLabels(worldId);
+  const [labelsOpen, setLabelsOpen] = useState(false);
 
-  // Inline rename, shared by both folder headers and document rows in the
-  // binder below — one piece of state, matching the pattern already proven
-  // in ChapterTree.tsx (the version of this UI that was never routed; ported
-  // here rather than left as unreachable dead code).
-  const [renamingId, setRenamingId] = useState<string | null>(null);
-  const [renameValue, setRenameValue] = useState("");
-  const beginRename = (id: string, currentTitle: string) => {
-    setRenamingId(id);
-    setRenameValue(currentTitle);
-  };
-  const commitRename = (kind: "doc" | "folder") => {
-    if (!renamingId) return;
-    const trimmed = renameValue.trim();
-    if (trimmed) {
-      if (kind === "doc") renameDoc.mutate({ docId: renamingId, title: trimmed });
-      else renameFolder.mutate({ folderId: renamingId, title: trimmed });
-    }
-    setRenamingId(null);
-  };
-  const cancelRename = () => setRenamingId(null);
-  const renameKeyDown = (kind: "doc" | "folder") => (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") commitRename(kind);
-    if (e.key === "Escape") cancelRename();
-  };
+  // Snapshots. The hook's content argument is the last SAVED text (auto
+  // snapshots every 5 minutes use it); manual snapshots and restores pass the
+  // live editor HTML explicitly.
+  const {
+    snapshots,
+    loading: snapshotsLoading,
+    usingFallback: snapshotsLocal,
+    createSnapshot,
+    restoreVersion,
+    deleteSnapshot,
+  } = useDocumentVersions(doc?.id ?? null, doc?.title ?? "", doc?.content ?? "");
+  const [comparing, setComparing] = useState<DocumentSnapshot | null>(null);
+  const [docPane, setDocPane] = useState<InspectorPane>("card");
 
   const [focus, setFocus] = useState(false);
   const [findOpen, setFindOpen] = useState(false);
@@ -142,7 +135,7 @@ export default function Write(): JSX.Element {
     try { localStorage.setItem("sf-write-view", view); } catch { /* no storage */ }
   }, [view]);
   const [editorInstance, setEditorInstance] = useState<Editor | null>(null);
-  const [inspector, setInspector] = useState<"entities" | "world" | "reference" | "continuity">("entities");
+  const [inspector, setInspector] = useState<"doc" | "entities" | "world" | "reference" | "continuity">("doc");
   const [mobilePanel, setMobilePanel] = useState<"binder" | "inspector" | null>(null);
   const [trashOpen, setTrashOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -193,12 +186,18 @@ export default function Write(): JSX.Element {
   // would invalidate chapterList (and anything else keyed on them) each time.
   const folders = useMemo(() => folderRows ?? [], [folderRows]);
   const unfiled = useMemo(() => unfiledDocs ?? [], [unfiledDocs]);
-  // Chapters a scene can be filed into. useMoveDocument existed in the hooks
-  // but was never wired up, so filing was impossible in the live editor.
-  const chapterList = useMemo(
-    () => folders.map((f) => ({ id: f.id, title: f.title })),
-    [folders],
-  );
+
+  // Every keyword used anywhere in this manuscript, for the inspector's
+  // keyword suggestions.
+  const keywordSuggestions = useMemo(() => {
+    const seen = new Map<string, string>();
+    for (const e of entries ?? []) {
+      for (const k of readDocMeta(e.metadata).keywords) {
+        if (!seen.has(k.toLowerCase())) seen.set(k.toLowerCase(), k);
+      }
+    }
+    return [...seen.values()].sort((a, b) => a.localeCompare(b));
+  }, [entries]);
 
   // Today's progress against the goal the writer already set in Studio.
   const { sessionWords, refresh: refreshSessionWords } = useSessionWords();
@@ -226,13 +225,17 @@ export default function Write(): JSX.Element {
   // the doc-change effect had already rebased lastCount to the NEW document,
   // so the timer committed (old doc's words - new doc's baseline) to the streak
   // ledger and painted the old count while the new doc was on screen.
-  const flushPending = useCallback(() => {
+  //
+  // Returns a promise that settles once the save has landed (or failed), so a
+  // structural operation (restore, trash) can wait for the latest words to be
+  // on the server before it acts. Fire-and-forget callers can ignore it.
+  const flushPending = useCallback((): Promise<void> => {
     if (debounce.current) {
       clearTimeout(debounce.current);
       debounce.current = undefined;
     }
     const p = pending.current;
-    if (!p) return;
+    if (!p) return Promise.resolve();
     pending.current = null;
 
     const delta =
@@ -241,19 +244,21 @@ export default function Write(): JSX.Element {
       lastCount.current = p.words;
       setWords(p.words);
     }
-    updateContent.mutate(
-      { docId: p.docId, content: p.html },
-      {
-        onSuccess: () => {
-          setSavedAt(new Date());
-          if (user && delta > 0) {
-            // Await nothing, but refresh the footer once the ledger is written
-            // so today's total advances as you type instead of on next refetch.
-            rollWordSession(user.id, delta).then(() => refreshSessionWords());
-          }
-        },
-      },
-    );
+    return updateContent
+      .mutateAsync({ docId: p.docId, content: p.html })
+      .then(() => {
+        setSavedAt(new Date());
+        if (user && delta > 0) {
+          // Await nothing, but refresh the footer once the ledger is written
+          // so today's total advances as you type instead of on next refetch.
+          rollWordSession(user.id, delta).then(() => refreshSessionWords());
+        }
+      })
+      .catch(() => {
+        // The mutation's own onError already told the writer. Keep the text
+        // queued so the next flush retries instead of dropping it.
+        if (!pending.current) pending.current = p;
+      });
   }, [docId, updateContent, user, refreshSessionWords]);
 
   function onContentChange(html: string) {
@@ -265,7 +270,7 @@ export default function Write(): JSX.Element {
 
   // Commit before leaving the document, and before the tab closes — otherwise
   // the last <=1.2s of typing is silently lost.
-  useEffect(() => flushPending, [docId, flushPending]);
+  useEffect(() => () => void flushPending(), [docId, flushPending]);
 
   useEffect(() => {
     const onBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -277,10 +282,101 @@ export default function Write(): JSX.Element {
     return () => window.removeEventListener("beforeunload", onBeforeUnload);
   }, [flushPending]);
 
+  // The live text: the editor is authoritative; the pending buffer and the
+  // last saved copy are fallbacks for the instant before it mounts.
+  const liveHtml = useCallback(
+    (): string => editorInstance?.getHTML() ?? pending.current?.html ?? doc?.content ?? "",
+    [editorInstance, doc?.content],
+  );
+
+  // SNAPSHOTS ----------------------------------------------------------------
+
+  const takeSnapshot = useCallback(
+    async (name?: string): Promise<boolean> => {
+      if (!doc) return false;
+      const html = liveHtml();
+      if (countWords(html) === 0) {
+        toast({ title: "NOTHING TO SNAPSHOT.", description: "This document is empty." });
+        return false;
+      }
+      void flushPending();
+      const snap = await createSnapshot({ name, content: html, title: title || doc.title });
+      if (snap) {
+        toast({
+          title: "SNAPSHOT TAKEN.",
+          description: snap.name ? `“${snap.name}” · ${snap.wordCount.toLocaleString()} words` : `${snap.wordCount.toLocaleString()} words`,
+        });
+        return true;
+      }
+      toast({ title: "SNAPSHOT FAILED.", description: "Nothing was changed. Try again.", variant: "destructive" });
+      return false;
+    },
+    [doc, liveHtml, flushPending, createSnapshot, title, toast],
+  );
+  const takeSnapshotRef = useRef(takeSnapshot);
+  takeSnapshotRef.current = takeSnapshot;
+
+  /** Restore a snapshot. The current text is snapshotted first, always. */
+  const restoreSnapshot = useCallback(
+    async (snap: DocumentSnapshot): Promise<boolean> => {
+      if (!doc || !editorInstance) return false;
+      await flushPending();
+      const found = await restoreVersion(snap.id, liveHtml());
+      if (!found) {
+        toast({
+          title: "RESTORE HALTED.",
+          description: "The current text could not be snapshotted first, so nothing was replaced.",
+          variant: "destructive",
+        });
+        return false;
+      }
+      editorInstance.commands.setContent(found.content, { emitUpdate: false });
+      // A restore is not writing: rebase the counter so the streak ledger
+      // neither gains nor loses words for it.
+      const restoredWords = countWords(found.content);
+      lastCount.current = restoredWords;
+      setWords(restoredWords);
+      try {
+        await updateContent.mutateAsync({ docId: doc.id, content: found.content });
+        setSavedAt(new Date());
+      } catch {
+        return false;
+      }
+      toast({ title: "VERSION RESTORED.", description: "The text it replaced is on file as a snapshot." });
+      return true;
+    },
+    [doc, editorInstance, flushPending, restoreVersion, liveHtml, updateContent, toast],
+  );
+
+  /** Trash a document, saving any unsaved words first (the hook snapshots it). */
+  const trashDocument = useCallback(
+    async (id: string) => {
+      if (id === docId) await flushPending();
+      trashDoc.mutate(id);
+    },
+    [docId, flushPending, trashDoc],
+  );
+
   // The live editor bound no shortcuts at all: Ctrl+S did nothing and focus
   // mode had no way out but the mouse.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // Ctrl/Cmd+Alt+S: take a snapshot. Scrivener's Cmd+5 is a browser tab
+      // switch; Mod+Shift+S is Tiptap's strikethrough (and Firefox's
+      // screenshot). Matched on e.code because Option+S types "ß" on a Mac,
+      // and skipped for AltGr so a writer typing "ś" on a Polish layout is
+      // never intercepted. Checked before plain Ctrl+S.
+      if (
+        (e.metaKey || e.ctrlKey) &&
+        e.altKey &&
+        !e.shiftKey &&
+        e.code === "KeyS" &&
+        !e.getModifierState?.("AltGraph")
+      ) {
+        e.preventDefault();
+        void takeSnapshotRef.current();
+        return;
+      }
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "s") {
         e.preventDefault();
         flushPending();
@@ -369,125 +465,42 @@ export default function Write(): JSX.Element {
     setMobilePanel(null);
   };
 
-  // Reorder one list (a folder's docs, or unfiled) and persist sort_order.
-  const reorderList = (list: WorldEntry[], activeId: string, overId: string) => {
-    const oldIdx = list.findIndex((d) => d.id === activeId);
-    const newIdx = list.findIndex((d) => d.id === overId);
-    if (oldIdx === -1 || newIdx === -1 || oldIdx === newIdx) return;
-    reorderDocs.mutate(arrayMove(list, oldIdx, newIdx).map((d) => d.id));
-  };
-
   // Shared binder content (renders in the desktop column AND the mobile sheet)
   const binderContent = (
     <div className="flex h-full min-h-0 flex-col border-r border-sf-line-interactive">
-      <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto py-3">
-        {folders.map((folder) => (
-          <div key={folder.id} className="mb-2">
-            <div className="group flex items-center gap-1 pr-1">
-              {renamingId === folder.id ? (
-                <input
-                  autoFocus
-                  value={renameValue}
-                  onChange={(e) => setRenameValue(e.target.value)}
-                  onBlur={() => commitRename("folder")}
-                  onKeyDown={renameKeyDown("folder")}
-                  aria-label="Chapter name"
-                  className="min-w-0 flex-1 bg-transparent px-3 py-1 font-heading text-[12px] uppercase tracking-wide text-t1"
-                />
-              ) : (
-                <button
-                  onDoubleClick={() => beginRename(folder.id, folder.title)}
-                  title="Double-click to rename"
-                  className="min-w-0 flex-1 truncate px-3 py-1 text-left font-heading text-[12px] uppercase tracking-wide text-t3 hover:text-t1"
-                >
-                  {folder.title}
-                </button>
-              )}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    onClick={(e) => e.stopPropagation()}
-                    aria-label={`Chapter options for ${folder.title}`}
-                    title="Chapter options"
-                    className="transition-colors duration-base shrink-0 p-1.5 text-t4 hover:text-sf-primary-text"
-                  >
-                    <MoreVertical className="h-3.5 w-3.5" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-52">
-                  <DropdownMenuItem
-                    onClick={() =>
-                      createDoc.mutate(
-                        { title: "Untitled", parentId: folder.id },
-                        { onSuccess: (d: WorldEntry) => openDoc(d.id) },
-                      )
-                    }
-                  >
-                    <Plus className="mr-2 h-3.5 w-3.5" /> New document here
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => beginRename(folder.id, folder.title)}>
-                    Rename
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    className="text-sf-crimson-text focus:text-sf-crimson-text"
-                    onClick={() => {
-                      if (window.confirm(`Delete "${folder.title}"? Its documents move to Unfiled. This cannot be undone.`)) {
-                        deleteFolder.mutate(folder.id);
-                      }
-                    }}
-                  >
-                    Delete chapter
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-            <DndContext sensors={sensors} collisionDetection={closestCenter}
-              onDragEnd={({ active, over }) => over && reorderList(folder.documents, String(active.id), String(over.id))}>
-              <SortableContext items={folder.documents.map((d) => d.id)} strategy={verticalListSortingStrategy}>
-                {folder.documents.map((d) => (
-                  <SortableDocRow
-                    key={d.id}
-                    d={d}
-                    active={d.id === docId}
-                    onOpen={() => openDoc(d.id)}
-                    onTrash={() => trashDoc.mutate(d.id)}
-                    chapters={chapterList}
-                    onMove={(folderId) => moveDoc.mutate({ docId: d.id, folderId })}
-                    isRenaming={renamingId === d.id}
-                    renameValue={renameValue}
-                    onRenameChange={setRenameValue}
-                    onRenameBlur={() => commitRename("doc")}
-                    onRenameKeyDown={renameKeyDown("doc")}
-                    onBeginRename={() => beginRename(d.id, d.title || "Untitled")}
-                  />
-                ))}
-              </SortableContext>
-            </DndContext>
-          </div>
-        ))}
-        <DndContext sensors={sensors} collisionDetection={closestCenter}
-          onDragEnd={({ active, over }) => over && reorderList(unfiled, String(active.id), String(over.id))}>
-          <SortableContext items={unfiled.map((d) => d.id)} strategy={verticalListSortingStrategy}>
-            {unfiled.map((d) => (
-              <SortableDocRow
-                key={d.id}
-                d={d}
-                active={d.id === docId}
-                onOpen={() => openDoc(d.id)}
-                onTrash={() => trashDoc.mutate(d.id)}
-                chapters={chapterList}
-                onMove={(folderId) => moveDoc.mutate({ docId: d.id, folderId })}
-                isRenaming={renamingId === d.id}
-                renameValue={renameValue}
-                onRenameChange={setRenameValue}
-                onRenameBlur={() => commitRename("doc")}
-                onRenameKeyDown={renameKeyDown("doc")}
-                onBeginRename={() => beginRename(d.id, d.title || "Untitled")}
-              />
-            ))}
-          </SortableContext>
-        </DndContext>
+      <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto py-2">
+        {worldId && (
+          <BinderTree
+            worldId={worldId}
+            tree={binderTree}
+            entries={binderEntries}
+            activeDocId={docId}
+            labels={labels}
+            onOpen={openDoc}
+            onMove={(plan) => moveItem.mutate(plan)}
+            onTrash={(id) => void trashDocument(id)}
+            onCreateDoc={(parentId) =>
+              createDoc.mutate(
+                { title: "Untitled", parentId },
+                { onSuccess: (d: WorldEntry) => openDoc(d.id) },
+              )
+            }
+            onCreateFolder={(parentId) => createFolder.mutate({ title: "New folder", parentId })}
+            onRename={(id, kind, newTitle) => {
+              if (kind === "doc") {
+                renameDoc.mutate({ docId: id, title: newTitle });
+                if (id === docId) setTitle(newTitle);
+              } else {
+                renameFolder.mutate({ folderId: id, title: newTitle });
+              }
+            }}
+            onDeleteFolder={(id, folderTitle) => {
+              if (window.confirm(`Delete the folder "${folderTitle}"? Everything inside it moves up one level. No document is deleted.`)) {
+                deleteFolder.mutate(id);
+              }
+            }}
+          />
+        )}
         {(entries?.length ?? 0) === 0 && (
           <p className="px-3 py-4 font-serif text-[13px] italic text-t4">No documents yet.</p>
         )}
@@ -530,25 +543,56 @@ export default function Write(): JSX.Element {
       </div>
       {worldId && (
         <div className="flex gap-1 border-t border-sf-line-interactive p-2">
-          <button onClick={newDocument} className="min-h-[40px] flex-1 border border-sf-line-interactive px-2 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">+ Document</button>
-          <button onClick={() => createFolder.mutate("New folder")} className="min-h-[40px] flex-1 border border-sf-line-interactive px-2 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">+ Folder</button>
+          <button onClick={newDocument} className="min-h-hit flex-1 border border-sf-line-interactive px-2 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">+ Document</button>
+          <button onClick={() => createFolder.mutate("New folder")} className="min-h-hit flex-1 border border-sf-line-interactive px-2 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">+ Folder</button>
         </div>
       )}
     </div>
   );
 
-  // Shared inspector content (desktop column AND mobile sheet)
+  // Shared inspector content (desktop column AND mobile sheet). The rail
+  // itself never scrolls (Studio Charter: one screen); each pane scrolls
+  // inside it.
   const inspectorContent = worldId ? (
-    <div className="sf-sb sf-sb--slim flex h-full min-h-0 flex-col overflow-y-auto border-l border-sf-line-interactive">
-      <div className="flex border-b border-sf-line-interactive" role="tablist" aria-label="Inspector">
-        {(["entities", "world", "reference", "continuity"] as const).map((t) => (
+    <div className="flex h-full min-h-0 flex-col overflow-hidden border-l border-sf-line-interactive">
+      <div className="flex shrink-0 border-b border-sf-line-interactive" role="tablist" aria-label="Inspector">
+        {(["doc", "entities", "world", "reference", "continuity"] as const).map((t) => (
           <button key={t} role="tab" aria-selected={inspector === t} onClick={() => setInspector(t)}
-            className={`min-h-[44px] flex-1 border-b-2 px-2 py-2.5 text-[13px] capitalize transition-colors ${inspector === t ? "border-sf-primary text-t1" : "border-transparent text-t3 hover:text-t1"}`}>
-            {t === "entities" ? "Entities" : t === "world" ? "World" : t === "reference" ? "Refs" : "Check"}
+            className={`min-h-[44px] flex-1 border-b-2 px-1 py-2.5 text-[13px] capitalize transition-colors ${inspector === t ? "border-sf-primary text-t1" : "border-transparent text-t3 hover:text-t1"}`}>
+            {t === "doc" ? "Doc" : t === "entities" ? "Entities" : t === "world" ? "World" : t === "reference" ? "Refs" : "Check"}
           </button>
         ))}
       </div>
+      {inspector === "doc" && doc && (
+        <div className="min-h-0 flex-1">
+          <DocumentInspector
+            key={doc.id}
+            meta={docMeta}
+            onChange={(patch) => updateMeta.mutate({ docId: doc.id, patch })}
+            words={words}
+            labels={labels}
+            onManageLabels={() => setLabelsOpen(true)}
+            keywordSuggestions={keywordSuggestions}
+            pane={docPane}
+            onPaneChange={setDocPane}
+            snapshots={snapshots}
+            snapshotsLoading={snapshotsLoading}
+            snapshotsLocal={snapshotsLocal}
+            onTakeSnapshot={takeSnapshot}
+            onCompare={(s) => {
+              void flushPending();
+              setComparing(s);
+            }}
+            onDeleteSnapshot={(s) => {
+              void deleteSnapshot(s.id).then((ok) =>
+                toast(ok ? { title: "SNAPSHOT DELETED." } : { title: "DELETE FAILED.", variant: "destructive" }),
+              );
+            }}
+          />
+        </div>
+      )}
       {inspector === "entities" && (
+        <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto">
         <WritingEntityPanel
           worldId={worldId}
           open
@@ -561,6 +605,7 @@ export default function Write(): JSX.Element {
           }}
           embedded
         />
+        </div>
       )}
       {inspector === "continuity" && (
         <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto">
@@ -575,10 +620,12 @@ export default function Write(): JSX.Element {
         </div>
       )}
       {inspector === "world" && (
-        <WorldInfluencePanel worldId={worldId} content={doc?.content} />
+        <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto">
+          <WorldInfluencePanel worldId={worldId} content={doc?.content} />
+        </div>
       )}
       {inspector === "reference" && (
-        <div className="flex h-full min-h-0 flex-col">
+        <div className="flex min-h-0 flex-1 flex-col">
           <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto">
             <WorksheetFactsPanel worldId={worldId} onInsert={insertIntoEditor} />
           </div>
@@ -731,15 +778,8 @@ export default function Write(): JSX.Element {
               className="w-full bg-transparent font-serif text-[30px] italic text-t1 placeholder:text-t4"
               aria-label="Document title"
             />
-            {/* Index-card fields. Collapsed until opened so they never compete
-                with the prose; these are what a corkboard/outliner will read. */}
-            {doc && (
-              <DocumentMetaBar
-                meta={docMeta}
-                onChange={(patch) => updateMeta.mutate({ docId: doc.id, patch })}
-                disabled={updateMeta.isPending}
-              />
-            )}
+            {/* The index-card fields (synopsis, label, status, POV...) moved
+                to the inspector's Doc tab, out of the writer's eyeline. */}
             <div className="my-6 text-center text-t4" aria-hidden="true">· · ·</div>
             {doc && (
               <StellarForgeEditor
@@ -799,110 +839,21 @@ export default function Write(): JSX.Element {
           </span>
         </div>
       </footer>
-    </div>
-  );
-}
 
-function DocRow({ d, active, onOpen }: { d: WorldEntry; active: boolean; onOpen: () => void }): JSX.Element {
-  return (
-    <button onClick={onOpen}
-      className={`flex w-full items-center gap-2 border-l-2 py-1.5 pl-3 pr-2 text-left font-serif text-[13px] transition-colors ${active ? "border-sf-primary bg-sf-primary/[0.06] text-t1" : "border-transparent text-t2 hover:text-t1"}`}>
-      <span className="truncate">{d.title || "Untitled"}</span>
-    </button>
-  );
-}
-
-/** Draggable binder row (dnd-kit). Short drag reorders; click opens; trash on hover. */
-function SortableDocRow({
-  d, active, onOpen, onTrash, chapters, onMove,
-  isRenaming, renameValue, onRenameChange, onRenameBlur, onRenameKeyDown, onBeginRename,
-}: {
-  d: WorldEntry;
-  active: boolean;
-  onOpen: () => void;
-  onTrash: () => void;
-  /** Folders this scene can be filed into. */
-  chapters?: { id: string; title: string }[];
-  onMove?: (folderId: string | null) => void;
-  isRenaming?: boolean;
-  renameValue?: string;
-  onRenameChange?: (value: string) => void;
-  onRenameBlur?: () => void;
-  onRenameKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-  onBeginRename?: () => void;
-}): JSX.Element {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: d.id });
-  return (
-    <div
-      ref={setNodeRef}
-      style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }}
-      className={`group flex touch-none items-center border-l-2 pr-1 transition-colors ${active ? "border-sf-primary bg-sf-primary/[0.06]" : "border-transparent hover:bg-sf-surface-elevated"}`}
-    >
-      {isRenaming ? (
-        <input
-          autoFocus
-          value={renameValue}
-          onChange={(e) => onRenameChange?.(e.target.value)}
-          onBlur={onRenameBlur}
-          onKeyDown={onRenameKeyDown}
-          aria-label="Document title"
-          className="min-w-0 flex-1 bg-transparent py-1.5 pl-3 pr-2 font-serif text-[13px] text-t1"
-        />
-      ) : (
-        <button
-          onClick={onOpen}
-          onDoubleClick={(e) => { e.stopPropagation(); onBeginRename?.(); }}
-          {...attributes}
-          {...listeners}
-          className={`min-w-0 flex-1 truncate py-1.5 pl-3 pr-2 text-left font-serif text-[13px] ${active ? "text-t1" : "text-t2 hover:text-t1"}`}
-        >
-          {d.title || "Untitled"}
-        </button>
-      )}
-      {chapters && chapters.length > 0 && onMove && (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              onClick={(e) => e.stopPropagation()}
-              aria-label={`File ${d.title || "Untitled"} into a chapter`}
-              title="File into a chapter"
-              className="transition-colors duration-base shrink-0 p-1.5 text-t4 hover:text-sf-primary-text"
-            >
-              <FolderInput className="h-3.5 w-3.5" />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-52">
-            <DropdownMenuLabel className="text-[12px] uppercase tracking-wide text-t3">
-              File into
-            </DropdownMenuLabel>
-            {chapters.map((c) => (
-              <DropdownMenuItem
-                key={c.id}
-                disabled={d.parent_id === c.id}
-                onClick={() => onMove(c.id)}
-              >
-                {c.title}
-              </DropdownMenuItem>
-            ))}
-            {d.parent_id && (
-              <>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => onMove(null)}>
-                  Remove from chapter
-                </DropdownMenuItem>
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )}
-      <button
-        onClick={(e) => { e.stopPropagation(); onTrash(); }}
-        aria-label={`Move ${d.title || "Untitled"} to trash`}
-        title="Move to trash"
-        className="transition-colors duration-base shrink-0 p-1.5 text-t4 hover:text-sf-crimson-text"
-      >
-        <Trash2 className="h-3.5 w-3.5" />
-      </button>
+      <SnapshotCompareDialog
+        snapshot={comparing}
+        currentHtml={comparing ? liveHtml() : ""}
+        onOpenChange={(o) => !o && setComparing(null)}
+        onRestore={restoreSnapshot}
+      />
+      <LabelManagerDialog
+        open={labelsOpen}
+        onOpenChange={setLabelsOpen}
+        labels={labels}
+        onSave={(next) => saveLabels(next)}
+        saving={labelsSaving}
+        local={labelsLocal}
+      />
     </div>
   );
 }

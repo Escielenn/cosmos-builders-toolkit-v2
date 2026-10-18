@@ -756,4 +756,97 @@ export const TOOL_INTROS: Record<string, ToolIntroData> = {
       },
     ],
   },
+  "generation-ship": {
+    title: "The Ship That Becomes a World",
+    purpose:
+      "A generation ship is a closed world that must stay closed for centuries. Its crew is a population with a gene pool, its air and water are a loop that leaks, and its history is written by people who never chose to be there. Set the voyage, the founders and the machinery, and watch the numbers decide what your shipboard scenes must contain.",
+    examples: [
+      {
+        bookTitle: "Aurora",
+        author: "Kim Stanley Robinson",
+        year: "2015",
+        isbn: "9780316098106",
+        quotes: [],
+        explanation:
+          "Robinson's ship is sick in exactly the ways this tool measures: island-biogeography decay in the biomes, a slow metabolic rift in the loops, and a population whose bodies and minds are shaped by its confinement. The voyage is a biology problem before it is an engineering one.",
+      },
+      {
+        bookTitle: "Tau Zero",
+        author: "Poul Anderson",
+        year: "1970",
+        isbn: "9780575077065",
+        quotes: [],
+        explanation:
+          "Fifty people sealed into one hull for longer than anyone planned. Anderson shows the social drift a closed crew undergoes: pairings, hierarchies and breakdowns that follow from a small population that cannot leave.",
+      },
+    ],
+  },
+  "dossier": {
+    title: "People Are Downstream",
+    purpose:
+      "Build characters who are made of their world. Name a homeworld, a species, a polity and a culture, and the dossier inherits lifespan, senses, native gravity, phonology, gods and funeral customs from the tools that already hold them. Override anything on purpose; the psychology and the voice are yours to write.",
+    examples: [
+      {
+        bookTitle: "Dune",
+        author: "Frank Herbert",
+        year: "1965",
+        isbn: "9780441013593",
+        quotes: [],
+        explanation:
+          "The Fremen are a desert written onto people: water discipline becomes ethics, the stillsuit becomes etiquette, and the dead are rendered for their water. Paul is legible only because Herbert knows exactly what Caladan and Arrakis each made of the people born there.",
+      },
+      {
+        bookTitle: "The Left Hand of Darkness",
+        author: "Ursula K. Le Guin",
+        year: "1969",
+        isbn: "9780441478125",
+        quotes: [],
+        explanation:
+          "Estraven is Gethenian before he is anything else: the kemmer cycle, the ice, and the code of shifgrethor shape every choice he makes. Genly Ai's failure to read him is the novel, and it only works because the biology and the culture were decided first.",
+      },
+      {
+        bookTitle: "Leviathan Wakes",
+        author: "James S.A. Corey",
+        year: "2011",
+        isbn: "9780316129084",
+        quotes: [],
+        explanation:
+          "A Belter's height, posture, gestures and creole are inherited from low gravity and long isolation, not chosen for flavour. Corey's characters carry their birthplace in their bodies, which is why a Belter on Earth is a scene before anyone speaks.",
+      },
+    ],
+  },
+  "surface-cartographer": {
+    title: "Where the Story Stands",
+    purpose:
+      "Give a planet or moon its map, then drop the places your scenes happen. Every place reads its climate band, daylight or fixed star, and its distance in days from every other place straight from the world's canon.",
+    examples: [
+      {
+        bookTitle: "Mission of Gravity",
+        author: "Hal Clement",
+        year: "1954",
+        isbn: "9780345353139",
+        quotes: [],
+        explanation:
+          "Mesklin spins so fast that gravity runs from about 3 g at the equator to hundreds of g at the poles. The whole novel is a voyage by latitude: Barlennan sails the Bree poleward, and every degree of the map changes what his crew can survive.",
+      },
+      {
+        bookTitle: "The Left Hand of Darkness",
+        author: "Ursula K. Le Guin",
+        year: "1969",
+        isbn: "9780441478125",
+        quotes: [],
+        explanation:
+          "Genly Ai and Estraven cross the Gobrin Ice on foot, counting days and rations against distance. The crossing works because Gethen's geography is fixed and measurable: the reader feels every kilometre because Le Guin knew how many there were.",
+      },
+      {
+        bookTitle: "Dune",
+        author: "Frank Herbert",
+        year: "1965",
+        isbn: "9780441172719",
+        quotes: [],
+        explanation:
+          "Arrakis is a map before it is a plot. The Shield Wall, the deep desert, the polar ice and the settlements sheltered at high latitudes decide where water is, where worms are, and therefore where every faction has to stand.",
+      },
+    ],
+  },
 };
