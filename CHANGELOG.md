@@ -1,5 +1,23 @@
 # StellarForge Changelog
 
+## 0.7469
+Tier 0 hotfix (1.5 programme).
+- Never lose words: the editor no longer re-applies an older server copy over
+  newer typing (Tiptap setContent now always `emitUpdate: false`, applied only
+  when genuinely new). Pending keystrokes flush on tab hide/close, and the close
+  guard sees them. A per-device journal keeps unsaved words until a save is
+  confirmed and offers recovery on open (KEEP RECOVERED / DISCARD, with a
+  snapshot first). Footer shows SAVING / SAVED / UNSAVED, RETRYING / OFFLINE;
+  failed saves retry with backoff and on reconnect.
+- Export reads the live editor text after flushing, with the real author name.
+- Binder reorder failures roll back and say so; Studio home ignores trash.
+- Pro tools are gated inside worlds too; Exosky and Solaris re-gated.
+- Community comments fixed (`content` column; author names via a scoped function).
+- Password reset (request + /auth/reset); sign-in returns you where you were;
+  auth errors mapped to Ship's Voice.
+- Moodboard images, audio tracks and map sheets are private, served by signed URLs.
+- Inviting a collaborator no longer reveals whether an email has an account.
+
 ## 0.7468
 - Softening follow-ups.
 - No box inside a box: a GlassPanel inside another panel now flattens into a
