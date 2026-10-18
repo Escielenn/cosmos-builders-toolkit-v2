@@ -395,6 +395,63 @@ export type Database = {
         }
         Relationships: []
       }
+      document_comments: {
+        Row: {
+          author_name: string | null
+          body: string
+          created_at: string
+          document_id: string
+          id: string
+          quote: string
+          resolved_at: string | null
+          resolved_by: string | null
+          updated_at: string
+          user_id: string
+          world_id: string
+        }
+        Insert: {
+          author_name?: string | null
+          body: string
+          created_at?: string
+          document_id: string
+          id?: string
+          quote?: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          updated_at?: string
+          user_id?: string
+          world_id: string
+        }
+        Update: {
+          author_name?: string | null
+          body?: string
+          created_at?: string
+          document_id?: string
+          id?: string
+          quote?: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          updated_at?: string
+          user_id?: string
+          world_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_comments_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "world_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "document_comments_world_id_fkey"
+            columns: ["world_id"]
+            isOneToOne: false
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       document_versions: {
         Row: {
           content_html: string

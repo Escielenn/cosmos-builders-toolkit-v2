@@ -18,6 +18,7 @@
 // ---------------------------------------------------------------------------
 
 import { htmlToBlocks, blocksWordCount, type Block } from "./blocks";
+import { buildBackMatter, type BackMatterData, type BackMatterSection } from "./back-matter";
 
 // ---------------------------------------------------------------------------
 // Settings
@@ -62,6 +63,10 @@ export interface CompileSettings {
   includeAbout: boolean;
   aboutAuthor: string;
   includeAppendix: boolean;
+  /** Generated back matter (Studio Charter 2.7, lib/manuscript/back-matter.ts). */
+  includeGlossary: boolean;
+  includeDramatis: boolean;
+  includeSeriesBible: boolean;
   font: ManuscriptFont;
   doubleSpaced: boolean;
 }
@@ -85,6 +90,9 @@ export const DEFAULT_COMPILE: CompileSettings = {
   includeAbout: false,
   aboutAuthor: "",
   includeAppendix: false,
+  includeGlossary: false,
+  includeDramatis: false,
+  includeSeriesBible: false,
   font: "times",
   doubleSpaced: true,
 };
@@ -180,6 +188,9 @@ export function sanitizeCompileSettings(raw: unknown): CompileSettings {
     includeAbout: bool(r.includeAbout, d.includeAbout),
     aboutAuthor: text(r.aboutAuthor, 8000),
     includeAppendix: bool(r.includeAppendix, d.includeAppendix),
+    includeGlossary: bool(r.includeGlossary, d.includeGlossary),
+    includeDramatis: bool(r.includeDramatis, d.includeDramatis),
+    includeSeriesBible: bool(r.includeSeriesBible, d.includeSeriesBible),
     font: pick(r.font, ["times", "courier"] as const, d.font),
     doubleSpaced: bool(r.doubleSpaced, d.doubleSpaced),
   };
@@ -362,6 +373,8 @@ export interface Manuscript {
   about: string | null;
   /** World reference appendix as blocks, or null. */
   appendix: Block[] | null;
+  /** Generated back matter (glossary, dramatis personae, series bible), in print order. */
+  backMatter: BackMatterSection[];
   font: ManuscriptFont;
   doubleSpaced: boolean;
 }
@@ -377,11 +390,22 @@ const GENERIC_TITLE = /^(chapter|part|book)\s+([0-9]+|[ivxlcdm]+|[a-z-]+)$|^(new
 export function buildManuscript(
   tree: CompileNode[],
   settings: CompileSettings,
-  extras: { appendixHtml?: string; fallbackTitle?: string; fallbackAuthor?: string } = {},
+  extras: {
+    appendixHtml?: string;
+    fallbackTitle?: string;
+    fallbackAuthor?: string;
+    /** Codex entries and canon facts for the generated back matter. */
+    backMatter?: BackMatterData;
+  } = {},
 ): Manuscript {
   const ordered = filterExcluded(applyCompileOrder(tree, settings.order), new Set(settings.excluded));
   const sections: ManuscriptSection[] = [];
-  const blocksOf = (n: CompileNode): CompiledDoc => ({ id: n.id, title: n.title || "Untitled", blocks: htmlToBlocks(n.html) });
+  // Included documents' HTML in compile order: what the back matter reads.
+  const includedHtml: string[] = [];
+  const blocksOf = (n: CompileNode): CompiledDoc => {
+    includedHtml.push(n.html);
+    return { id: n.id, title: n.title || "Untitled", blocks: htmlToBlocks(n.html) };
+  };
 
   const hasDirectDocs = (n: CompileNode) => n.children.some((c) => !c.isFolder);
   const anyChapterFolder = (list: CompileNode[]): boolean =>
@@ -452,6 +476,11 @@ export function buildManuscript(
     sections: sections.filter((s) => s.docs.length || s.kind === "part"),
     about: settings.includeAbout && settings.aboutAuthor.trim() ? settings.aboutAuthor.trim() : null,
     appendix: appendixBlocks && appendixBlocks.length ? appendixBlocks : null,
+    backMatter: buildBackMatter(
+      includedHtml,
+      { glossary: settings.includeGlossary, dramatis: settings.includeDramatis, seriesBible: settings.includeSeriesBible },
+      extras.backMatter,
+    ),
     font: settings.font,
     doubleSpaced: settings.doubleSpaced,
   };

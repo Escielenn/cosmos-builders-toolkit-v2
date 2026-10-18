@@ -32,6 +32,9 @@ export function manuscriptToMarkdown(m: Manuscript): string {
   if (m.appendix) {
     out.push("---", "## Appendix: World Reference", blocksToMarkdown(m.appendix));
   }
+  for (const b of m.backMatter) {
+    out.push("---", `## ${b.title}`, blocksToMarkdown(b.blocks));
+  }
   return out.join("\n\n") + "\n";
 }
 
@@ -57,5 +60,6 @@ export function manuscriptToText(m: Manuscript): string {
   }
   if (m.about) out.push("", "ABOUT THE AUTHOR", m.about);
   if (m.appendix) out.push("", "APPENDIX: WORLD REFERENCE", blocksToText(m.appendix));
+  for (const b of m.backMatter) out.push("", b.title.toUpperCase(), blocksToText(b.blocks));
   return out.join("\n\n").replace(/\n{4,}/g, "\n\n\n") + "\n";
 }

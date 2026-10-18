@@ -9,7 +9,21 @@ import {
   staleLine,
   type FactRefAttrs,
 } from "@/lib/writing/fact-ref";
-import { compileManuscriptMarkdown, compileManuscriptPlainText } from "@/lib/manuscript-compile";
+import { DEFAULT_COMPILE, buildManuscript } from "@/lib/manuscript/compile";
+import { manuscriptToMarkdown, manuscriptToText } from "@/lib/manuscript/text-formats";
+
+// The per-document export and the compile page share one pipeline now
+// (the old lib/manuscript-compile.ts is gone): a one-document manuscript.
+type Chapter = { id: string; title: string; content: string };
+const one = (meta: { title: string; author: string }, chapters: Chapter[]) =>
+  buildManuscript(
+    chapters.map((c) => ({ id: c.id, title: c.title, isFolder: false, html: c.content, children: [] })),
+    { ...DEFAULT_COMPILE, title: meta.title, author: meta.author, numbering: "none", titlePage: false },
+  );
+const compileManuscriptPlainText = (meta: { title: string; author: string }, chapters: Chapter[]) =>
+  manuscriptToText(one(meta, chapters));
+const compileManuscriptMarkdown = (meta: { title: string; author: string }, chapters: Chapter[]) =>
+  manuscriptToMarkdown(one(meta, chapters));
 
 const GRAVITY: FactRefAttrs = {
   factKey: "surfaceGravity",

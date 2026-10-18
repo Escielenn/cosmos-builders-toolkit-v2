@@ -46,6 +46,7 @@ import { useWikiLinkTrigger } from "@/components/editor/useWikiLinkTrigger";
 import { EntityMention, useEntityMentionTrigger } from "@/components/editor/EntityMention";
 import { CurrentBlock } from "@/components/editor/CurrentBlockExtension";
 import { FactRef } from "@/components/editor/FactRefExtension";
+import { CommentMark } from "@/components/editor/CommentMark";
 import { WorldPalette } from "@/components/editor/WorldPalette";
 import { useWorldPaletteTrigger } from "@/components/editor/useWorldPaletteTrigger";
 import { useStudioWorld } from "@/components/writing/studio-world";
@@ -245,6 +246,9 @@ export function StellarForgeEditor({
       // Always registered, so a document with cited facts reads the same in
       // every editor; only the Studio offers to insert them.
       FactRef,
+      // Inline comment anchors: registered everywhere for the same reason,
+      // so no surface drops them on save.
+      CommentMark,
       // Ctrl/Cmd+J: the world palette at the caret. Ctrl/Cmd+K is the global
       // command palette; J is free in the Studio and in Tiptap.
       Extension.create({

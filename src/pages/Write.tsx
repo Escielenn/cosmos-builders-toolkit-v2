@@ -21,6 +21,9 @@ import { StudioWorldProvider, useStudioWorldIndex, type StudioWorld } from "@/co
 import { DocumentInspector, type InspectorPane } from "@/components/writing/DocumentInspector";
 import { BinderTree } from "@/components/writing/BinderTree";
 import { SnapshotCompareDialog } from "@/components/writing/SnapshotCompareDialog";
+import { ProjectReplaceDialog } from "@/components/writing/ProjectReplaceDialog";
+import { DocumentComments } from "@/components/writing/DocumentComments";
+import type { ReplaceRecord } from "@/hooks/use-project-replace";
 import { LabelManagerDialog } from "@/components/writing/LabelManagerDialog";
 // Import pulls in the readers (and, on use, jszip and mammoth): load on open.
 const ImportManuscriptDialog = lazy(() => import("@/components/writing/ImportManuscriptDialog"));
@@ -55,11 +58,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  compileManuscriptDocx,
-  compileManuscriptMarkdown,
-  compileManuscriptPlainText,
-} from "@/lib/manuscript-compile";
+import { DEFAULT_COMPILE, buildManuscript, type CompileFormat } from "@/lib/manuscript/compile";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -297,6 +296,10 @@ export default function Write(): JSX.Element {
   const [searchOpts, setSearchOpts] = useState<SearchOptions>({ regex: false, caseSensitive: false });
   const searchRef = useRef<HTMLInputElement>(null);
   const [jump, setJump] = useState<{ docId: string; hit: SearchHit; query: string; opts: SearchOptions } | null>(null);
+  // Project-wide replace (ProjectReplaceDialog). The last replace is kept
+  // here so REVERT REPLACE outlives the dialog.
+  const [replaceOpen, setReplaceOpen] = useState(false);
+  const [lastReplace, setLastReplace] = useState<ReplaceRecord | null>(null);
   const collections = useWorldSetting<WritingCollection[]>(
     worldId,
     COLLECTIONS_KEY,
@@ -1030,10 +1033,11 @@ export default function Write(): JSX.Element {
     return () => window.removeEventListener("keydown", onKey);
   }, [flushPending, focus, focusSearch]);
 
-  // Export just this document, reusing the manuscript exporters with a
-  // single-chapter list so the formatting matches a compiled manuscript.
+  // Export just this document through the compile pipeline
+  // (lib/manuscript), as a one-document manuscript, so a single scene looks
+  // exactly like it does in a compiled book: same blocks, same exporters.
   const exportDoc = useCallback(
-    async (format: "docx" | "md" | "txt") => {
+    async (format: Extract<CompileFormat, "docx" | "pdf" | "md" | "txt">) => {
       if (!doc) return;
       // The words on screen, not the last fetched copy: hand the editor's
       // debounced text over and let the save land before reading.
@@ -1045,34 +1049,23 @@ export default function Write(): JSX.Element {
           : liveHtml();
 
       const name = title.trim() || doc.title || "Untitled";
-      const meta = {
-        title: name,
-        author: exportAuthor(profile?.display_name, user?.user_metadata),
-      };
-      const chapters = [{ id: doc.id, title: name, content: html }];
-      const safeName = name.replace(/[^\w\d-]+/g, "-").replace(/^-+|-+$/g, "") || "document";
+      const manuscript = buildManuscript(
+        [{ id: doc.id, title: name, isFolder: false, html, children: [] }],
+        {
+          ...DEFAULT_COMPILE,
+          format,
+          title: name,
+          author: exportAuthor(profile?.display_name, user?.user_metadata),
+          // One document: its title as the heading, no number, no title page.
+          numbering: "none",
+          titlePage: false,
+          doubleSpaced: format === "docx",
+        },
+      );
 
       try {
-        if (format === "docx") {
-          await compileManuscriptDocx(meta, chapters);
-          return;
-        }
-        const text =
-          format === "md"
-            ? compileManuscriptMarkdown(meta, chapters)
-            : compileManuscriptPlainText(meta, chapters);
-        const blob = new Blob([text], {
-          type: format === "md" ? "text/markdown;charset=utf-8" : "text/plain;charset=utf-8",
-        });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${safeName}.${format}`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        // Revoke late; revoking immediately can cancel the download in some browsers.
-        setTimeout(() => URL.revokeObjectURL(url), 10_000);
+        const { downloadManuscript } = await import("@/lib/manuscript/export");
+        await downloadManuscript(manuscript, format);
       } catch {
         toast({
           title: "EXPORT FAILED.",
@@ -1254,6 +1247,7 @@ export default function Write(): JSX.Element {
             onJump={jumpTo}
             onSave={() => setCollectPrompt({ kind: "search" })}
             onScrivenings={(ids) => openScrivenings(ids, `Search: ${searchQuery}`)}
+            onReplace={() => setReplaceOpen(true)}
           />
         ) : (
         <>
@@ -1438,6 +1432,15 @@ export default function Write(): JSX.Element {
             povOptions={povOptions}
             placeOptions={placeOptions}
             branchOptions={worldIndex.branches}
+            comments={
+              worldId ? (
+                <DocumentComments
+                  docId={doc.id}
+                  worldId={worldId}
+                  editor={editorState && editorState.docId === doc.id ? editorState.editor : null}
+                />
+              ) : undefined
+            }
           />
         </div>
       )}
@@ -1581,6 +1584,9 @@ export default function Write(): JSX.Element {
             <DropdownMenuContent align="end" className="w-52 rounded-none border-sf-line bg-sf-surface/95">
               <DropdownMenuItem onClick={() => exportDoc("docx")}>
                 Word (.docx)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => exportDoc("pdf")}>
+                PDF (.pdf)
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => exportDoc("md")}>
                 Markdown (.md)
@@ -1947,6 +1953,31 @@ export default function Write(): JSX.Element {
         </div>
       </footer>
 
+      {worldId && (
+        <ProjectReplaceDialog
+          open={replaceOpen}
+          onOpenChange={setReplaceOpen}
+          worldId={worldId}
+          query={searchQuery}
+          opts={searchOpts}
+          scopes={[
+            { id: "all", label: "Every document" },
+            ...folders.map((f) => ({ id: f.id, label: f.path.join(" / ") })),
+          ]}
+          docIdsFor={(scope) =>
+            (scope === "all" ? readingDocs : docsUnderFolder(binderTree, scope)).map((d) => d.id)
+          }
+          editorFor={(id) =>
+            editorState && editorState.docId === id && !editorState.editor.isDestroyed ? editorState.editor : null
+          }
+          beforeApply={async () => {
+            handOffMain();
+            await flushPending();
+          }}
+          lastReplace={lastReplace}
+          onLastReplace={setLastReplace}
+        />
+      )}
       <SnapshotCompareDialog
         snapshot={comparing}
         currentHtml={comparing ? liveHtml() : ""}

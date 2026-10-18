@@ -169,6 +169,13 @@ export default function ManuscriptTemplate({ manuscript: m }: { manuscript: Manu
           <BlockList blocks={m.appendix} m={m} s={s} />
         </Page>
       )}
+      {m.backMatter.map((b) => (
+        <Page key={b.id} size="LETTER" style={s.page}>
+          {runningHeader}
+          <Text style={s.chapterHead}>{b.title}</Text>
+          <BlockList blocks={b.blocks} m={m} s={s} />
+        </Page>
+      ))}
     </Document>
   );
 }

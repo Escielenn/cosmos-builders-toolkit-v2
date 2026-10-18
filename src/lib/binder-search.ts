@@ -18,6 +18,8 @@ import { readDocMeta } from "@/lib/document-meta";
 export interface SearchOptions {
   regex: boolean;
   caseSensitive: boolean;
+  /** Only whole words: no letter, digit or underscore on either side. */
+  wholeWord?: boolean;
 }
 
 export type SearchField = "title" | "synopsis" | "notes" | "keywords" | "text";
@@ -98,7 +100,16 @@ export function buildMatcher(
   if (!query) return { re: null, error: "EMPTY QUERY." };
   try {
     const source = opts.regex ? query : escapeRegex(query);
-    return { re: new RegExp(source, opts.caseSensitive ? "g" : "gi"), error: null };
+    const flags = opts.caseSensitive ? "g" : "gi";
+    if (opts.wholeWord) {
+      // Unicode-aware edges, so "café" and "Ödön" are words too. \b alone
+      // treats every accented letter as a boundary.
+      return {
+        re: new RegExp(`(?<![\\p{L}\\p{N}_])(?:${source})(?![\\p{L}\\p{N}_])`, `${flags}u`),
+        error: null,
+      };
+    }
+    return { re: new RegExp(source, flags), error: null };
   } catch {
     return { re: null, error: "PATTERN INVALID. CHECK THE EXPRESSION." };
   }
