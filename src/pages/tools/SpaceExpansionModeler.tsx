@@ -1,7 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, lazy, Suspense } from "react";
-import { useWorldId } from "@/hooks/use-world-id";
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
-import { useTags } from "@/hooks/use-tags";
 import { useSearchParams } from "react-router-dom";
 import { ChevronDown, Plus, Trash2 } from "lucide-react";
 import {
@@ -10,6 +8,13 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
+// FormState, defaults and codec: lib/tool-worksheets/exodus.
+import {
+  codec as exodusCodec,
+  TOOL_TYPE,
+  LOCAL_STORAGE_KEY,
+} from "@/lib/tool-worksheets/exodus";
+import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -36,12 +41,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import {
-  useWorksheets,
-  useWorksheet,
-  useWorksheetsByType,
-  useRenameWorksheet,
-} from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, {
@@ -64,7 +63,6 @@ import { useWorksheetShare } from "@/hooks/use-sharing";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import { useWorlds } from "@/hooks/use-worlds";
-import { Json } from "@/integrations/supabase/types";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import {
@@ -96,15 +94,11 @@ import {
   type ForceDirection,
   type InteractionResult,
 } from "@/lib/space-expansion-data";
-import { writeStandaloneBackup } from "@/lib/standalone-backup";
 import { manifest as exodusManifest } from "@/tools/exodus/manifest";
 import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
 import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
 import { textToParagraphHtml } from "@/canon/codecs";
 import { CanonProvenance } from "@/components/canon/CanonProvenance";
-
-const TOOL_TYPE = "space-expansion-modeler";
-const LOCAL_STORAGE_KEY = "space-expansion-worksheet";
 
 const EditorSkeleton = () => (
   <div className="min-h-[120px] sf-field animate-pulse" />
@@ -120,15 +114,10 @@ const PHASE_IDS: ExpansionPhaseId[] = [
 ];
 
 const SpaceExpansionModeler = () => {
-  const [formState, setFormState] = useState<FormState>(INITIAL_FORM_STATE);
-  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
-  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [notesSheetOpen, setNotesSheetOpen] = useState(false);
   const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
-  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
   const [selectedForcePhase, setSelectedForcePhase] = useState<ExpansionPhaseId>("earth-orbit");
   const [selectedMatrixPhase, setSelectedMatrixPhase] = useState<ExpansionPhaseId>("earth-orbit");
   const [templateConfirmId, setTemplateConfirmId] = useState<string | null>(null);
@@ -136,11 +125,22 @@ const SpaceExpansionModeler = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const { worlds } = useWorlds();
-  const { updateWorksheetTags } = useTags();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = useWorldId();
-  const worksheetId = searchParams.get("worksheetId");
+
+  const worksheet = useToolWorksheet(TOOL_TYPE, {
+    ...exodusCodec,
+    displayName: "Exodus",
+    localKey: LOCAL_STORAGE_KEY,
+    loadedToast: true,
+    onDraftCreated: (id, title) => entityMatch.check(id, title),
+    onSaved: (saved, { worksheetId: savedId }) =>
+      canonEmit.emit(saved, { subjectId: canonSubjectId, worksheetId: savedId }),
+  });
+  const { state: formState, setState: setFormState, worldId } = worksheet;
+  const currentWorksheetId = worksheet.worksheetId;
+  const currentWorksheetTitle = worksheet.worksheetTitle;
+  const worksheetId = worksheet.worksheetId;
 
   // One home per value (1.5 item 10): the One Big Lie is Axiom's. Exodus prefills its copy from canon.
   const canonSubjectId = useToolSubject(currentWorksheetId || worksheetId);
@@ -153,104 +153,10 @@ const SpaceExpansionModeler = () => {
   const worldName = currentWorld?.name;
 
   const entityMatch = useEntityMatch(worldId);
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
-    onDraftCreated: entityMatch.check,
-  });
-  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
-  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
-  const renameWorksheet = useRenameWorksheet();
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
-
-  // ── Effects ──────────────────────────────────────────────────────
-
-  useEffect(() => {
-    if (worldId && !worksheetId && !worksheetsLoading && user) {
-      setWorksheetSelectorOpen(true);
-    }
-  }, [worldId, worksheetId, worksheetsLoading, user]);
-
-  useEffect(() => {
-    if (existingWorksheet && existingWorksheet.data) {
-      try {
-        const data = existingWorksheet.data as unknown as FormState;
-        setFormState(data);
-        setCurrentWorksheetId(existingWorksheet.id);
-        setCurrentWorksheetTitle(existingWorksheet.title);
-        if (existingWorksheet.tags) {
-          setWorksheetTags(existingWorksheet.tags);
-        }
-        toast({ title: "WORKSHEET LOADED.", description: "WORK RESTORED." });
-      } catch { /* ignore */ }
-    }
-  }, [existingWorksheet]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (!worldId && !worksheetId) {
-      const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (saved) {
-        try { setFormState(JSON.parse(saved)); } catch { /* ignore */ }
-      }
-    }
-  }, [worldId, worksheetId]);
-
-  // ── Handlers ─────────────────────────────────────────────────────
-
-  const handleSave = async () => {
-    writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
-    if (worldId && user) {
-      const worksheetData = formState as unknown as Json;
-      try {
-        if (currentWorksheetId || worksheetId) {
-          await updateWorksheet.mutateAsync({
-            worksheetId: currentWorksheetId || worksheetId!,
-            data: worksheetData,
-          });
-          await canonEmit.emit(formState, { subjectId: canonSubjectId, worksheetId: currentWorksheetId || worksheetId });
-        } else {
-          toast({ title: "OPERATION FAILED.", description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.", variant: "destructive" });
-        }
-      } catch { /* handled by mutation */ }
-    } else {
-      toast({ title: "DRAFT SAVED.", description: "WORK SECURED TO LOCAL STORAGE." });
-    }
-  };
 
   const handleExport = () => setExportDialogOpen(true);
   const handlePrint = () => window.print();
-
-  const handleWorksheetSelect = (id: string) => {
-    setSearchParams({ worldId: worldId!, worksheetId: id });
-    setWorksheetSelectorOpen(false);
-  };
-
-  const handleWorksheetCreate = async (name: string): Promise<string> => {
-    const data = INITIAL_FORM_STATE as unknown as Json;
-    const result = await createWorksheet.mutateAsync({
-      worldId: worldId!,
-      toolType: TOOL_TYPE,
-      title: name,
-      data,
-    });
-    setCurrentWorksheetId(result.id);
-    setCurrentWorksheetTitle(result.title);
-    setSearchParams({ worldId: worldId!, worksheetId: result.id });
-    return result.id;
-  };
-
-  const handleRename = async (newTitle: string) => {
-    const wsId = currentWorksheetId || worksheetId;
-    if (!wsId) return;
-    await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
-    setCurrentWorksheetTitle(newTitle);
-  };
-
-  const handleTagsChange = (newTags: string[]) => {
-    setWorksheetTags(newTags);
-    const wsId = currentWorksheetId || worksheetId;
-    if (wsId) {
-      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
-    }
-  };
 
   // ── Form Updaters ────────────────────────────────────────────────
 
@@ -472,15 +378,12 @@ const SpaceExpansionModeler = () => {
 
   return (
     <ToolPageLayout
+      {...worksheet.layoutProps}
       toolType={TOOL_TYPE}
-      onSave={handleSave}
-      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
       onPrint={handlePrint}
       onExport={handleExport}
       onShare={currentWorksheetId || worksheetId ? () => setShareDialogOpen(true) : undefined}
       isShared={!!shareConfig?.enabled}
-      isSaving={updateWorksheet.isPending}
-      isCloudEnabled={!!(worldId && user)}
       onNotesClick={() => setNotesSheetOpen(true)}
       onMoodboardClick={() => setMoodboardSheetOpen(true)}
       moodboardCount={formState.moodboard?.length || 0}
@@ -494,13 +397,6 @@ const SpaceExpansionModeler = () => {
           defaultFilename="space-expansion"
         />
       }
-      worksheetId={currentWorksheetId || worksheetId}
-      worksheetTitle={currentWorksheetTitle}
-      onRenameWorksheet={handleRename}
-      worksheetLoading={worksheetLoading}
-      worksheetTags={worksheetTags}
-      onTagsChange={handleTagsChange}
-      isLoggedIn={!!user}
     >
         {/* Intro Panel */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
@@ -1326,16 +1222,9 @@ const SpaceExpansionModeler = () => {
       />
       {worldId && (
         <WorksheetSelectorDialog
-          open={worksheetSelectorOpen}
-          onOpenChange={setWorksheetSelectorOpen}
-          worldId={worldId}
+          {...worksheet.selectorProps}
           worldName={worldName}
-          toolType={TOOL_TYPE}
           toolDisplayName="Exodus"
-          worksheets={existingWorksheets}
-          isLoading={worksheetsLoading}
-          onSelect={handleWorksheetSelect}
-          onCreate={handleWorksheetCreate}
         />
       )}
 
