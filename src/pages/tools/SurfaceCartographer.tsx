@@ -108,6 +108,7 @@ import { bindGlobe } from "@/gl/bind/globe";
 import FlatMap from "@/components/tools/surface-cartographer/FlatMap";
 import BodyFactsPanel from "@/components/tools/surface-cartographer/BodyFactsPanel";
 import PlaceReadouts from "@/components/tools/surface-cartographer/PlaceReadouts";
+import { ToolWorldBar } from "@/components/tools/ToolWorldBar";
 import {
   canvasToBlob,
   loadImage,
@@ -730,10 +731,11 @@ const SurfaceCartographer = () => {
         {/* ── 1 · Body ─────────────────────────────────────────────── */}
         <CollapsibleSection id="body" title="Body" levelNumber={1} defaultOpen>
           {!worldId ? (
-            <p className="sf-measure text-[15px] text-t2">
-              Maps are drawn on the planets and moons of a world. Open this instrument from a world, or save to
-              choose one. The generated map below works without one.
-            </p>
+            <ToolWorldBar
+              accent="azure"
+              className="mb-0"
+              reason="MAPS ARE DRAWN ON THE PLANETS AND MOONS OF A WORLD. CHOOSE ONE. THE GENERATED MAP BELOW WORKS WITHOUT ONE."
+            />
           ) : (
             <div className="space-y-5">
               <div className="grid gap-4 md:grid-cols-2">

@@ -1,5 +1,10 @@
 # StellarForge Changelog
 
+## 0.7426
+- Dossier, Surface Cartographer and Ark: the "NO WORLD OPEN" notice now
+  carries a world picker (and NEW WORLD / SIGN IN), instead of telling the
+  writer to open a world with no way to do it.
+
 ## 0.7425
 Writing space phase 1, time-travel timelines, three new tools.
 
