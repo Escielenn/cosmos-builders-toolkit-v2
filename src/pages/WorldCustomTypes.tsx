@@ -133,7 +133,7 @@ export default function WorldCustomTypes() {
               </Button>
             </div>
 
-            <div className="border-t border-sf-line pt-2 space-y-0.5">
+            <div className="border-t border-sf-line-hairline pt-2 space-y-0.5">
               {isLoading && (
                 <div className="text-xs text-t4 p-2">Loading...</div>
               )}

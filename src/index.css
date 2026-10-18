@@ -204,6 +204,31 @@
      commit. The HSL CSS vars `--sf-tier-1..4` remain for any handwritten CSS
      that still references them. */
 
+  /* ── Softening pass (2026-10-17) ──────────────────────────────────
+     .sf-field: the one field treatment. A recessed well (void inset into
+     its panel), a hairline frame, and one baseline at line-interactive,
+     which carries WCAG 1.4.11 by itself. Mirrors the generated
+     input/select/textarea defaults in tokens.css for components that are
+     not native fields (Radix Select trigger, contenteditable, chips).
+     .sf-quiet: a labelled control (button, tab, chip) whose text already
+     identifies it. Soft frame at rest, emphasis on hover. */
+  .sf-field {
+    background: var(--sf-void);
+    border: 1px solid var(--sf-line-hairline);
+    border-bottom-color: var(--sf-line-interactive);
+    border-radius: 0;
+    transition: border-color 180ms cubic-bezier(0.2, 0, 0, 1);
+  }
+  .sf-field:hover {
+    border-color: var(--sf-line);
+    border-bottom-color: var(--sf-line-emphasis);
+  }
+  .sf-quiet {
+    border: 1px solid var(--sf-line);
+    border-radius: 0;
+  }
+  .sf-quiet:hover { border-color: var(--sf-line-emphasis); }
+
   /* Glass panel component */
   .glass-panel {
     @apply rounded-none border backdrop-blur-xl;
@@ -861,12 +886,14 @@ html {
   }
 
   /* Writing toolbar — dark frame, stellar blue accents */
+  /* Softening pass: one solid hairline under every writing toolbar, and
+     the role colour on hover (was a dashed stellar rule and a raw hex). */
   .sf-writing-toolbar {
-    border-bottom: 1px dashed var(--sf-stellar) !important;
+    border-bottom: 1px solid var(--sf-line-hairline) !important;
   }
 
   .sf-writing-toolbar button:hover {
-    color: #5B8DEF !important;
+    color: var(--sf-primary-text) !important;
   }
 
   /* ---- Note resize wrapper: editor fills container ---- */

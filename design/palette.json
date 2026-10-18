@@ -11,10 +11,10 @@
     "t4": "#9799A0"
   },
   "line": {
-    "hairline": "#50555E",
-    "default": "#676B75",
+    "hairline": "#41454D",
+    "default": "#50555E",
     "interactive": "#787D87",
-    "emphasis": "#979BA5"
+    "emphasis": "#8C909A"
   },
   "accent": {
     "teal": "#15C17B",

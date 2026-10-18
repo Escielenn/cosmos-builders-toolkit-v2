@@ -19,7 +19,7 @@ const SelectTrigger = React.forwardRef<
     className={cn(
       // Focus ring and disabled colors come from the global :focus-visible /
       // :disabled rules in tokens.css — no component ring/opacity needed.
-      "flex h-11 w-full items-center justify-between rounded-none border border-sf-line-interactive bg-background px-4 py-2 text-base font-sans placeholder:text-t3 disabled:cursor-not-allowed [&>span]:line-clamp-1 transition-colors duration-base",
+      "flex h-11 w-full items-center justify-between sf-field px-4 py-2 text-base font-sans placeholder:text-t3 disabled:cursor-not-allowed [&>span]:line-clamp-1 transition-colors duration-base",
       className,
     )}
     {...props}
@@ -127,7 +127,7 @@ const SelectSeparator = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Separator>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Separator>
 >(({ className, ...props }, ref) => (
-  <SelectPrimitive.Separator ref={ref} className={cn("-mx-1 my-1 h-px bg-muted", className)} {...props} />
+  <SelectPrimitive.Separator ref={ref} className={cn("-mx-1 my-1 h-px bg-sf-line-hairline", className)} {...props} />
 ));
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 

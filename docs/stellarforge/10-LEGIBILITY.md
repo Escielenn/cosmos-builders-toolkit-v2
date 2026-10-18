@@ -59,10 +59,10 @@ python3 design/emit.py       # palette.json → tokens.css + tailwind.config.ts
 | `t2` | ≥ 8:1 | on the lightest plane |
 | `t3` | ≥ 5.5:1 | on the lightest plane |
 | `t4` | ≥ 4.5:1 | on the lightest plane — AA, everywhere |
-| `line-hairline` | ≥ 1.7:1 | decorative rules only |
-| `line` | ≥ 2.4:1 | panel edges |
-| `line-interactive` | ≥ 3.1:1 | **WCAG 1.4.11** — anything you can operate |
-| `line-emphasis` | ≥ 4.6:1 | hover, active, selected |
+| `line-hairline` | ≥ 1.32:1 | decorative rules only |
+| `line` | ≥ 1.7:1 | panel edges, labelled controls at rest |
+| `line-interactive` | ≥ 3.1:1 | **WCAG 1.4.11** — boundaries that identify a control |
+| `line-emphasis` | ≥ 4.0:1 | hover, active, selected |
 | Accent (canonical) | ≥ 3.05:1 | fills, borders, icons, large text |
 | Accent `-text` | ≥ 4.55:1 | the only accent value legal for body text |
 | Focus ring | ≥ 3:1 vs component **and** background | measured at 10:1 |
@@ -102,12 +102,19 @@ Chroma rises with lightness along the original `#0A0E17 → #161C2B` slope, so t
 
 | | Was | Now | Worst case |
 |---|---|---|---|
-| hairline | — | `#50555E` | 1.71:1 |
-| `line` | white 8% → 1.20:1 | `#676B75` | 2.40:1 |
+| hairline | — | `#41454D` | 1.33:1 (2.01 on void) |
+| `line` | white 8% → 1.20:1 | `#50555E` | 1.71:1 (2.58 on void) |
 | `line-interactive` | white 14% → 1.45:1 | `#787D87` | **3.10:1** |
-| `line-emphasis` | — | `#979BA5` | 4.61:1 |
+| `line-emphasis` | — | `#8C909A` | 4.01:1 |
 
-Four tiers by *function*, not by strength. The rule that matters: **anything a user can operate gets `line-interactive` or better.** Panel edges can be quieter; input and button boundaries cannot.
+*Softened 2026-10-17 (see AMENDMENTS). The first solve put every edge at 2.4:1 or more and boxed every control at 3.1:1; the app read as a grid of cages. Planes already separate at 1.22:1, so panel edges can sit just above that.*
+
+Four tiers by *function*, not by strength. The rule that matters: **the visual boundary that identifies a control clears 3:1 (`line-interactive`).** That is WCAG 1.4.11 as written, and it is narrower than "every operable thing is boxed at 3:1":
+
+- **Fields** are a recessed well (void inset, hairline frame) with ONE baseline at `line-interactive`. The baseline identifies the field, as an underline does. `.sf-field` and the generated input/select/textarea defaults.
+- **Labelled buttons, tabs, chips** are identified by their text; their frame is `line` at rest, `line-emphasis` on hover, `sf-primary` when selected. `.sf-quiet`.
+- **Identity boundaries** (checkbox, radio, switch, slider, scrollbar thumb, drop zone) keep `line-interactive`.
+- High Contrast (`data-contrast="high"`) promotes every line one or two tiers.
 
 Solid values were chosen deliberately over alpha so that a border's contrast is the same over the starfield, over grain, over video, and over a plain plane.
 
@@ -192,7 +199,7 @@ And exposed to the user as a **Display** setting, which is the honest answer to 
 3. **Never use opacity for a state.** Disabled, muted, and inactive are colours.
 4. **Never put body text in a canonical accent.** Use the `-text` stop.
 5. **Nothing readable below `t4`.** If it needs to recede, make it smaller, not fainter.
-6. **Anything operable gets `line-interactive` minimum.**
+6. **The boundary that identifies a control clears 3:1.** Field baselines and identity boundaries use `line-interactive`; labelled buttons and tabs may sit on `line`.
 7. **Wide tracking is for 12px and up.** Never track small text.
 8. **Every interactive element has a visible `:focus-visible` ring.** No exceptions.
 9. **Colour is never the only signal.** Errors get an icon or a `//` prefix as well as crimson.
@@ -218,8 +225,9 @@ For each primitive in src/components/ui/ and src/components/tools/:
    border with the right functional token:
      panel edges, dividers        → sf-line
      table rules                  → sf-line-hairline
-     inputs, buttons, selects,
-     checkboxes, toggles, tabs    → sf-line-interactive   (WCAG 1.4.11)
+     inputs, selects              → .sf-field (baseline at sf-line-interactive)
+     labelled buttons, tabs       → sf-line (.sf-quiet)
+     checkboxes, toggles, sliders → sf-line-interactive   (WCAG 1.4.11)
      hover / active / selected    → sf-line-emphasis
 
 2. STATES — delete every disabled:opacity-* . Replace with

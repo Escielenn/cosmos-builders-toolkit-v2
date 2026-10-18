@@ -219,7 +219,7 @@ const ToolActionBar = ({
       {/* Light arc glow on top edge */}
       <div className="absolute top-0 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-[hsl(157_100%_62%/0.25)] to-transparent" />
 
-      <div className="bg-[hsl(222_25%_9%/0.95)] backdrop-blur-xl border-t border-sf-line">
+      <div className="bg-[hsl(222_25%_9%/0.95)] backdrop-blur-xl border-t border-sf-line-hairline">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <Button

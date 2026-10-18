@@ -20,7 +20,7 @@ export function DeleteEventDialog({
 }: DeleteEventDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px] bg-sf-surface border-sf-line-interactive rounded-none">
+      <DialogContent className="sm:max-w-[400px] bg-sf-surface border-sf-line rounded-none">
         <DialogHeader>
           <DialogTitle className="sf-tool-section text-left">
             Confirm Removal
@@ -37,7 +37,7 @@ export function DeleteEventDialog({
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="sf-fill-sweep sf-fill-sweep--secondary px-4 py-1.5 border border-sf-line-interactive text-[12px] uppercase tracking-wider text-t3"
+            className="sf-fill-sweep sf-fill-sweep--secondary px-4 py-1.5 border border-sf-line hover:border-sf-line-emphasis text-[12px] uppercase tracking-wider text-t3"
           >
             Cancel
           </button>

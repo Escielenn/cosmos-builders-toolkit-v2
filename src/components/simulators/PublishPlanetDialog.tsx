@@ -101,7 +101,7 @@ export default function PublishPlanetDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-sf-surface border-sf-line-interactive">
+      <DialogContent className="sm:max-w-md bg-sf-surface border-sf-line">
         {publishedId ? (
           <>
             <DialogHeader>

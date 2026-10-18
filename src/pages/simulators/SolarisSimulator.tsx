@@ -160,8 +160,8 @@ const SolarisSimulator = () => {
               dialogs ask which world, and gating the buttons made that
               unreachable from the tools menu. */}
           {loaded && (
-            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex flex-col items-stretch gap-1.5">
-            <div className="flex items-center gap-1.5 border border-sf-line bg-sf-surface/90 px-1.5 py-1 backdrop-blur-sf-panel">
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex flex-col items-stretch gap-2">
+            <div className="flex items-center gap-2 border border-sf-line bg-sf-surface/90 px-3 py-2 backdrop-blur-sf-panel">
               <Button
                 variant="outline"
                 size="sm"

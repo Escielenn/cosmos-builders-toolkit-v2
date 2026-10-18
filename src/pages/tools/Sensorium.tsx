@@ -827,7 +827,7 @@ const Sensorium = () => {
 
                 {/* Worksheet Links */}
                 {worldId && (
-                  <div className="pt-4 border-t border-sf-line-interactive">
+                  <div className="pt-4 border-t border-sf-line-hairline">
                     <h4 className="text-sm font-medium mb-3">Link Worksheets</h4>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       {linkConfigs.map((config) => (
@@ -963,7 +963,7 @@ const Sensorium = () => {
                         <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-sf-primary" /> Recommended</span>
                         <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-sf-amber" /> Possible</span>
                         <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-sf-disabled-line" /> Implausible</span>
-                        <span className="flex items-center gap-1.5 ml-2 pl-2 border-l border-sf-line-interactive"><Check className="h-3 w-3 text-sf-emerald" /> Selected by you</span>
+                        <span className="flex items-center gap-1.5 ml-2 pl-2 border-l border-sf-line-hairline"><Check className="h-3 w-3 text-sf-emerald" /> Selected by you</span>
                       </div>
                     </div>
                   </TabsContent>
@@ -1304,7 +1304,7 @@ const Sensorium = () => {
                     })}
 
                     {/* User notes per category */}
-                    <div className="space-y-4 pt-4 border-t border-sf-line-interactive">
+                    <div className="space-y-4 pt-4 border-t border-sf-line-hairline">
                       <h4 className="text-sm font-medium">Your Worldbuilding Notes</h4>
                       {(
                         [

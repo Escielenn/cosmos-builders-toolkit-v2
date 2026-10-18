@@ -235,7 +235,7 @@ const EventFormDialog = ({
           {tracks.length > 1 && (
             <div className="space-y-2">
               <Label>Also Affects Tracks</Label>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-2">
                 {tracks
                   .filter((t) => t.id !== trackId)
                   .map((t) => {
@@ -250,10 +250,10 @@ const EventFormDialog = ({
                           )
                         }
                         className={cn(
-                          "flex items-center gap-1.5 px-2.5 py-1 rounded-none border text-xs font-medium transition-colors",
+                          "flex items-center gap-1.5 px-3 py-1 rounded-none border text-xs font-medium transition-colors",
                           isActive
                             ? "border-sf-primary bg-sf-primary/10 text-t1"
-                            : "border-sf-line text-t3 hover:border-sf-line"
+                            : "border-sf-line text-t3 hover:border-sf-line-emphasis"
                         )}
                       >
                         <span
@@ -306,7 +306,7 @@ const EventFormDialog = ({
                     "flex-1 px-3 py-1.5 rounded-none border text-xs font-medium transition-colors",
                     importance === il.id
                       ? "border-sf-primary bg-sf-primary/10 text-t1"
-                      : "border-sf-line text-t3 hover:border-sf-line"
+                      : "border-sf-line text-t3 hover:border-sf-line-emphasis"
                   )}
                 >
                   {il.label}

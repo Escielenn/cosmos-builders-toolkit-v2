@@ -102,7 +102,7 @@ export default function WorldInstruments() {
               value={subjectId}
               onChange={(e) => setSubjectId(e.target.value)}
               aria-label="Subject entity"
-              className="min-h-hit border border-sf-line-interactive bg-transparent px-2 text-[13px] text-t2"
+              className="min-h-hit px-3 text-[13px] text-t2"
             >
               <option value="">Open blank (no subject)</option>
               {subjects.map((e) => (

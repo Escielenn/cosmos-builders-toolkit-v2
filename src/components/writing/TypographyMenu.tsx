@@ -43,7 +43,7 @@ interface TypographyMenuProps {
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="px-3 py-2">
+    <div className="px-4 py-3">
       <span className="mb-1.5 block font-heading text-[12px] uppercase tracking-wide text-t4">
         {label}
       </span>
@@ -73,12 +73,12 @@ function Segmented<T extends string>({
           type="button"
           aria-pressed={value === opt}
           onClick={() => onSelect(opt)}
-          className={`min-h-hit flex-1 border px-2 font-mono text-[12px] transition-colors ${
+          className={`min-h-hit flex-1 border px-3 font-mono text-[12px] transition-colors ${
             i > 0 ? "-ml-px" : ""
           } ${
             value === opt
-              ? "border-sf-primary text-sf-primary-text"
-              : "border-sf-line-interactive text-t3 hover:text-t1"
+              ? "relative z-[1] border-sf-primary text-sf-primary-text"
+              : "border-sf-line text-t3 hover:border-sf-line-emphasis hover:text-t1"
           }`}
         >
           {labels[opt]}
@@ -93,7 +93,7 @@ export function TypographyMenu({ preferences, onChange }: TypographyMenuProps) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          className="flex items-center gap-1.5 border border-sf-line-interactive px-2.5 py-1 text-[12px] text-t3 transition-colors hover:text-t1"
+          className="flex items-center gap-1.5 border border-sf-line px-3 py-1 text-[12px] text-t3 transition-colors hover:border-sf-line-emphasis hover:text-t1"
           title="Spacing, font and column width"
           aria-label="Typography"
         >
@@ -105,7 +105,7 @@ export function TypographyMenu({ preferences, onChange }: TypographyMenuProps) {
         align="end"
         // Settings, not commands: keep it open while the writer tries options.
         onCloseAutoFocus={(e) => e.preventDefault()}
-        className="sf-sb max-h-[80vh] w-64 overflow-y-auto rounded-none border-sf-line-interactive bg-sf-surface-elevated p-0"
+        className="sf-sb max-h-[80vh] w-64 overflow-y-auto rounded-none border-sf-line bg-sf-surface-elevated p-0"
       >
         <Row label="Spacing">
           <Segmented
@@ -133,10 +133,10 @@ export function TypographyMenu({ preferences, onChange }: TypographyMenuProps) {
             role="switch"
             aria-checked={preferences.dropCap}
             onClick={() => onChange({ dropCap: !preferences.dropCap })}
-            className={`min-h-hit w-full border px-2 text-left text-[13px] transition-colors ${
+            className={`min-h-hit w-full border px-3 text-left text-[13px] transition-colors ${
               preferences.dropCap
                 ? "border-sf-primary text-sf-primary-text"
-                : "border-sf-line-interactive text-t3 hover:text-t1"
+                : "border-sf-line text-t3 hover:border-sf-line-emphasis hover:text-t1"
             }`}
           >
             Drop cap {preferences.dropCap ? "on" : "off"}
@@ -144,7 +144,7 @@ export function TypographyMenu({ preferences, onChange }: TypographyMenuProps) {
         </Row>
 
         <Row label="View">
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-2">
             <SwitchRow
               on={preferences.typewriter}
               onClick={() => onChange({ typewriter: !preferences.typewriter })}
@@ -168,7 +168,7 @@ export function TypographyMenu({ preferences, onChange }: TypographyMenuProps) {
                 type="button"
                 aria-pressed={preferences.writingFont === font}
                 onClick={() => onChange({ writingFont: font })}
-                className={`min-h-hit border px-2 text-left text-[14px] transition-colors ${
+                className={`min-h-hit border px-3 text-left text-[14px] transition-colors ${
                   preferences.writingFont === font
                     ? "border-sf-primary text-t1"
                     : "border-transparent text-t3 hover:text-t1"
@@ -204,8 +204,8 @@ function SwitchRow({
       aria-checked={on}
       onClick={onClick}
       title={hint}
-      className={`flex min-h-hit w-full items-center justify-between gap-2 border px-2 text-left text-[13px] transition-colors ${
-        on ? "border-sf-primary text-sf-primary-text" : "border-sf-line-interactive text-t3 hover:text-t1"
+      className={`flex min-h-hit w-full items-center justify-between gap-2 border px-3 text-left text-[13px] transition-colors ${
+        on ? "border-sf-primary text-sf-primary-text" : "border-sf-line text-t3 hover:border-sf-line-emphasis hover:text-t1"
       }`}
     >
       <span>{label}</span>

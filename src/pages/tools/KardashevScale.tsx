@@ -409,7 +409,7 @@ const KardashevScale = () => {
                   "text-left p-3 border transition-all group",
                   formState.civilizationPreset === preset.id
                     ? "border-sf-primary bg-sf-primary/[0.06]"
-                    : "border-sf-line bg-sf-surface hover:border-sf-line"
+                    : "border-sf-line bg-sf-surface hover:border-sf-line-emphasis"
                 )}
               >
                 <div className="flex items-center gap-2 mb-1">
@@ -522,7 +522,7 @@ const KardashevScale = () => {
                         civilizationPreset: "",
                       }));
                     }}
-                    className="text-left p-2 border border-sf-line hover:border-sf-line bg-sf-surface hover:bg-sf-surface-elevated transition-colors"
+                    className="text-left px-3 py-2 border border-sf-line hover:border-sf-line-emphasis bg-sf-surface hover:bg-sf-surface-elevated transition-colors"
                   >
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-[12px] text-t2 truncate">
@@ -633,7 +633,7 @@ const KardashevScale = () => {
                     {results.projections.map((p) => (
                       <div
                         key={p.level}
-                        className="flex items-center justify-between p-2 bg-sf-surface border border-sf-line"
+                        className="flex items-center justify-between px-3 py-2 bg-sf-surface border border-sf-line"
                       >
                         <span className="text-sm text-t2">{p.label}</span>
                         <div className="text-right">

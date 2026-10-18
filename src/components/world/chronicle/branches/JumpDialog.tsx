@@ -37,7 +37,7 @@ interface JumpDialogProps {
 }
 
 const selectClass =
-  "min-h-hit w-full border border-sf-line-interactive bg-sf-surface px-2 text-[16px] text-t1 hover:border-sf-line-emphasis";
+  "min-h-hit w-full px-3 text-[16px] text-t1";
 
 const FREE_TEXT = "__free__";
 

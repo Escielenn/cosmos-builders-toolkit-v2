@@ -479,7 +479,7 @@ const CodexCustomSection = ({
 
                       {/* Folder children, shown when expanded */}
                       {folder && folderExpanded && children.length > 0 && (
-                        <div className="border-l border-sf-line-interactive ml-[18px]">
+                        <div className="border-l border-sf-line-hairline ml-[18px]">
                           {children.map((child, cidx) => (
                             <ChildRow
                               key={child.id}
@@ -503,7 +503,7 @@ const CodexCustomSection = ({
 
                       {/* Empty folder hint */}
                       {folder && folderExpanded && children.length === 0 && (
-                        <div className="ml-[18px] border-l border-sf-line-interactive px-3 py-1">
+                        <div className="ml-[18px] border-l border-sf-line-hairline px-3 py-1">
                           <span className="text-[12px] text-t4 italic">
                             Drag entries here
                           </span>
@@ -526,14 +526,14 @@ const CodexCustomSection = ({
           <div className="flex gap-2 px-3 py-2">
             <button
               onClick={onCreateFolder}
-              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-sf-line-interactive text-[12px] font-heading uppercase tracking-wider text-t3 hover:text-sf-primary-text hover:border-primary transition-colors"
+              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-sf-line text-[12px] font-heading uppercase tracking-wider text-t3 hover:text-sf-primary-text hover:border-primary transition-colors"
             >
               <Plus className="w-3 h-3" />
               New Folder
             </button>
             <button
               onClick={onCreateEntry}
-              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-sf-line-interactive text-[12px] font-heading uppercase tracking-wider text-t3 hover:text-sf-primary-text hover:border-primary transition-colors"
+              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-sf-line text-[12px] font-heading uppercase tracking-wider text-t3 hover:text-sf-primary-text hover:border-primary transition-colors"
             >
               <Plus className="w-3 h-3" />
               New Entry

@@ -84,7 +84,7 @@ export function TargetsStatus(props: TargetsProps): JSX.Element {
       <PopoverContent
         align="end"
         side="top"
-        className="sf-sb max-h-[80vh] w-80 overflow-y-auto border-sf-line-interactive bg-sf-surface-elevated p-0"
+        className="sf-sb max-h-[80vh] w-80 overflow-y-auto border-sf-line bg-sf-surface-elevated p-0"
       >
         <TargetsPanel {...props} />
       </PopoverContent>
@@ -102,7 +102,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 const inputCls =
-  "min-h-hit w-full border border-sf-line-interactive bg-sf-surface px-2 font-mono text-[16px] text-t1 hover:border-sf-line-emphasis";
+  "min-h-hit w-full px-3 font-mono text-[16px] text-t1";
 
 export function TargetsPanel({
   session,
@@ -162,7 +162,7 @@ export function TargetsPanel({
           onKeyDown={(e) => e.key === "Enter" && commitGoal()}
           className={inputCls}
         />
-        <div className="mt-1.5 flex gap-1" role="group" aria-label="Quick goals">
+        <div className="mt-2 flex gap-2" role="group" aria-label="Quick goals">
           {QUICK_GOALS.map((g) => (
             <button
               key={g}
@@ -170,7 +170,7 @@ export function TargetsPanel({
               aria-pressed={session.goal === g}
               onClick={() => session.setGoal(g)}
               className={`min-h-hit flex-1 border font-mono text-[12px] transition-colors duration-fast ${
-                session.goal === g ? "border-sf-primary text-sf-primary-text" : "border-sf-line-interactive text-t3 hover:text-t1"
+                session.goal === g ? "border-sf-primary text-sf-primary-text" : "border-sf-line text-t3 hover:border-sf-line-emphasis hover:text-t1"
               }`}
             >
               {g.toLocaleString()}
@@ -186,8 +186,8 @@ export function TargetsPanel({
               role="radio"
               aria-checked={session.mode === m}
               onClick={() => session.setMode(m)}
-              className={`min-h-hit flex-1 border px-2 text-[12px] transition-colors duration-fast ${i > 0 ? "-ml-px" : ""} ${
-                session.mode === m ? "border-sf-primary text-sf-primary-text" : "border-sf-line-interactive text-t3 hover:text-t1"
+              className={`min-h-hit flex-1 border px-3 text-[12px] transition-colors duration-fast ${i > 0 ? "-ml-px" : ""} ${
+                session.mode === m ? "relative z-[1] border-sf-primary text-sf-primary-text" : "border-sf-line text-t3 hover:border-sf-line-emphasis hover:text-t1"
               }`}
             >
               {m === "day" ? "Every day" : "Every session"}
@@ -202,7 +202,7 @@ export function TargetsPanel({
             <button
               type="button"
               onClick={session.reset}
-              className="min-h-hit border border-sf-line-interactive px-2 text-[12px] text-t2 transition-colors duration-base hover:border-sf-primary hover:text-t1"
+              className="min-h-hit border border-sf-line px-3 text-[12px] text-t2 transition-colors duration-base hover:border-sf-primary hover:text-t1"
             >
               New session
             </button>
@@ -292,7 +292,7 @@ export function TargetsPanel({
           <button
             type="button"
             onClick={() => onProjectChange({ words: 0, deadline: "" })}
-            className="mt-2 min-h-hit border border-sf-line-interactive px-2 text-[12px] text-t3 transition-colors duration-base hover:border-sf-crimson hover:text-sf-crimson-text"
+            className="mt-2 min-h-hit border border-sf-line px-3 text-[12px] text-t3 transition-colors duration-base hover:border-sf-crimson hover:text-sf-crimson-text"
           >
             Clear project target
           </button>

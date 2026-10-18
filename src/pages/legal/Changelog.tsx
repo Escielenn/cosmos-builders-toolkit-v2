@@ -297,7 +297,7 @@ const Changelog = () => {
         })}
 
         {/* Future updates notice */}
-        <section className="pt-8 border-t border-sf-line-interactive">
+        <section className="pt-8 border-t border-sf-line-hairline">
           <p className="text-t3 text-center">
             Subscribe to our{" "}
             <a

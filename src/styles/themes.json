@@ -100,10 +100,10 @@
     "t4": "#969AA0"
    },
    "line": {
-    "hairline": "#51555D",
-    "default": "#686B74",
+    "hairline": "#41454C",
+    "default": "#51555D",
     "interactive": "#797D85",
-    "emphasis": "#979BA4"
+    "emphasis": "#8C9099"
    },
    "accent": {
     "teal": "#15C17B",
@@ -184,10 +184,10 @@
     "t4": "#969AA0"
    },
    "line": {
-    "hairline": "#51555D",
-    "default": "#686B74",
+    "hairline": "#41454C",
+    "default": "#51555D",
     "interactive": "#797D85",
-    "emphasis": "#979BA4"
+    "emphasis": "#8C9099"
    },
    "accent": {
     "teal": "#15C17B",
@@ -268,10 +268,10 @@
     "t4": "#969AA0"
    },
    "line": {
-    "hairline": "#51555D",
-    "default": "#686B74",
+    "hairline": "#41454C",
+    "default": "#51555D",
     "interactive": "#797D85",
-    "emphasis": "#979BA4"
+    "emphasis": "#8C9099"
    },
    "accent": {
     "teal": "#15C17B",
@@ -352,10 +352,10 @@
     "t4": "#969AA0"
    },
    "line": {
-    "hairline": "#51555D",
-    "default": "#686B74",
+    "hairline": "#41454C",
+    "default": "#51555D",
     "interactive": "#797D85",
-    "emphasis": "#979BA4"
+    "emphasis": "#8C9099"
    },
    "accent": {
     "teal": "#15C17B",
@@ -436,10 +436,10 @@
     "t4": "#969AA0"
    },
    "line": {
-    "hairline": "#51555D",
-    "default": "#686B74",
+    "hairline": "#41454C",
+    "default": "#51555D",
     "interactive": "#797D85",
-    "emphasis": "#979BA4"
+    "emphasis": "#8C9099"
    },
    "accent": {
     "teal": "#15C17B",
@@ -520,10 +520,10 @@
     "t4": "#969AA0"
    },
    "line": {
-    "hairline": "#51555D",
-    "default": "#686B74",
+    "hairline": "#41454C",
+    "default": "#51555D",
     "interactive": "#797D85",
-    "emphasis": "#979BA4"
+    "emphasis": "#8C9099"
    },
    "accent": {
     "teal": "#15C17B",
@@ -604,10 +604,10 @@
     "t4": "#989CA2"
    },
    "line": {
-    "hairline": "#53565F",
-    "default": "#696D75",
+    "hairline": "#43464E",
+    "default": "#53565F",
     "interactive": "#7A7F87",
-    "emphasis": "#999EA6"
+    "emphasis": "#8E929B"
    },
    "accent": {
     "teal": "#15C17B",
@@ -688,10 +688,10 @@
     "t4": "#989CA2"
    },
    "line": {
-    "hairline": "#53565F",
-    "default": "#696D75",
+    "hairline": "#43464E",
+    "default": "#53565F",
     "interactive": "#7A7F87",
-    "emphasis": "#999EA6"
+    "emphasis": "#8E929B"
    },
    "accent": {
     "teal": "#15C17B",
@@ -772,10 +772,10 @@
     "t4": "#989CA2"
    },
    "line": {
-    "hairline": "#53565F",
-    "default": "#696D75",
+    "hairline": "#43464E",
+    "default": "#53565F",
     "interactive": "#7A7F87",
-    "emphasis": "#999EA6"
+    "emphasis": "#8E929B"
    },
    "accent": {
     "teal": "#15C17B",
@@ -856,10 +856,10 @@
     "t4": "#989CA2"
    },
    "line": {
-    "hairline": "#53565F",
-    "default": "#696D75",
+    "hairline": "#43464E",
+    "default": "#53565F",
     "interactive": "#7A7F87",
-    "emphasis": "#999EA6"
+    "emphasis": "#8E929B"
    },
    "accent": {
     "teal": "#15C17B",
@@ -940,10 +940,10 @@
     "t4": "#989CA2"
    },
    "line": {
-    "hairline": "#53565F",
-    "default": "#696D75",
+    "hairline": "#43464E",
+    "default": "#53565F",
     "interactive": "#7A7F87",
-    "emphasis": "#999EA6"
+    "emphasis": "#8E929B"
    },
    "accent": {
     "teal": "#15C17B",
@@ -1024,10 +1024,10 @@
     "t4": "#989CA2"
    },
    "line": {
-    "hairline": "#53565F",
-    "default": "#696D75",
+    "hairline": "#43464E",
+    "default": "#53565F",
     "interactive": "#7A7F87",
-    "emphasis": "#999EA6"
+    "emphasis": "#8E929B"
    },
    "accent": {
     "teal": "#15C17B",
@@ -1108,10 +1108,10 @@
     "t4": "#A2A5AC"
    },
    "line": {
-    "hairline": "#595E66",
-    "default": "#71757D",
+    "hairline": "#4A4E55",
+    "default": "#595E66",
     "interactive": "#838890",
-    "emphasis": "#A3A7B0"
+    "emphasis": "#979CA4"
    },
    "accent": {
     "teal": "#15C17B",
@@ -1192,10 +1192,10 @@
     "t4": "#A2A5AC"
    },
    "line": {
-    "hairline": "#595E66",
-    "default": "#71757D",
+    "hairline": "#4A4E55",
+    "default": "#595E66",
     "interactive": "#838890",
-    "emphasis": "#A3A7B0"
+    "emphasis": "#979CA4"
    },
    "accent": {
     "teal": "#15C17B",
@@ -1276,10 +1276,10 @@
     "t4": "#A2A5AC"
    },
    "line": {
-    "hairline": "#595E66",
-    "default": "#71757D",
+    "hairline": "#4A4E55",
+    "default": "#595E66",
     "interactive": "#838890",
-    "emphasis": "#A3A7B0"
+    "emphasis": "#979CA4"
    },
    "accent": {
     "teal": "#15C17B",
@@ -1360,10 +1360,10 @@
     "t4": "#A2A5AC"
    },
    "line": {
-    "hairline": "#595E66",
-    "default": "#71757D",
+    "hairline": "#4A4E55",
+    "default": "#595E66",
     "interactive": "#838890",
-    "emphasis": "#A3A7B0"
+    "emphasis": "#979CA4"
    },
    "accent": {
     "teal": "#15C17B",
@@ -1444,10 +1444,10 @@
     "t4": "#A2A5AC"
    },
    "line": {
-    "hairline": "#595E66",
-    "default": "#71757D",
+    "hairline": "#4A4E55",
+    "default": "#595E66",
     "interactive": "#838890",
-    "emphasis": "#A3A7B0"
+    "emphasis": "#979CA4"
    },
    "accent": {
     "teal": "#15C17B",
@@ -1528,10 +1528,10 @@
     "t4": "#A2A5AC"
    },
    "line": {
-    "hairline": "#595E66",
-    "default": "#71757D",
+    "hairline": "#4A4E55",
+    "default": "#595E66",
     "interactive": "#838890",
-    "emphasis": "#A3A7B0"
+    "emphasis": "#979CA4"
    },
    "accent": {
     "teal": "#15C17B",
@@ -1612,10 +1612,10 @@
     "t4": "#999BA2"
    },
    "line": {
-    "hairline": "#53565E",
-    "default": "#696D75",
+    "hairline": "#42464E",
+    "default": "#53565E",
     "interactive": "#7B7F87",
-    "emphasis": "#999DA6"
+    "emphasis": "#8E929B"
    },
    "accent": {
     "teal": "#15C17B",
@@ -1696,10 +1696,10 @@
     "t4": "#999BA2"
    },
    "line": {
-    "hairline": "#53565E",
-    "default": "#696D75",
+    "hairline": "#42464E",
+    "default": "#53565E",
     "interactive": "#7B7F87",
-    "emphasis": "#999DA6"
+    "emphasis": "#8E929B"
    },
    "accent": {
     "teal": "#15C17B",
@@ -1780,10 +1780,10 @@
     "t4": "#999BA2"
    },
    "line": {
-    "hairline": "#53565E",
-    "default": "#696D75",
+    "hairline": "#42464E",
+    "default": "#53565E",
     "interactive": "#7B7F87",
-    "emphasis": "#999DA6"
+    "emphasis": "#8E929B"
    },
    "accent": {
     "teal": "#15C17B",
@@ -1864,10 +1864,10 @@
     "t4": "#999BA2"
    },
    "line": {
-    "hairline": "#53565E",
-    "default": "#696D75",
+    "hairline": "#42464E",
+    "default": "#53565E",
     "interactive": "#7B7F87",
-    "emphasis": "#999DA6"
+    "emphasis": "#8E929B"
    },
    "accent": {
     "teal": "#15C17B",
@@ -1948,10 +1948,10 @@
     "t4": "#999BA2"
    },
    "line": {
-    "hairline": "#53565E",
-    "default": "#696D75",
+    "hairline": "#42464E",
+    "default": "#53565E",
     "interactive": "#7B7F87",
-    "emphasis": "#999DA6"
+    "emphasis": "#8E929B"
    },
    "accent": {
     "teal": "#15C17B",
@@ -2032,10 +2032,10 @@
     "t4": "#999BA2"
    },
    "line": {
-    "hairline": "#53565E",
-    "default": "#696D75",
+    "hairline": "#42464E",
+    "default": "#53565E",
     "interactive": "#7B7F87",
-    "emphasis": "#999DA6"
+    "emphasis": "#8E929B"
    },
    "accent": {
     "teal": "#15C17B",
@@ -2116,10 +2116,10 @@
     "t4": "#92959C"
    },
    "line": {
-    "hairline": "#4E5159",
-    "default": "#646870",
+    "hairline": "#3E4148",
+    "default": "#4E5159",
     "interactive": "#767982",
-    "emphasis": "#9397A0"
+    "emphasis": "#888C94"
    },
    "accent": {
     "teal": "#15C17B",
@@ -2200,10 +2200,10 @@
     "t4": "#92959C"
    },
    "line": {
-    "hairline": "#4E5159",
-    "default": "#646870",
+    "hairline": "#3E4148",
+    "default": "#4E5159",
     "interactive": "#767982",
-    "emphasis": "#9397A0"
+    "emphasis": "#888C94"
    },
    "accent": {
     "teal": "#15C17B",
@@ -2284,10 +2284,10 @@
     "t4": "#92959C"
    },
    "line": {
-    "hairline": "#4E5159",
-    "default": "#646870",
+    "hairline": "#3E4148",
+    "default": "#4E5159",
     "interactive": "#767982",
-    "emphasis": "#9397A0"
+    "emphasis": "#888C94"
    },
    "accent": {
     "teal": "#15C17B",
@@ -2368,10 +2368,10 @@
     "t4": "#92959C"
    },
    "line": {
-    "hairline": "#4E5159",
-    "default": "#646870",
+    "hairline": "#3E4148",
+    "default": "#4E5159",
     "interactive": "#767982",
-    "emphasis": "#9397A0"
+    "emphasis": "#888C94"
    },
    "accent": {
     "teal": "#15C17B",
@@ -2452,10 +2452,10 @@
     "t4": "#92959C"
    },
    "line": {
-    "hairline": "#4E5159",
-    "default": "#646870",
+    "hairline": "#3E4148",
+    "default": "#4E5159",
     "interactive": "#767982",
-    "emphasis": "#9397A0"
+    "emphasis": "#888C94"
    },
    "accent": {
     "teal": "#15C17B",
@@ -2536,10 +2536,10 @@
     "t4": "#92959C"
    },
    "line": {
-    "hairline": "#4E5159",
-    "default": "#646870",
+    "hairline": "#3E4148",
+    "default": "#4E5159",
     "interactive": "#767982",
-    "emphasis": "#9397A0"
+    "emphasis": "#888C94"
    },
    "accent": {
     "teal": "#15C17B",
@@ -2620,10 +2620,10 @@
     "t4": "#A09995"
    },
    "line": {
-    "hairline": "#5C544E",
-    "default": "#736B65",
+    "hairline": "#4C443F",
+    "default": "#5C544E",
     "interactive": "#867C77",
-    "emphasis": "#A49B95"
+    "emphasis": "#998F8A"
    },
    "accent": {
     "teal": "#15C17B",
@@ -2704,10 +2704,10 @@
     "t4": "#A09995"
    },
    "line": {
-    "hairline": "#5C544E",
-    "default": "#736B65",
+    "hairline": "#4C443F",
+    "default": "#5C544E",
     "interactive": "#867C77",
-    "emphasis": "#A49B95"
+    "emphasis": "#998F8A"
    },
    "accent": {
     "teal": "#15C17B",
@@ -2788,10 +2788,10 @@
     "t4": "#A09995"
    },
    "line": {
-    "hairline": "#5C544E",
-    "default": "#736B65",
+    "hairline": "#4C443F",
+    "default": "#5C544E",
     "interactive": "#867C77",
-    "emphasis": "#A49B95"
+    "emphasis": "#998F8A"
    },
    "accent": {
     "teal": "#15C17B",
@@ -2872,10 +2872,10 @@
     "t4": "#A09995"
    },
    "line": {
-    "hairline": "#5C544E",
-    "default": "#736B65",
+    "hairline": "#4C443F",
+    "default": "#5C544E",
     "interactive": "#867C77",
-    "emphasis": "#A49B95"
+    "emphasis": "#998F8A"
    },
    "accent": {
     "teal": "#15C17B",
@@ -2956,10 +2956,10 @@
     "t4": "#A09995"
    },
    "line": {
-    "hairline": "#5C544E",
-    "default": "#736B65",
+    "hairline": "#4C443F",
+    "default": "#5C544E",
     "interactive": "#867C77",
-    "emphasis": "#A49B95"
+    "emphasis": "#998F8A"
    },
    "accent": {
     "teal": "#15C17B",
@@ -3040,10 +3040,10 @@
     "t4": "#A09995"
    },
    "line": {
-    "hairline": "#5C544E",
-    "default": "#736B65",
+    "hairline": "#4C443F",
+    "default": "#5C544E",
     "interactive": "#867C77",
-    "emphasis": "#A49B95"
+    "emphasis": "#998F8A"
    },
    "accent": {
     "teal": "#15C17B",
@@ -3124,10 +3124,10 @@
     "t4": "#56534E"
    },
    "line": {
-    "hairline": "#9C988F",
-    "default": "#827E75",
+    "hairline": "#B2ADA4",
+    "default": "#9C988F",
     "interactive": "#706C64",
-    "emphasis": "#56524A"
+    "emphasis": "#5F5B53"
    },
    "accent": {
     "teal": "#007E3E",
@@ -3208,10 +3208,10 @@
     "t4": "#56534E"
    },
    "line": {
-    "hairline": "#9C988F",
-    "default": "#827E75",
+    "hairline": "#B2ADA4",
+    "default": "#9C988F",
     "interactive": "#706C64",
-    "emphasis": "#56524A"
+    "emphasis": "#5F5B53"
    },
    "accent": {
     "teal": "#007E3E",
@@ -3292,10 +3292,10 @@
     "t4": "#56534E"
    },
    "line": {
-    "hairline": "#9C988F",
-    "default": "#827E75",
+    "hairline": "#B2ADA4",
+    "default": "#9C988F",
     "interactive": "#706C64",
-    "emphasis": "#56524A"
+    "emphasis": "#5F5B53"
    },
    "accent": {
     "teal": "#007E3E",
@@ -3376,10 +3376,10 @@
     "t4": "#56534E"
    },
    "line": {
-    "hairline": "#9C988F",
-    "default": "#827E75",
+    "hairline": "#B2ADA4",
+    "default": "#9C988F",
     "interactive": "#706C64",
-    "emphasis": "#56524A"
+    "emphasis": "#5F5B53"
    },
    "accent": {
     "teal": "#007E3E",
@@ -3460,10 +3460,10 @@
     "t4": "#56534E"
    },
    "line": {
-    "hairline": "#9C988F",
-    "default": "#827E75",
+    "hairline": "#B2ADA4",
+    "default": "#9C988F",
     "interactive": "#706C64",
-    "emphasis": "#56524A"
+    "emphasis": "#5F5B53"
    },
    "accent": {
     "teal": "#007E3E",
@@ -3544,10 +3544,10 @@
     "t4": "#56534E"
    },
    "line": {
-    "hairline": "#9C988F",
-    "default": "#827E75",
+    "hairline": "#B2ADA4",
+    "default": "#9C988F",
     "interactive": "#706C64",
-    "emphasis": "#56524A"
+    "emphasis": "#5F5B53"
    },
    "accent": {
     "teal": "#007E3E",
@@ -3628,10 +3628,10 @@
     "t4": "#4F5359"
    },
    "line": {
-    "hairline": "#9298A1",
-    "default": "#787E86",
+    "hairline": "#A7ADB6",
+    "default": "#9298A1",
     "interactive": "#666C74",
-    "emphasis": "#4D525A"
+    "emphasis": "#565B63"
    },
    "accent": {
     "teal": "#007D3D",
@@ -3712,10 +3712,10 @@
     "t4": "#4F5359"
    },
    "line": {
-    "hairline": "#9298A1",
-    "default": "#787E86",
+    "hairline": "#A7ADB6",
+    "default": "#9298A1",
     "interactive": "#666C74",
-    "emphasis": "#4D525A"
+    "emphasis": "#565B63"
    },
    "accent": {
     "teal": "#007D3D",
@@ -3796,10 +3796,10 @@
     "t4": "#4F5359"
    },
    "line": {
-    "hairline": "#9298A1",
-    "default": "#787E86",
+    "hairline": "#A7ADB6",
+    "default": "#9298A1",
     "interactive": "#666C74",
-    "emphasis": "#4D525A"
+    "emphasis": "#565B63"
    },
    "accent": {
     "teal": "#007D3D",
@@ -3880,10 +3880,10 @@
     "t4": "#4F5359"
    },
    "line": {
-    "hairline": "#9298A1",
-    "default": "#787E86",
+    "hairline": "#A7ADB6",
+    "default": "#9298A1",
     "interactive": "#666C74",
-    "emphasis": "#4D525A"
+    "emphasis": "#565B63"
    },
    "accent": {
     "teal": "#007D3D",
@@ -3964,10 +3964,10 @@
     "t4": "#4F5359"
    },
    "line": {
-    "hairline": "#9298A1",
-    "default": "#787E86",
+    "hairline": "#A7ADB6",
+    "default": "#9298A1",
     "interactive": "#666C74",
-    "emphasis": "#4D525A"
+    "emphasis": "#565B63"
    },
    "accent": {
     "teal": "#007D3D",
@@ -4048,10 +4048,10 @@
     "t4": "#4F5359"
    },
    "line": {
-    "hairline": "#9298A1",
-    "default": "#787E86",
+    "hairline": "#A7ADB6",
+    "default": "#9298A1",
     "interactive": "#666C74",
-    "emphasis": "#4D525A"
+    "emphasis": "#565B63"
    },
    "accent": {
     "teal": "#007D3D",
@@ -4132,10 +4132,10 @@
     "t4": "#505157"
    },
    "line": {
-    "hairline": "#92969F",
-    "default": "#797B84",
+    "hairline": "#A7ABB4",
+    "default": "#92969F",
     "interactive": "#676A73",
-    "emphasis": "#4E5059"
+    "emphasis": "#575962"
    },
    "accent": {
     "teal": "#007C3C",
@@ -4216,10 +4216,10 @@
     "t4": "#505157"
    },
    "line": {
-    "hairline": "#92969F",
-    "default": "#797B84",
+    "hairline": "#A7ABB4",
+    "default": "#92969F",
     "interactive": "#676A73",
-    "emphasis": "#4E5059"
+    "emphasis": "#575962"
    },
    "accent": {
     "teal": "#007C3C",
@@ -4300,10 +4300,10 @@
     "t4": "#505157"
    },
    "line": {
-    "hairline": "#92969F",
-    "default": "#797B84",
+    "hairline": "#A7ABB4",
+    "default": "#92969F",
     "interactive": "#676A73",
-    "emphasis": "#4E5059"
+    "emphasis": "#575962"
    },
    "accent": {
     "teal": "#007C3C",
@@ -4384,10 +4384,10 @@
     "t4": "#505157"
    },
    "line": {
-    "hairline": "#92969F",
-    "default": "#797B84",
+    "hairline": "#A7ABB4",
+    "default": "#92969F",
     "interactive": "#676A73",
-    "emphasis": "#4E5059"
+    "emphasis": "#575962"
    },
    "accent": {
     "teal": "#007C3C",
@@ -4468,10 +4468,10 @@
     "t4": "#505157"
    },
    "line": {
-    "hairline": "#92969F",
-    "default": "#797B84",
+    "hairline": "#A7ABB4",
+    "default": "#92969F",
     "interactive": "#676A73",
-    "emphasis": "#4E5059"
+    "emphasis": "#575962"
    },
    "accent": {
     "teal": "#007C3C",
@@ -4552,10 +4552,10 @@
     "t4": "#505157"
    },
    "line": {
-    "hairline": "#92969F",
-    "default": "#797B84",
+    "hairline": "#A7ABB4",
+    "default": "#92969F",
     "interactive": "#676A73",
-    "emphasis": "#4E5059"
+    "emphasis": "#575962"
    },
    "accent": {
     "teal": "#007C3C",
@@ -4636,10 +4636,10 @@
     "t4": "#57534E"
    },
    "line": {
-    "hairline": "#9E978F",
-    "default": "#847D76",
+    "hairline": "#B3ACA4",
+    "default": "#9E978F",
     "interactive": "#726B64",
-    "emphasis": "#57514A"
+    "emphasis": "#605A53"
    },
    "accent": {
     "teal": "#007E3E",
@@ -4720,10 +4720,10 @@
     "t4": "#57534E"
    },
    "line": {
-    "hairline": "#9E978F",
-    "default": "#847D76",
+    "hairline": "#B3ACA4",
+    "default": "#9E978F",
     "interactive": "#726B64",
-    "emphasis": "#57514A"
+    "emphasis": "#605A53"
    },
    "accent": {
     "teal": "#007E3E",
@@ -4804,10 +4804,10 @@
     "t4": "#57534E"
    },
    "line": {
-    "hairline": "#9E978F",
-    "default": "#847D76",
+    "hairline": "#B3ACA4",
+    "default": "#9E978F",
     "interactive": "#726B64",
-    "emphasis": "#57514A"
+    "emphasis": "#605A53"
    },
    "accent": {
     "teal": "#007E3E",
@@ -4888,10 +4888,10 @@
     "t4": "#57534E"
    },
    "line": {
-    "hairline": "#9E978F",
-    "default": "#847D76",
+    "hairline": "#B3ACA4",
+    "default": "#9E978F",
     "interactive": "#726B64",
-    "emphasis": "#57514A"
+    "emphasis": "#605A53"
    },
    "accent": {
     "teal": "#007E3E",
@@ -4972,10 +4972,10 @@
     "t4": "#57534E"
    },
    "line": {
-    "hairline": "#9E978F",
-    "default": "#847D76",
+    "hairline": "#B3ACA4",
+    "default": "#9E978F",
     "interactive": "#726B64",
-    "emphasis": "#57514A"
+    "emphasis": "#605A53"
    },
    "accent": {
     "teal": "#007E3E",
@@ -5056,10 +5056,10 @@
     "t4": "#57534E"
    },
    "line": {
-    "hairline": "#9E978F",
-    "default": "#847D76",
+    "hairline": "#B3ACA4",
+    "default": "#9E978F",
     "interactive": "#726B64",
-    "emphasis": "#57514A"
+    "emphasis": "#605A53"
    },
    "accent": {
     "teal": "#007E3E",

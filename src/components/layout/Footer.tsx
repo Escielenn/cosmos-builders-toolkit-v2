@@ -62,7 +62,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="border-t border-dashed border-sf-line-interactive bg-sf-void/80 backdrop-blur-sf-panel">
+    <footer className="border-t border-dashed border-sf-line-hairline bg-sf-void/80 backdrop-blur-sf-panel">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
           {/* Brand */}
@@ -99,7 +99,7 @@ const Footer = () => {
             </div>
 
             {/* Privacy Statement */}
-            <div className="mt-6 pt-4 border-t border-dashed border-sf-line-interactive">
+            <div className="mt-6 pt-4 border-t border-dashed border-sf-line-hairline">
               <h4 className="font-heading text-[12px] font-medium uppercase tracking-wide text-t1 mb-2">
                 YOUR WORLDS ARE YOURS ALONE
               </h4>
@@ -169,7 +169,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar, coordinates, build, copyright */}
-        <div className="mt-12 pt-8 border-t border-dashed border-sf-line-interactive">
+        <div className="mt-12 pt-8 border-t border-dashed border-sf-line-hairline">
           <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
             <div className="font-mono text-[12px] tracking-wide text-t4 text-center sm:text-left space-y-1">
               <p>

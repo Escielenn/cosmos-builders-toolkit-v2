@@ -11,7 +11,7 @@ const badgeVariants = cva(
         default: "border-sf-primary bg-sf-primary text-sf-on-primary",
         secondary: "border-sf-line bg-sf-surface-elevated text-t2",
         destructive: "border-sf-crimson bg-sf-crimson/[0.06] text-sf-crimson-text",
-        outline: "border-sf-line-interactive text-t1",
+        outline: "border-sf-line text-t1",
         glow: "bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text",
         "glow-amber": "bg-sf-amber/[0.06] border-sf-amber text-sf-amber-text",
         /** Retired alias: renders as glow (primary). Do not use in new code. */

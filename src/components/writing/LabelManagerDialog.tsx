@@ -92,7 +92,7 @@ export function LabelManagerDialog({
                   <button
                     type="button"
                     aria-label={`Colour for ${l.name || "new label"}: ${hueName(l.hue)}`}
-                    className="flex min-h-hit w-11 shrink-0 items-center justify-center border border-sf-line-interactive hover:border-sf-line-emphasis"
+                    className="sf-field flex min-h-hit w-11 shrink-0 items-center justify-center"
                   >
                     <span className={`h-4 w-4 ${LABEL_SWATCH[l.hue]}`} />
                   </button>

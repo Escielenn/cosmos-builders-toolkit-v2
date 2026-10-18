@@ -172,7 +172,7 @@ function CascadeDiagram({
   onStageClick: (id: string) => void;
 }) {
   return (
-    <div className="flex flex-col md:flex-row items-stretch gap-1 md:gap-0">
+    <div className="flex flex-col md:flex-row items-stretch gap-2 md:gap-0">
       {CASCADE_STAGES.map((stage, i) => {
         const isActive = activeStage === stage.id;
         const isDownstream =
@@ -189,8 +189,8 @@ function CascadeDiagram({
                 isActive
                   ? "border-sf-line-emphasis bg-sf-surface-elevated"
                   : isDownstream
-                  ? "border-sf-line-interactive bg-sf-surface-elevated"
-                  : "border-sf-line-interactive bg-transparent hover:border-sf-line-emphasis"
+                  ? "border-sf-line bg-sf-surface-elevated"
+                  : "border-sf-line bg-transparent hover:border-sf-line-emphasis"
               }`}
             >
               <div
@@ -582,7 +582,7 @@ const GettingStarted = () => {
           </div>
 
           {/* Navigation */}
-          <div className="flex items-center justify-between mt-6 pt-4 border-t border-sf-line">
+          <div className="flex items-center justify-between mt-6 pt-4 border-t border-sf-line-hairline">
             <Button
               variant="ghost"
               size="sm"

@@ -210,17 +210,17 @@ const FilterBar = () => {
       </Popover>
 
       {/* Importance Filter */}
-      <div className="flex items-center gap-0.5">
+      <div className="flex items-center gap-2">
         {IMPORTANCE_LEVELS.map((il) => (
           <button
             key={il.id}
             type="button"
             onClick={() => toggleImportanceFilter(il.id)}
             className={cn(
-              "px-2 py-1 rounded-none border text-[12px] font-medium transition-colors h-8",
+              "px-3 py-1 rounded-none border text-[12px] font-medium transition-colors h-8",
               filter.importanceLevels.includes(il.id)
                 ? "border-sf-primary bg-sf-primary/10 text-t1"
-                : "border-sf-line text-t3 hover:border-sf-line"
+                : "border-sf-line text-t3 hover:border-sf-line-emphasis"
             )}
           >
             {il.label}

@@ -10,7 +10,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(({ classNa
     <BracketPanel size="sm" color="default">
       <textarea
         className={cn(
-          "flex min-h-[112px] w-full rounded-none border border-sf-line-interactive bg-background px-4 py-3 text-base font-sans leading-relaxed placeholder:font-heading placeholder:uppercase placeholder:tracking-[0.08em] placeholder:text-t3 focus-visible:outline-none focus-visible:border-sf-line-emphasis disabled:cursor-not-allowed transition-colors duration-base",
+          "flex min-h-[112px] w-full sf-field px-4 py-3 text-base font-sans leading-relaxed placeholder:font-heading placeholder:uppercase placeholder:tracking-[0.08em] placeholder:text-t3 focus-visible:outline-none focus-visible:border-sf-line-emphasis disabled:cursor-not-allowed transition-colors duration-base",
           className,
         )}
         ref={ref}

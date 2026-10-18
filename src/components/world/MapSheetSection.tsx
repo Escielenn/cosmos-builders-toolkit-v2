@@ -126,7 +126,7 @@ export function MapSheetSection({
                   onChange({ map_sheet_projection: ev.target.value as MapProjection })
                 }
                 aria-label="Map projection"
-                className="border border-sf-line-interactive bg-transparent px-1.5 py-0.5 text-[12px] uppercase tracking-wider text-t2"
+                className="px-3 py-0.5 text-[12px] uppercase tracking-wider text-t2"
               >
                 {MAP_PROJECTIONS.map((p) => (
                   <option key={p} value={p}>
@@ -143,7 +143,7 @@ export function MapSheetSection({
               <button
                 type="button"
                 onClick={() => onChange({ map_sheet_url: null })}
-                className="ml-auto flex min-h-hit items-center gap-1.5 border border-sf-line-interactive px-2 text-[12px] uppercase tracking-wider text-t3 transition-colors hover:border-sf-crimson hover:text-sf-crimson-text"
+                className="ml-auto flex min-h-hit items-center gap-1.5 border border-sf-line px-3 text-[12px] uppercase tracking-wider text-t3 transition-colors hover:border-sf-crimson hover:text-sf-crimson-text"
               >
                 <Trash2 className="h-3 w-3" aria-hidden />
                 Remove
@@ -156,7 +156,7 @@ export function MapSheetSection({
           </p>
         </div>
       ) : (
-        <label className="flex min-h-hit cursor-pointer items-center gap-2 border border-sf-line-interactive px-3 text-[13px] text-t3 transition-colors hover:border-sf-primary hover:text-t1">
+        <label className="flex min-h-hit cursor-pointer items-center gap-2 border border-sf-line px-3 text-[13px] text-t3 transition-colors hover:border-sf-primary hover:text-t1">
           <ImagePlus className="h-3.5 w-3.5" aria-hidden />
           {busy ? "Uploading…" : "Attach a surface map"}
           <input

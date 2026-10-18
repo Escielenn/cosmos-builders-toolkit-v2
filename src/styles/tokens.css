@@ -36,10 +36,10 @@
 
   /* ═══ LINES ═══ solid, not alpha. Alpha composites unpredictably over the
      starfield, grain, and video layers; solid values hold everywhere. */
-  --sf-line-hairline:     #50555E;   /* table rules, dividers   1.71:1 */
-  --sf-line:              #676B75;   /* panel edges             2.40:1 */
+  --sf-line-hairline:     #41454D;   /* table rules, dividers   1.33:1 */
+  --sf-line:              #50555E;   /* panel edges             1.71:1 */
   --sf-line-interactive:  #787D87;   /* inputs, buttons  3.10:1 — WCAG 1.4.11 */
-  --sf-line-emphasis:     #979BA5;   /* hover, active, selected 4.61:1 */
+  --sf-line-emphasis:     #8C909A;   /* hover, active, selected 4.01:1 */
 
   /* ═══ ACCENTS ═══ two stops each.
      --sf-X       canonical brand hue. Fills, borders, icons, large text.
@@ -98,10 +98,10 @@
   --t2-hsl:                    216 10% 81%;
   --t3-hsl:                    220 5% 67%;
   --t4-hsl:                    227 5% 61%;
-  --sf-line-hairline-hsl:      219 8% 34%;
-  --sf-line-hsl:               223 6% 43%;
+  --sf-line-hairline-hsl:      220 8% 28%;
+  --sf-line-hsl:               219 8% 34%;
   --sf-line-interactive-hsl:   220 6% 50%;
-  --sf-line-emphasis-hsl:      223 7% 62%;
+  --sf-line-emphasis-hsl:      223 6% 58%;
   --sf-teal-hsl:               156 80% 42%;
   --sf-teal-bright-hsl:        165 100% 62%;
   --sf-amber-hsl:              43 100% 50%;
@@ -137,10 +137,10 @@
   --t2-rgb:                    201 205 211;
   --t3-rgb:                    167 170 176;
   --t4-rgb:                    151 153 160;
-  --sf-line-hairline-rgb:      80 85 94;
-  --sf-line-rgb:               103 107 117;
+  --sf-line-hairline-rgb:      65 69 77;
+  --sf-line-rgb:               80 85 94;
   --sf-line-interactive-rgb:   120 125 135;
-  --sf-line-emphasis-rgb:      151 155 165;
+  --sf-line-emphasis-rgb:      140 144 154;
   --sf-teal-rgb:               21 193 123;
   --sf-teal-bright-rgb:        61 255 205;
   --sf-amber-rgb:              255 184 0;
@@ -213,9 +213,10 @@
   --sf-ambient: 1;
 
   /* ═══ SCROLLBAR ═══ was #2E3548 on void — 1.4:1, effectively invisible. */
-  --sb-track:       #0A0E17;
-  --sb-thumb:       #676B75;
-  --sb-thumb-hover: #979BA5;
+  /* var() so the scrollbar follows the active theme, not the default hex. */
+  --sb-track:       var(--sf-void);
+  --sb-thumb:       var(--sf-line-interactive);   /* operable: 1.4.11, ≥3:1 */
+  --sb-thumb-hover: var(--sf-line-emphasis);
   --sb-width:       10px;
 }
 
@@ -251,15 +252,27 @@ html, body {
 /* ───── FORM DEFAULTS ─────
    Placeholders may never fall below t3. A placeholder IS content until typed. */
 ::placeholder { color: var(--t3); opacity: 1; }
+/* A field is a recessed well: the void plane inset into its panel, a quiet
+   hairline frame, and ONE edge (the baseline) at --sf-line-interactive. The
+   baseline carries WCAG 1.4.11 on its own, the way an underlined field does,
+   so the frame can recede instead of boxing every field at 3:1.
+   (Decision 2026-10-17, softening pass. High Contrast restores full frames.) */
 input, select, textarea {
-  background: var(--sf-surface);
-  border: 1px solid var(--sf-line-interactive);
+  background: var(--sf-void);
+  border: 1px solid var(--sf-line-hairline);
+  border-bottom-color: var(--sf-line-interactive);
   color: var(--t1);
   border-radius: 0;
   min-height: var(--hit-min);
   font-size: 16px;   /* below 16px, iOS Safari zooms the viewport on focus */
 }
-input:hover, select:hover, textarea:hover { border-color: var(--sf-line-emphasis); }
+input:hover, select:hover, textarea:hover {
+  border-color: var(--sf-line);
+  border-bottom-color: var(--sf-line-emphasis);
+}
+input[type="checkbox"], input[type="radio"] {
+  border-color: var(--sf-line-interactive);
+}
 :disabled {
   background: var(--sf-disabled-bg);
   border-color: var(--sf-disabled-line);

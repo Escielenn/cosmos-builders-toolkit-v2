@@ -884,7 +884,7 @@ const WorldDashboard = () => {
             World Elements and Saved Worksheets both duplicating what the Codex
             sidebar already navigates. One opens at a time; nothing was removed,
             and the choice persists per world. */}
-        <div className="mb-8 flex flex-wrap items-center gap-1 border-y border-sf-line-interactive py-2">
+        <div className="mb-8 flex flex-wrap items-center gap-2 border-y border-sf-line-hairline py-2">
           {DRAWERS.filter((d) => !d.ownerOnly || isOwner).map((d) => (
             <button
               key={d.id}

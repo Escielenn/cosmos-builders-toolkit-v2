@@ -24,7 +24,7 @@ interface LegalPageLayoutProps {
 // Custom markdown components, April 2026 handoff: mono eyebrows, t-tier text, zero radius.
 const markdownComponents: Components = {
   h2: ({ children }) => (
-    <h2 className="flex items-center gap-3 font-heading text-2xl font-light uppercase tracking-[0.08em] text-t1 mt-12 mb-6 pt-8 border-t border-sf-line-interactive first:mt-0 first:pt-0 first:border-t-0">
+    <h2 className="flex items-center gap-3 font-heading text-2xl font-light uppercase tracking-[0.08em] text-t1 mt-12 mb-6 pt-8 border-t border-sf-line-hairline first:mt-0 first:pt-0 first:border-t-0">
       <span className="w-1 h-8 bg-sf-primary" />
       {children}
     </h2>

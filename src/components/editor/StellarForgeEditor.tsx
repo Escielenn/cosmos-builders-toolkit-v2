@@ -104,6 +104,11 @@ export interface StellarForgeEditorProps {
    * where a toolbar per editor would be noise. Shortcuts still work.
    */
   bare?: boolean;
+  /**
+   * The Studio's writing page: a page, not a box. No frame, no corner
+   * brackets; the toolbar sits above the prose on one solid hairline rule.
+   */
+  page?: boolean;
 }
 
 /** The frame-less shell for `bare` editors. */
@@ -190,6 +195,7 @@ export function StellarForgeEditor({
   minHeight,
   onEditorReady,
   bare = false,
+  page = false,
 }: StellarForgeEditorProps) {
   const config = PRESET_CONFIG[preset];
   const resolvedMinHeight = minHeight || config.defaultMinHeight;
@@ -396,20 +402,27 @@ export function StellarForgeEditor({
 
   if (!editor) return null;
 
-  const Shell = bare ? BareShell : BracketPanel;
+  const Shell = bare || page ? BareShell : BracketPanel;
 
   return (
     <Shell color="stellar">
       <div
         className={cn(
-          bare ? "relative" : "rounded-none border border-sf-stellar bg-background overflow-hidden relative",
+          bare || page ? "relative" : "rounded-none border border-sf-stellar bg-background overflow-hidden relative",
           focusMode && "sf-focus-mode",
           className
         )}
       >
         {/* Toolbar */}
         {!readOnly && !bare && (
-          <div className="sf-writing-toolbar flex items-center gap-0.5 p-1.5 border-b border-sf-line bg-muted/30 flex-wrap">
+          <div
+            className={cn(
+              "sf-writing-toolbar flex flex-wrap items-center",
+              page
+                ? "gap-1 py-1.5 border-b !border-solid !border-sf-line-hairline"
+                : "gap-0.5 p-1.5 border-b border-sf-line bg-muted/30",
+            )}
+          >
             {/* Bold + Italic (always shown) */}
             <ToolbarBtn
               onClick={() => editor.chain().focus().toggleBold().run()}
@@ -646,7 +659,8 @@ export function StellarForgeEditor({
         <EditorContent
           editor={editor}
           className={cn(
-            "px-3 py-2 [&_.tiptap]:outline-none [&_.tiptap:focus-visible]:ring-2 [&_.tiptap:focus-visible]:ring-sf-focus [&_.tiptap]:min-h-[var(--editor-min-h)]",
+            page ? "px-0 pb-2 pt-6" : "px-3 py-2",
+            "[&_.tiptap]:outline-none [&_.tiptap:focus-visible]:ring-2 [&_.tiptap:focus-visible]:ring-sf-focus [&_.tiptap]:min-h-[var(--editor-min-h)]",
             !readOnly && "sf-writing-surface",
             readOnly && "bg-muted/30",
             config.maxWidth && "mx-auto"
@@ -662,7 +676,7 @@ export function StellarForgeEditor({
 
         {/* Word Count Footer (full preset only) */}
         {config.showWordCount && !readOnly && !bare && (
-          <div className="flex items-center justify-end px-3 py-1.5 border-t border-sf-line bg-muted/20">
+          <div className={cn("flex items-center justify-end py-1.5 border-t border-sf-line-hairline", page ? "px-0" : "px-3 bg-muted/20")}>
             <span className="font-mono text-[12px] tracking-wide uppercase text-t4">
               {wordCount.toLocaleString()} {wordCount === 1 ? "word" : "words"}
             </span>
@@ -720,8 +734,9 @@ function ToolbarBtn({
       type="button"
       onClick={onClick}
       title={title}
+      aria-label={title}
       className={cn(
-        "p-1.5 rounded-none hover:bg-accent/80 transition-colors",
+        "p-1.5 rounded-none border border-transparent hover:bg-accent/80 transition-colors",
         active && "bg-accent text-accent-foreground"
       )}
     >

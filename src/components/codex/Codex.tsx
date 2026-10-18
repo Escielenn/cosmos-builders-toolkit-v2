@@ -337,7 +337,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       <div className="px-3 pt-2 pb-1">
         <button
           onClick={onCollapse}
-          className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center h-6 border border-sf-line-interactive text-t3 hover:text-t2 transition-colors"
+          className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center h-6 border border-transparent text-t3 hover:text-t2 hover:border-sf-line-emphasis transition-colors"
           aria-label="Collapse Registry"
         >
           <span className="text-[12px]">◀</span>
@@ -377,13 +377,13 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       <CodexSearch value={searchQuery} onChange={setSearchQuery} />
 
       {/* Group-by toggle */}
-      <div className="px-3 pb-1 flex items-center gap-1">
+      <div className="px-3 pb-1 flex items-center gap-2">
         <button
           onClick={() => handleGroupByChange("cascade")}
           className={`flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-wide transition-colors ${
             groupBy === "cascade"
               ? "text-sf-primary-text bg-sf-primary/8 border border-sf-primary"
-              : "text-t4 hover:text-t3"
+              : "border border-sf-line text-t4 hover:text-t3 hover:border-sf-line-emphasis"
           }`}
           title="Group by cascade layer"
         >
@@ -395,7 +395,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
           className={`flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-wide transition-colors ${
             groupBy === "entity"
               ? "text-sf-primary-text bg-sf-primary/8 border border-sf-primary"
-              : "text-t4 hover:text-t3"
+              : "border border-sf-line text-t4 hover:text-t3 hover:border-sf-line-emphasis"
           }`}
           title="Group by entity type"
         >
@@ -407,7 +407,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       {/* Tag filter chips */}
       {codexData.worldTags.length > 0 && (
         <div className="px-3 pb-1.5">
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-2">
             {codexData.worldTags.slice(0, 12).map((tag) => (
               <button
                 key={tag}
@@ -421,7 +421,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
                 className={`flex items-center gap-1 px-1.5 py-0.5 text-[12px] tracking-wider border transition-colors ${
                   activeTags.includes(tag)
                     ? "bg-sf-primary/10 border-sf-primary text-sf-primary-text"
-                    : "border-sf-line-interactive text-t4 hover:text-t3"
+                    : "border-sf-line text-t4 hover:text-t3 hover:border-sf-line-emphasis"
                 }`}
               >
                 <Tag className="w-2.5 h-2.5" />
@@ -534,7 +534,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
             Default view:
           </span>
           <Select value={defaultView} onValueChange={handleDefaultViewChange}>
-            <SelectTrigger className="h-5 text-[12px] flex-1 border-sf-line-interactive bg-transparent">
+            <SelectTrigger className="h-5 text-[12px] flex-1">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

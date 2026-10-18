@@ -438,7 +438,7 @@ const Gravitas = () => {
                   className={`p-3 rounded-none border text-left transition-colors ${
                     formState.realismMode === mode
                       ? "border-sf-primary bg-sf-primary/10"
-                      : "border-sf-line-interactive hover:border-sf-primary hover:bg-accent/5"
+                      : "border-sf-line hover:border-sf-primary hover:bg-accent/5"
                   }`}
                 >
                   <span className="font-medium text-sm">{REALISM_LABELS[mode]}</span>
@@ -483,7 +483,7 @@ const Gravitas = () => {
                           setActiveSpinPreset(preset.id);
                           setFormState((prev) => ({ ...prev, spin: { ...preset.values } }));
                         }}
-                        className={`p-2 rounded-none border text-left transition-colors ${activeSpinPreset === preset.id ? "border-sf-primary bg-sf-primary/10" : "border-sf-line-interactive hover:border-sf-primary hover:bg-accent/5"}`}
+                        className={`px-3 py-2 rounded-none border text-left transition-colors ${activeSpinPreset === preset.id ? "border-sf-primary bg-sf-primary/10" : "border-sf-line hover:border-sf-primary hover:bg-accent/5"}`}
                       >
                         <span className="font-medium text-xs">{preset.name}</span>
                         <p className="text-[12px] text-t2">{preset.description}</p>
@@ -548,7 +548,7 @@ const Gravitas = () => {
                           setActiveThrustPreset(preset.id);
                           setFormState((prev) => ({ ...prev, thrust: { ...prev.thrust, ...preset.values } }));
                         }}
-                        className={`p-2 rounded-none border text-left transition-colors ${activeThrustPreset === preset.id ? "border-sf-primary bg-sf-primary/10" : "border-sf-line-interactive hover:border-sf-primary hover:bg-accent/5"}`}
+                        className={`px-3 py-2 rounded-none border text-left transition-colors ${activeThrustPreset === preset.id ? "border-sf-primary bg-sf-primary/10" : "border-sf-line hover:border-sf-primary hover:bg-accent/5"}`}
                       >
                         <span className="font-medium text-xs">{preset.name}</span>
                         <p className="text-[12px] text-t2">{preset.description}</p>
@@ -682,7 +682,7 @@ const Gravitas = () => {
                           setActiveOrbitalPreset(preset.id);
                           setFormState((prev) => ({ ...prev, orbital: { ...preset.values } }));
                         }}
-                        className={`p-2 rounded-none border text-left transition-colors ${activeOrbitalPreset === preset.id ? "border-sf-primary bg-sf-primary/10" : "border-sf-line-interactive hover:border-sf-primary hover:bg-accent/5"}`}
+                        className={`px-3 py-2 rounded-none border text-left transition-colors ${activeOrbitalPreset === preset.id ? "border-sf-primary bg-sf-primary/10" : "border-sf-line hover:border-sf-primary hover:bg-accent/5"}`}
                       >
                         <span className="font-medium text-xs">{preset.name}</span>
                         <p className="text-[12px] text-t2">{preset.description}</p>

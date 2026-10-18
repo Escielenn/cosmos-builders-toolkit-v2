@@ -104,7 +104,7 @@ export function SnapshotCompareDialog({
               className={`min-h-hit border px-3 font-sans text-[13px] font-medium transition-colors duration-fast ${
                 view === v
                   ? "border-sf-primary bg-sf-primary/[0.06] text-sf-primary-text"
-                  : "border-sf-line-interactive text-t3 hover:text-t1"
+                  : "border-sf-line text-t3 hover:border-sf-line-emphasis hover:text-t1"
               }`}
             >
               {v === "changes" ? "Changes since snapshot" : "Snapshot text"}

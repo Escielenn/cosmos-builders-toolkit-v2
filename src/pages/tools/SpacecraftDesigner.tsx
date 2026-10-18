@@ -631,7 +631,7 @@ const SpacecraftDesigner = () => {
           </div>
           
           {/* External Resources */}
-          <div className="mt-6 pt-4 border-t border-sf-line-interactive">
+          <div className="mt-6 pt-4 border-t border-sf-line-hairline">
             <h4 className="text-sm font-medium mb-3">Reference Resources</h4>
             <div className="flex flex-wrap gap-2">
               {EXTERNAL_RESOURCES.map((resource) => (
@@ -692,7 +692,7 @@ const SpacecraftDesigner = () => {
                   className="grid gap-2 md:grid-cols-3"
                 >
                   {SHIP_CLASSES.map((cls) => (
-                    <div key={cls.value} className="flex items-start gap-2 p-2 rounded-none border border-sf-line-interactive hover:border-sf-primary transition-colors">
+                    <div key={cls.value} className="flex items-start gap-2 px-3 py-2 rounded-none border border-sf-line hover:border-sf-primary transition-colors">
                       <RadioGroupItem value={cls.value} id={`class-${cls.value}`} className="mt-0.5" />
                       <Label htmlFor={`class-${cls.value}`} className="cursor-pointer text-sm">
                         <span className="font-medium">{cls.label}</span>
@@ -745,7 +745,7 @@ const SpacecraftDesigner = () => {
                   className="grid gap-2 md:grid-cols-3"
                 >
                   {SIZE_OPTIONS.map((size) => (
-                    <div key={size.value} className="flex items-start gap-2 p-2 rounded-none border border-sf-line-interactive hover:border-sf-primary">
+                    <div key={size.value} className="flex items-start gap-2 px-3 py-2 rounded-none border border-sf-line hover:border-sf-primary">
                       <RadioGroupItem value={size.value} id={`size-${size.value}`} className="mt-0.5" />
                       <Label htmlFor={`size-${size.value}`} className="cursor-pointer text-sm">
                         <span className="font-medium">{size.label}</span>
@@ -981,7 +981,7 @@ const SpacecraftDesigner = () => {
                   className="grid gap-2 md:grid-cols-3"
                 >
                   {GRAVITY_OPTIONS.map((option) => (
-                    <div key={option.value} className="flex items-start gap-2 p-2 rounded-none border border-sf-line-interactive">
+                    <div key={option.value} className="flex items-start gap-2 px-3 py-2 rounded-none border border-sf-line">
                       <RadioGroupItem value={option.value} id={`gravity-${option.value}`} className="mt-0.5" />
                       <Label htmlFor={`gravity-${option.value}`} className="cursor-pointer text-sm">
                         <span className="font-medium">{option.label}</span>
@@ -1397,7 +1397,7 @@ const SpacecraftDesigner = () => {
               {SF_EXAMPLES.map((example, index) => (
                 <Collapsible key={index}>
                   <CollapsibleTrigger asChild>
-                    <button type="button" className="w-full p-4 rounded-none border border-sf-line-interactive hover:border-sf-primary transition-colors text-left flex items-center justify-between">
+                    <button type="button" className="w-full p-4 rounded-none border border-sf-line hover:border-sf-primary transition-colors text-left flex items-center justify-between">
                       <span className="font-medium text-sm">{example.title}</span>
                       <ChevronDown className="w-4 h-4 text-t2" />
                     </button>
@@ -1455,7 +1455,7 @@ const SpacecraftDesigner = () => {
                 <p className="text-xs text-t4">
                   Write a paragraph describing what it's like to step aboard this ship for the first time, sight, sound, smell, feel.
                 </p>
-                <Suspense fallback={<div className="min-h-[150px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse" />}>
+                <Suspense fallback={<div className="min-h-[150px] sf-field animate-pulse" />}>
                   <RichTextEditor
                     content={formState.synthesis.sensorySignature}
                     onChange={(value) => updateSynthesis("sensorySignature", value)}

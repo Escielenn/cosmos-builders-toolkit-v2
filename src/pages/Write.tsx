@@ -900,7 +900,7 @@ export default function Write(): JSX.Element {
 
   // Shared binder content (renders in the desktop column AND the mobile sheet)
   const binderContent = (
-    <div className="flex h-full min-h-0 w-full min-w-0 flex-col border-r border-sf-line-interactive">
+    <div className="flex h-full min-h-0 w-full min-w-0 flex-col border-r border-sf-line-hairline">
       {worldId && (
         <BinderSearchInput
           query={searchQuery}
@@ -996,7 +996,7 @@ export default function Write(): JSX.Element {
           <p className="px-3 py-4 font-serif text-[13px] italic text-t4">No documents yet.</p>
         )}
         {worldId && (entries?.length ?? 0) <= 1 && !(entries ?? []).some((e) => countWords(e.content) > 0) && (
-          <div className="mx-3 mt-3 border-t border-sf-line-interactive pt-3">
+          <div className="mx-3 mt-3 border-t border-sf-line-hairline pt-3">
             <p className="font-serif text-[14px] italic text-t3">Writing this book somewhere else?</p>
             <button
               type="button"
@@ -1008,7 +1008,7 @@ export default function Write(): JSX.Element {
           </div>
         )}
         {(trashed?.length ?? 0) > 0 && (
-          <div className="mt-3 border-t border-sf-line-interactive pt-2">
+          <div className="mt-3 border-t border-sf-line-hairline pt-2">
             <button
               onClick={() => setTrashOpen((o) => !o)}
               className="flex w-full items-center gap-2 px-3 py-1.5 text-left font-heading text-[12px] uppercase tracking-wide text-t4 hover:text-t2"
@@ -1047,14 +1047,14 @@ export default function Write(): JSX.Element {
         )}
       </div>
       {worldId && (
-        <div className="flex gap-1 border-t border-sf-line-interactive p-2">
-          <button onClick={newDocument} className="min-h-hit flex-1 border border-sf-line-interactive px-2 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">+ Document</button>
-          <button onClick={() => createFolder.mutate("New folder")} className="min-h-hit flex-1 border border-sf-line-interactive px-2 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">+ Folder</button>
+        <div className="flex flex-wrap gap-2 border-t border-sf-line-hairline p-3">
+          <button onClick={newDocument} className="min-h-hit flex-auto whitespace-nowrap border border-sf-line px-3 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">+ Document</button>
+          <button onClick={() => createFolder.mutate("New folder")} className="min-h-hit flex-auto whitespace-nowrap border border-sf-line px-3 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">+ Folder</button>
           <button
             type="button"
             onClick={() => setImportOpen(true)}
             title="Import a manuscript: Scrivener, Word, Markdown, text"
-            className="min-h-hit flex-1 border border-sf-line-interactive px-2 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
+            className="min-h-hit flex-auto whitespace-nowrap border border-sf-line px-3 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
           >
             Import
           </button>
@@ -1067,8 +1067,8 @@ export default function Write(): JSX.Element {
   // itself never scrolls (Studio Charter: one screen); each pane scrolls
   // inside it.
   const inspectorContent = worldId ? (
-    <div className="flex h-full min-h-0 flex-col overflow-hidden border-l border-sf-line-interactive">
-      <div className="flex shrink-0 border-b border-sf-line-interactive" role="tablist" aria-label="Inspector">
+    <div className="flex h-full min-h-0 flex-col overflow-hidden border-l border-sf-line-hairline">
+      <div className="flex shrink-0 border-b border-sf-line-hairline" role="tablist" aria-label="Inspector">
         {(["doc", "entities", "world", "reference", "continuity"] as const).map((t) => (
           <button key={t} role="tab" aria-selected={inspector === t} onClick={() => setInspector(t)}
             className={`min-h-[44px] flex-1 border-b-2 px-1 py-2.5 text-[13px] capitalize transition-colors ${inspector === t ? "border-sf-primary text-t1" : "border-transparent text-t3 hover:text-t1"}`}>
@@ -1165,9 +1165,9 @@ export default function Write(): JSX.Element {
               }}
             />
           </div>
-          <div className="border-t border-sf-line-interactive p-3">
-            <Link to={`/worlds/${worldId}/codex`} className="block border border-sf-line-interactive px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">Open the Codex →</Link>
-            <Link to={`/worlds/${worldId}/codex?view=web`} className="mt-2 block border border-sf-line-interactive px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">Open the entity web →</Link>
+          <div className="border-t border-sf-line-hairline p-3">
+            <Link to={`/worlds/${worldId}/codex`} className="block border border-sf-line px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">Open the Codex →</Link>
+            <Link to={`/worlds/${worldId}/codex?view=web`} className="mt-2 block border border-sf-line px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">Open the entity web →</Link>
           </div>
         </div>
       )}
@@ -1178,11 +1178,11 @@ export default function Write(): JSX.Element {
     <StudioWorldProvider value={studioWorld}>
     <div className="relative z-10 grid h-screen grid-rows-[44px_1fr_44px] bg-[hsl(var(--sf-void-hsl))]">
       {/* topbar */}
-      <header className="flex items-center gap-3 border-b border-sf-line-interactive px-4">
+      <header className="flex items-center gap-3 border-b border-sf-line-hairline px-4">
         {/* explicit way back to the Studio overview */}
         <Link
           to="/studio"
-          className="flex min-h-hit items-center gap-1.5 border border-sf-line-interactive px-2.5 py-1 font-heading text-sf-eyebrow uppercase text-t3 transition-colors duration-base hover:border-sf-primary hover:text-t1"
+          className="flex min-h-hit items-center gap-1.5 border border-sf-line px-2.5 py-1 font-heading text-sf-eyebrow uppercase text-t3 transition-colors duration-base hover:border-sf-primary hover:text-t1"
           title="Return to Studio"
           aria-label="Return to Studio"
         >
@@ -1205,12 +1205,12 @@ export default function Write(): JSX.Element {
           {!focus && (
             <>
               <button onClick={() => setMobilePanel("binder")}
-                className="border border-sf-line-interactive px-2.5 py-1 text-[12px] text-t3 transition-colors hover:border-sf-primary hover:text-t1 lg:hidden">
+                className="border border-sf-line px-3 py-1 text-[12px] text-t3 transition-colors hover:border-sf-primary hover:text-t1 lg:hidden">
                 Docs
               </button>
               {worldId && (
                 <button onClick={() => setMobilePanel("inspector")}
-                  className="border border-sf-line-interactive px-2.5 py-1 text-[12px] text-t3 transition-colors hover:border-sf-primary hover:text-t1 lg:hidden">
+                  className="border border-sf-line px-3 py-1 text-[12px] text-t3 transition-colors hover:border-sf-primary hover:text-t1 lg:hidden">
                   Inspector
                 </button>
               )}
@@ -1225,13 +1225,13 @@ export default function Write(): JSX.Element {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
-                className="border border-sf-line-interactive px-2.5 py-1 text-[12px] text-t3 transition-colors hover:text-t1"
+                className="border border-sf-line px-3 py-1 text-[12px] text-t3 transition-colors hover:border-sf-line-emphasis hover:text-t1"
                 title="Export this document"
               >
                 Export
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52 rounded-none border-sf-line-interactive bg-sf-surface/95">
+            <DropdownMenuContent align="end" className="w-52 rounded-none border-sf-line bg-sf-surface/95">
               <DropdownMenuItem onClick={() => exportDoc("docx")}>
                 Word (.docx)
               </DropdownMenuItem>
@@ -1258,7 +1258,7 @@ export default function Write(): JSX.Element {
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                className="border border-sf-line-interactive px-2.5 py-1 text-[12px] text-t3 transition-colors hover:text-t1 sm:hidden"
+                className="border border-sf-line px-3 py-1 text-[12px] text-t3 transition-colors hover:border-sf-line-emphasis hover:text-t1 sm:hidden"
                 aria-label={`View: ${effectiveView === "scrivenings" ? "Scrivenings" : VIEW_LABELS[effectiveView].label}. Change view.`}
               >
                 {effectiveView === "scrivenings" ? "Scrivenings" : VIEW_LABELS[effectiveView].label}
@@ -1281,17 +1281,17 @@ export default function Write(): JSX.Element {
                 onClick={() => switchView(v)}
                 aria-pressed={effectiveView === v}
                 title={VIEW_LABELS[v].hint}
-                className={`border px-2.5 py-1 text-[12px] transition-colors ${i > 0 ? "-ml-px" : ""} ${
+                className={`border px-3 py-1 text-[12px] transition-colors ${i > 0 ? "-ml-px" : ""} ${
                   effectiveView === v
                     ? "relative z-[1] border-sf-primary text-sf-primary-text"
-                    : "border-sf-line-interactive text-t3 hover:text-t1"
+                    : "border-sf-line text-t3 hover:border-sf-line-emphasis hover:text-t1"
                 }`}
               >
                 {VIEW_LABELS[v].label}
               </button>
             ))}
             {effectiveView === "scrivenings" && (
-              <span className="relative z-[1] -ml-px border border-sf-primary px-2.5 py-1 text-[12px] text-sf-primary-text">
+              <span className="relative z-[1] -ml-px border border-sf-primary px-3 py-1 text-[12px] text-sf-primary-text">
                 Scrivenings
               </span>
             )}
@@ -1306,8 +1306,8 @@ export default function Write(): JSX.Element {
               aria-pressed={split.open}
               aria-label={split.open ? "Close the split editor" : "Split the editor"}
               title="Split: a second document, Codex entry or worksheet beside this one"
-              className={`hidden items-center gap-1.5 border px-2.5 py-1 text-[12px] transition-colors md:flex ${
-                split.open ? "border-sf-primary text-sf-primary-text" : "border-sf-line-interactive text-t3 hover:text-t1"
+              className={`hidden items-center gap-1.5 border px-3 py-1 text-[12px] transition-colors md:flex ${
+                split.open ? "border-sf-primary text-sf-primary-text" : "border-sf-line text-t3 hover:border-sf-line-emphasis hover:text-t1"
               }`}
             >
               <Columns2 className="h-3.5 w-3.5" aria-hidden="true" /> Split
@@ -1315,7 +1315,7 @@ export default function Write(): JSX.Element {
           )}
           <button onClick={() => setFocus(!focus)}
             title={focus ? "Leave focus mode (Esc)" : "Focus mode hides the binder and inspector. Press Esc to come back."}
-            className={`border px-2.5 py-1 text-[12px] transition-colors ${focus ? "border-sf-primary text-sf-primary-text" : "border-sf-line-interactive text-t3 hover:text-t1"}`}>
+            className={`border px-3 py-1 text-[12px] transition-colors ${focus ? "border-sf-primary text-sf-primary-text" : "border-sf-line text-t3 hover:border-sf-line-emphasis hover:text-t1"}`}>
             Focus
           </button>
         </div>
@@ -1323,13 +1323,13 @@ export default function Write(): JSX.Element {
 
       {/* mobile slide-over: binder */}
       <Sheet open={mobilePanel === "binder"} onOpenChange={(o) => !o && setMobilePanel(null)}>
-        <SheetContent side="left" className="w-[280px] border-sf-line-interactive bg-sf-surface/95 p-0">
+        <SheetContent side="left" className="w-[280px] border-sf-line bg-sf-surface/95 p-0">
           <div className="flex h-full flex-col pt-8">{binderContent}</div>
         </SheetContent>
       </Sheet>
       {/* mobile slide-over: inspector */}
       <Sheet open={mobilePanel === "inspector"} onOpenChange={(o) => !o && setMobilePanel(null)}>
-        <SheetContent side="right" className="w-[320px] border-sf-line-interactive bg-sf-surface/95 p-0">
+        <SheetContent side="right" className="w-[320px] border-sf-line bg-sf-surface/95 p-0">
           <div className="flex h-full flex-col pt-8">{inspectorContent}</div>
         </SheetContent>
       </Sheet>
@@ -1397,7 +1397,7 @@ export default function Write(): JSX.Element {
               onChange={(e) => setTitle(e.target.value)}
               onBlur={saveTitle}
               placeholder="Document title"
-              className="w-full bg-transparent font-serif text-[30px] italic text-t1 placeholder:text-t4"
+              className="w-full border-0 border-b border-sf-line-interactive bg-transparent font-serif text-[30px] italic text-t1 transition-colors duration-base placeholder:text-t4 hover:border-sf-line-emphasis"
               aria-label="Document title"
             />
             {/* The index-card fields (synopsis, label, status, POV...) moved
@@ -1412,6 +1412,7 @@ export default function Write(): JSX.Element {
                 worldId={worldId}
                 preset="full"
                 placeholder="Begin writing. Use @ to mention entities, [[ to link wiki pages…"
+                page
                 className={`sf-writing-serif${preferences.dropCap ? " sf-writing-dropcap" : ""}`}
                 minHeight="55vh"
               />
@@ -1460,7 +1461,7 @@ export default function Write(): JSX.Element {
       </div>
 
       {/* status bar */}
-      <footer className="flex items-center justify-between border-t border-sf-line-interactive pl-4 pr-20">
+      <footer className="flex items-center justify-between border-t border-sf-line-hairline pl-4 pr-20">
         <div className="flex items-center gap-2.5">
           <span className={`h-1.5 w-1.5 rounded-full bg-sf-primary ${updateContent.isPending ? "animate-sf-pulse" : ""}`} aria-hidden="true" />
           <span className="font-serif text-[12px] italic text-t3">

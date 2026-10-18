@@ -138,7 +138,7 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
         </button>
 
         {expanded && (
-          <div className="border-t border-sf-line-interactive">
+          <div className="border-t border-sf-line-hairline">
             {isLoading ? (
               <div className="flex items-center justify-center py-8">
                 <Loader />
@@ -151,7 +151,7 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
                 </p>
               </div>
             ) : (
-              <div className="divide-y divide-border max-h-80 overflow-y-auto sf-sb">
+              <div className="divide-y divide-sf-line-hairline max-h-80 overflow-y-auto sf-sb">
                 {versions.map((v) => (
                   <div
                     key={v.id}

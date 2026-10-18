@@ -164,7 +164,7 @@ const NotFound = () => {
         {/* Failed coordinates readout */}
         {showCoords && (
           <motion.div
-            className="font-mono text-[12px] text-t4 mb-8 py-2 px-4 inline-block border border-sf-line-interactive bg-sf-surface/40 tracking-wide"
+            className="font-mono text-[12px] text-t4 mb-8 py-2 px-4 inline-block border border-sf-line bg-sf-surface/40 tracking-wide"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}

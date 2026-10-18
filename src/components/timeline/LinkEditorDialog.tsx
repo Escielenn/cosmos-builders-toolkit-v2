@@ -156,7 +156,7 @@ const LinkEditorDialog = ({
           {/* Link Type */}
           <div className="space-y-2">
             <Label className="text-xs">Relationship</Label>
-            <div className="grid grid-cols-2 gap-1.5">
+            <div className="grid grid-cols-2 gap-2">
               {LINK_TYPES.map((lt) => {
                 const config = LINK_TYPE_CONFIG[lt.id];
                 return (
@@ -168,7 +168,7 @@ const LinkEditorDialog = ({
                       "flex items-center gap-2 px-3 py-2 rounded-none border text-xs font-medium transition-colors",
                       linkType === lt.id
                         ? "border-sf-primary bg-sf-primary/10 text-t1"
-                        : "border-sf-line text-t3 hover:border-sf-line"
+                        : "border-sf-line text-t3 hover:border-sf-line-emphasis"
                     )}
                   >
                     <span

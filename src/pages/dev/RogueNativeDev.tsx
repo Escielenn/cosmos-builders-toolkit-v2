@@ -473,7 +473,7 @@ const RogueNativeDev = () => {
         </div>
 
         {/* Save / Load / Publish. Top-centre, clear of both panels. */}
-        <div className="absolute left-1/2 top-3 z-30 flex -translate-x-1/2 items-center gap-1.5 border border-sf-line bg-sf-surface/90 px-1.5 py-1 backdrop-blur-sf-panel">
+        <div className="absolute left-1/2 top-3 z-30 flex -translate-x-1/2 items-center gap-2 border border-sf-line bg-sf-surface/90 px-2 py-1 backdrop-blur-sf-panel">
           <button type="button" onClick={requestSave} className={toolBtn} title="Save encounter">
             <Save className="h-3 w-3" /> Save
           </button>
@@ -541,7 +541,7 @@ const RogueNativeDev = () => {
         />
 
         {/* ── Zoom, bottom-right, clear of both panels ── */}
-        <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1 border border-sf-line bg-sf-surface/90 px-1.5 py-1 backdrop-blur-sf-panel">
+        <div className="absolute bottom-3 right-3 z-20 flex items-center gap-2 border border-sf-line bg-sf-surface/90 px-2 py-1 backdrop-blur-sf-panel">
           {([
             ["−", () => zoomBy(1 / 1.3), "Zoom out (−)"],
             ["+", () => zoomBy(1.3), "Zoom in (+)"],
@@ -554,7 +554,7 @@ const RogueNativeDev = () => {
               onClick={fn}
               title={title}
               aria-label={title}
-              className="min-h-hit min-w-hit border border-sf-line-interactive bg-sf-surface px-2 py-1 font-mono text-[12px] uppercase tracking-wider text-t2 transition-colors duration-base hover:border-sf-primary hover:bg-sf-primary/[0.12] hover:text-t1"
+              className="min-h-hit min-w-hit border border-sf-line bg-sf-surface px-2 py-1 font-mono text-[12px] uppercase tracking-wider text-t2 transition-colors duration-base hover:border-sf-primary hover:bg-sf-primary/[0.12] hover:text-t1"
             >
               {label}
             </button>
@@ -568,7 +568,7 @@ const RogueNativeDev = () => {
             className={`min-h-hit min-w-hit border px-2 py-1 font-mono text-[12px] transition-colors duration-base ${
               showKeys
                 ? "border-sf-primary bg-sf-primary/[0.12] text-t1"
-                : "border-sf-line-interactive bg-sf-surface text-t2 hover:text-t1"
+                : "border-sf-line bg-sf-surface text-t2 hover:text-t1"
             }`}
           >
             ?

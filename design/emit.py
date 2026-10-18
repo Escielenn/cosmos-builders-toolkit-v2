@@ -183,9 +183,10 @@ css += f"""
   --sf-ambient: 1;
 
   /* ═══ SCROLLBAR ═══ was #2E3548 on void — 1.4:1, effectively invisible. */
-  --sb-track:       {pl['void']};
-  --sb-thumb:       {ln['default']};
-  --sb-thumb-hover: {ln['emphasis']};
+  /* var() so the scrollbar follows the active theme, not the default hex. */
+  --sb-track:       var(--sf-void);
+  --sb-thumb:       var(--sf-line-interactive);   /* operable: 1.4.11, ≥3:1 */
+  --sb-thumb-hover: var(--sf-line-emphasis);
   --sb-width:       10px;
 }}
 
@@ -221,15 +222,27 @@ html, body {{
 /* ───── FORM DEFAULTS ─────
    Placeholders may never fall below t3. A placeholder IS content until typed. */
 ::placeholder {{ color: var(--t3); opacity: 1; }}
+/* A field is a recessed well: the void plane inset into its panel, a quiet
+   hairline frame, and ONE edge (the baseline) at --sf-line-interactive. The
+   baseline carries WCAG 1.4.11 on its own, the way an underlined field does,
+   so the frame can recede instead of boxing every field at 3:1.
+   (Decision 2026-10-17, softening pass. High Contrast restores full frames.) */
 input, select, textarea {{
-  background: var(--sf-surface);
-  border: 1px solid var(--sf-line-interactive);
+  background: var(--sf-void);
+  border: 1px solid var(--sf-line-hairline);
+  border-bottom-color: var(--sf-line-interactive);
   color: var(--t1);
   border-radius: 0;
   min-height: var(--hit-min);
   font-size: 16px;   /* below 16px, iOS Safari zooms the viewport on focus */
 }}
-input:hover, select:hover, textarea:hover {{ border-color: var(--sf-line-emphasis); }}
+input:hover, select:hover, textarea:hover {{
+  border-color: var(--sf-line);
+  border-bottom-color: var(--sf-line-emphasis);
+}}
+input[type="checkbox"], input[type="radio"] {{
+  border-color: var(--sf-line-interactive);
+}}
 :disabled {{
   background: var(--sf-disabled-bg);
   border-color: var(--sf-disabled-line);

@@ -59,10 +59,12 @@ Never pure black. In the default theme the ramp carries the void's 266.5° blue;
 
 | Token | Value | Use |
 |---|---|---|
-| `--sf-line-hairline` | `#50555E` | table rules, dividers |
-| `--sf-line` | `#676B75` | panel edges, card boundaries |
-| `--sf-line-interactive` | `#787D87` | **anything operable** — WCAG 1.4.11, ≥3:1 |
-| `--sf-line-emphasis` | `#979BA5` | hover, active, selected |
+| `--sf-line-hairline` | `#41454D` | table rules, dividers, pane edges |
+| `--sf-line` | `#50555E` | panel edges, labelled buttons/tabs at rest (`.sf-quiet`) |
+| `--sf-line-interactive` | `#787D87` | **boundaries that identify a control** (field baseline via `.sf-field`, checkbox, switch, slider, scrollbar) — WCAG 1.4.11, ≥3:1 |
+| `--sf-line-emphasis` | `#8C909A` | hover, active, selected |
+
+Softened 2026-10-17: fields are recessed wells with one 3:1 baseline; labelled controls are not boxed at 3:1; the writing page has no frame.
 
 Alpha borders composite unpredictably over the starfield, grain, and video layers. `rgba(255,255,255,0.08)` is not a contrast ratio — it's a gamble. Solid tokens only.
 

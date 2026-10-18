@@ -162,3 +162,10 @@ only outcome that's actually bad.
      tokens stay reserved for things that cannot be operated.
 **Revisit:** permanent unless the owner reopens one.
 
+## 2026-10-17 · Softening pass: quieter edges, fields as wells
+
+**Touches:** Design system — line tokens, 10-LEGIBILITY rule 6
+**Scope:** product-wide
+**Why:** Jason: borders "too close to the touch, too opaque". With panel edges at 2.4:1 and every operable thing boxed at 3.1:1, the Studio read as a grid of cages, worst on the writing page.
+**Instead:** re-solved `line-hairline` 1.7 → 1.32, `line` 2.4 → 1.7, `line-emphasis` 4.6 → 4.0 (`line-interactive` unchanged at 3.1). Fields became recessed wells whose baseline alone carries 1.4.11 (`.sf-field`, generated input defaults). Labelled buttons/tabs moved to `line` (`.sf-quiet`). The editor lost its frame. Scrollbar thumb moved up to `line-interactive` and now follows the theme. High Contrast mode restores strong edges.
+**Revisit:** permanent

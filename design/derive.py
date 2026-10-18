@@ -113,7 +113,7 @@ text = {'t1': hx('FAFAFA'), **text}   # brand white, pinned. 18.5:1 on void.
 
 # ───────────────────────── 3. LINES ─────────────────────────
 # TARGET: interactive boundaries clear WCAG 1.4.11 (3:1) on every plane.
-LINE_TARGETS = {'hairline': 1.7, 'default': 2.4, 'interactive': 3.1, 'emphasis': 4.6}
+LINE_TARGETS = {'hairline': 1.32, 'default': 1.7, 'interactive': 3.1, 'emphasis': 4.0}
 line = {k: solve_lighter(v, LIGHTEST, C_line, H_N) for k, v in LINE_TARGETS.items()}
 
 # ───────────────────────── 4. ACCENTS ─────────────────────────

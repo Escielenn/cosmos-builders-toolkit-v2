@@ -228,7 +228,7 @@ function EditableField({
         <select
           value={stringVal}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full text-xs bg-sf-surface border border-sf-line-interactive rounded-none px-2 py-1.5 text-t2"
+          className="w-full text-xs px-3 py-1.5 text-t2"
         >
           <option value="">-</option>
           {field.options.map((opt) => (

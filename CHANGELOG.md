@@ -1,5 +1,21 @@
 # StellarForge Changelog
 
+## 0.7467
+- Softening pass, product-wide. Line tokens re-solved: panel edges 2.40 → 1.71:1,
+  hairlines 1.71 → 1.33:1, hover edges 4.61 → 4.01:1. All 60 themes still pass.
+- Fields are recessed wells: void inset, hairline frame, one baseline at 3:1
+  (that baseline alone carries WCAG 1.4.11). New `.sf-field` and `.sf-quiet`.
+- Labelled buttons, tabs and chips sit on soft `sf-line` frames. Full-strength
+  edges remain only where the edge is the control (checkbox, radio, switch,
+  slider, scrollbar, drag handle, drop zone). 464 → 20 uses.
+- Studio: the writing page has no frame or brackets; the title is an underline;
+  pane dividers are hairlines; status is a 2×2 grid; binder buttons no longer wrap.
+  Writing toolbars sit on one solid hairline.
+- Nested frames removed across worksheets; adjacent controls get 8px gaps.
+- Scrollbar thumb follows the theme and clears 3:1. Stellar Cartographer no
+  longer suppresses the focus ring.
+- High Contrast (Display settings) restores strong edges.
+
 ## 0.7457
 - Scrivener import: top-level folders other than Draft and Research
   (Characters, Places, Factions, Ships, …) become Codex entries of the

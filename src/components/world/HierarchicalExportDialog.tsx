@@ -187,7 +187,7 @@ const HierarchicalExportDialog = ({
         )}
 
         {/* Inline theme picker */}
-        <div className="pt-3 border-t border-sf-line-interactive">
+        <div className="pt-3 border-t border-sf-line-hairline">
           <Label className="text-xs text-t3 mb-2 block">PDF Theme</Label>
           <div className="flex gap-2 flex-wrap">
             {EXPORT_THEMES.map((theme) => {
@@ -202,13 +202,13 @@ const HierarchicalExportDialog = ({
                     "flex gap-0.5 p-1.5 rounded-none border transition-all",
                     isSelected
                       ? "border-primary ring-1 ring-primary/50"
-                      : "border-sf-line-interactive hover:border-primary"
+                      : "border-sf-line hover:border-primary"
                   )}
                 >
                   {theme.swatch.map((color, i) => (
                     <div
                       key={i}
-                      className="w-4 h-4 rounded-none border border-sf-line-interactive"
+                      className="w-4 h-4 rounded-none border border-sf-line"
                       style={{ backgroundColor: color }}
                     />
                   ))}

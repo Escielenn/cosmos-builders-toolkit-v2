@@ -112,13 +112,13 @@ const LearnIndex = () => {
         <div className="flex justify-center gap-2 -mt-4 mb-8">
           <a
             href="#courses"
-            className="px-4 py-2 text-xs uppercase tracking-wider text-t3 hover:text-sf-primary-text border border-sf-line-interactive rounded-none hover:border-sf-primary transition-all"
+            className="px-4 py-2 text-xs uppercase tracking-wider text-t3 hover:text-sf-primary-text border border-sf-line rounded-none hover:border-sf-primary transition-all"
           >
             Courses
           </a>
           <Link
             to="/roadmap"
-            className="px-4 py-2 text-xs uppercase tracking-wider text-t3 hover:text-sf-primary-text border border-sf-line-interactive rounded-none hover:border-sf-primary transition-all"
+            className="px-4 py-2 text-xs uppercase tracking-wider text-t3 hover:text-sf-primary-text border border-sf-line rounded-none hover:border-sf-primary transition-all"
           >
             Roadmap
           </Link>

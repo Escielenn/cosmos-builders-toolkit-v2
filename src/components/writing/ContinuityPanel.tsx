@@ -159,13 +159,13 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
           Picking one lets the check compare your prose to the right numbers
           instead of every candidate on file.
         </p>
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           {candidates.map((c) => (
             <button
               key={c.id}
               type="button"
               onClick={() => onSetEntityId?.(c.id)}
-              className="block w-full min-h-hit border border-sf-line-interactive px-3 py-2 text-left text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
+              className="block w-full min-h-hit border border-sf-line px-3 py-2 text-left text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
             >
               {c.title}
               {c.entryType && (
@@ -215,7 +215,7 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
         </p>
         <Link
           to="/guide/tools"
-          className="mt-3 inline-block border border-sf-line-interactive px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
+          className="mt-3 inline-block border border-sf-line px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
         >
           Browse the tools
         </Link>

@@ -58,7 +58,7 @@ export function CascadeFilterBar({
 
   return (
     <div
-      className="flex items-center gap-0.5 border border-sf-line bg-sf-surface px-1.5 py-1"
+      className="flex items-center gap-2 border border-sf-line bg-sf-surface px-3 py-2"
       onDoubleClick={handleDoubleClick}
     >
       {CASCADE_STAGES.map((stage) => {
@@ -71,10 +71,10 @@ export function CascadeFilterBar({
             type="button"
             aria-pressed={isActive}
             onClick={(e) => handleClick(stage, e)}
-            className={`flex min-h-hit items-center gap-1.5 border px-2 transition-colors duration-base ${
+            className={`flex min-h-hit items-center gap-1.5 border px-3 transition-colors duration-base ${
               isActive
                 ? "border-sf-line-emphasis"
-                : "border-transparent hover:border-sf-line-interactive"
+                : "border-transparent hover:border-sf-line-emphasis"
             }`}
             title={`${CASCADE_STAGE_LABELS[stage]} — click to solo, shift-click to toggle`}
           >

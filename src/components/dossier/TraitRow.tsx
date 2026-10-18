@@ -40,7 +40,7 @@ export function SourceChip({
     <Link
       to={toolHref(tool, worldId, worksheetId ?? null)}
       className={cn(
-        "inline-flex min-h-hit items-center gap-1.5 border px-2 rounded-sf-tag font-mono text-[12px] uppercase tracking-[0.10em] transition-colors duration-fast ease-sf-out hover:border-sf-line-emphasis",
+        "inline-flex min-h-hit items-center gap-1.5 border px-3 rounded-sf-tag font-mono text-[12px] uppercase tracking-[0.10em] transition-colors duration-fast ease-sf-out hover:border-sf-line-emphasis",
         accentChipClass(getToolAccent(tool)),
       )}
       aria-label={`Open ${brandOf(tool)}${title ? `: ${title}` : ""}`}

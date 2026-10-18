@@ -149,7 +149,7 @@ const Join = () => {
 
   return (
     <div className="relative min-h-screen bg-background flex flex-col">
-      <header className="border-b border-sf-line-interactive backdrop-blur-xl bg-background/80">
+      <header className="border-b border-sf-line-hairline backdrop-blur-xl bg-background/80">
         <div className="container mx-auto px-4 h-16 flex items-center">
           <Link to="/auth" className="flex items-center gap-3 group">
             <CubeLogo size={40} className="rounded-none" />
@@ -195,7 +195,7 @@ const Join = () => {
 
           <div className="relative my-4">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-sf-line-interactive"></div>
+              <div className="w-full border-t border-sf-line-hairline"></div>
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-sf-surface px-2 text-t4">or create with email</span>
@@ -328,7 +328,7 @@ const Join = () => {
           <DialogHeader>
             <DialogTitle className="font-heading text-xl">Terms of Service</DialogTitle>
           </DialogHeader>
-          <div className="prose prose-invert prose-sm max-w-none [&_h2]:text-lg [&_h2]:font-heading [&_h2]:font-light [&_h2]:tracking-wider [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-base [&_h3]:font-medium [&_h3]:mt-4 [&_h3]:mb-2 [&_h4]:text-sm [&_h4]:font-medium [&_h4]:mt-3 [&_h4]:mb-1 [&_p]:text-sm [&_p]:text-t3 [&_p]:leading-relaxed [&_p]:mb-3 [&_li]:text-sm [&_li]:text-t3 [&_hr]:border-sf-line-interactive [&_hr]:my-4 [&_strong]:text-t1">
+          <div className="prose prose-invert prose-sm max-w-none [&_h2]:text-lg [&_h2]:font-heading [&_h2]:font-light [&_h2]:tracking-wider [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-base [&_h3]:font-medium [&_h3]:mt-4 [&_h3]:mb-2 [&_h4]:text-sm [&_h4]:font-medium [&_h4]:mt-3 [&_h4]:mb-1 [&_p]:text-sm [&_p]:text-t3 [&_p]:leading-relaxed [&_p]:mb-3 [&_li]:text-sm [&_li]:text-t3 [&_hr]:border-sf-line-hairline [&_hr]:my-4 [&_strong]:text-t1">
             <ReactMarkdown>{TERMS_CONTENT}</ReactMarkdown>
           </div>
         </DialogContent>

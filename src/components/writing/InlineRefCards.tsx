@@ -234,7 +234,7 @@ function FactCard({ detail, onDone }: { detail: InlineRefDetail; onDone: () => v
               onDone();
               navigate(live.href!);
             }}
-            className="inline-flex min-h-hit items-center gap-1.5 border border-sf-line-interactive px-3 font-sans text-[12px] font-medium uppercase text-t1 transition-colors duration-fast hover:border-sf-primary hover:text-sf-primary-text"
+            className="inline-flex min-h-hit items-center gap-1.5 border border-sf-line px-3 font-sans text-[12px] font-medium uppercase text-t1 transition-colors duration-fast hover:border-sf-primary hover:text-sf-primary-text"
           >
             Open source <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
           </button>
@@ -296,7 +296,7 @@ function EntityCard({
         {entity && (
           <Link
             to={`/worlds/${world.worldId}/codex/${entity.id}`}
-            className="inline-flex min-h-hit items-center gap-1.5 border border-sf-line-interactive px-3 font-sans text-[12px] font-medium uppercase text-t1 transition-colors duration-fast hover:border-sf-primary hover:text-sf-primary-text"
+            className="inline-flex min-h-hit items-center gap-1.5 border border-sf-line px-3 font-sans text-[12px] font-medium uppercase text-t1 transition-colors duration-fast hover:border-sf-primary hover:text-sf-primary-text"
           >
             Open Codex <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
           </Link>
@@ -305,7 +305,7 @@ function EntityCard({
           <button
             type="button"
             onClick={() => onOpenBeside(id)}
-            className="inline-flex min-h-hit items-center gap-1.5 border border-sf-line-interactive px-3 font-sans text-[12px] font-medium uppercase text-t1 transition-colors duration-fast hover:border-sf-primary hover:text-sf-primary-text"
+            className="inline-flex min-h-hit items-center gap-1.5 border border-sf-line px-3 font-sans text-[12px] font-medium uppercase text-t1 transition-colors duration-fast hover:border-sf-primary hover:text-sf-primary-text"
           >
             <Columns2 className="h-3.5 w-3.5" aria-hidden="true" /> Open beside
           </button>

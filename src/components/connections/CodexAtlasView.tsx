@@ -193,7 +193,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
     <div className="grid grid-cols-1 gap-6 xl:grid-cols-4">
       <div className="xl:col-span-3">
         {/* Where you are. Each step back is one click. */}
-        <nav className="mb-3 flex flex-wrap items-center gap-1" aria-label="Atlas level">
+        <nav className="mb-3 flex flex-wrap items-center gap-2" aria-label="Atlas level">
           {trail.map((crumb, i) => (
             <span key={`${crumb.id ?? "root"}-${i}`} className="flex items-center gap-1">
               {i > 0 && <ChevronRight className="h-3 w-3 text-t4" aria-hidden />}
@@ -432,7 +432,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
       <aside className="space-y-4">
         {atGalaxy && galaxyMode === "sky" ? (
           <>
-            <div className="border border-sf-line bg-sf-surface p-3">
+            <div className="border border-sf-line bg-sf-surface p-4">
               <h3 className="mb-2 flex items-center gap-1.5 font-heading text-[12px] uppercase tracking-wide text-t3">
                 <Route className="h-3 w-3" aria-hidden />
                 Routes
@@ -465,7 +465,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
                         onClick={() =>
                           navigate(`/worlds/${worldId}/codex/${lane.from.id}`)
                         }
-                        className="flex min-h-hit w-full items-center justify-between gap-3 border border-sf-line-interactive px-2 text-left transition-colors hover:border-sf-line-emphasis"
+                        className="flex min-h-hit w-full items-center justify-between gap-3 border border-sf-line px-3 text-left transition-colors hover:border-sf-line-emphasis"
                       >
                         <span className="truncate text-[13px] text-t2">
                           {lane.from.name} → {lane.to.name}
@@ -489,7 +489,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
 
             {(territoryField.territories.length ||
               territoryField.unmappable.length) > 0 ? (
-              <div className="border border-sf-line bg-sf-surface p-3">
+              <div className="border border-sf-line bg-sf-surface p-4">
                 <h3 className="mb-2 flex items-center gap-1.5 font-heading text-[12px] uppercase tracking-wide text-t3">
                   <Flag className="h-3 w-3" aria-hidden />
                   Territory
@@ -503,7 +503,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
                           onClick={() =>
                             navigate(`/worlds/${worldId}/codex/${t.id}`)
                           }
-                          className="flex min-h-hit w-full items-center gap-2 border border-sf-line-interactive px-2 text-left transition-colors hover:border-sf-line-emphasis"
+                          className="flex min-h-hit w-full items-center gap-2 border border-sf-line px-3 text-left transition-colors hover:border-sf-line-emphasis"
                         >
                           <span
                             aria-hidden
@@ -554,7 +554,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
             ) : null}
 
             {(galaxyField?.unplaced.length || laneField.undrawable.length) ? (
-              <div className="border border-sf-line bg-sf-surface p-3">
+              <div className="border border-sf-line bg-sf-surface p-4">
                 <h3 className="mb-2 flex items-center gap-1.5 font-heading text-[12px] uppercase tracking-wide text-t3">
                   <Crosshair className="h-3 w-3" aria-hidden />
                   Not anchored
@@ -568,7 +568,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
                           onClick={() =>
                             navigate(`/worlds/${worldId}/codex/${system.id}`)
                           }
-                          className="flex min-h-hit w-full items-center gap-2 border border-sf-line-interactive px-2 text-left transition-colors hover:border-sf-line-emphasis"
+                          className="flex min-h-hit w-full items-center gap-2 border border-sf-line px-3 text-left transition-colors hover:border-sf-line-emphasis"
                         >
                           <span className="truncate text-[13px] text-t2">
                             {system.name}
@@ -593,7 +593,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
             ) : null}
           </>
         ) : (
-        <div className="border border-sf-line bg-sf-surface p-3">
+        <div className="border border-sf-line bg-sf-surface p-4">
           <h3 className="mb-2 flex items-center gap-1.5 font-heading text-[12px] uppercase tracking-wide text-t3">
             <MapPin className="h-3 w-3" aria-hidden />
             Unplaced
@@ -616,7 +616,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
                         setDragging(pin.id);
                       }}
                       onDragEnd={() => setDragging(null)}
-                      className="flex min-h-hit cursor-grab items-center gap-2 border border-sf-line-interactive px-2 active:cursor-grabbing"
+                      className="flex min-h-hit cursor-grab items-center gap-2 border border-sf-line-interactive px-3 active:cursor-grabbing"
                     >
                       <span
                         aria-hidden
