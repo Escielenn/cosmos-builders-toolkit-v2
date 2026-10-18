@@ -124,7 +124,7 @@ Each plane clears 1.22:1 on the one below, so a panel edge reads before any bord
 
 #### Lines
 
-Solid `sf-line-*` tokens only (`sf-line-hairline`, `sf-line`, `sf-line-interactive`, `sf-line-emphasis`). The old alpha borders (`hsl(0 0% 100% / 0.08)`, the `0.15` glow border) are banned; see Legibility below for which line goes where.
+Solid `sf-line-*` tokens only (`sf-line-hairline`, `sf-line`, `sf-line-interactive`, `sf-line-emphasis`). Fields use `.sf-field` (recessed well, one 3:1 baseline); labelled controls use `.sf-quiet`. The old alpha borders (`hsl(0 0% 100% / 0.08)`, the `0.15` glow border) are banned; see Legibility below for which line goes where.
 
 #### Glow pattern
 
@@ -1049,7 +1049,10 @@ Full audit and rationale: `docs/stellarforge/10-LEGIBILITY.md`.
 - **No alpha borders.** Solid `sf-line-*` tokens only — alpha composites
   unpredictably over the starfield, grain, and video layers.
     - `sf-line-hairline` table rules · `sf-line` panel edges
-    - `sf-line-interactive` anything operable (WCAG 1.4.11, ≥3:1)
+    - `sf-line-interactive` boundaries that identify a control (WCAG 1.4.11,
+      ≥3:1): field baselines (`.sf-field`), checkbox, switch, slider, scrollbar
+    - labelled buttons, tabs, chips sit on `sf-line` (`.sf-quiet`); their text
+      identifies them. (Softening pass, 2026-10-17.)
     - `sf-line-emphasis` hover, active, selected
 - **No opacity for states.** Disabled uses `sf-disabled-bg` /
   `sf-disabled-line` / `sf-disabled-text`. `opacity-40` guarantees nothing.
