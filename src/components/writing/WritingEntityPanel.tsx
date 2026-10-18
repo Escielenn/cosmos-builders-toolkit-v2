@@ -1,11 +1,13 @@
 // ---------------------------------------------------------------------------
-// WritingEntityPanel, Left sidebar for the Writing Space.
+// WritingEntityPanel, the Studio's Entities tab.
 //
 // Two modes:
-//   List Mode:   Search input, entities grouped by cascade stage, click to
-//                enter Detail Mode.
-//   Detail Mode: Back button, entity detail with badges, connections, and
-//                insert buttons for @mentions and [[wiki links]].
+//   List Mode:   PINNED, then FOR THIS SCENE (entities in the prose, the POV,
+//                the setting, the subject, one graph hop out, each saying
+//                why), then the rest grouped by cascade stage.
+//   Detail Mode: Back button, entity detail with badges, key facts,
+//                connections, and insert buttons that place a real @mention
+//                or [[wiki link]] node carrying the entity's id.
 // ---------------------------------------------------------------------------
 
 import { useCallback, useMemo, useState } from "react";
@@ -34,6 +36,10 @@ import type {
 import { EntityHistory } from "@/components/world/EntityHistory";
 import { sanitizeHtml } from "@/lib/sanitize";
 import { BackLink } from "@/components/ui/back-link";
+import { useStudioWorld } from "@/components/writing/studio-world";
+import { PinnedGroup, ReasonTag } from "@/components/writing/RailPins";
+import { rankEntities } from "@/lib/writing/scene-context";
+import type { PinnedItem } from "@/hooks/use-writing-pins";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -43,9 +49,14 @@ export interface WritingEntityPanelProps {
   worldId: string;
   open: boolean;
   onToggle: () => void;
-  onInsertMention: (name: string) => void;
-  onInsertWikiLink: (name: string) => void;
+  /** Insert an @mention node for this entity at the writer's cursor. */
+  onInsertMention: (entity: Entity) => void;
+  /** Insert a [[wiki link]] node for this entity at the writer's cursor. */
+  onInsertWikiLink: (entity: Entity) => void;
   onPinEntity?: (entity: Entity) => void;
+  /** Pins for this world; the entity ones show at the top. */
+  pins?: PinnedItem[];
+  onUnpin?: (pin: PinnedItem) => void;
   /** When true, renders content only (no outer aside/width management). Used inside WritingSidebar. */
   embedded?: boolean;
 }
@@ -67,18 +78,21 @@ export function WritingEntityPanel({
   onInsertMention,
   onInsertWikiLink,
   onPinEntity,
+  pins = [],
+  onUnpin,
   embedded,
 }: WritingEntityPanelProps) {
   const { data: entities } = useEntities(worldId);
   const { data: connections } = useEntityConnections(worldId);
+  const studio = useStudioWorld();
 
   // UI state
   const [filter, setFilter] = useState("");
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
 
   // Derived
-  const entityList = entities ?? [];
-  const connectionList = connections ?? [];
+  const entityList = useMemo(() => entities ?? [], [entities]);
+  const connectionList = useMemo(() => connections ?? [], [connections]);
   const entityMap = useMemo(
     () => new Map(entityList.map((e) => [e.id, e])),
     [entityList]
@@ -96,16 +110,28 @@ export function WritingEntityPanel({
     [entityList, filter]
   );
 
+  // Ranked by the open scene (Studio Charter §2.1). Only when not filtering:
+  // a search is a search.
+  const sceneRanked = useMemo(
+    () =>
+      studio && !filter
+        ? rankEntities(entityList, studio.scene).filter((r) => r.reason !== null)
+        : [],
+    [studio, filter, entityList],
+  );
+  const sceneIds = useMemo(() => new Set(sceneRanked.map((r) => r.item.id)), [sceneRanked]);
+
   // Group by cascade stage (not entity type)
   const groupedByCascade = useMemo(() => {
     const groups: Record<string, Entity[]> = {};
     for (const entity of filteredEntities) {
+      if (sceneIds.has(entity.id)) continue;
       const stage = entity.cascade_stage || "culture";
       if (!groups[stage]) groups[stage] = [];
       groups[stage].push(entity);
     }
     return groups;
-  }, [filteredEntities]);
+  }, [filteredEntities, sceneIds]);
 
   // Get connections for the selected entity
   const selectedEntity = selectedEntityId
@@ -225,6 +251,23 @@ export function WritingEntityPanel({
               </div>
             </div>
 
+            {/* Key facts: every value on file about this entity */}
+            {(studio?.factsByEntity.get(selectedEntity.id)?.length ?? 0) > 0 && (
+              <div>
+                <span className="text-[12px] font-medium uppercase tracking-wide text-t4 block mb-1">
+                  Key facts
+                </span>
+                <dl>
+                  {studio!.factsByEntity.get(selectedEntity.id)!.slice(0, 8).map((f) => (
+                    <div key={f.ref} className="flex items-baseline gap-2 border-b border-sf-line-hairline py-1">
+                      <dt className="w-[45%] shrink-0 truncate text-[12px] text-t3">{f.label}</dt>
+                      <dd className="min-w-0 flex-1 break-words font-mono text-[12px] text-t1">{f.insert}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            )}
+
             {/* Summary */}
             {selectedEntity.summary && (
               <div>
@@ -308,14 +351,14 @@ export function WritingEntityPanel({
             {/* Insert buttons */}
             <div className="flex gap-2 pt-2 border-t border-sf-line">
               <button
-                onClick={() => onInsertMention(selectedEntity.name)}
+                onClick={() => onInsertMention(selectedEntity)}
                 className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-sans font-medium uppercase tracking-wider text-sf-primary-text bg-sf-primary/[0.06] border border-sf-primary rounded-none hover:bg-sf-primary/[0.12] transition-colors"
               >
                 <AtSign className="w-3 h-3" />
                 Mention
               </button>
               <button
-                onClick={() => onInsertWikiLink(selectedEntity.name)}
+                onClick={() => onInsertWikiLink(selectedEntity)}
                 className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-sans font-medium uppercase tracking-wider text-sf-stellar-text bg-sf-stellar/[0.06] border border-sf-stellar rounded-none hover:bg-sf-stellar/[0.12] transition-colors"
               >
                 <Link2 className="w-3 h-3" />
@@ -323,18 +366,22 @@ export function WritingEntityPanel({
               </button>
             </div>
 
-            {/* Pin to references */}
-            {onPinEntity && (
-              <div className="pt-1">
-                <button
-                  onClick={() => onPinEntity(selectedEntity)}
-                  className="w-full flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-sans font-medium uppercase tracking-wider text-sf-amber-text bg-sf-amber/[0.06] border border-sf-amber rounded-none hover:bg-sf-amber/[0.12] transition-colors"
-                >
-                  <Pin className="w-3 h-3" />
-                  Pin to References
-                </button>
-              </div>
-            )}
+            {/* Pin: key facts stay at the top of the rail while you write */}
+            {onPinEntity && (() => {
+              const pinned = pins.find((p) => p.type === "entity" && p.id === selectedEntity.id);
+              return (
+                <div className="pt-1">
+                  <button
+                    onClick={() => (pinned && onUnpin ? onUnpin(pinned) : onPinEntity(selectedEntity))}
+                    aria-pressed={!!pinned}
+                    className="w-full min-h-hit flex items-center justify-center gap-1.5 px-2 py-2 text-[12px] font-sans font-medium uppercase text-sf-primary-text bg-sf-primary/[0.06] border border-sf-primary rounded-none hover:bg-sf-primary/[0.12] transition-colors"
+                  >
+                    <Pin className="w-3 h-3" />
+                    {pinned ? "Unpin" : "Pin to the rail"}
+                  </button>
+                </div>
+              );
+            })()}
           </div>
         ) : (
           <>
@@ -358,6 +405,36 @@ export function WritingEntityPanel({
 
             {/* Entity list grouped by cascade stage */}
             <div className="flex-1 overflow-y-auto sf-sb px-1 pb-4 sf-custom-scrollbar">
+              {!filter && onUnpin && (
+                <div className="-mx-1 mb-2">
+                  <PinnedGroup
+                    pins={pins}
+                    types={["entity"]}
+                    onUnpin={onUnpin}
+                    onOpen={(p) => entityMap.has(p.id) && setSelectedEntityId(p.id)}
+                  />
+                </div>
+              )}
+              {sceneRanked.length > 0 && (
+                <div className="mb-3">
+                  <div className="px-2 py-1 font-heading text-sf-eyebrow uppercase text-t4">// For this scene</div>
+                  {sceneRanked.map(({ item: entity, reason }) => (
+                    <button
+                      key={entity.id}
+                      onClick={() => handleSelectEntity(entity)}
+                      className="w-full min-h-hit flex items-center gap-2 px-2 py-1.5 text-left rounded-none hover:bg-sf-surface-elevated transition-colors group"
+                      title={`View ${entity.name}`}
+                    >
+                      <span
+                        className="w-2 h-2 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: entity.color || ENTITY_TYPE_COLORS[entity.entity_type] || ENTITY_TYPE_COLORS.custom }}
+                      />
+                      <span className="text-xs text-t2 truncate group-hover:text-t1 transition-colors flex-1">{entity.name}</span>
+                      {reason && <ReasonTag reason={reason} />}
+                    </button>
+                  ))}
+                </div>
+              )}
               {CASCADE_STAGES.map((stage) => {
                 const stageEntities = groupedByCascade[stage];
                 if (!stageEntities || stageEntities.length === 0) return null;

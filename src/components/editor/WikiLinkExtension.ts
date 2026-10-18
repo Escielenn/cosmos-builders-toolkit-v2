@@ -1,4 +1,5 @@
 import { Node, mergeAttributes } from "@tiptap/core";
+import { selectionHandlers, wireInlineRefHover } from "@/components/editor/inline-ref-events";
 
 /**
  * TipTap extension for [[wiki-links]].
@@ -46,12 +47,15 @@ export const WikiLink = Node.create({
   },
 
   addNodeView() {
-    return ({ node }) => {
+    return ({ node, editor, getPos }) => {
       const dom = document.createElement("span");
       dom.className = "sf-wiki-link";
       dom.textContent = node.attrs.title || "Unknown";
       dom.dataset.elementId = node.attrs.elementId;
       dom.dataset.elementType = node.attrs.elementType;
+
+      const refCtx = { attrs: () => node.attrs as Record<string, unknown>, editor, getPos };
+      wireInlineRefHover(dom, "wiki", refCtx);
 
       dom.addEventListener("click", (e) => {
         e.preventDefault();
@@ -64,7 +68,7 @@ export const WikiLink = Node.create({
         }
       });
 
-      return { dom };
+      return { dom, ...selectionHandlers(dom, "wiki", refCtx) };
     };
   },
 });

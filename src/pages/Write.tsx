@@ -5,7 +5,7 @@
  * Supersedes the old /worlds/:id/write "Writing Space" (which now
  * redirects here). SF-II: one writing model, no parallel tables.
  */
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,7 +15,9 @@ import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { WritingEntityPanel } from "@/components/writing/WritingEntityPanel";
 import { WorldInfluencePanel } from "@/components/writing/WorldInfluencePanel";
-import { WorksheetFactsPanel } from "@/components/writing/WorksheetFactsPanel";
+import { WorldRefsPanel } from "@/components/writing/WorldRefsPanel";
+import { InlineRefCards } from "@/components/writing/InlineRefCards";
+import { StudioWorldProvider, useStudioWorldIndex, type StudioWorld } from "@/components/writing/studio-world";
 import { DocumentInspector, type InspectorPane } from "@/components/writing/DocumentInspector";
 import { BinderTree } from "@/components/writing/BinderTree";
 import { SnapshotCompareDialog } from "@/components/writing/SnapshotCompareDialog";
@@ -40,7 +42,7 @@ import {
 } from "@/components/writing/BinderSearch";
 import { TargetsStatus } from "@/components/writing/TargetsPopover";
 import { PromptDialog } from "@/components/ui/prompt-dialog";
-import type { Editor } from "@tiptap/react";
+import type { Editor, JSONContent } from "@tiptap/react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -84,17 +86,14 @@ import { reportWordsWritten } from "@/lib/session-words-bus";
 import { useWritingPreferences } from "@/hooks/use-writing-preferences";
 import { useWritingPins } from "@/hooks/use-writing-pins";
 import { readDocMeta } from "@/lib/document-meta";
-import type { Entity } from "@/services/entity-graph-types";
+import { ENTITY_TYPE_COLORS, type Entity } from "@/services/entity-graph-types";
+import { getActiveEditor } from "@/lib/writing/live-facts";
+import { factToRefAttrs, sourceLine, type WorldFact } from "@/lib/writing/world-index";
+import { buildSceneContext } from "@/lib/writing/scene-context";
+import { buildPlaceChoices, buildPovChoices, resolveSceneWorld } from "@/lib/writing/scene-world";
+import type { PinnedItem } from "@/hooks/use-writing-pins";
 import type { WorldEntry } from "@/services/world-data";
 import { useMetaTags } from "@/hooks/use-meta-tags";
-
-// insert helpers (proven pattern from the mature editor)
-function insertIntoEditor(text: string) {
-  const el = document.querySelector(".tiptap") as HTMLElement | null;
-  if (!el) return;
-  el.focus();
-  setTimeout(() => document.execCommand("insertText", false, text), 40);
-}
 
 type WriteView = "editor" | "board" | "outline" | "scrivenings";
 
@@ -182,7 +181,7 @@ export default function Write(): JSX.Element {
   const renameFolder = useRenameFolder(worldId);
   const deleteFolder = useDeleteFolder(worldId);
   const updateMeta = useUpdateDocumentMeta(worldId);
-  const { addPin } = useWritingPins(worldId ?? "");
+  const { pins, addPin, removePin } = useWritingPins(worldId ?? "");
   const moveItem = useMoveBinderItem(worldId);
   const {
     labels,
@@ -374,6 +373,54 @@ export default function Write(): JSX.Element {
   // Card fields for the open document. metadata is untyped, so this tolerates
   // whatever is already in the column.
   const docMeta = useMemo(() => readDocMeta(doc?.metadata), [doc?.metadata]);
+
+  // THE WORLD IN THE ROOM ----------------------------------------------------
+  // One index of every fact and entity on file, shared by the rail, the
+  // world palette in every editor, and the hover cards. Rebuilt when data
+  // changes, never per keystroke.
+  const worldIndex = useStudioWorldIndex(worldId);
+
+  // The scene as the rail ranks it: the prose as last handed to the binder
+  // cache (the editor's own 1.5s debounce), deferred so ranking yields to
+  // typing.
+  const sceneHtml = useMemo(
+    () => readingDocs.find((d) => d.id === docId)?.content ?? doc?.content ?? "",
+    [readingDocs, docId, doc?.content],
+  );
+  const deferredSceneHtml = useDeferredValue(sceneHtml);
+  const sceneWorld = useMemo(
+    () =>
+      resolveSceneWorld({
+        worldId: worldId ?? "",
+        meta: docMeta,
+        entities: worldIndex.entities,
+        worksheets: worldIndex.worksheets,
+        simulations: worldIndex.simulations,
+        subjects: worldIndex.subjects,
+        branches: worldIndex.branches,
+      }),
+    [worldId, docMeta, worldIndex],
+  );
+  const scene = useMemo(
+    () =>
+      buildSceneContext({
+        html: deferredSceneHtml,
+        povEntityId: sceneWorld.povEntityId,
+        povDossierId: sceneWorld.povDossierId,
+        povOriginSheetIds: sceneWorld.povOriginSheetIds,
+        setInPlaceId: docMeta.setInPlaceId || null,
+        settingBodyId: sceneWorld.bodyEntityId,
+        subjectEntityId: docMeta.subjectEntityId || null,
+        connections: worldIndex.connections,
+      }),
+    [deferredSceneHtml, sceneWorld, docMeta.setInPlaceId, docMeta.subjectEntityId, worldIndex.connections],
+  );
+  const studioWorld = useMemo<StudioWorld>(() => ({ ...worldIndex, scene, focus }), [worldIndex, scene, focus]);
+  const povOptions = useMemo(
+    () => buildPovChoices(worldIndex.worksheets, worldIndex.subjects, worldIndex.entities),
+    [worldIndex.worksheets, worldIndex.subjects, worldIndex.entities],
+  );
+  const placeOptions = useMemo(() => buildPlaceChoices(worldIndex.entities), [worldIndex.entities]);
 
   // Commit any pending edit immediately.
   //
@@ -725,6 +772,91 @@ export default function Write(): JSX.Element {
     [doc, user, flushPending, toast],
   );
 
+  // INSERTING FROM THE RAIL --------------------------------------------------
+  // Into the editor the writer was last in (main, split or Scrivenings), at
+  // its caret, as real nodes: a cited fact, an @mention or a [[wiki link]]
+  // that carry ids. The old path typed plain text through execCommand into
+  // whichever .tiptap came first in the DOM.
+  const insertNodes = useCallback(
+    (content: JSONContent | JSONContent[]) => {
+      const ed =
+        getActiveEditor() ?? (editorInstance && !editorInstance.isDestroyed ? editorInstance : null);
+      if (!ed || !ed.isEditable) {
+        toast({ title: "NO DOCUMENT OPEN.", description: "Open a document in the editor, then insert." });
+        return;
+      }
+      ed.chain().focus().insertContent(content).run();
+    },
+    [editorInstance, toast],
+  );
+  const insertMention = useCallback(
+    (e: Entity) =>
+      insertNodes([
+        {
+          type: "entityMention",
+          attrs: {
+            id: e.id,
+            label: e.name,
+            entityType: e.entity_type,
+            color: e.color || ENTITY_TYPE_COLORS[e.entity_type] || ENTITY_TYPE_COLORS.custom,
+          },
+        },
+        { type: "text", text: " " },
+      ]),
+    [insertNodes],
+  );
+  const insertWikiLink = useCallback(
+    (e: Entity) =>
+      insertNodes({ type: "wikiLink", attrs: { elementId: e.id, title: e.name, elementType: e.entity_type } }),
+    [insertNodes],
+  );
+  const citeFact = useCallback(
+    (f: WorldFact) => insertNodes({ type: "factRef", attrs: factToRefAttrs(f) }),
+    [insertNodes],
+  );
+  const insertPlainFact = useCallback(
+    (f: WorldFact) => insertNodes({ type: "text", text: f.insert }),
+    [insertNodes],
+  );
+  const unpin = useCallback((p: PinnedItem) => removePin(p.id, p.type), [removePin]);
+
+  // CLICKING A MENTION ------------------------------------------------------
+  // @mentions and [[wiki links]] dispatch sf-navigate-entity/-element. Only
+  // WorldLayout listened, and /write sits outside it, so a click did nothing.
+  // Here it opens the entity beside the prose, read only, with OPEN CODEX.
+  const openBeside = useCallback(
+    (id: string) => {
+      if (!worldId) return;
+      const narrow = typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
+      const isEntity = worldIndex.entityById.has(id);
+      const isDoc = !isEntity && id !== docId && readingDocs.some((d) => d.id === id);
+      if (narrow || (!isEntity && !isDoc)) {
+        navigate(isDoc ? `/write/${id}` : `/worlds/${worldId}/codex/${id}`);
+        return;
+      }
+      if (!split.open && effectiveView === "editor") handOffMain();
+      setFocus(false);
+      updateSplit({ open: true, source: isEntity ? { kind: "entity", id } : { kind: "doc", id } });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [worldId, worldIndex.entityById, docId, readingDocs, split.open, effectiveView, updateSplit, navigate],
+  );
+  const openBesideRef = useRef(openBeside);
+  openBesideRef.current = openBeside;
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<{ elementId?: string; entityId?: string }>).detail;
+      const id = detail?.elementId ?? detail?.entityId;
+      if (id) openBesideRef.current(id);
+    };
+    window.addEventListener("sf-navigate-element", handler);
+    window.addEventListener("sf-navigate-entity", handler);
+    return () => {
+      window.removeEventListener("sf-navigate-element", handler);
+      window.removeEventListener("sf-navigate-entity", handler);
+    };
+  }, []);
+
   function saveTitle() {
     if (docId && worldId && title !== (doc?.title ?? "")) {
       renameDoc.mutate({ docId, title });
@@ -935,6 +1067,9 @@ export default function Write(): JSX.Element {
                 toast(ok ? { title: "SNAPSHOT DELETED." } : { title: "DELETE FAILED.", variant: "destructive" }),
               );
             }}
+            povOptions={povOptions}
+            placeOptions={placeOptions}
+            branchOptions={worldIndex.branches}
           />
         </div>
       )}
@@ -944,12 +1079,14 @@ export default function Write(): JSX.Element {
           worldId={worldId}
           open
           onToggle={() => {}}
-          onInsertMention={(name) => insertIntoEditor(`@${name} `)}
-          onInsertWikiLink={(name) => insertIntoEditor(`[[${name}]]`)}
+          onInsertMention={insertMention}
+          onInsertWikiLink={insertWikiLink}
           onPinEntity={(e: Entity) => {
-            addPin({ id: e.id, type: "entity", title: e.name, content: e.description || e.summary || "" });
+            addPin({ id: e.id, type: "entity", title: e.name, content: e.summary || "" });
             toast({ title: `${e.name.toUpperCase()} PINNED.` });
           }}
+          pins={pins}
+          onUnpin={unpin}
           embedded
         />
         </div>
@@ -968,13 +1105,31 @@ export default function Write(): JSX.Element {
       )}
       {inspector === "world" && (
         <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto">
-          <WorldInfluencePanel worldId={worldId} content={doc?.content} />
+          <WorldInfluencePanel
+            worldId={worldId}
+            content={deferredSceneHtml}
+            influence={sceneWorld.influence}
+            onEditCard={() => {
+              setInspector("doc");
+              setDocPane("card");
+            }}
+          />
         </div>
       )}
       {inspector === "reference" && (
         <div className="flex min-h-0 flex-1 flex-col">
           <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto">
-            <WorksheetFactsPanel worldId={worldId} onInsert={insertIntoEditor} />
+            <WorldRefsPanel
+              pins={pins}
+              onUnpin={unpin}
+              onCite={citeFact}
+              onInsertPlain={insertPlainFact}
+              onPinSource={(f) => {
+                if (!f.sourceId) return;
+                addPin({ id: f.sourceId, type: "worksheet", title: sourceLine(f), content: "" });
+                toast({ title: "PINNED.", description: sourceLine(f) });
+              }}
+            />
           </div>
           <div className="border-t border-sf-line-interactive p-3">
             <Link to={`/worlds/${worldId}/codex`} className="block border border-sf-line-interactive px-3 py-2 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">Open the Codex →</Link>
@@ -986,6 +1141,7 @@ export default function Write(): JSX.Element {
   ) : null;
 
   return (
+    <StudioWorldProvider value={studioWorld}>
     <div className="relative z-10 grid h-screen grid-rows-[44px_1fr_44px] bg-[hsl(var(--sf-void-hsl))]">
       {/* topbar */}
       <header className="flex items-center gap-3 border-b border-sf-line-interactive px-4">
@@ -1158,7 +1314,7 @@ export default function Write(): JSX.Element {
         >
         <main
           ref={mainRef}
-          className={`sf-sb min-h-0 min-w-0 overflow-y-auto${fadeClass}`}
+          className={`sf-sb min-h-0 min-w-0 overflow-y-auto${fadeClass}${focus ? " sf-write-focus" : ""}`}
           style={showSplit ? { flex: `0 0 calc(${split.ratio * 100}% - 6px)` } : { flex: "1 1 auto" }}
         >
           {findOpen && effectiveView === "editor" && (
@@ -1326,7 +1482,9 @@ export default function Write(): JSX.Element {
         saving={labelsSaving}
         local={labelsLocal}
       />
+      <InlineRefCards onOpenBeside={openBeside} />
     </div>
+    </StudioWorldProvider>
   );
 }
 
