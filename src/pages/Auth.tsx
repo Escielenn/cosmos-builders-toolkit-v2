@@ -1,25 +1,23 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { GlassPanel } from "@/components/ui/glass-panel";
-import { LogIn, Rocket, ChevronDown, Layers, Share2, FileDown } from "lucide-react";
+import { LogIn, Rocket, ChevronDown, Layers, Share2, FileDown, KeyRound, Mail } from "lucide-react";
 import CubeLogo from "@/components/icons/CubeLogo";
 import { Loader } from "@/components/ui/loader";
 import { useToast } from "@/hooks/use-toast";
-import { z } from "zod";
 import { PageBursts } from "@/components/ui/data-burst";
 import { AUTH_BURSTS } from "@/lib/data-bursts";
 import { TOTAL_TOOL_COUNT } from "@/lib/tools-config";
-import { mapError } from "@/lib/ship-voice";
+import { mapError, VOICE } from "@/lib/ship-voice";
+import { emailSchema, passwordSchema, redirectFromSearch } from "@/lib/auth-validation";
+import { supabase } from "@/integrations/supabase/client";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 
 const YOUTUBE_VIDEO_ID = "iGYxmAQa8DY";
-
-const emailSchema = z.string().email("VALID EMAIL REQUIRED.");
-const passwordSchema = z.string().min(6, "AT LEAST 6 CHARS REQUIRED.");
 
 const Auth = () => {
   useMetaTags({ title: "Authentication" });
@@ -28,7 +26,18 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-  const [showLogin, setShowLogin] = useState(false);
+  const [searchParams] = useSearchParams();
+  const initialTab = searchParams.get("tab");
+  const [showLogin, setShowLogin] = useState(initialTab === "login" || initialTab === "reset");
+  // Where to land after authenticating; validated same-origin relative path.
+  const redirectTarget = redirectFromSearch(searchParams);
+
+  // Password reset request (lives inside the sign-in panel)
+  const [loginMode, setLoginMode] = useState<"signin" | "reset">(initialTab === "reset" ? "reset" : "signin");
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetError, setResetError] = useState<string | undefined>();
+  const [isRequestingReset, setIsRequestingReset] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
 
   // Signup state (new-account creation)
   const [signupEmail, setSignupEmail] = useState("");
@@ -57,9 +66,9 @@ const Auth = () => {
 
   useEffect(() => {
     if (!loading && user) {
-      navigate("/");
+      navigate(redirectTarget, { replace: true });
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, redirectTarget]);
 
   const validateLogin = () => {
     const newErrors: { email?: string; password?: string } = {};
@@ -80,15 +89,43 @@ const Auth = () => {
     if (error) {
       toast({
         title: "AUTHENTICATION FAILED.",
-        description: error.message === "Invalid login credentials"
-          ? "CREDENTIALS NOT RECOGNIZED. VERIFY AND RETRY."
-          : mapError(error),
+        description: mapError(error),
         variant: "destructive",
       });
     } else {
-      toast({ title: "SESSION ESTABLISHED." });
-      navigate("/");
+      toast({ title: VOICE.sessionEstablished });
+      navigate(redirectTarget, { replace: true });
     }
+  };
+
+  const openReset = () => {
+    setResetEmail((prev) => prev || email);
+    setResetError(undefined);
+    setResetSent(false);
+    setLoginMode("reset");
+  };
+
+  const handleResetRequest = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const parsed = emailSchema.safeParse(resetEmail.trim());
+    if (!parsed.success) {
+      setResetError(parsed.error.errors[0].message);
+      return;
+    }
+    setResetError(undefined);
+    setIsRequestingReset(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(parsed.data, {
+      redirectTo: `${window.location.origin}/auth/reset`,
+    });
+    setIsRequestingReset(false);
+    // Supabase answers the same for known and unknown addresses; we only
+    // surface transport-level failures (rate limit, network), never "no
+    // such account".
+    if (error) {
+      toast({ title: "RESET REQUEST FAILED.", description: mapError(error), variant: "destructive" });
+      return;
+    }
+    setResetSent(true);
   };
 
   const handleOAuthSignIn = async (provider: 'google' | 'github' | 'discord' | 'apple' | 'notion') => {
@@ -358,6 +395,8 @@ const Auth = () => {
 
             {showLogin && (
               <GlassPanel className="p-6 mt-2">
+                {loginMode === "signin" && (
+                <>
                 {/* Google Sign In */}
                 <Button
                   type="button"
@@ -385,6 +424,66 @@ const Auth = () => {
                   </div>
                 </div>
 
+                </>
+                )}
+
+                {loginMode === "reset" ? (
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2">
+                      <KeyRound className="w-4 h-4 text-sf-primary-text" aria-hidden="true" />
+                      <h3 className="font-heading text-sf-eyebrow uppercase text-t3">Reset password</h3>
+                    </div>
+                    {resetSent ? (
+                      <div className="space-y-3" role="status">
+                        <p className="font-mono text-sf-mono uppercase text-sf-primary-text">
+                          {VOICE.resetLinkSent}
+                        </p>
+                        <p className="text-sm text-t2">
+                          If an account exists for that address, the email holds a link to set a new
+                          password. The link expires after one hour.
+                        </p>
+                      </div>
+                    ) : (
+                      <form onSubmit={handleResetRequest} className="space-y-4" noValidate>
+                        <p className="text-sm text-t2">
+                          Enter the email you signed up with. We will send a link to set a new password.
+                        </p>
+                        <div className="space-y-2">
+                          <Label htmlFor="reset-email">Email</Label>
+                          <div className="sf-input-bracketed">
+                            <Input
+                              id="reset-email"
+                              type="email"
+                              autoComplete="email"
+                              placeholder="you@example.com"
+                              value={resetEmail}
+                              onChange={(e) => setResetEmail(e.target.value)}
+                              disabled={isRequestingReset}
+                              aria-invalid={!!resetError}
+                              aria-describedby={resetError ? "reset-email-error" : undefined}
+                            />
+                          </div>
+                          {resetError && (
+                            <p id="reset-email-error" className="text-sm text-sf-crimson-text">// {resetError}</p>
+                          )}
+                        </div>
+                        <Button type="submit" className="w-full gap-2" size="lg" disabled={isRequestingReset}>
+                          {isRequestingReset ? <Loader variant="inline" size="sm" /> : <Mail className="w-4 h-4" />}
+                          SEND RESET LINK
+                        </Button>
+                      </form>
+                    )}
+                    <div className="flex justify-center">
+                      <button
+                        type="button"
+                        onClick={() => setLoginMode("signin")}
+                        className="inline-flex min-h-hit items-center text-sm text-sf-primary-text hover:underline"
+                      >
+                        Back to sign in
+                      </button>
+                    </div>
+                  </div>
+                ) : (
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="login-email">Email</Label>
@@ -413,6 +512,15 @@ const Auth = () => {
                       />
                     </div>
                     {errors.password && <p className="text-sm text-sf-crimson-text">{errors.password}</p>}
+                    <div className="flex justify-end">
+                      <button
+                        type="button"
+                        onClick={openReset}
+                        className="inline-flex min-h-hit items-center text-sm text-sf-primary-text hover:underline"
+                      >
+                        Reset password
+                      </button>
+                    </div>
                   </div>
                   <Button type="submit" className="w-full gap-2" size="lg" disabled={isLoading}>
                     {isLoading ? (
@@ -423,6 +531,7 @@ const Auth = () => {
                     AUTHENTICATE
                   </Button>
                 </form>
+                )}
               </GlassPanel>
             )}
           </div>

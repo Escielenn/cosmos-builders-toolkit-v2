@@ -2399,6 +2399,14 @@ export type Database = {
         Args: { p_label?: string; p_world_id: string }
         Returns: Json
       }
+      world_comment_authors: {
+        Args: { p_world_id: string }
+        Returns: {
+          avatar_url: string | null
+          display_name: string | null
+          user_id: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

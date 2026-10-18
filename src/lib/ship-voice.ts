@@ -52,7 +52,41 @@ export const VOICE = {
   // Auth / session
   sessionEstablished: "SESSION ESTABLISHED.",
   sessionTerminated: "SESSION TERMINATED.",
+  credentialsRejected: "CREDENTIALS NOT RECOGNIZED. VERIFY AND RETRY.",
+  accountExists: "ACCOUNT ALREADY ON FILE. SIGN IN INSTEAD.",
+  emailUnconfirmed: "EMAIL NOT CONFIRMED. CHECK YOUR INBOX FOR THE CONFIRMATION LINK.",
+  weakPassword: "PASSWORD REJECTED. CHOOSE A STRONGER ONE.",
+  samePassword: "NEW PASSWORD MUST DIFFER FROM THE CURRENT ONE.",
+  rateLimited: "TOO MANY REQUESTS. STAND BY AND RETRY IN A MINUTE.",
+  resetLinkSent: "RESET LINK DISPATCHED. CHECK YOUR INBOX.",
+  resetLinkInvalid: "RESET LINK EXPIRED OR INVALID. REQUEST A NEW ONE.",
+  passwordUpdated: "PASSWORD UPDATED. SESSION ESTABLISHED.",
 } as const;
+
+/**
+ * Supabase Auth error codes (AuthError.code) and the raw messages older
+ * servers send without a code. Matching lives here so pages never branch on
+ * raw upstream text.
+ */
+const AUTH_CODES: Record<string, string> = {
+  invalid_credentials: VOICE.credentialsRejected,
+  user_already_exists: VOICE.accountExists,
+  email_exists: VOICE.accountExists,
+  email_not_confirmed: VOICE.emailUnconfirmed,
+  weak_password: VOICE.weakPassword,
+  same_password: VOICE.samePassword,
+  over_email_send_rate_limit: VOICE.rateLimited,
+  over_request_rate_limit: VOICE.rateLimited,
+  otp_expired: VOICE.resetLinkInvalid,
+};
+
+const AUTH_MESSAGES: Array<[RegExp, string]> = [
+  [/invalid login credentials/i, VOICE.credentialsRejected],
+  [/user already registered/i, VOICE.accountExists],
+  [/email not confirmed/i, VOICE.emailUnconfirmed],
+  [/should be different from the old password/i, VOICE.samePassword],
+  [/rate limit|too many requests|security purposes, you can only request/i, VOICE.rateLimited],
+];
 
 /**
  * Map a raw error (Supabase PostgREST code, Error, or string) to Ship's Voice.
@@ -60,7 +94,12 @@ export const VOICE = {
  */
 export function mapError(err: unknown): string {
   if (!err) return VOICE.genericError;
-  if (typeof err === "string") return reshape(err);
+  if (typeof err === "string") {
+    for (const [pattern, voice] of AUTH_MESSAGES) {
+      if (pattern.test(err)) return voice;
+    }
+    return reshape(err);
+  }
 
   // Supabase / PostgREST shape: { code, message, details }
   const anyErr = err as { code?: string; message?: string };
@@ -77,10 +116,16 @@ export function mapError(err: unknown): string {
       case "23514":
         return VOICE.outsideRange;
     }
+    if (AUTH_CODES[anyErr.code]) return AUTH_CODES[anyErr.code];
   }
 
-  if (anyErr.message) return reshape(anyErr.message);
-  if (err instanceof Error) return reshape(err.message);
+  const message = anyErr.message ?? (err instanceof Error ? err.message : undefined);
+  if (message) {
+    for (const [pattern, voice] of AUTH_MESSAGES) {
+      if (pattern.test(message)) return voice;
+    }
+    return reshape(message);
+  }
   return VOICE.genericError;
 }
 
