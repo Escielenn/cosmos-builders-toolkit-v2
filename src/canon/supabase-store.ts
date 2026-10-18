@@ -69,7 +69,9 @@ export const supabaseCanonStore: CanonStore = {
   },
 
   async update(id, patch) {
-    const { data, error } = await supabase.from("facts").update(patch).eq("id", id).select(COLUMNS).single();
+    const { source_ref, ...rest } = patch;
+    const body = source_ref === undefined ? rest : { ...rest, source_ref: source_ref as unknown as Json };
+    const { data, error } = await supabase.from("facts").update(body).eq("id", id).select(COLUMNS).single();
     if (error) throw error;
     return asRow(data);
   },

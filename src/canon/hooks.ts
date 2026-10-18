@@ -9,7 +9,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { canon, type AssertInput, type FactsQuery, type ProposeInput } from "@/canon";
+import { canon, type AssertInput, type EpochNote, type FactsQuery, type ProposeInput } from "@/canon";
 import type { AssertResult, CanonFact, CanonFactRow } from "@/canon/types";
 
 export const canonKeys = {
@@ -76,4 +76,9 @@ export function usePromoteFact(worldId: string | undefined) {
 
 export function useRetractFact(worldId: string | undefined) {
   return useCanonMutation<{ id: string }>(worldId, (v) => canon.retract(v.id));
+}
+
+/** Attach an epoch-boundary note to a stored fact (the "both are right" resolution). */
+export function useAnnotateFact(worldId: string | undefined) {
+  return useCanonMutation<{ id: string; note: EpochNote }>(worldId, (v) => canon.annotate(v.id, v.note));
 }

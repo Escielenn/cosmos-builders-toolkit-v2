@@ -23,6 +23,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AlertTriangle, ArrowUpRight, Columns2, RefreshCw } from "lucide-react";
 import { useStudioWorld } from "@/components/writing/studio-world";
 import { ConfidenceTag } from "@/components/writing/ConfidenceTag";
+import { ProposedFactActions } from "@/components/writing/ProposedFactActions";
 import {
   INLINE_REF_EVENT,
   type InlineRefDetail,
@@ -226,6 +227,9 @@ function FactCard({ detail, onDone }: { detail: InlineRefDetail; onDone: () => v
       </p>
       {status?.state === "current" && (
         <p className="font-mono text-[12px] text-t3">// CURRENT. MATCHES THE SOURCE.</p>
+      )}
+      {live?.confidence === "proposed" && live.factId && world.worldId && (
+        <ProposedFactActions worldId={world.worldId} factId={live.factId} label={live.label} onDone={onDone} />
       )}
       {status && status.state !== "current" && (
         <p className="flex items-start gap-1.5 font-mono text-[12px] text-sf-amber-text">

@@ -101,6 +101,8 @@ The fix:
 
 Ship's Voice for the whole flow: `CLAIM DETECTED. NOT ON FILE. ADOPT?`
 
+*Status 2026-10-18 (1.5 items 11 and 12):* Canon Capture v1 and the Contradiction Ledger ship in the Check tab (it absorbs the old continuity panel; no sixth tab). Rule table, binding order and comparison rules: `src/lib/writing/capture/` (rules.ts header). Detection runs 1200ms after the last edit in idle slices, cached per paragraph; markers sit in the text column's margin; ADOPT writes `proposed` with `source_kind:'prose'` and `source_ref {document_id, excerpt, offset, ...}`; ADOPT AS CANON is an explicit writer click under the canon conflict rule; DISMISS and BOTH ARE RIGHT persist per document in `metadata.captureResolutions`; BOTH ARE RIGHT also appends to a stored fact's `source_ref.epoch_notes` (`canon.annotate`). Not yet: the `asserts` DocBinding (no table), moon count and character age (no predicates; `/sf-fact`).
+
 ### 2.3 — The Contradiction Ledger
 
 Generalize the `Check` tab from "this document vs. canon" to a world-level surface.

@@ -20,7 +20,7 @@ import { supabaseCanonStore, supabaseProjector } from "@/canon/supabase-store";
 export const canon = createCanon(supabaseCanonStore, supabaseProjector);
 
 export { createCanon, CanonError } from "@/canon/core";
-export type { AssertInput, ProposeInput, FactsQuery, CanonStore, Projector, Canon } from "@/canon/core";
+export type { AssertInput, ProposeInput, FactsQuery, CanonStore, Projector, Canon, EpochNote } from "@/canon/core";
 export { mergeCanonFacts, factSlot, displayValue } from "@/canon/merge";
 export { resolvePredicate, predicateLabel, isKnownPredicate, VOCABULARY } from "@/canon/vocabulary";
 export type * from "@/canon/types";
