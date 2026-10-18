@@ -59,7 +59,12 @@ function pluralSubjectNoun(entryType: string | null, count: number): string {
 // Component
 // ---------------------------------------------------------------------------
 
-export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: ContinuityPanelProps) {
+/**
+ * The continuity check's state for a document: the facts it compares
+ * against, the ambiguity picker's candidates, and the findings. Shared by
+ * this panel and the Contradiction Ledger, which lists the same findings.
+ */
+export function useContinuityCheck({ worldId, content, entityId, onSetEntityId }: ContinuityPanelProps) {
   // List hook: the single-worksheet hook throws for non-owners.
   const { worksheets } = useWorksheets(worldId);
 
@@ -150,6 +155,17 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
           ],
     [content, facts, slugs, entityId, needsPicker, canonFacts],
   );
+
+  return { facts, slugs, subjectsById, candidates, needsPicker, currentSubject, canChangeSubject, notes };
+}
+
+export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: ContinuityPanelProps) {
+  const { facts, slugs, candidates, needsPicker, currentSubject, canChangeSubject, notes } = useContinuityCheck({
+    worldId,
+    content,
+    entityId,
+    onSetEntityId,
+  });
 
   if (!worldId) return null;
 

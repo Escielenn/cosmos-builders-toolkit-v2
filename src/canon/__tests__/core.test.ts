@@ -200,3 +200,31 @@ describe("canon.facts", () => {
     expect(asked).toBe("w");
   });
 });
+
+describe("canon.annotate: both are right (epoch boundary note)", () => {
+  const note = { note: "after the terraforming", prose_value: "1.6 g", document_id: "d1", excerpt: "It was 1.6 g." };
+
+  it("appends to source_ref.epoch_notes and changes nothing else", async () => {
+    const { canon } = setup();
+    const r = await canon.assert({ ...g(1.4), sourceRef: { tool: "atlas" } });
+    if (r.status !== "created") throw new Error("setup");
+    const a = await canon.annotate(r.fact.id, note);
+    expect(a.value).toEqual(r.fact.value);
+    expect(a.confidence).toBe("canon");
+    expect(a.source_ref.tool).toBe("atlas");
+    expect(a.source_ref.epoch_notes).toHaveLength(1);
+    const b = await canon.annotate(r.fact.id, { ...note, note: "" });
+    const notes = b.source_ref.epoch_notes as Array<{ note: string; at: string }>;
+    expect(notes.map((n) => n.note)).toEqual(["after the terraforming", ""]);
+    expect(notes[0].at).toBeTruthy();
+  });
+
+  it("refuses a retracted or missing fact", async () => {
+    const { canon } = setup();
+    const r = await canon.assert(g(1.4));
+    if (r.status !== "created") throw new Error("setup");
+    await canon.retract(r.fact.id);
+    await expect(canon.annotate(r.fact.id, note)).rejects.toBeInstanceOf(CanonError);
+    await expect(canon.annotate("nope", note)).rejects.toBeInstanceOf(CanonError);
+  });
+});

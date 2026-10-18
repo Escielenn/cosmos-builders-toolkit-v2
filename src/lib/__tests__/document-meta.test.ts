@@ -7,6 +7,27 @@ import {
   targetProgress,
 } from "@/lib/document-meta";
 
+describe("captureResolutions (Canon Capture)", () => {
+  it("is absent until set, and ignores junk", () => {
+    expect(readDocMeta({}).captureResolutions).toBeUndefined();
+    expect(readDocMeta({ captureResolutions: { a: { r: "nope" }, b: 3 } }).captureResolutions).toBeUndefined();
+    expect(readDocMeta({ captureResolutions: { a: { r: "both", note: "later", at: "t" } } }).captureResolutions).toEqual({
+      a: { r: "both", note: "later", at: "t" },
+    });
+  });
+
+  it("merges a patch into what is stored instead of replacing it, and keeps other keys", () => {
+    const stored = { synopsis: "s", captureResolutions: { a: { r: "dismissed", at: "1" } } };
+    const next = writeDocMeta(stored, { captureResolutions: { b: { r: "both", at: "2" } } });
+    expect(next.synopsis).toBe("s");
+    expect(Object.keys(next.captureResolutions as object).sort()).toEqual(["a", "b"]);
+    const removed = writeDocMeta(next, {
+      captureResolutions: { a: null, b: null } as unknown as Record<string, { r: "dismissed"; at: string }>,
+    });
+    expect(removed.captureResolutions).toBeUndefined();
+  });
+});
+
 describe("readDocMeta", () => {
   it("reads the six fields", () => {
     expect(

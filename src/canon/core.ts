@@ -52,7 +52,10 @@ export interface CanonStore {
   /** The live canon row for a slot, any of the given spellings. */
   findLiveCanon(worldId: string, subjectId: string | null, predicates: string[]): Promise<CanonFactRow | null>;
   insert(row: NewFactRow): Promise<CanonFactRow>;
-  update(id: string, patch: Partial<Pick<CanonFactRow, "confidence" | "superseded_at">>): Promise<CanonFactRow>;
+  update(
+    id: string,
+    patch: Partial<Pick<CanonFactRow, "confidence" | "superseded_at" | "source_ref">>,
+  ): Promise<CanonFactRow>;
 }
 
 /** Loads the computed-on-read facts for a world (world-index). */
@@ -95,6 +98,17 @@ export interface AssertInput {
 }
 
 export type ProposeInput = Omit<AssertInput, "confidence" | "supersede">;
+
+/** A writer's note that a fact and the prose are both right, at different times. */
+export interface EpochNote {
+  /** What changed, in the writer's words ("after the terraforming"). May be empty. */
+  note: string;
+  /** The value the prose holds on the other side of the boundary. */
+  prose_value: string;
+  document_id: string;
+  excerpt: string;
+  at?: string;
+}
 
 export interface FactsQuery extends Pick<MergeOptions, "rowContext"> {
   subjectId?: string | null;
@@ -234,6 +248,24 @@ export function createCanon(store: CanonStore, projector?: Projector) {
           () => store.update(id, { confidence: "canon" }),
           id,
         );
+      });
+    },
+
+    /**
+     * Attach an epoch-boundary note to a live fact (Studio Charter §2.3, the
+     * "both are right" resolution). Appends to source_ref.epoch_notes and
+     * changes nothing else: not the value, not the tier. Full validity
+     * intervals are 2.0 (Law V); this keeps the writer's statement that the
+     * world changed, on the fact it is about, until then.
+     */
+    annotate(id: string, note: EpochNote): Promise<CanonFactRow> {
+      return guard(async () => {
+        const row = await store.get(id);
+        if (!row || row.superseded_at) throw new CanonError("COORDINATES DO NOT MATCH ANY KNOWN RECORD.", "PGRST116");
+        const ref = row.source_ref ?? {};
+        const prior = Array.isArray(ref.epoch_notes) ? (ref.epoch_notes as unknown[]) : [];
+        const entry: EpochNote = { ...note, at: note.at ?? nowIso() };
+        return store.update(id, { source_ref: { ...ref, epoch_notes: [...prior, entry] } });
       });
     },
 
