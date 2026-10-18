@@ -127,7 +127,7 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-sf-line-hairline backdrop-blur-sf-side bg-sf-void/85">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-sf-line-hairline backdrop-blur-sf-side bg-sf-void/95">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex items-center gap-3 shrink-0 mr-6">
           <div className="flex flex-col">
