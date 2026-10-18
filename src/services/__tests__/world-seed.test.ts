@@ -20,7 +20,7 @@ vi.mock("@/services/entity-graph-crud", () => ({
   createEntityConnection: (...a: unknown[]) => createEntityConnection(...a),
 }));
 
-import { executeSeed, seedDocumentMeta } from "@/services/world-seed";
+import { emptySeedProgress, executeSeed, fileSurveyRun, newSurveyRun, seedDocumentMeta } from "@/services/world-seed";
 import { buildSeedPayload } from "@/lib/onboarding/survey-seed";
 import { readDocMeta } from "@/lib/document-meta";
 
@@ -75,5 +75,55 @@ describe("executeSeed", () => {
     const doc = inserted[0];
     expect(doc).toMatchObject({ world_id: "w1", title: "Chapter One", entry_type: "document", content: "", created_by: "u1" });
     expect(readDocMeta(doc.metadata).setInPlaceId).toBe("e2");
+  });
+
+  it("resumes from the failed step without rewriting what exists", async () => {
+    const payload = buildSeedPayload(choices);
+    const progress = emptySeedProgress();
+    // Second connection fails on the first attempt.
+    createEntityConnection.mockResolvedValueOnce({}).mockRejectedValueOnce(new Error("network"));
+    await expect(executeSeed(payload, "w1", "u1", progress)).rejects.toThrow("network");
+    expect(progress.entityIds).toEqual({ star: "e1", planet: "e2", species: "e3" });
+    expect(progress.connectionsDone).toEqual(["planet>orbits>star"]);
+    expect(progress.documentId).toBeNull();
+
+    const result = await executeSeed(payload, "w1", "u1", progress);
+    expect(createEntity).toHaveBeenCalledTimes(3); // not 6
+    expect(createEntityConnection).toHaveBeenCalledTimes(3); // 2 + the retried one
+    expect(createEntityConnection.mock.calls[2][0]).toMatchObject({ relationship_type: "inhabits" });
+    expect(inserted).toHaveLength(1);
+    expect(result).toEqual({ entityIds: { star: "e1", planet: "e2", species: "e3" }, documentId: "doc-1" });
+
+    // A third call after success writes nothing at all.
+    await executeSeed(payload, "w1", "u1", progress);
+    expect(createEntity).toHaveBeenCalledTimes(3);
+    expect(inserted).toHaveLength(1);
+  });
+});
+
+describe("fileSurveyRun", () => {
+  it("creates the world once; a retry after a seeding failure reuses it", async () => {
+    const run = newSurveyRun(buildSeedPayload(choices));
+    const insertWorld = vi.fn().mockResolvedValue("w-new");
+    createEntity.mockReset();
+    createEntity.mockResolvedValueOnce({ id: "e1" }).mockRejectedValueOnce(new Error("down"));
+
+    await expect(fileSurveyRun(run, "u1", insertWorld)).rejects.toThrow("down");
+    expect(run.worldId).toBe("w-new");
+
+    createEntity.mockResolvedValueOnce({ id: "e2" }).mockResolvedValueOnce({ id: "e3" });
+    const result = await fileSurveyRun(run, "u1", insertWorld);
+    expect(insertWorld).toHaveBeenCalledTimes(1);
+    expect(insertWorld).toHaveBeenCalledWith("Kellis");
+    expect(result.worldId).toBe("w-new");
+    expect(result.entityIds).toEqual({ star: "e1", planet: "e2", species: "e3" });
+    expect(result.documentId).toBe("doc-1");
+  });
+
+  it("leaves worldId unset when the world insert itself fails", async () => {
+    const run = newSurveyRun(buildSeedPayload(choices));
+    await expect(fileSurveyRun(run, "u1", vi.fn().mockRejectedValue(new Error("rls")))).rejects.toThrow("rls");
+    expect(run.worldId).toBeNull();
+    expect(createEntity).not.toHaveBeenCalled();
   });
 });

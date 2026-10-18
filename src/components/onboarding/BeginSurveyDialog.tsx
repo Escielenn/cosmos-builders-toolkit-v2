@@ -27,6 +27,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader } from "@/components/ui/loader";
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/hooks/use-toast";
 import IconPicker from "@/components/world/IconPicker";
 import { cn } from "@/lib/utils";
 import { useBeginSurvey } from "@/hooks/use-begin-survey";
@@ -98,10 +100,14 @@ export default function BeginSurveyDialog({
   const [speciesLine, setSpeciesLine] = useState("");
 
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const { toast } = useToast();
+  const resetSurvey = useRef(survey.reset);
+  resetSurvey.current = survey.reset;
 
   // Fresh survey every time the dialog opens.
   useEffect(() => {
     if (!open) return;
+    resetSurvey.current();
     setStep("designation");
     setWorldName("");
     setWorldIcon("globe");
@@ -125,6 +131,38 @@ export default function BeginSurveyDialog({
 
   const index = STEPS.indexOf(step);
   const busy = survey.isPending || initializingEmpty;
+  // Seeding failed after the world was created. The run is kept: RETRY
+  // resumes it from the failed step, never a second world.
+  const partialWorldId = survey.partialWorldId;
+  const stalled = !!partialWorldId && !survey.isPending;
+
+  const openWorld = useCallback(
+    (worldId: string) => {
+      resetSurvey.current();
+      onOpenChange(false);
+      navigate(`/worlds/${worldId}`);
+    },
+    [onOpenChange, navigate],
+  );
+
+  const handleOpenChange = (o: boolean) => {
+    if (busy) return;
+    if (!o && partialWorldId) {
+      // Cancelled after a partial failure: the world stays, and says so.
+      const worldId = partialWorldId;
+      toast({
+        title: "WORLD CREATED. SEEDING INCOMPLETE.",
+        description: "The world is on file. Some survey entries were not written.",
+        action: (
+          <ToastAction altText="Open world" onClick={() => navigate(`/worlds/${worldId}`)}>
+            Open world
+          </ToastAction>
+        ),
+      });
+      resetSurvey.current();
+    }
+    onOpenChange(o);
+  };
   const nameOk = worldName.trim().length > 0;
 
   const go = (delta: number) => {
@@ -189,7 +227,7 @@ export default function BeginSurveyDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={(o) => { if (!busy) onOpenChange(o); }}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-2xl bg-sf-surface-elevated gap-5 p-4 sm:p-6">
         <DialogHeader className="text-left space-y-2 pr-10">
           <p className="font-heading text-sf-eyebrow uppercase text-t4" aria-hidden="true">
@@ -213,8 +251,31 @@ export default function BeginSurveyDialog({
           <StepTrack index={index} />
         </DialogHeader>
 
+        {/* ── SEEDING INCOMPLETE ──────────────────────────────────── */}
+        {stalled && partialWorldId && (
+          <div role="alert" className="space-y-4">
+            <div className="border border-sf-crimson bg-sf-crimson/[0.06] px-4 py-3 space-y-1">
+              <p className="flex items-center gap-2 font-heading text-sf-eyebrow uppercase text-sf-crimson-text">
+                <AlertTriangle className="w-4 h-4 shrink-0 text-sf-crimson" aria-hidden="true" />
+                {"// WORLD CREATED. SEEDING INCOMPLETE."}
+              </p>
+              <p className="text-sm text-t2">
+                The world is on file. Retry resumes from the failed entry; nothing already written is written twice.
+              </p>
+            </div>
+            <div className="flex flex-col-reverse sm:flex-row gap-2">
+              <Button type="button" variant="sf-ghost" size="sf-md" className="sm:mr-auto" onClick={() => openWorld(partialWorldId)}>
+                Open world
+              </Button>
+              <Button type="button" variant="sf-primary" size="sf-md" onClick={() => fileSurvey()}>
+                Retry
+              </Button>
+            </div>
+          </div>
+        )}
+
         {/* ── DESIGNATION ─────────────────────────────────────────── */}
-        {step === "designation" && (
+        {!stalled && step === "designation" && (
           <form
             className="space-y-4"
             onSubmit={(e) => { e.preventDefault(); primary(); }}
@@ -271,7 +332,7 @@ export default function BeginSurveyDialog({
         )}
 
         {/* ── STAR ────────────────────────────────────────────────── */}
-        {step === "star" && (
+        {!stalled && step === "star" && (
           <div className="space-y-4">
             <ChoiceGroup
               label="Spectral class"
@@ -313,7 +374,7 @@ export default function BeginSurveyDialog({
         )}
 
         {/* ── WORLD ───────────────────────────────────────────────── */}
-        {step === "world" && (
+        {!stalled && step === "world" && (
           <div className="space-y-4">
             <ChoiceGroup
               label="Planet type"
@@ -368,7 +429,7 @@ export default function BeginSurveyDialog({
         )}
 
         {/* ── LIFE ────────────────────────────────────────────────── */}
-        {step === "life" && (
+        {!stalled && step === "life" && (
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="survey-species-name">Species name</Label>
@@ -399,7 +460,7 @@ export default function BeginSurveyDialog({
         )}
 
         {/* ── Transport ───────────────────────────────────────────── */}
-        {step !== "designation" && (
+        {!stalled && step !== "designation" && (
           <div className="grid grid-cols-2 sm:flex sm:flex-row gap-2 border-t border-sf-line-hairline pt-4">
             <Button type="button" variant="sf-ghost" size="sf-md" onClick={() => go(-1)} disabled={busy}>
               <ChevronLeft aria-hidden="true" />
