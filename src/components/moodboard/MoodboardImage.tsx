@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import type { MoodboardImage as MoodboardImageType } from "@/hooks/use-moodboard";
+import { useStorageUrl } from "@/hooks/use-storage-url";
 
 interface MoodboardImageProps {
   image: MoodboardImageType;
@@ -23,6 +24,8 @@ export function MoodboardImage({
   const [isEditing, setIsEditing] = useState(false);
   const [caption, setCaption] = useState(image.caption || "");
   const [imageError, setImageError] = useState(false);
+  const display = useStorageUrl(image.url);
+  const unavailable = imageError || display.isError;
 
   const handleSaveCaption = () => {
     onUpdateCaption(image.id, caption);
@@ -39,16 +42,18 @@ export function MoodboardImage({
       {/* Image */}
       <div
         className="aspect-video cursor-pointer relative"
-        onClick={() => !imageError && onOpenLightbox(image)}
+        onClick={() => !unavailable && display.url && onOpenLightbox(image)}
       >
-        {imageError ? (
+        {unavailable ? (
           <div className="w-full h-full flex items-center justify-center bg-muted">
             <span className="text-sm text-t3">Image not found</span>
           </div>
+        ) : !display.url ? (
+          <div className="w-full h-full bg-muted" aria-busy="true" />
         ) : (
           <>
             <img
-              src={image.url}
+              src={display.url}
               alt={image.caption || "Moodboard image"}
               className="w-full h-full object-cover"
               onError={() => setImageError(true)}

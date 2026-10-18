@@ -617,6 +617,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
       {isEntityType(entry.entry_type) && acceptsMapSheet(cascadeEntityType) && (
         <MapSheetSection
           entryId={entry.id}
+          worldId={entry.world_id}
           url={mapSheet?.url ?? null}
           projection={mapSheet?.projection ?? "equirectangular"}
           canEdit={!!canEdit}

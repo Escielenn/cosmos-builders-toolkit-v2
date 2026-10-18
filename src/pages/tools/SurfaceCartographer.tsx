@@ -72,7 +72,6 @@ import { useWorksheetSubjects } from "@/hooks/use-worksheet-subjects";
 import { useCreateEntity, useEntities, useUpdateEntity } from "@/hooks/use-entity-graph";
 import { useEntityAttachedWorksheets } from "@/hooks/use-codex-entity";
 import { useWorldSimulations } from "@/hooks/use-world-simulations";
-import { supabase } from "@/integrations/supabase/client";
 import { attachWorksheetToEntity } from "@/services/worksheet-subjects";
 import type { Json } from "@/integrations/supabase/types";
 import type { Entity } from "@/services/entity-graph-types";
@@ -103,7 +102,8 @@ import {
   type SurfaceCartographerState,
   type SurfacePlace,
 } from "@/lib/surface-cartographer/places";
-import { MAX_SHEET_BYTES, SHEET_BUCKET, checkSheet, sheetStoragePath } from "@/lib/surface-cartographer/sheet";
+import { MAX_SHEET_BYTES, checkSheet } from "@/lib/surface-cartographer/sheet";
+import { resolveStorageUrl, uploadMapSheet } from "@/services/storage-urls";
 import { bindGlobe } from "@/gl/bind/globe";
 import FlatMap from "@/components/tools/surface-cartographer/FlatMap";
 import BodyFactsPanel from "@/components/tools/surface-cartographer/BodyFactsPanel";
@@ -332,7 +332,8 @@ const SurfaceCartographer = () => {
     setSheetFailed(false);
     if (!sheet?.url) return;
     let alive = true;
-    loadImage(sheet.url)
+    resolveStorageUrl(sheet.url)
+      .then((src) => loadImage(src))
       .then((img) => alive && setSheetImg(img))
       .catch(() => alive && setSheetFailed(true));
     return () => {
@@ -464,13 +465,16 @@ const SurfaceCartographer = () => {
     try {
       const size = await readImageSize(file);
       const check = checkSheet(size.width, size.height, pendingProjection);
-      const path = sheetStoragePath(user.id, bodyEntity.id, file.name.split(".").pop() ?? "png");
-      const { error } = await supabase.storage.from(SHEET_BUCKET).upload(path, file);
-      if (error) throw error;
-      const { data } = supabase.storage.from(SHEET_BUCKET).getPublicUrl(path);
+      const storedUrl = await uploadMapSheet({
+        userId: user.id,
+        worldId: bodyEntity.world_id,
+        entityId: bodyEntity.id,
+        body: file,
+        ext: file.name.split(".").pop() ?? "png",
+      });
       await updateEntity.mutateAsync({
         id: bodyEntity.id,
-        metadata: { map_sheet_url: data.publicUrl, map_sheet_projection: pendingProjection },
+        metadata: { map_sheet_url: storedUrl, map_sheet_projection: pendingProjection },
       });
       setState((s) => ({ ...s, mapSource: "sheet" }));
       toast({
@@ -496,13 +500,17 @@ const SurfaceCartographer = () => {
     setBusy("attach");
     try {
       const blob = await canvasToBlob(generated.canvas);
-      const path = sheetStoragePath(user.id, bodyEntity.id, "png");
-      const { error } = await supabase.storage.from(SHEET_BUCKET).upload(path, blob, { contentType: "image/png" });
-      if (error) throw error;
-      const { data } = supabase.storage.from(SHEET_BUCKET).getPublicUrl(path);
+      const storedUrl = await uploadMapSheet({
+        userId: user.id,
+        worldId: bodyEntity.world_id,
+        entityId: bodyEntity.id,
+        body: blob,
+        ext: "png",
+        contentType: "image/png",
+      });
       await updateEntity.mutateAsync({
         id: bodyEntity.id,
-        metadata: { map_sheet_url: data.publicUrl, map_sheet_projection: "equirectangular" },
+        metadata: { map_sheet_url: storedUrl, map_sheet_projection: "equirectangular" },
       });
       setState((s) => ({ ...s, mapSource: "sheet" }));
       toast({ title: "GENERATED MAP FILED AS SHEET.", description: "PAINT OVER IT ELSEWHERE AND ATTACH THE RESULT WHEN READY." });

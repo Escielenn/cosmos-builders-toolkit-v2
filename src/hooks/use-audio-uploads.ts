@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import type { AudioTrack } from "@/lib/audio/types";
 import { mapError } from "@/lib/ship-voice";
+import { uploadStorageObject } from "@/services/storage-urls";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -143,15 +144,9 @@ export function useUploadAudioTrack() {
       const ext = file.name.split(".").pop() ?? "mp3";
       const storagePath = `${user.id}/${crypto.randomUUID()}.${ext}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("audio-tracks")
-        .upload(storagePath, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from("audio-tracks")
-        .getPublicUrl(storagePath);
+      // Private bucket: `url` is the object's address; the player signs it
+      // at play time (src/services/storage-urls.ts).
+      const storedUrl = await uploadStorageObject("audio-tracks", storagePath, file);
 
       // Save metadata
       const trackTitle = title?.trim() || file.name.replace(/\.[^.]+$/, "");
@@ -163,7 +158,7 @@ export function useUploadAudioTrack() {
           title: trackTitle,
           filename: file.name,
           storage_path: storagePath,
-          url: publicUrl,
+          url: storedUrl,
           duration_seconds: durationSeconds,
           file_size_bytes: file.size,
           mime_type: file.type || `audio/${ext}`,

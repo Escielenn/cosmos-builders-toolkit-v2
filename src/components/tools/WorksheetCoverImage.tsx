@@ -4,11 +4,12 @@ import { Loader } from "@/components/ui/loader";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { MoodboardPickerDialog } from "@/components/moodboard/MoodboardPickerDialog";
 
 import { mapError } from "@/lib/ship-voice";
+import { uploadStorageObject } from "@/services/storage-urls";
+import { useStorageUrl } from "@/hooks/use-storage-url";
 interface WorksheetCoverImageProps {
   imageUrl: string | null;
   onImageChange: (url: string | null) => void;
@@ -27,6 +28,7 @@ export function WorksheetCoverImage({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [moodboardPickerOpen, setMoodboardPickerOpen] = useState(false);
+  const display = useStorageUrl(imageUrl);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -55,11 +57,10 @@ export function WorksheetCoverImage({
     const fileExt = file.name.split(".").pop();
     const filePath = `${user.id}/${worksheetId}/cover.${fileExt}`;
 
-    const { error: uploadError } = await supabase.storage
-      .from("moodboard-images")
-      .upload(filePath, file, { upsert: true });
-
-    if (uploadError) {
+    let storedUrl: string;
+    try {
+      storedUrl = await uploadStorageObject("moodboard-images", filePath, file, { upsert: true });
+    } catch (uploadError) {
       toast({
         title: "UPLOAD FAILED.",
         description: mapError(uploadError),
@@ -69,11 +70,7 @@ export function WorksheetCoverImage({
       return;
     }
 
-    const { data } = supabase.storage
-      .from("moodboard-images")
-      .getPublicUrl(filePath);
-
-    onImageChange(data.publicUrl);
+    onImageChange(storedUrl);
     setIsUploading(false);
 
     if (fileInputRef.current) {
@@ -142,7 +139,7 @@ export function WorksheetCoverImage({
       />
       <div className="relative w-full aspect-[3/1] rounded-none overflow-hidden border border-sf-line mt-2">
         <img
-          src={imageUrl}
+          src={display.url ?? undefined}
           alt="Worksheet cover"
           className="w-full h-full object-cover"
         />

@@ -64,16 +64,10 @@ export function checkSheet(width: number, height: number, projection: MapProject
 /** The upload cap, shared with the Codex map-sheet section. */
 export const MAX_SHEET_BYTES = 12 * 1024 * 1024;
 
-/**
- * Storage. The Codex already files map sheets in the public `world-headers`
- * bucket under `<user>/map-sheets/` (MapSheetSection.tsx). One place for one
- * kind of thing: the cartographer writes to the same bucket and prefix, and
- * the same entity keys (map_sheet_url, map_sheet_projection), so a sheet
- * attached here is the sheet the Atlas shows and vice versa.
+/*
+ * Storage lives in src/services/storage-urls.ts (uploadMapSheet): the private
+ * `map-sheets` bucket at <user>/<world>/<entity>-<ts>.<ext>, shared with the
+ * Codex map-sheet section, under the same entity keys (map_sheet_url,
+ * map_sheet_projection), so a sheet attached here is the sheet the Atlas shows
+ * and vice versa.
  */
-export const SHEET_BUCKET = "world-headers";
-
-export function sheetStoragePath(userId: string, entityId: string, ext: string): string {
-  const clean = (ext || "png").toLowerCase().replace(/[^a-z0-9]/g, "") || "png";
-  return `${userId}/map-sheets/${entityId}-${Date.now()}.${clean}`;
-}

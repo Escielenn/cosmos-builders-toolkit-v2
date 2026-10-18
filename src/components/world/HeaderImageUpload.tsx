@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils";
 import { MoodboardPickerDialog } from "@/components/moodboard/MoodboardPickerDialog";
 
 import { mapError } from "@/lib/ship-voice";
+import { promoteToPublicHeader } from "@/services/storage-urls";
+import { useStorageUrl } from "@/hooks/use-storage-url";
 interface HeaderImageUploadProps {
   currentImageUrl: string | null;
   onImageChange: (url: string | null) => void;
@@ -97,6 +99,28 @@ const HeaderImageUpload = ({
     onImageChange(null);
   };
 
+  // Headers show on shared links and community cards, so they must sit in the
+  // public world-headers bucket. A moodboard pick is copied there first.
+  const handleMoodboardPick = async (url: string) => {
+    if (!user) return;
+    setIsUploading(true);
+    try {
+      onImageChange(await promoteToPublicHeader(url, user.id));
+    } catch (err) {
+      toast({
+        title: "IMAGE NOT FILED.",
+        description: mapError(err),
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  // Legacy headers picked from a moodboard before it went private still
+  // resolve for the owner.
+  const preview = useStorageUrl(currentImageUrl);
+
   return (
     <div className={cn("relative", className)}>
       <input
@@ -111,7 +135,7 @@ const HeaderImageUpload = ({
       {currentImageUrl ? (
         <div className="relative w-full aspect-[3/1] rounded-none overflow-hidden border border-sf-line">
           <img
-            src={currentImageUrl}
+            src={preview.url ?? undefined}
             alt="World header"
             loading="lazy"
             className="w-full h-full object-cover"
@@ -204,7 +228,7 @@ const HeaderImageUpload = ({
         <MoodboardPickerDialog
           open={moodboardPickerOpen}
           onOpenChange={setMoodboardPickerOpen}
-          onSelect={(url) => onImageChange(url)}
+          onSelect={(url) => void handleMoodboardPick(url)}
           currentImageUrl={currentImageUrl}
         />
       )}

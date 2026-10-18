@@ -2,6 +2,7 @@ import { useEffect, useCallback } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
+import { useStorageUrl } from "@/hooks/use-storage-url";
 
 interface MoodboardLightboxProps {
   images: MoodboardImage[];
@@ -54,6 +55,8 @@ export function MoodboardLightbox({
     };
   }, [currentImage]);
 
+  const display = useStorageUrl(currentImage?.url);
+
   if (!currentImage) return null;
 
   return (
@@ -100,11 +103,17 @@ export function MoodboardLightbox({
         className="max-w-[90vw] max-h-[90vh] flex flex-col items-center"
         onClick={(e) => e.stopPropagation()}
       >
-        <img
-          src={currentImage.url}
-          alt={currentImage.caption || "Moodboard image"}
-          className="max-w-full max-h-[80vh] object-contain"
-        />
+        {display.url ? (
+          <img
+            src={display.url}
+            alt={currentImage.caption || "Moodboard image"}
+            className="max-w-full max-h-[80vh] object-contain"
+          />
+        ) : (
+          <p className="text-sm text-t2">
+            {display.isError ? "IMAGE UNAVAILABLE." : "RETRIEVING IMAGE."}
+          </p>
+        )}
 
         {/* Caption */}
         {currentImage.caption && (
