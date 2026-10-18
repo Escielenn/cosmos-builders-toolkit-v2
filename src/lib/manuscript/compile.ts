@@ -3,7 +3,8 @@
 //
 // Settings live per world at worlds.settings.compile (the jsonb column from
 // 20261018_writing_p1.sql), with a localStorage fallback until it exists.
-// Ordering here is a COMPILE order: it never moves anything in the binder.
+// Ordering: the compile page now follows and moves the binder (decision
+// 2026-10-17). The `order` field below is legacy and ignored by the page.
 // Exclusion is by document or folder id; an excluded folder drops its subtree.
 //
 // Chapters: a folder that directly holds included documents is a chapter

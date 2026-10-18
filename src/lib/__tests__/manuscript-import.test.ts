@@ -20,7 +20,7 @@ import {
   splitHtmlAtHeadings,
   type ImportNode,
 } from "@/lib/manuscript-import";
-import { mapScrivStatus, mergeScrivLabels, nearestHue, parseScrivx } from "@/lib/manuscript-import/scrivener";
+import { entityTypeForFolder, importScrivener, mapScrivStatus, mergeScrivLabels, nearestHue, parseScrivx } from "@/lib/manuscript-import/scrivener";
 import { sourceFromZip, type FileSource } from "@/lib/manuscript-import/sources";
 import { readDocMeta } from "@/lib/document-meta";
 
@@ -352,5 +352,54 @@ describe("files", () => {
     const html = await docxToHtml(new Uint8Array(buf).buffer);
     expect(html).toBe("<h1>Part One</h1><h2>Landing</h2><p>The <strong>ship</strong><em> fell.</em></p>");
     expect(titles(splitHtmlAtHeadings(html, "x"))).toEqual([{ "Part One": ["Landing"] }]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Scrivener research folders → Codex entries (decision 2026-10-17)
+// ---------------------------------------------------------------------------
+
+describe("scrivener research folders become Codex entries", () => {
+  it("maps folder names to entity types", () => {
+    expect(entityTypeForFolder("Characters")).toBe("character");
+    expect(entityTypeForFolder("Places")).toBe("location");
+    expect(entityTypeForFolder(" Settings ")).toBe("location");
+    expect(entityTypeForFolder("Factions")).toBe("faction");
+    expect(entityTypeForFolder("Ships")).toBe("vessel");
+    expect(entityTypeForFolder("Ideas")).toBe("lore");
+  });
+
+  it("files text items as entities, keeps the draft as documents, skips templates", async () => {
+    const scrivx = `<?xml version="1.0" encoding="UTF-8"?>
+<ScrivenerProject Version="2.0"><Binder>
+  <BinderItem UUID="D" Type="DraftFolder"><Title>Draft</Title><Children>
+    <BinderItem UUID="S1" Type="Text"><Title>Opening</Title></BinderItem>
+  </Children></BinderItem>
+  <BinderItem UUID="C" Type="Folder"><Title>Characters</Title><Children>
+    <BinderItem UUID="C1" Type="Text"><Title>Ix</Title></BinderItem>
+    <BinderItem UUID="CF" Type="Folder"><Title>Minor</Title><Children>
+      <BinderItem UUID="C2" Type="Text"><Title>Talto</Title></BinderItem>
+    </Children></BinderItem>
+  </Children></BinderItem>
+  <BinderItem UUID="T" Type="Folder"><Title>Template Sheets</Title><Children>
+    <BinderItem UUID="T1" Type="Text"><Title>Character Sketch</Title></BinderItem>
+  </Children></BinderItem>
+  <BinderItem UUID="R" Type="ResearchFolder"><Title>Research</Title></BinderItem>
+  <BinderItem UUID="X" Type="TrashFolder"><Title>Trash</Title></BinderItem>
+</Binder></ScrivenerProject>`;
+    const src = memSource({
+      "P.scriv/P.scrivx": scrivx,
+      "P.scriv/Files/Data/S1/content.rtf": "{\\rtf1 It began.\\par}",
+      "P.scriv/Files/Data/C1/content.rtf": "{\\rtf1 A pilot.\\par}",
+      "P.scriv/Files/Data/C1/synopsis.txt": "The pilot.",
+      "P.scriv/Files/Data/C2/content.rtf": "{\\rtf1 A diplomat.\\par}",
+    });
+    const res = await importScrivener(src, "P.scriv/P.scrivx", []);
+    expect(titles(res.nodes)).toEqual([{ Draft: ["Opening"] }, { Research: [] }]);
+    expect(res.entities.map((e) => [e.entryType, e.title, e.summary, e.tags])).toEqual([
+      ["character", "Ix", "The pilot.", ["Characters"]],
+      ["character", "Talto", "", ["Characters", "Minor"]],
+    ]);
+    expect(res.entities[0].html).toContain("A pilot.");
   });
 });

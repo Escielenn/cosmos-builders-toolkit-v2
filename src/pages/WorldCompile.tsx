@@ -4,8 +4,8 @@
 // Route: /worlds/:worldId/compile
 //
 // The writer picks what goes in (per document or folder), the order it goes
-// in (drag, or Up / Down on a row's handle; compile order only, the binder
-// never moves), how it is dressed (preset, separators, chapter headings and
+// in (drag, or Up / Down on a row's handle; reordering here reorders the binder:
+// one order everywhere), how it is dressed (preset, separators, chapter headings and
 // numbering, title page, back matter) and the format: Word in Standard
 // Manuscript Format, PDF, EPUB, Markdown or plain text.
 //
@@ -39,7 +39,7 @@ import { GlassPanel } from "@/components/ui/glass-panel";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BackLink } from "@/components/ui/back-link";
 import { useMetaTags } from "@/hooks/use-meta-tags";
-import { useWritingDocuments } from "@/hooks/use-writing-documents";
+import { useReorderDocuments, useWritingDocuments } from "@/hooks/use-writing-documents";
 import { useWorldSetting } from "@/hooks/use-world-setting";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useAuth } from "@/contexts/AuthContext";
@@ -60,7 +60,6 @@ import {
   PRESETS,
   PRESET_LABELS,
   SEPARATORS,
-  applyCompileOrder,
   applyPreset,
   approxWordsLine,
   buildManuscript,
@@ -164,9 +163,12 @@ export default function WorldCompile() {
     [update],
   );
 
-  // Binder → compile tree, in compile order (exclusion shown, not applied).
+  // Binder → compile tree. Compile follows the binder's order (decision
+  // 2026-10-17: one order, not two); reordering here moves the binder.
+  // Any compile-only order saved by 0.7456 is ignored.
   const compileTree = useMemo(() => toCompileNodes(tree ?? []), [tree]);
-  const orderedTree = useMemo(() => applyCompileOrder(compileTree, s.order), [compileTree, s.order]);
+  const orderedTree = compileTree;
+  const buildSettings = useMemo(() => ({ ...s, order: {} }), [s]);
   const excluded = useMemo(() => new Set(s.excluded), [s.excluded]);
 
   // World appendix (off by default).
@@ -189,8 +191,8 @@ export default function WorldCompile() {
   }, [worksheets]);
 
   const manuscript = useMemo(
-    () => buildManuscript(compileTree, s, { appendixHtml, fallbackTitle, fallbackAuthor }),
-    [compileTree, s, appendixHtml, fallbackTitle, fallbackAuthor],
+    () => buildManuscript(compileTree, buildSettings, { appendixHtml, fallbackTitle, fallbackAuthor }),
+    [compileTree, buildSettings, appendixHtml, fallbackTitle, fallbackAuthor],
   );
   const docCount = manuscript.sections.reduce((n, sec) => n + sec.docs.length, 0);
 
@@ -208,11 +210,12 @@ export default function WorldCompile() {
     return out;
   }, [compileTree]);
 
-  // Reorder (compile only)
+  // Reorder: moves the binder (siblings keep their parent; only order changes).
   const [announce, setAnnounce] = useState("");
-  const reorder = (parentKey: string, ids: string[], label: string, index: number) => {
-    update({ order: { ...s.order, [parentKey]: ids } });
-    setAnnounce(`${label} MOVED. POSITION ${index + 1} OF ${ids.length}.`);
+  const reorderDocs = useReorderDocuments(worldId);
+  const reorder = (_parentKey: string, ids: string[], label: string, index: number) => {
+    reorderDocs.mutate(ids);
+    setAnnounce(`${label} MOVED IN THE BINDER. POSITION ${index + 1} OF ${ids.length}.`);
   };
 
   // Preview
@@ -300,18 +303,6 @@ export default function WorldCompile() {
                     </Button>
                     <Button variant="ghost" size="sm" className="min-h-hit text-xs" onClick={() => update({ excluded: allIds })}>
                       Exclude all
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="min-h-hit text-xs"
-                      disabled={Object.keys(s.order).length === 0}
-                      onClick={() => {
-                        update({ order: {} });
-                        setAnnounce("BINDER ORDER RESTORED.");
-                      }}
-                    >
-                      Binder order
                     </Button>
                   </div>
                 </div>

@@ -1,5 +1,14 @@
 # StellarForge Changelog
 
+## 0.7457
+- Scrivener import: top-level folders other than Draft and Research
+  (Characters, Places, Factions, Ships, …) become Codex entries of the
+  matching type, so they can be @mentioned and used as POV and setting.
+  Synopses become summaries; subfolder names and keywords become tags.
+  Template Sheets are skipped.
+- Compile follows the binder: reordering in compile reorders the binder.
+  One order everywhere.
+
 ## 0.7456
 Writing space phase 4 of 4: in and out.
 - Import into a world: Markdown, plain text, Word (.docx), RTF, HTML, a

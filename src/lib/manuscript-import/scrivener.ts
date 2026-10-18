@@ -12,7 +12,9 @@
 // Mapping:
 //   Draft / Manuscript folder → a folder of that name, nested order kept
 //   Research folder           → "Research" (text items only; media counted)
-//   other top-level folders   → kept as folders (Characters, Places, …)
+//   other top-level folders   → Codex entries (Characters → character,
+//                               Places → location, …; decision 2026-10-17)
+//   Template Sheets           → skipped (Scrivener's own templates)
 //   Trash                     → skipped
 //   Label                     → world label (matched by name, else created
 //                               with the nearest named hue)
@@ -220,8 +222,49 @@ export function mapScrivStatus(name: string): DocStatus | null {
 // Project → forest
 // ---------------------------------------------------------------------------
 
+/**
+ * A Codex entry made from a text item in a top-level research-style folder
+ * (Characters, Places, …). The writer's sheets become entities the Studio can
+ * @mention, not binder documents (decision 2026-10-17).
+ */
+export interface ImportEntity {
+  entryType: string;
+  title: string;
+  /** Tiptap HTML body (the item's text). */
+  html: string;
+  /** One-line summary (the Scrivener synopsis). */
+  summary: string;
+  notes: string;
+  /** The folder path it came from, plus Scrivener keywords. */
+  tags: string[];
+}
+
+/** Scrivener folder names → Codex entity types. Unknown names become lore. */
+const ENTITY_FOLDER_TYPES: [RegExp, string][] = [
+  [/^(characters?|cast|people|persons|dramatis personae|protagonists?|antagonists?)$/i, "character"],
+  [/^(places?|locations?|settings?|geography|cities|maps?)$/i, "location"],
+  [/^(species|races?|creatures?|aliens?|beasts?|fauna|flora)$/i, "species"],
+  [/^(factions?|organi[sz]ations?|groups?|polities|nations?|houses?|guilds?|empires?)$/i, "faction"],
+  [/^(tech|technology|technologies|inventions?|devices?)$/i, "technology"],
+  [/^(ships?|vessels?|spacecraft|starships?|vehicles?)$/i, "vessel"],
+  [/^(artifacts?|artefacts?|objects?|items?|relics?)$/i, "artifact"],
+  [/^(planets?|worlds?|moons?)$/i, "planet"],
+  [/^(languages?|conlangs?|lexicon|glossary)$/i, "language"],
+  [/^(myths?|mythology|religions?|gods|deities|beliefs?)$/i, "mythology"],
+];
+
+export function entityTypeForFolder(name: string): string {
+  const n = name.trim();
+  for (const [re, type] of ENTITY_FOLDER_TYPES) if (re.test(n)) return type;
+  return "lore";
+}
+
+const SKIP_FOLDERS = /^(template sheets?|templates?)$/i;
+
 export interface ScrivImport {
   nodes: ImportNode[];
+  /** Text items from top-level folders other than Draft and Research. */
+  entities: ImportEntity[];
   /** Full world label set after the merge (write back only if `labelsCreated`). */
   labels: WritingLabel[];
   labelsCreated: number;
@@ -345,6 +388,30 @@ export async function importScrivener(
     return out;
   };
 
+  // Top-level research-style folders → Codex entries. Every text item
+  // becomes one entity; nested folder names ride along as tags.
+  const entities: ImportEntity[] = [];
+  const toEntities = async (items: ScrivItem[], entryType: string, path: string[]) => {
+    for (const it of items) {
+      done++;
+      if (it.type === "TrashFolder") continue;
+      const isFolder = FOLDER_TYPES.has(it.type);
+      if (!isFolder && it.type !== "Text") {
+        skippedMedia++;
+        await toEntities(it.children, entryType, path);
+        continue;
+      }
+      const title = it.title || "Untitled";
+      if (it.type === "Text") {
+        const { html, found, synopsis, notes } = await readItem(it);
+        if (!found) missingContent++;
+        const keywords = it.keywordIds.map((k) => project.keywords.get(k)).filter((k): k is string => !!k);
+        entities.push({ entryType, title, html, summary: synopsis, notes, tags: [...path, ...keywords] });
+      }
+      await toEntities(it.children, entryType, isFolder ? [...path, title] : path);
+    }
+  };
+
   const nodes: ImportNode[] = [];
   for (const top of project.items) {
     if (top.type === "TrashFolder") continue;
@@ -353,12 +420,19 @@ export async function importScrivener(
       nodes.push(folderNode("Research", children));
       continue;
     }
+    if (top.type === "Folder") {
+      const name = top.title || "";
+      if (SKIP_FOLDERS.test(name.trim())) continue;
+      await toEntities(top.children, entityTypeForFolder(name), [name]);
+      continue;
+    }
     nodes.push(...(await convert([top])));
   }
   onProgress?.(total, total);
 
   return {
     nodes,
+    entities,
     labels: merged.labels,
     labelsCreated: merged.created,
     skippedMedia,

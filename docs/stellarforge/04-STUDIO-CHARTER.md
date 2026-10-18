@@ -33,14 +33,14 @@ Match the 80% writers actually use. Ship these before adding graph cleverness, b
 | **Corkboard** — index cards with synopsis, drag to reorder | `Board` button exists | P0 |
 | **Outliner** — table view with metadata columns | done 2026-10-18 (Outline view: reading order, toggleable columns, inline status/label/synopsis, totals) | P0 |
 | **Document metadata** — label, status, POV, target words, notes | done 2026-10-18 (inspector Doc tab; keywords too) | P0 |
-| **Compile** — manuscript output (DOCX, PDF, EPUB, MD) with format presets, front/back matter, separators | done 2026-10-18 (presets Standard Manuscript / Reading copy / Ebook; DOCX in SMF, PDF, EPUB 3, MD, TXT; include/exclude and compile-only reorder per world; separators; chapter numbering; title page with rounded word count; About the author; world appendix) | P0 |
+| **Compile** — manuscript output (DOCX, PDF, EPUB, MD) with format presets, front/back matter, separators | done 2026-10-18 (presets Standard Manuscript / Reading copy / Ebook; DOCX in SMF, PDF, EPUB 3, MD, TXT; include/exclude per world; reordering in compile reorders the binder (one order, decision 2026-10-17); separators; chapter numbering; title page with rounded word count; About the author; world appendix) | P0 |
 | **Snapshots** — versioned captures with diff and restore | done 2026-10-18 (named, word diff, restore snapshots first) | P1 |
 | **Collections** — saved sets of documents | done 2026-10-18 (saved searches and hand-picked sets, top of the binder; open as Scrivenings) | P1 |
 | **Split view** — two documents, or document + reference | done 2026-10-18 (Split: document, Codex entry or worksheet; side by side or stacked; plus Scrivenings) | P1 |
 | **Focus / composition mode** | `Focus` exists | done |
 | **Targets** — session, document, project, with deadline pacing | done 2026-10-18 (session goal resets per day or per session; document; project + deadline pacing) | P1 |
 | **Search across the binder**, with regex | done 2026-10-18 (Ctrl/Cmd+Shift+F: text, titles, synopses, notes, keywords; regex, case) | P1 |
-| Import from DOCX / Markdown / Scrivener `.scriv` | done 2026-10-18 (binder IMPORT: .md/.txt/.docx/.rtf, .zip, .scriv folder or zip; Scrivener 2 and 3 with labels, status, synopsis, notes, keywords, compile flags; preview and confirm; additive only) | P2 |
+| Import from DOCX / Markdown / Scrivener `.scriv` | done 2026-10-18 (binder IMPORT: .md/.txt/.docx/.rtf, .zip, .scriv folder or zip; Scrivener 2 and 3 with labels, status, synopsis, notes, keywords, compile flags; Characters, Places and other top-level folders become Codex entries, decision 2026-10-17; preview and confirm; additive only) | P2 |
 
 **On import:** a `.scriv` importer is worth more than three new worksheets. Writers do not abandon a manuscript in progress to try a new tool. Let them bring the book.
 
