@@ -81,7 +81,7 @@ export function TagInput({
     <div ref={containerRef} className={cn("relative", className)}>
       <div
         className={cn(
-          "flex flex-wrap gap-1.5 p-2 min-h-[42px] rounded-none border border-input bg-background",
+          "sf-field flex flex-wrap gap-1.5 p-2 min-h-[42px]",
           "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
           disabled && "text-sf-disabled-text border-sf-disabled-line bg-sf-disabled-bg cursor-not-allowed"
         )}

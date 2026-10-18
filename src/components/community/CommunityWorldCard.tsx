@@ -82,7 +82,7 @@ export default function CommunityWorldCard({ world }: CommunityWorldCardProps) {
 
       {/* Actions row */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           <FavoriteButton worldId={world.id} />
           <ForkButton
             worldId={world.id}

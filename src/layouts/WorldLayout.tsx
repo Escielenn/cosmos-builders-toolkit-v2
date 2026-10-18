@@ -204,7 +204,7 @@ const WorldLayout = () => {
             >
               {/* Tab toggle, hidden when collapsed */}
               {!collapsed && (
-                <div className="flex border-b border-sf-line">
+                <div className="flex border-b border-sf-line-hairline">
                   <button
                     onClick={() => handleSidebarTabChange("codex")}
                     className={cn(

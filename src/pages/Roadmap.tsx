@@ -246,7 +246,7 @@ const Roadmap = () => {
               className={`px-4 py-2 text-xs font-heading uppercase tracking-wide border transition-colors whitespace-nowrap ${
                 statusFilter === tab.value
                   ? 'border-sf-primary bg-sf-primary/[0.06] text-sf-primary-text'
-                  : 'border-sf-line text-t3 hover:border-sf-line hover:text-t2'
+                  : 'border-sf-line text-t3 hover:border-sf-line-emphasis hover:text-t2'
               }`}
             >
               {tab.label}

@@ -48,7 +48,7 @@ const AppearanceSettings = () => {
           "transition-sf duration-fast ease-sf-out",
           selected
             ? "border-sf-primary"
-            : "border-sf-line-interactive hover:border-sf-line-emphasis",
+            : "border-sf-line hover:border-sf-line-emphasis",
         )}
       >
         <span
@@ -112,7 +112,7 @@ const AppearanceSettings = () => {
         <button
           type="button"
           onClick={reset}
-          className="min-h-hit shrink-0 border border-sf-line-interactive px-sf-3 font-sans text-[12px] font-medium uppercase tracking-wide text-t2 transition-sf duration-fast hover:border-sf-primary hover:text-sf-primary-text"
+          className="min-h-hit shrink-0 border border-sf-line hover:border-sf-line-emphasis px-sf-3 font-sans text-[12px] font-medium uppercase tracking-wide text-t2 transition-sf duration-fast hover:border-sf-primary hover:text-sf-primary-text"
         >
           Reset to Void · Teal
         </button>

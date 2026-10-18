@@ -258,7 +258,7 @@ const SolarisNativeDev = () => {
             Sits top-centre, clear of both side panels, and reads as a real
             toolbar rather than three faint outlines. These were easy to miss
             against the starfield when they carried only a hairline border. */}
-        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 border border-sf-line bg-sf-surface/90 px-1.5 py-1 backdrop-blur-sf-panel">
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 border border-sf-line bg-sf-surface/90 px-2 py-1 backdrop-blur-sf-panel">
           <button onClick={requestSave} className={actionBtn} title="Save simulation">
             <Save className="w-3 h-3" /> Save
           </button>

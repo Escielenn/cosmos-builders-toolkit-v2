@@ -647,7 +647,7 @@ const Index = () => {
                   </Link>
                 </div>
               </div>
-              <div className="flex items-center gap-1 p-0.5 bg-sf-surface-elevated rounded-none border border-sf-line-interactive w-fit">
+              <div className="flex items-center gap-1 p-0.5 bg-sf-surface-elevated rounded-none border border-sf-line w-fit">
                 {([
                   { mode: 'category' as SortMode, label: 'Category' },
                   { mode: 'type' as SortMode, label: 'Type' },
@@ -668,7 +668,7 @@ const Index = () => {
                 ))}
               </div>
               {/* Quick-jump nav, scrolls to each group section under the active sort mode. */}
-              <div className="flex flex-wrap items-center gap-1.5">
+              <div className="flex flex-wrap items-center gap-2">
                 {groupedTools.map(({ key, label, color }) => (
                   <button
                     type="button"
@@ -678,7 +678,7 @@ const Index = () => {
                         .getElementById(`tools-group-${key}`)
                         ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }}
-                    className="flex items-center gap-1.5 px-2.5 py-1 text-xs uppercase tracking-[0.12em] font-medium rounded-none border border-sf-line-interactive hover:border-sf-line-emphasis text-t3 hover:text-t1 transition-all"
+                    className="flex items-center gap-1.5 px-3 py-1 text-xs uppercase tracking-[0.12em] font-medium rounded-none border border-sf-line hover:border-sf-line-emphasis text-t3 hover:text-t1 transition-all"
                   >
                     <span
                       className="w-1.5 h-1.5 rounded-full shrink-0"

@@ -128,7 +128,7 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-sf-line-interactive backdrop-blur-sf-side bg-sf-void/85">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-sf-line-hairline backdrop-blur-sf-side bg-sf-void/85">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex items-center gap-3 shrink-0 mr-6">
           <div className="flex flex-col">
@@ -166,7 +166,7 @@ const Header = () => {
                 <span className="sr-only">Open menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-72 bg-sf-surface/95 border-sf-line-interactive sf-sb">
+            <SheetContent side="right" className="w-72 bg-sf-surface/95 border-sf-line sf-sb">
               <SheetHeader className="text-left">
                 <SheetTitle className="flex items-center gap-3">
                   <CubeLogo size={32} className="rounded-none" />   {/* sheet header */}
@@ -178,7 +178,7 @@ const Header = () => {
               <nav className="flex flex-col gap-1 mt-8">
                 {MOBILE_NAV.map((group) => (
                   <div key={group.heading} className="mb-4 last:mb-0">
-                    <p className="font-heading text-[12px] font-medium uppercase tracking-wide text-t3 px-3 mb-1.5 pb-1.5 border-b border-sf-line">
+                    <p className="font-heading text-[12px] font-medium uppercase tracking-wide text-t3 px-3 mb-1.5 pb-1.5 border-b border-sf-line-hairline">
                       {group.heading}
                     </p>
                     {group.items.map((item) => {
@@ -199,7 +199,7 @@ const Header = () => {
                 ))}
                 {!isSubscribed && (
                   <div className="mb-0">
-                    <p className="font-heading text-[12px] font-medium uppercase tracking-wide text-t3 px-3 mb-1.5 pb-1.5 border-b border-sf-line">
+                    <p className="font-heading text-[12px] font-medium uppercase tracking-wide text-t3 px-3 mb-1.5 pb-1.5 border-b border-sf-line-hairline">
                       Upgrade
                     </p>
                     <Link
@@ -222,7 +222,7 @@ const Header = () => {
                 )}
               </nav>
               {!loading && !user && (
-                <div className="mt-8 pt-8 border-t border-sf-line-interactive">
+                <div className="mt-8 pt-8 border-t border-sf-line-hairline">
                   <Button
                     className="w-full gap-2"
                     onClick={() => {
@@ -245,7 +245,7 @@ const Header = () => {
             aria-label="Search"
           >
             <Search className="w-4 h-4 relative z-[1]" aria-hidden="true" />
-            <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded-none border border-sf-line-interactive bg-sf-surface px-1.5 font-mono text-[12px] font-medium text-t3 relative z-[1]">
+            <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded-none border border-sf-line bg-sf-surface px-2 font-mono text-[12px] font-medium text-t3 relative z-[1]">
               {isMac ? <span className="text-xs">⌘</span> : <span className="text-xs">Ctrl</span>}K
             </kbd>
           </button>
@@ -296,7 +296,7 @@ const Header = () => {
                   <ChevronDown className="w-4 h-4 text-t3 relative z-[1]" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-sf-surface/95 backdrop-blur-sf-side border-sf-line-interactive rounded-none">
+              <DropdownMenuContent align="end" className="w-48 bg-sf-surface/95 backdrop-blur-sf-side border-sf-line rounded-none">
                 <DropdownMenuItem onClick={() => navigate("/profile")}>
                   <User className="w-4 h-4 mr-2" />
                   Profile

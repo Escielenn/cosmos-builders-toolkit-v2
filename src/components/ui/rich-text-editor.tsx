@@ -141,7 +141,7 @@ const RichTextEditor = ({
     >
       {/* Toolbar */}
       {!readOnly && (
-        <div className="sf-writing-toolbar flex items-center gap-0.5 p-1.5 border-b border-sf-line bg-muted/30 flex-wrap">
+        <div className="sf-writing-toolbar flex items-center gap-0.5 p-1.5 border-b border-sf-line-hairline bg-muted/30 flex-wrap">
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleBold().run()}
             isActive={editor.isActive("bold")}
@@ -171,7 +171,7 @@ const RichTextEditor = ({
             <Strikethrough className="w-4 h-4" />
           </ToolbarButton>
 
-          <div className="w-px h-5 bg-border mx-1" />
+          <div className="w-px h-5 bg-sf-line-hairline mx-1" />
 
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
@@ -195,7 +195,7 @@ const RichTextEditor = ({
             <Heading3 className="w-4 h-4" />
           </ToolbarButton>
 
-          <div className="w-px h-5 bg-border mx-1" />
+          <div className="w-px h-5 bg-sf-line-hairline mx-1" />
 
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -232,7 +232,7 @@ const RichTextEditor = ({
             <Minus className="w-4 h-4" />
           </ToolbarButton>
 
-          <div className="w-px h-5 bg-border mx-1" />
+          <div className="w-px h-5 bg-sf-line-hairline mx-1" />
 
           <ToolbarButton
             onClick={() => editor.chain().focus().undo().run()}
@@ -248,7 +248,7 @@ const RichTextEditor = ({
           </ToolbarButton>
 
           {/* Theme Picker */}
-          <div className="w-px h-5 bg-border mx-1" />
+          <div className="w-px h-5 bg-sf-line-hairline mx-1" />
           <div className="flex items-center gap-1 ml-0.5">
             {WRITING_THEMES.map((theme) => (
               <Tooltip key={theme.id}>

@@ -65,7 +65,7 @@ const PropulsionMockup = () => {
         {propulsionTypes.map((type, index) => (
           <div
             key={type.name}
-            className={`flex-1 px-2 py-1.5 rounded-none border text-xs transition-colors duration-slow ${
+            className={`flex-1 px-3 py-1.5 rounded-none border text-xs transition-colors duration-slow ${
               index === activeType ? "" : "border-sf-line bg-transparent text-t4"
             }`}
             style={{
@@ -181,7 +181,7 @@ const PropulsionMockup = () => {
         {["Economic", "Political", "Social"].map((domain) => (
           <div
             key={domain}
-            className="px-2 py-1 rounded-none border border-sf-line text-xs text-t3"
+            className="px-3 py-1 rounded-none border border-sf-line text-xs text-t3"
           >
             {domain}
           </div>

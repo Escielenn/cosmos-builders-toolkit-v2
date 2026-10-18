@@ -255,14 +255,14 @@ const Pricing = () => {
 
             {activating ? (
               <div className="space-y-3">
-                <div className="p-4 rounded-none bg-sf-primary/[0.06] border border-sf-primary text-center">
+                <div className="p-4 rounded-none bg-sf-primary/[0.06] text-center">
                   <Loader size="sm" className="mb-2" />
                   <p className="text-sm font-medium text-t1">ACTIVATION IN PROGRESS.</p>
                 </div>
               </div>
             ) : isSubscribed && tier === 'pro' ? (
               <div className="space-y-3">
-                <div className="p-3 rounded-none bg-sf-emerald/[0.06] border border-sf-emerald text-center">
+                <div className="p-3 rounded-none bg-sf-emerald/[0.06] text-center">
                   <p className="text-sm font-medium uppercase text-sf-emerald-text">
                     Pro active ({subscription?.plan_type})
                   </p>
@@ -280,7 +280,7 @@ const Pricing = () => {
                 </Button>
               </div>
             ) : isVanguard ? (
-              <div className="p-3 rounded-none bg-sf-emerald/[0.06] border border-sf-emerald text-center">
+              <div className="p-3 rounded-none bg-sf-emerald/[0.06] text-center">
                 <p className="text-sm uppercase text-t2">Included in Vanguard access.</p>
               </div>
             ) : (
@@ -344,14 +344,14 @@ const Pricing = () => {
 
             {activating ? (
               <div className="space-y-3">
-                <div className="p-4 rounded-none bg-sf-violet/[0.06] border border-sf-violet text-center">
+                <div className="p-4 rounded-none bg-sf-violet/[0.06] text-center">
                   <Loader size="sm" className="mb-2" />
                   <p className="text-sm font-medium text-t1">ACTIVATION IN PROGRESS.</p>
                 </div>
               </div>
             ) : isVanguard ? (
               <div className="space-y-3">
-                <div className="p-3 rounded-none bg-sf-violet/[0.06] border border-sf-violet text-center">
+                <div className="p-3 rounded-none bg-sf-violet/[0.06] text-center">
                   <p className="text-sm font-medium uppercase text-sf-violet-text">
                     Vanguard active ({subscription?.plan_type})
                   </p>
