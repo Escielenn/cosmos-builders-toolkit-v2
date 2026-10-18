@@ -1712,6 +1712,7 @@ export type Database = {
         Row: {
           color: string | null
           content: string | null
+          content_version: number
           cover_image_url: string | null
           created_at: string
           created_by: string
@@ -1728,11 +1729,13 @@ export type Database = {
           tool_source: string | null
           trashed_at: string | null
           updated_at: string
+          word_count: number
           world_id: string
         }
         Insert: {
           color?: string | null
           content?: string | null
+          content_version?: number
           cover_image_url?: string | null
           created_at?: string
           created_by: string
@@ -1749,11 +1752,13 @@ export type Database = {
           tool_source?: string | null
           trashed_at?: string | null
           updated_at?: string
+          word_count?: number
           world_id: string
         }
         Update: {
           color?: string | null
           content?: string | null
+          content_version?: number
           cover_image_url?: string | null
           created_at?: string
           created_by?: string
@@ -1770,6 +1775,7 @@ export type Database = {
           tool_source?: string | null
           trashed_at?: string | null
           updated_at?: string
+          word_count?: number
           world_id?: string
         }
         Relationships: [

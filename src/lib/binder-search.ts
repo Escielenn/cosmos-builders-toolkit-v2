@@ -2,9 +2,10 @@
 // binder-search, search every document in a world: text, titles, synopses,
 // notes and keywords, with optional regex and case sensitivity.
 //
-// Runs client-side over the documents the binder already holds
-// (useWritingDocuments selects full rows, content included), so there is no
-// extra query and no server index to keep in step.
+// Runs client-side. The binder list carries no text; the Studio loads every
+// document's text once, the first time a search (or a saved search) runs
+// (useWorldDocumentContents), and keeps it current in place as the writer
+// types. No server index to keep in step.
 //
 // Text is flattened with "\n" between blocks, the same separator the
 // in-document find uses (src/lib/editor-text-map.ts), so the Nth match here

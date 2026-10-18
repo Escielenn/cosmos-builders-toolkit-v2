@@ -38,7 +38,10 @@ import { extractWorksheetFacts } from "@/lib/worksheet-facts";
 import { getToolDisplayName, getToolRoute } from "@/lib/tools-config";
 import { ENTITY_TYPE_LABELS, type Entity } from "@/services/entity-graph-types";
 import { useStudioWorld } from "@/components/writing/studio-world";
-import type { WorldEntry } from "@/services/world-data";
+import type { BinderDoc } from "@/hooks/use-writing-documents";
+import { useWriteDoc } from "@/hooks/use-write-doc";
+import { unsavedHtml } from "@/hooks/use-document-contents";
+import { ReadOnlyNotice, SaveConflictNotice } from "@/components/writing/SaveConflictNotice";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -62,7 +65,7 @@ export function clampRatio(r: number): number {
 export interface SplitPaneProps {
   worldId: string;
   /** Manuscript documents in reading order (the picker list). */
-  docs: WorldEntry[];
+  docs: BinderDoc[];
   /** Documents open in the primary pane: never offered here (one editor per document). */
   excludeIds: string[];
   source: SplitSource | null;
@@ -76,6 +79,8 @@ export interface SplitPaneProps {
   /** Extra space under the last line (typewriter scrolling). */
   tailSpacer: boolean;
   onWordsLedgered?: () => void;
+  /** Viewer access: the document opens read only and nothing is saved. */
+  readOnly?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -96,6 +101,7 @@ export function SplitPane({
   scrollRef,
   tailSpacer,
   onWordsLedgered,
+  readOnly = false,
 }: SplitPaneProps): JSX.Element {
   const { data: entities } = useEntities(worldId);
   const { worksheets } = useWorksheets(worldId);
@@ -219,6 +225,7 @@ export function SplitPane({
             editorClassName={editorClassName}
             editorStyle={editorStyle}
             onWordsLedgered={onWordsLedgered}
+            readOnly={readOnly}
           />
         ) : entity ? (
           <EntityBody worldId={worldId} entity={entity} />
@@ -249,38 +256,66 @@ function DocBody({
   editorClassName,
   editorStyle,
   onWordsLedgered,
+  readOnly,
 }: {
   worldId: string;
-  doc: WorldEntry;
+  doc: BinderDoc;
   editorClassName: string;
   editorStyle: CSSProperties;
   onWordsLedgered?: () => void;
+  readOnly: boolean;
 }): JSX.Element {
   const autosave = useDocAutosave(worldId, onWordsLedgered);
+  // The binder row carries no text: this one document's text loads here.
+  const { data: full, isError } = useWriteDoc(doc.id);
   // Opening text, captured once: a refetch must never reset what is on screen.
+  // Words this device typed and the server has not confirmed win over the
+  // fetched copy.
   const initial = useRef<string | null>(null);
-  if (initial.current === null) {
-    initial.current = doc.content ?? "";
-    autosave.register(doc.id, doc.content, doc.updated_at);
+  if (initial.current === null && full) {
+    initial.current = unsavedHtml(doc.id) ?? full.content ?? "";
+    autosave.register(doc.id, full.content, full.updated_at, full.content_version ?? null);
   }
+  const reload = autosave.reloaded[doc.id];
+  const conflict = autosave.conflicts.get(doc.id);
+  const locked = readOnly || autosave.denied;
   return (
     <div className="mx-auto px-6 py-6" style={{ maxWidth: "var(--sf-writing-measure, 68ch)", ...editorStyle }}>
       <div className="mb-4 flex items-baseline gap-3">
         <span className="min-w-0 flex-1 truncate font-serif text-[22px] italic text-t1">{doc.title || "Untitled"}</span>
         <span className="shrink-0 font-mono text-[12px] text-t4">
-          {autosave.saving ? "SAVING…" : autosave.savedAt ? "SAVED" : ""}
+          {initial.current === null ? "LOADING" : autosave.saving ? "SAVING…" : autosave.savedAt ? "SAVED" : ""}
         </span>
       </div>
-      <StellarForgeEditor
-        bare
-        content={initial.current}
-        onChange={(html) => autosave.queue(doc.id, html)}
-        worldId={worldId}
-        preset="full"
-        placeholder="Begin writing."
-        className={editorClassName}
-        minHeight="40vh"
-      />
+      {locked && <ReadOnlyNotice />}
+      {conflict && (
+        <SaveConflictNotice
+          docId={doc.id}
+          theirs={conflict.theirs}
+          mine={() => autosave.latestHtml(doc.id) ?? conflict.mine}
+          onKeepMine={() => autosave.keepMine(doc.id)}
+          onLoadTheirs={() => autosave.loadTheirs(doc.id)}
+        />
+      )}
+      {isError && initial.current === null && (
+        <p className="font-mono text-[12px] uppercase text-sf-crimson-text" role="alert">
+          {"// DOCUMENT COULD NOT BE LOADED. NOTHING WAS CHANGED."}
+        </p>
+      )}
+      {initial.current !== null && (
+        <StellarForgeEditor
+          key={reload?.rev ?? 0}
+          bare
+          content={reload?.html ?? initial.current}
+          onChange={(html) => autosave.queue(doc.id, html)}
+          worldId={worldId}
+          preset="full"
+          readOnly={locked}
+          placeholder="Begin writing."
+          className={editorClassName}
+          minHeight="40vh"
+        />
+      )}
     </div>
   );
 }

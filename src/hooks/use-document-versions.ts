@@ -292,6 +292,41 @@ export async function captureDocumentSnapshot(
   }
 }
 
+/**
+ * Put a given text on file as a named snapshot of a document, outside any
+ * React tree (a save conflict files one side before the other replaces it).
+ * Best effort: resolves false rather than throwing.
+ */
+export async function snapshotDocumentText(
+  documentId: string,
+  userId: string,
+  html: string,
+  name: string,
+): Promise<boolean> {
+  try {
+    if (!html || html === "<p></p>") return true; // nothing to keep
+    const { data: doc } = await db
+      .from("world_entries")
+      .select("world_id, title")
+      .eq("id", documentId)
+      .maybeSingle();
+    if (!doc?.world_id) return false;
+    const { error } = await insertVersion({
+      document_id: documentId,
+      world_id: doc.world_id,
+      user_id: userId,
+      title: doc.title || "Untitled",
+      content_html: html,
+      word_count: countWords(html),
+      snapshot_reason: "manual",
+      name,
+    });
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Hook
 // ---------------------------------------------------------------------------

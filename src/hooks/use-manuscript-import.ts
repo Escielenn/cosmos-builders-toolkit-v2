@@ -20,7 +20,7 @@ import { useCallback, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import type { WorldEntry } from "@/services/world-data";
+import type { BinderDoc } from "@/hooks/use-writing-documents";
 import { nextSortOrder } from "@/hooks/use-writing-documents";
 import { updateWorldSettingKey } from "@/hooks/use-world-setting";
 import { chunkRows, countImport, dedupeTopLevel, planImportRows, type ImportPreview } from "@/lib/manuscript-import";
@@ -69,7 +69,7 @@ export function useManuscriptImport(worldId: string | undefined) {
   const [progress, setProgress] = useState<ImportProgress | null>(null);
 
   const run = useCallback(
-    async (preview: ImportPreview, existing: WorldEntry[]): Promise<ImportOutcome> => {
+    async (preview: ImportPreview, existing: BinderDoc[]): Promise<ImportOutcome> => {
       if (!worldId || !user) throw new Error("SESSION REQUIRED.");
       const root = existing.filter((e) => !e.parent_id);
       const nodes = dedupeTopLevel(preview.nodes, root.map((e) => e.title));

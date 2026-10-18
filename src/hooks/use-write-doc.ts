@@ -17,6 +17,11 @@ export interface WriteDoc {
   parent_id: string | null;
   updated_at: string;
   /**
+   * Bumped by the server whenever content changes; saves are made against
+   * it (optimistic concurrency). null before 20261019_writing_scale.sql.
+   */
+  content_version?: number | null;
+  /**
    * Card fields (synopsis, POV, status, in-world date) read via
    * readDocMeta. Untyped in the DB, so it stays unknown here.
    */
@@ -29,13 +34,16 @@ export function useWriteDoc(docId: string | undefined) {
     queryKey: ["write-doc", docId],
     enabled: !!docId,
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("world_entries")
-        .select("id, world_id, title, content, entry_type, parent_id, updated_at, metadata")
-        .eq("id", docId)
-        .maybeSingle();
+      const cols = "id, world_id, title, content, entry_type, parent_id, updated_at, metadata";
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const db = supabase as any;
+      const first = await db.from("world_entries").select(`${cols}, content_version`).eq("id", docId).maybeSingle();
+      if (!first.error) return first.data as WriteDoc | null;
+      // content_version is not deployed yet (42703): read without it.
+      if (first.error.code !== "42703" && first.error.code !== "PGRST204") throw first.error;
+      const { data, error } = await db.from("world_entries").select(cols).eq("id", docId).maybeSingle();
       if (error) throw error;
-      return data as WriteDoc | null;
+      return data ? ({ ...data, content_version: null } as WriteDoc) : null;
     },
   });
 }
