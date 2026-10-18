@@ -6,6 +6,10 @@
 // Atlas. The Genesis worksheet still stores physicalCharacteristics.
 // surfaceGravity today, and it still projects; retiring that field is the
 // /sf-wire genesis session, not this manifest.
+//
+// One home (1.5 item 10): Genesis is the sole producer of planet.mass and
+// planet.radius (03 registry). On save it asserts its produces through canon
+// (KEEP CANON / REPLACE on a conflict); Atlas reads mass and radius from here.
 
 import type { ToolManifest } from "@/canon/manifest";
 
@@ -31,12 +35,9 @@ export const manifest: ToolManifest = {
   ],
 
   consumes: [
-    {
-      predicate: "star.spectral_class",
-      required: false,
-      onMissing: "prompt",
-      prompt: "NO PRIMARY STAR ON FILE. RUN ORRERY OR ENTER MANUALLY.",
-    },
+    // One home (1.5 item 10): the star's class is Orrery's. Genesis's star
+    // type picker is prefilled from canon with a provenance tag.
+    { predicate: "star.spectral_class", required: false, onMissing: "link", producer: "orrery" },
     {
       predicate: "star.luminosity",
       required: false,

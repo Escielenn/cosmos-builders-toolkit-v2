@@ -184,6 +184,11 @@ These predicates are currently entered in more than one tool. Each must get exac
 | `propulsion.cruise_fraction_c` | **Impulse** | Paradox, Vessel, Exodus |
 | `route.distance_ly` | **Cartographer** | Paradox, Impulse, Exodus |
 | `polity.territory[]` | **Dominion** | Cartographer (overlay), Exodus |
+| `propulsion.type` | **Impulse** | Vessel, Paradox, Exodus |
+| `vessel.crew_size` | **Vessel** (`living.crewSize`) | Impulse |
+| `world.axiom` | **Axiom** | Impulse, Exodus |
+
+**Resolved 2026-10-18 (1.5 item 10).** `star.spectral_class`, `planet.mass`/`radius`, `planet.surface_gravity`, `propulsion.type`, `vessel.crew_size` and `world.axiom` each have one wired producer; the code form of this table is `SINGLE_HOME` in `src/canon/ownership.ts`, tested against the manifests. Consumers keep their field but open prefilled from canon (`CanonProvenance`: `// FROM <TOOL> · CANON`, `EDIT AT <OWNER>`); a differing value offers USE CANON, EDIT AT the owner, or OVERRIDE HERE, which proposes and never overwrites. Producers assert on save (`useCanonEmit`); a differing canon value opens KEEP CANON / REPLACE. Among projected copies the owner's ranks first (`mergeCanonFacts` `preferTool`), and continuity checks owned predicates through `canon.facts`, one value per subject.
 
 **Simulators are not second producers.** ExoForge can compute `planet.radius`; Solaris can compute `star.spectral_class`. Neither *produces* the predicate — they emit a SimRun snapshot the user may **promote**, which writes the fact with `source:{kind:'sim'}` through the same single owner. One producer, two entry paths.
 

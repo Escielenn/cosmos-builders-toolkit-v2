@@ -434,14 +434,27 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
         "propulsion-consequences-map": "system.type",
       },
     },
+    // vessel.crew_size has one home: Vessel (spacecraft-designer), on its own
+    // numeric field. Until 2026-10-18 this pointed at living.crewQuarters, a
+    // prose answer about bunks and cabins, so a sentence about Kaylee's frilly
+    // bunk was being read as a crew count. Impulse's crewCapacity is a
+    // consumer of the canon value (see src/tools/impulse/manifest.ts); its
+    // path stays so an unwired sheet still reaches the page, and canon's
+    // owner rule ranks Vessel's value first.
     {
       label: "Crew Size",
       key: "crewSize",
       type: "text",
       worksheetPaths: {
-        "spacecraft-designer": "living.crewQuarters",
+        "spacecraft-designer": "living.crewSize",
         "propulsion-consequences-map": "costs.crewCapacity",
       },
+    },
+    {
+      label: "Crew Quarters",
+      key: "crewQuarters",
+      type: "text",
+      worksheetPaths: { "spacecraft-designer": "living.crewQuarters" },
     },
     {
       label: "Origin",
@@ -635,9 +648,10 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
       label: "The One Big Lie",
       key: "theOneBigLie",
       type: "text",
-      // Two tools record the same premise, which is exactly what a field with
-      // several paths is for: whichever one the writer filled in, the premise
-      // reaches their prose, and entity-sync keeps the two in step.
+      // Two tools record the same premise. world.axiom has one home, Axiom
+      // (one-big-lie); Exodus reads it from canon and prefills its own copy
+      // (src/tools/exodus/manifest.ts). Both paths stay so an unwired sheet
+      // still reaches the page; canon's owner rule ranks Axiom's value first.
       worksheetPaths: {
         "one-big-lie": "coreStatement.statement",
         "space-expansion-modeler": "foundation.oneBigLie",

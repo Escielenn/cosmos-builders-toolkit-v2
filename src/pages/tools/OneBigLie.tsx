@@ -46,6 +46,9 @@ import {
   SECTION_HELPERS,
 } from "@/lib/one-big-lie-data";
 import { writeStandaloneBackup } from "@/lib/standalone-backup";
+import { manifest as axiomManifest } from "@/tools/axiom/manifest";
+import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
+import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
 
 // Types
 interface FormState {
@@ -169,6 +172,10 @@ const OneBigLie = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const worldId = useWorldId();
   const worksheetId = searchParams.get("worksheetId");
+
+  // One home per value (1.5 item 10): the One Big Lie is Axiom's; Exodus reads it.
+  const canonSubjectId = useToolSubject(currentWorksheetId || worksheetId);
+  const canonEmit = useCanonEmit(axiomManifest, worldId);
 
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
   const worldName = currentWorld?.name;
@@ -374,6 +381,7 @@ const OneBigLie = () => {
             worksheetId: currentWorksheetId || worksheetId!,
             data: worksheetData,
           });
+          await canonEmit.emit(formState, { subjectId: canonSubjectId, worksheetId: currentWorksheetId || worksheetId });
         } else {
           toast({
             title: "OPERATION FAILED.",
@@ -1260,6 +1268,7 @@ const OneBigLie = () => {
       )}
 
       <EntityMatchDialog {...entityMatch.dialogProps} />
+      <CanonConflictPrompt {...canonEmit} />
     </ToolPageLayout>
   );
 };

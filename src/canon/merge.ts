@@ -7,8 +7,9 @@
 //     canon  >  proposed  >  projected
 //
 // for the same (subject_id, canonical predicate). Ties inside a stored tier go
-// to the most recently updated row; ties among projected facts keep pipeline
-// order (worksheets, then sims, then Codex infoboxes: world-index's order).
+// to the most recently updated row; among projected facts the owning tool's
+// projection ranks first (opts.preferTool), then pipeline order (worksheets,
+// then sims, then Codex infoboxes: world-index's order).
 //
 // Outranking is never silent. Every loser stays attached to the winner in
 // `outranks`, and `conflicted` is set when any of them reads differently,
@@ -152,6 +153,21 @@ export interface MergeOptions {
   predicate?: string;
   /** Builds the provenance label / route for a stored row. */
   rowContext?: (row: CanonFactRow) => { label?: string; href?: string | null };
+  /**
+   * The tool slug that owns a predicate (canon/ownership ownerToolOf). Among
+   * projected candidates for one slot, the owner's projection ranks first, so
+   * a consumer's copy of a value never outranks the producer's (one home per
+   * value, 1.5 item 10). Stored tiers are unaffected: canon still beats any
+   * projection.
+   */
+  preferTool?: (predicate: string) => string | undefined;
+}
+
+/** The tool slug a projected fact came from (projectedToCanonFact's ref.tool). */
+function projectedTool(f: CanonFact): string | undefined {
+  if (f.confidence !== "projected") return undefined;
+  const t = (f.provenance.ref as { tool?: unknown }).tool;
+  return typeof t === "string" ? t : undefined;
 }
 
 /**
@@ -191,9 +207,12 @@ export function mergeCanonFacts(
 
   const winners: Array<{ fact: CanonFact; order: number }> = [];
   for (const g of groups.values()) {
+    const owner = opts.preferTool?.(g[0].fact.predicate);
+    const ownerRank = (f: CanonFact) => (owner && projectedTool(f) === owner ? 0 : 1);
     g.sort(
       (a, b) =>
         CONFIDENCE_RANK[a.fact.confidence] - CONFIDENCE_RANK[b.fact.confidence] ||
+        ownerRank(a.fact) - ownerRank(b.fact) ||
         b.updated - a.updated ||
         a.order - b.order,
     );

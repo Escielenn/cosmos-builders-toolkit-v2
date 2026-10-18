@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { useState, useEffect, useMemo, useCallback, lazy, Suspense } from "react";
 import { useWorldId } from "@/hooks/use-world-id";
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 import { useTags } from "@/hooks/use-tags";
@@ -97,6 +97,11 @@ import {
   type InteractionResult,
 } from "@/lib/space-expansion-data";
 import { writeStandaloneBackup } from "@/lib/standalone-backup";
+import { manifest as exodusManifest } from "@/tools/exodus/manifest";
+import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
+import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
+import { textToParagraphHtml } from "@/canon/codecs";
+import { CanonProvenance } from "@/components/canon/CanonProvenance";
 
 const TOOL_TYPE = "space-expansion-modeler";
 const LOCAL_STORAGE_KEY = "space-expansion-worksheet";
@@ -136,6 +141,13 @@ const SpaceExpansionModeler = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const worldId = useWorldId();
   const worksheetId = searchParams.get("worksheetId");
+
+  // One home per value (1.5 item 10): the One Big Lie is Axiom's. Exodus prefills its copy from canon.
+  const canonSubjectId = useToolSubject(currentWorksheetId || worksheetId);
+  const canonEmit = useCanonEmit(exodusManifest, worldId);
+  const applyCanonAxiom = useCallback((v: unknown) => {
+    if (typeof v === "string") setFormState((prev) => ({ ...prev, foundation: { ...prev.foundation, oneBigLie: v } }));
+  }, []);
 
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
   const worldName = currentWorld?.name;
@@ -193,6 +205,7 @@ const SpaceExpansionModeler = () => {
             worksheetId: currentWorksheetId || worksheetId!,
             data: worksheetData,
           });
+          await canonEmit.emit(formState, { subjectId: canonSubjectId, worksheetId: currentWorksheetId || worksheetId });
         } else {
           toast({ title: "OPERATION FAILED.", description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.", variant: "destructive" });
         }
@@ -632,6 +645,16 @@ const SpaceExpansionModeler = () => {
                       className="bg-background/50"
                     />
                   </Suspense>
+                  <CanonProvenance
+                    worldId={worldId}
+                    subjectId={canonSubjectId}
+                    predicate="world.axiom"
+                    consumer={exodusManifest}
+                    local={formState.foundation.oneBigLie}
+                    toLocal={(v) => (v.kind === "text" ? textToParagraphHtml(v.value) : null)}
+                    onApply={applyCanonAxiom}
+                    worksheetId={currentWorksheetId || worksheetId}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label>Starting Conditions</Label>
@@ -1333,6 +1356,7 @@ const SpaceExpansionModeler = () => {
       </AlertDialog>
 
       <EntityMatchDialog {...entityMatch.dialogProps} />
+      <CanonConflictPrompt {...canonEmit} />
     </ToolPageLayout>
   );
 };

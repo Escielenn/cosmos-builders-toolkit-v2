@@ -217,6 +217,10 @@ const DEFS: PredicateDef[] = [
   ...domain("expansion", "culture", "exodus", [
     ["phase_timeline[]", "Expansion phases", "struct[]"],
     ["limiting_factor", "Limiting factor", "text"],
+    // Added 2026-10-18 (/sf-fact, 1.5 item 10): what Exodus actually records.
+    // Without them the Exodus manifest had nothing honest to produce.
+    ["trajectory", "Expansion trajectory", "enum", { aliases: ["expansionTrajectory"] }],
+    ["dominant_force", "Dominant force", "text", { aliases: ["dominantForce"] }],
   ]),
   ...domain("polity", "culture", "dominion", [
     ["governance", "Governance", "text", { aliases: ["governmentType"] }],

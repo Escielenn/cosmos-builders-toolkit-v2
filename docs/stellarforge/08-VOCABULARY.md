@@ -160,7 +160,7 @@ Enough to run Phases 0–5. Extend via `/sf-fact`.
 
 ### `expansion.*`
 
-`expansion.phase_timeline[]` (struct[]: `{epoch, phase, driver, population}` — Exodus, projects to Chronicle events) · `expansion.limiting_factor`
+`expansion.phase_timeline[]` (struct[]: `{epoch, phase, driver, population}` — Exodus, projects to Chronicle events) · `expansion.limiting_factor` · `expansion.trajectory` (enum: `accelerating|decelerating|stalled|cyclical|exponential`, added 2026-10-18) · `expansion.dominant_force` (text, added 2026-10-18)
 
 ### `polity.*` · `economy.*` · `tech.*`
 
