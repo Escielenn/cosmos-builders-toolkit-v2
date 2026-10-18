@@ -253,38 +253,47 @@ export function useUpdateDocumentContent(worldId: string | undefined) {
  * Writes into the existing world_entries.metadata jsonb column, merging so any
  * keys another feature owns survive. No schema change.
  */
+/**
+ * Read-modify-write on one document's metadata. Safe because writes for a
+ * document are queued (below) and the merge preserves keys it doesn't touch.
+ */
+async function writeMeta(docId: string, patch: Partial<DocumentMeta>): Promise<WorldEntry> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const db = supabase as any;
+  const { data: current, error: readErr } = await db
+    .from("world_entries")
+    .select("metadata")
+    .eq("id", docId)
+    .single();
+  if (readErr) throw readErr;
+
+  const next = writeDocMeta(current?.metadata, patch);
+  const { data, error } = await db
+    .from("world_entries")
+    .update({ metadata: next })
+    .eq("id", docId)
+    .select()
+    .single();
+  if (error) throw error;
+  return data as WorldEntry;
+}
+
+// Per-document write queue. The inspector can commit two fields in quick
+// succession (keywords, then target); two overlapping read-modify-writes
+// would each read the old metadata and the second would drop the first's key.
+const metaQueues = new Map<string, Promise<unknown>>();
+
 export function useUpdateDocumentMeta(worldId: string | undefined) {
   const { toast } = useToast();
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
-      docId,
-      patch,
-    }: {
-      docId: string;
-      patch: Partial<DocumentMeta>;
-    }) => {
-      // Read-modify-write on a per-document row. Unlike the session ledger this
-      // is safe: only one editor holds a document, and the merge preserves keys.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const db = supabase as any;
-      const { data: current, error: readErr } = await db
-        .from("world_entries")
-        .select("metadata")
-        .eq("id", docId)
-        .single();
-      if (readErr) throw readErr;
-
-      const next = writeDocMeta(current?.metadata, patch);
-      const { data, error } = await db
-        .from("world_entries")
-        .update({ metadata: next })
-        .eq("id", docId)
-        .select()
-        .single();
-      if (error) throw error;
-      return data as WorldEntry;
+    mutationFn: ({ docId, patch }: { docId: string; patch: Partial<DocumentMeta> }) => {
+      const run = (metaQueues.get(docId) ?? Promise.resolve())
+        .catch(() => undefined)
+        .then(() => writeMeta(docId, patch));
+      metaQueues.set(docId, run);
+      return run;
     },
     onSuccess: (_data, variables) => {
       qc.invalidateQueries({ queryKey: docKeys.all(worldId!) });
