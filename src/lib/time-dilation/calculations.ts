@@ -227,8 +227,31 @@ export function calculateBrachistochrone(
   roundTrip: boolean
 ): TimeDilationResult {
   const distanceLY = convertToLY(distanceMeters);
-  const effectiveDistance = roundTrip ? distanceMeters * 2 : distanceMeters;
-  const halfDistance = effectiveDistance / 2;
+
+  // A round trip is two complete stop-to-stop legs: accelerate for half the
+  // distance, decelerate to rest at the destination, then repeat the same
+  // profile home. It is NOT one accelerate/decelerate profile over 2x the
+  // distance (that would carry the ship past the destination at peak speed).
+  // Both legs are identical, so the totals are exactly twice one leg. The
+  // phase durations below stay per-leg.
+  if (roundTrip) {
+    const leg = calculateBrachistochrone(distanceMeters, gForce, maxVelocityFractionC, false);
+    if (!leg.valid) return leg;
+    const shipTime = leg.shipTimeSeconds * 2;
+    const observerTime = leg.observerTimeSeconds * 2;
+    const timeDiff = Math.abs(observerTime - shipTime);
+    return {
+      ...leg,
+      shipTimeSeconds: shipTime,
+      observerTimeSeconds: observerTime,
+      timeDifferenceSeconds: timeDiff,
+      shipTimeFormatted: formatDuration(shipTime),
+      observerTimeFormatted: formatDuration(observerTime),
+      timeDifferenceFormatted: formatDuration(timeDiff),
+    };
+  }
+
+  const halfDistance = distanceMeters / 2;
   const a = gForce * G_ACCEL; // proper acceleration in m/s²
 
   if (a <= 0) {
@@ -422,8 +445,10 @@ export function calculateTimeDilation(formState: FormStateForCalc): TimeDilation
     };
   }
 
-  // For Alcubierre with dilation: treat effective velocity as superluminal
-  // but use Lorentz with the effective sub-c fraction for dramatic effect
+  // SPECULATIVE "inverted dilation" mode for Alcubierre. This is NOT derived
+  // from any warp metric (Alcubierre 1994 has proper time = coordinate time
+  // at the bubble centre). It is a story device: the traveller ages by the
+  // warp factor. Kept because writers use it; labelled SPECULATIVE in the UI.
   if (isAlcubierre && !formState.alcubierreNoDilation) {
     const effectiveDistance = formState.roundTrip ? distanceMeters * 2 : distanceMeters;
     const observerTime = effectiveDistance / (maxVelocityC * C);
@@ -460,8 +485,8 @@ export function calculateTimeDilation(formState: FormStateForCalc): TimeDilation
       ),
       storyCallouts: [
         {
-          title: "Inverted Dilation",
-          prompt: "At superluminal speeds with this interpretation, the traveler ages MORE than the observer. Time debt runs in the opposite direction, your character arrives older than expected.",
+          title: "Inverted Dilation (Speculative)",
+          prompt: "Speculative story device, not a physics result. At superluminal speeds with this interpretation, the traveler ages MORE than the observer. Time debt runs in the opposite direction, your character arrives older than expected.",
         },
         {
           title: "Causality Concerns",

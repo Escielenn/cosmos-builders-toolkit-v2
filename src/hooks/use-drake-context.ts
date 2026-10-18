@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useWorksheets } from "./use-worksheets";
+import { calculateDrakeN, getDrakeInterpretation } from "@/lib/drake";
 
 export interface DrakeContext {
   hasData: boolean;
@@ -10,24 +11,13 @@ export interface DrakeContext {
   suggestion: string;
 }
 
-/**
- * Calculate the Drake Equation N value from form values.
- */
+/** Missing factors count as 1 here, as they always have for this hook. */
 function calculateN(values: Record<string, number>): number {
-  const { rStar = 1, fp = 1, ne = 1, fl = 1, fi = 1, fc = 1, L = 1 } = values;
-  return rStar * fp * ne * fl * fi * fc * L;
+  return calculateDrakeN(values, { missingAs: 1 });
 }
 
-/**
- * Get interpretation label for N value.
- */
 function getInterpretation(n: number): string {
-  if (n < 1) return "Very Lonely";
-  if (n < 10) return "Lonely";
-  if (n < 100) return "Sparse";
-  if (n < 1000) return "Moderate";
-  if (n < 10000) return "Crowded";
-  return "Teeming";
+  return getDrakeInterpretation(n).label;
 }
 
 /**

@@ -8,6 +8,7 @@ import {
   PDFResultBox,
 } from "../components";
 import { deepStripHtml } from "@/lib/html-utils";
+import { calculateDrakeN, formatDrakeNumber, getDrakeInterpretation, type DrakeBand } from "@/lib/drake";
 
 // Drake variable definitions for display
 const DRAKE_VARIABLES = [
@@ -46,47 +47,23 @@ interface DrakeSummaryTemplateProps {
   date?: string;
 }
 
-// Calculate N from values
-const calculateN = (values: DrakeFormState["values"]): number => {
-  return values.rStar * values.fp * values.ne * values.fl * values.fi * values.fc * values.L;
+// N and number format come from @/lib/drake. The summary keeps its own
+// shorter description per band.
+const calculateN = (values: DrakeFormState["values"]): number => calculateDrakeN(values);
+const formatNumber = formatDrakeNumber;
+
+const SHORT_DESCRIPTION: Record<DrakeBand, string> = {
+  "very-lonely": "Fewer than one civilization expected. We may be alone in the galaxy.",
+  lonely: "A handful of civilizations might exist. Contact would be extremely rare.",
+  sparse: "Dozens of civilizations. Contact is possible but requires patience.",
+  moderate: "Hundreds of civilizations. Regional groupings become possible.",
+  crowded: "Thousands of civilizations. Alliances and conflicts become common.",
+  teeming: "A galaxy full of life. Civilizations encounter each other regularly.",
 };
 
-// Format large numbers
-const formatNumber = (n: number): string => {
-  if (n < 1) return n.toFixed(4);
-  if (n < 10) return n.toFixed(2);
-  if (n < 1000) return n.toFixed(1);
-  if (n < 1000000) return Math.round(n).toLocaleString();
-  if (n < 1000000000) return (n / 1000000).toFixed(1) + " million";
-  return (n / 1000000000).toFixed(1) + " billion";
-};
-
-// Get interpretation
 const getInterpretation = (n: number): { label: string; description: string } => {
-  if (n < 1) return {
-    label: "Very Lonely",
-    description: "Fewer than one civilization expected. We may be alone in the galaxy.",
-  };
-  if (n < 10) return {
-    label: "Lonely",
-    description: "A handful of civilizations might exist. Contact would be extremely rare.",
-  };
-  if (n < 100) return {
-    label: "Sparse",
-    description: "Dozens of civilizations. Contact is possible but requires patience.",
-  };
-  if (n < 1000) return {
-    label: "Moderate",
-    description: "Hundreds of civilizations. Regional groupings become possible.",
-  };
-  if (n < 10000) return {
-    label: "Crowded",
-    description: "Thousands of civilizations. Alliances and conflicts become common.",
-  };
-  return {
-    label: "Teeming",
-    description: "A galaxy full of life. Civilizations encounter each other regularly.",
-  };
+  const { band, label } = getDrakeInterpretation(n);
+  return { label, description: SHORT_DESCRIPTION[band] };
 };
 
 const DrakeSummaryTemplate = ({

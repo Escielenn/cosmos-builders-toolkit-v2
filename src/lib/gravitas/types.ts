@@ -71,7 +71,15 @@ export interface CombinedVectorInput {
 }
 
 export interface CombinedVectorOutput {
+  /** Felt gravity at the point on the rim with the worst floor tilt. */
   resultant_g: number;
+  /** Lowest felt gravity anywhere around the rim. */
+  resultant_min_g: number;
+  /** Highest felt gravity anywhere around the rim. */
+  resultant_max_g: number;
+  /** Angle between the spin and thrust gravity vectors at the worst-tilt point. */
+  vector_angle_deg: number;
+  /** Worst floor tilt around the rim, degrees from the spin "down". */
   tilt_angle_deg: number;
   walking_difficulty: number; // 1–10
   architectural_impact: string;
