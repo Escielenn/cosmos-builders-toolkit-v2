@@ -183,7 +183,7 @@ export default function WorldCustomTypes() {
           </aside>
 
           {/* Main: selected template editor */}
-          <main className="min-h-[400px]">
+          <section aria-label="Template editor" className="min-h-[400px]">
             {selected ? (
               <TemplateDetailEditor
                 key={selected.id}
@@ -207,7 +207,7 @@ export default function WorldCustomTypes() {
                 </div>
               </div>
             )}
-          </main>
+          </section>
         </div>
       </div>
     </div>

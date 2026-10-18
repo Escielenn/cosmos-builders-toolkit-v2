@@ -12,6 +12,14 @@ import { DeleteConfirmDialog } from "@/components/dialogs/DeleteConfirmDialog";
 import { useDeleteEntity, useEntities } from "@/hooks/use-entity-graph";
 import { WorldLayoutProvider } from "@/contexts/WorldLayoutContext";
 import { WorldThemeProvider } from "@/contexts/WorldThemeContext";
+import {
+  CodexSidebarContainer,
+  CodexResizeHandle,
+  useCodexSheetMode,
+  CODEX_MIN_WIDTH,
+  CODEX_MAX_WIDTH,
+} from "@/components/world/CodexSidebarContainer";
+import { useAudioPlayer } from "@/hooks/use-audio-player";
 import { BookOpen, Network } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { isWorldManuscriptPath } from "@/lib/manuscript-path";
@@ -32,8 +40,9 @@ const SIDEBAR_TABS: { id: SidebarTab; label: string; title: string; Icon: typeof
 
 const HEADER_HEIGHT = 64; // matches Header h-16
 const DEFAULT_WIDTH = 260;
-const MIN_WIDTH = 200;
-const MAX_WIDTH = 400;
+const MIN_WIDTH = CODEX_MIN_WIDTH;
+const MAX_WIDTH = CODEX_MAX_WIDTH;
+const CODEX_ID = "sf-codex-sidebar";
 const COLLAPSED_WIDTH = 48;
 
 // ---------------------------------------------------------------------------
@@ -84,8 +93,22 @@ const WorldLayout = () => {
     setDeleteEntityId(null);
   }, [deleteEntityId, deleteEntityMutation]);
 
-  // Sidebar state, persisted in localStorage
-  const [collapsed, setCollapsed] = useState(() => {
+  // Below md the sidebar is a left Sheet, closed by default (item 29: the
+  // 260px column left ~115px of content at 375px). Desktop is unchanged.
+  const sheetMode = useCodexSheetMode();
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const { pathname } = useLocation();
+  useEffect(() => {
+    setSheetOpen(false);
+  }, [pathname]);
+  const { hasEverLoaded: audioVisible, minimized: audioMinimized } = useAudioPlayer();
+  const sheetTriggerBottom = audioVisible
+    ? audioMinimized ? "bottom-[76px]" : "bottom-[100px]"
+    : "bottom-10";
+
+  // Sidebar state, persisted in localStorage. In the Sheet the sidebar is
+  // always full width, whatever the desktop preference says.
+  const [collapsedPref, setCollapsed] = useState(() => {
     try {
       return localStorage.getItem("sf-codex-collapsed") === "true";
     } catch {
@@ -103,9 +126,11 @@ const WorldLayout = () => {
   });
 
   // Persist state changes
+  const collapsed = sheetMode ? false : collapsedPref;
+
   useEffect(() => {
-    localStorage.setItem("sf-codex-collapsed", String(collapsed));
-  }, [collapsed]);
+    localStorage.setItem("sf-codex-collapsed", String(collapsedPref));
+  }, [collapsedPref]);
 
   useEffect(() => {
     localStorage.setItem("sf-codex-width", String(width));
@@ -178,8 +203,13 @@ const WorldLayout = () => {
   );
 
   const toggleCollapse = useCallback(() => {
+    // In the Sheet, "collapse" means put the Sheet away.
+    if (sheetMode) {
+      setSheetOpen(false);
+      return;
+    }
     setCollapsed((prev) => !prev);
-  }, []);
+  }, [sheetMode]);
 
   // Loading / error states
   if ((isLoading || !worldId) && manuscript) {
@@ -249,10 +279,18 @@ const WorldLayout = () => {
             className="sf-world-layout"
             style={{ height: `calc(100vh - ${HEADER_HEIGHT}px)`, marginTop: HEADER_HEIGHT }}
           >
-            {/* Sidebar */}
+            {/* Sidebar: inline column at md+, left Sheet below md */}
+            <CodexSidebarContainer
+              sheetMode={sheetMode}
+              open={sheetOpen}
+              onOpenChange={setSheetOpen}
+              triggerBottomClassName={sheetTriggerBottom}
+            >
             <aside
-              className={`sf-codex ${collapsed ? "sf-codex--collapsed" : ""}`}
-              style={{ width: collapsed ? COLLAPSED_WIDTH : width }}
+              id={CODEX_ID}
+              aria-label="World index"
+              className={`sf-codex sf-sb ${collapsed ? "sf-codex--collapsed" : ""} ${sheetMode ? "sf-codex--sheet" : ""}`}
+              style={sheetMode ? undefined : { width: collapsed ? COLLAPSED_WIDTH : width }}
             >
               {/* Tab toggle, hidden when collapsed */}
               {!collapsed && (
@@ -324,17 +362,20 @@ const WorldLayout = () => {
               )}
               </div>
             </aside>
+            </CodexSidebarContainer>
 
-            {/* Resize handle */}
-            {!collapsed && (
-              <div
-                className="sf-codex-resize-handle"
+            {/* Resize handle: drag, or focus and use the arrow keys */}
+            {!collapsed && !sheetMode && (
+              <CodexResizeHandle
+                width={width}
+                onWidthChange={setWidth}
                 onMouseDown={startResize}
+                controls={CODEX_ID}
               />
             )}
 
             {/* Main content */}
-            <main className="sf-world-main">
+            <main id="main" tabIndex={-1} className="sf-world-main sf-sb">
               {/* F6: one answer to "what are the parts of a world". Sticky so
                   it survives a long Codex list or a tall tool page. */}
               {worldId && (

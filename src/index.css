@@ -182,9 +182,40 @@
     outline-offset: 2px;
   }
 
-  /* Skip to content link for keyboard users */
-  .skip-link {
-    @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg;
+  /* Skip to content (SkipLink.tsx). The first focusable element on every
+     page; parked above the viewport until it takes focus, then drops in over
+     the header (z-[100], the toast tier, so the z-50 header cannot hide it). */
+  .sf-skip-link {
+    position: fixed;
+    top: 8px;
+    left: 16px;
+    z-index: 100;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--sf-primary);
+    border-radius: 0;
+    background: var(--sf-surface-elevated);
+    color: var(--t1);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    transform: translateY(calc(-100% - 16px));
+    transition: transform 120ms cubic-bezier(0.2, 0, 0, 1);
+  }
+  .sf-skip-link:focus,
+  .sf-skip-link:focus-visible {
+    transform: translateY(0);
+  }
+
+  /* The skip target takes programmatic focus (tabindex="-1") so the next Tab
+     continues from the content. It is a landmark, not a control: a ring
+     around the whole page would read as a fault, so it draws none. */
+  main[tabindex="-1"]:focus,
+  main[tabindex="-1"]:focus-visible {
+    outline: none;
   }
 
   /* Remove focus rings from command palette elements */
@@ -785,33 +816,45 @@ html {
     --sf-world-accent: var(--sf-primary-bright);
   }
 
+  /* Scrollbars on .sf-codex and .sf-world-main come from .sf-sb (the
+     --sb-* tokens in tokens.css); both elements carry the class. The old
+     hex track/thumb and the 12%-alpha accent thumb are gone. */
   .sf-codex {
     flex-shrink: 0;
-    background: #0C1019;
+    background: var(--sf-void);
     border-right: 1px solid var(--sf-line-hairline);
     overflow-y: auto;
     overflow-x: hidden;
-    transition: width 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: width 180ms cubic-bezier(0.2, 0, 0, 1);
     position: relative;
     z-index: 10;
   }
 
-  .sf-codex::-webkit-scrollbar { width: 3px; }
-  .sf-codex::-webkit-scrollbar-track { background: transparent; }
-  .sf-codex::-webkit-scrollbar-thumb { background: rgba(var(--sf-world-accent-rgb), 0.12); }
-
   .sf-codex--collapsed { width: 48px !important; }
 
+  /* Below md the sidebar lives in a left Sheet (CodexSidebarContainer). */
+  .sf-codex--sheet {
+    width: 100%;
+    height: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
+    border-right: 0;
+    transition: none;
+  }
+
+  /* Window splitter (role="separator"). Drag with the mouse, or focus it and
+     use the arrow keys. Solid line tokens on hover and focus. */
   .sf-codex-resize-handle {
     width: 4px;
     cursor: col-resize;
     flex-shrink: 0;
     background: transparent;
-    transition: background 0.15s;
+    transition: background-color 120ms cubic-bezier(0.2, 0, 0, 1);
   }
 
-  .sf-codex-resize-handle:hover {
-    background: rgba(var(--sf-world-accent-rgb), 0.1);
+  .sf-codex-resize-handle:hover,
+  .sf-codex-resize-handle:focus-visible {
+    background: var(--sf-line-emphasis);
   }
 
   .sf-world-main {
@@ -819,14 +862,7 @@ html {
     overflow-y: auto;
     overflow-x: hidden;
     background: hsl(var(--sf-void-hsl));
-    /* April 2026 handoff — thumb in sb-thumb grey, track matches void */
-    scrollbar-color: #2E3548 #0A0E17;
-    scrollbar-width: thin;
   }
-  .sf-world-main::-webkit-scrollbar { width: 8px; height: 8px; }
-  .sf-world-main::-webkit-scrollbar-track { background: #0A0E17; }
-  .sf-world-main::-webkit-scrollbar-thumb { background: #2E3548; border: 0; border-radius: 0; }
-  .sf-world-main::-webkit-scrollbar-thumb:hover { background: #3D4658; }
 
   /* Tool content when rendered inside WorldLayout */
   .sf-tool-content {

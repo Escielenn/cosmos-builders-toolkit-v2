@@ -93,7 +93,7 @@ const RogueSimulator = () => {
         <Header />
         {/* One viewport tall rather than flex-1, so the cascade footer sits
             below the simulator instead of squeezing it. */}
-        <div className="relative h-[calc(100dvh-64px)] shrink-0" style={{ marginTop: 64 }}>
+        <main id="main" tabIndex={-1} className="relative h-[calc(100dvh-64px)] shrink-0" style={{ marginTop: 64 }}>
           {!loaded && (
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-background">
               <Loader message="INITIALIZING ROGUE" />
@@ -186,7 +186,7 @@ const RogueSimulator = () => {
             config={SIMULATOR_NARRATIVE_CONFIGS["rogue"]}
             {...narrativeBridge.panelProps}
           />
-        </div>
+        </main>
         <SimulatorCascadeFooter simulatorType="rogue" />
       </div>
       <SaveSimulationDialog

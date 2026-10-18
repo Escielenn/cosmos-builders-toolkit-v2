@@ -141,14 +141,18 @@ const TrackFormDialog = ({
           {/* Color */}
           <div className="space-y-2">
             <Label>Color</Label>
-            <div className="flex flex-wrap gap-2">
+            {/* 28px swatches, 44px hits (.sf-hit); the 16px gap keeps the
+                hit boxes from overlapping. */}
+            <div className="flex flex-wrap gap-4 p-2" role="group" aria-label="Track colour">
               {TRACK_COLOR_PALETTE.map((c) => (
                 <button
                   key={c}
                   type="button"
                   onClick={() => setColor(c)}
+                  aria-label={c}
+                  aria-pressed={color === c}
                   className={cn(
-                    "w-7 h-7 rounded-full border-2 transition-all",
+                    "sf-hit w-7 h-7 rounded-full border-2 transition-all",
                     color === c
                       ? "border-t1 scale-110 shadow-lg"
                       : "border-transparent hover:scale-105"

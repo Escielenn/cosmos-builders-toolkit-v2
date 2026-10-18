@@ -158,7 +158,7 @@ export default function Studio(): JSX.Element {
       <div className="mx-auto flex max-w-[1280px] pt-16">
         <Rail worlds={data?.worlds ?? []} />
 
-        <main className="min-w-0 flex-1 px-6 py-10 md:px-10">
+        <main id="main" tabIndex={-1} className="min-w-0 flex-1 px-6 py-10 md:px-10">
           {/* greeting */}
           <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
             <div>
