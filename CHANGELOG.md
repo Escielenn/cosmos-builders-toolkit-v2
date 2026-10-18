@@ -1,5 +1,27 @@
 # StellarForge Changelog
 
+## 0.7700 · True Instruments
+Tier 3 of the 1.5 programme.
+- Science fixes, each with tests against published values:
+  - Time Dilation round trips are two stop-to-stop legs (were ~29% short).
+  - Gravitas combines spin and thrust as vectors (with the rim range) and uses
+    the relativistic brachistochrone for thrust trips.
+  - Surface Gravity orbit cost reads 1.00x for Earth.
+  - Habitable Zone uses the star's temperature (Kopparapu 2014); the scorched
+    narrative says "inside the inner edge".
+  - Solaris places the G-star habitable zone at ~0.95-1.68 AU, scales binaries
+    once, and uses mass (not luminosity) for orbits and Hill spheres.
+  - Inverted dilation is labelled SPECULATIVE. Drake has one shared formula.
+- One save system for 22 tools (create, rename, tags, autosave, local draft in
+  LOCAL MODE that files on sign-in, canon emit on first save). Every tool shows
+  the world bar when no world is open.
+- Retired cyan removed from the simulators; CI now scans all of public/.
+- Simulator runs export to Markdown and PDF, with a cascade footer.
+- Dossier gets a real full-report PDF; Surface Cartographer exports a PDF map
+  sheet and gazetteer.
+- Phone layouts fixed for Timeline, Drake, Axiom and Cascade. Timeline links
+  to its world's Chronicle. The header no longer lets text read through.
+
 ## 0.7600 · The Writing Room
 Tier 2 of the 1.5 programme.
 - Large manuscripts: the binder no longer loads every document's text; word
