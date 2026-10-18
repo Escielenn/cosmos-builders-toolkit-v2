@@ -551,6 +551,9 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
             }
           >
             <WikiEditor
+              // One editor per entry: its pending words flush to the entry
+              // they were typed in, and never meet another entry's text.
+              key={entry.id}
               worldId={worldId}
               content={entry.content || ""}
               onChange={handleContentChange}

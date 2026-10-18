@@ -115,7 +115,8 @@ const RichTextEditor = ({
   // Sync content from outside (e.g., initial load from DB)
   useEffect(() => {
     if (editor && content !== editor.getHTML() && !editor.isFocused) {
-      editor.commands.setContent(content || "");
+      // An external sync, not an edit: never echo it back through onChange.
+      editor.commands.setContent(content || "", { emitUpdate: false });
     }
   }, [content, editor]);
 

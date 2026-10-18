@@ -53,7 +53,7 @@ export function Scrivenings({
   for (const d of docs) {
     if (!initial.current.has(d.id)) {
       initial.current.set(d.id, d.content ?? "");
-      autosave.register(d.id, d.content);
+      autosave.register(d.id, d.content, d.updated_at);
     }
   }
 
