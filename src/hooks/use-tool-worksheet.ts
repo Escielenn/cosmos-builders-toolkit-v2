@@ -90,7 +90,7 @@ export interface ToolWorksheet<S> {
   setTags: (tags: string[]) => void;
   /** Point the page at a sheet (selector pick). */
   select: (worksheetId: string) => void;
-  /** Create a named sheet from the codec defaults (selector create). */
+  /** Create a named sheet from the page's current state (selector create). */
   create: (name: string) => Promise<string>;
   /** Treat the current state as saved (after a page-specific write). */
   markSaved: (state?: S) => void;
@@ -127,7 +127,7 @@ export interface ToolWorksheet<S> {
 }
 
 export function useToolWorksheet<S>(toolType: string, options: UseToolWorksheetOptions<S>): ToolWorksheet<S> {
-  const { defaults, hydrate, serialize, displayName, localKey, autosaveDraftMs, loadedToast } = options;
+  const { defaults, serialize, displayName, localKey, autosaveDraftMs, loadedToast } = options;
   const autoOpenSelector = options.autoOpenSelector ?? true;
   // Callbacks change identity every render; read them through a ref.
   const opts = useRef(options);
@@ -323,18 +323,24 @@ export function useToolWorksheet<S>(toolType: string, options: UseToolWorksheetO
 
   const create = useCallback(
     async (name: string): Promise<string> => {
+      // The new sheet starts from what is on the page (defaults on a fresh
+      // page), so work done before a world was chosen is never thrown away
+      // when the new row loads back in.
+      const snapshot = state;
       const ws = await createWorksheet.mutateAsync({
         worldId: worldId!,
         toolType,
         title: name,
-        data: serialize(defaults),
+        data: serialize(snapshot),
       });
       setCurrentId(ws.id);
       setTitle(ws.title);
+      setSavedKey(keyOf(snapshot));
+      if (localKey) clearUnfiled(localKey);
       setSearchParams(withWorksheetParams(searchParams, worldId, ws.id));
       return ws.id;
     },
-    [createWorksheet, worldId, toolType, serialize, defaults, setSearchParams, searchParams],
+    [state, createWorksheet, worldId, toolType, serialize, keyOf, localKey, setSearchParams, searchParams],
   );
 
   const rename = useCallback(

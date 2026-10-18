@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { useState, useMemo, lazy, Suspense } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Download, Save, Info, Printer, ExternalLink, Globe, Image as ImageIcon, ChevronDown } from "lucide-react";
 import {
@@ -19,34 +19,37 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
-import { useWorldId } from "@/hooks/use-world-id";
-import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import WorksheetLinkSelector from "@/components/tools/WorksheetLinkSelector";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useAuth } from "@/contexts/AuthContext";
-import WorldSelectDialog, { SaveSelection } from "@/components/tools/WorldSelectDialog";
 import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
+// FormState, defaults and codec: lib/tool-worksheets/ecr.
+import {
+  codec as ecrCodec,
+  type FormState,
+  TOOL_TYPE,
+  LOCAL_STORAGE_KEY,
+  type PlanetaryParameter,
+  type CascadeLevel,
+} from "@/lib/tool-worksheets/ecr";
+import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import SelectedParametersSidebar from "@/components/tools/SelectedParametersSidebar";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import type { MoodboardImage } from "@/hooks/use-moodboard";
-import { useTags } from "@/hooks/use-tags";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import { ECRSummaryTemplate, ECRFullReportTemplate } from "@/lib/pdf/templates";
-import { Json } from "@/integrations/supabase/types";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import QuestionSection from "@/components/tools/QuestionSection";
 import { LinkedWorksheetRef, getLinkConfigsForTool } from "@/lib/worksheet-links-config";
-import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 
@@ -108,65 +111,6 @@ const SF_CASCADE_EXAMPLES = [
     insight: "Hal Clement built an entire psychology from the terror of falling in extreme gravity.",
   },
 ];
-
-// Types for form state
-interface PlanetaryParameter {
-  type: string;
-  specificValue: string;
-  mode: "single" | "multiple";
-  types?: string[];
-  specificValues?: Record<string, string>;
-}
-
-interface CascadeLevel {
-  responses: Record<string, string>;
-}
-
-interface FormState {
-  parameter: PlanetaryParameter;
-  level1: CascadeLevel;
-  level2: CascadeLevel;
-  level3: CascadeLevel;
-  level4: CascadeLevel;
-  level5: CascadeLevel;
-  synthesis: {
-    logicalFlow: string;
-    contradictions: string;
-    monoCultureCheck: string;
-    vestigialQuestion: string;
-    soWhatTest: string;
-    surprisingConsequence: string;
-    biggestGap: string;
-    storyPotential: string;
-  };
-  _linkedWorksheets?: {
-    planet?: LinkedWorksheetRef;
-    evobio?: LinkedWorksheetRef;
-  };
-  generalNotes: string;
-  moodboard: MoodboardImage[];
-}
-
-const initialFormState: FormState = {
-  parameter: { type: "", specificValue: "", mode: "single", types: [], specificValues: {} },
-  level1: { responses: {} },
-  level2: { responses: {} },
-  level3: { responses: {} },
-  level4: { responses: {} },
-  level5: { responses: {} },
-  synthesis: {
-    logicalFlow: "",
-    contradictions: "",
-    monoCultureCheck: "",
-    vestigialQuestion: "",
-    soWhatTest: "",
-    surprisingConsequence: "",
-    biggestGap: "",
-    storyPotential: "",
-  },
-  generalNotes: "",
-  moodboard: [],
-};
 
 const PLANETARY_PARAMETERS = [
   {
@@ -454,25 +398,26 @@ const LEVEL5_QUESTIONS = [
   },
 ];
 
-const TOOL_TYPE = "environmental-chain-reaction";
-
 const EnvironmentalChainReaction = () => {
-  const [formState, setFormState] = useState<FormState>(initialFormState);
-  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
-  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
-  const [showWorldSelectDialog, setShowWorldSelectDialog] = useState(false);
-  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
-  const { worlds, createWorld } = useWorlds();
-  const { updateWorksheetTags } = useTags();
+  const { worlds } = useWorlds();
 
   // Get URL params for worldId and worksheetId
   const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = useWorldId();
-  const worksheetId = searchParams.get("worksheetId");
+
+  const worksheet = useToolWorksheet(TOOL_TYPE, {
+    ...ecrCodec,
+    displayName: "Chain Reaction",
+    localKey: LOCAL_STORAGE_KEY,
+    loadedToast: true,
+    onDraftCreated: (id, title) => entityMatch.check(id, title),
+  });
+  const { state: formState, setState: setFormState, worldId } = worksheet;
+  const currentWorksheetId = worksheet.worksheetId;
+  const currentWorksheetTitle = worksheet.worksheetTitle;
+  const worksheetId = worksheet.worksheetId;
 
   // Get world name from worldId
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
@@ -480,63 +425,10 @@ const EnvironmentalChainReaction = () => {
 
   // Supabase hooks
   const entityMatch = useEntityMatch(worldId);
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
-    onDraftCreated: entityMatch.check,
-  });
-  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
-  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
-  const renameWorksheet = useRenameWorksheet();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [notesSheetOpen, setNotesSheetOpen] = useState(false);
   const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
-  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
-
-  // Show worksheet selector when worldId is present but no worksheetId
-  useEffect(() => {
-    if (worldId && !worksheetId && !worksheetsLoading && user) {
-      setWorksheetSelectorOpen(true);
-    }
-  }, [worldId, worksheetId, worksheetsLoading, user]);
-
-  // Load existing worksheet from Supabase if worksheetId is provided
-  useEffect(() => {
-    if (existingWorksheet && existingWorksheet.data) {
-      try {
-        const data = existingWorksheet.data as unknown as FormState;
-        setFormState(data);
-        setCurrentWorksheetId(existingWorksheet.id);
-        setCurrentWorksheetTitle(existingWorksheet.title);
-        if (existingWorksheet?.tags) {
-          setWorksheetTags(existingWorksheet.tags);
-        }
-        toast({
-          title: "WORKSHEET LOADED.",
-          description: "WORK RESTORED FROM CLOUD.",
-        });
-      } catch {
-        // Ignore parse errors
-      }
-    }
-  }, [existingWorksheet]);
-
-  // Fallback to localStorage if no worldId (standalone mode)
-  useEffect(() => {
-    if (!worldId && !worksheetId) {
-      const saved = localStorage.getItem("ecr-worksheet");
-      if (saved) {
-        try {
-          setFormState(JSON.parse(saved));
-          toast({
-            title: "DRAFT LOADED.",
-            description: "PREVIOUS WORK RESTORED.",
-          });
-        } catch {
-          // Ignore parse errors
-        }
-      }
-    }
-  }, [worldId, worksheetId]);
 
   // Link configurations for this tool
   const linkConfigs = getLinkConfigsForTool(TOOL_TYPE);
@@ -744,114 +636,6 @@ const EnvironmentalChainReaction = () => {
     return selectedParams;
   };
 
-  const saveToSupabase = async (targetWorldId: string) => {
-    const worksheetData = formState as unknown as Json;
-
-    if (currentWorksheetId || worksheetId) {
-      // Update existing worksheet - preserve existing title
-      await updateWorksheet.mutateAsync({
-        worksheetId: currentWorksheetId || worksheetId!,
-        data: worksheetData,
-      });
-    } else {
-      // Should not reach here - worksheet selector ensures title is set first
-      console.warn("Attempting to save without worksheet selection");
-    }
-  };
-
-  // Handle worksheet selection from dialog
-  const handleWorksheetSelect = (selectedWorksheetId: string) => {
-    setSearchParams({ worldId: worldId!, worksheetId: selectedWorksheetId });
-    setWorksheetSelectorOpen(false);
-  };
-
-  // Handle new worksheet creation from dialog
-  const handleWorksheetCreate = async (name: string): Promise<string> => {
-    const worksheetData = formState as unknown as Json;
-    const result = await createWorksheet.mutateAsync({
-      worldId: worldId!,
-      toolType: TOOL_TYPE,
-      title: name,
-      data: worksheetData,
-    });
-    setCurrentWorksheetId(result.id);
-    setCurrentWorksheetTitle(result.title);
-    setSearchParams({ worldId: worldId!, worksheetId: result.id });
-    return result.id;
-  };
-
-  // Handle worksheet rename
-  const handleRename = async (newTitle: string) => {
-    const wsId = currentWorksheetId || worksheetId;
-    if (!wsId) return;
-
-    await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
-    setCurrentWorksheetTitle(newTitle);
-  };
-
-  const handleTagsChange = (newTags: string[]) => {
-    setWorksheetTags(newTags);
-    const wsId = currentWorksheetId || worksheetId;
-    if (wsId) {
-      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
-    }
-  };
-
-  const handleSave = async () => {
-    // Browser backup in standalone mode only (see lib/standalone-backup)
-    writeStandaloneBackup("ecr-worksheet", formState, { worldId, signedIn: !!user });
-
-    // If we have a worldId and user is authenticated, save directly to Supabase
-    if (worldId && user) {
-      try {
-        await saveToSupabase(worldId);
-      } catch {
-        // Error already handled by the mutation
-      }
-    } else if (user) {
-      // User is logged in but no worldId - show selection dialog
-      setShowWorldSelectDialog(true);
-    } else {
-      toast({
-        title: "DRAFT SAVED.",
-        description: "WORK SECURED TO LOCAL STORAGE.",
-      });
-    }
-  };
-
-  const handleWorldSelection = async (selection: SaveSelection) => {
-    setIsSaving(true);
-    try {
-      if (selection.type === "local") {
-        toast({
-          title: "DRAFT SAVED.",
-          description: "WORK SECURED TO LOCAL STORAGE.",
-        });
-      } else if (selection.type === "existing") {
-        await saveToSupabase(selection.worldId);
-        toast({
-          title: "SAVED TO CLOUD.",
-          description: `WORKSHEET SECURED TO "${selection.worldName}".`,
-        });
-      } else if (selection.type === "new") {
-        const newWorld = await createWorld.mutateAsync({
-          name: selection.worldName,
-          description: selection.worldDescription,
-        });
-        await saveToSupabase(newWorld.id);
-        toast({
-          title: "WORLD CREATED AND SAVED.",
-          description: `WORKSHEET SECURED TO "${newWorld.name}".`,
-        });
-      }
-      setShowWorldSelectDialog(false);
-    } catch {
-      // Errors handled by mutations
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
   const handleExport = () => {
     setExportDialogOpen(true);
   };
@@ -862,14 +646,12 @@ const EnvironmentalChainReaction = () => {
 
   return (
     <ToolPageLayout
+      {...worksheet.layoutProps}
       toolType={TOOL_TYPE}
-      onSave={handleSave}
-      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
       onPrint={handlePrint}
       onExport={handleExport}
       onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
       isShared={!!shareConfig?.enabled}
-      isCloudEnabled={!!(worldId && user)}
       onNotesClick={() => setNotesSheetOpen(true)}
       onMoodboardClick={() => setMoodboardSheetOpen(true)}
       moodboardCount={formState.moodboard?.length || 0}
@@ -883,13 +665,6 @@ const EnvironmentalChainReaction = () => {
           defaultFilename="environmental-chain-reaction"
         />
       }
-      worksheetId={currentWorksheetId || worksheetId}
-      worksheetTitle={currentWorksheetTitle}
-      onRenameWorksheet={handleRename}
-      worksheetLoading={worksheetLoading}
-      worksheetTags={worksheetTags}
-      onTagsChange={handleTagsChange}
-      isLoggedIn={!!user}
       pageShellClassName="sf-atmosphere"
     >
         {/* Introduction */}
@@ -1475,13 +1250,6 @@ const EnvironmentalChainReaction = () => {
         images={formState.moodboard || []}
         onImagesChange={(images) => setFormState(prev => ({ ...prev, moodboard: images }))}
       />
-      {/* World Selection Dialog */}
-      <WorldSelectDialog
-        open={showWorldSelectDialog}
-        onOpenChange={setShowWorldSelectDialog}
-        onSave={handleWorldSelection}
-        isLoading={isSaving}
-      />
 
       {/* Export Dialog */}
       <ExportDialog
@@ -1506,16 +1274,9 @@ const EnvironmentalChainReaction = () => {
       {/* Worksheet Selector Dialog */}
       {worldId && (
         <WorksheetSelectorDialog
-          open={worksheetSelectorOpen}
-          onOpenChange={setWorksheetSelectorOpen}
-          worldId={worldId}
+          {...worksheet.selectorProps}
           worldName={worldName}
-          toolType={TOOL_TYPE}
           toolDisplayName="Cascade"
-          worksheets={existingWorksheets}
-          isLoading={worksheetsLoading}
-          onSelect={handleWorksheetSelect}
-          onCreate={handleWorksheetCreate}
         />
       )}
 
