@@ -2046,7 +2046,7 @@ export default function ExoSkyV2({
             </div>
           )}
           {worldEntity && worldEntityCoords && (
-            <div style={{marginTop:10,padding:"8px 10px",background:"rgb(var(--sf-primary-rgb) / 0.06)",border:"1px solid var(--sf-line)",borderRadius:0}}>
+            <div style={{marginTop:10,padding:"8px 12px",background:"rgb(var(--sf-primary-rgb) / 0.06)",borderRadius:0}}>
               <div style={{fontSize:12,fontFamily:FONT_MONO,letterSpacing:"0.10em",textTransform:"uppercase",color:"var(--sf-primary-text)",marginBottom:4}}>
                 // FROM YOUR WORLD
               </div>
@@ -2078,7 +2078,7 @@ export default function ExoSkyV2({
               </div>
               <input type="range" min="1" max="5000" step="1" value={Math.min(5000,customDistPc)} onChange={e=>setCustomDistPc(Number(e.target.value))} style={{width:"100%"}} />
 
-              <div style={{marginTop:6,padding:"6px 8px",background:"rgb(var(--sf-primary-rgb) / 0.06)",borderRadius:0,border:"1px solid var(--sf-line)"}}>
+              <div style={{marginTop:6,padding:"6px 12px",background:"rgb(var(--sf-primary-rgb) / 0.06)",borderRadius:0}}>
                 <div style={{fontSize:12,color:"var(--sf-primary-text)",fontFamily:FONT_MONO,lineHeight:1.7}}>
                   RA {planet.ra.toFixed(2)}° · Dec {planet.dec.toFixed(2)}°<br/>
                   {(customDistPc*3.262).toFixed(1)} ly from Sol
@@ -2332,17 +2332,17 @@ export default function ExoSkyV2({
               style={{
                 width:"100%",fontFamily:FONT_HEADING,fontSize:16,fontWeight:400,
                 letterSpacing:"0.06em",textTransform:"uppercase",
-                background:"var(--sf-surface)",color:"var(--t1)",
-                border:"1px solid var(--sf-line-interactive)",borderRadius:0,
+                background:"var(--sf-void)",color:"var(--t1)",
+                border:"1px solid var(--sf-line-hairline)",borderBottomColor:"var(--sf-line-interactive)",borderRadius:0,
                 padding:"12px 14px",minHeight:"var(--hit-min)",
                 transition:`border-color ${EASE}`,
               }}
               onFocus={e => e.target.style.borderColor = drawColor}
-              onBlur={e => e.target.style.borderColor = "var(--sf-line-interactive)"}
+              onBlur={e => { e.target.style.borderColor = "var(--sf-line-hairline)"; e.target.style.borderBottomColor = "var(--sf-line-interactive)"; }}
             />
 
             {/* Color adjustment */}
-            <div style={{display:"flex",gap:5,marginTop:14,alignItems:"center",flexWrap:"wrap"}}>
+            <div style={{display:"flex",gap:8,marginTop:14,alignItems:"center",flexWrap:"wrap"}}>
               <span style={{fontSize:12,fontFamily:FONT_HEADING,letterSpacing:"0.12em",color:"var(--t4)",marginRight:4}}>COLOUR</span>
               {DRAW_COLORS.map(c => (
                 <button key={c.hex} type="button" onClick={() => setDrawColor(c.hex)}
@@ -2406,18 +2406,18 @@ export default function ExoSkyV2({
                   </div>
                 </div>
               </div>
-              <div style={{display:"flex",gap:4,flexShrink:0}}>
+              <div style={{display:"flex",gap:8,flexShrink:0}}>
                 {/* Navigate to constellation */}
                 <button onClick={() => { setViewRa(cons.centRa); setViewDec(cons.centDec); }}
-                  style={{...MINI_BTN}} title="Navigate to" aria-label={`Navigate to ${cons.name}`}>⌖</button>
+                  className="exo-mini" style={{...MINI_BTN}} title="Navigate to" aria-label={`Navigate to ${cons.name}`}>⌖</button>
                 {/* Toggle visibility */}
                 <button onClick={() => toggleConstellation(cons.id)}
-                  style={{...MINI_BTN,color:cons.visible?"var(--t2)":"var(--t4)"}} title={cons.visible?"Hide":"Show"} aria-label={`${cons.visible?"Hide":"Show"} ${cons.name}`} aria-pressed={cons.visible}>
+                  className="exo-mini" style={{...MINI_BTN,color:cons.visible?"var(--t2)":"var(--t4)"}} title={cons.visible?"Hide":"Show"} aria-label={`${cons.visible?"Hide":"Show"} ${cons.name}`} aria-pressed={cons.visible}>
                   {cons.visible ? "◉" : "○"}
                 </button>
                 {/* Delete */}
                 <button onClick={() => deleteConstellation(cons.id)}
-                  style={{...MINI_BTN,color:"var(--sf-crimson-text)"}} title="Delete" aria-label={`Delete ${cons.name}`}>✕</button>
+                  className="exo-mini" style={{...MINI_BTN,color:"var(--sf-crimson-text)"}} title="Delete" aria-label={`Delete ${cons.name}`}>✕</button>
               </div>
             </div>
           ))}
@@ -2473,6 +2473,7 @@ export default function ExoSkyV2({
         .exosky-root input[type=checkbox]{accent-color:var(--sf-primary);width:14px;height:14px}
         .exosky-root input[type=number]{-moz-appearance:textfield}.exosky-root input[type=number]::-webkit-outer-spin-button,.exosky-root input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
         .exosky-root select option{background:var(--sf-surface);color:var(--t2)}
+        .exosky-root .exo-mini:hover{border-color:var(--sf-line-emphasis)!important}
       `}</style>
     </div>
   );
@@ -2500,16 +2501,16 @@ const SH = { fontSize:12,fontFamily:FONT_HEADING,fontWeight:500,letterSpacing:"0
 const COLLAPSE = { cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,width:"100%",minHeight:"var(--hit-min)",background:"none",border:"none",padding:0,color:"inherit" } as const;
 const LBL = { fontSize:12,fontFamily:FONT_SANS,fontWeight:400,color:"var(--t3)" };
 const VAL = { fontSize:14,fontFamily:FONT_MONO,fontWeight:500,color:"var(--t1)" };
-const SEL = { width:"100%",marginTop:8,fontFamily:FONT_SANS,fontSize:16,background:"var(--sf-surface)",color:"var(--t1)",border:"1px solid var(--sf-line-interactive)",padding:"7px 10px",minHeight:"var(--hit-min)",borderRadius:0 };
+const SEL = { width:"100%",marginTop:8,fontFamily:FONT_SANS,fontSize:16,background:"var(--sf-void)",color:"var(--t1)",border:"1px solid var(--sf-line-hairline)",borderBottomColor:"var(--sf-line-interactive)",padding:"7px 10px",minHeight:"var(--hit-min)",borderRadius:0 };
 const BTN = { fontFamily:FONT_SANS,fontSize:12,fontWeight:500,letterSpacing:"0.10em",textTransform:"uppercase",padding:"7px 12px",minHeight:"var(--hit-min)",border:"1px solid var(--sf-primary)",background:"rgb(var(--sf-primary-rgb) / 0.06)",color:"var(--sf-primary-text)",cursor:"pointer",borderRadius:0,transition:`background-color ${EASE}, border-color ${EASE}, color ${EASE}` } as const;
 /** Secondary action: outline only. */
-const BTN_QUIET = { background:"transparent",borderColor:"var(--sf-line-interactive)",color:"var(--t2)" } as const;
+const BTN_QUIET = { background:"transparent",borderColor:"var(--sf-line)",color:"var(--t2)" } as const;
 /** Disabled is a colour state, never opacity. */
 const BTN_DISABLED = { background:"var(--sf-disabled-bg)",borderColor:"var(--sf-disabled-line)",color:"var(--sf-disabled-text)",cursor:"not-allowed" } as const;
 const CKL = { display:"flex",alignItems:"center",gap:8,marginTop:2,minHeight:32,fontSize:13,color:"var(--t2)",cursor:"pointer" };
 const CK = { accentColor:"var(--sf-primary)",width:14,height:14 };
-const NUM_INPUT = { width:76,fontFamily:FONT_MONO,fontSize:16,background:"var(--sf-surface)",color:"var(--t1)",border:"1px solid var(--sf-line-interactive)",padding:"3px 5px",borderRadius:0,textAlign:"right" } as const;
-const MINI_BTN = { background:"none",border:"1px solid var(--sf-line-interactive)",borderRadius:0,padding:0,minWidth:"var(--hit-min)",minHeight:"var(--hit-min)",cursor:"pointer",fontSize:14,color:"var(--t2)",lineHeight:1,transition:`border-color ${EASE}, color ${EASE}` };
+const NUM_INPUT = { width:76,fontFamily:FONT_MONO,fontSize:16,background:"var(--sf-void)",color:"var(--t1)",border:"1px solid var(--sf-line-hairline)",borderBottomColor:"var(--sf-line-interactive)",padding:"3px 5px",borderRadius:0,textAlign:"right" } as const;
+const MINI_BTN = { background:"none",border:"1px solid transparent",borderRadius:0,padding:0,minWidth:"var(--hit-min)",minHeight:"var(--hit-min)",cursor:"pointer",fontSize:14,color:"var(--t2)",lineHeight:1,transition:`border-color ${EASE}, color ${EASE}` };
 /** Constellation line-colour swatch. Selection reads as a t1 frame, not opacity. */
 function swatchStyle(hex: string, selected: boolean) {
   return { width:32,height:32,padding:0,borderRadius:0,background:hex,cursor:"pointer",border: selected ? "2px solid var(--t1)" : "2px solid var(--sf-line)",outlineOffset:2,transition:`border-color ${EASE}` } as const;

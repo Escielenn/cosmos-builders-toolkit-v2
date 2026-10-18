@@ -32,15 +32,15 @@ import type { EncounterStatus } from "@/lib/simulators/nbody";
 
 const S = {
   panelBase:
-    "absolute z-20 w-[268px] max-w-[calc(100vw-24px)] bg-sf-surface/90 border border-sf-line backdrop-blur-sf-panel rounded-none p-3 overflow-y-auto sf-sb",
+    "absolute z-20 w-[268px] max-w-[calc(100vw-24px)] bg-sf-surface/90 border border-sf-line backdrop-blur-sf-panel rounded-none p-4 overflow-y-auto sf-sb",
   sec: "font-mono text-[13px] uppercase tracking-wide text-sf-primary-text mb-1.5 block",
-  chip: "px-2 py-1 text-[12px] uppercase tracking-wide border rounded-none transition-colors duration-base min-h-[26px]",
+  chip: "px-3 py-1 text-[12px] uppercase tracking-wide border rounded-none transition-colors duration-base min-h-[26px]",
   chipOff:
-    "bg-sf-surface border-sf-line-interactive text-t2 hover:border-sf-primary hover:bg-sf-primary/[0.12] hover:text-t1",
+    "bg-sf-surface border-sf-line text-t2 hover:border-sf-primary hover:bg-sf-primary/[0.12] hover:text-t1",
   chipOn: "bg-sf-primary/[0.12] border-sf-primary text-t1",
   // An ejected body recedes by tier and a strike, never by opacity.
   chipEjected:
-    "bg-sf-surface border-sf-line-interactive text-t4 line-through hover:border-sf-primary hover:text-t2",
+    "bg-sf-surface border-sf-line text-t4 line-through hover:border-sf-primary hover:text-t2",
   row: "flex items-baseline justify-between gap-2 py-0.5",
   label: "font-heading text-[13px] uppercase tracking-[1.5px] text-t3 shrink-0",
   value: "font-mono text-[14px] text-t1 text-right",
@@ -157,7 +157,7 @@ export function RogueControls({
       {/* ── System ── */}
       <div>
         <span className={S.sec}>System</span>
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-2">
           {Object.entries(SYSTEMS).map(([key, sys]) => (
             <button
               key={key}
@@ -175,9 +175,9 @@ export function RogueControls({
       </div>
 
       {/* ── Intruder ── */}
-      <div className="mt-3 border-t border-sf-line pt-2.5">
+      <div className="mt-3 border-t border-sf-line-hairline pt-2.5">
         <span className={S.sec}>Intruder</span>
-        <div className="mb-2 flex flex-wrap gap-1">
+        <div className="mb-2 flex flex-wrap gap-2">
           {(Object.keys(INTRUDER_TYPES) as IntruderKind[]).map((kind) => (
             <button
               key={kind}
@@ -235,19 +235,19 @@ export function RogueControls({
       </div>
 
       {/* ── Transport ── */}
-      <div className="mt-3 border-t border-sf-line pt-2.5">
+      <div className="mt-3 border-t border-sf-line-hairline pt-2.5">
         <span className={S.sec}>Time</span>
         {!launched ? (
           <button
             type="button"
             onClick={onLaunch}
-            className="w-full min-h-hit border border-sf-primary bg-sf-primary px-2 py-2 font-heading text-[13px] font-medium uppercase tracking-[1.5px] text-sf-on-primary transition-shadow duration-base ease-sf-out hover:shadow-sf-glow-teal"
+            className="w-full min-h-hit border border-sf-primary bg-sf-primary px-3 py-2 font-heading text-[13px] font-medium uppercase tracking-[1.5px] text-sf-on-primary transition-shadow duration-base ease-sf-out hover:shadow-sf-glow-teal"
           >
             ▶ Launch intruder
           </button>
         ) : (
           <>
-            <div className="mb-2 flex gap-1">
+            <div className="mb-2 flex gap-2">
               <button
                 type="button"
                 onClick={onTogglePause}
@@ -307,7 +307,7 @@ export function RogueControls({
       </div>
 
       {/* ── Display ── */}
-      <div className="mt-3 border-t border-sf-line pt-2.5">
+      <div className="mt-3 border-t border-sf-line-hairline pt-2.5">
         <span className={S.sec}>Display</span>
         <Toggle
           on={display.trails}
@@ -396,7 +396,7 @@ export function RogueReadout({
 
   return (
     <div className={`${S.panelBase} right-3 top-3 max-h-[calc(100%-24px)]`}>
-      <div className="border-b border-sf-line pb-2">
+      <div className="border-b border-sf-line-hairline pb-2">
         <span className={S.sec}>Status</span>
         <p role="status" className={`font-heading text-[14px] uppercase tracking-[1.5px] ${copy.tone}`}>
           <span aria-hidden>{copy.glyph}</span> {copy.text}
@@ -426,7 +426,7 @@ export function RogueReadout({
       </div>
 
       {/* ── Selected body ── */}
-      <div className="mt-2 border-t border-sf-line pt-2">
+      <div className="mt-2 border-t border-sf-line-hairline pt-2">
         {selected ? (
           <div>
             <div className="mb-1 flex items-center justify-between gap-2">
@@ -471,9 +471,9 @@ export function RogueReadout({
       </div>
 
       {/* ── Bodies list, doubles as a camera picker ── */}
-      <div className="mt-2 border-t border-sf-line pt-2">
+      <div className="mt-2 border-t border-sf-line-hairline pt-2">
         <span className={S.sec}>Bodies</span>
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-2">
           <button
             type="button"
             onClick={() => onFollow(null)}

@@ -36,7 +36,7 @@ export default function LoadSimulationSheet({
 }: LoadSimulationSheetProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-80 bg-sf-surface border-sf-line-interactive">
+      <SheetContent side="right" className="w-80 bg-sf-surface border-sf-line">
         <SheetHeader>
           <SheetTitle className="font-heading text-sm font-light uppercase tracking-wide text-sf-primary-text flex items-center gap-2">
             <FolderOpen className="w-4 h-4" />

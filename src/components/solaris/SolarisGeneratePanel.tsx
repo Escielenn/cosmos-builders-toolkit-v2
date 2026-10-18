@@ -49,18 +49,18 @@ const CONDITIONS: { key: keyof GenerateConditions; label: string; hint: string }
 const S = {
   // Bottom-right, under the readout panel. Sits above the status strip.
   panel:
-    "absolute right-3 bottom-10 z-20 w-60 bg-sf-surface/90 border border-sf-line backdrop-blur-sf-panel rounded-none p-3 space-y-3 max-h-[52%] overflow-y-auto sf-sb",
+    "absolute right-3 bottom-10 z-20 w-60 bg-sf-surface/90 border border-sf-line backdrop-blur-sf-panel rounded-none p-4 space-y-3 max-h-[52%] overflow-y-auto sf-sb",
   // Contrast raised to match SolarisControls: chips were white/45 on a 0.02 fill
   // with a 0.06 border, which read as absent rather than merely inactive.
   sec: "font-mono text-[13px] uppercase tracking-wide text-sf-primary-text mb-1.5 block",
-  chip: "px-2 py-1 text-[12px] uppercase tracking-wide border rounded-none transition-colors duration-base min-h-[26px]",
+  chip: "px-3 py-1 text-[12px] uppercase tracking-wide border rounded-none transition-colors duration-base min-h-[26px]",
   chipOff:
-    "bg-sf-surface border-sf-line-interactive text-t2 hover:border-sf-primary hover:bg-sf-primary/[0.12] hover:text-t1",
+    "bg-sf-surface border-sf-line text-t2 hover:border-sf-primary hover:bg-sf-primary/[0.12] hover:text-t1",
   chipOn: "bg-sf-primary/[0.12] border-sf-primary text-t1",
   field:
-    "w-full bg-sf-surface border border-sf-line-interactive focus:border-sf-primary focus:bg-sf-surface-elevated rounded-none px-2 py-1.5 font-mono text-[14px] text-t1 tracking-wide",
+    "w-full sf-field focus:border-sf-primary px-3 py-1.5 font-mono text-[14px] text-t1 tracking-wide",
   action:
-    "flex-1 min-h-hit px-2 py-2 text-[13px] uppercase tracking-[1.5px] font-heading font-medium border rounded-none transition-[color,background-color,border-color,box-shadow] duration-base ease-sf-out",
+    "flex-1 min-h-hit px-3 py-2 text-[13px] uppercase tracking-[1.5px] font-heading font-medium border rounded-none transition-[color,background-color,border-color,box-shadow] duration-base ease-sf-out",
 };
 
 interface Props {
@@ -108,7 +108,7 @@ export default function SolarisGeneratePanel({
       {/* Architecture */}
       <div>
         <span className={S.sec}>Stars</span>
-        <div className="flex flex-wrap gap-1 mb-1.5">
+        <div className="flex flex-wrap gap-2 mb-2">
           {ARCH_PRESETS.map((a) => (
             <button
               key={a.value}
@@ -121,7 +121,7 @@ export default function SolarisGeneratePanel({
             </button>
           ))}
         </div>
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-2">
           {STAR_CLASSES.map((c) => (
             <button
               key={c.value}
@@ -165,7 +165,7 @@ export default function SolarisGeneratePanel({
         <span className={S.sec}>
           Require{activeConditions > 0 ? ` (${activeConditions})` : ""}
         </span>
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-2">
           {CONDITIONS.map((c) => (
             <button
               key={c.key}
@@ -186,7 +186,7 @@ export default function SolarisGeneratePanel({
       {/* Asteroid belt */}
       <div>
         <span className={S.sec}>Asteroid Belt</span>
-        <div className="flex gap-1">
+        <div className="flex gap-2">
           {[
             { v: null as boolean | null, l: "Auto" },
             { v: true as boolean | null, l: "Always" },
@@ -207,7 +207,7 @@ export default function SolarisGeneratePanel({
       {/* Actions. Pinned to the foot of the panel: the settings above can
           overflow into a scroll, and Generate is the one control that must
           never be below the fold. */}
-      <div className="sticky bottom-0 -mx-3 -mb-3 flex gap-1.5 border-t border-sf-line bg-sf-surface px-3 py-2.5">
+      <div className="sticky bottom-0 -mx-4 -mb-4 flex gap-2 border-t border-sf-line-hairline bg-sf-surface px-4 py-3">
         <button
           onClick={onGenerate}
           className={`${S.action} bg-sf-primary border-sf-primary text-sf-on-primary hover:shadow-sf-glow-teal`}
@@ -217,7 +217,7 @@ export default function SolarisGeneratePanel({
         <button
           onClick={onRandomize}
           title="New random seed, keeping your settings"
-          className={`${S.action} bg-sf-surface border-sf-line-interactive text-t2 hover:bg-sf-surface-elevated hover:text-t1`}
+          className={`${S.action} bg-sf-surface border-sf-line text-t2 hover:bg-sf-surface-elevated hover:border-sf-line-emphasis hover:text-t1`}
         >
           Random
         </button>

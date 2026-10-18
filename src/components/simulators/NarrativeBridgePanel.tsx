@@ -90,9 +90,9 @@ export default function NarrativeBridgePanel({
 
   // Expanded panel
   return (
-    <div className="absolute right-0 top-0 bottom-0 z-30 w-80 max-w-[92vw] bg-sf-void/95 backdrop-blur-sf-side border-l border-sf-line-interactive overflow-y-auto sf-sb animate-in slide-in-from-right duration-slow">
+    <div className="absolute right-0 top-0 bottom-0 z-30 w-80 max-w-[92vw] bg-sf-void/95 backdrop-blur-sf-side border-l border-sf-line overflow-y-auto sf-sb animate-in slide-in-from-right duration-slow">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-sf-void/95 backdrop-blur-sf-side px-4 py-3 border-b border-sf-line">
+      <div className="sticky top-0 z-10 bg-sf-void/95 backdrop-blur-sf-side px-4 py-3 border-b border-sf-line-hairline">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <PenLine className="w-3.5 h-3.5 text-sf-primary-text" />
@@ -130,7 +130,7 @@ export default function NarrativeBridgePanel({
               value={notes[q.id] ?? ""}
               onChange={(e) => updateNote(q.id, e.target.value)}
               placeholder="Write your thoughts…"
-              className="min-h-[80px] rounded-none bg-sf-surface border-sf-line-interactive hover:border-sf-line-emphasis text-t2 text-sf-body resize-y"
+              className="min-h-[80px] rounded-none text-t2 text-sf-body resize-y"
             />
           </div>
         ))}
@@ -144,12 +144,12 @@ export default function NarrativeBridgePanel({
             value={notes["general_notes"] ?? ""}
             onChange={(e) => updateNote("general_notes", e.target.value)}
             placeholder="Free-form notes, observations, story ideas..."
-            className="w-full font-sans text-sf-body leading-relaxed text-t2 placeholder:text-t3 bg-sf-surface border border-sf-line-interactive hover:border-sf-line-emphasis rounded-none px-[14px] py-3 min-h-[120px] resize-y focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus focus:border-sf-primary transition-colors"
+            className="w-full font-sans text-sf-body leading-relaxed text-t2 placeholder:text-t3 sf-field px-[14px] py-3 min-h-[120px] resize-y focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sf-focus focus:border-sf-primary transition-colors"
           />
         </div>
 
         {/* Footer: save + count */}
-        <div className="pt-3 border-t border-sf-line space-y-2">
+        <div className="pt-3 border-t border-sf-line-hairline space-y-2">
           <div className="flex items-center justify-between">
             <p className="font-mono text-[12px] text-t4 uppercase tracking-wider">
               {filledCount} / {config.questions.length} NOTES WRITTEN

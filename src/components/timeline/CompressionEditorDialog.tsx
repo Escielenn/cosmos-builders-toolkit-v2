@@ -224,7 +224,7 @@ const CompressionEditorDialog = ({
                     "px-3 py-2 rounded-none border text-xs font-medium transition-colors text-center",
                     style === opt.id
                       ? "border-sf-primary bg-sf-primary/10 text-t1"
-                      : "border-sf-line text-t3 hover:border-sf-line"
+                      : "border-sf-line text-t3 hover:border-sf-line-emphasis"
                   )}
                 >
                   {opt.label}

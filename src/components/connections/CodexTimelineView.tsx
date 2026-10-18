@@ -133,7 +133,7 @@ export function CodexTimelineView({ worldId }: CodexTimelineViewProps) {
       </div>
 
       <aside>
-        <div className="border border-sf-line bg-sf-surface p-3">
+        <div className="border border-sf-line bg-sf-surface p-4">
           <h3 className="mb-2 font-heading text-[12px] uppercase tracking-wide text-t3">
             Undated
           </h3>
@@ -141,13 +141,13 @@ export function CodexTimelineView({ worldId }: CodexTimelineViewProps) {
             <p className="text-[13px] text-t3">Everything here sits on the axis.</p>
           ) : (
             <>
-              <ul className="sf-sb max-h-72 space-y-1 overflow-y-auto">
+              <ul className="sf-sb max-h-72 space-y-2 overflow-y-auto">
                 {model.undated.map((e) => (
                   <li key={e.id}>
                     <button
                       type="button"
                       onClick={() => navigate(`/worlds/${worldId}/codex/${e.id}`)}
-                      className="flex min-h-hit w-full items-center gap-2 border border-sf-line-interactive px-2 text-left"
+                      className="flex min-h-hit w-full items-center gap-2 border border-sf-line px-3 text-left transition-colors hover:border-sf-line-emphasis"
                     >
                       <span
                         aria-hidden

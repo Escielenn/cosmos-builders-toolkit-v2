@@ -90,7 +90,7 @@ export function CreateEntityModal({
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       {/* Modals sit on `elevated` above the scrim — there is no fourth plane. */}
-      <DialogContent className="border-sf-line-interactive bg-sf-surface-elevated sm:max-w-[420px]">
+      <DialogContent className="border-sf-line bg-sf-surface-elevated sm:max-w-[420px]">
         <DialogHeader>
           <DialogTitle className="font-heading text-sm font-light uppercase tracking-wide text-t1">
             New Entity

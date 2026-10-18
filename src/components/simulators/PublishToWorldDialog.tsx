@@ -252,7 +252,7 @@ export default function PublishToWorldDialog({
   return (
     <>
       <Dialog open={open && !matchDialogOpen} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-md bg-sf-surface border-sf-line-interactive">
+        <DialogContent className="sm:max-w-md bg-sf-surface border-sf-line">
           <DialogHeader>
             <DialogTitle className="font-heading text-sm font-light uppercase tracking-wide text-sf-primary-text flex items-center gap-2">
               <Globe className="w-4 h-4" />

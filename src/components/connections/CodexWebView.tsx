@@ -237,7 +237,7 @@ export function CodexWebView({
           ) : (
             <>
               {nodes.length > 0 && edges.length === 0 && (
-                <p className="mb-2 border border-sf-line-interactive bg-sf-surface-elevated px-3 py-2 text-[13px] text-t2">
+                <p className="mb-2 bg-sf-surface-elevated px-3 py-2 text-[13px] text-t2">
                   {nodes.length} {nodes.length === 1 ? "entity" : "entities"} on
                   file, none related yet. Add a relation from an entity's Codex
                   page and the line appears here.
