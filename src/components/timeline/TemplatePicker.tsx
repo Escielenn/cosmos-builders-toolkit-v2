@@ -182,7 +182,7 @@ const TemplatePicker = ({
                   onClick={() => handleSelect(template)}
                   className={cn(
                     "flex flex-col items-start gap-2 p-4 rounded-none border border-sf-line",
-                    "bg-muted/20 hover:bg-muted/40 hover:border-sf-line transition-colors text-left"
+                    "bg-muted/20 hover:bg-muted/40 hover:border-sf-line-emphasis transition-colors text-left"
                   )}
                 >
                   <div className="flex items-center gap-2 w-full">

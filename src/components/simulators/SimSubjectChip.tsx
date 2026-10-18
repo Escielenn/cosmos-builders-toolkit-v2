@@ -27,7 +27,7 @@ export function SimSubjectChip({ worldId }: { worldId?: string | null }) {
   if (subject.isMissing || !subject.entry) {
     return (
       <span
-        className="flex min-h-hit items-center gap-1.5 border border-sf-crimson px-2 font-mono text-[12px] uppercase tracking-wider text-sf-crimson-text"
+        className="flex min-h-hit items-center gap-1.5 border border-sf-crimson px-3 font-mono text-[12px] uppercase tracking-wider text-sf-crimson-text"
         title="The id in this link is not on file in that world."
       >
         // SUBJECT NOT ON FILE
@@ -46,7 +46,7 @@ export function SimSubjectChip({ worldId }: { worldId?: string | null }) {
   );
 
   const className =
-    "flex min-h-hit items-center gap-1.5 border border-sf-primary bg-sf-primary/[0.06] px-2";
+    "flex min-h-hit items-center gap-1.5 border border-sf-primary bg-sf-primary/[0.06] px-3";
 
   return worldId ? (
     <Link

@@ -282,12 +282,12 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
           >
             {/* Time Axis */}
             <div
-              className="sticky top-0 z-20 flex border-b border-sf-line bg-background/95 backdrop-blur-sm"
+              className="sticky top-0 z-20 flex border-b border-sf-line-hairline bg-background/95 backdrop-blur-sm"
               style={{ height: TIME_AXIS_HEIGHT }}
             >
               {/* Header spacer */}
               <div
-                className="shrink-0 border-r border-sf-line"
+                className="shrink-0 border-r border-sf-line-hairline"
                 style={{ width: TRACK_HEADER_WIDTH }}
               />
               {/* Tick marks */}

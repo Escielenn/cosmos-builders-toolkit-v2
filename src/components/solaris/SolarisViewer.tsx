@@ -170,14 +170,14 @@ export default function SolarisViewer({
             className={`absolute bottom-3 right-3 z-20 min-h-hit min-w-hit border px-2 py-1 font-mono text-[12px] backdrop-blur-sf-panel transition-colors duration-base ${
               showKeys
                 ? "border-sf-primary bg-sf-primary/[0.12] text-t1"
-                : "border-sf-line-interactive bg-sf-surface/90 text-t2 hover:text-t1"
+                : "border-sf-line bg-sf-surface/90 text-t2 hover:border-sf-line-emphasis hover:text-t1"
             }`}
           >
             ?
           </button>
 
           {showKeys && (
-            <div className="absolute bottom-[60px] right-3 z-30 w-[228px] border border-sf-line bg-sf-surface-elevated p-3 backdrop-blur-sf-panel">
+            <div className="absolute bottom-[60px] right-3 z-30 w-[228px] border border-sf-line bg-sf-surface-elevated p-4 backdrop-blur-sf-panel">
               <span className="mb-2 block font-mono text-[12px] uppercase tracking-wide text-sf-primary-text">
                 Keyboard
               </span>

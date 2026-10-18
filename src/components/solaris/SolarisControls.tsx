@@ -34,19 +34,19 @@ interface SolarisControlsProps {
 // the transport controls entirely behind the editor.
 const S = {
   panel:
-    "absolute left-3 top-14 z-10 w-52 bg-sf-surface/90 border border-sf-line backdrop-blur-sf-panel rounded-none p-3.5 space-y-4 overflow-y-auto sf-sb max-h-[46%]",
+    "absolute left-3 top-14 z-10 w-52 bg-sf-surface/90 border border-sf-line backdrop-blur-sf-panel rounded-none p-4 space-y-4 overflow-y-auto sf-sb max-h-[46%]",
   // Contrast: the previous values (label teal at 0.35, button text at white/30,
   // borders at 0.06) left every control barely visible against the panel, and
   // the transport row unfindable. Interactive text now sits at tier 2 or above
   // and every button carries a border you can actually see.
   sectionLabel:
     "font-heading text-[13px] uppercase tracking-wide text-sf-primary-text mb-1.5 block",
-  btn: "px-2 py-1 text-[12px] uppercase tracking-[1.5px] font-heading transition-colors duration-base border min-h-[26px]",
+  btn: "px-3 py-1 text-[12px] uppercase tracking-[1.5px] font-heading transition-colors duration-base border min-h-[26px]",
   // Transport buttons are the controls a writer reaches for most; they get the
   // full 44px hit target even where the chip rows stay compact.
   transport: "min-h-hit",
   btnOff:
-    "bg-sf-surface border-sf-line-interactive text-t2 hover:bg-sf-primary/[0.12] hover:border-sf-line-emphasis hover:text-t1",
+    "bg-sf-surface border-sf-line text-t2 hover:bg-sf-primary/[0.12] hover:border-sf-line-emphasis hover:text-t1",
   btnOn:
     "bg-sf-primary/[0.12] border-sf-primary text-t1",
   toggle:
@@ -81,7 +81,7 @@ export default function SolarisControls({
       {/* Camera */}
       <div>
         <span className={S.sectionLabel}>Camera</span>
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-2">
           <button
             className={`${S.btn} ${cameraMode === "free" ? S.btnOn : S.btnOff}`}
             onClick={() => onCameraMode("free")}
@@ -130,7 +130,7 @@ export default function SolarisControls({
         {/* Transport. Pausing is what lets a writer hold a conjunction still
             long enough to describe it, so it leads and it is the one control
             here styled as primary. */}
-        <div className="mb-2 flex gap-1">
+        <div className="mb-2 flex gap-2">
           <button
             className={`${S.btn} ${S.transport} flex-1 font-medium ${
               paused
@@ -156,7 +156,7 @@ export default function SolarisControls({
         </div>
         <p className="mb-2 font-mono text-[12px] uppercase text-t4">SPACE · PLAY / PAUSE</p>
 
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-2">
           {SPEEDS.map((s) => (
             <button
               key={s}

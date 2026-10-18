@@ -75,7 +75,7 @@ export function GraphSearch({
       <button
         type="button"
         onClick={handleOpen}
-        className="flex min-h-hit items-center gap-1.5 border border-sf-line bg-sf-surface px-3 font-sans text-[12px] uppercase tracking-wide text-t3 transition-colors hover:text-t1"
+        className="flex min-h-hit items-center gap-1.5 border border-sf-line bg-sf-surface px-3 font-sans text-[12px] uppercase tracking-wide text-t3 transition-colors hover:border-sf-line-emphasis hover:text-t1"
         title="Search entities (Ctrl+F)"
       >
         <Search className="w-3 h-3" />
@@ -86,7 +86,7 @@ export function GraphSearch({
 
   return (
     <div className="relative">
-      <div className="flex min-h-hit items-center gap-1.5 border border-sf-line bg-sf-surface px-2">
+      <div className="sf-field flex min-h-hit items-center gap-2 px-3">
         <Search className="h-3 w-3 shrink-0 text-t4" aria-hidden />
         <Input
           ref={inputRef}
@@ -94,7 +94,7 @@ export function GraphSearch({
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search entities..."
           aria-label="Search entities"
-          className="h-8 w-[160px] rounded-none border-sf-line-interactive bg-transparent text-[13px]"
+          className="h-8 w-[160px] rounded-none border-0 bg-transparent text-[13px]"
         />
         <button
           type="button"
@@ -107,7 +107,7 @@ export function GraphSearch({
       </div>
 
       {results.length > 0 && (
-        <div className="sf-sb absolute left-0 top-full z-50 mt-1 max-h-[200px] w-[220px] overflow-y-auto border border-sf-line-emphasis bg-sf-surface-elevated">
+        <div className="sf-sb absolute left-0 top-full z-50 mt-1 max-h-[200px] w-[220px] overflow-y-auto border border-sf-line bg-sf-surface-elevated">
           {results.map((entity) => {
             const color =
               entity.color ??

@@ -186,17 +186,17 @@ const EventDetailPanel = ({
           {/* Importance */}
           <div className="space-y-1.5">
             <Label className="text-xs">Importance</Label>
-            <div className="flex gap-1.5">
+            <div className="flex gap-2">
               {IMPORTANCE_LEVELS.map((il) => (
                 <button
                   key={il.id}
                   type="button"
                   onClick={() => update({ importance: il.id })}
                   className={cn(
-                    "flex-1 px-2 py-1 rounded-none border text-[12px] font-medium transition-colors",
+                    "flex-1 px-3 py-1 rounded-none border text-[12px] font-medium transition-colors",
                     event.importance === il.id
                       ? "border-sf-primary bg-sf-primary/10 text-t1"
-                      : "border-sf-line text-t3 hover:border-sf-line"
+                      : "border-sf-line text-t3 hover:border-sf-line-emphasis"
                   )}
                 >
                   {il.label}
@@ -385,7 +385,7 @@ const EventDetailPanel = ({
           {tracks.length > 1 && (
             <div className="space-y-1.5">
               <Label className="text-xs">Also Affects Tracks</Label>
-              <div className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap gap-2">
                 {tracks
                   .filter((t) => t.id !== event.trackId)
                   .map((t) => {
@@ -402,10 +402,10 @@ const EventDetailPanel = ({
                           update({ secondaryTrackIds: updated.length > 0 ? updated : undefined });
                         }}
                         className={cn(
-                          "flex items-center gap-1 px-2 py-0.5 rounded-none border text-[12px] font-medium transition-colors",
+                          "flex items-center gap-1 px-3 py-0.5 rounded-none border text-[12px] font-medium transition-colors",
                           isActive
                             ? "border-sf-primary bg-sf-primary/10 text-t1"
-                            : "border-sf-line text-t3 hover:border-sf-line"
+                            : "border-sf-line text-t3 hover:border-sf-line-emphasis"
                         )}
                       >
                         <span
@@ -555,7 +555,7 @@ const EventDetailPanel = ({
           })()}
 
           {/* Delete */}
-          <div className="pt-4 border-t border-sf-line">
+          <div className="pt-4 border-t border-sf-line-hairline">
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button variant="destructive" size="sm" className="w-full">
