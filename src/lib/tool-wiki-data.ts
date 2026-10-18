@@ -606,6 +606,30 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
     ],
   },
 
+  // ── PRO CALCULATOR (Integration) ───────────────────────────
+  'generation-ship': {
+    id: 'generation-ship',
+    tagline: 'Size a multi-generational voyage: crew genetics, closed-loop air and water, spin habitat, and the drift events the trip writes into your Chronicle.',
+    category: 'integration',
+    complexity: 'advanced',
+    type: 'calculator',
+    cascade: 'meta',
+    workshopWeek: 4,
+    timeEstimate: '20-40 min',
+    buildsOn: [
+      { toolId: 'time-dilation', strength: 'recommended', note: 'Distance and cruise speed set the voyage length' },
+      { toolId: 'propulsion-consequences-map', strength: 'recommended', note: 'Drive speed and acceleration' },
+      { toolId: 'spacecraft-designer', strength: 'recommended', note: 'The lived-in ship this voyage happens aboard' },
+      { toolId: 'evolutionary-biology', strength: 'optional', note: 'Lifespan and mating system set generation length and Ne' },
+      { toolId: 'gravitas', strength: 'optional', note: 'Spin radius and rate for the habitat ring' },
+    ],
+    feedsInto: [
+      { toolId: 'timeline', strength: 'recommended', note: 'Drift events log to the Chronicle' },
+      { toolId: 'lexdrift', strength: 'recommended', note: 'Centuries of isolation drive language drift' },
+      { toolId: 'xenomythology-framework-builder', strength: 'optional', note: 'A ship that forgets it is a ship needs a cosmology' },
+    ],
+  },
+
   // ── PRO CARTOGRAPHER ────────────────────────────────────────
   'stellar-cartographer': {
     id: 'stellar-cartographer',

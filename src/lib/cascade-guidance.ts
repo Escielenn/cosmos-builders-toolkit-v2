@@ -55,6 +55,7 @@ const LAYER_TOOLS: Record<string, string[]> = {
     "lexdrift",
     "kardashev-scale",
     "space-expansion-modeler",
+    "generation-ship",
   ],
   mythology: [
     "xenomythology-framework-builder",

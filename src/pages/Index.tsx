@@ -23,6 +23,7 @@ import {
   ChevronDown,
   Map as MapIcon,
   Zap,
+  Ship,
 } from "lucide-react";
 import {
   TOOL_WIKI,
@@ -324,6 +325,14 @@ const toolsByCategory: {
         description:
           "Plot events across deep time. Build multi-track timelines that reveal how characters, civilizations, and technologies intersect.",
         icon: Clock,
+        status: "available",
+      },
+      {
+        id: "generation-ship",
+        title: "Ark: Generation Ship Designer",
+        description:
+          "Size a multi-generational voyage: crew genetics, closed-loop life support, spin habitat, and drift events for the Chronicle.",
+        icon: Ship,
         status: "available",
       },
     ],

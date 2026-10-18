@@ -46,6 +46,7 @@ export const TOOL_ACCENTS: Record<string, ToolAccent> = {
   // Integration / vehicles / time, teal
   "propulsion-consequences-map": "teal",
   "spacecraft-designer": "teal",
+  "generation-ship": "teal",
   "timeline": "teal",
 };
 

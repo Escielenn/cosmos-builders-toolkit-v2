@@ -118,6 +118,7 @@ const TOOL_LABELS: Record<string, string> = {
   gravitas: "Gravitas",
   "time-dilation": "Time Dilation",
   "kardashev-scale": "Kardashev Scale",
+  "generation-ship": "Generation Ship",
   "one-big-lie": "The One Big Lie",
   "environmental-chain-reaction": "Environmental Chain",
   "technology-consequences": "Technology Consequences",

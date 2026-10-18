@@ -756,4 +756,29 @@ export const TOOL_INTROS: Record<string, ToolIntroData> = {
       },
     ],
   },
+  "generation-ship": {
+    title: "The Ship That Becomes a World",
+    purpose:
+      "A generation ship is a closed world that must stay closed for centuries. Its crew is a population with a gene pool, its air and water are a loop that leaks, and its history is written by people who never chose to be there. Set the voyage, the founders and the machinery, and watch the numbers decide what your shipboard scenes must contain.",
+    examples: [
+      {
+        bookTitle: "Aurora",
+        author: "Kim Stanley Robinson",
+        year: "2015",
+        isbn: "9780316098106",
+        quotes: [],
+        explanation:
+          "Robinson's ship is sick in exactly the ways this tool measures: island-biogeography decay in the biomes, a slow metabolic rift in the loops, and a population whose bodies and minds are shaped by its confinement. The voyage is a biology problem before it is an engineering one.",
+      },
+      {
+        bookTitle: "Tau Zero",
+        author: "Poul Anderson",
+        year: "1970",
+        isbn: "9780575077065",
+        quotes: [],
+        explanation:
+          "Fifty people sealed into one hull for longer than anyone planned. Anderson shows the social drift a closed crew undergoes: pairings, hierarchies and breakdowns that follow from a small population that cannot leave.",
+      },
+    ],
+  },
 };

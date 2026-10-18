@@ -35,6 +35,7 @@ export const PRO_TOOL_IDS = [
   'sensorium',
   'gravitas',
   'kardashev-scale',
+  'generation-ship',
   // Simulators
   'rogue',
   'tidelock',
@@ -101,6 +102,7 @@ export const TOOL_DISPLAY_NAMES: Record<string, string> = {
   'exoforge': 'ExoForge: Procedural Exoplanet Forge',
   'solaris': 'Solaris: Procedural Star System Simulator',
   'kardashev-scale': 'K-Scale: Kardashev Scale Calculator',
+  'generation-ship': 'Ark: Generation Ship Designer',
   // Cartographers
   'stellar-cartographer': 'Stellar Cartographer: Galaxy Mapper',
   // Workshop
@@ -132,6 +134,7 @@ export const TOOL_ROUTES: Record<string, string> = {
   'sensorium': '/tools/sensorium',
   'gravitas': '/tools/gravitas',
   'kardashev-scale': '/tools/kardashev-scale',
+  'generation-ship': '/tools/generation-ship',
   'rogue': '/rogue',
   'tidelock': '/tools/tidelock',
   'exosky': '/tools/exosky',
