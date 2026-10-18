@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Synthetic Scrivener 2 style project for the test suite. -->
+<ScrivenerProject Version="91">
+    <Binder>
+        <BinderItem ID="0" Type="DraftFolder">
+            <Title>Draft</Title>
+            <Children>
+                <BinderItem ID="3" Type="Text">
+                    <Title>Opening</Title>
+                    <MetaData><IncludeInCompile>Yes</IncludeInCompile></MetaData>
+                </BinderItem>
+            </Children>
+        </BinderItem>
+        <BinderItem ID="1" Type="ResearchFolder"><Title>Research</Title></BinderItem>
+    </Binder>
+</ScrivenerProject>

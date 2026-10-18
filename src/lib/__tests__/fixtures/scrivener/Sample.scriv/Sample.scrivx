@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Synthetic test project. Every word here was written for the test suite. -->
+<ScrivenerProject Template="No" Version="2.0" Identifier="SYNTHETIC-TEST-PROJECT" Creator="SCRMAC-3.3">
+    <Binder>
+        <BinderItem UUID="D-DRAFT" Type="DraftFolder" Created="2026-01-01 10:00:00 -0700">
+            <Title>Manuscript</Title>
+            <MetaData><IncludeInCompile>Yes</IncludeInCompile></MetaData>
+            <Children>
+                <BinderItem UUID="AAAA-0001" Type="Folder">
+                    <Title>Chapter One</Title>
+                    <MetaData><IncludeInCompile>Yes</IncludeInCompile><LabelID>1</LabelID><StatusID>1</StatusID></MetaData>
+                    <Children>
+                        <BinderItem UUID="AAAA-0002" Type="Text">
+                            <Title>Arrival</Title>
+                            <MetaData><IncludeInCompile>Yes</IncludeInCompile><LabelID>1</LabelID><StatusID>2</StatusID></MetaData>
+                            <Keywords><KeywordID>7</KeywordID></Keywords>
+                        </BinderItem>
+                        <BinderItem UUID="AAAA-0003" Type="Text">
+                            <Title>Cut scene</Title>
+                            <MetaData><IncludeInCompile>No</IncludeInCompile><StatusID>5</StatusID><LabelID>2</LabelID></MetaData>
+                        </BinderItem>
+                    </Children>
+                </BinderItem>
+                <BinderItem UUID="AAAA-0005" Type="Text">
+                    <Title>Chapter Two</Title>
+                    <MetaData><IncludeInCompile>Yes</IncludeInCompile></MetaData>
+                    <Children>
+                        <BinderItem UUID="AAAA-0007" Type="Text">
+                            <Title>Night</Title>
+                            <MetaData><IncludeInCompile>Yes</IncludeInCompile><StatusID>4</StatusID></MetaData>
+                        </BinderItem>
+                    </Children>
+                </BinderItem>
+            </Children>
+        </BinderItem>
+        <BinderItem UUID="R-1" Type="ResearchFolder">
+            <Title>Research Stuff</Title>
+            <Children>
+                <BinderItem UUID="AAAA-0008" Type="Text"><Title>Orbit notes</Title></BinderItem>
+                <BinderItem UUID="AAAA-0009" Type="PDF"><Title>Paper.pdf</Title></BinderItem>
+            </Children>
+        </BinderItem>
+        <BinderItem UUID="T-1" Type="TrashFolder">
+            <Title>Trash</Title>
+            <Children><BinderItem UUID="AAAA-0010" Type="Text"><Title>Deleted</Title></BinderItem></Children>
+        </BinderItem>
+    </Binder>
+    <LabelSettings>
+        <Title>Label</Title>
+        <DefaultLabelID>-1</DefaultLabelID>
+        <Labels>
+            <Label ID="-1">No Label</Label>
+            <Label ID="1" Color="0.905882 0.2 0.301961">Flashback</Label>
+            <Label ID="2" Color="0.2 0.4 0.9">Concept</Label>
+            <Label ID="3" Color="0.1 0.8 0.3">Unused</Label>
+        </Labels>
+    </LabelSettings>
+    <StatusSettings>
+        <Title>Status</Title>
+        <StatusItems>
+            <Status ID="-1">No Status</Status>
+            <Status ID="1">To Do</Status>
+            <Status ID="2">First Draft</Status>
+            <Status ID="3">Revised Draft</Status>
+            <Status ID="4">Final Draft</Status>
+            <Status ID="5">Waiting On Edits</Status>
+        </StatusItems>
+    </StatusSettings>
+    <Keywords>
+        <Keyword ID="7" Color="0.5 0.5 0.5"><Title>Kellis</Title></Keyword>
+    </Keywords>
+</ScrivenerProject>
