@@ -118,7 +118,7 @@ export const LAYER_TOOL_MAP: Record<CascadeLayer, string[]> = {
     "surface-gravity-calculator",
   ],
   biology: ["evolutionary-biology", "sensorium", "species-interaction-matrix"],
-  psychology: [], // No dedicated tool, evo-bio psychology sections
+  psychology: ["dossier"], // Dossier: characters inherit the layers above
   culture: ["empire-designer", "lexdrift", "space-expansion-modeler"],
   mythology: ["xenomythology-framework-builder"],
   technology: [
@@ -465,6 +465,7 @@ export const TOOL_TYPE_MAP: Record<string, string> = {
   "gravitas": "gravity_sim",
   "timeline": "timeline",
   "drake-equation-calculator": "signal_profile",
+  "dossier": "character",
 };
 
 export function getTypeForTool(toolType: string): string {

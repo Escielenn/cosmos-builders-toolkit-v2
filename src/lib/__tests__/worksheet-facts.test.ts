@@ -228,3 +228,61 @@ describe("summarizeFacts", () => {
     expect(summarizeFacts([])).toBe("");
   });
 });
+
+describe("dossier facts", () => {
+  const dossier = {
+    identity: { name: "Kael", aliases: "the Ash", role: "Protagonist", pronouns: "" },
+    origins: { house: "House Adran", birth: { eventId: null, label: "The Long Thaw, 2290" } },
+    body: { heightCm: "158", massKg: "70" },
+    psychology: { want: "Command of the trench fleet", fear: "Silence" },
+    voice: { dialect: "Trench cant" },
+    resolved: {
+      homeworld: "Kellis",
+      species: "Verrid",
+      lifespan: "Long (centuries)",
+      gravityAdaptation: "1.4 g",
+      dominantSense: "Touch",
+      funeralCustoms: "",
+    },
+    provenance: {
+      homeworld: "planetary-profile",
+      species: "evolutionary-biology",
+      lifespan: "evolutionary-biology",
+      gravityAdaptation: "planetary-profile",
+      dominantSense: "override",
+    },
+  };
+
+  it("surfaces a character's decisions and inherited traits", () => {
+    const byKey = Object.fromEntries(extractWorksheetFacts("dossier", dossier).map((f) => [f.key, f]));
+    expect(byKey.characterName.value).toBe("Kael");
+    expect(byKey.characterHomeworld.value).toBe("Kellis");
+    expect(byKey.characterHouse.value).toBe("House Adran");
+    expect(byKey.characterLifespan.value).toBe("Long (centuries)");
+    expect(byKey.characterNativeGravity.value).toBe("1.4 g");
+    expect(byKey.characterWant.value).toBe("Command of the trench fleet");
+    expect(byKey.characterBorn.value).toContain("Long Thaw");
+    // A blank snapshot value is not a fact.
+    expect(byKey.characterFuneralCustoms).toBeUndefined();
+  });
+
+  it("names the tool an inherited value came from", () => {
+    const byKey = Object.fromEntries(extractWorksheetFacts("dossier", dossier).map((f) => [f.key, f]));
+    expect(byKey.characterLifespan.source).toBe("Phylo, inherited by Kael's dossier");
+    expect(byKey.characterNativeGravity.source).toBe("Genesis, inherited by Kael's dossier");
+    expect(byKey.characterDominantSense.source).toBe("Kael's dossier (writer override)");
+    expect(byKey.characterWant.source).toBe("Kael's dossier");
+  });
+
+  it("keeps character keys apart from the species' own facts", () => {
+    // The species' dominantSense and the character's must never pool.
+    const keys = extractWorksheetFacts("dossier", dossier).map((f) => f.key);
+    expect(keys).not.toContain("dominantSense");
+    expect(keys.every((k) => k.startsWith("character"))).toBe(true);
+  });
+
+  it("reports the tool as mapped and returns nothing for an empty dossier", () => {
+    expect(hasFactMapping("dossier")).toBe(true);
+    expect(extractWorksheetFacts("dossier", {})).toEqual([]);
+  });
+});

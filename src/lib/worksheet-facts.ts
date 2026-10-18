@@ -16,6 +16,7 @@
 import { ENTITY_MASTER_FIELDS } from "@/lib/entity-config";
 import { getNestedValue } from "@/lib/entity-prepopulate";
 import { extractTimelineFacts } from "@/lib/timeline-facts";
+import { annotateDossierFacts } from "@/lib/dossier/facts";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -97,6 +98,15 @@ const BESPOKE_EXTRACTORS: Record<string, (data: unknown) => WorksheetFact[]> = {
   timeline: extractTimelineFacts,
 };
 
+/**
+ * Tools whose facts are found by dot path but need a second pass to say where
+ * each value came from. Dossier records values it inherited from other tools,
+ * so "Your world" would be the wrong provenance for its lifespan or its gods.
+ */
+const FACT_ANNOTATORS: Record<string, (facts: WorksheetFact[], data: unknown) => WorksheetFact[]> = {
+  dossier: annotateDossierFacts,
+};
+
 export function extractWorksheetFacts(
   toolType: string,
   data: unknown,
@@ -145,7 +155,8 @@ export function extractWorksheetFacts(
     }
   }
 
-  return facts;
+  const annotate = FACT_ANNOTATORS[toolType];
+  return annotate ? annotate(facts, data) : facts;
 }
 
 /** True when this tool has any path mapping at all. */

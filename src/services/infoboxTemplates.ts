@@ -240,4 +240,17 @@ const templates: Record<
     { label: "Active Mode", value: str(d, "activeMode") },
     { label: "Realism", value: str(d, "realismMode") },
   ],
+
+  dossier: (d) => [
+    { label: "Role", value: str(d, "identity.role") },
+    { label: "Species", value: str(d, "resolved.species") },
+    { label: "Homeworld", value: str(d, "resolved.homeworld") },
+    { label: "Polity", value: str(d, "resolved.polity") },
+    { label: "House", value: str(d, "origins.house") },
+    { label: "Native Language", value: str(d, "resolved.language") },
+    { label: "Lifespan", value: str(d, "resolved.lifespan") },
+    { label: "Native Gravity", value: str(d, "resolved.gravityAdaptation") },
+    { label: "Wants", value: str(d, "psychology.want") },
+    { label: "Fear", value: str(d, "psychology.fear") },
+  ],
 };
