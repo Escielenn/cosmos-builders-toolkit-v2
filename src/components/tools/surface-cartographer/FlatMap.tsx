@@ -402,7 +402,7 @@ export function FlatMap({
           type="button"
           onClick={() => zoomBy(1.25)}
           aria-label="Zoom in"
-          className="flex h-11 w-11 items-center justify-center border border-sf-line-interactive text-t2 transition-colors duration-fast hover:border-sf-primary hover:text-sf-primary-text"
+          className="flex h-11 w-11 items-center justify-center border border-sf-line text-t2 transition-colors duration-fast hover:border-sf-primary hover:text-sf-primary-text"
         >
           <Plus className="h-4 w-4" aria-hidden />
         </button>
@@ -410,7 +410,7 @@ export function FlatMap({
           type="button"
           onClick={() => zoomBy(0.8)}
           aria-label="Zoom out"
-          className="flex h-11 w-11 items-center justify-center border border-sf-line-interactive text-t2 transition-colors duration-fast hover:border-sf-primary hover:text-sf-primary-text"
+          className="flex h-11 w-11 items-center justify-center border border-sf-line text-t2 transition-colors duration-fast hover:border-sf-primary hover:text-sf-primary-text"
         >
           <Minus className="h-4 w-4" aria-hidden />
         </button>
@@ -418,7 +418,7 @@ export function FlatMap({
           type="button"
           onClick={() => setView(HOME)}
           aria-label="Reset view"
-          className="flex h-11 w-11 items-center justify-center border border-sf-line-interactive text-t2 transition-colors duration-fast hover:border-sf-primary hover:text-sf-primary-text"
+          className="flex h-11 w-11 items-center justify-center border border-sf-line text-t2 transition-colors duration-fast hover:border-sf-primary hover:text-sf-primary-text"
         >
           <RotateCcw className="h-4 w-4" aria-hidden />
         </button>

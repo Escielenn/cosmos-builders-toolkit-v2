@@ -156,7 +156,7 @@ const SuggestedImplications = ({
 
                     {/* Expanded details */}
                     {isExpanded && (
-                      <div className="mt-4 pt-4 border-t border-sf-line space-y-4">
+                      <div className="mt-4 pt-4 border-t border-sf-line-hairline space-y-4">
                         <p className="text-sm text-t2">
                           {implication.explanation}
                         </p>

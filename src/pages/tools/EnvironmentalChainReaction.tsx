@@ -920,7 +920,7 @@ const EnvironmentalChainReaction = () => {
             {SF_CASCADE_EXAMPLES.map((example) => (
               <Collapsible key={example.title}>
                 <CollapsibleTrigger asChild>
-                  <button type="button" className="w-full p-4 rounded-none border border-sf-line-interactive hover:border-sf-primary transition-colors text-left flex items-center justify-between">
+                  <button type="button" className="w-full p-4 rounded-none border border-sf-line hover:border-sf-primary transition-colors text-left flex items-center justify-between">
                     <span className="font-medium text-sm">
                       {example.title}{" "}
                       <span className="text-t2 font-normal">
@@ -939,14 +939,14 @@ const EnvironmentalChainReaction = () => {
                     <div className="overflow-x-auto sf-sb">
                       <table className="w-full text-sm">
                         <thead>
-                          <tr className="border-b border-sf-line-interactive">
+                          <tr className="border-b border-sf-line-hairline">
                             <th className="text-left p-2 font-medium">Level</th>
                             <th className="text-left p-2 font-medium">Consequence</th>
                           </tr>
                         </thead>
                         <tbody>
                           {example.cascade.map((level) => (
-                            <tr key={level.level} className="border-b border-sf-line-interactive">
+                            <tr key={level.level} className="border-b border-sf-line-hairline">
                               <td className="p-2 text-sf-primary-text font-medium">{level.level}</td>
                               <td className="p-2 text-t2">{level.details}</td>
                             </tr>
@@ -981,7 +981,7 @@ const EnvironmentalChainReaction = () => {
           >
             {/* Link to Planet (if in a world context) */}
             {worldId && linkConfigs.length > 0 && (
-              <div className="mb-6 p-4 rounded-none border border-sf-line-interactive bg-muted/20">
+              <div className="mb-6 p-4 rounded-none border border-sf-line bg-muted/20">
                 <h4 className="font-medium text-sm mb-3 flex items-center gap-2">
                   <ExternalLink className="w-4 h-4 text-sf-primary-text" />
                   Link to Other Worksheets
@@ -1150,7 +1150,7 @@ const EnvironmentalChainReaction = () => {
                                     updateMultipleSpecificValue(typeId, e.target.value)
                                   }
                                   placeholder={param.placeholder}
-                                  className="ml-7 max-w-md bg-background/50"
+                                  className="ml-7 max-w-md"
                                 />
                               )}
                             </div>
@@ -1182,7 +1182,7 @@ const EnvironmentalChainReaction = () => {
                                 updateMultipleSpecificValue(param.id, e.target.value)
                               }
                               placeholder={param.placeholder}
-                              className="ml-7 max-w-md bg-background/50"
+                              className="ml-7 max-w-md"
                             />
                           )}
                         </div>
@@ -1385,7 +1385,7 @@ const EnvironmentalChainReaction = () => {
                 <Label htmlFor="surprising" className="text-sm font-medium">
                   Most surprising consequence you discovered:
                 </Label>
-                <Suspense fallback={<div className="min-h-[80px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse mt-2" />}>
+                <Suspense fallback={<div className="min-h-[80px] sf-field animate-pulse mt-2" />}>
                   <RichTextEditor
                     content={formState.synthesis.surprisingConsequence}
                     onChange={(value) => updateSynthesis("surprisingConsequence", value)}
@@ -1400,7 +1400,7 @@ const EnvironmentalChainReaction = () => {
                 <Label htmlFor="gap" className="text-sm font-medium">
                   Biggest gap or unresolved tension:
                 </Label>
-                <Suspense fallback={<div className="min-h-[80px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse mt-2" />}>
+                <Suspense fallback={<div className="min-h-[80px] sf-field animate-pulse mt-2" />}>
                   <RichTextEditor
                     content={formState.synthesis.biggestGap}
                     onChange={(value) => updateSynthesis("biggestGap", value)}
@@ -1415,7 +1415,7 @@ const EnvironmentalChainReaction = () => {
                 <Label htmlFor="story" className="text-sm font-medium">
                   Story potential this creates:
                 </Label>
-                <Suspense fallback={<div className="min-h-[80px] rounded-none border border-sf-line-interactive bg-background/50 animate-pulse mt-2" />}>
+                <Suspense fallback={<div className="min-h-[80px] sf-field animate-pulse mt-2" />}>
                   <RichTextEditor
                     content={formState.synthesis.storyPotential}
                     onChange={(value) => updateSynthesis("storyPotential", value)}

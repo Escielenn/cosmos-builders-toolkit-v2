@@ -589,7 +589,7 @@ const SurfaceGravityCalculator = () => {
                     className={`p-3 rounded-none border text-left transition-colors ${
                       formState.primary.planetPreset === preset.id
                         ? "border-sf-primary bg-sf-primary/10"
-                        : "border-sf-line-interactive hover:border-sf-primary hover:bg-accent/5"
+                        : "border-sf-line hover:border-sf-primary hover:bg-accent/5"
                     }`}
                   >
                     <div className="flex items-center gap-1.5 mb-1">

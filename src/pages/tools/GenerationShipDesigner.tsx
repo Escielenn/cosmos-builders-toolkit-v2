@@ -962,7 +962,7 @@ const GenerationShipDesigner = () => {
             ].map(({ key, label, placeholder }) => (
               <div key={key} className="space-y-2">
                 <Label>{label}</Label>
-                <Suspense fallback={<div className="min-h-[120px] border border-sf-line bg-sf-surface" />}>
+                <Suspense fallback={<div className="sf-field min-h-[120px]" />}>
                   <RichTextEditor
                     content={form.notes[key]}
                     onChange={(html) => setForm((prev) => ({ ...prev, notes: { ...prev.notes, [key]: html } }))}

@@ -89,7 +89,7 @@ export function NumberField({ label, value, onChange, unit, help, min, max, step
           className={cn(unit && "border-r-0")}
         />
         {unit ? (
-          <span className="flex min-w-[56px] items-center justify-center border border-sf-line-interactive bg-sf-surface px-3 font-mono text-[12px] text-t4">
+          <span className="sf-field flex min-w-[56px] items-center justify-center px-3 font-mono text-[12px] text-t4">
             {unit}
           </span>
         ) : null}

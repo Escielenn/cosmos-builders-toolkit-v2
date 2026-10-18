@@ -72,7 +72,7 @@ const CollapsibleSection = ({
       <CollapsibleTrigger asChild>
         <button
           type="button"
-          className={`w-full p-4 md:p-6 flex items-center justify-between text-left ${hoverClass} transition-colors border-b border-[hsl(var(--sf-section-border))] rounded-none`}
+          className={`w-full p-4 md:p-6 flex items-center justify-between text-left ${hoverClass} transition-colors border-b border-sf-line-hairline rounded-none`}
         >
           <div className="flex items-center gap-3">
             {/* Numbered badge */}

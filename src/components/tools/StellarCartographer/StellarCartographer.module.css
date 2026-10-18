@@ -101,9 +101,9 @@
   text-transform: uppercase;
   color: var(--t3);
   text-decoration: none;
-  padding: 3px 8px;
-  border: 1px solid var(--sf-line-interactive);
-  border-radius: 4px;
+  padding: 3px 12px;
+  border: 1px solid var(--sf-line);
+  border-radius: 0;
   transition: all 0.2s;
 }
 
@@ -329,11 +329,11 @@
   letter-spacing: 1.5px;
   text-transform: uppercase;
   padding: 7px 12px;
-  border: 1px solid var(--sf-line-interactive);
+  border: 1px solid var(--sf-line);
   background: rgba(255, 255, 255, 0.03);
   color: var(--t2);
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 0;
   transition: all 0.2s;
 }
 
@@ -388,7 +388,7 @@
 
 .btnRow {
   display: flex;
-  gap: 4px;
+  gap: 8px;
 }
 
 .btnRow .btn {
@@ -403,11 +403,12 @@
   font-family: 'DM Sans', sans-serif;
   font-size: 12px;
   width: 100%;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--sf-void);
   color: var(--t2);
-  border: 1px solid var(--sf-line-interactive);
-  padding: 6px 8px;
-  border-radius: 6px;
+  border: 1px solid var(--sf-line-hairline);
+  border-bottom-color: var(--sf-line-interactive);
+  padding: 6px 12px;
+  border-radius: 0;
   outline: none;
   cursor: pointer;
 }
@@ -429,11 +430,12 @@
   font-family: 'DM Sans', sans-serif;
   font-size: 12px;
   width: 100%;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--sf-void);
   color: var(--t2);
-  border: 1px solid var(--sf-line-interactive);
-  padding: 7px 10px;
-  border-radius: 6px;
+  border: 1px solid var(--sf-line-hairline);
+  border-bottom-color: var(--sf-line-interactive);
+  padding: 7px 12px;
+  border-radius: 0;
   outline: none;
   box-sizing: border-box;
 }
@@ -889,10 +891,11 @@
 
 .searchInput {
   width: 100%;
-  padding: 8px 10px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--sf-line-interactive);
-  border-radius: 4px;
+  padding: 8px 12px;
+  background: var(--sf-void);
+  border: 1px solid var(--sf-line-hairline);
+  border-bottom-color: var(--sf-line-interactive);
+  border-radius: 0;
   color: #FAFAFA;
   font-family: 'DM Sans', sans-serif;
   font-size: 13px;
