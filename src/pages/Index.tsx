@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   Globe,
   Users,
@@ -57,6 +57,7 @@ import BetaBanner from "@/components/BetaBanner";
 import Footer from "@/components/layout/Footer";
 import RecentArticles from "@/components/landing/RecentArticles";
 import WelcomeDialog from "@/components/onboarding/WelcomeDialog";
+import { dismissWelcome, isWelcomeDismissed, shouldShowWelcome } from "@/lib/onboarding/welcome-gate";
 import { TagFilter } from "@/components/dashboard/TagFilter";
 import { PromptOfTheDay } from "@/components/writing/PromptOfTheDay";
 import { ArchiveToggle } from "@/components/dashboard/ArchiveToggle";
@@ -401,29 +402,35 @@ const ComingSoonCard = ({ title, subtitle }: { title: string; subtitle: string }
   </GlassPanel>
 );
 
-const SIGNUP_WELCOME_KEY = "sf-welcome-signup-shown";
-
 const Index = () => {
   useMetaTags({});
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
   const [showArchived, setShowArchived] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [showSignupWelcome, setShowSignupWelcome] = useState(false);
+  const [, setSearchParams] = useSearchParams();
 
-  // Show signup welcome for brand new accounts (within 5 minutes of creation)
+  const { worlds, isLoading, archivedCount: archivedTotal, deleteWorld, archiveWorld, unarchiveWorld, allWorldTags } = useWorlds(showArchived);
+
+  // Signup welcome: a signed-in writer with zero worlds (archived included)
+  // who has not dismissed it (lib/onboarding/welcome-gate.ts). Replaces the
+  // old five-minutes-after-signup window.
+  const [welcomeDismissed, setWelcomeDismissed] = useState(false);
   useEffect(() => {
-    if (!user || !profile?.created_at) return;
-    try {
-      if (localStorage.getItem(SIGNUP_WELCOME_KEY)) return;
-      const ageMs = Date.now() - new Date(profile.created_at).getTime();
-      if (ageMs < 5 * 60 * 1000) {
-        localStorage.setItem(SIGNUP_WELCOME_KEY, "true");
-        setShowSignupWelcome(true);
-      }
-    } catch { /* localStorage unavailable */ }
-  }, [user, profile]);
-
-  const { worlds, isLoading, deleteWorld, archiveWorld, unarchiveWorld, allWorldTags } = useWorlds(showArchived);
+    setWelcomeDismissed(isWelcomeDismissed(user?.id));
+  }, [user?.id]);
+  const showSignupWelcome = shouldShowWelcome({
+    userId: user?.id,
+    worldsLoaded: !isLoading,
+    worldCount: worlds.length + (showArchived ? 0 : archivedTotal),
+    dismissed: welcomeDismissed,
+  });
+  const closeSignupWelcome = (open: boolean) => {
+    if (open) return;
+    dismissWelcome(user?.id);
+    setWelcomeDismissed(true);
+  };
+  // Primary action: open BEGIN SURVEY through CreateWorldButton's ?create=true.
+  const openBeginSurvey = () => setSearchParams({ create: "true" });
   const { isSubscribed } = useSubscription();
   const [sortMode, setSortMode] = useState<SortMode>('category');
 
@@ -569,8 +576,13 @@ const Index = () => {
                   <p className="text-sm text-t2 text-center">
                     {selectedTags.length > 0
                       ? "No worlds match the selected tags."
-                      : "Your worlds will appear here once you create them."}
+                      : "No worlds on file."}
                   </p>
+                  {selectedTags.length === 0 && (
+                    <Button variant="sf-primary" size="sf-md" className="mt-4" onClick={openBeginSurvey}>
+                      Begin survey
+                    </Button>
+                  )}
                 </GlassPanel>
               )}
 
@@ -830,7 +842,12 @@ const Index = () => {
       <Footer />
 
       {/* Signup welcome dialog (first-time users) */}
-      <WelcomeDialog open={showSignupWelcome} onOpenChange={setShowSignupWelcome} variant="signup" />
+      <WelcomeDialog
+        open={showSignupWelcome}
+        onOpenChange={closeSignupWelcome}
+        variant="signup"
+        onPrimaryAction={openBeginSurvey}
+      />
     </div>
   );
 };

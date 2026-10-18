@@ -39,8 +39,11 @@ const VARIANTS: Record<WelcomeVariant, VariantConfig> = {
     subtitle: "These worlds exist in you. Waiting to be found.",
     accentColor: "teal",
     showPwaPrompt: true,
-    primaryAction: { label: "Getting Started", href: "/getting-started" },
-    secondaryAction: { label: "Create Your First World", href: "/worlds" },
+    // BEGIN SURVEY: name a world, pick a star, a planet, one species, and
+    // land in Chapter One. /worlds?create=true opens it; Index passes
+    // onPrimaryAction to open it in place.
+    primaryAction: { label: "Begin Survey", href: "/worlds?create=true" },
+    secondaryAction: { label: "Getting Started", href: "/getting-started" },
   },
   pro: {
     icon: Zap,
@@ -101,9 +104,11 @@ interface WelcomeDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   variant: WelcomeVariant;
+  /** Replaces the variant's primary href (the dialog still closes first). */
+  onPrimaryAction?: () => void;
 }
 
-export default function WelcomeDialog({ open, onOpenChange, variant }: WelcomeDialogProps) {
+export default function WelcomeDialog({ open, onOpenChange, variant, onPrimaryAction }: WelcomeDialogProps) {
   const navigate = useNavigate();
   const config = VARIANTS[variant];
   const accent = ACCENT[config.accentColor];
@@ -195,7 +200,14 @@ export default function WelcomeDialog({ open, onOpenChange, variant }: WelcomeDi
           <div className="flex flex-col sm:flex-row gap-2 pt-2">
             <Button
               className="flex-1 gap-2"
-              onClick={() => handleAction(config.primaryAction)}
+              onClick={() => {
+                if (onPrimaryAction) {
+                  onOpenChange(false);
+                  onPrimaryAction();
+                } else {
+                  handleAction(config.primaryAction);
+                }
+              }}
             >
               {config.primaryAction.label}
               <ChevronRight className="w-4 h-4" />

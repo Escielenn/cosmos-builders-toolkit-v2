@@ -172,6 +172,9 @@ const Worlds = () => {
                     ? "NO WORLDS MATCH FILTER CRITERIA. ADJUST TAG SELECTION."
                     : "NO WORLDS ON FILE. BEGIN SURVEY WHEN READY."
                 }
+                {...(selectedTags.length === 0
+                  ? { actionLabel: "Begin survey", actionTo: "/worlds?create=true" }
+                  : {})}
               />
             </div>
           )}
