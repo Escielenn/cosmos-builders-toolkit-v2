@@ -140,3 +140,17 @@ describe("isDocMetaEmpty", () => {
     expect(isDocMetaEmpty({ ...EMPTY_DOC_META, pov: "Ix" })).toBe(false);
   });
 });
+
+describe("POV binding (writing phase 3)", () => {
+  it("reads a picked POV's ids only when present, so free-text POVs read as before", () => {
+    expect(readDocMeta({ pov: "Ix" })).not.toHaveProperty("povEntityId");
+    const m = readDocMeta({ pov: "Kael", povEntityId: "e1", povDossierId: "d1" });
+    expect(m).toMatchObject({ pov: "Kael", povEntityId: "e1", povDossierId: "d1" });
+  });
+
+  it("unbinding clears the ids and keeps the name", () => {
+    expect(
+      writeDocMeta({ pov: "Kael", povEntityId: "e1", povDossierId: "d1" }, { pov: "Kael Ves", povEntityId: "", povDossierId: "" }),
+    ).toEqual({ pov: "Kael Ves" });
+  });
+});
