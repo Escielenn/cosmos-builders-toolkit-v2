@@ -1,5 +1,25 @@
 # StellarForge Changelog
 
+## 0.7600 · The Writing Room
+Tier 2 of the 1.5 programme.
+- Large manuscripts: the binder no longer loads every document's text; word
+  counts are stored (trigger-kept) and saves patch the cache in place. Search,
+  badges, capture and compile load text lazily. The world row is touched at
+  most once a minute.
+- Scrivenings mounts editors only near the viewport.
+- Collaborators can't overwrite each other: saves carry a content version;
+  RECORD CHANGED ELSEWHERE. offers KEEP MINE / LOAD THEIRS / COMPARE, with a
+  snapshot of whichever side is replaced. Viewers get READ ONLY. VIEWER ACCESS.
+- Find and replace across the manuscript, with per-match preview, a named
+  snapshot of every affected document and REVERT REPLACE. Whole-word search.
+- Inline comments anchored to a range, with authors, resolve and reopen.
+- Compile back matter: Dramatis Personae, Glossary, Series Bible (canon facts).
+  Per-document Export uses the compile pipeline and gains PDF.
+- The Workshop retires into the Studio: entries become documents in a Workshop
+  folder; prompts open a new Studio document; badges read Studio words.
+- The daily goal follows your local midnight. A 30/90-day word history chart.
+- Deleting a folder sends it and its contents to Trash, with snapshots.
+
 ## 0.7500 · The Spine
 Tier 1 of the 1.5 programme: the world now pushes back on the page.
 - Canon layer: `public.facts` + `src/canon/` facade (facts / assert / propose /
