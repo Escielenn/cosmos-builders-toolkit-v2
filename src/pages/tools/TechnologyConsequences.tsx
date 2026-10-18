@@ -1,10 +1,10 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
-import { useWorldId } from "@/hooks/use-world-id";
-import { useTags } from "@/hooks/use-tags";
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
-import { useSearchParams } from "react-router-dom";
 import { RefreshCw } from "lucide-react";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
+// FormState, defaults and codec: lib/tool-worksheets/paradigm.
+import { codec as paradigmCodec, type FormState, TOOL_TYPE, LOCAL_STORAGE_KEY } from "@/lib/tool-worksheets/paradigm";
+import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,8 +18,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
-import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
@@ -32,12 +30,10 @@ import ExportDialog from "@/components/tools/ExportDialog";
 import { TechConsequencesSummaryTemplate, TechConsequencesFullReportTemplate } from "@/lib/pdf/templates";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import UpgradeDialog from "@/components/subscription/UpgradeDialog";
 import { useWorlds } from "@/hooks/use-worlds";
-import { Json } from "@/integrations/supabase/types";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import {
@@ -55,7 +51,6 @@ import {
   CONTRADICTION_PROMPTS,
   STORY_CONFLICT_PROMPTS,
 } from "@/lib/technology-data";
-import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const SECTIONS: Section[] = [
   { id: "section-definition", title: "1. Technology Definition" },
@@ -69,238 +64,42 @@ const SECTIONS: Section[] = [
   { id: "section-synthesis", title: "Synthesis" },
 ];
 
-interface FormState {
-  // Technology Definition
-  technologyName: string;
-  technologyCategory: string;
-  technologyDescription: string;
-  maturityLevel: string;
-  accessLevel: string;
-  keyCapabilities: string;
-  limitations: string;
-
-  // Physical Consequences
-  infrastructureEffect: string;
-  infrastructureNotes: string;
-  environmentEffect: string;
-  environmentNotes: string;
-  resourceEffect: string;
-  resourceNotes: string;
-  physicalTimeframe: string;
-
-  // Economic Consequences
-  industryEffect: string;
-  industryNotes: string;
-  employmentEffect: string;
-  employmentNotes: string;
-  wealthEffect: string;
-  wealthNotes: string;
-  economicTimeframe: string;
-
-  // Social Consequences
-  classEffect: string;
-  classNotes: string;
-  familyEffect: string;
-  familyNotes: string;
-  communityEffect: string;
-  communityNotes: string;
-  identityEffect: string;
-  identityNotes: string;
-  socialTimeframe: string;
-
-  // Political Consequences
-  powerEffect: string;
-  powerNotes: string;
-  surveillanceEffect: string;
-  surveillanceNotes: string;
-  governanceEffect: string;
-  governanceNotes: string;
-  politicalTimeframe: string;
-
-  // Military Consequences
-  warfareEffect: string;
-  warfareNotes: string;
-  defenseEffect: string;
-  defenseNotes: string;
-  deterrenceEffect: string;
-  deterrenceNotes: string;
-  militaryTimeframe: string;
-
-  // Psychological Consequences
-  perceptionEffect: string;
-  perceptionNotes: string;
-  valuesEffect: string;
-  valuesNotes: string;
-  fearsEffect: string;
-  fearsNotes: string;
-  psychologicalTimeframe: string;
-
-  // Synthesis
-  primaryContradiction: string;
-  contradictionAnalysis: string;
-  storyConflicts: string;
-  winnersLosers: string;
-  unexpectedUses: string;
-  technologyCharacter: string;
-
-  // Additional
-  notes: string;
-  generalNotes: string;
-  moodboard: MoodboardImage[];
-}
-
-const initialFormState: FormState = {
-  technologyName: "",
-  technologyCategory: "",
-  technologyDescription: "",
-  maturityLevel: "",
-  accessLevel: "",
-  keyCapabilities: "",
-  limitations: "",
-
-  infrastructureEffect: "",
-  infrastructureNotes: "",
-  environmentEffect: "",
-  environmentNotes: "",
-  resourceEffect: "",
-  resourceNotes: "",
-  physicalTimeframe: "",
-
-  industryEffect: "",
-  industryNotes: "",
-  employmentEffect: "",
-  employmentNotes: "",
-  wealthEffect: "",
-  wealthNotes: "",
-  economicTimeframe: "",
-
-  classEffect: "",
-  classNotes: "",
-  familyEffect: "",
-  familyNotes: "",
-  communityEffect: "",
-  communityNotes: "",
-  identityEffect: "",
-  identityNotes: "",
-  socialTimeframe: "",
-
-  powerEffect: "",
-  powerNotes: "",
-  surveillanceEffect: "",
-  surveillanceNotes: "",
-  governanceEffect: "",
-  governanceNotes: "",
-  politicalTimeframe: "",
-
-  warfareEffect: "",
-  warfareNotes: "",
-  defenseEffect: "",
-  defenseNotes: "",
-  deterrenceEffect: "",
-  deterrenceNotes: "",
-  militaryTimeframe: "",
-
-  perceptionEffect: "",
-  perceptionNotes: "",
-  valuesEffect: "",
-  valuesNotes: "",
-  fearsEffect: "",
-  fearsNotes: "",
-  psychologicalTimeframe: "",
-
-  primaryContradiction: "",
-  contradictionAnalysis: "",
-  storyConflicts: "",
-  winnersLosers: "",
-  unexpectedUses: "",
-  technologyCharacter: "",
-
-  notes: "",
-  generalNotes: "",
-  moodboard: [],
-};
-
-const TOOL_TYPE = "technology-consequences";
 
 const TechnologyConsequences = () => {
-  const [formState, setFormState] = useState<FormState>(initialFormState);
-  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
-  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
   const [randomContradiction, setRandomContradiction] = useState("");
   const [randomConflict, setRandomConflict] = useState("");
-  const { toast } = useToast();
   const { user } = useAuth();
   const { isSubscribed } = useSubscription();
   const { worlds } = useWorlds();
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = useWorldId();
-  const worksheetId = searchParams.get("worksheetId");
+  const worksheet = useToolWorksheet(TOOL_TYPE, {
+    ...paradigmCodec,
+    displayName: "Paradigm",
+    localKey: LOCAL_STORAGE_KEY,
+    loadedToast: true,
+    onDraftCreated: (id, title) => entityMatch.check(id, title),
+  });
+  const { state: formState, setState: setFormState, worldId } = worksheet;
+  const currentWorksheetId = worksheet.worksheetId;
+  const currentWorksheetTitle = worksheet.worksheetTitle;
+  const worksheetId = worksheet.worksheetId;
 
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
   const worldName = currentWorld?.name;
 
   const entityMatch = useEntityMatch(worldId);
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
-    onDraftCreated: entityMatch.check,
-  });
-  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
-  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
-  const renameWorksheet = useRenameWorksheet();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [notesSheetOpen, setNotesSheetOpen] = useState(false);
   const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
-  const { updateWorksheetTags } = useTags();
-  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
 
   useEffect(() => {
     if (user && !isSubscribed) {
       setUpgradeDialogOpen(true);
     }
   }, [user, isSubscribed]);
-
-  useEffect(() => {
-    if (worldId && !worksheetId && !worksheetsLoading && user) {
-      setWorksheetSelectorOpen(true);
-    }
-  }, [worldId, worksheetId, worksheetsLoading, user]);
-
-  useEffect(() => {
-    if (existingWorksheet && existingWorksheet.data) {
-      try {
-        const data = existingWorksheet.data as unknown as FormState;
-        setFormState(data);
-        setCurrentWorksheetId(existingWorksheet.id);
-        setCurrentWorksheetTitle(existingWorksheet.title);
-        if (existingWorksheet.tags) {
-          setWorksheetTags(existingWorksheet.tags);
-        }
-        toast({
-          title: "WORKSHEET LOADED.",
-          description: "WORK RESTORED FROM CLOUD.",
-        });
-      } catch {
-        // Ignore parse errors
-      }
-    }
-  }, [existingWorksheet]);
-
-  useEffect(() => {
-    if (!worldId && !worksheetId) {
-      const saved = localStorage.getItem("tc-worksheet");
-      if (saved) {
-        try {
-          setFormState(JSON.parse(saved));
-        } catch {
-          // Ignore parse errors
-        }
-      }
-    }
-  }, [worldId, worksheetId]);
 
   useEffect(() => {
     setRandomContradiction(CONTRADICTION_PROMPTS[Math.floor(Math.random() * CONTRADICTION_PROMPTS.length)]);
@@ -363,71 +162,6 @@ const TechnologyConsequences = () => {
     setFormState((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSave = async () => {
-    writeStandaloneBackup("tc-worksheet", formState, { worldId, signedIn: !!user });
-
-    if (worldId && user) {
-      const worksheetData = formState as unknown as Json;
-      try {
-        if (currentWorksheetId || worksheetId) {
-          await updateWorksheet.mutateAsync({
-            worksheetId: currentWorksheetId || worksheetId!,
-            data: worksheetData,
-          });
-        } else {
-          toast({
-            title: "OPERATION FAILED.",
-            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
-            variant: "destructive",
-          });
-        }
-      } catch {
-        // Error handled by mutation
-      }
-    } else {
-      toast({
-        title: "DRAFT SAVED.",
-        description: "WORK SECURED TO LOCAL STORAGE.",
-      });
-    }
-  };
-
-  const handleWorksheetSelect = (selectedWorksheetId: string) => {
-    setSearchParams({ worldId: worldId!, worksheetId: selectedWorksheetId });
-    setWorksheetSelectorOpen(false);
-  };
-
-  const handleWorksheetCreate = async (name: string): Promise<string> => {
-    const worksheetData = initialFormState as unknown as Json;
-    const result = await createWorksheet.mutateAsync({
-      worldId: worldId!,
-      toolType: TOOL_TYPE,
-      title: name,
-      data: worksheetData,
-    });
-    setCurrentWorksheetId(result.id);
-    setCurrentWorksheetTitle(result.title);
-    setSearchParams({ worldId: worldId!, worksheetId: result.id });
-    return result.id;
-  };
-
-  // Handle worksheet rename
-  const handleRename = async (newTitle: string) => {
-    const wsId = currentWorksheetId || worksheetId;
-    if (!wsId) return;
-
-    await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
-    setCurrentWorksheetTitle(newTitle);
-  };
-
-  const handleTagsChange = (newTags: string[]) => {
-    setWorksheetTags(newTags);
-    const wsId = currentWorksheetId || worksheetId;
-    if (wsId) {
-      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
-    }
-  };
-
   const generateRandomContradiction = () => {
     setRandomContradiction(CONTRADICTION_PROMPTS[Math.floor(Math.random() * CONTRADICTION_PROMPTS.length)]);
   };
@@ -438,15 +172,12 @@ const TechnologyConsequences = () => {
 
   return (
     <ToolPageLayout
+      {...worksheet.layoutProps}
       toolType={TOOL_TYPE}
-      onSave={handleSave}
-      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
       onExport={() => setExportDialogOpen(true)}
       onPrint={() => window.print()}
       onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
       isShared={!!shareConfig?.enabled}
-      isSaving={updateWorksheet.isPending}
-      isCloudEnabled={!!(worldId && user)}
       onNotesClick={() => setNotesSheetOpen(true)}
       onMoodboardClick={() => setMoodboardSheetOpen(true)}
       moodboardCount={formState.moodboard?.length || 0}
@@ -460,13 +191,6 @@ const TechnologyConsequences = () => {
           defaultFilename="technology-consequences"
         />
       }
-      worksheetId={currentWorksheetId || worksheetId}
-      worksheetTitle={currentWorksheetTitle}
-      onRenameWorksheet={handleRename}
-      worksheetLoading={worksheetLoading}
-      worksheetTags={worksheetTags}
-      onTagsChange={handleTagsChange}
-      isLoggedIn={!!user}
     >
         {/* Mobile Sidebars - Right side floating buttons */}
         <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
@@ -1357,16 +1081,9 @@ const TechnologyConsequences = () => {
       />
 
       <WorksheetSelectorDialog
-        open={worksheetSelectorOpen}
-        onOpenChange={setWorksheetSelectorOpen}
-        worldId={worldId!}
+        {...worksheet.selectorProps}
         worldName={worldName}
-        toolType={TOOL_TYPE}
         toolDisplayName="Paradigm"
-        worksheets={existingWorksheets}
-        isLoading={worksheetsLoading}
-        onSelect={handleWorksheetSelect}
-        onCreate={handleWorksheetCreate}
       />
 
       <UpgradeDialog

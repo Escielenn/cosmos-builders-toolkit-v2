@@ -1,7 +1,4 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
-import { useWorldId } from "@/hooks/use-world-id";
-import { useTags } from "@/hooks/use-tags";
-import { useSearchParams } from "react-router-dom";
 import {
   Info,
   ExternalLink,
@@ -27,9 +24,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
-import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
+import { useWorksheets } from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
-import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
@@ -44,7 +40,6 @@ import SpeciesLinkModal from "@/components/tools/SpeciesLinkModal";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import { applyMappedFields, type MappedField } from "@/lib/field-mappings";
@@ -53,7 +48,6 @@ import { useWorlds } from "@/hooks/use-worlds";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import { generateImplications, type Implication } from "@/lib/xenomythology-implications";
-import { Json } from "@/integrations/supabase/types";
 import {
   SENSORY_MODALITIES,
   SENSORY_INTEGRATION_STYLES,
@@ -95,7 +89,17 @@ import {
   XENOMYTHOLOGY_SECTIONS,
   SECTION_GUIDANCE,
 } from "@/lib/xenomythology-data";
-import { writeStandaloneBackup } from "@/lib/standalone-backup";
+import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
+import {
+  codec as mythosCodec,
+  type FormState,
+  type PressureAnalysisEntry,
+  type ArchetypeEntry,
+  type DeityEntry,
+  type SymbolicEntity,
+  TOOL_TYPE,
+  LOCAL_STORAGE_KEY,
+} from "@/lib/tool-worksheets/mythos";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 
@@ -107,317 +111,7 @@ const SECTIONS: Section[] = [
   })),
 ];
 
-// Types for form state
-interface PressureAnalysisEntry {
-  pressure: string;
-  cognitiveChallenge: string;
-  symbolicResolution: string;
-  archetypeStructure: string;
-  archetypeForm: string;
-}
-
-interface ArchetypeEntry {
-  name: string;
-  evolutionaryOrigin: string;
-  cognitiveFunction: string;
-  symbolicForm: string;
-  narrativeRole: string;
-}
-
-interface DeityEntry {
-  archetypeName: string;
-  divineStatus: string;
-  domain: string;
-  physicalRelationship: string;
-  interaction: string;
-}
-
-interface SymbolicEntity {
-  entityName: string;
-  symbolicImportance: string;
-  archetypeAssociation: string;
-  mythicRole: string;
-}
-
-interface FormState {
-  // Section 1: Species Biology & Psychology
-  sensoryArchitecture: {
-    primaryModalities: string[];
-    primaryModalitiesOther?: string;
-    integrationStyle: string;
-    sensoryRange: string;
-    cognitionImpact: string;
-  };
-  physicalForm: {
-    bodyPlan: string;
-    bodyPlanOther?: string;
-    movementMode: string;
-    movementModeOther?: string;
-    limbArrangement: string;
-    lifespanCategory: string;
-    developmentalStages: string;
-    reproductionStrategy: string;
-    reproductionStrategyOther?: string;
-    offspringInvestment: string;
-  };
-  cognitiveArchitecture: {
-    consciousnessType: string;
-    consciousnessTypeOther?: string;
-    memoryArchitecture: string[];
-    memoryArchitectureOther?: string;
-    cognitiveStrengths: string[];
-    emotionalRange: string;
-    selfAwarenessLevel: string;
-    cognitiveChallenges: string;
-  };
-
-  // Section 2: Environmental Context
-  planetaryConditions: {
-    planetType: string;
-    planetTypeOther?: string;
-    atmosphericComposition: string;
-    dayNightCycle: string;
-    seasonalVariation: string;
-    stellarEnvironment: string;
-    stellarEnvironmentOther?: string;
-    skyAppearance: string;
-    environmentalVolatility: string;
-    geographicDiversity: string;
-  };
-  evolutionaryPressures: {
-    survivalChallenges: string[];
-    survivalChallengesOther?: string;
-    socialStructureEvolution: string;
-    adaptiveBreakthrough: string;
-  };
-  existentialParameters: {
-    mortalitySalience: string;
-    deathPhenomenology: string;
-    generationalContinuity: string;
-    timeExperience: string;
-    temporalHorizon: string;
-  };
-
-  // Section 3: Archetypal Foundations
-  pressureAnalysis: PressureAnalysisEntry[];
-  novelArchetypes: {
-    metamorphicArchetype: string;
-    hiveMindArchetype: string;
-    multiParentalArchetype: string;
-    longevityArchetype: string;
-    binaryStarArchetype: string;
-    tidallyLockedArchetype: string;
-    oceanWorldArchetype: string;
-    noSkyArchetype: string;
-  };
-  archetypePantheon: ArchetypeEntry[];
-
-  // Section 4: Mythic Expression
-  creationNarrative: {
-    primordialArchetypes: string[];
-    primordialState: string;
-    creativeAct: string;
-    firstCreatedThing: string;
-    fullNarrative: string;
-  };
-  cosmologicalStructure: {
-    dimensionalStructure: string;
-    primaryDivision: string;
-    sacredGeography: string;
-  };
-  divineConceptualization: {
-    divineOntology: string;
-    deities: DeityEntry[];
-  };
-  mythicCycles: {
-    greatCrisis: string;
-    crisisArchetypes: string[];
-    crisisResolution: string;
-    crisisExplanation: string;
-    currentOrder: string;
-    unresolvedTension: string;
-  };
-  symbolicCatalog: SymbolicEntity[];
-
-  // Section 5: Religious/Ritual Practices
-  ritualStructure: {
-    primaryFunctions: string[];
-    sensoryModality: string;
-    ritualTiming: string;
-  };
-  sacredSpecialists: {
-    leadershipModel: string;
-    specialistAbilities: string;
-    identificationMethod: string;
-    specialistDangers: string;
-  };
-  sacredSpaces: {
-    whatMakesSacred: string;
-    templeCharacteristics: string;
-    pilgrimageTypes: string[];
-    pilgrimagePurpose: string;
-  };
-  deathPractices: {
-    consciousnessAtDeath: string;
-    deathRituals: string;
-    ancestorRelations: string;
-    cosmicEschatology: string;
-    endTimesNarrative: string;
-  };
-
-  // Section 6: Synthesis
-  synthesis: {
-    ethicalVirtues: string;
-    ethicalTaboos: string;
-    ethicalAmbiguous: string;
-    artExpressions: string;
-    scienceHarmony: string;
-    scienceTension: string;
-    scienceResolution: string[];
-  };
-
-  // Linked worksheets for cross-tool integration
-  _linkedWorksheets?: {
-    ecrWorksheetId?: string;
-    lastSyncedAt?: string;
-    species?: {
-      worksheetId: string;
-      speciesName: string;
-      syncedAt: string;
-    };
-  };
-  generalNotes: string;
-  moodboard: MoodboardImage[];
-}
-
-const initialFormState: FormState = {
-  sensoryArchitecture: {
-    primaryModalities: [],
-    primaryModalitiesOther: "",
-    integrationStyle: "",
-    sensoryRange: "",
-    cognitionImpact: "",
-  },
-  physicalForm: {
-    bodyPlan: "",
-    bodyPlanOther: "",
-    movementMode: "",
-    movementModeOther: "",
-    limbArrangement: "",
-    lifespanCategory: "",
-    developmentalStages: "",
-    reproductionStrategy: "",
-    reproductionStrategyOther: "",
-    offspringInvestment: "",
-  },
-  cognitiveArchitecture: {
-    consciousnessType: "",
-    consciousnessTypeOther: "",
-    memoryArchitecture: [],
-    memoryArchitectureOther: "",
-    cognitiveStrengths: [],
-    emotionalRange: "",
-    selfAwarenessLevel: "",
-    cognitiveChallenges: "",
-  },
-  planetaryConditions: {
-    planetType: "",
-    planetTypeOther: "",
-    atmosphericComposition: "",
-    dayNightCycle: "",
-    seasonalVariation: "",
-    stellarEnvironment: "",
-    stellarEnvironmentOther: "",
-    skyAppearance: "",
-    environmentalVolatility: "",
-    geographicDiversity: "",
-  },
-  evolutionaryPressures: {
-    survivalChallenges: [],
-    survivalChallengesOther: "",
-    socialStructureEvolution: "",
-    adaptiveBreakthrough: "",
-  },
-  existentialParameters: {
-    mortalitySalience: "",
-    deathPhenomenology: "",
-    generationalContinuity: "",
-    timeExperience: "",
-    temporalHorizon: "",
-  },
-  pressureAnalysis: [],
-  novelArchetypes: {
-    metamorphicArchetype: "",
-    hiveMindArchetype: "",
-    multiParentalArchetype: "",
-    longevityArchetype: "",
-    binaryStarArchetype: "",
-    tidallyLockedArchetype: "",
-    oceanWorldArchetype: "",
-    noSkyArchetype: "",
-  },
-  archetypePantheon: [],
-  creationNarrative: {
-    primordialArchetypes: [],
-    primordialState: "",
-    creativeAct: "",
-    firstCreatedThing: "",
-    fullNarrative: "",
-  },
-  cosmologicalStructure: {
-    dimensionalStructure: "",
-    primaryDivision: "",
-    sacredGeography: "",
-  },
-  divineConceptualization: {
-    divineOntology: "",
-    deities: [],
-  },
-  mythicCycles: {
-    greatCrisis: "",
-    crisisArchetypes: [],
-    crisisResolution: "",
-    crisisExplanation: "",
-    currentOrder: "",
-    unresolvedTension: "",
-  },
-  symbolicCatalog: [],
-  ritualStructure: {
-    primaryFunctions: [],
-    sensoryModality: "",
-    ritualTiming: "",
-  },
-  sacredSpecialists: {
-    leadershipModel: "",
-    specialistAbilities: "",
-    identificationMethod: "",
-    specialistDangers: "",
-  },
-  sacredSpaces: {
-    whatMakesSacred: "",
-    templeCharacteristics: "",
-    pilgrimageTypes: [],
-    pilgrimagePurpose: "",
-  },
-  deathPractices: {
-    consciousnessAtDeath: "",
-    deathRituals: "",
-    ancestorRelations: "",
-    cosmicEschatology: "",
-    endTimesNarrative: "",
-  },
-  synthesis: {
-    ethicalVirtues: "",
-    ethicalTaboos: "",
-    ethicalAmbiguous: "",
-    artExpressions: "",
-    scienceHarmony: "",
-    scienceTension: "",
-    scienceResolution: [],
-  },
-  generalNotes: "",
-  moodboard: [],
-};
+// FormState, defaults and codec: lib/tool-worksheets/mythos.
 
 const EXTERNAL_RESOURCES = [
   { name: "Xenomythology Substack", url: "https://xenomythology.substack.com/", description: "Xenomythology research" },
@@ -583,22 +277,23 @@ const RadioGroupField = ({
   </div>
 );
 
-const TOOL_TYPE = "xenomythology-framework-builder";
-
 const XenomythologyFrameworkBuilder = () => {
-  const [formState, setFormState] = useState<FormState>(initialFormState);
-  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
-  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const { toast } = useToast();
-  const { user } = useAuth();
   const { worlds } = useWorlds();
 
   // Get URL params for worldId and worksheetId
-  const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = useWorldId();
-  const worksheetId = searchParams.get("worksheetId");
+  const worksheet = useToolWorksheet(TOOL_TYPE, {
+    ...mythosCodec,
+    displayName: "Mythos",
+    localKey: LOCAL_STORAGE_KEY,
+    loadedToast: true,
+    onDraftCreated: (id, title) => entityMatch.check(id, title),
+  });
+  const { state: formState, setState: setFormState, worldId } = worksheet;
+  const currentWorksheetId = worksheet.worksheetId;
+  const currentWorksheetTitle = worksheet.worksheetTitle;
+  const worksheetId = worksheet.worksheetId;
 
   // Get world name from worldId
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
@@ -606,23 +301,10 @@ const XenomythologyFrameworkBuilder = () => {
 
   // Supabase hooks
   const entityMatch = useEntityMatch(worldId);
-  const { worksheets, createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
-    onDraftCreated: entityMatch.check,
-  });
-  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
-  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
-  const renameWorksheet = useRenameWorksheet();
+  // The world's other sheets, for the ECR and Phylo imports.
+  const { worksheets } = useWorksheets(worldId || undefined);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
-  const { updateWorksheetTags } = useTags();
-  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
-
-  // Show worksheet selector when worldId is present but no worksheetId
-  useEffect(() => {
-    if (worldId && !worksheetId && !worksheetsLoading && user) {
-      setWorksheetSelectorOpen(true);
-    }
-  }, [worldId, worksheetId, worksheetsLoading, user]);
 
   // ECR integration state
   const [showECRImport, setShowECRImport] = useState(false);
@@ -633,42 +315,6 @@ const XenomythologyFrameworkBuilder = () => {
   const [notesSheetOpen, setNotesSheetOpen] = useState(false);
   const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
   const evoBioWorksheets = worksheets.filter(w => w.tool_type === "evolutionary-biology");
-
-  // Load existing worksheet from Supabase if worksheetId is provided
-  useEffect(() => {
-    if (existingWorksheet && existingWorksheet.data) {
-      try {
-        const data = existingWorksheet.data as unknown as FormState;
-        setFormState(data);
-        setCurrentWorksheetId(existingWorksheet.id);
-        setCurrentWorksheetTitle(existingWorksheet.title);
-        if (existingWorksheet.tags) {
-          setWorksheetTags(existingWorksheet.tags);
-        }
-        toast({
-          title: "WORKSHEET LOADED.",
-          description: "WORK RESTORED FROM CLOUD.",
-        });
-      } catch {
-        // Ignore parse errors
-      }
-    }
-  }, [existingWorksheet]);
-
-  // Fallback to localStorage if no worldId (standalone mode)
-  useEffect(() => {
-    if (!worldId && !worksheetId) {
-      const saved = localStorage.getItem("xenomythology-framework-builder");
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          setFormState(parsed);
-        } catch {
-          // Ignore parse errors
-        }
-      }
-    }
-  }, [worldId, worksheetId]);
 
   // Generate key choices for sidebar
   const keyChoicesSections: KeyChoicesSection[] = useMemo(() => {
@@ -860,76 +506,6 @@ const XenomythologyFrameworkBuilder = () => {
       ...prev,
       symbolicCatalog: prev.symbolicCatalog.filter((_, i) => i !== index),
     }));
-  };
-
-  const handleSave = async () => {
-    // Browser backup in standalone mode only (see lib/standalone-backup)
-    writeStandaloneBackup("xenomythology-framework-builder", formState, { worldId, signedIn: !!user });
-
-    // If we have a worldId and user is authenticated, save to Supabase
-    if (worldId && user) {
-      const worksheetData = formState as unknown as Json;
-
-      try {
-        if (currentWorksheetId || worksheetId) {
-          // Update existing worksheet - preserve user-provided title
-          await updateWorksheet.mutateAsync({
-            worksheetId: currentWorksheetId || worksheetId!,
-            data: worksheetData,
-          });
-        } else {
-          // Should not reach here - worksheet must be created via selector first
-          toast({
-            title: "OPERATION FAILED.",
-            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
-            variant: "destructive",
-          });
-        }
-      } catch {
-        // Error already handled by the mutation
-      }
-    } else {
-      toast({
-        title: "DRAFT SAVED.",
-        description: "WORK SECURED TO LOCAL STORAGE.",
-      });
-    }
-  };
-
-  const handleWorksheetSelect = (selectedWorksheetId: string) => {
-    setSearchParams({ worldId: worldId!, worksheetId: selectedWorksheetId });
-    setWorksheetSelectorOpen(false);
-  };
-
-  const handleWorksheetCreate = async (name: string): Promise<string> => {
-    const worksheetData = initialFormState as unknown as Json;
-    const result = await createWorksheet.mutateAsync({
-      worldId: worldId!,
-      toolType: TOOL_TYPE,
-      title: name,
-      data: worksheetData,
-    });
-    setCurrentWorksheetId(result.id);
-    setCurrentWorksheetTitle(result.title);
-    setSearchParams({ worldId: worldId!, worksheetId: result.id });
-    return result.id;
-  };
-
-  // Handle worksheet rename
-  const handleRename = async (newTitle: string) => {
-    const wsId = currentWorksheetId || worksheetId;
-    if (!wsId) return;
-
-    await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
-    setCurrentWorksheetTitle(newTitle);
-  };
-
-  const handleTagsChange = (newTags: string[]) => {
-    setWorksheetTags(newTags);
-    const wsId = currentWorksheetId || worksheetId;
-    if (wsId) {
-      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
-    }
   };
 
   const handleExport = () => {
@@ -1345,14 +921,12 @@ const XenomythologyFrameworkBuilder = () => {
 
   return (
     <ToolPageLayout
+      {...worksheet.layoutProps}
       toolType={TOOL_TYPE}
-      onSave={handleSave}
-      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
       onPrint={handlePrint}
       onExport={handleExport}
       onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
       isShared={!!shareConfig?.enabled}
-      isCloudEnabled={!!(worldId && user)}
       onNotesClick={() => setNotesSheetOpen(true)}
       onMoodboardClick={() => setMoodboardSheetOpen(true)}
       moodboardCount={formState.moodboard?.length || 0}
@@ -1366,14 +940,7 @@ const XenomythologyFrameworkBuilder = () => {
           defaultFilename="xenomythology-framework"
         />
       }
-      worksheetId={currentWorksheetId || worksheetId}
-      worksheetTitle={currentWorksheetTitle}
-      onRenameWorksheet={handleRename}
-      worksheetLoading={worksheetLoading}
-      worksheetTags={worksheetTags}
-      onTagsChange={handleTagsChange}
       worksheetIcon={<FileText className="w-4 h-4 text-sf-primary-text" />}
-      isLoggedIn={!!user}
     >
         {/* Linked species / ECR indicators */}
         <div className="flex items-center gap-2 mb-6 flex-wrap">
@@ -2791,16 +2358,9 @@ const XenomythologyFrameworkBuilder = () => {
       {/* Worksheet Selector Dialog */}
       {worldId && (
         <WorksheetSelectorDialog
-          open={worksheetSelectorOpen}
-          onOpenChange={setWorksheetSelectorOpen}
-          worldId={worldId}
+          {...worksheet.selectorProps}
           worldName={worldName}
-          toolType={TOOL_TYPE}
           toolDisplayName="Mythos"
-          worksheets={existingWorksheets}
-          isLoading={worksheetsLoading}
-          onSelect={handleWorksheetSelect}
-          onCreate={handleWorksheetCreate}
         />
       )}
 

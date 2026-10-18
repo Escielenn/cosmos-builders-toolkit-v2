@@ -67,6 +67,13 @@ export interface UseToolWorksheetOptions<S> extends ToolWorksheetCodec<S> {
   loadedToast?: boolean;
   /** Open the selector when a world is bound with no worksheet. Default true. */
   autoOpenSelector?: boolean;
+  /**
+   * The page already holds its form state elsewhere (Epoch keeps it in a
+   * reducer with undo history): pass [value, replace] and the hook reads and
+   * writes through it instead of its own useState. `replace` receives the
+   * whole next state.
+   */
+  store?: readonly [S, (next: S) => void];
 }
 
 export interface ToolWorksheet<S> {
@@ -142,7 +149,25 @@ export function useToolWorksheet<S>(toolType: string, options: UseToolWorksheetO
   const [searchParams, setSearchParams] = useSearchParams();
   const urlWorksheetId = searchParams.get("worksheetId");
 
-  const [state, setState] = useState<S>(defaults);
+  const [ownState, setOwnState] = useState<S>(defaults);
+  const store = options.store;
+  const state = store ? store[0] : ownState;
+  // Through a ref so functional updates see the latest external value.
+  const stateRef = useRef(state);
+  stateRef.current = state;
+  const setState = useCallback<Dispatch<SetStateAction<S>>>(
+    (action) => {
+      const replace = opts.current.store?.[1];
+      if (!replace) {
+        setOwnState(action);
+        return;
+      }
+      const next = typeof action === "function" ? (action as (prev: S) => S)(stateRef.current) : action;
+      stateRef.current = next;
+      replace(next);
+    },
+    [],
+  );
   const [currentId, setCurrentId] = useState<string | null>(null);
   const [title, setTitle] = useState<string | null>(null);
   const [tags, setTagsState] = useState<string[]>([]);
@@ -207,7 +232,7 @@ export function useToolWorksheet<S>(toolType: string, options: UseToolWorksheetO
     } catch {
       // Corrupt draft: start from defaults.
     }
-  }, [localKey, worldId, urlWorksheetId, signedIn, authLoading, keyOf]);
+  }, [localKey, worldId, urlWorksheetId, signedIn, authLoading, keyOf, setState]);
 
   // ── File a signed-out draft once signed in with a world ────────────
   const migrating = useRef(false);

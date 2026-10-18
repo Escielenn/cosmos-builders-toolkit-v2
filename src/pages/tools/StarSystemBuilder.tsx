@@ -1,8 +1,24 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
-import { useWorldId } from "@/hooks/use-world-id";
 import { useSearchParams } from "react-router-dom";
 import { Download, Save, Info, Printer, Plus, Trash2, FileText, Image as ImageIcon } from "lucide-react";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
+// FormState, defaults and codec: lib/tool-worksheets/orrery.
+import {
+  codec as orreryCodec,
+  type FormState,
+  TOOL_TYPE,
+  LOCAL_STORAGE_KEY,
+  type PrimaryStar,
+  type StellarConfiguration,
+  type PlanetaryBody,
+  type OrbitalMechanics,
+  type SystemHistory,
+  type Habitability,
+  type NarrativeElements,
+  type Synthesis,
+  createEmptyBody,
+} from "@/lib/tool-worksheets/orrery";
+import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,7 +40,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
@@ -37,13 +52,10 @@ import ExportDialog from "@/components/tools/ExportDialog";
 import { StarSystemSummaryTemplate, StarSystemFullReportTemplate } from "@/lib/pdf/templates";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import type { MoodboardImage } from "@/hooks/use-moodboard";
-import { useTags } from "@/hooks/use-tags";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import UpgradeDialog from "@/components/subscription/UpgradeDialog";
 import { useWorlds } from "@/hooks/use-worlds";
-import { Json } from "@/integrations/supabase/types";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import {
@@ -61,7 +73,6 @@ import {
 } from "@/lib/star-system-data";
 import { calcHZBoundaries, luminosityFromMass } from "@/lib/habitable-zone/calculations";
 import StarSystemDiagram from "@/components/tools/StarSystemDiagram";
-import { writeStandaloneBackup } from "@/lib/standalone-backup";
 import { manifest as orreryManifest } from "@/tools/orrery/manifest";
 import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
 import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
@@ -82,198 +93,30 @@ const SECTIONS: Section[] = [
   { id: "section-synthesis", title: "Final Synthesis" },
 ];
 
-// Types for form state
-interface PrimaryStar {
-  name: string;
-  spectralClass: string;
-  customClass: string;
-  age: string;
-  luminosity: string;
-  mass: string;
-  notes: string;
-}
-
-interface StellarConfiguration {
-  type: string;
-  secondaryStarClass: string;
-  tertiaryStarClass: string;
-  binaryOrbitalPeriod: string;
-  binarySeparation: string;
-  configurationNotes: string;
-}
-
-interface PlanetaryBody {
-  id: string;
-  name: string;
-  type: string;
-  subtype: string;
-  orbitalZone: string;
-  orbitalPeriod: string;
-  distanceFromStar: string;
-  moons: string;
-  rings: boolean;
-  tidallyLocked: boolean;
-  notes: string;
-}
-
-interface OrbitalMechanics {
-  resonancePattern: string;
-  resonanceNotes: string;
-  stabilityAssessment: string;
-  asteroidBelts: string[];
-  kuiperBelt: boolean;
-  oortCloud: boolean;
-  hazards: string;
-}
-
-interface SystemHistory {
-  age: string;
-  formationScenario: string;
-  majorEvents: string;
-  collisionHistory: string;
-  migrationHistory: string;
-  futureProjection: string;
-}
-
-interface Habitability {
-  habitableZoneInner: string;
-  habitableZoneOuter: string;
-  modifiers: string[];
-  bestCandidate: string;
-  terraformingPotential: string;
-  resourceRichness: string;
-}
-
-interface NarrativeElements {
-  systemCharacter: string;
-  visualSignature: string;
-  navigationChallenges: string;
-  travelTimes: string;
-  culturalSignificance: string;
-  mysteries: string;
-  storyHooks: string;
-}
-
-interface Synthesis {
-  consistencyChecks: string[];
-  primaryConflict: string;
-  uniqueFeature: string;
-  connectionToPlanetary: string;
-  oneSentenceSummary: string;
-}
-
-interface FormState {
-  systemName: string;
-  primaryStar: PrimaryStar;
-  configuration: StellarConfiguration;
-  bodies: PlanetaryBody[];
-  orbits: OrbitalMechanics;
-  history: SystemHistory;
-  habitability: Habitability;
-  narrative: NarrativeElements;
-  synthesis: Synthesis;
-  generalNotes: string;
-  moodboard: MoodboardImage[];
-}
-
-const createEmptyBody = (): PlanetaryBody => ({
-  id: crypto.randomUUID(),
-  name: "",
-  type: "",
-  subtype: "",
-  orbitalZone: "",
-  orbitalPeriod: "",
-  distanceFromStar: "",
-  moons: "",
-  rings: false,
-  tidallyLocked: false,
-  notes: "",
-});
-
-const initialFormState: FormState = {
-  systemName: "",
-  primaryStar: {
-    name: "",
-    spectralClass: "",
-    customClass: "",
-    age: "",
-    luminosity: "",
-    mass: "",
-    notes: "",
-  },
-  configuration: {
-    type: "single",
-    secondaryStarClass: "",
-    tertiaryStarClass: "",
-    binaryOrbitalPeriod: "",
-    binarySeparation: "",
-    configurationNotes: "",
-  },
-  bodies: [createEmptyBody()],
-  orbits: {
-    resonancePattern: "",
-    resonanceNotes: "",
-    stabilityAssessment: "",
-    asteroidBelts: [],
-    kuiperBelt: false,
-    oortCloud: false,
-    hazards: "",
-  },
-  history: {
-    age: "",
-    formationScenario: "",
-    majorEvents: "",
-    collisionHistory: "",
-    migrationHistory: "",
-    futureProjection: "",
-  },
-  habitability: {
-    habitableZoneInner: "",
-    habitableZoneOuter: "",
-    modifiers: [],
-    bestCandidate: "",
-    terraformingPotential: "",
-    resourceRichness: "",
-  },
-  narrative: {
-    systemCharacter: "",
-    visualSignature: "",
-    navigationChallenges: "",
-    travelTimes: "",
-    culturalSignificance: "",
-    mysteries: "",
-    storyHooks: "",
-  },
-  synthesis: {
-    consistencyChecks: [],
-    primaryConflict: "",
-    uniqueFeature: "",
-    connectionToPlanetary: "",
-    oneSentenceSummary: "",
-  },
-  generalNotes: "",
-  moodboard: [],
-};
-
-const TOOL_TYPE = "star-system-builder";
-
 const StarSystemBuilder = () => {
-  const [formState, setFormState] = useState<FormState>(initialFormState);
-  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
-  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
   const { isSubscribed } = useSubscription();
   const { worlds } = useWorlds();
-  const { updateWorksheetTags } = useTags();
 
   // Get URL params for worldId and worksheetId
   const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = useWorldId();
-  const worksheetId = searchParams.get("worksheetId");
+
+  const worksheet = useToolWorksheet(TOOL_TYPE, {
+    ...orreryCodec,
+    displayName: "Orrery",
+    localKey: LOCAL_STORAGE_KEY,
+    loadedToast: true,
+    onDraftCreated: (id, title) => entityMatch.check(id, title),
+    onSaved: (saved, { worksheetId: savedId }) =>
+      canonEmit.emit(saved, { subjectId: canonSubjectId, worksheetId: savedId }),
+  });
+  const { state: formState, setState: setFormState, worldId } = worksheet;
+  const currentWorksheetId = worksheet.worksheetId;
+  const currentWorksheetTitle = worksheet.worksheetTitle;
+  const worksheetId = worksheet.worksheetId;
 
   // One home per value (1.5 item 10): Orrery owns the star's class; Genesis and Goldilocks read it.
   const canonSubjectId = useToolSubject(currentWorksheetId || worksheetId);
@@ -285,16 +128,9 @@ const StarSystemBuilder = () => {
 
   // Supabase hooks
   const entityMatch = useEntityMatch(worldId);
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
-    onDraftCreated: entityMatch.check,
-  });
-  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
-  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
-  const renameWorksheet = useRenameWorksheet();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [notesSheetOpen, setNotesSheetOpen] = useState(false);
   const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
-  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
 
   // Check Pro access
@@ -303,49 +139,6 @@ const StarSystemBuilder = () => {
       setUpgradeDialogOpen(true);
     }
   }, [user, isSubscribed]);
-
-  // Show worksheet selector when worldId is present but no worksheetId
-  useEffect(() => {
-    if (worldId && !worksheetId && !worksheetsLoading && user) {
-      setWorksheetSelectorOpen(true);
-    }
-  }, [worldId, worksheetId, worksheetsLoading, user]);
-
-  // Load existing worksheet from Supabase if worksheetId is provided
-  useEffect(() => {
-    if (existingWorksheet && existingWorksheet.data) {
-      try {
-        const data = existingWorksheet.data as unknown as FormState;
-        setFormState(data);
-        setCurrentWorksheetId(existingWorksheet.id);
-        setCurrentWorksheetTitle(existingWorksheet.title);
-        if (existingWorksheet?.tags) {
-          setWorksheetTags(existingWorksheet.tags);
-        }
-        toast({
-          title: "WORKSHEET LOADED.",
-          description: "WORK RESTORED FROM CLOUD.",
-        });
-      } catch {
-        // Ignore parse errors
-      }
-    }
-  }, [existingWorksheet]);
-
-  // Fallback to localStorage if no worldId (standalone mode)
-  useEffect(() => {
-    if (!worldId && !worksheetId) {
-      const saved = localStorage.getItem("ssb-worksheet");
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          setFormState(parsed);
-        } catch {
-          // Ignore parse errors
-        }
-      }
-    }
-  }, [worldId, worksheetId]);
 
   // Generate key choices for sidebar
   const keyChoicesSections: KeyChoicesSection[] = useMemo(() => {
@@ -518,73 +311,6 @@ const StarSystemBuilder = () => {
     });
   };
 
-  const handleSave = async () => {
-    writeStandaloneBackup("ssb-worksheet", formState, { worldId, signedIn: !!user });
-
-    if (worldId && user) {
-      const worksheetData = formState as unknown as Json;
-
-      try {
-        if (currentWorksheetId || worksheetId) {
-          await updateWorksheet.mutateAsync({
-            worksheetId: currentWorksheetId || worksheetId!,
-            data: worksheetData,
-          });
-          await canonEmit.emit(formState, { subjectId: canonSubjectId, worksheetId: currentWorksheetId || worksheetId });
-        } else {
-          toast({
-            title: "OPERATION FAILED.",
-            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
-            variant: "destructive",
-          });
-        }
-      } catch {
-        // Error already handled by the mutation
-      }
-    } else {
-      toast({
-        title: "DRAFT SAVED.",
-        description: "WORK SECURED TO LOCAL STORAGE.",
-      });
-    }
-  };
-
-  const handleWorksheetSelect = (selectedWorksheetId: string) => {
-    setSearchParams({ worldId: worldId!, worksheetId: selectedWorksheetId });
-    setWorksheetSelectorOpen(false);
-  };
-
-  const handleWorksheetCreate = async (name: string): Promise<string> => {
-    const worksheetData = initialFormState as unknown as Json;
-    const result = await createWorksheet.mutateAsync({
-      worldId: worldId!,
-      toolType: TOOL_TYPE,
-      title: name,
-      data: worksheetData,
-    });
-    setCurrentWorksheetId(result.id);
-    setCurrentWorksheetTitle(result.title);
-    setSearchParams({ worldId: worldId!, worksheetId: result.id });
-    return result.id;
-  };
-
-  // Handle worksheet rename
-  const handleRename = async (newTitle: string) => {
-    const wsId = currentWorksheetId || worksheetId;
-    if (!wsId) return;
-
-    await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
-    setCurrentWorksheetTitle(newTitle);
-  };
-
-  const handleTagsChange = (newTags: string[]) => {
-    setWorksheetTags(newTags);
-    const wsId = currentWorksheetId || worksheetId;
-    if (wsId) {
-      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
-    }
-  };
-
   const handleExport = () => {
     setExportDialogOpen(true);
   };
@@ -605,15 +331,12 @@ const StarSystemBuilder = () => {
 
   return (
     <ToolPageLayout
+      {...worksheet.layoutProps}
       toolType={TOOL_TYPE}
-      onSave={handleSave}
-      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
       onExport={handleExport}
       onPrint={handlePrint}
       onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
       isShared={!!shareConfig?.enabled}
-      isSaving={updateWorksheet.isPending}
-      isCloudEnabled={!!(worldId && user)}
       onNotesClick={() => setNotesSheetOpen(true)}
       onMoodboardClick={() => setMoodboardSheetOpen(true)}
       moodboardCount={formState.moodboard?.length || 0}
@@ -627,13 +350,6 @@ const StarSystemBuilder = () => {
           defaultFilename="star-system"
         />
       }
-      worksheetId={currentWorksheetId || worksheetId}
-      worksheetTitle={currentWorksheetTitle}
-      onRenameWorksheet={handleRename}
-      worksheetLoading={worksheetLoading}
-      worksheetTags={worksheetTags}
-      onTagsChange={handleTagsChange}
-      isLoggedIn={!!user}
     >
         {/* Mobile Sidebars - Right side floating buttons */}
         <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
@@ -1628,16 +1344,9 @@ const StarSystemBuilder = () => {
 
       {/* Worksheet Selector Dialog */}
       <WorksheetSelectorDialog
-        open={worksheetSelectorOpen}
-        onOpenChange={setWorksheetSelectorOpen}
-        worldId={worldId!}
+        {...worksheet.selectorProps}
         worldName={worldName}
-        toolType={TOOL_TYPE}
         toolDisplayName="Orrery"
-        worksheets={existingWorksheets}
-        isLoading={worksheetsLoading}
-        onSelect={handleWorksheetSelect}
-        onCreate={handleWorksheetCreate}
       />
 
       {/* Upgrade Dialog */}

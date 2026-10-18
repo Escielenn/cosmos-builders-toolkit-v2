@@ -1,8 +1,7 @@
-import { Component, useState, useEffect, useCallback, useRef } from "react";
+import { Component, useState, useCallback, useRef } from "react";
 import PageShell from "@/components/layout/PageShell";
-import { useWorldId } from "@/hooks/use-world-id";
 import type { ReactNode, ErrorInfo } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Layers,
   CalendarPlus,
@@ -23,12 +22,6 @@ import { useHintDismissed } from "@/hooks/use-hint-dismissed";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import {
-  useWorksheets,
-  useWorksheet,
-  useWorksheetsByType,
-  useRenameWorksheet,
-} from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
@@ -36,16 +29,12 @@ import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import { useTags } from "@/hooks/use-tags";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import { useWorlds } from "@/hooks/use-worlds";
-import { Json } from "@/integrations/supabase/types";
 
 import type { TimelineTrack, TimelineEvent } from "@/lib/timeline/types";
-import { initialTimelineState } from "@/lib/timeline/constants";
 import { TimelineProvider, useTimeline } from "@/lib/timeline/context";
-import { migrateTimelineState } from "@/lib/timeline/migration";
 
 import TimelineView from "@/components/timeline/TimelineView";
 import TrackFormDialog from "@/components/timeline/TrackFormDialog";
@@ -67,19 +56,14 @@ import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import PresenceAvatars from "@/components/timeline/PresenceAvatars";
 import { useTimelineKeyboard } from "@/components/timeline/useTimelineKeyboard";
 import { fitAllEvents } from "@/lib/timeline/utils";
-import { writeStandaloneBackup } from "@/lib/standalone-backup";
-
-const TOOL_TYPE = "timeline";
-const LOCAL_STORAGE_KEY = "tl-worksheet";
+import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
+import { codec as epochCodec, dirtyKey as epochDirtyKey, TOOL_TYPE, LOCAL_STORAGE_KEY } from "@/lib/tool-worksheets/epoch";
 
 const Timeline = () => {
   const { state, selectedEventId, canUndo, canRedo, dispatch } = useTimeline();
   const timelineViewRef = useRef<HTMLDivElement>(null);
 
-  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
-  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [notesSheetOpen, setNotesSheetOpen] = useState(false);
   const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
@@ -104,9 +88,26 @@ const Timeline = () => {
   const { worlds } = useWorlds();
   const { isSubscribed } = useSubscription();
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = useWorldId();
-  const worksheetId = searchParams.get("worksheetId");
+  // The timeline lives in TimelineProvider's reducer (undo history); the
+  // worksheet hook reads and replaces it there. SET_STATE resets undo, as a
+  // load always did.
+  const replaceTimeline = useCallback(
+    (next: typeof state) => dispatch({ type: "SET_STATE", payload: next }),
+    [dispatch],
+  );
+  const worksheet = useToolWorksheet(TOOL_TYPE, {
+    ...epochCodec,
+    displayName: "Epoch",
+    localKey: LOCAL_STORAGE_KEY,
+    loadedToast: true,
+    dirtyKey: epochDirtyKey,
+    store: [state, replaceTimeline],
+    onDraftCreated: (id, title) => entityMatch.check(id, title),
+  });
+  const { worldId } = worksheet;
+  const currentWorksheetId = worksheet.worksheetId;
+  const currentWorksheetTitle = worksheet.worksheetTitle;
+  const worksheetId = worksheet.worksheetId;
 
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
   const worldName = currentWorld?.name;
@@ -114,15 +115,7 @@ const Timeline = () => {
   const [chronicleHintDismissed, dismissChronicleHint] = useHintDismissed("timeline-chronicle-pointer");
 
   const entityMatch = useEntityMatch(worldId);
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
-    onDraftCreated: entityMatch.check,
-  });
-  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
-  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
-  const renameWorksheet = useRenameWorksheet();
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
-  const { updateWorksheetTags } = useTags();
-  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
 
   const { presences } = useTimelinePresence({
     worksheetId: currentWorksheetId || worksheetId,
@@ -169,49 +162,6 @@ const Timeline = () => {
     },
     onFitAll: handleFitAll,
   });
-
-  // Show worksheet selector when worldId is present but no worksheetId
-  useEffect(() => {
-    if (worldId && !worksheetId && !worksheetsLoading && user) {
-      setWorksheetSelectorOpen(true);
-    }
-  }, [worldId, worksheetId, worksheetsLoading, user]);
-
-  // Load existing worksheet from Supabase
-  useEffect(() => {
-    if (existingWorksheet && existingWorksheet.data) {
-      try {
-        const migrated = migrateTimelineState(existingWorksheet.data);
-        dispatch({ type: "SET_STATE", payload: migrated });
-        setCurrentWorksheetId(existingWorksheet.id);
-        setCurrentWorksheetTitle(existingWorksheet.title);
-        if (existingWorksheet.tags) {
-          setWorksheetTags(existingWorksheet.tags);
-        }
-        toast({
-          title: "WORKSHEET LOADED.",
-          description: "WORK RESTORED FROM CLOUD.",
-        });
-      } catch {
-        // Ignore parse errors
-      }
-    }
-  }, [existingWorksheet]);
-
-  // Fallback to localStorage if no worldId
-  useEffect(() => {
-    if (!worldId && !worksheetId) {
-      const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (saved) {
-        try {
-          const migrated = migrateTimelineState(JSON.parse(saved));
-          dispatch({ type: "SET_STATE", payload: migrated });
-        } catch {
-          // Ignore parse errors
-        }
-      }
-    }
-  }, [worldId, worksheetId]);
 
   // ─── Track CRUD via dispatch ────────────────────────────────────────
 
@@ -262,68 +212,6 @@ const Timeline = () => {
     setEventDialogOpen(true);
   }, []);
 
-  // ─── Save & Worksheet Handlers ────────────────────────────────────
-
-  const handleSave = async () => {
-    writeStandaloneBackup(LOCAL_STORAGE_KEY, state, { worldId, signedIn: !!user });
-
-    if (worldId && user) {
-      const worksheetData = state as unknown as Json;
-      try {
-        if (currentWorksheetId || worksheetId) {
-          await updateWorksheet.mutateAsync({
-            worksheetId: currentWorksheetId || worksheetId!,
-            data: worksheetData,
-          });
-        } else {
-          toast({
-            title: "OPERATION FAILED.",
-            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
-            variant: "destructive",
-          });
-        }
-      } catch {
-        // Error handled by mutation
-      }
-    } else {
-      toast({ title: "DRAFT SAVED.", description: "WORK SECURED TO LOCAL STORAGE." });
-    }
-  };
-
-  const handleWorksheetSelect = (selectedWorksheetId: string) => {
-    setSearchParams({ worldId: worldId!, worksheetId: selectedWorksheetId });
-    setWorksheetSelectorOpen(false);
-  };
-
-  const handleWorksheetCreate = async (name: string): Promise<string> => {
-    const worksheetData = initialTimelineState as unknown as Json;
-    const result = await createWorksheet.mutateAsync({
-      worldId: worldId!,
-      toolType: TOOL_TYPE,
-      title: name,
-      data: worksheetData,
-    });
-    setCurrentWorksheetId(result.id);
-    setCurrentWorksheetTitle(result.title);
-    setSearchParams({ worldId: worldId!, worksheetId: result.id });
-    return result.id;
-  };
-
-  const handleRename = async (newTitle: string) => {
-    const wsId = currentWorksheetId || worksheetId;
-    if (!wsId) return;
-    await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
-    setCurrentWorksheetTitle(newTitle);
-  };
-
-  const handleTagsChange = (newTags: string[]) => {
-    setWorksheetTags(newTags);
-    const wsId = currentWorksheetId || worksheetId;
-    if (wsId) {
-      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
-    }
-  };
-
   const [capturingPNG, setCapturingPNG] = useState(false);
 
   const handleCapturePNG = async () => {
@@ -350,14 +238,12 @@ const Timeline = () => {
 
   return (
     <ToolPageLayout
+      {...worksheet.layoutProps}
       toolType={TOOL_TYPE}
-      onSave={handleSave}
-      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
       onPrint={() => window.print()}
       onExport={() => setExportDialogOpen(true)}
       onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
       isShared={!!shareConfig?.enabled}
-      isCloudEnabled={!!(worldId && user)}
       onNotesClick={() => setNotesSheetOpen(true)}
       onMoodboardClick={() => setMoodboardSheetOpen(true)}
       moodboardCount={state.moodboard?.length || 0}
@@ -375,13 +261,6 @@ const Timeline = () => {
           defaultFilename="timeline"
         />
       }
-      worksheetId={currentWorksheetId || worksheetId}
-      worksheetTitle={currentWorksheetTitle}
-      onRenameWorksheet={handleRename}
-      worksheetLoading={worksheetLoading}
-      worksheetTags={worksheetTags}
-      onTagsChange={handleTagsChange}
-      isLoggedIn={!!user}
     >
         {/* Early Development Banner */}
         <div className="flex items-center gap-3 px-4 py-3 rounded-none border border-sf-amber bg-sf-amber/[0.06] mb-6">
@@ -597,16 +476,9 @@ const Timeline = () => {
       />
 
       <WorksheetSelectorDialog
-        open={worksheetSelectorOpen}
-        onOpenChange={setWorksheetSelectorOpen}
-        worldId={worldId!}
+        {...worksheet.selectorProps}
         worldName={worldName}
-        toolType={TOOL_TYPE}
         toolDisplayName="Timeline"
-        worksheets={existingWorksheets}
-        onSelect={handleWorksheetSelect}
-        onCreate={handleWorksheetCreate}
-        isLoading={worksheetsLoading}
       />
 
       <ExportDialog
