@@ -2722,6 +2722,17 @@ html {
   outline-offset: -1px;
 }
 
+/* @mention whose entity the Codex has since renamed: the same quiet square
+   marker as a stale value. The hover card says WAS · NOW. */
+.sf-entity-mention[data-state="renamed"]::after {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  align-self: flex-start;
+  background: var(--sf-amber);
+}
+
 .ProseMirror-selectednode.sf-fact-ref,
 .ProseMirror-selectednode.sf-entity-mention,
 .ProseMirror-selectednode.sf-wiki-link {
@@ -2737,6 +2748,7 @@ html {
 }
 .sf-write-focus .sf-fact-ref:hover { background: none; }
 .sf-write-focus .sf-fact-ref::after { display: none; }
+.sf-write-focus .sf-entity-mention::after { display: none; }
 
 /* ------------------------------------------------------------------ */
 /* Entity Mention autocomplete suggestion list                        */

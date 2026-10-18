@@ -15,6 +15,7 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import type { Editor } from "@tiptap/react";
 import { useStudioWorld } from "@/components/writing/studio-world";
+import { ConfidenceTag } from "@/components/writing/ConfidenceTag";
 import {
   entityTypeLabel,
   factToRefAttrs,
@@ -225,7 +226,10 @@ export function WorldPalette({ editor, state, onClose }: WorldPaletteProps): JSX
                 <>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate font-sans text-[13px] text-t1">{it.fact.label}</span>
-                    <span className="block truncate font-sans text-[12px] text-t3">{sourceLine(it.fact)}</span>
+                    <span className="flex min-w-0 items-center gap-1.5">
+                      <ConfidenceTag confidence={it.fact.confidence} outranked={!!it.fact.outrankedBy} />
+                      <span className="min-w-0 truncate font-sans text-[12px] text-t3">{sourceLine(it.fact)}</span>
+                    </span>
                   </span>
                   <span className="max-w-[40%] shrink-0 truncate font-mono text-[12px] text-t1">{it.fact.insert}</span>
                 </>

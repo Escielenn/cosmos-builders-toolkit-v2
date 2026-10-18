@@ -110,8 +110,13 @@ export function resolveSceneWorld(input: SceneWorldInput): SceneWorld {
     (typeof placeMeta.bodyEntityId === "string" && placeMeta.bodyEntityId) || place?.parent_entity_id || null;
   const subject = meta.subjectEntityId ? byId.get(meta.subjectEntityId) ?? null : null;
   const subjectIsBody = subject && (subject.entity_type === "planet" || subject.entity_type === "moon");
+  // A scene SET IN a planet or moon reads that body directly (its own
+  // parent may be a star or system, never the ground the scene stands on).
+  const placeIsBody = !!place && (place.entity_type === "planet" || place.entity_type === "moon");
   const bodyEntity =
-    (placeBodyId ? byId.get(placeBodyId) ?? null : null) ?? (subjectIsBody ? subject : null);
+    (placeIsBody ? place : null) ??
+    (placeBodyId ? byId.get(placeBodyId) ?? null : null) ??
+    (subjectIsBody ? subject : null);
 
   let body: BodyFacts | null = null;
   let substellarLon = 0;
@@ -209,8 +214,32 @@ export interface PlaceChoice {
   sub: string;
 }
 
-/** Located places (Surface Cartographer), placed ones first. */
+/** Entity types a scene can be SET IN without being a located `location`. */
+const PLACE_BODY_TYPES = new Set(["planet", "moon", "region"]);
+
+/**
+ * True when an entity can be a scene's SET IN target: a located place, a
+ * planet, moon or region, or anything on the environment layer. A world
+ * seeded by BEGIN SURVEY sets Chapter One in its planet before any map
+ * exists, so planets have to be places too.
+ */
+export function isPlaceEntity(e: Entity): boolean {
+  return e.entity_type === "location" || PLACE_BODY_TYPES.has(e.entity_type) || e.cascade_stage === "environment";
+}
+
+/**
+ * Located places (Surface Cartographer), placed ones first, then bodies and
+ * other environment-layer entities by name, labelled with their type.
+ */
 export function buildPlaceChoices(entities: readonly Entity[]): PlaceChoice[] {
+  const bodies = entities
+    .filter((e) => e.entity_type !== "location" && isPlaceEntity(e))
+    .map((e) => ({ id: e.id, name: e.name, sub: e.entity_type.replace(/_/g, " ").toUpperCase() }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+  return [...buildLocatedPlaces(entities), ...bodies];
+}
+
+function buildLocatedPlaces(entities: readonly Entity[]): PlaceChoice[] {
   const byId = new Map(entities.map((e) => [e.id, e]));
   return entities
     .filter((e) => e.entity_type === "location")

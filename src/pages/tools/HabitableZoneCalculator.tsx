@@ -76,6 +76,11 @@ import {
 } from "@/lib/habitable-zone/calculations";
 import type { FormStateForCalc } from "@/lib/habitable-zone/calculations";
 import { writeStandaloneBackup } from "@/lib/standalone-backup";
+import { manifest as goldilocksManifest } from "@/tools/goldilocks/manifest";
+import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
+import { spectralLetter } from "@/canon/codecs";
+import { CanonProvenance } from "@/components/canon/CanonProvenance";
+import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
 import { hueEdge } from "@/lib/hue-edge";
 
 // ─── FormState ───────────────────────────────────────────────────────
@@ -173,6 +178,13 @@ const HabitableZoneCalculator = () => {
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
   const { updateWorksheetTags } = useTags();
   const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
+
+  // One home per value (1.5 item 10): the star's class is Orrery's. Goldilocks
+  // reads it from canon and owns the habitable-zone edges it derives.
+  const canonSubjectId = useToolSubject(currentWorksheetId || worksheetId);
+  const canonEmit = useCanonEmit(goldilocksManifest, worldId);
+  // Only a sheet whose star is still the default takes canon on open.
+  const starIsDefault = JSON.stringify(formState.star) === JSON.stringify(initialFormState.star);
 
   // Star System worksheets for planet import
   const { data: starSystemWorksheets = [] } = useWorksheetsByType(worldId || undefined, "star-system-builder");
@@ -344,6 +356,11 @@ const HabitableZoneCalculator = () => {
           await updateWorksheet.mutateAsync({
             worksheetId: currentWorksheetId || worksheetId!,
             data: worksheetData,
+          });
+          await canonEmit.emit(formState, {
+            subjectId: canonSubjectId,
+            worksheetId: currentWorksheetId || worksheetId,
+            inputs: { "star.luminosity": formState.star.luminosity },
           });
         } else {
           toast({
@@ -605,6 +622,20 @@ const HabitableZoneCalculator = () => {
                     );
                   })}
                 </div>
+                <CanonProvenance
+                  worldId={worldId}
+                  subjectId={canonSubjectId}
+                  predicate="star.spectral_class"
+                  consumer={goldilocksManifest}
+                  local={formState.star.spectralType}
+                  toLocal={(v) => {
+                    const letter = spectralLetter(v)?.toUpperCase();
+                    return letter && SPECTRAL_LABELS.includes(letter) ? letter : null;
+                  }}
+                  onApply={(v) => typeof v === "string" && handleSpectralTypeChange(v)}
+                  pristine={starIsDefault}
+                  worksheetId={currentWorksheetId || worksheetId}
+                />
               </div>
 
               {/* Star Mass */}
@@ -1194,6 +1225,7 @@ const HabitableZoneCalculator = () => {
       />
 
       <EntityMatchDialog {...entityMatch.dialogProps} />
+      <CanonConflictPrompt {...canonEmit} />
     </ToolPageLayout>
   );
 };

@@ -83,6 +83,20 @@ export interface DocumentMeta {
   keywords: string[];
   /** Word-count target for this document. 0 = no target. */
   target: number;
+  /**
+   * Canon Capture resolutions for this document (Studio Charter §2.2/2.3):
+   * claim or contradiction key → what the writer decided (DISMISS, or BOTH
+   * ARE RIGHT with an epoch note). Absent when none. Written as a PATCH:
+   * writeDocMeta merges it into what is stored, and a null value removes a
+   * key, so two quick resolutions never drop each other.
+   */
+  captureResolutions?: Record<string, CaptureResolutionMeta>;
+}
+
+export interface CaptureResolutionMeta {
+  r: "dismissed" | "both";
+  note?: string;
+  at: string;
 }
 
 export const EMPTY_DOC_META: DocumentMeta = {
@@ -172,7 +186,26 @@ export function readDocMeta(metadata: unknown): DocumentMeta {
     labelId: str(m.labelId),
     keywords: keywordList(m.keywords),
     target: wordTarget(m.target),
+    ...(hasResolutions(m.captureResolutions) ? { captureResolutions: resolutionMap(m.captureResolutions) } : {}),
   };
+}
+
+function resolutionMap(v: unknown): Record<string, CaptureResolutionMeta> {
+  const out: Record<string, CaptureResolutionMeta> = {};
+  if (!v || typeof v !== "object" || Array.isArray(v)) return out;
+  for (const [k, raw] of Object.entries(v as Record<string, unknown>)) {
+    if (!raw || typeof raw !== "object") continue;
+    const r = (raw as Record<string, unknown>).r;
+    if (r !== "dismissed" && r !== "both") continue;
+    const note = (raw as Record<string, unknown>).note;
+    const at = (raw as Record<string, unknown>).at;
+    out[k] = { r, at: typeof at === "string" ? at : "", ...(typeof note === "string" && note ? { note } : {}) };
+  }
+  return out;
+}
+
+function hasResolutions(v: unknown): boolean {
+  return Object.keys(resolutionMap(v)).length > 0;
 }
 
 // ---------------------------------------------------------------------------
@@ -194,6 +227,18 @@ export function writeDocMeta(
       ? { ...(metadata as Record<string, unknown>) }
       : {};
   for (const [k, raw] of Object.entries(patch)) {
+    if (k === "captureResolutions") {
+      // Merge, never replace: each resolution is its own key; null removes.
+      const next: Record<string, unknown> = { ...resolutionMap(base[k]) };
+      for (const [rk, rv] of Object.entries((raw ?? {}) as Record<string, unknown>)) {
+        if (rv === null || rv === undefined) delete next[rk];
+        else next[rk] = rv;
+      }
+      const clean = resolutionMap(next);
+      if (Object.keys(clean).length) base[k] = clean;
+      else delete base[k];
+      continue;
+    }
     let v: unknown = raw;
     if (k === "keywords") v = keywordList(raw);
     if (k === "target") v = wordTarget(raw);

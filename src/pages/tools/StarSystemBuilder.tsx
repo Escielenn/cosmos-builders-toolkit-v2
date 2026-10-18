@@ -62,6 +62,9 @@ import {
 import { calcHZBoundaries, luminosityFromMass } from "@/lib/habitable-zone/calculations";
 import StarSystemDiagram from "@/components/tools/StarSystemDiagram";
 import { writeStandaloneBackup } from "@/lib/standalone-backup";
+import { manifest as orreryManifest } from "@/tools/orrery/manifest";
+import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
+import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 
@@ -271,6 +274,10 @@ const StarSystemBuilder = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const worldId = useWorldId();
   const worksheetId = searchParams.get("worksheetId");
+
+  // One home per value (1.5 item 10): Orrery owns the star's class; Genesis and Goldilocks read it.
+  const canonSubjectId = useToolSubject(currentWorksheetId || worksheetId);
+  const canonEmit = useCanonEmit(orreryManifest, worldId);
 
   // Get world name from worldId
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
@@ -523,6 +530,7 @@ const StarSystemBuilder = () => {
             worksheetId: currentWorksheetId || worksheetId!,
             data: worksheetData,
           });
+          await canonEmit.emit(formState, { subjectId: canonSubjectId, worksheetId: currentWorksheetId || worksheetId });
         } else {
           toast({
             title: "OPERATION FAILED.",
@@ -1640,6 +1648,7 @@ const StarSystemBuilder = () => {
       />
 
       <EntityMatchDialog {...entityMatch.dialogProps} />
+      <CanonConflictPrompt {...canonEmit} />
     </ToolPageLayout>
   );
 };

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { useState, useEffect, useMemo, useCallback, lazy, Suspense } from "react";
 import { useWorldId } from "@/hooks/use-world-id";
 import { Link, useSearchParams } from "react-router-dom";
 import { ExternalLink, Globe, ChevronDown, Info, Check, AlertCircle } from "lucide-react";
@@ -35,6 +35,11 @@ import { useWorksheetShare } from "@/hooks/use-sharing";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import { useEntityPrepopulate } from "@/hooks/use-entity-prepopulate";
+import { manifest as genesisManifest } from "@/tools/genesis/manifest";
+import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
+import { spectralLetter } from "@/canon/codecs";
+import { CanonProvenance } from "@/components/canon/CanonProvenance";
+import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import { useTags } from "@/hooks/use-tags";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
@@ -257,6 +262,9 @@ const EXTERNAL_RESOURCES = [
 
 const TOOL_TYPE = "planetary-profile";
 
+/** star.spectral_class letter → this picker's STAR_TYPES id. Classes it has no card for are not prefilled. */
+const GENESIS_STAR_TYPE: Record<string, string> = { m: "m-dwarf", k: "k-dwarf", g: "g-type", f: "f-type" };
+
 const PlanetaryProfile = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
   const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
@@ -279,6 +287,17 @@ const PlanetaryProfile = () => {
 
   // Entity pre-populate (when launched from entity hover card / CreateElementDialog)
   const entityPrep = useEntityPrepopulate(TOOL_TYPE);
+
+  // One home per value (1.5 item 10): Genesis owns mass and radius (asserted
+  // on save); the star's class is Orrery's and gravity is Atlas's, read here.
+  const canonSubjectId = useToolSubject(currentWorksheetId || worksheetId);
+  const canonEmit = useCanonEmit(genesisManifest, worldId);
+  const applyCanonStarType = useCallback((v: unknown) => {
+    if (typeof v === "string") setFormState((prev) => ({ ...prev, stellarEnvironment: { ...prev.stellarEnvironment, starType: v } }));
+  }, []);
+  const applyCanonGravity = useCallback((v: unknown) => {
+    if (typeof v === "string") setFormState((prev) => ({ ...prev, physicalCharacteristics: { ...prev.physicalCharacteristics, surfaceGravity: v } }));
+  }, []);
 
   // Supabase hooks
   const entityMatch = useEntityMatch(worldId);
@@ -482,6 +501,7 @@ const PlanetaryProfile = () => {
             worksheetId: currentWorksheetId || worksheetId!,
             data: worksheetData,
           });
+          await canonEmit.emit(formState, { subjectId: canonSubjectId, worksheetId: currentWorksheetId || worksheetId });
         } else {
           // Should not reach here - worksheet selector ensures title is set first
           console.warn("Attempting to save without worksheet selection");
@@ -735,6 +755,16 @@ const PlanetaryProfile = () => {
                     </div>
                   ))}
                 </RadioGroup>
+                <CanonProvenance
+                  worldId={worldId}
+                  subjectId={canonSubjectId}
+                  predicate="star.spectral_class"
+                  consumer={genesisManifest}
+                  local={formState.stellarEnvironment.starType}
+                  toLocal={(v) => GENESIS_STAR_TYPE[spectralLetter(v) ?? ""] ?? null}
+                  onApply={applyCanonStarType}
+                  worksheetId={currentWorksheetId || worksheetId}
+                />
               </div>
 
               <div className="space-y-2">
@@ -886,6 +916,16 @@ const PlanetaryProfile = () => {
                     onChange={(e) => updatePhysicalCharacteristics("surfaceGravity", e.target.value)}
                   />
                   <p className="text-xs text-t4">Directly impacts biology, architecture, and movement</p>
+                  <CanonProvenance
+                    worldId={worldId}
+                    subjectId={canonSubjectId}
+                    predicate="planet.surface_gravity"
+                    consumer={genesisManifest}
+                    local={formState.physicalCharacteristics.surfaceGravity}
+                    toLocal={(v) => (v.kind === "scalar" ? `${Number(v.value.toFixed(3))}g` : null)}
+                    onApply={applyCanonGravity}
+                    worksheetId={currentWorksheetId || worksheetId}
+                  />
                 </div>
               </div>
 
@@ -1772,6 +1812,7 @@ const PlanetaryProfile = () => {
       )}
 
       <EntityMatchDialog {...entityMatch.dialogProps} />
+      <CanonConflictPrompt {...canonEmit} />
     </ToolPageLayout>
   );
 };

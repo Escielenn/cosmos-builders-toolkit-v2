@@ -24,7 +24,10 @@ import { SnapshotCompareDialog } from "@/components/writing/SnapshotCompareDialo
 import { LabelManagerDialog } from "@/components/writing/LabelManagerDialog";
 // Import pulls in the readers (and, on use, jszip and mammoth): load on open.
 const ImportManuscriptDialog = lazy(() => import("@/components/writing/ImportManuscriptDialog"));
-import { ContinuityPanel } from "@/components/writing/ContinuityPanel";
+import { ContradictionLedger } from "@/components/writing/ContradictionLedger";
+import { CaptureGutter } from "@/components/writing/CaptureGutter";
+import { useCanonCapture } from "@/hooks/use-canon-capture";
+import { contradictionSummaryLine } from "@/lib/writing/capture/ledger";
 import { FindReplaceBar } from "@/components/writing/FindReplaceBar";
 import { Corkboard } from "@/components/writing/Corkboard";
 import { Outliner } from "@/components/writing/Outliner";
@@ -75,6 +78,8 @@ import { useWorldSetting } from "@/hooks/use-world-setting";
 import { useTypewriterScroll } from "@/hooks/use-typewriter-scroll";
 import { primeDocCaches } from "@/hooks/use-doc-autosave";
 import { docsUnderFolder, inReadingOrder } from "@/lib/binder-tree";
+import { useCanonChanges } from "@/hooks/use-canon-changes";
+import { canonSummaryLine, pruneTree } from "@/lib/writing/canon-changes";
 import { buildMatcher, type SearchHit, type SearchOptions } from "@/lib/binder-search";
 import { selectMatch } from "@/lib/editor-text-map";
 import {
@@ -449,6 +454,21 @@ export default function Write(): JSX.Element {
   // changes, never per keystroke.
   const worldIndex = useStudioWorldIndex(worldId);
 
+  // CANON CHANGED (charter 2.5) ----------------------------------------------
+  // Documents citing a value or a name the world has since moved past. Read
+  // off the binder's own content and the index above; no fetch of its own.
+  const canon = useCanonChanges(binderEntries, worldIndex);
+  const canonAffected = canon.affected.size;
+  const [canonFilter, setCanonFilter] = useState(false);
+  useEffect(() => {
+    if (canonAffected === 0) setCanonFilter(false);
+  }, [canonAffected]);
+  useEffect(() => setCanonFilter(false), [worldId]);
+  const shownTree = useMemo(
+    () => (canonFilter ? pruneTree(binderTree, canon.affected) : binderTree),
+    [canonFilter, binderTree, canon.affected],
+  );
+
   // The scene as the rail ranks it: the prose as last handed to the binder
   // cache (the editor's own 1.5s debounce), deferred so ranking yields to
   // typing.
@@ -485,6 +505,38 @@ export default function Write(): JSX.Element {
     [deferredSceneHtml, sceneWorld, docMeta.setInPlaceId, docMeta.subjectEntityId, worldIndex.connections],
   );
   const studioWorld = useMemo<StudioWorld>(() => ({ ...worldIndex, scene, focus }), [worldIndex, scene, focus]);
+
+  // CANON CAPTURE + CONTRADICTION LEDGER (charter 2.2, 2.3) ------------------
+  // Claims in the prose, read on idle 1200ms after the last edit; never on
+  // the typing path, never an edit to the prose. The ledger lives in the
+  // Check tab; markers sit in the margin; the world-level contradiction
+  // count sits in the footer.
+  const openDocRef = useRef<(id: string) => void>(() => undefined);
+  const openDocStable = useCallback((id: string) => openDocRef.current(id), []);
+  const captureScene = useMemo(
+    () => ({
+      subjectEntityId: docMeta.subjectEntityId || null,
+      settingBodyId: sceneWorld.bodyEntityId,
+      setInPlaceId: docMeta.setInPlaceId || null,
+      povEntityId: sceneWorld.povEntityId,
+    }),
+    [docMeta.subjectEntityId, docMeta.setInPlaceId, sceneWorld.bodyEntityId, sceneWorld.povEntityId],
+  );
+  const capture = useCanonCapture({
+    editor: editorState?.editor ?? null,
+    editorDocId: editorState?.docId ?? null,
+    docId: doc?.id,
+    docs: binderEntries,
+    world: worldIndex,
+    scene: captureScene,
+    resolutions: docMeta.captureResolutions,
+    openDoc: openDocStable,
+  });
+  const [captureFocus, setCaptureFocus] = useState<string | null>(null);
+  const docTitleOf = useCallback(
+    (id: string) => binderEntries?.find((e) => e.id === id)?.title || "Untitled",
+    [binderEntries],
+  );
   const povOptions = useMemo(
     () => buildPovChoices(worldIndex.worksheets, worldIndex.subjects, worldIndex.entities),
     [worldIndex.worksheets, worldIndex.subjects, worldIndex.entities],
@@ -1143,6 +1195,7 @@ export default function Write(): JSX.Element {
     navigate(`/write/${id}`);
     setMobilePanel(null);
   };
+  openDocRef.current = openDoc;
 
   // Shared binder content (renders in the desktop column AND the mobile sheet)
   const binderContent = (
@@ -1163,6 +1216,33 @@ export default function Write(): JSX.Element {
           onSave={() => setCollectPrompt({ kind: "manual", ids: inReadingOrder(binderTree, selection).map((d) => d.id) })}
           onClear={() => setSelection([])}
         />
+      )}
+      {worldId && canonAffected > 0 && !searchQuery.trim() && (
+        // Charter 2.5: a small mono marker and a filter, not a modal.
+        <div className="flex items-center gap-2 border-b border-sf-line-hairline px-3">
+          <button
+            type="button"
+            onClick={() => setCanonFilter((f) => !f)}
+            aria-pressed={canonFilter}
+            className={`flex min-h-hit min-w-0 flex-1 items-center gap-1.5 text-left font-mono text-[12px] uppercase transition-colors duration-fast ${
+              canonFilter ? "text-sf-amber-text" : "text-t3 hover:text-t1"
+            }`}
+          >
+            <span className="text-sf-amber-text" aria-hidden="true">//</span>
+            <span className="truncate">
+              {canonFilter ? `Canon-changed only (${canonAffected})` : `Show canon-changed (${canonAffected})`}
+            </span>
+          </button>
+          {canonFilter && (
+            <button
+              type="button"
+              onClick={() => setCanonFilter(false)}
+              className="min-h-hit shrink-0 px-1 font-mono text-[12px] uppercase text-t3 transition-colors duration-fast hover:text-sf-primary-text"
+            >
+              Show all
+            </button>
+          )}
+        </div>
       )}
       <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto py-2">
         {worldId && searchQuery.trim() ? (
@@ -1209,7 +1289,9 @@ export default function Write(): JSX.Element {
               );
             }}
             worldId={worldId}
-            tree={binderTree}
+            tree={shownTree}
+            canonCounts={canon.counts}
+            expandAll={canonFilter}
             entries={binderEntries}
             activeDocId={docId}
             labels={labels}
@@ -1319,6 +1401,12 @@ export default function Write(): JSX.Element {
           <button key={t} role="tab" aria-selected={inspector === t} onClick={() => setInspector(t)}
             className={`min-h-[44px] flex-1 border-b-2 px-1 py-2.5 text-[13px] capitalize transition-colors ${inspector === t ? "border-sf-primary text-t1" : "border-transparent text-t3 hover:text-t1"}`}>
             {t === "doc" ? "Doc" : t === "entities" ? "Entities" : t === "world" ? "World" : t === "reference" ? "Refs" : "Check"}
+            {t === "continuity" && capture.items.length > 0 && (
+              <span className="ml-1 font-mono text-[12px] text-sf-amber-text">
+                {capture.items.length}
+                <span className="sr-only"> items in the ledger</span>
+              </span>
+            )}
           </button>
         ))}
       </div>
@@ -1373,14 +1461,27 @@ export default function Write(): JSX.Element {
       )}
       {inspector === "continuity" && (
         <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto">
-          <ContinuityPanel
-            worldId={worldId}
-            content={doc?.content}
-            entityId={docMeta.subjectEntityId || undefined}
-            onSetEntityId={(id) =>
-              docId && updateMeta.mutate({ docId, patch: { subjectEntityId: id } })
-            }
-          />
+          {doc ? (
+            <ContradictionLedger
+              worldId={worldId}
+              docId={doc.id}
+              content={doc.content}
+              entityId={docMeta.subjectEntityId || undefined}
+              onSetEntityId={(id) =>
+                docId && updateMeta.mutate({ docId, patch: { subjectEntityId: id } })
+              }
+              items={capture.items}
+              elsewhere={capture.elsewhere}
+              docTitle={docTitleOf}
+              resolutions={docMeta.captureResolutions ?? {}}
+              focusKey={captureFocus}
+              onResolve={(key, resolution) =>
+                updateMeta.mutate({ docId: doc.id, patch: { captureResolutions: { [key]: resolution } } })
+              }
+              onLocate={capture.locate}
+              onLocateIn={capture.locateIn}
+            />
+          ) : null}
         </div>
       )}
       {inspector === "world" && (
@@ -1684,6 +1785,20 @@ export default function Write(): JSX.Element {
               </div>
             )}
             {doc && (
+              <div className="relative">
+              <CaptureGutter
+                editor={editorState && editorState.docId === doc.id ? editorState.editor : null}
+                paragraphs={capture.paragraphs}
+                items={capture.items}
+                hidden={focus || !worldId}
+                onSelect={(item) => {
+                  setInspector("continuity");
+                  if (window.matchMedia("(max-width: 1023px)").matches) setMobilePanel("inspector");
+                  // Re-set even when it is the same item, so it scrolls again.
+                  setCaptureFocus(null);
+                  requestAnimationFrame(() => setCaptureFocus(item.key));
+                }}
+              />
               <StellarForgeEditor
                 onEditorReady={onEditorReady}
                 key={doc.id}
@@ -1697,6 +1812,7 @@ export default function Write(): JSX.Element {
                 className={`sf-writing-serif${preferences.dropCap ? " sf-writing-dropcap" : ""}`}
                 minHeight="55vh"
               />
+              </div>
             )}
             {!doc && !docLoading && (
               <p className="font-serif text-[15px] italic text-t4">Select or create a document.</p>
@@ -1775,6 +1891,42 @@ export default function Write(): JSX.Element {
                     : "READY"}
           </span>
         </div>
+        {/* World-level canon line: documents citing what the world has since
+            revised. Click filters the binder to them. */}
+        {canonAffected > 0 && !focus && (
+          <button
+            type="button"
+            onClick={() => {
+              setSearchQuery("");
+              setCanonFilter(true);
+              if (typeof window !== "undefined" && window.matchMedia("(max-width: 1023px)").matches) {
+                setMobilePanel("binder");
+              }
+            }}
+            title="Show the affected documents in the binder"
+            className="hidden min-h-hit min-w-0 items-center gap-1.5 px-2 font-mono text-[12px] uppercase text-sf-amber-text transition-colors duration-fast hover:text-t1 md:flex"
+          >
+            <AlertTriangle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+            <span className="truncate">{canonSummaryLine(canonAffected)}</span>
+          </button>
+        )}
+        {/* World-level contradiction count (charter 2.3). Opens the ledger. */}
+        {capture.worldContradictions > 0 && !focus && (
+          <button
+            type="button"
+            onClick={() => {
+              setInspector("continuity");
+              if (typeof window !== "undefined" && window.matchMedia("(max-width: 1023px)").matches) {
+                setMobilePanel("inspector");
+              }
+            }}
+            title="Open the Contradiction Ledger"
+            className="hidden min-h-hit min-w-0 items-center gap-1.5 px-2 font-mono text-[12px] uppercase text-sf-amber-text transition-colors duration-fast hover:text-t1 md:flex"
+          >
+            <span aria-hidden="true">≠</span>
+            <span className="truncate">{contradictionSummaryLine(capture.worldContradictions)}</span>
+          </button>
+        )}
         {/* Progress toward today's goal, not an astronomical date. The editor
             already wrote session words to writing_sessions and never read them
             back, so the writer's own number was invisible while writing. */}

@@ -26,6 +26,7 @@ import {
 import { checkContinuity, checkImplausibility, checkableSubjects } from "@/lib/continuity";
 import { useWorldParameters } from "@/hooks/use-world-parameters";
 import { ENTITY_TYPE_LABELS } from "@/services/world-data";
+import { useCanonFacts } from "@/canon/hooks";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -58,7 +59,12 @@ function pluralSubjectNoun(entryType: string | null, count: number): string {
 // Component
 // ---------------------------------------------------------------------------
 
-export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: ContinuityPanelProps) {
+/**
+ * The continuity check's state for a document: the facts it compares
+ * against, the ambiguity picker's candidates, and the findings. Shared by
+ * this panel and the Contradiction Ledger, which lists the same findings.
+ */
+export function useContinuityCheck({ worldId, content, entityId, onSetEntityId }: ContinuityPanelProps) {
   // List hook: the single-worksheet hook throws for non-owners.
   const { worksheets } = useWorksheets(worldId);
 
@@ -96,6 +102,12 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
   // Tier 2 needs the qualitative cascade drivers the writer chose in the
   // Environmental Chain Reaction tool, not the numeric facts.
   const { data: params } = useWorldParameters(worldId);
+
+  // One home per value (1.5 item 10): mass, radius, gravity, crew size and
+  // the rest of the owned predicates resolve through canon to one value per
+  // subject instead of every tool's copy. Until it loads (or if it fails),
+  // the check runs on the pooled facts exactly as before.
+  const { data: canonFacts } = useCanonFacts(worldId);
   const slugs = useMemo(() => (params ?? []).map((p) => p.slug), [params]);
 
   // Every entity a worksheet is linked to, by id — used to resolve names for
@@ -138,11 +150,22 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
       needsPicker
         ? []
         : [
-            ...checkContinuity(content, facts, entityId),
+            ...checkContinuity(content, facts, entityId, canonFacts),
             ...checkImplausibility(content, slugs),
           ],
-    [content, facts, slugs, entityId, needsPicker],
+    [content, facts, slugs, entityId, needsPicker, canonFacts],
   );
+
+  return { facts, slugs, subjectsById, candidates, needsPicker, currentSubject, canChangeSubject, notes };
+}
+
+export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: ContinuityPanelProps) {
+  const { facts, slugs, candidates, needsPicker, currentSubject, canChangeSubject, notes } = useContinuityCheck({
+    worldId,
+    content,
+    entityId,
+    onSetEntityId,
+  });
 
   if (!worldId) return null;
 

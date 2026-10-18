@@ -20,6 +20,9 @@
 // ---------------------------------------------------------------------------
 
 import type { WorksheetFact } from "@/lib/worksheet-facts";
+import type { CanonFact } from "@/canon/types";
+import { resolvePredicate } from "@/canon/vocabulary";
+import { ownerOf } from "@/canon/ownership";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -336,6 +339,42 @@ export function checkableSubjects(facts: WorksheetFact[]): string[] {
 }
 
 // ---------------------------------------------------------------------------
+// One home per value (1.5 item 10)
+// ---------------------------------------------------------------------------
+
+/**
+ * The candidates for a check, resolved through canon where a value has one
+ * home.
+ *
+ * Mass used to arrive twice for the same planet (Genesis and Atlas), crew
+ * size twice for the same ship, and the check had to treat the copies as
+ * rival candidates. When the key's predicate has a wired owner and
+ * canon.facts() holds it, canon's answer replaces the pooled copies: one
+ * value per subject (canon > proposed > projected, the owner's projection
+ * first). Keys with no owner, or with nothing in canon yet, keep the pooled
+ * candidates exactly as before.
+ */
+export function resolveCandidatesViaCanon(
+  keys: readonly string[],
+  pooled: readonly WorksheetFact[],
+  canonFacts: readonly CanonFact[] | undefined,
+): WorksheetFact[] | null {
+  if (!canonFacts?.length) return null;
+  const out: WorksheetFact[] = [];
+  for (const key of keys) {
+    const r = resolvePredicate(key);
+    if (r.via === "legacy" || !ownerOf(r.predicate)) return null;
+    const winners = canonFacts.filter((f) => f.predicate === r.predicate && f.valueText.trim() !== "");
+    if (winners.length === 0) return null;
+    const label = pooled.find((f) => f.key === key)?.label ?? winners[0].label;
+    for (const f of winners) {
+      out.push({ key, label, value: f.valueText, ...(f.subjectId ? { subject_id: f.subjectId } : {}) });
+    }
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------------------
 // The check
 // ---------------------------------------------------------------------------
 
@@ -366,11 +405,15 @@ export function checkableSubjects(facts: WorksheetFact[]): string[] {
  * @param html      The document's HTML (TipTap output).
  * @param facts     Facts from extractWorksheetFacts across the world's worksheets.
  * @param subjectId The world_entries id this document is about, if chosen.
+ * @param canonFacts canon.facts(worldId), when loaded. Predicates with one
+ *                   home resolve through it to a single value per subject
+ *                   (see resolveCandidatesViaCanon).
  */
 export function checkContinuity(
   html: string | null | undefined,
   facts: WorksheetFact[],
   subjectId?: string | null,
+  canonFacts?: readonly CanonFact[],
 ): ContinuityNote[] {
   const text = proseToText(html);
   if (!text || facts.length === 0) return [];
@@ -389,7 +432,8 @@ export function checkContinuity(
   }
 
   for (const spec of CHECKS) {
-    const allForKey = spec.keys.flatMap((k) => byKey.get(k) ?? []);
+    const pooled = spec.keys.flatMap((k) => byKey.get(k) ?? []);
+    const allForKey = resolveCandidatesViaCanon(spec.keys, pooled, canonFacts) ?? pooled;
     if (allForKey.length === 0) continue;
 
     // Scoped: prefer facts that are actually about this subject. Only fall

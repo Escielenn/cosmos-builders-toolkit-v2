@@ -1,5 +1,28 @@
 # StellarForge Changelog
 
+## 0.7500 · The Spine
+Tier 1 of the 1.5 programme: the world now pushes back on the page.
+- Canon layer: `public.facts` + `src/canon/` facade (facts / assert / propose /
+  promote / retract), predicate vocabulary with aliases for every existing
+  field key, `ToolManifest` and nine manifests. Studio facts show CANON /
+  PROPOSED / PROJECTED.
+- One home per value: star class (Orrery), mass and radius (Genesis), surface
+  gravity (Atlas), propulsion (Impulse), crew size (Vessel), the One Big Lie
+  (Axiom). Other tools prefill from canon with provenance and EDIT AT / OVERRIDE
+  HERE (override proposes, never overwrites). Owners assert on save; a differing
+  canon value asks KEEP CANON / REPLACE. Spacecraft Designer gains a numeric
+  Crew Size.
+- Canon Capture: claims in prose (gravity, day and year length, spectral class,
+  crew, tilt, pressure, temperature, radius, mass, population, lifespan and
+  more) are detected off the typing path. CLAIM DETECTED. NOT ON FILE. ADOPT?
+- Contradiction Ledger (the Check tab): CANON IS RIGHT / PROSE IS RIGHT / BOTH
+  ARE RIGHT, with margin markers and a world-level count.
+- Canon-changed badges in the binder (`//N`), PARAMETER REVISED. N DOCUMENTS
+  AFFECTED. with a filter; renamed mentions flagged with UPDATE NAME / IGNORE.
+- BEGIN SURVEY: star, world and life in three steps, then straight into
+  Chapter One set on that planet. The welcome dialog now shows to anyone with
+  no worlds.
+
 ## 0.7469
 Tier 0 hotfix (1.5 programme).
 - Never lose words: the editor no longer re-applies an older server copy over

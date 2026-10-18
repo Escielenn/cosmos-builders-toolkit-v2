@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import { BinderTree } from "@/components/writing/BinderTree";
 import { buildBinderTree } from "@/lib/binder-tree";
+import { rollUpCanonCounts } from "@/lib/writing/canon-changes";
 import type { WorldEntry } from "@/services/world-data";
 
 const row = (
@@ -126,5 +127,39 @@ describe("BinderTree", () => {
       parentId: "Chapter 1",
       orderedIds: ["Scene B", "Scene A"],
     });
+  });
+});
+
+describe("BinderTree canon-changed badges", () => {
+  it("tags affected documents and rolled-up folders with //N and the words", () => {
+    const counts = rollUpCanonCounts(
+      entries,
+      new Map([
+        ["Scene A", { facts: 3, names: 1 }],
+        ["Prologue", { facts: 0, names: 1 }],
+      ]),
+    );
+    mount({ canonCounts: counts });
+    const badges = screen.getAllByTestId("canon-badge");
+    const four = "//4" + "3 CITED VALUES CHANGED · 1 NAME CHANGED";
+    // Part One, Chapter 1, Scene A (rolled up), then Prologue.
+    expect(badges.map((b) => b.textContent)).toEqual([four, four, four, "//1" + "1 NAME CHANGED"]);
+    expect(badges[2].getAttribute("title")).toBe("3 CITED VALUES CHANGED · 1 NAME CHANGED");
+  });
+
+  it("shows no badge without counts", () => {
+    mount();
+    expect(screen.queryByTestId("canon-badge")).toBeNull();
+  });
+
+  it("expandAll opens collapsed folders without forgetting the stored state", () => {
+    const worldId = "w-collapse";
+    localStorage.setItem(`sf-binder-collapsed:${worldId}`, JSON.stringify(["Part One"]));
+    mount({ worldId, activeDocId: undefined });
+    expect(screen.queryByText("Scene A")).toBeNull();
+    cleanup();
+    mount({ worldId, activeDocId: undefined, expandAll: true });
+    expect(screen.getByText("Scene A")).toBeTruthy();
+    expect(localStorage.getItem(`sf-binder-collapsed:${worldId}`)).toBe(JSON.stringify(["Part One"]));
   });
 });

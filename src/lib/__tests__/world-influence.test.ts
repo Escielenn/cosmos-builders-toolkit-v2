@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { buildWorldInfluence, influenceHeading, MAX_INFLUENCE_ROWS } from "@/lib/writing/world-influence";
-import { buildPlaceChoices, buildPovChoices, resolveSceneWorld } from "@/lib/writing/scene-world";
+import { buildPlaceChoices, buildPovChoices, isPlaceEntity, resolveSceneWorld } from "@/lib/writing/scene-world";
 import { createEmptyDossier } from "@/lib/dossier/types";
 import type { BodyFacts } from "@/lib/surface-cartographer/body";
 import type { Entity } from "@/services/entity-graph-types";
@@ -175,8 +175,43 @@ describe("resolveSceneWorld", () => {
       ["Kael", "DOSSIER", "dos", "kael-entity"],
     ]);
     const places = buildPlaceChoices([planet, entity({ id: "u", name: "Aardvark", entity_type: "location" }), place]);
-    expect(places.map((p) => p.name)).toEqual(["Vel Haran", "Aardvark"]);
+    // Located places first (placed, then unplaced), then bodies by name.
+    expect(places.map((p) => p.name)).toEqual(["Vel Haran", "Aardvark", "Kellis"]);
     expect(places[0].sub).toBe("Kellis · 12.0°N 30.0°E");
     expect(places[1].sub).toBe("UNPLACED");
+    expect(places[2].sub).toBe("PLANET");
+  });
+
+  it("accepts planets, moons, regions and environment-layer entities as places", () => {
+    const places = buildPlaceChoices([
+      entity({ id: "m", name: "Ossa", entity_type: "moon" }),
+      entity({ id: "r", name: "Dry Sea", entity_type: "region" as Entity["entity_type"] }),
+      entity({ id: "c", name: "Rift Basin", entity_type: "custom", cascade_stage: "environment" }),
+      entity({ id: "s", name: "Ashe", entity_type: "star", cascade_stage: "physics" }),
+      entity({ id: "x", name: "Vethari", entity_type: "species", cascade_stage: "biology" }),
+    ]);
+    expect(places.map((p) => [p.name, p.sub])).toEqual([
+      ["Dry Sea", "REGION"],
+      ["Ossa", "MOON"],
+      ["Rift Basin", "CUSTOM"],
+    ]);
+    expect(isPlaceEntity(entity({ id: "k", name: "Kellis", entity_type: "planet" }))).toBe(true);
+    expect(isPlaceEntity(entity({ id: "a", name: "Ashe", entity_type: "star", cascade_stage: "physics" }))).toBe(false);
+  });
+
+  it("reads the planet as the body when a scene is set in the planet itself", () => {
+    const star = entity({ id: "ashe", name: "Ashe", entity_type: "star", cascade_stage: "physics" });
+    const kellis = entity({ id: "kellis", name: "Kellis", entity_type: "planet", parent_entity_id: "ashe" });
+    const sw = resolveSceneWorld({
+      worldId: "w",
+      meta: { setInPlaceId: "kellis", subjectEntityId: "", when: "" },
+      entities: [star, kellis],
+      worksheets: [],
+      simulations: [],
+      subjects: {},
+      branches: [],
+    });
+    expect(sw.influence.place?.name).toBe("Kellis");
+    expect(sw.bodyEntityId).toBe("kellis");
   });
 });

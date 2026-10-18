@@ -837,6 +837,72 @@ export type Database = {
         }
         Relationships: []
       }
+      facts: {
+        Row: {
+          asserted_by: string | null
+          confidence: string
+          created_at: string
+          id: string
+          predicate: string
+          source_kind: string
+          source_ref: Json
+          subject_id: string | null
+          superseded_at: string | null
+          unit: string | null
+          updated_at: string
+          value: Json
+          value_text: string | null
+          world_id: string
+        }
+        Insert: {
+          asserted_by?: string | null
+          confidence: string
+          created_at?: string
+          id?: string
+          predicate: string
+          source_kind: string
+          source_ref?: Json
+          subject_id?: string | null
+          superseded_at?: string | null
+          unit?: string | null
+          updated_at?: string
+          value: Json
+          value_text?: string | null
+          world_id: string
+        }
+        Update: {
+          asserted_by?: string | null
+          confidence?: string
+          created_at?: string
+          id?: string
+          predicate?: string
+          source_kind?: string
+          source_ref?: Json
+          subject_id?: string | null
+          superseded_at?: string | null
+          unit?: string | null
+          updated_at?: string
+          value?: Json
+          value_text?: string | null
+          world_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "facts_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "world_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "facts_world_id_fkey"
+            columns: ["world_id"]
+            isOneToOne: false
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       hidden_example_worlds: {
         Row: {
           hidden_at: string

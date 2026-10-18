@@ -65,6 +65,7 @@ import { readDocMeta, STATUS_LABELS, STATUS_TONE } from "@/lib/document-meta";
 import { findLabel, LABEL_SWATCH, type WritingLabel } from "@/lib/writing-labels";
 import { countWords } from "@/lib/text";
 import type { WorldEntry } from "@/services/world-data";
+import { canonCountLine, canonTotal, type CanonCount } from "@/lib/writing/canon-changes";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -92,6 +93,13 @@ export interface BinderTreeProps {
   onSelectionChange?: (ids: string[]) => void;
   /** Open a folder's documents as Scrivenings. */
   onScrivenings?: (folderId: string) => void;
+  /**
+   * Canon-changed counts per document, rolled up into folders
+   * (lib/writing/canon-changes). Rows with a count carry a `//N` tag.
+   */
+  canonCounts?: ReadonlyMap<string, CanonCount>;
+  /** Show every folder open regardless of collapse memory (filtered views). */
+  expandAll?: boolean;
 }
 
 interface DropState {
@@ -161,8 +169,11 @@ export function BinderTree({
   selection = NO_SELECTION,
   onSelectionChange,
   onScrivenings,
+  canonCounts,
+  expandAll = false,
 }: BinderTreeProps): JSX.Element {
-  const [collapsed, setCollapsed] = useCollapsed(worldId);
+  const [storedCollapsed, setCollapsed] = useCollapsed(worldId);
+  const collapsed = useMemo(() => (expandAll ? new Set<string>() : storedCollapsed), [expandAll, storedCollapsed]);
   const rows = useMemo(() => flattenVisible(tree, collapsed), [tree, collapsed]);
   const [dragId, setDragId] = useState<string | null>(null);
   const [drop, setDrop] = useState<DropState | null>(null);
@@ -328,6 +339,7 @@ export function BinderTree({
             drop={drop?.overId === node.entry.id ? drop : null}
             dragging={dragId === node.entry.id}
             words={wordCounts.get(node.entry.id) ?? 0}
+            canon={canonCounts?.get(node.entry.id)}
             labels={labels}
             renaming={renamingId === node.entry.id}
             renameValue={renameValue}
@@ -387,6 +399,7 @@ interface BinderRowProps {
   drop: DropState | null;
   dragging: boolean;
   words: number;
+  canon?: CanonCount;
   labels: WritingLabel[];
   renaming: boolean;
   renameValue: string;
@@ -414,6 +427,7 @@ function BinderRow({
   drop,
   dragging,
   words,
+  canon,
   labels,
   renaming,
   renameValue,
@@ -476,10 +490,14 @@ function BinderRow({
         ? "bg-sf-primary/[0.08] outline outline-1 -outline-offset-1 outline-sf-primary"
         : "";
 
+  const canonCount = canon && canonTotal(canon) > 0 ? canonTotal(canon) : 0;
+  const canonLine = canon && canonCount > 0 ? canonCountLine(canon) : "";
+
   const hint = [
     isFolder ? "Folder" : `${words.toLocaleString()} words`,
     status ? STATUS_LABELS[status] : "",
     label ? label.name : "",
+    canonLine,
   ]
     .filter(Boolean)
     .join(" · ");
@@ -567,6 +585,19 @@ function BinderRow({
               <Folder className="h-3.5 w-3.5 shrink-0 text-t4" aria-hidden="true" />
             ))}
           <span className="min-w-0 flex-1 truncate">{title}</span>
+          {canonCount > 0 && (
+            // Canon changed under this document (or, on a folder, under
+            // something inside it). A `//` tag in amber: shape and text, not
+            // hue alone. The words are in the tooltip and for screen readers.
+            <span
+              title={canonLine}
+              data-testid="canon-badge"
+              className="shrink-0 rounded-sf-tag border border-sf-amber bg-sf-amber/[0.06] px-1 font-mono text-[12px] leading-[18px] text-sf-amber-text"
+            >
+              <span aria-hidden="true">{`//${canonCount}`}</span>
+              <span className="sr-only">{canonLine}</span>
+            </span>
+          )}
           {status && (
             <span
               className={`shrink-0 font-mono text-[12px] ${STATUS_TONE[status]}`}

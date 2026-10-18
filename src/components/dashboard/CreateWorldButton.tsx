@@ -1,20 +1,10 @@
 import { useEffect, useState } from "react";
 import { Plus, ChevronRight } from "lucide-react";
-import { Loader } from "@/components/ui/loader";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import AuthRequiredDialog from "@/components/auth/AuthRequiredDialog";
-import IconPicker from "@/components/world/IconPicker";
+import BeginSurveyDialog, { type EmptyWorldInput } from "@/components/onboarding/BeginSurveyDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -30,9 +20,6 @@ const CreateWorldButton = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
   const [createdWorldId, setCreatedWorldId] = useState<string | null>(null);
-  const [worldName, setWorldName] = useState("");
-  const [worldDescription, setWorldDescription] = useState("");
-  const [worldIcon, setWorldIcon] = useState("globe");
 
   const handleClick = () => {
     if (user) {
@@ -56,18 +43,20 @@ const CreateWorldButton = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, authLoading]);
 
-  const handleCreate = async () => {
-    if (!worldName.trim()) return;
+  const handleCreate = async ({ name, icon, description }: EmptyWorldInput) => {
+    if (!name.trim()) return;
 
-    const world = await createWorld.mutateAsync({
-      name: worldName.trim(),
-      description: worldDescription.trim() || undefined,
-      icon: worldIcon,
-    });
+    let world;
+    try {
+      world = await createWorld.mutateAsync({
+        name: name.trim(),
+        description: description.trim() || undefined,
+        icon,
+      });
+    } catch {
+      return; // useWorlds already reported it; keep the dialog open to retry
+    }
 
-    setWorldName("");
-    setWorldDescription("");
-    setWorldIcon("globe");
     setShowCreateDialog(false);
 
     // Show sovereignty welcome on first world creation
@@ -113,62 +102,14 @@ const CreateWorldButton = () => {
       {/* Auth Dialog for unauthenticated users */}
       <AuthRequiredDialog open={showAuthDialog} onOpenChange={setShowAuthDialog} />
 
-      {/* Create World Dialog for authenticated users */}
-      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="font-heading text-xl">INITIALIZE NEW WORLD</DialogTitle>
-            <DialogDescription>
-              Assign a designation, icon, and optional description.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 mt-4">
-            {/* Icon and Name Row */}
-            <div className="space-y-2">
-              <div className="flex gap-4">
-                <Label className="w-12 shrink-0 text-center">Icon</Label>
-                <Label htmlFor="world-name">World Name</Label>
-              </div>
-              <div className="flex items-end gap-4">
-                <IconPicker value={worldIcon} onChange={setWorldIcon} />
-                <div className="flex-1 sf-input-bracketed">
-                  <Input
-                    id="world-name"
-                    placeholder="e.g., Kepler-442b Colony"
-                    value={worldName}
-                    onChange={(e) => setWorldName(e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="world-description">Description (optional)</Label>
-              <div className="sf-input-bracketed">
-                <Textarea
-                  id="world-description"
-                  placeholder="World survey notes..."
-                  value={worldDescription}
-                  onChange={(e) => setWorldDescription(e.target.value)}
-                  rows={3}
-                />
-              </div>
-            </div>
-            <Button
-              className="w-full gap-2"
-              size="lg"
-              onClick={handleCreate}
-              disabled={!worldName.trim() || createWorld.isPending}
-            >
-              {createWorld.isPending ? (
-                <Loader variant="inline" size="sm" />
-              ) : (
-                <Plus className="w-4 h-4" />
-              )}
-              Initialize
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* BEGIN SURVEY: designation, star, world, life. Keeps the old
+          one-step create as INITIALIZE EMPTY on its first screen. */}
+      <BeginSurveyDialog
+        open={showCreateDialog}
+        onOpenChange={setShowCreateDialog}
+        onInitializeEmpty={handleCreate}
+        initializingEmpty={createWorld.isPending}
+      />
 
       {/* First world sovereignty welcome */}
       <Dialog open={showWelcome} onOpenChange={(open) => { if (!open) handleWelcomeDismiss(); }}>

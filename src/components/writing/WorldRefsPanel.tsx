@@ -19,6 +19,8 @@ import { Link } from "react-router-dom";
 import { ChevronDown, ChevronRight, CornerDownLeft, ExternalLink, Pin, Search, Type } from "lucide-react";
 import { useStudioWorld } from "@/components/writing/studio-world";
 import { PinnedGroup, ReasonTag } from "@/components/writing/RailPins";
+import { ConfidenceTag } from "@/components/writing/ConfidenceTag";
+import { ProposedFactActions } from "@/components/writing/ProposedFactActions";
 import type { PinnedItem } from "@/hooks/use-writing-pins";
 import { fuzzyScore, sourceLine, type WorldFact } from "@/lib/writing/world-index";
 import { factReason, rankFacts, type RankReason } from "@/lib/writing/scene-context";
@@ -47,7 +49,11 @@ export function WorldRefsPanel({ pins, onUnpin, onPinSource, onCite, onInsertPla
     const map = new Map<string, { key: string; title: string; facts: WorldFact[]; href: string | null; pinnable: boolean }>();
     for (const { item } of ranked) {
       if (sceneRefs.has(item.ref)) continue;
-      const key = item.sourceId ?? `entity:${item.entityId ?? item.tool}`;
+      // Stored canon facts group by subject, not by row: one "Canon · Kellis".
+      const key =
+        item.sourceKind === "canon"
+          ? `canon:${item.entityId ?? "world"}`
+          : item.sourceId ?? `entity:${item.entityId ?? item.tool}`;
       let g = map.get(key);
       if (!g) {
         g = {
@@ -218,6 +224,7 @@ function FactRow({
   onCite: (f: WorldFact) => void;
   onInsertPlain: (f: WorldFact) => void;
 }): JSX.Element {
+  const worldId = useStudioWorld()?.worldId;
   return (
     <li className="flex items-center gap-0.5 border-t border-sf-line-hairline first:border-t-0">
       <div className="min-w-0 flex-1 py-1.5">
@@ -226,6 +233,7 @@ function FactRow({
             {fact.label}
           </span>
           {reason && <ReasonTag reason={reason} />}
+          <ConfidenceTag confidence={fact.confidence} outranked={!!fact.outrankedBy} />
         </div>
         <div className="break-words font-mono text-[13px] text-t1">{fact.insert}</div>
         {showSource &&
@@ -236,6 +244,11 @@ function FactRow({
           ) : (
             <span className="block truncate font-sans text-[12px] text-t3">{sourceLine(fact)}</span>
           ))}
+        {fact.confidence === "proposed" && fact.factId && worldId && (
+          <div className="pt-1.5">
+            <ProposedFactActions worldId={worldId} factId={fact.factId} label={fact.label} />
+          </div>
+        )}
       </div>
       <button
         type="button"
