@@ -41,7 +41,7 @@ const S = {
   // and every button carries a border you can actually see.
   sectionLabel:
     "font-heading text-[13px] uppercase tracking-wide text-sf-primary-text mb-1.5 block",
-  btn: "px-3 py-1 text-[12px] uppercase tracking-[1.5px] font-heading transition-colors duration-base border min-h-[26px]",
+  btn: "px-3 py-1 text-[12px] uppercase tracking-[1.5px] font-heading transition-colors duration-base border sf-hit min-h-[26px]",
   // Transport buttons are the controls a writer reaches for most; they get the
   // full 44px hit target even where the chip rows stay compact.
   transport: "min-h-hit",

@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Check, Copy, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { hueEdge } from "@/lib/hue-edge";
 
 interface SocialShareButtonsProps {
   url: string;
@@ -73,7 +74,7 @@ export function SocialShareButtons({
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex min-h-hit items-center gap-1.5 px-3 py-1.5 text-[12px] font-sans text-t2 hover:text-t1 border border-sf-line hover:border-sf-line-emphasis transition-colors"
-            style={{ borderLeftColor: `${link.color}40`, borderLeftWidth: 2 }}
+            style={{ borderLeftColor: hueEdge(link.color), borderLeftWidth: 2 }}
           >
             <ExternalLink className="w-3 h-3" />
             {link.name}

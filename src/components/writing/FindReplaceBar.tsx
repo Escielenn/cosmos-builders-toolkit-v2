@@ -157,7 +157,7 @@ export function FindReplaceBar({ editor, onClose }: FindReplaceBarProps) {
         onClick={() => select(current - 1)}
         disabled={matches.length === 0}
         aria-label="Previous match"
-        className="border border-transparent p-1 text-t4 transition-colors duration-fast hover:border-sf-line-emphasis hover:text-t1"
+        className="sf-hit border border-transparent p-1.5 text-t4 transition-colors duration-fast hover:border-sf-line-emphasis hover:text-t1"
       >
         <ChevronUp className="h-3 w-3" />
       </button>
@@ -165,7 +165,7 @@ export function FindReplaceBar({ editor, onClose }: FindReplaceBarProps) {
         onClick={() => select(current + 1)}
         disabled={matches.length === 0}
         aria-label="Next match"
-        className="border border-transparent p-1 text-t4 transition-colors duration-fast hover:border-sf-line-emphasis hover:text-t1"
+        className="sf-hit border border-transparent p-1.5 text-t4 transition-colors duration-fast hover:border-sf-line-emphasis hover:text-t1"
       >
         <ChevronDown className="h-3 w-3" />
       </button>
@@ -181,14 +181,14 @@ export function FindReplaceBar({ editor, onClose }: FindReplaceBarProps) {
       <button
         onClick={replaceCurrent}
         disabled={matches.length === 0}
-        className="border border-sf-line px-3 py-1 font-serif text-[13px] italic text-t3 transition-colors duration-fast hover:border-sf-line-emphasis hover:text-t1"
+        className="sf-hit border border-sf-line px-3 py-1.5 font-serif text-[13px] italic text-t3 transition-colors duration-fast hover:border-sf-line-emphasis hover:text-t1"
       >
         Replace
       </button>
       <button
         onClick={replaceEvery}
         disabled={matches.length === 0}
-        className="border border-sf-line px-3 py-1 font-serif text-[13px] italic text-t3 transition-colors duration-fast hover:border-sf-line-emphasis hover:text-t1"
+        className="sf-hit border border-sf-line px-3 py-1.5 font-serif text-[13px] italic text-t3 transition-colors duration-fast hover:border-sf-line-emphasis hover:text-t1"
       >
         All
       </button>
@@ -219,7 +219,7 @@ export function FindReplaceBar({ editor, onClose }: FindReplaceBarProps) {
       <button
         onClick={onClose}
         aria-label="Close find and replace"
-        className="ml-auto p-1 text-t4 hover:text-t1"
+        className="sf-hit ml-auto p-1.5 text-t4 hover:text-t1"
       >
         <X className="h-3.5 w-3.5" />
       </button>

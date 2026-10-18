@@ -18,6 +18,7 @@ import SoundtrackPicker from "@/components/audio/SoundtrackPicker";
 import { useToast } from "@/hooks/use-toast";
 import type { WorldTheme } from "@/hooks/use-world";
 import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
+import { hueEdge } from "@/lib/hue-edge";
 
 const DEFAULT_ACCENT = "#3DFFCD";
 
@@ -251,7 +252,7 @@ export default function WorldAppearanceDialog({
                 {/* Mock infobox border */}
                 <div
                   className="border-t-2 border border-sf-line p-3 mt-2"
-                  style={{ borderTopColor: `${accentColor}80` }}
+                  style={{ borderTopColor: hueEdge(accentColor, "active") }}
                 >
                   <span
                     className="font-mono text-[12px] uppercase tracking-wide"

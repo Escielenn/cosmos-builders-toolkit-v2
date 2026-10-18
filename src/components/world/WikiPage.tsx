@@ -429,7 +429,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
               onBlur={commitAliases}
               onKeyDown={(e) => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }}
               placeholder="Other names, comma separated"
-              className="min-h-[36px] min-w-[240px] flex-1 px-3 text-[13px] normal-case tracking-normal text-t1"
+              className="min-h-hit min-w-[240px] flex-1 px-3 text-[13px] normal-case tracking-normal text-t1"
             />
           ) : (
             aliases.map((a) => (
@@ -448,7 +448,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
             onChange={(e) => setEpochDraft({ from: e.target.value, to: epochDraft?.to ?? entityEpochRange(entryMeta).to ?? "" })}
             onBlur={commitEpoch}
             placeholder="from"
-            className="min-h-[36px] w-32 px-3 text-[13px] normal-case tracking-normal text-t1"
+            className="min-h-hit w-32 px-3 text-[13px] normal-case tracking-normal text-t1"
           />
           <span className="text-t4">—</span>
           <input
@@ -458,7 +458,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
             onChange={(e) => setEpochDraft({ from: epochDraft?.from ?? entityEpochRange(entryMeta).from ?? "", to: e.target.value })}
             onBlur={commitEpoch}
             placeholder="to"
-            className="min-h-[36px] w-32 px-3 text-[13px] normal-case tracking-normal text-t1"
+            className="min-h-hit w-32 px-3 text-[13px] normal-case tracking-normal text-t1"
           />
           <span className="text-t4">IN THE WORLD'S OWN CALENDAR · BLANK = ALWAYS</span>
         </div>

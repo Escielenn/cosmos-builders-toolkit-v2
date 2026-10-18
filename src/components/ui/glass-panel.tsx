@@ -12,7 +12,22 @@ interface GlassPanelProps extends React.HTMLAttributes<HTMLDivElement> {
   layer?: PanelLayer;
   /** April 2026 handoff, teal L-shaped corner brackets (focal panels only) */
   bracket?: boolean;
+  /**
+   * Inside another panel, a plain GlassPanel flattens into a group: no frame,
+   * no second backdrop, a hairline rule above it instead (softening pass,
+   * 2026-10-18: no box inside a box). Pass `nested="frame"` to keep the frame
+   * for a card that genuinely needs one. Panels with `hover`, `bracket` or
+   * `glow`, and any panel whose className sets its own border colour, keep
+   * their frame regardless.
+   */
+  nested?: "flatten" | "frame";
 }
+
+/** How many GlassPanels enclose this one. 0 = top level. */
+const PanelDepthContext = React.createContext(0);
+
+const NESTED_GROUP =
+  "relative border-0 border-t border-sf-line-hairline bg-transparent backdrop-blur-none shadow-none pt-4 first:border-t-0 first:pt-0";
 
 const LAYER_CLASS: Record<PanelLayer, string> = {
   void: "bg-sf-void",
@@ -29,12 +44,25 @@ const GlassPanel = React.forwardRef<HTMLDivElement, GlassPanelProps>(
       lightArc = false,
       layer,
       bracket = false,
+      nested = "flatten",
       children,
       ...props
     },
     ref
   ) => {
+    const depth = React.useContext(PanelDepthContext);
+    const flatten = depth > 0 && nested === "flatten" && !glow && !hover && !bracket;
+    if (flatten) {
+      return (
+        <PanelDepthContext.Provider value={depth + 1}>
+          <div ref={ref} className={cn(NESTED_GROUP, className)} data-panel-nested="" {...props}>
+            {children}
+          </div>
+        </PanelDepthContext.Provider>
+      );
+    }
     return (
+      <PanelDepthContext.Provider value={depth + 1}>
       <div
         ref={ref}
         className={cn(
@@ -55,10 +83,11 @@ const GlassPanel = React.forwardRef<HTMLDivElement, GlassPanelProps>(
           />
         )}
       </div>
+      </PanelDepthContext.Provider>
     );
   }
 );
 GlassPanel.displayName = "GlassPanel";
 
-export { GlassPanel };
+export { GlassPanel, PanelDepthContext };
 

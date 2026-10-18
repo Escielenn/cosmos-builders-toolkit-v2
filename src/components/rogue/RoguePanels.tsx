@@ -34,7 +34,7 @@ const S = {
   panelBase:
     "absolute z-20 w-[268px] max-w-[calc(100vw-24px)] bg-sf-surface/90 border border-sf-line backdrop-blur-sf-panel rounded-none p-4 overflow-y-auto sf-sb",
   sec: "font-mono text-[13px] uppercase tracking-wide text-sf-primary-text mb-1.5 block",
-  chip: "px-3 py-1 text-[12px] uppercase tracking-wide border rounded-none transition-colors duration-base min-h-[26px]",
+  chip: "px-3 py-1 text-[12px] uppercase tracking-wide border rounded-none transition-colors duration-base sf-hit min-h-[26px]",
   chipOff:
     "bg-sf-surface border-sf-line text-t2 hover:border-sf-primary hover:bg-sf-primary/[0.12] hover:text-t1",
   chipOn: "bg-sf-primary/[0.12] border-sf-primary text-t1",

@@ -47,6 +47,7 @@ import type { WorldTheme } from "@/hooks/use-world";
 import { mapError } from "@/lib/ship-voice";
 import WorldIconRenderer from "@/components/world/WorldIconRenderer";
 import { BackLink } from "@/components/ui/back-link";
+import { hueEdge } from "@/lib/hue-edge";
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -246,7 +247,7 @@ function EntityCard({
             className="font-mono text-[12px] px-1.5 py-0.5 rounded-none"
             style={{
               backgroundColor: `${stageColor}0F`,
-              border: `1px solid ${stageColor}26`,
+              border: `1px solid ${hueEdge(stageColor)}`,
               color: stageColor,
             }}
           >
@@ -390,7 +391,7 @@ function VisibilitySelector({
             className="flex items-center gap-1.5 px-3 py-1.5 font-sans text-[12px] font-medium uppercase tracking-wider transition-all duration-base"
             style={{
               backgroundColor: isActive ? `${opt.color}0F` : "transparent",
-              border: `1px solid ${isActive ? `${opt.color}26` : "var(--sf-line)"}`,
+              border: `1px solid ${isActive ? hueEdge(opt.color, "active") : "var(--sf-line)"}`,
               color: isActive ? opt.color : "var(--t4)",
             }}
           >

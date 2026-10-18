@@ -1,5 +1,20 @@
 # StellarForge Changelog
 
+## 0.7468
+- Softening follow-ups.
+- No box inside a box: a GlassPanel inside another panel now flattens into a
+  group with a hairline rule above it (opt out with `nested="frame"`; hover,
+  bracket and glow panels keep their frame). Clears the ~40 nested panels in
+  Gravitas, Sensorium, LexDrift, Space Expansion, Star System Builder and
+  Habitable Zone without per-tool rewrites.
+- Hue edges no longer use alpha: new `hueEdge()` mixes the cascade or data hue
+  into the surface plane, so the edge is solid and stays quiet (entity sidebar,
+  showcase, tools wiki, tool cards, tags, share buttons, Habitable Zone,
+  Kardashev, world appearance).
+- Compact toolbar controls keep their size but get a 44px touch target via
+  `.sf-hit` (find/replace, Codex filter, timeline importance, Solaris, Rogue,
+  targets popover). Wiki header fields raised to the full hit height.
+
 ## 0.7467
 - Softening pass, product-wide. Line tokens re-solved: panel edges 2.40 → 1.71:1,
   hairlines 1.71 → 1.33:1, hover edges 4.61 → 4.01:1. All 60 themes still pass.

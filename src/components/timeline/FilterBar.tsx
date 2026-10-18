@@ -217,7 +217,7 @@ const FilterBar = () => {
             type="button"
             onClick={() => toggleImportanceFilter(il.id)}
             className={cn(
-              "px-3 py-1 rounded-none border text-[12px] font-medium transition-colors h-8",
+              "sf-hit px-3 py-1 rounded-none border text-[12px] font-medium transition-colors h-8",
               filter.importanceLevels.includes(il.id)
                 ? "border-sf-primary bg-sf-primary/10 text-t1"
                 : "border-sf-line text-t3 hover:border-sf-line-emphasis"

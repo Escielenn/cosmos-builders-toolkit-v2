@@ -55,6 +55,7 @@ import {
   type EntityType,
 } from "@/services/entity-graph-types";
 import { cn } from "@/lib/utils";
+import { hueEdge } from "@/lib/hue-edge";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -279,7 +280,7 @@ function SortableEntityRow({
               className="shrink-0 font-mono text-[12px] uppercase tracking-wider px-1.5 py-0.5 rounded-none border"
               style={{
                 color: entityColor,
-                borderColor: `${entityColor}26`,
+                borderColor: hueEdge(entityColor),
                 backgroundColor: `${entityColor}0F`,
               }}
             >
@@ -360,7 +361,7 @@ function StaticEntityRow({
             className="shrink-0 font-mono text-[12px] uppercase tracking-wider px-1.5 py-0.5 rounded-none border"
             style={{
               color: entityColor,
-              borderColor: `${entityColor}26`,
+              borderColor: hueEdge(entityColor),
               backgroundColor: `${entityColor}0F`,
             }}
           >
