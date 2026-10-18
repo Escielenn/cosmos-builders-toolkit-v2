@@ -56,13 +56,8 @@ export function writeProjectTarget(settings: unknown, t: ProjectTarget): Record<
   return writeSettingsKey(settings, PROJECT_KEY, sanitizeProjectTarget(t));
 }
 
-/** Local calendar date of `d` as YYYY-MM-DD. */
-export function localDay(d: Date): string {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
-}
+/** Local calendar date of `d` as YYYY-MM-DD (one definition, in local-day.ts). */
+export { localDay } from "@/lib/local-day";
 
 /**
  * Writing days left until the deadline, today included. The deadline day

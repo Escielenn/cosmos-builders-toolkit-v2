@@ -7,7 +7,7 @@ import { MotionConfig } from "framer-motion";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { BackgroundProvider } from "@/hooks/use-background";
 import { AudioProvider } from "@/hooks/use-audio-player";
@@ -100,7 +100,6 @@ const LearnArticle = lazy(() => import("./pages/learn/LearnArticle"));
 
 // Lazy loaded content pages
 const Bookshelf = lazy(() => import("./pages/Bookshelf"));
-const WritingWorkshop = lazy(() => import("./pages/WritingWorkshop"));
 const PromptBrowser = lazy(() => import("./pages/PromptBrowser"));
 
 // Lazy loaded utility pages
@@ -246,15 +245,9 @@ const App = () => (
                   <Route path="compile" element={<WorldCompile />} />
                 </Route>
                 <Route path="/bookshelf" element={<Bookshelf />} />
-                {/* Writing Prompts - Pro gated */}
-                <Route
-                  path="/workshop"
-                  element={
-                    <ProToolGuard toolId="writing-workshop">
-                      <WritingWorkshop />
-                    </ProToolGuard>
-                  }
-                />
+                {/* /workshop retired (1.5 #17): its entries live in the Studio now;
+                    prompts open new Studio documents from the Prompt Browser. */}
+                <Route path="/workshop" element={<Navigate to="/prompts" replace />} />
                 {/* Prompt Browser */}
                 <Route path="/prompts" element={<PromptBrowser />} />
                 {/* Free Tools */}

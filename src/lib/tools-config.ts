@@ -160,7 +160,7 @@ export const TOOL_ROUTES: Record<string, string> = {
   'solaris': '/tools/solaris',
   'stellar-cartographer': '/tools/stellar-cartographer',
   'surface-cartographer': '/tools/surface-cartographer',
-  'writing-workshop': '/workshop',
+  'writing-workshop': '/prompts',
 };
 
 export const getToolRoute = (toolId: string): string | undefined =>

@@ -5,29 +5,25 @@
 // and never read it back, so the writer's own progress was invisible while
 // writing. The footer showed a Julian Day instead.
 //
-// Deliberately reads writing_sessions rather than use-writing-stats: that hook
-// computes "words today" from writing_entries.word_count, a different ledger
-// that the manuscript editor never touches. Reconciling the two is a product
-// decision (see the D3 note in the writing-integration plan); until then this
-// reports the number the editor actually produces.
+// Reads writing_sessions, the ledger the Studio writes. The old /workshop
+// store (writing_entries) is retired and no longer counted anywhere.
 // ---------------------------------------------------------------------------
 
 import { useCallback } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { localDay } from "@/lib/local-day";
 
 /**
- * Must match rollWordSession's key exactly.
- *
- * That writer uses `new Date().toISOString().slice(0, 10)` — the UTC date, not
- * the local one. Reading by local date would miss the row for several hours
- * either side of midnight depending on timezone. Keeping both on UTC is the
- * safe fix; switching the pair to local days later would need a data migration
- * of existing writing_sessions rows.
+ * Must match rollWordSession's key exactly: both use the writer's local
+ * calendar day (localDay). Before 2026-10-19 both used the UTC date, which
+ * reset the daily goal at 6 pm in Denver. Rows written before the switch keep
+ * their UTC key; on the switch-over evening, words written after local 6 pm
+ * sit on the next day's row. That is a one-time edge, not a data loss.
  */
 function sessionDay(): string {
-  return new Date().toISOString().slice(0, 10);
+  return localDay();
 }
 
 export function useSessionWords() {

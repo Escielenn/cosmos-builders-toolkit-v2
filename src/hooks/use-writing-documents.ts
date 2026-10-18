@@ -22,6 +22,7 @@ import { writeDocMeta, type DocumentMeta } from "@/lib/document-meta";
 import { mapError } from "@/lib/ship-voice";
 import { buildBinderTree, flattenFolders, type BinderNode, type MovePlan } from "@/lib/binder-tree";
 import { captureDocumentSnapshot } from "@/hooks/use-document-versions";
+import { planFolderTrash } from "@/lib/folder-trash";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -694,41 +695,83 @@ export function useRenameFolder(worldId: string | undefined) {
 }
 
 // ---------------------------------------------------------------------------
-// Delete a folder (moves children to unfiled first)
+// Delete a folder: the folder and its contents move to the Trash
+// (plan and rationale in src/lib/folder-trash.ts)
 // ---------------------------------------------------------------------------
 
 export function useDeleteFolder(worldId: string | undefined) {
   const { toast } = useToast();
+  const { user } = useAuth();
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: async (folderId: string) => {
-      // Step 1: Move all children (documents AND nested folders) up to the
-      // folder's own parent, so nothing inside it is ever orphaned.
-      const { data: folder, error: readError } = await supabase
+    mutationFn: async (folderId: string): Promise<{ documents: number }> => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const db = supabase as any;
+      // Plan from the server's rows, not the cache: a stale cache could miss
+      // a document and leave it parented to a trashed folder.
+      const { data: rows, error: readError } = await db
         .from("world_entries")
-        .select("parent_id")
-        .eq("id", folderId)
-        .maybeSingle();
+        .select("id, parent_id, entry_type, sort_order, title, metadata")
+        .eq("world_id", worldId!)
+        .in("entry_type", ["document", "folder"])
+        .is("trashed_at", null);
       if (readError) throw readError;
-      const { error: moveError } = await supabase
-        .from("world_entries")
-        .update({ parent_id: folder?.parent_id ?? null })
-        .eq("parent_id", folderId);
+      const all = (rows ?? []) as (WorldEntry & { metadata: unknown })[];
+      const plan = planFolderTrash(all, folderId);
+      if (!plan) throw new Error("FOLDER NOT ON FILE.");
 
-      if (moveError) throw moveError;
+      // Never lose words: snapshot every document before it moves.
+      if (user) {
+        for (const id of plan.documentIds) await captureDocumentSnapshot(id, user.id, "trash");
+      }
 
-      // Step 2: Delete the folder itself
-      const { error: deleteError } = await supabase
+      const now = new Date().toISOString();
+      const metaOf = new Map(all.map((e) => [e.id, e.metadata]));
+      const asObject = (m: unknown): Record<string, unknown> =>
+        m && typeof m === "object" && !Array.isArray(m) ? (m as Record<string, unknown>) : {};
+      const inside: { error: unknown }[] = await Promise.all(
+        plan.inside.map((r) =>
+          db
+            .from("world_entries")
+            .update({
+              trashed_at: now,
+              parent_id: null,
+              metadata: { ...asObject(metaOf.get(r.id)), trashedFromParentId: r.formerParentId },
+            })
+            .eq("id", r.id),
+        ),
+      );
+      const insideFailed = inside.find((r) => r.error);
+      if (insideFailed?.error) throw insideFailed.error;
+
+      const { error: folderError } = await db
         .from("world_entries")
-        .delete()
+        .update({ trashed_at: now })
         .eq("id", folderId);
+      if (folderError) throw folderError;
 
-      if (deleteError) throw deleteError;
+      // Close the gap the folder left and clear colliding sort_orders.
+      const renumbered = await Promise.all(
+        plan.siblingOrder.map((id, i) =>
+          supabase.from("world_entries").update({ sort_order: i * 10 }).eq("id", id),
+        ),
+      );
+      const renumberFailed = renumbered.find((r) => r.error);
+      if (renumberFailed?.error) throw renumberFailed.error;
+
+      return { documents: plan.documentIds.length };
     },
-    onSuccess: () => {
+    onSuccess: ({ documents }) => {
       qc.invalidateQueries({ queryKey: docKeys.all(worldId!) });
-      toast({ title: "FOLDER DELETED.", description: "Its contents moved up one level." });
+      qc.invalidateQueries({ queryKey: ["trashed-documents", worldId] });
+      toast({
+        title: "FOLDER MOVED TO TRASH.",
+        description:
+          documents === 0
+            ? "Recoverable for 90 days."
+            : `${documents} ${documents === 1 ? "document" : "documents"} recoverable for 90 days. A restored document returns to the top level.`,
+      });
     },
     onError: (error) => {
       toast({
