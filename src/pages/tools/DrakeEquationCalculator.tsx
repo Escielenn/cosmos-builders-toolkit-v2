@@ -37,6 +37,21 @@ import { Json } from "@/integrations/supabase/types";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import { writeStandaloneBackup } from "@/lib/standalone-backup";
+import {
+  calculateDrakeN,
+  formatDrakeNumber,
+  getDrakeInterpretation,
+  type DrakeBand,
+} from "@/lib/drake";
+
+const DRAKE_BAND_COLOR: Record<DrakeBand, string> = {
+  "very-lonely": "text-sf-violet-text",
+  lonely: "text-sf-azure-text",
+  sparse: "text-sf-emerald-text",
+  moderate: "text-sf-amber-text",
+  crowded: "text-sf-crimson-text",
+  teeming: "text-sf-magenta-text",
+};
 
 // Section definitions for navigation
 const SECTIONS: Section[] = [
@@ -287,53 +302,15 @@ const DrakeEquationCalculator = () => {
   const [isSavingToCloud, setIsSavingToCloud] = useState(false);
 
   // Calculate N (result of Drake Equation)
-  const N = useMemo(() => {
-    const { rStar, fp, ne, fl, fi, fc, L } = formState.values;
-    return rStar * fp * ne * fl * fi * fc * L;
-  }, [formState.values]);
+  const N = useMemo(() => calculateDrakeN(formState.values), [formState.values]);
 
   // Format large numbers
-  const formatNumber = (n: number): string => {
-    if (n < 1) return n.toFixed(4);
-    if (n < 10) return n.toFixed(2);
-    if (n < 1000) return n.toFixed(1);
-    if (n < 1000000) return Math.round(n).toLocaleString();
-    if (n < 1000000000) return (n / 1000000).toFixed(1) + " million";
-    return (n / 1000000000).toFixed(1) + " billion";
-  };
+  const formatNumber = formatDrakeNumber;
 
-  // Get interpretation of result
+  // Get interpretation of result (copy from @/lib/drake, colour per band here)
   const getInterpretation = (n: number): { label: string; color: string; description: string } => {
-    if (n < 1) return {
-      label: "Very Lonely",
-      color: "text-sf-violet-text",
-      description: "Fewer than one civilization expected. We may be alone in the galaxy, or civilizations are so rare that contact is essentially impossible."
-    };
-    if (n < 10) return {
-      label: "Lonely",
-      color: "text-sf-azure-text",
-      description: "A handful of civilizations might exist. Finding each other would be like finding needles in a cosmic haystack."
-    };
-    if (n < 100) return {
-      label: "Sparse",
-      color: "text-sf-emerald-text",
-      description: "Dozens of civilizations. Contact is possible but requires patience and luck. Good for stories about first contact as a rare, meaningful event."
-    };
-    if (n < 1000) return {
-      label: "Moderate",
-      color: "text-sf-amber-text",
-      description: "Hundreds of civilizations. Enough for a network, but vast distances mean most remain isolated. Good for stories about distant rumors."
-    };
-    if (n < 10000) return {
-      label: "Crowded",
-      color: "text-sf-crimson-text",
-      description: "Thousands of civilizations. Regional groupings, alliances, and conflicts become possible. Classic space opera territory."
-    };
-    return {
-      label: "Teeming",
-      color: "text-sf-magenta-text",
-      description: "A galaxy full of life. Civilizations bump into each other regularly. Think Star Trek or Star Wars. The Fermi Paradox becomes very pressing."
-    };
+    const { band, label, description } = getDrakeInterpretation(n);
+    return { label, description, color: DRAKE_BAND_COLOR[band] };
   };
 
   const interpretation = getInterpretation(N);

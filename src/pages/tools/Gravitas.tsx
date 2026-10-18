@@ -614,6 +614,16 @@ const Gravitas = () => {
                   Enter the spin and thrust gravity components to calculate the resultant vector.
                   You can use values from the Spin and Thrust modes.
                 </p>
+                <p className="text-sm text-t2">
+                  Spin gravity points outward from the spin axis; thrust gravity points aft. With the
+                  spin axis parallel to the thrust line (the usual design) the two always meet at a right
+                  angle: felt gravity is √(spin² + thrust²) and the floor tilts aft by the same amount
+                  everywhere. Tilt the spin axis away from the thrust line and felt gravity sweeps around
+                  the rim once per revolution, here from{" "}
+                  <span className="font-mono">{formatG(combinedResult.resultant_min_g)}</span> to{" "}
+                  <span className="font-mono">{formatG(combinedResult.resultant_max_g)}</span>. Results
+                  show the point on the rim with the worst tilt.
+                </p>
 
                 {/* Spin g component */}
                 <div className="space-y-2">
@@ -643,12 +653,12 @@ const Gravitas = () => {
 
                 {/* Axis orientation */}
                 <div className="space-y-2">
-                  <Label>Spin Axis Orientation</Label>
+                  <Label>Spin Axis vs Thrust Line</Label>
                   <Select value={formState.combined.axis_orientation} onValueChange={(v) => updateCombined("axis_orientation", v)}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="parallel">Parallel (0°)</SelectItem>
-                      <SelectItem value="perpendicular">Perpendicular (90°)</SelectItem>
+                      <SelectItem value="parallel">Axis parallel to thrust (0°)</SelectItem>
+                      <SelectItem value="perpendicular">Axis perpendicular to thrust (90°)</SelectItem>
                       <SelectItem value="custom">Custom Angle</SelectItem>
                     </SelectContent>
                   </Select>
@@ -657,7 +667,7 @@ const Gravitas = () => {
                 {formState.combined.axis_orientation === "custom" && (
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label>Custom Angle</Label>
+                      <Label>Axis-to-Thrust Angle</Label>
                       <span className="font-mono text-sf-primary-text">{formState.combined.custom_angle_deg}°</span>
                     </div>
                     <Slider
@@ -951,7 +961,7 @@ const Gravitas = () => {
                 )}
                 {formState.activeMode === "thrust" && (
                   <>
-                    <ResultItem label="Trip Duration" value={formatDuration(thrustResult.trip_duration_days)} />
+                    <ResultItem label={formState.thrust.include_relativity ? "Trip Duration (Earth)" : "Trip Duration"} value={formatDuration(thrustResult.trip_duration_days)} />
                     <ResultItem label="Delta-V" value={`${thrustResult.delta_v_kms.toFixed(1)} km/s`} />
                     <ResultItem label="Peak Velocity" value={`${thrustResult.peak_velocity_kms.toFixed(1)} km/s`} />
                     <ResultItem label="Peak V (%c)" value={`${(thrustResult.peak_velocity_c * 100).toFixed(4)}%`} />
@@ -983,10 +993,10 @@ const Gravitas = () => {
 
                         // Spin vector always points "down" (positive Y)
                         const spinLen = spinG * scale;
-                        // Thrust vector at the configured angle from spin
-                        const angleDeg = formState.combined.axis_orientation === "parallel" ? 0
-                          : formState.combined.axis_orientation === "perpendicular" ? 90
-                          : formState.combined.custom_angle_deg;
+                        // Thrust vector at its angle from the spin vector at the
+                        // worst-tilt point on the rim (90° when the axis is parallel
+                        // to thrust; see calculateCombinedVector).
+                        const angleDeg = combinedResult.vector_angle_deg;
                         const angleRad = (angleDeg * Math.PI) / 180;
                         const thrustLen = thrustG * scale;
                         const thrustDx = Math.sin(angleRad) * thrustLen;

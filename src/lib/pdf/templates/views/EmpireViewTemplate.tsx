@@ -2,6 +2,7 @@ import { Document, Page, View, Text } from "@react-pdf/renderer";
 import { styles, colors, spacing, typography } from "../../styles";
 import { PDFHeader, PDFFooter, PDFSection, PDFKeyValuePair } from "../../components";
 import { deepStripHtml } from "@/lib/html-utils";
+import { calculateDrakeN } from "@/lib/drake";
 
 interface WorksheetData {
   id: string;
@@ -121,8 +122,7 @@ const RenderDrake = ({ ws }: { ws: WorksheetData }) => {
   const values = d.values as Record<string, number> | undefined;
   if (!values) return null;
 
-  const N = (values.rStar || 0) * (values.fp || 0) * (values.ne || 0) *
-    (values.fl || 0) * (values.fi || 0) * (values.fc || 0) * (values.L || 0);
+  const N = calculateDrakeN(values);
 
   const formatN = (n: number): string => {
     if (n < 1) return n.toFixed(4);

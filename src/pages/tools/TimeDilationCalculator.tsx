@@ -877,9 +877,15 @@ const TimeDilationCalculator = () => {
                     <Label className="cursor-pointer text-sm">
                       {formState.alcubierreNoDilation
                         ? "No dilation inside bubble (consensus interpretation)"
-                        : "Apply effective dilation (dramatic interpretation)"}
+                        : "SPECULATIVE: inverted dilation (story device)"}
                     </Label>
                   </div>
+                  {!formState.alcubierreNoDilation && (
+                    <p className="text-xs text-t3 mt-2">
+                      {"// "}SPECULATIVE. No published warp-metric solution predicts this: the traveller
+                      aging by the warp factor is an invented rule for drama, not a physics result.
+                    </p>
+                  )}
                 </div>
               )}
             </div>
@@ -1081,7 +1087,7 @@ const TimeDilationCalculator = () => {
                   calculationResult.accelerationPhaseSeconds !== undefined && (
                     <GlassPanel className="p-5">
                       <p className="font-mono text-xs uppercase tracking-wide text-t2 mb-3">
-                        Flight Profile
+                        {formState.roundTrip ? "Flight Profile (each leg)" : "Flight Profile"}
                       </p>
                       <div className="space-y-2">
                         <div className="flex justify-between items-center">
