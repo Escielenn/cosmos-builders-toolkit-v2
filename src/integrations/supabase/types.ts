@@ -2384,6 +2384,10 @@ export type Database = {
         Args: { p_day: string; p_delta: number; p_user_id: string }
         Returns: undefined
       }
+      is_world_collaborator_email: {
+        Args: { p_email: string; p_world_id: string }
+        Returns: boolean
+      }
       lookup_user_by_email: { Args: { p_email: string }; Returns: Json }
       maybe_snapshot_world: { Args: { p_world_id: string }; Returns: boolean }
       prepare_account_deletion: { Args: { p_user_id: string }; Returns: Json }
