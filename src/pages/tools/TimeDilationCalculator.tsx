@@ -78,6 +78,10 @@ import {
 } from "@/lib/time-dilation/calculations";
 import type { FormStateForCalc } from "@/lib/time-dilation/calculations";
 import { writeStandaloneBackup } from "@/lib/standalone-backup";
+import { manifest as paradoxManifest } from "@/tools/paradox/manifest";
+import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
+import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
+import { CanonProvenance } from "@/components/canon/CanonProvenance";
 
 // ─── FormState ───────────────────────────────────────────────────────
 
@@ -127,6 +131,18 @@ const initialFormState: FormState = {
 };
 
 const TOOL_TYPE = "time-dilation";
+
+/** propulsion.type (Impulse's slugs) → this picker's method id. Drives it has no card for are not prefilled. */
+const PARADOX_METHOD: Record<string, string> = {
+  chemical: "chemical",
+  ion: "ion",
+  "nuclear-thermal": "nuclear-thermal",
+  "nuclear-pulse": "nuclear-pulse",
+  fusion: "fusion",
+  "solar-sail": "light-sail",
+  antimatter: "antimatter",
+  alcubierre: "alcubierre",
+};
 const LOCAL_STORAGE_KEY = "time-dilation-calculator-v1";
 
 // ─── Severity color helpers ──────────────────────────────────────────
@@ -175,6 +191,10 @@ const TimeDilationCalculator = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const worldId = useWorldId();
   const worksheetId = searchParams.get("worksheetId");
+
+  // One home per value (1.5 item 10): the drive is Impulse's; Paradox reads it and owns the dilation it derives.
+  const canonSubjectId = useToolSubject(currentWorksheetId || worksheetId);
+  const canonEmit = useCanonEmit(paradoxManifest, worldId);
 
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
   const worldName = currentWorld?.name;
@@ -426,6 +446,11 @@ const TimeDilationCalculator = () => {
           await updateWorksheet.mutateAsync({
             worksheetId: currentWorksheetId || worksheetId!,
             data: worksheetData,
+          });
+          await canonEmit.emit(formState, {
+            subjectId: canonSubjectId,
+            worksheetId: currentWorksheetId || worksheetId,
+            inputs: { "propulsion.cruise_fraction_c": parseFloat(formState.velocityProfile.velocityFraction) },
           });
         } else {
           toast({
@@ -708,6 +733,17 @@ const TimeDilationCalculator = () => {
                   </div>
                 ))}
               </RadioGroup>
+              <CanonProvenance
+                worldId={worldId}
+                subjectId={canonSubjectId}
+                predicate="propulsion.type"
+                consumer={paradoxManifest}
+                // "custom" is a choice, not an empty field: it reads as its label, so canon never replaces it.
+                local={formState.propulsion.method === "custom" ? "Custom Drive" : formState.propulsion.method}
+                toLocal={(v) => (v.kind === "text" || v.kind === "enum" ? PARADOX_METHOD[v.value] ?? null : null)}
+                onApply={(v) => typeof v === "string" && handlePropulsionChange(v)}
+                worksheetId={currentWorksheetId || worksheetId}
+              />
 
               {/* Custom max velocity */}
               {formState.propulsion.method === "custom" && (
@@ -1311,6 +1347,7 @@ const TimeDilationCalculator = () => {
       />
 
       <EntityMatchDialog {...entityMatch.dialogProps} />
+      <CanonConflictPrompt {...canonEmit} />
     </ToolPageLayout>
   );
 };

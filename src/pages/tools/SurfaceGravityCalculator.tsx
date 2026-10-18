@@ -93,6 +93,10 @@ import PlanetSizeComparison from "@/components/tools/PlanetSizeComparison";
 import GravityScaleBar from "@/components/tools/GravityScaleBar";
 import AtmosphericRetentionChart from "@/components/tools/AtmosphericRetentionChart";
 import { writeStandaloneBackup } from "@/lib/standalone-backup";
+import { manifest as atlasManifest } from "@/tools/atlas/manifest";
+import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
+import { CanonProvenance } from "@/components/canon/CanonProvenance";
+import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
 
 
 // Preset glyphs (lucide, not emoji). Kept out of lib/surface-gravity/data,
@@ -309,6 +313,29 @@ const SurfaceGravityCalculator = () => {
   const { updateWorksheetTags } = useTags();
   const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
 
+  // One home per value (1.5 item 10): mass and radius are Genesis's; Atlas
+  // reads them from canon and owns the gravity it derives from them.
+  const canonSubjectId = useToolSubject(currentWorksheetId || worksheetId);
+  const canonEmit = useCanonEmit(atlasManifest, worldId);
+  // A field still at its default takes canon on open; a value the writer set
+  // is never replaced, only compared (USE CANON / OVERRIDE HERE).
+  const massIsDefault = formState.primary.mass === initialFormState.primary.mass;
+  const radiusIsDefault = formState.primary.radius === initialFormState.primary.radius;
+  const applyCanonPrimary = useCallback((key: "mass" | "radius", raw: unknown) => {
+    const n = typeof raw === "number" ? raw : Number(raw);
+    if (!Number.isFinite(n) || n <= 0) return;
+    // Unlinked, so taking canon's mass does not move the radius (or back).
+    setFormState((prev) => ({ ...prev, primary: { ...prev.primary, [key]: n, linked: false, planetPreset: "" } }));
+  }, []);
+  const applyCanonMass = useCallback((raw: unknown) => applyCanonPrimary("mass", raw), [applyCanonPrimary]);
+  const applyCanonRadius = useCallback((raw: unknown) => applyCanonPrimary("radius", raw), [applyCanonPrimary]);
+  const emitCanon = (wsId: string) =>
+    canonEmit.emit(formState, {
+      subjectId: canonSubjectId,
+      worksheetId: wsId,
+      inputs: { "planet.mass": formState.primary.mass, "planet.radius": formState.primary.radius },
+    });
+
   // Show worksheet selector
   useEffect(() => {
     if (worldId && !worksheetId && !worksheetsLoading && user) {
@@ -481,6 +508,7 @@ const SurfaceGravityCalculator = () => {
           data: formState as unknown as Json,
         });
         toast({ title: "FILE SECURED.", description: "WORKSHEET SECURED TO CLOUD." });
+        await emitCanon(wsId);
       } else {
         const ws = await createWorksheet.mutateAsync({
           worldId,
@@ -492,6 +520,7 @@ const SurfaceGravityCalculator = () => {
         setCurrentWorksheetTitle(ws.title);
         setSearchParams({ worldId, worksheetId: ws.id });
         toast({ title: "CREATED.", description: "NEW WORKSHEET ON FILE." });
+        await emitCanon(ws.id);
       }
     } else {
       toast({ title: "SAVED LOCALLY.", description: "WORK SECURED TO THIS BROWSER." });
@@ -656,6 +685,17 @@ const SurfaceGravityCalculator = () => {
                     <span>0.01 M⊕</span>
                     <span>20 M⊕</span>
                   </div>
+                  <CanonProvenance
+                    worldId={worldId}
+                    subjectId={canonSubjectId}
+                    predicate="planet.mass"
+                    consumer={atlasManifest}
+                    local={formState.primary.mass}
+                    toLocal={(v) => (v.kind === "scalar" ? v.value : null)}
+                    onApply={applyCanonMass}
+                    pristine={massIsDefault}
+                    worksheetId={currentWorksheetId || worksheetId}
+                  />
                 </div>
 
                 {/* Radius slider */}
@@ -677,6 +717,17 @@ const SurfaceGravityCalculator = () => {
                     <span>0.3 R⊕</span>
                     <span>4.0 R⊕</span>
                   </div>
+                  <CanonProvenance
+                    worldId={worldId}
+                    subjectId={canonSubjectId}
+                    predicate="planet.radius"
+                    consumer={atlasManifest}
+                    local={formState.primary.radius}
+                    toLocal={(v) => (v.kind === "scalar" ? v.value : null)}
+                    onApply={applyCanonRadius}
+                    pristine={radiusIsDefault}
+                    worksheetId={currentWorksheetId || worksheetId}
+                  />
                 </div>
 
                 {formState.primary.linked && formState.primary.compositionPreset !== "custom" && (
@@ -1108,6 +1159,7 @@ const SurfaceGravityCalculator = () => {
       />
 
       <EntityMatchDialog {...entityMatch.dialogProps} />
+      <CanonConflictPrompt {...canonEmit} />
     </ToolPageLayout>
   );
 };

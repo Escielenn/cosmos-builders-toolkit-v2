@@ -18,6 +18,7 @@
 import { isKnownPredicate, predicateSpellingsFor, resolvePredicate } from "@/canon/vocabulary";
 import { mapError } from "@/lib/ship-voice";
 import { displayValue, mergeCanonFacts, sameValue, type MergeOptions } from "@/canon/merge";
+import { ownerToolOf } from "@/canon/ownership";
 import type {
   AssertResult,
   AssertSourceKind,
@@ -196,6 +197,7 @@ export function createCanon(store: CanonStore, projector?: Projector) {
           subjectId: q.subjectId,
           predicate: q.predicate,
           rowContext: q.rowContext,
+          preferTool: ownerToolOf,
         });
       });
     },

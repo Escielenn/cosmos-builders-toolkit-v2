@@ -2,10 +2,12 @@
 // planet.escape_velocity and planet.density (03-TOOL-CHARTER anti-duplication
 // registry), each derived from planet.mass + planet.radius, which Genesis owns.
 //
-// Today the Atlas worksheet still records its own mass and radius
-// (primary.mass / primary.radius) and those project as planet.mass /
-// planet.radius. That is the Parallel Truth the Charter's gravity demo
-// resolves; this manifest states the target, /sf-wire atlas does the work.
+// One home (1.5 item 10): the Atlas sheet still holds primary.mass and
+// primary.radius, but as a consumer's copy. On open they are prefilled from
+// canon (Genesis) with a provenance tag; a different value here is either
+// EDIT AT GENESIS or an explicit OVERRIDE HERE that proposes. On save Atlas
+// asserts the gravity, escape velocity and density it computes, and withholds
+// them when its mass or radius disagrees with canon.
 
 import type { Derivation, ToolManifest } from "@/canon/manifest";
 

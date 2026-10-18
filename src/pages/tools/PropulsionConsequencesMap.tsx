@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, lazy, Suspense } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef, lazy, Suspense } from "react";
 import { useWorldId } from "@/hooks/use-world-id";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
@@ -45,6 +45,11 @@ import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import { Json } from "@/integrations/supabase/types";
 import { writeStandaloneBackup } from "@/lib/standalone-backup";
+import { manifest as impulseManifest } from "@/tools/impulse/manifest";
+import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
+import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
+import { CanonProvenance } from "@/components/canon/CanonProvenance";
+import { PROPULSION_TYPES } from "@/canon/codecs";
 
 // Section definitions for navigation
 const SECTIONS: Section[] = [
@@ -164,21 +169,8 @@ const initialFormState: FormState = {
   moodboard: [],
 };
 
-const PROPULSION_TYPES = [
-  { value: "chemical", label: "Chemical rockets", description: "Current technology" },
-  { value: "ion", label: "Ion drives", description: "Proven, slow acceleration" },
-  { value: "nuclear-thermal", label: "Nuclear thermal", description: "High thrust, tested 1960s-70s" },
-  { value: "nuclear-pulse", label: "Nuclear pulse", description: "Orion-style, requires bombs" },
-  { value: "fusion", label: "Fusion drive", description: "Theoretical, high efficiency" },
-  { value: "antimatter", label: "Antimatter", description: "Theoretical, enormous energy" },
-  { value: "solar-sail", label: "Solar/laser sails", description: "Continuous low thrust" },
-  { value: "bussard", label: "Bussard ramjet", description: "Theoretical hydrogen scoop" },
-  { value: "alcubierre", label: "Alcubierre warp drive", description: "Speculative FTL" },
-  { value: "hyperspace", label: "Hyperspace/jump drive", description: "Speculative FTL" },
-  { value: "wormhole", label: "Wormholes/portals", description: "Speculative instant travel" },
-  { value: "generation", label: "Generation ships", description: "Subluminal, multi-century" },
-  { value: "other", label: "Other", description: "Custom propulsion system" },
-];
+// The propulsion list is canon/codecs PROPULSION_TYPES: Impulse owns
+// propulsion.type, so its list is the vocabulary other tools read through.
 
 const ENERGY_SOURCES = [
   { value: "chemical", label: "Chemical combustion" },
@@ -437,6 +429,13 @@ const PropulsionConsequencesMap = () => {
   const worldId = useWorldId();
   const worksheetId = searchParams.get("worksheetId");
 
+  // One home per value (1.5 item 10): Impulse owns the drive (asserted on save); crew size is Vessel's, read here.
+  const canonSubjectId = useToolSubject(currentWorksheetId || worksheetId);
+  const canonEmit = useCanonEmit(impulseManifest, worldId);
+  const applyCanonCrew = useCallback((v: unknown) => {
+    if (typeof v === "string") setFormState((prev) => ({ ...prev, costs: { ...prev.costs, crewCapacity: v } }));
+  }, []);
+
   // Get world name from worldId
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
   const worldName = currentWorld?.name;
@@ -659,6 +658,15 @@ const PropulsionConsequencesMap = () => {
           await updateWorksheet.mutateAsync({
             worksheetId: currentWorksheetId || worksheetId!,
             data: worksheetData,
+          });
+          await canonEmit.emit(formState, {
+            subjectId: canonSubjectId,
+            worksheetId: currentWorksheetId || worksheetId,
+            // A drive outside the list is asserted in the writer's own words.
+            overrides:
+              formState.system.type === "other"
+                ? { "propulsion.type": formState.system.customType?.trim() ? { kind: "text", value: formState.system.customType.trim() } : null }
+                : undefined,
           });
         } else {
           // Should not reach here - worksheet must be created via selector first
@@ -1036,6 +1044,16 @@ const PropulsionConsequencesMap = () => {
                       placeholder="e.g., 50 crew, 200 passengers"
                       value={formState.costs.crewCapacity}
                       onChange={(e) => updateCosts("crewCapacity", e.target.value)}
+                    />
+                    <CanonProvenance
+                      worldId={worldId}
+                      subjectId={canonSubjectId}
+                      predicate="vessel.crew_size"
+                      consumer={impulseManifest}
+                      local={formState.costs.crewCapacity}
+                      toLocal={(v) => (v.kind === "scalar" ? `${v.value} crew` : null)}
+                      onApply={applyCanonCrew}
+                      worksheetId={currentWorksheetId || worksheetId}
                     />
                   </div>
                   <div className="space-y-1">
@@ -1814,6 +1832,7 @@ const PropulsionConsequencesMap = () => {
       )}
 
       <EntityMatchDialog {...entityMatch.dialogProps} />
+      <CanonConflictPrompt {...canonEmit} />
     </ToolPageLayout>
   );
 };

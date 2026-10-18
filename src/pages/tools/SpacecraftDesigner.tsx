@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { useState, useEffect, useMemo, useCallback, lazy, Suspense } from "react";
 import { useWorldId } from "@/hooks/use-world-id";
 import { useTags } from "@/hooks/use-tags";
 import { useSearchParams } from "react-router-dom";
@@ -44,6 +44,11 @@ import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import { Json } from "@/integrations/supabase/types";
 import { writeStandaloneBackup } from "@/lib/standalone-backup";
+import { manifest as vesselManifest } from "@/tools/vessel/manifest";
+import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
+import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
+import { CanonProvenance } from "@/components/canon/CanonProvenance";
+import { propulsionLabel } from "@/canon/codecs";
 
 // Section definitions for navigation
 const SECTIONS: Section[] = [
@@ -95,6 +100,8 @@ interface LifeSupport {
 }
 
 interface LivingSpaces {
+  /** Head count. vessel.crew_size has its home here (1.5 item 10). */
+  crewSize?: string;
   crewQuarters: string;
   commonAreas: string;
   privateSpace: string;
@@ -180,6 +187,7 @@ const initialFormState: FormState = {
     failureModes: "",
   },
   living: {
+    crewSize: "",
     crewQuarters: "",
     commonAreas: "",
     privateSpace: "",
@@ -332,6 +340,13 @@ const SpacecraftDesigner = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const worldId = useWorldId();
   const worksheetId = searchParams.get("worksheetId");
+
+  // One home per value (1.5 item 10): crew size is Vessel's (asserted on save); the drive is Impulse's, read here.
+  const canonSubjectId = useToolSubject(currentWorksheetId || worksheetId);
+  const canonEmit = useCanonEmit(vesselManifest, worldId);
+  const applyCanonDrive = useCallback((v: unknown) => {
+    if (typeof v === "string") setFormState((prev) => ({ ...prev, propulsion: { ...prev.propulsion, driveType: v } }));
+  }, []);
 
   // Get world name from worldId
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
@@ -518,6 +533,7 @@ const SpacecraftDesigner = () => {
             worksheetId: currentWorksheetId || worksheetId!,
             data: worksheetData,
           });
+          await canonEmit.emit(formState, { subjectId: canonSubjectId, worksheetId: currentWorksheetId || worksheetId });
         } else {
           // Should not reach here - worksheet must be created via selector first
           toast({
@@ -816,6 +832,16 @@ const SpacecraftDesigner = () => {
                   value={formState.propulsion.driveType}
                   onChange={(e) => updatePropulsion("driveType", e.target.value)}
                 />
+                <CanonProvenance
+                  worldId={worldId}
+                  subjectId={canonSubjectId}
+                  predicate="propulsion.type"
+                  consumer={vesselManifest}
+                  local={formState.propulsion.driveType}
+                  toLocal={(v) => (v.kind === "text" || v.kind === "enum" ? propulsionLabel(v.value) : null)}
+                  onApply={applyCanonDrive}
+                  worksheetId={currentWorksheetId || worksheetId}
+                />
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
@@ -1041,6 +1067,19 @@ const SpacecraftDesigner = () => {
             thinkLike="a crew member who's been aboard for months: You know every sound, smell, and shortcut."
           >
             <div className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="crewSize">Crew Size</Label>
+                <Input
+                  id="crewSize"
+                  inputMode="numeric"
+                  placeholder="e.g., 9"
+                  value={formState.living.crewSize ?? ""}
+                  onChange={(e) => updateLiving("crewSize", e.target.value)}
+                  className="max-w-[12rem] font-mono"
+                />
+                <p className="text-xs text-t4">How many people live aboard. Impulse and the Studio read this number.</p>
+              </div>
+
               <QuestionSection
                 id="living-quarters"
                 label="Crew Quarters"
@@ -1532,6 +1571,7 @@ const SpacecraftDesigner = () => {
       )}
 
       <EntityMatchDialog {...entityMatch.dialogProps} />
+      <CanonConflictPrompt {...canonEmit} />
     </ToolPageLayout>
   );
 };
