@@ -164,16 +164,15 @@ const Worlds = () => {
           {!isLoading && filteredWorlds.length === 0 && (
             <div className="col-span-full">
               <EmptyState
-                warm
-                eyebrow="World index"
-                title="No worlds yet"
+                eyebrow="// WORLD INDEX"
+                title={selectedTags.length > 0 ? "INDEX: NO MATCH" : "INDEX: EMPTY"}
                 description={
                   selectedTags.length > 0
                     ? "NO WORLDS MATCH FILTER CRITERIA. ADJUST TAG SELECTION."
                     : "NO WORLDS ON FILE. BEGIN SURVEY WHEN READY."
                 }
                 {...(selectedTags.length === 0
-                  ? { actionLabel: "Begin survey", actionTo: "/worlds?create=true" }
+                  ? { actionLabel: "BEGIN SURVEY", actionTo: "/worlds?create=true" }
                   : {})}
               />
             </div>

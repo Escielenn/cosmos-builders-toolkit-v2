@@ -3,6 +3,9 @@
   "framework": "vite",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "redirects": [
+    { "source": "/early", "destination": "/", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/api/notion/callback", "destination": "/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }

@@ -13,6 +13,7 @@ import { BackgroundProvider } from "@/hooks/use-background";
 import { AudioProvider } from "@/hooks/use-audio-player";
 import AudioPlayer from "@/components/audio/AudioPlayer";
 import ScrollToTop from "./components/ScrollToTop";
+import RouteSeo from "./components/common/RouteSeo";
 import FABStack from "./components/layout/FABStack";
 import CookieConsent from "./components/common/CookieConsent";
 import AmbientEffects from "./components/layout/AmbientEffects";
@@ -36,7 +37,6 @@ import Auth from "./pages/Auth";
 // Lazy loaded pages (larger, less frequently accessed)
 const Profile = lazy(() => import("./pages/Profile"));
 const Pricing = lazy(() => import("./pages/Pricing"));
-const EarlyAccess = lazy(() => import("./pages/EarlyAccess"));
 const Studio = lazy(() => import("./pages/Studio"));
 const Write = lazy(() => import("./pages/Write"));
 const WriteIndex = lazy(() => import("./pages/Write").then((m) => ({ default: m.WriteIndex })));
@@ -188,6 +188,7 @@ const App = () => (
           <Toaster />
           <BrowserRouter>
             <ScrollToTop />
+            <RouteSeo />
             <BackgroundLayer />
             <KonamiCode />
             <BadgeEvaluatorMount />
@@ -197,8 +198,8 @@ const App = () => (
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={<Index />} />
-                {/* Public launch waitlist (Cowork Implementation Guide §2) */}
-                <Route path="/early" element={<EarlyAccess />} />
+                {/* The launch waitlist closed with open early access; old links land home. */}
+                <Route path="/early" element={<Navigate to="/" replace />} />
                 {/* Writer-register studio home (Cowork Implementation Guide §3) */}
                 <Route path="/studio" element={<Studio />} />
                 {/* Manuscript editor (Implementation Guide §4) */}
