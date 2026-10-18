@@ -57,6 +57,8 @@ export interface UseToolWorksheetOptions<S> extends ToolWorksheetCodec<S> {
   autosaveDraftMs?: number;
   /** After a successful cloud save (canon emit lives here). Errors are the caller's to report. */
   onSaved?: (state: S, ctx: { worksheetId: string; created: boolean }) => void | Promise<void>;
+  /** After any new sheet is created (first save, selector, draft filing). */
+  onCreated?: (worksheetId: string) => void;
   /** After a cloud worksheet is hydrated into the page. */
   onLoaded?: (worksheet: Worksheet, state: S) => void;
   /** Passed to useWorksheets: entity-match check after the draft wiki page syncs. */
@@ -235,6 +237,7 @@ export function useToolWorksheet<S>(toolType: string, options: UseToolWorksheetO
         setState(draft);
         setSavedKey(keyOf(draft));
         setCurrentId(ws.id);
+        opts.current.onCreated?.(ws.id);
         setTitle(ws.title);
         setTagsState(ws.tags ?? []);
         setSelectorOpen(false);
@@ -308,6 +311,7 @@ export function useToolWorksheet<S>(toolType: string, options: UseToolWorksheetO
         });
         id = ws.id;
         setCurrentId(ws.id);
+        opts.current.onCreated?.(ws.id);
         setTitle(ws.title);
         setSearchParams(withWorksheetParams(searchParams, worldId, ws.id));
       }
@@ -344,6 +348,7 @@ export function useToolWorksheet<S>(toolType: string, options: UseToolWorksheetO
         data: serialize(snapshot),
       });
       setCurrentId(ws.id);
+      opts.current.onCreated?.(ws.id);
       setTitle(ws.title);
       setSavedKey(keyOf(snapshot));
       if (localKey) clearUnfiled(localKey);
