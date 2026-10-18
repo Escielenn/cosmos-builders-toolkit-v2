@@ -105,7 +105,7 @@ SEMANTIC = {'physics':'amber','stop':'crimson','worlds':'stellar','lore':'violet
 
 PLANE_STEP = 1.22
 TEXT_T  = {'t1': None, 't2': 8.0, 't3': 5.5, 't4': 4.5}     # t1 pinned
-LINE_T  = {'hairline':1.7,'default':2.4,'interactive':3.1,'emphasis':4.6}
+LINE_T  = {'hairline':1.32,'default':1.7,'interactive':3.1,'emphasis':4.0}
 
 def derive_theme(base_id, primary_id):
     B = BASES[base_id]; seed = hx(B['seed']); dark = B['mode']=='dark'

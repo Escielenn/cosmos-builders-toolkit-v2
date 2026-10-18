@@ -16,7 +16,7 @@ const buttonVariants = cva(
         // Destructive: crimson with white fill-sweep (same pattern as primary)
         destructive: "bg-destructive text-destructive-foreground sf-btn-lift",
         // Outline: transparent with border, primary fill-sweep
-        outline: "border border-sf-line-interactive bg-transparent sf-fill-sweep sf-fill-sweep--primary hover:border-primary hover:text-primary",
+        outline: "border border-sf-line bg-transparent sf-fill-sweep sf-fill-sweep--primary hover:border-primary hover:text-primary",
         // Secondary: elevated surface with neutral fill-sweep
         secondary: "bg-secondary text-secondary-foreground sf-fill-sweep sf-fill-sweep--secondary",
         // Ghost: minimal with subtle fill-sweep
@@ -24,13 +24,13 @@ const buttonVariants = cva(
         // Link: sweep underline on hover
         link: "text-primary sf-text-link",
         // StellarForge signature: uppercase, letter-spaced, primary fill-sweep
-        sf: "bg-transparent border border-sf-line-interactive text-t1 uppercase tracking-[0.15em] text-xs font-medium sf-fill-sweep sf-fill-sweep--primary hover:border-primary hover:text-primary",
+        sf: "bg-transparent border border-sf-line text-t1 uppercase tracking-[0.15em] text-xs font-medium sf-fill-sweep sf-fill-sweep--primary hover:border-primary hover:text-primary",
         /* ── April 2026 handoff ── zero-radius, teal-filled primary */
         "sf-primary":
           "border border-sf-primary bg-sf-primary text-sf-on-primary font-sans font-medium uppercase tracking-[1.2px] transition-base ease-sf-out hover:bg-sf-primary-bright hover:border-sf-primary-bright hover:-translate-y-[1px] active:translate-y-0",
         /* ── April 2026 handoff ── transparent outline ghost */
         "sf-ghost":
-          "border border-sf-line-interactive bg-transparent text-t1 font-sans font-medium uppercase tracking-[1.2px] transition-base ease-sf-out hover:border-sf-primary hover:text-sf-primary-text hover:shadow-sf-inset-teal",
+          "border border-sf-line bg-transparent text-t1 font-sans font-medium uppercase tracking-[1.2px] transition-base ease-sf-out hover:border-sf-primary hover:text-sf-primary-text hover:shadow-sf-inset-teal",
       },
       size: {
         /* Heights target a comfortable desktop hit area; every size clears the

@@ -99,10 +99,10 @@ const config: Config = {
         't5': 'rgba(255, 255, 255, 0.38)',
 
         // ── Lines: solid, not alpha ──
-        'sf-line-hairline':    'rgb(var(--sf-line-hairline-rgb) / <alpha-value>)',  // #50555E
-        'sf-line':             'rgb(var(--sf-line-rgb) / <alpha-value>)',  // #676B75
+        'sf-line-hairline':    'rgb(var(--sf-line-hairline-rgb) / <alpha-value>)',  // #41454D
+        'sf-line':             'rgb(var(--sf-line-rgb) / <alpha-value>)',  // #50555E
         'sf-line-interactive': 'rgb(var(--sf-line-interactive-rgb) / <alpha-value>)',  // #787D87
-        'sf-line-emphasis':    'rgb(var(--sf-line-emphasis-rgb) / <alpha-value>)',  // #979BA5
+        'sf-line-emphasis':    'rgb(var(--sf-line-emphasis-rgb) / <alpha-value>)',  // #8C909A
         // DEPRECATED alpha borders — same reasoning as t5. sf-line-* above
         // are the replacement; these stay only until every call site moves.
         'sf-border':           'rgba(255, 255, 255, 0.22)',
@@ -165,8 +165,8 @@ const config: Config = {
         // ── PRESERVED: scrollbar swatches used outside tokens.css's own
         // .sf-sb rules, and a couple of legacy direct references ──
         'sb-track': 'rgb(var(--sf-void-rgb) / <alpha-value>)',  // #0A0E17
-        'sb-thumb': 'rgb(var(--sf-line-rgb) / <alpha-value>)',  // #676B75
-        'sb-thumb-hover': 'rgb(var(--sf-line-emphasis-rgb) / <alpha-value>)',  // #979BA5
+        'sb-thumb': 'rgb(var(--sf-line-rgb) / <alpha-value>)',  // #50555E
+        'sb-thumb-hover': 'rgb(var(--sf-line-emphasis-rgb) / <alpha-value>)',  // #8C909A
       },
 
       fontFamily: {
