@@ -1,5 +1,21 @@
 # StellarForge Changelog
 
+## 0.7456
+Writing space phase 4 of 4: in and out.
+- Import into a world: Markdown, plain text, Word (.docx), RTF, HTML, a
+  .zip of files, or a Scrivener project (.scriv folder or zip; Scrivener 2
+  and 3). Preview with counts before anything is written; additive only,
+  never overwrites. Scrivener draft order, nested folders, labels,
+  statuses, synopses, notes, keywords and compile exclusions carry over;
+  Research text comes in as a Research folder.
+- Optional split of Markdown and Word at headings (H1 folders, H2 documents).
+- Compile rebuilt: compile-only order (drag or keyboard), include/exclude
+  per document or folder, presets (Standard Manuscript, Reading copy,
+  Ebook), separators, chapter headings with numbering, title page with
+  rounded word count, About the author, World Reference appendix.
+- Formats: Word in Standard Manuscript Format, PDF, EPUB 3, Markdown,
+  plain text. Cited facts print their stored value.
+
 ## 0.7446
 Writing space phase 3 of 4: the world in the room.
 - Cited facts: values inserted from Refs (or the world picker) become
