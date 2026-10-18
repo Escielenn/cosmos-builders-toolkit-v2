@@ -29,12 +29,12 @@ Match the 80% writers actually use. Ship these before adding graph cleverness, b
 
 | Feature | State | Priority |
 |---|---|---|
-| Binder hierarchy, drag-reorder | partial | P0 |
+| Binder hierarchy, drag-reorder | done 2026-10-18 (any depth, drag anywhere, keyboard Move to) | P0 |
 | **Corkboard** — index cards with synopsis, drag to reorder | `Board` button exists | P0 |
 | **Outliner** — table view with metadata columns | missing | P0 |
-| **Document metadata** — label, status, POV, target words, notes | `Add a synopsis` only | P0 |
+| **Document metadata** — label, status, POV, target words, notes | done 2026-10-18 (inspector Doc tab; keywords too) | P0 |
 | **Compile** — manuscript output (DOCX, PDF, EPUB, MD) with format presets, front/back matter, separators | `Export` exists, scope unknown | P0 |
-| **Snapshots** — versioned captures with diff and restore | missing | P1 |
+| **Snapshots** — versioned captures with diff and restore | done 2026-10-18 (named, word diff, restore snapshots first) | P1 |
 | **Collections** — saved sets of documents | missing | P1 |
 | **Split view** — two documents, or document + reference | missing | P1 |
 | **Focus / composition mode** | `Focus` exists | done |

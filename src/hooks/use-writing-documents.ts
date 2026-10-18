@@ -2,7 +2,13 @@
 // useWritingDocuments, React Query hooks for writing-space documents.
 //
 // Documents are stored as world_entries with entry_type = 'document'.
-// Folders are stored as world_entries with entry_type = 'folder'.
+// Folders are stored as world_entries with entry_type = 'folder', and nest to
+// any depth through parent_id (see src/lib/binder-tree.ts).
+//
+// 'lore' entries are Codex material (the Codex uses them as its own folders
+// and wiki prose). They used to be pulled in here and showed up as binder
+// documents; they are reachable from the Codex only now. Their trash rows
+// still list in the binder's Trash so nothing trashed earlier is stranded.
 // Provides CRUD operations with tanstack-query cache invalidation.
 // ---------------------------------------------------------------------------
 
@@ -14,6 +20,8 @@ import { useToast } from "@/hooks/use-toast";
 import type { WorldEntry } from "@/services/world-data";
 import { writeDocMeta, type DocumentMeta } from "@/lib/document-meta";
 import { mapError } from "@/lib/ship-voice";
+import { buildBinderTree, flattenFolders, type BinderNode, type MovePlan } from "@/lib/binder-tree";
+import { captureDocumentSnapshot } from "@/hooks/use-document-versions";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -25,7 +33,14 @@ export interface WritingFolder {
   id: string;
   title: string;
   sort_order: number;
+  /** Direct child documents, in binder order. */
   documents: WritingDocument[];
+  /** Effective parent folder (null = binder root). */
+  parent_id: string | null;
+  /** Nesting depth, 0 at the root. */
+  depth: number;
+  /** Folder titles from the root down to this one. */
+  path: string[];
 }
 
 // ---------------------------------------------------------------------------
@@ -51,7 +66,7 @@ export function useWritingDocuments(worldId: string | undefined) {
         .from("world_entries")
         .select("*")
         .eq("world_id", worldId!)
-        .in("entry_type", ["document", "lore", "folder"])
+        .in("entry_type", ["document", "folder"])
         .is("trashed_at", null)
         .order("updated_at", { ascending: false });
 
@@ -62,44 +77,59 @@ export function useWritingDocuments(worldId: string | undefined) {
     staleTime: 30_000,
   });
 
-  // Derive structured folder/document data from the flat list
+  // Derive the binder tree, plus the flat shapes older callers read
+  // (Corkboard and Compile walk `folders` then `unfiledDocs`).
   const structured = useMemo(() => {
     const allEntries = query.data ?? [];
+    const tree = buildBinderTree(allEntries);
+    const docsOf = (n: BinderNode<WorldEntry>) =>
+      n.children.filter((c) => !c.isFolder).map((c) => c.entry);
 
-    // Separate folders from documents
-    const folderEntries = allEntries
-      .filter((e) => e.entry_type === "folder")
-      .sort((a, b) => a.sort_order - b.sort_order);
-
-    const docEntries = allEntries.filter((e) => e.entry_type !== "folder");
-
-    // Build folder map with their children
-    const folders: WritingFolder[] = folderEntries.map((f) => ({
-      id: f.id,
-      title: f.title,
-      sort_order: f.sort_order,
-      documents: docEntries
-        .filter((d) => d.parent_id === f.id)
-        .sort((a, b) => a.sort_order - b.sort_order),
+    // Every folder, depth-first, so nested chapters compile in reading order.
+    const folders: WritingFolder[] = flattenFolders(tree).map(({ node, path }) => ({
+      id: node.entry.id,
+      title: node.entry.title,
+      sort_order: node.entry.sort_order,
+      documents: docsOf(node),
+      parent_id: node.depth === 0 ? null : node.entry.parent_id,
+      depth: node.depth,
+      path,
     }));
 
-    // Unfiled documents have no parent_id or a parent_id that doesn't match any folder
-    const folderIds = new Set(folderEntries.map((f) => f.id));
-    const unfiledDocs = docEntries.filter(
-      (d) => !d.parent_id || !folderIds.has(d.parent_id)
-    );
+    // Documents at the binder root (no folder, or an orphaned parent).
+    const unfiledDocs = tree.filter((n) => !n.isFolder).map((n) => n.entry);
+    const allDocs = allEntries.filter((e) => e.entry_type !== "folder");
 
-    return { folders, unfiledDocs, allDocs: docEntries };
+    // Every document in binder reading order (depth-first, folders and
+    // documents interleaved exactly as the binder shows them), with the
+    // folder that holds it. This is the order a compile must follow.
+    const folderById = new Map(folders.map((f) => [f.id, f]));
+    const orderedDocs: { doc: WorldEntry; folder: WritingFolder | null }[] = [];
+    const walk = (nodes: BinderNode<WorldEntry>[], folder: WritingFolder | null) => {
+      for (const n of nodes) {
+        if (n.isFolder) walk(n.children, folderById.get(n.entry.id) ?? null);
+        else orderedDocs.push({ doc: n.entry, folder });
+      }
+    };
+    walk(tree, null);
+
+    return { tree, folders, unfiledDocs, allDocs, allEntries, orderedDocs };
   }, [query.data]);
 
   return {
     ...query,
     /** All documents (excludes folders), for backward compat */
     data: structured.allDocs,
-    /** Folders with their child documents */
+    /** Every folder, depth-first, with its direct child documents */
     folders: structured.folders,
-    /** Documents not assigned to any folder */
+    /** Documents at the binder root */
     unfiledDocs: structured.unfiledDocs,
+    /** The binder as a tree (folders nest to any depth) */
+    tree: structured.tree,
+    /** Folders and documents, flat (input for binder-tree planners) */
+    entries: structured.allEntries,
+    /** Documents in binder reading order, with their folder (compile order) */
+    orderedDocs: structured.orderedDocs,
   };
 }
 
@@ -223,38 +253,47 @@ export function useUpdateDocumentContent(worldId: string | undefined) {
  * Writes into the existing world_entries.metadata jsonb column, merging so any
  * keys another feature owns survive. No schema change.
  */
+/**
+ * Read-modify-write on one document's metadata. Safe because writes for a
+ * document are queued (below) and the merge preserves keys it doesn't touch.
+ */
+async function writeMeta(docId: string, patch: Partial<DocumentMeta>): Promise<WorldEntry> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const db = supabase as any;
+  const { data: current, error: readErr } = await db
+    .from("world_entries")
+    .select("metadata")
+    .eq("id", docId)
+    .single();
+  if (readErr) throw readErr;
+
+  const next = writeDocMeta(current?.metadata, patch);
+  const { data, error } = await db
+    .from("world_entries")
+    .update({ metadata: next })
+    .eq("id", docId)
+    .select()
+    .single();
+  if (error) throw error;
+  return data as WorldEntry;
+}
+
+// Per-document write queue. The inspector can commit two fields in quick
+// succession (keywords, then target); two overlapping read-modify-writes
+// would each read the old metadata and the second would drop the first's key.
+const metaQueues = new Map<string, Promise<unknown>>();
+
 export function useUpdateDocumentMeta(worldId: string | undefined) {
   const { toast } = useToast();
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
-      docId,
-      patch,
-    }: {
-      docId: string;
-      patch: Partial<DocumentMeta>;
-    }) => {
-      // Read-modify-write on a per-document row. Unlike the session ledger this
-      // is safe: only one editor holds a document, and the merge preserves keys.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const db = supabase as any;
-      const { data: current, error: readErr } = await db
-        .from("world_entries")
-        .select("metadata")
-        .eq("id", docId)
-        .single();
-      if (readErr) throw readErr;
-
-      const next = writeDocMeta(current?.metadata, patch);
-      const { data, error } = await db
-        .from("world_entries")
-        .update({ metadata: next })
-        .eq("id", docId)
-        .select()
-        .single();
-      if (error) throw error;
-      return data as WorldEntry;
+    mutationFn: ({ docId, patch }: { docId: string; patch: Partial<DocumentMeta> }) => {
+      const run = (metaQueues.get(docId) ?? Promise.resolve())
+        .catch(() => undefined)
+        .then(() => writeMeta(docId, patch));
+      metaQueues.set(docId, run);
+      return run;
     },
     onSuccess: (_data, variables) => {
       qc.invalidateQueries({ queryKey: docKeys.all(worldId!) });
@@ -315,10 +354,13 @@ export function useRenameDocument(worldId: string | undefined) {
 /** Move a document to the trash (soft delete — recoverable, auto-purged ~90d). */
 export function useDeleteDocument(worldId: string | undefined) {
   const { toast } = useToast();
+  const { user } = useAuth();
   const qc = useQueryClient();
 
   return useMutation({
     mutationFn: async (docId: string) => {
+      // Never lose words: a structural operation captures the text first.
+      if (user) await captureDocumentSnapshot(docId, user.id, "trash");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { error } = await (supabase as any)
         .from("world_entries")
@@ -420,7 +462,9 @@ export function useCreateFolder(worldId: string | undefined) {
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: async (title: string) => {
+    /** A bare title creates at the root; pass parentId to nest. */
+    mutationFn: async (arg: string | { title: string; parentId?: string | null }) => {
+      const { title, parentId = null } = typeof arg === "string" ? { title: arg } : arg;
       const { data, error } = await supabase
         .from("world_entries")
         .insert({
@@ -431,10 +475,10 @@ export function useCreateFolder(worldId: string | undefined) {
           metadata: {},
           sort_order: nextSortOrder(
             (qc.getQueryData<WorldEntry[]>(docKeys.all(worldId!)) ?? []).filter(
-              (e) => e.entry_type === "folder",
+              (e) => (e.parent_id ?? null) === parentId,
             ),
           ),
-          parent_id: null,
+          parent_id: parentId,
           created_by: user!.id,
         })
         .select()
@@ -534,6 +578,55 @@ export function useReorderDocuments(worldId: string | undefined) {
 }
 
 // ---------------------------------------------------------------------------
+// Move any binder row (document or folder): new parent + sibling order.
+// Plans come from binder-tree.ts, which refuses a folder-into-descendant move.
+// ---------------------------------------------------------------------------
+
+export function useMoveBinderItem(worldId: string | undefined) {
+  const qc = useQueryClient();
+  const { toast } = useToast();
+  return useMutation({
+    mutationFn: async (plan: MovePlan) => {
+      const { error } = await supabase
+        .from("world_entries")
+        .update({ parent_id: plan.parentId })
+        .eq("id", plan.id);
+      if (error) throw error;
+      const results = await Promise.all(
+        plan.orderedIds.map((id, i) =>
+          supabase.from("world_entries").update({ sort_order: i * 10 }).eq("id", id),
+        ),
+      );
+      const failed = results.find((r) => r.error);
+      if (failed?.error) throw failed.error;
+    },
+    onMutate: async (plan: MovePlan) => {
+      await qc.cancelQueries({ queryKey: docKeys.all(worldId!) });
+      const prev = qc.getQueryData<WorldEntry[]>(docKeys.all(worldId!));
+      if (prev) {
+        const pos = new Map(plan.orderedIds.map((id, i) => [id, i * 10]));
+        qc.setQueryData<WorldEntry[]>(
+          docKeys.all(worldId!),
+          prev.map((e) => {
+            const next = pos.has(e.id) ? { ...e, sort_order: pos.get(e.id)! } : e;
+            return e.id === plan.id ? { ...next, parent_id: plan.parentId } : next;
+          }),
+        );
+      }
+      return { prev };
+    },
+    onError: (error, _plan, ctx) => {
+      if (ctx?.prev) qc.setQueryData(docKeys.all(worldId!), ctx.prev);
+      toast({ title: "MOVE FAILED.", description: mapError(error), variant: "destructive" });
+    },
+    onSettled: (_d, _e, plan) => {
+      qc.invalidateQueries({ queryKey: docKeys.all(worldId!) });
+      qc.invalidateQueries({ queryKey: ["write-doc", plan.id] });
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Rename a folder
 // ---------------------------------------------------------------------------
 
@@ -583,10 +676,17 @@ export function useDeleteFolder(worldId: string | undefined) {
 
   return useMutation({
     mutationFn: async (folderId: string) => {
-      // Step 1: Move all children to unfiled (parent_id = null)
+      // Step 1: Move all children (documents AND nested folders) up to the
+      // folder's own parent, so nothing inside it is ever orphaned.
+      const { data: folder, error: readError } = await supabase
+        .from("world_entries")
+        .select("parent_id")
+        .eq("id", folderId)
+        .maybeSingle();
+      if (readError) throw readError;
       const { error: moveError } = await supabase
         .from("world_entries")
-        .update({ parent_id: null })
+        .update({ parent_id: folder?.parent_id ?? null })
         .eq("parent_id", folderId);
 
       if (moveError) throw moveError;
@@ -601,7 +701,7 @@ export function useDeleteFolder(worldId: string | undefined) {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: docKeys.all(worldId!) });
-      toast({ title: "CHAPTER DELETED." });
+      toast({ title: "FOLDER DELETED.", description: "Its contents moved up one level." });
     },
     onError: (error) => {
       toast({

@@ -219,7 +219,7 @@ export function Corkboard({
       {folders.map((f) => (
         <Group
           key={f.id}
-          title={f.title}
+          title={f.path.join(" / ")}
           docs={f.documents}
           activeDocId={activeDocId}
           onOpen={onOpen}
