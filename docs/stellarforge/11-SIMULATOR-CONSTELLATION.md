@@ -357,7 +357,8 @@ Voice rule: state the CONSEQUENCE, not the number.
   GOOD  "HABITABLE BAND: 4.1°. THAT IS NOT A CIVILIZATION. THAT IS A VALLEY."
 
 Follow the stellarforge-design skill. Simulator chrome keeps product teal
-and rounded-lg per the Tidelock reference. Legacy cyan #00D4FF is retired
+and is square like every other panel (rounded-lg exception retired
+2026-10-17). Legacy cyan #00D4FF is retired
 (SF-II settled decision #3) — do not use it.
 
 Show me the ten rule predicates before wiring any UI.

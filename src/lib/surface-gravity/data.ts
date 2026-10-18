@@ -295,13 +295,13 @@ export const DELTA_V_VERDICTS: DeltaVVerdict[] = [
   {
     maxDeltaV: 30,
     label: "Extremely Difficult",
-    color: "text-sf-amber-warm-text",
+    color: "text-sf-crimson-text",
     description: "Chemical rockets are essentially useless. Civilization may be gravity-locked without exotic technology. Consider space elevators, laser propulsion, or orbital tethers as civilization-defining megaprojects.",
   },
   {
     maxDeltaV: Infinity,
     label: "GRAVITY-LOCKED",
-    color: "text-sf-crimson-text",
+    color: "text-sf-magenta-text",
     description: "Effectively trapped. Reaching orbit requires physics-breaking technology or external rescue. This is one of the most profound worldbuilding choices in hard SF, intelligent beings who can see the cosmos but are imprisoned by their own world's mass.",
   },
 ];

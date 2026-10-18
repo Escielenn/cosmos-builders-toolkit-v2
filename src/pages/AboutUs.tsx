@@ -81,9 +81,9 @@ const AboutUs = () => {
                 { label: "Physics", color: "var(--sf-amber-text)" },
                 { label: "Environment", color: "var(--sf-azure-text)" },
                 { label: "Biology", color: "var(--sf-emerald-text)" },
-                { label: "Psychology", color: "var(--sf-violet-text)" },
+                { label: "Psychology", color: "var(--sf-magenta-text)" },
                 { label: "Mythology", color: "var(--sf-stellar-text)" },
-                { label: "Culture", color: "var(--sf-teal-text)" },
+                { label: "Culture", color: "var(--sf-violet-text)" },
               ].map((step, i) => (
                 <span key={step.label} className="flex items-center gap-2">
                   <span

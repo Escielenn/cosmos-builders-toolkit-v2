@@ -134,8 +134,8 @@ const LOCAL_STORAGE_KEY = "time-dilation-calculator-v1";
 const SEVERITY_STYLES = {
   negligible: { text: "text-sf-emerald-text", border: "border-l-sf-emerald", bg: "bg-sf-emerald/[0.06]" },
   notable: { text: "text-sf-amber-text", border: "border-l-sf-amber", bg: "bg-sf-amber/[0.06]" },
-  significant: { text: "text-sf-amber-warm-text", border: "border-l-sf-amber-warm", bg: "bg-sf-amber-warm/[0.06]" },
-  extreme: { text: "text-sf-crimson-text", border: "border-l-sf-crimson", bg: "bg-sf-crimson/[0.06]" },
+  significant: { text: "text-sf-crimson-text", border: "border-l-sf-crimson", bg: "bg-sf-crimson/[0.06]" },
+  extreme: { text: "text-sf-magenta-text", border: "border-l-sf-magenta", bg: "bg-sf-magenta/[0.06]" },
 };
 
 // ─── Logarithmic slider mapping ──────────────────────────────────────

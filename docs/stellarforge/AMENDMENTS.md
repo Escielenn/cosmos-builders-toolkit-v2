@@ -134,3 +134,31 @@ only outcome that's actually bad.
   contrast targets are the constraint, and every base is solved against them.
 **Revisit:** never, unless a base fails a target — then fix the base.
 
+## 2026-10-17 · Five design decisions settled after the 0.7414 uplift
+
+**Touches:** Design system (stellarforge-design skill, CLAUDE.md)
+**Scope:** typography, simulator radius, cascade colours, scale palettes, archived state
+**Why:** the uplift surfaced five places where the written rules and the
+  shipped product disagreed. Each was settled toward what ships, or toward
+  the rule that already existed, rather than toward a new direction.
+**Instead:**
+  1. *Lora is the sanctioned writer voice* (index.html, SF-II #4): writing
+     surfaces plus marketing "Studio meld" accents. Never instrument chrome
+     or buttons. CascadeFooter on tool pages moved off it. "Four fonts only"
+     now reads "four interface fonts plus Lora".
+  2. *Simulators are square.* No simulator ever shipped `rounded-lg`; the
+     exception is retired. Tag (2px) is the only rounded element.
+  3. *Cascade colours follow the tool categories:* amber Physics, azure
+     Environment, emerald Biology, magenta Psychology, stellar Mythology,
+     violet Culture, teal Integration, crimson Stop. About and Getting
+     Started had Culture as teal and as orange; both now violet. The old
+     "stellar = Worlds" line never matched the code and is corrected.
+  4. *Ordered scales use a distinct hue per step* (emerald → amber →
+     crimson → magenta). Amber and amber-warm never sit on adjacent steps.
+     Applied to Time Dilation, LexDrift, Drake, Space Expansion barriers and
+     surface-gravity escape regimes.
+  5. *Archived is stored, not disabled.* Archived world cards keep the
+     normal surface with a dashed edge and the ARCHIVED badge; disabled
+     tokens stay reserved for things that cannot be operated.
+**Revisit:** permanent unless the owner reopens one.
+

@@ -242,7 +242,7 @@ export const MODIFIER_TYPES: ModifierTypeDef[] = [
     id: "barrier",
     name: "Barrier",
     description: "Political, economic, social, or ideological obstacle that is surmountable but requires significant effort",
-    color: "text-sf-amber-warm-text",
+    color: "text-sf-magenta-text",
     hex: "#FB923C",
   },
   {
