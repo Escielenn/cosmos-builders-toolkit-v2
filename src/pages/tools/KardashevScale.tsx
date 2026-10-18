@@ -1,9 +1,6 @@
 import { useState, useMemo, useCallback, lazy, Suspense } from "react";
-import { useWorldId } from "@/hooks/use-world-id";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
-import { useTags } from "@/hooks/use-tags";
-import { useSearchParams } from "react-router-dom";
 import {
   Copy,
   Crown,
@@ -41,14 +38,14 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
+// FormState, defaults and codec: lib/tool-worksheets/kardashev.
 import {
-  useWorksheets,
-  useWorksheet,
-  useWorksheetsByType,
-  useRenameWorksheet,
-} from "@/hooks/use-worksheets";
+  codec as kardashevCodec,
+  LOCAL_STORAGE_KEY,
+  TOOL_TYPE,
+} from "@/lib/tool-worksheets/kardashev";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
-import { useAuth } from "@/contexts/AuthContext";
 import { MobileSectionNav } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import SectionNavigation from "@/components/tools/SectionNavigation";
@@ -66,9 +63,7 @@ import {
 } from "@/lib/pdf/templates";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
-import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { useWorlds } from "@/hooks/use-worlds";
-import { Json } from "@/integrations/supabase/types";
 import { cn } from "@/lib/utils";
 
 import {
@@ -109,58 +104,6 @@ const PRESET_ICONS: Record<string, LucideIcon> = {
   downstreamers: InfinityIcon,
 };
 
-// ─── FormState ───────────────────────────────────────────────────────
-
-interface FormState {
-  totalPowerWatts: number;
-  powerLog10: number; // slider value (log10)
-  growthRate: GrowthRateKey;
-  civilizationPreset: string;
-  budgetPercentages: Record<string, number>;
-  cascade: {
-    governance: string;
-    warfare: string;
-    economics: string;
-    biology: string;
-    culture: string;
-  };
-  storyNotes: {
-    energySources: string;
-    limitations: string;
-    conflicts: string;
-    dailyLife: string;
-  };
-  generalNotes: string;
-  moodboard: MoodboardImage[];
-}
-
-const initialFormState: FormState = {
-  totalPowerWatts: 1.8e13,
-  powerLog10: 13.26,
-  growthRate: "moderate",
-  civilizationPreset: "earth-2025",
-  budgetPercentages: Object.fromEntries(
-    BUDGET_CATEGORIES.map((c) => [c.id, c.defaultPercent])
-  ),
-  cascade: {
-    governance: "",
-    warfare: "",
-    economics: "",
-    biology: "",
-    culture: "",
-  },
-  storyNotes: {
-    energySources: "",
-    limitations: "",
-    conflicts: "",
-    dailyLife: "",
-  },
-  generalNotes: "",
-  moodboard: [],
-};
-
-const TOOL_TYPE = "kardashev-scale";
-const LOCAL_STORAGE_KEY = "kardashev-scale-v1";
 
 const CASCADE_ICONS: Record<string, typeof Crown> = {
   Governance: Crown,
@@ -182,37 +125,24 @@ function sliderToPower(slider: number): number {
 // ─── Component ───────────────────────────────────────────────────────
 
 const KardashevScale = () => {
-  const [formState, setFormState] = useState<FormState>(initialFormState);
-  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
-  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
-  const worldId = useWorldId();
-  const { user } = useAuth();
   const { toast } = useToast();
   const { worlds } = useWorlds();
-  const [searchParams, setSearchParams] = useSearchParams();
 
-  // Tags
-  const { tags: allTags } = useTags();
-  const worksheetTags = currentWorksheetId
-    ? allTags.filter((t) => t.worksheetIds?.includes(currentWorksheetId))
-    : [];
+  // Worksheet persistence: load, create on first save, rename, tags, browser draft.
+  const worksheet = useToolWorksheet(TOOL_TYPE, {
+    ...kardashevCodec,
+    displayName: "K-Scale Analysis",
+    localKey: LOCAL_STORAGE_KEY,
+    onDraftCreated: (id, title) => entityMatch.check(id, title),
+  });
+  const { state: formState, setState: setFormState, worldId } = worksheet;
+  const currentWorksheetId = worksheet.worksheetId;
+  const currentWorksheetTitle = worksheet.worksheetTitle;
 
-  // Worksheets
   const entityMatch = useEntityMatch(worldId);
-  const { createWorksheet, updateWorksheet, worksheets } = useWorksheets(
-    worldId || undefined, false, {
-      onDraftCreated: entityMatch.check,
-    }
-  );
-  const renameWorksheet = useRenameWorksheet();
-  const { data: worksheetsByType = [] } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
-  // Load worksheet
-  const requestedWorksheetId = searchParams.get("worksheetId");
-  const { data: loadedWorksheet } = useWorksheet(requestedWorksheetId);
 
   // ─── Calculation ──────────────────────────────────────────────────
 
@@ -227,57 +157,6 @@ const KardashevScale = () => {
 
   const results = useMemo(() => calculateKardashev(calcInput), [calcInput]);
 
-  // ─── Worksheet persistence ────────────────────────────────────────
-
-  const handleSave = useCallback(() => {
-    const data = { ...formState } as unknown as Record<string, Json>;
-    if (currentWorksheetId) {
-      updateWorksheet.mutate(
-        { worksheetId: currentWorksheetId, data },
-        { onSuccess: () => toast({ title: "FILE SECURED." }) }
-      );
-    } else if (user) {
-      createWorksheet.mutate(
-        { data, worldId: worldId || undefined, toolType: TOOL_TYPE, title: currentWorksheetTitle || "K-Scale Analysis" },
-        {
-          onSuccess: (ws) => {
-            setCurrentWorksheetId(ws.id);
-            setSearchParams((p) => { p.set("worksheetId", ws.id); return p; });
-            toast({ title: "FILE SECURED." });
-          },
-        }
-      );
-    }
-  }, [formState, currentWorksheetId, currentWorksheetTitle, user, worldId, updateWorksheet, createWorksheet, toast, setSearchParams]);
-
-  // Load worksheet data
-  const handleLoadWorksheet = useCallback(
-    (ws: { id: string; title: string | null; data: Record<string, Json> | null }) => {
-      setCurrentWorksheetId(ws.id);
-      setCurrentWorksheetTitle(ws.title);
-      if (ws.data) {
-        const d = ws.data as unknown as Partial<FormState>;
-        setFormState((prev) => ({
-          ...prev,
-          ...d,
-          budgetPercentages: d.budgetPercentages || prev.budgetPercentages,
-          cascade: { ...prev.cascade, ...d.cascade },
-          storyNotes: { ...prev.storyNotes, ...d.storyNotes },
-          moodboard: d.moodboard || prev.moodboard,
-        }));
-      }
-      setSearchParams((p) => { p.set("worksheetId", ws.id); return p; });
-      setWorksheetSelectorOpen(false);
-    },
-    [setSearchParams]
-  );
-
-  // Auto-load requested worksheet
-  useMemo(() => {
-    if (loadedWorksheet && loadedWorksheet.id !== currentWorksheetId) {
-      handleLoadWorksheet(loadedWorksheet);
-    }
-  }, [loadedWorksheet, currentWorksheetId, handleLoadWorksheet]);
 
   // ─── Handlers ─────────────────────────────────────────────────────
 
@@ -319,12 +198,6 @@ const KardashevScale = () => {
     toast({ title: "COPIED TO CLIPBOARD." });
   }, [results, calcInput, toast]);
 
-  const handleNewWorksheet = useCallback(() => {
-    setFormState(initialFormState);
-    setCurrentWorksheetId(null);
-    setCurrentWorksheetTitle(null);
-    setSearchParams((p) => { p.delete("worksheetId"); return p; });
-  }, [setSearchParams]);
 
   // ─── Key Choices ──────────────────────────────────────────────────
 
@@ -366,13 +239,10 @@ const KardashevScale = () => {
   return (
     <ToolPageLayout
       toolType={TOOL_TYPE}
-      onSave={handleSave}
+      {...worksheet.layoutProps}
       onPrint={() => window.print()}
       onExport={() => setExportDialogOpen(true)}
-      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
       onShare={currentWorksheetId ? () => setShareDialogOpen(true) : undefined}
-      isSaving={updateWorksheet.isPending || createWorksheet.isPending}
-      isCloudEnabled={!!(worldId && user)}
       extraActions={
         <QuickExportButton
           toolName="K-Scale"
@@ -382,15 +252,7 @@ const KardashevScale = () => {
           fullTemplate={<KardashevFullReportTemplate formState={formState} worldName={currentWorld?.name} />}
         />
       }
-      worksheetId={currentWorksheetId}
-      worksheetTitle={currentWorksheetTitle}
-      onRenameWorksheet={async (newTitle) => {
-        if (!currentWorksheetId) return;
-        await renameWorksheet.mutateAsync({ worksheetId: currentWorksheetId, title: newTitle });
-        setCurrentWorksheetTitle(newTitle);
-      }}
       worksheetIcon={<Zap className="w-5 h-5 text-sf-primary-text" />}
-      isLoggedIn={!!user}
     >
 
         {/* ─── Preset Section ────────────────────────────────────── */}
@@ -927,31 +789,9 @@ const KardashevScale = () => {
       {/* Dialogs */}
       {worldId && (
         <WorksheetSelectorDialog
-          open={worksheetSelectorOpen}
-          onOpenChange={setWorksheetSelectorOpen}
-          worldId={worldId}
+          {...worksheet.selectorProps}
           worldName={currentWorld?.name}
-          toolType={TOOL_TYPE}
           toolDisplayName="K-Scale"
-          worksheets={worksheetsByType || []}
-          isLoading={false}
-          onSelect={(selectedId) => {
-            setSearchParams({ worldId: worldId, worksheetId: selectedId });
-            setWorksheetSelectorOpen(false);
-          }}
-          onCreate={async (name) => {
-            const data = formState as unknown as Record<string, Json>;
-            const result = await createWorksheet.mutateAsync({
-              worldId,
-              toolType: TOOL_TYPE,
-              title: name,
-              data,
-            });
-            setCurrentWorksheetId(result.id);
-            setCurrentWorksheetTitle(result.title);
-            setSearchParams({ worldId, worksheetId: result.id });
-            return result.id;
-          }}
         />
       )}
 

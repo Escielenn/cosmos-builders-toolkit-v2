@@ -1,10 +1,7 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from "react";
-import { useWorldId } from "@/hooks/use-world-id";
+import { useState, useMemo, lazy, Suspense } from "react";
 import { logToSlider, sliderToLog } from "@/lib/sliders";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
-import { useTags } from "@/hooks/use-tags";
-import { useSearchParams } from "react-router-dom";
 import {
   FileText,
   Copy,
@@ -26,14 +23,9 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
-import {
-  useWorksheets,
-  useWorksheet,
-  useWorksheetsByType,
-  useRenameWorksheet,
-} from "@/hooks/use-worksheets";
+import { useWorksheetsByType } from "@/hooks/use-worksheets";
+import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
-import { useAuth } from "@/contexts/AuthContext";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, {
   KeyChoicesSection,
@@ -48,7 +40,6 @@ import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
-import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import {
@@ -56,7 +47,6 @@ import {
   HZFullReportTemplate,
 } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
-import { Json } from "@/integrations/supabase/types";
 import OrbitalDiagram from "@/components/tools/OrbitalDiagram";
 
 import {
@@ -74,8 +64,12 @@ import {
   estimatedSurfaceTemperature,
   formatTemperature,
 } from "@/lib/habitable-zone/calculations";
-import type { FormStateForCalc } from "@/lib/habitable-zone/calculations";
-import { writeStandaloneBackup } from "@/lib/standalone-backup";
+import {
+  codec as goldilocksCodec,
+  initialFormState,
+  LOCAL_STORAGE_KEY,
+  TOOL_TYPE,
+} from "@/lib/tool-worksheets/goldilocks";
 import { manifest as goldilocksManifest } from "@/tools/goldilocks/manifest";
 import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
 import { spectralLetter } from "@/canon/codecs";
@@ -83,45 +77,8 @@ import { CanonProvenance } from "@/components/canon/CanonProvenance";
 import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
 import { hueEdge } from "@/lib/hue-edge";
 
-// ─── FormState ───────────────────────────────────────────────────────
-
-interface FormState extends FormStateForCalc {
-  storyNotes: {
-    starDescription: string;
-    planetSetting: string;
-    habitabilityNarrative: string;
-    worldbuildingNotes: string;
-  };
-  generalNotes: string;
-  moodboard: MoodboardImage[];
-}
-
-const initialFormState: FormState = {
-  star: {
-    presetId: "sol",
-    spectralType: "G",
-    mass: 1.0,
-    luminosity: 1.0,
-    temperature: 5778,
-    autoLuminosity: true,
-  },
-  planet: {
-    orbitalDistance: 1.0,
-    name: "",
-    greenhouseWarming: 33,
-  },
-  storyNotes: {
-    starDescription: "",
-    planetSetting: "",
-    habitabilityNarrative: "",
-    worldbuildingNotes: "",
-  },
-  generalNotes: "",
-  moodboard: [],
-};
-
-const TOOL_TYPE = "habitable-zone-calculator";
-const LOCAL_STORAGE_KEY = "habitable-zone-calculator-v1";
+// FormState, defaults and codec: lib/tool-worksheets/goldilocks.
+type FormState = typeof initialFormState;
 
 const SECTIONS: Section[] = [
   { id: "section-star", title: "Define Your Star" },
@@ -147,90 +104,48 @@ const SPECTRAL_LABELS = ["O", "B", "A", "F", "G", "K", "M"];
 // ─── Component ───────────────────────────────────────────────────────
 
 const HabitableZoneCalculator = () => {
-  const [formState, setFormState] = useState<FormState>(initialFormState);
-  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
-  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const [additionalPlanets, setAdditionalPlanets] = useState<{ name: string; distanceAU: number }[]>([]);
   const [importOpen, setImportOpen] = useState(false);
   const { toast } = useToast();
-  const { user } = useAuth();
   const { worlds } = useWorlds();
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = useWorldId();
-  const worksheetId = searchParams.get("worksheetId");
+  // One home per value (1.5 item 10): the star's class is Orrery's. Goldilocks
+  // reads it from canon and owns the habitable-zone edges it derives.
+  const worksheet = useToolWorksheet(TOOL_TYPE, {
+    ...goldilocksCodec,
+    displayName: "Goldilocks",
+    localKey: LOCAL_STORAGE_KEY,
+    loadedToast: true,
+    onDraftCreated: (id, title) => entityMatch.check(id, title),
+    onSaved: (saved, { worksheetId: savedId }) =>
+      canonEmit.emit(saved, {
+        subjectId: canonSubjectId,
+        worksheetId: savedId,
+        inputs: { "star.luminosity": saved.star.luminosity },
+      }),
+  });
+  const { state: formState, setState: setFormState, worldId } = worksheet;
+  const currentWorksheetId = worksheet.worksheetId;
+  const currentWorksheetTitle = worksheet.worksheetTitle;
+  const worksheetId = worksheet.worksheetId;
 
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
   const worldName = currentWorld?.name;
 
   const entityMatch = useEntityMatch(worldId);
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
-    onDraftCreated: entityMatch.check,
-  });
-  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
-  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
-  const renameWorksheet = useRenameWorksheet();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [notesSheetOpen, setNotesSheetOpen] = useState(false);
   const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
-  const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
-  const { updateWorksheetTags } = useTags();
-  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
+  const { data: shareConfig } = useWorksheetShare(currentWorksheetId || undefined);
 
-  // One home per value (1.5 item 10): the star's class is Orrery's. Goldilocks
-  // reads it from canon and owns the habitable-zone edges it derives.
-  const canonSubjectId = useToolSubject(currentWorksheetId || worksheetId);
+  const canonSubjectId = useToolSubject(currentWorksheetId);
   const canonEmit = useCanonEmit(goldilocksManifest, worldId);
   // Only a sheet whose star is still the default takes canon on open.
   const starIsDefault = JSON.stringify(formState.star) === JSON.stringify(initialFormState.star);
 
   // Star System worksheets for planet import
   const { data: starSystemWorksheets = [] } = useWorksheetsByType(worldId || undefined, "star-system-builder");
-
-  // Show worksheet selector when worldId is present but no worksheetId
-  useEffect(() => {
-    if (worldId && !worksheetId && !worksheetsLoading && user) {
-      setWorksheetSelectorOpen(true);
-    }
-  }, [worldId, worksheetId, worksheetsLoading, user]);
-
-  // Load existing worksheet from Supabase
-  useEffect(() => {
-    if (existingWorksheet && existingWorksheet.data) {
-      try {
-        const data = existingWorksheet.data as unknown as FormState;
-        setFormState(data);
-        setCurrentWorksheetId(existingWorksheet.id);
-        setCurrentWorksheetTitle(existingWorksheet.title);
-        if (existingWorksheet.tags) {
-          setWorksheetTags(existingWorksheet.tags);
-        }
-        toast({
-          title: "WORKSHEET LOADED.",
-          description: "WORK RESTORED FROM CLOUD.",
-        });
-      } catch {
-        // Ignore parse errors
-      }
-    }
-  }, [existingWorksheet]);
-
-  // Fallback to localStorage if no worldId
-  useEffect(() => {
-    if (!worldId && !worksheetId) {
-      const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (saved) {
-        try {
-          setFormState(JSON.parse(saved));
-        } catch {
-          // Ignore parse errors
-        }
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [worldId, worksheetId]);
 
   // ─── Computed Results ──────────────────────────────────────────────
 
@@ -344,72 +259,7 @@ const HabitableZoneCalculator = () => {
     }
   };
 
-  // ─── Save / Load / Export ──────────────────────────────────────────
-
-  const handleSave = async () => {
-    writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
-
-    if (worldId && user) {
-      const worksheetData = formState as unknown as Json;
-      try {
-        if (currentWorksheetId || worksheetId) {
-          await updateWorksheet.mutateAsync({
-            worksheetId: currentWorksheetId || worksheetId!,
-            data: worksheetData,
-          });
-          await canonEmit.emit(formState, {
-            subjectId: canonSubjectId,
-            worksheetId: currentWorksheetId || worksheetId,
-            inputs: { "star.luminosity": formState.star.luminosity },
-          });
-        } else {
-          toast({
-            title: "OPERATION FAILED.",
-            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
-            variant: "destructive",
-          });
-        }
-      } catch {
-        // Error handled by mutation
-      }
-    } else {
-      toast({ title: "DRAFT SAVED.", description: "WORK SECURED TO LOCAL STORAGE." });
-    }
-  };
-
-  const handleWorksheetSelect = (selectedWorksheetId: string) => {
-    setSearchParams({ worldId: worldId!, worksheetId: selectedWorksheetId });
-    setWorksheetSelectorOpen(false);
-  };
-
-  const handleWorksheetCreate = async (name: string): Promise<string> => {
-    const worksheetData = initialFormState as unknown as Json;
-    const wsResult = await createWorksheet.mutateAsync({
-      worldId: worldId!,
-      toolType: TOOL_TYPE,
-      title: name,
-      data: worksheetData,
-    });
-    setCurrentWorksheetId(wsResult.id);
-    setCurrentWorksheetTitle(wsResult.title);
-    setSearchParams({ worldId: worldId!, worksheetId: wsResult.id });
-    return wsResult.id;
-  };
-
-  const handleRename = async (newTitle: string) => {
-    const wsId = currentWorksheetId || worksheetId;
-    if (!wsId) return;
-    await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
-    setCurrentWorksheetTitle(newTitle);
-  };
-
-  const handleTagsChange = (newTags: string[]) => {
-    setWorksheetTags(newTags);
-    const wsId = currentWorksheetId || worksheetId;
-    if (wsId) {
-      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
-    }
-  };
+  // ─── Export ────────────────────────────────────────────────────────
 
   const handleCopyResults = () => {
     if (!result.valid) return;
@@ -434,13 +284,11 @@ const HabitableZoneCalculator = () => {
   return (
     <ToolPageLayout
       toolType={TOOL_TYPE}
-      onSave={handleSave}
-      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
+      {...worksheet.layoutProps}
       onPrint={() => window.print()}
       onExport={() => setExportDialogOpen(true)}
-      onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
+      onShare={currentWorksheetId ? () => setShareDialogOpen(true) : undefined}
       isShared={!!shareConfig?.enabled}
-      isCloudEnabled={!!(worldId && user)}
       onNotesClick={() => setNotesSheetOpen(true)}
       onMoodboardClick={() => setMoodboardSheetOpen(true)}
       moodboardCount={formState.moodboard?.length || 0}
@@ -454,13 +302,6 @@ const HabitableZoneCalculator = () => {
           defaultFilename="habitable-zone"
         />
       }
-      worksheetId={currentWorksheetId || worksheetId}
-      worksheetTitle={currentWorksheetTitle}
-      onRenameWorksheet={handleRename}
-      worksheetLoading={worksheetLoading}
-      worksheetTags={worksheetTags}
-      onTagsChange={handleTagsChange}
-      isLoggedIn={!!user}
     >
         {/* Introduction */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
@@ -1171,21 +1012,9 @@ const HabitableZoneCalculator = () => {
 
       {/* Dialogs */}
       <WorksheetSelectorDialog
-        open={worksheetSelectorOpen}
-        onOpenChange={setWorksheetSelectorOpen}
-        worldId={worldId || ""}
+        {...worksheet.selectorProps}
         worldName={worldName}
-        toolType={TOOL_TYPE}
         toolDisplayName="Goldilocks"
-        worksheets={existingWorksheets.map((w) => ({
-          id: w.id,
-          title: w.title,
-          updated_at: w.updated_at,
-          tags: w.tags || undefined,
-        }))}
-        isLoading={worksheetsLoading}
-        onSelect={handleWorksheetSelect}
-        onCreate={handleWorksheetCreate}
       />
 
       <ExportDialog
