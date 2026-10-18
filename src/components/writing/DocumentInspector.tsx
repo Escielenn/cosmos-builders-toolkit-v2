@@ -327,7 +327,7 @@ function CardPane({
             <DropdownMenuItem onClick={() => commit("setInPlaceId", "")}>Not set</DropdownMenuItem>
             {placeOptions.length === 0 ? (
               <p className="px-2 py-1.5 font-serif text-[13px] italic text-t3">
-                No places on file. Place them on a map in the Surface Cartographer.
+                No places on file. Add a place, planet or moon in the Codex.
               </p>
             ) : (
               placeOptions.map((p) => (
