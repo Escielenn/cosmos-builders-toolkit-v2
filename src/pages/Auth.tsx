@@ -171,7 +171,7 @@ const Auth = () => {
       setSignupComplete(true);
       toast({
         title: "ACCOUNT CREATED.",
-        description: "Check your email to confirm; you can sign in once verified.",
+        description: "CONFIRMATION SENT. CHECK EMAIL, THEN SIGN IN.",
       });
     }
   };

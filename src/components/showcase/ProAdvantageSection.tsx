@@ -1,40 +1,43 @@
-import { Zap, Link2, FileDown, Infinity as InfinityIcon, ExternalLink, GraduationCap } from "lucide-react";
+import { Zap, BookOpen, FileDown, Users, Palette, GraduationCap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
-import { PRO_TOOL_IDS, PRICING } from "@/lib/tools-config";
+import { PRO_TOOL_COUNT, SIMULATOR_COUNT, PRICING } from "@/lib/tools-config";
 
+// Only what Pro actually gates (see src/lib/plan-features.ts). The Studio,
+// Codex, Chronicle, Compile and worksheet exports are free for every account,
+// and no world limit exists on any plan.
 const benefits = [
   {
     icon: Zap,
-    title: `${PRO_TOOL_IDS.length} Additional Pro Tools`,
+    title: `${PRO_TOOL_COUNT} Additional Pro Instruments`,
     description:
-      "Access Planetary Profile, Star System Builder, Empire Designer, Drake Equation, Xenomythology Framework, Evolutionary Biology, Technology Consequences, and Species Interaction Matrix.",
+      `All ${SIMULATOR_COUNT} simulators (Rogue, Tidelock, Exosky, ExoForge, Solaris), both cartographers, Genesis, Orrery, Phylo, Mythos, Lexdrift, Dossier, Dominion and the rest of the catalog.`,
   },
   {
-    icon: Link2,
-    title: "Cross-Tool Integration",
+    icon: BookOpen,
+    title: "World Bible",
     description:
-      "Link worksheets together. Your spacecraft references your planet's atmosphere automatically.",
+      "Generate a single PDF of an entire world: its worksheets and notes, laid out as a reference document.",
   },
   {
     icon: FileDown,
-    title: "Professional Exports",
+    title: "Full-World Exports",
     description:
-      "Generate PDFs, Word docs, plain text, and JSON. Export directly to your Notion workspace.",
+      "Export a whole world as a Word document, a Markdown archive with wiki links, or a Scrivener 3 project.",
   },
   {
-    icon: ExternalLink,
-    title: "Notion Integration",
+    icon: Users,
+    title: "Collaborators",
     description:
-      "Connect your Notion workspace and export worksheets as pages. Your worldbuilding, where you work.",
+      "Invite others into a world as viewers or editors.",
   },
   {
-    icon: InfinityIcon,
-    title: "Unlimited Worlds",
+    icon: Palette,
+    title: "World Appearance",
     description:
-      "Create as many worlds and worksheets as you need. Build entire galaxies of interconnected settings.",
+      "Give each world its own accent colour, icon and cover image, and play your own uploaded audio while you work.",
   },
   {
     icon: GraduationCap,

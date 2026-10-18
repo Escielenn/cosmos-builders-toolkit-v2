@@ -2,7 +2,8 @@ import { ReactNode } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
-import { getToolAccess, PRO_TOOL_COUNT } from "@/lib/tools-config";
+import { getToolAccess } from "@/lib/tools-config";
+import { PRO_UNLOCK_SUMMARY } from "@/lib/plan-features";
 import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -201,10 +202,9 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
           <div className="mt-8 pt-6 border-t border-sf-line-hairline">
             <p className="font-heading text-sf-eyebrow uppercase text-t4 mb-2">Pro includes</p>
             <ul className="text-sm text-t2 space-y-1">
-              <li>All {PRO_TOOL_COUNT} Pro worldbuilding tools</li>
-              <li>Unlimited worlds and worksheets</li>
-              <li>Cloud sync across devices</li>
-              <li>Future tools and features</li>
+              {PRO_UNLOCK_SUMMARY.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
             </ul>
           </div>
         </GlassPanel>

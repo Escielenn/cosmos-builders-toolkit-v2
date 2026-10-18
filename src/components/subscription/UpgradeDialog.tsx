@@ -14,7 +14,8 @@ import { useSubscription } from "@/hooks/use-subscription";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { safeRedirect } from "@/lib/url-validation";
-import { FREE_TOOL_IDS, PRO_TOOL_IDS, PRICING } from "@/lib/tools-config";
+import { PRICING } from "@/lib/tools-config";
+import { PRO_PLAN_ITEMS } from "@/lib/plan-features";
 
 interface UpgradeDialogProps {
   open: boolean;
@@ -46,7 +47,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
       console.error("Checkout error:", error);
       toast({
         title: "OPERATION FAILED.",
-        description: "Failed to start checkout. Retry when ready.",
+        description: "CHECKOUT UNAVAILABLE. RETRY WHEN READY.",
         variant: "destructive",
       });
     } finally {
@@ -124,14 +125,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
         <div className="space-y-2 text-sm">
           <p className="font-medium">Pro clearance includes:</p>
           <ul className="space-y-1">
-            {[
-              `All ${FREE_TOOL_IDS.length + PRO_TOOL_IDS.length} tools`,
-              "Unlimited worlds and worksheets",
-              "Cloud sync across devices",
-              "Export to PDF, DOCX, and JSON",
-              "Priority support",
-              "All future tools and features",
-            ].map((feature) => (
+            {PRO_PLAN_ITEMS.map((feature) => (
               <li key={feature} className="flex items-center gap-2 text-t3">
                 <Check className="w-4 h-4 text-sf-emerald-text" />
                 {feature}

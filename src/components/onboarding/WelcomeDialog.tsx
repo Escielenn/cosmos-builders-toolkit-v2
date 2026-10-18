@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { usePwaInstall } from "@/hooks/use-pwa-install";
+import { PRO_PLAN_ITEMS } from "@/lib/plan-features";
 
 // ---------------------------------------------------------------------------
 // Variant types & content
@@ -48,13 +49,10 @@ const VARIANTS: Record<WelcomeVariant, VariantConfig> = {
   pro: {
     icon: Zap,
     title: "PRO ACCESS ACTIVATED",
-    subtitle: "All instruments unlocked.",
-    features: [
-      "Unlimited worlds",
-      "Full export suite (PDF, DOCX, Notion)",
-      "Cloud sync across devices",
-      "All future tools included",
-    ],
+    subtitle: "ALL INSTRUMENTS UNLOCKED.",
+    // Only what Pro actually adds (src/lib/plan-features.ts). Writing,
+    // Compile and worksheet exports are free, so they are not promised here.
+    features: PRO_PLAN_ITEMS,
     accentColor: "teal",
     showPwaPrompt: false,
     primaryAction: { label: "Create a World", href: "/worlds" },
@@ -64,7 +62,7 @@ const VARIANTS: Record<WelcomeVariant, VariantConfig> = {
   vanguard: {
     icon: Sparkles,
     title: "VANGUARD ACCESS ACTIVATED",
-    subtitle: "You're shaping what comes next.",
+    subtitle: "ROADMAP VOTES ACTIVE. EARLY ACCESS GRANTED.",
     features: [
       "10 roadmap votes every month",
       "Early access to new tools",

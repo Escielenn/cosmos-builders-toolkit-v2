@@ -11,7 +11,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription, type Subscription } from "@/hooks/use-subscription";
 import { useToast } from "@/hooks/use-toast";
 import WelcomeDialog from "@/components/onboarding/WelcomeDialog";
-import { FREE_TOOL_IDS, PRO_TOOL_IDS, PRICING, getToolDisplayName } from "@/lib/tools-config";
+import { FREE_TOOL_IDS, PRICING, TOTAL_TOOL_COUNT, getToolDisplayName } from "@/lib/tools-config";
+import { FREE_PLAN_GROUPS, PRO_PLAN_ITEMS } from "@/lib/plan-features";
 import { PageBursts } from "@/components/ui/data-burst";
 import { PRICING_BURSTS } from "@/lib/data-bursts";
 import { ParallaxStrips } from "@/components/ambient/ParallaxStrips";
@@ -44,7 +45,7 @@ const Pricing = () => {
         setActivating(true);
         toast({
           title: "ACTIVATING ACCESS...",
-          description: "Confirming payment. Stand by.",
+          description: "CONFIRMING PAYMENT. STAND BY.",
         });
 
         const success = await waitForSubscription();
@@ -52,7 +53,7 @@ const Pricing = () => {
         if (success) {
           toast({
             title: "ACCESS ACTIVATED.",
-            description: "All instruments unlocked.",
+            description: "ALL INSTRUMENTS UNLOCKED.",
           });
 
           // Show tier-specific welcome dialog
@@ -77,7 +78,7 @@ const Pricing = () => {
         } else {
           toast({
             title: "SUBSCRIPTION PENDING.",
-            description: "Payment received. Activation in progress.",
+            description: "PAYMENT RECEIVED. ACTIVATION IN PROGRESS.",
           });
           refreshSubscription();
         }
@@ -89,7 +90,7 @@ const Pricing = () => {
       handledRef.current = true;
       toast({
         title: "CHECKOUT CANCELED.",
-        description: "Clearance available when ready.",
+        description: "CLEARANCE AVAILABLE WHEN READY.",
       });
       window.history.replaceState({}, '', '/pricing');
     }
@@ -130,7 +131,7 @@ const Pricing = () => {
     } catch (error) {
       toast({
         title: "OPERATION FAILED.",
-        description: "Failed to open billing portal. Retry when ready.",
+        description: "BILLING PORTAL UNAVAILABLE. RETRY WHEN READY.",
         variant: "destructive",
       });
     } finally {
@@ -138,22 +139,12 @@ const Pricing = () => {
     }
   };
 
-  const totalTools = FREE_TOOL_IDS.length + PRO_TOOL_IDS.length;
-
-  const freeFeatures = [
-    `${FREE_TOOL_IDS.length} worldbuilding tools`,
-    "Unlimited local drafts",
-    "Cloud sync (with account)",
-    "Export to JSON",
-  ];
-
+  // Plan contents come from src/lib/plan-features.ts, the one place a plan
+  // promise may be made. Free is the whole writing side of the ship; Pro
+  // adds instruments and world-level exports.
   const proFeatures = [
-    `All ${totalTools} worldbuilding tools`,
-    "Unlimited worlds & worksheets",
-    "Cloud sync across devices",
-    "Export to PDF, JSON & Notion",
-    "5–10% off SF courses",
-    "All future tools & features",
+    ...PRO_PLAN_ITEMS,
+    `${PRICING.pro.monthly.courseDiscount}–${PRICING.pro.yearly.courseDiscount} off SF courses`,
   ];
 
   const vanguardFeatures = [
@@ -184,8 +175,8 @@ const Pricing = () => {
             <SectionHero
               warm
               eyebrow="// access tiers"
-              title={<>Upgrade your <span className="text-sf-primary-text">access.</span></>}
-              subtitle={`Free accounts access ${FREE_TOOL_IDS.length} tools. Pro unlocks all ${totalTools}. Vanguard shapes what comes next.`}
+              title={<>Write the book free. <span className="text-sf-primary-text">Unlock every instrument.</span></>}
+              subtitle={`The Studio, Codex, Chronicle, Canon and Compile come with every account. Pro opens all ${TOTAL_TOOL_COUNT} instruments and full-world exports. Vanguard shapes what comes next.`}
             />
           </div>
         </section>
@@ -199,16 +190,23 @@ const Pricing = () => {
               <p className="text-4xl font-light text-t1">$0<span className="text-lg text-t3">/forever</span></p>
             </div>
 
-            <ul className="space-y-3 mb-8">
-              {freeFeatures.map((feature) => (
-                <li key={feature} className="flex items-center gap-2 text-sm">
-                  <Check className="w-4 h-4 text-sf-emerald-text shrink-0" />
-                  <span className="text-t2">{feature}</span>
-                </li>
+            <div className="space-y-5 mb-8">
+              {FREE_PLAN_GROUPS.map((group) => (
+                <div key={group.heading}>
+                  <p className="font-heading text-sf-eyebrow uppercase text-t4 mb-2">{group.heading}</p>
+                  <ul className="space-y-2">
+                    {group.items.map((feature) => (
+                      <li key={feature} className="flex items-start gap-2 text-sm">
+                        <Check className="w-4 h-4 mt-0.5 text-sf-emerald-text shrink-0" />
+                        <span className="text-t2">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ))}
-            </ul>
+            </div>
 
-            <p className="font-heading text-sf-eyebrow uppercase text-t4 mb-3">Free tools</p>
+            <p className="font-heading text-sf-eyebrow uppercase text-t4 mb-3">Free instruments</p>
             <ul className="text-sm text-t2 space-y-1 mb-6">
               {FREE_TOOL_IDS.map((id) => (
                 <li key={id}>{getToolDisplayName(id)}</li>
@@ -244,10 +242,11 @@ const Pricing = () => {
               <p className="text-sm text-t2">or ${PRICING.pro.yearly.price}/year (save {PRICING.pro.yearly.savings})</p>
             </div>
 
+            <p className="text-sm text-t1 mb-3">Everything in Standard, plus:</p>
             <ul className="space-y-3 mb-8">
               {proFeatures.map((feature) => (
-                <li key={feature} className="flex items-center gap-2 text-sm">
-                  <Check className="w-4 h-4 text-sf-emerald-text shrink-0" />
+                <li key={feature} className="flex items-start gap-2 text-sm">
+                  <Check className="w-4 h-4 mt-0.5 text-sf-emerald-text shrink-0" />
                   <span className="text-t2">{feature}</span>
                 </li>
               ))}
@@ -462,8 +461,12 @@ const Pricing = () => {
             <h3 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4">Frequently Asked Questions</h3>
             <div className="space-y-4 text-sm">
               <div>
+                <p className="font-medium text-t1">Is the writing Studio free?</p>
+                <p className="text-t2">Yes. The Studio (binder, corkboard, outliner, snapshots), the Codex, the Chronicle, Canon capture and Compile come with every free account. Pro adds instruments and world-level exports; it never locks your manuscript.</p>
+              </div>
+              <div>
                 <p className="font-medium text-t1">Can I cancel anytime?</p>
-                <p className="text-t2">Yes! Cancel anytime from your billing portal. You'll keep access until the end of your billing period.</p>
+                <p className="text-t2">Yes. Cancel anytime from your billing portal. You'll keep access until the end of your billing period.</p>
               </div>
               <div>
                 <p className="font-medium text-t1">What payment methods do you accept?</p>
@@ -471,15 +474,15 @@ const Pricing = () => {
               </div>
               <div>
                 <p className="font-medium text-t1">Will I lose my data if I cancel?</p>
-                <p className="text-t2">No. Your worlds and worksheets remain saved. You just won't be able to access Pro/Vanguard tools.</p>
+                <p className="text-t2">No. Your worlds, worksheets and manuscripts remain saved, and the Studio stays open. Pro and Vanguard instruments lock until you resubscribe.</p>
               </div>
               <div>
                 <p className="font-medium text-t1">Can I upgrade from Pro to Vanguard?</p>
-                <p className="text-t2">Yes! Upgrade anytime. Stripe prorates the billing so you only pay the difference for the remainder of your current period.</p>
+                <p className="text-t2">Yes. Upgrade anytime. Stripe prorates the billing so you only pay the difference for the remainder of your current period.</p>
               </div>
               <div>
                 <p className="font-medium text-t1">Can I switch between monthly and yearly?</p>
-                <p className="text-t2">Yes! You can change your plan anytime through the billing portal.</p>
+                <p className="text-t2">Yes. You can change your plan anytime through the billing portal.</p>
               </div>
               <div>
                 <p className="font-medium text-t1">What are roadmap votes?</p>

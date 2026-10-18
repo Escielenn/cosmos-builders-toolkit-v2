@@ -147,14 +147,14 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                 </>
               ) : user ? (
                 <div className="text-center py-4">
-                  <p className="text-xs text-t3 mb-3">No worlds yet</p>
+                  <p className="text-xs text-t3 mb-3">NO WORLDS ON FILE.</p>
                   <NavigationMenuLink asChild>
                     <button
                       onClick={() => navigate("/worlds?create=true")}
                       className="flex items-center justify-center gap-2 px-3 py-2 text-xs text-sf-primary-text hover:text-t1 transition-colors mx-auto"
                     >
                       <Plus className="w-3.5 h-3.5" />
-                      Create Your First World
+                      Begin survey
                     </button>
                   </NavigationMenuLink>
                 </div>
