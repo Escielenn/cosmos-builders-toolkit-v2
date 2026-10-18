@@ -675,7 +675,7 @@ const WorldDashboard = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="container mx-auto px-4 pt-24 pb-16">{loadingSkeleton}</main>
+        <main id="main" tabIndex={-1} className="container mx-auto px-4 pt-24 pb-16">{loadingSkeleton}</main>
       </div>
     );
   }
@@ -703,7 +703,7 @@ const WorldDashboard = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="container mx-auto px-4 pt-24 pb-16">{errorContent}</main>
+        <main id="main" tabIndex={-1} className="container mx-auto px-4 pt-24 pb-16">{errorContent}</main>
       </div>
     );
   }
@@ -1072,7 +1072,7 @@ const WorldDashboard = () => {
       ) : (
         <div className="min-h-screen bg-background">
           <Header />
-          <main className="relative container mx-auto px-4 pt-24 pb-16">
+          <main id="main" tabIndex={-1} className="relative container mx-auto px-4 pt-24 pb-16">
             {dashboardContent}
           </main>
         </div>

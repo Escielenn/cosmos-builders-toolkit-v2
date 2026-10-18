@@ -32,7 +32,7 @@ function GuardShell({ embedded, children }: { embedded: boolean; children: React
   return (
     <div className="min-h-screen bg-sf-void">
       <Header />
-      <main className="container mx-auto px-4 pt-24 pb-16 flex items-center justify-center">
+      <main id="main" tabIndex={-1} className="container mx-auto px-4 pt-24 pb-16 flex items-center justify-center">
         {children}
       </main>
     </div>

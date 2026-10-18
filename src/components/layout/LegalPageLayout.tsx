@@ -94,7 +94,7 @@ const LegalPageLayout = ({
     <div className="min-h-screen bg-background sf-atmosphere">
       <Header />
 
-      <main className="relative container mx-auto px-4 pt-24 pb-16 max-w-4xl">
+      <main id="main" tabIndex={-1} className="relative container mx-auto px-4 pt-24 pb-16 max-w-4xl">
         {bursts && <PageBursts bursts={bursts} />}
         {/* Back Link */}
         <BackLink to="/" label="RETURN TO BRIDGE" className="mb-6" />

@@ -5,6 +5,7 @@ import "@/lib/preload-error-recovery";
 import { Suspense, lazy } from "react";
 import { MotionConfig } from "framer-motion";
 import { Toaster } from "@/components/ui/toaster";
+import { SkipLink } from "@/components/layout/SkipLink";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -187,6 +188,8 @@ const App = () => (
         <TooltipProvider>
           <Toaster />
           <BrowserRouter>
+            {/* First focusable element on every page (WCAG 2.4.1). */}
+            <SkipLink />
             <ScrollToTop />
             <BackgroundLayer />
             <KonamiCode />

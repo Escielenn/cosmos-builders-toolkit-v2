@@ -131,7 +131,7 @@ const ExoskySimulator = () => {
         <Header />
         {/* In flow (not fixed) at one viewport tall, so the cascade footer
             can sit below the sky. */}
-        <div className="relative h-[calc(100dvh-64px)]" style={{ marginTop: 64 }}>
+        <main id="main" tabIndex={-1} className="relative h-[calc(100dvh-64px)]" style={{ marginTop: 64 }}>
           <Suspense fallback={<SimLoader />}>
             <ExoSkyV2
               narrativeBridgeOpen={narrativeBridge.panelProps.open}
@@ -190,7 +190,7 @@ const ExoskySimulator = () => {
             config={SIMULATOR_NARRATIVE_CONFIGS["exosky"]}
             {...narrativeBridge.panelProps}
           />
-        </div>
+        </main>
         <SimulatorCascadeFooter simulatorType="exosky" />
       </div>
       <SaveSimulationDialog

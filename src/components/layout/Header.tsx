@@ -156,7 +156,8 @@ const Header = () => {
         {/* Desktop Navigation */}
         <HeaderNavigation isSubscribed={isSubscribed} />
 
-        <div className="flex items-center gap-2">
+        {/* gap-0 below sm: five 44px controls fit beside the mark at 375px */}
+        <div className="flex items-center gap-0 sm:gap-2">
           {/* Mobile Menu */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild className="xl:hidden">
@@ -239,7 +240,7 @@ const Header = () => {
           <AudioSelectorDialog />
           <BackgroundSelector />
           <button
-            className="sf-nav-link inline-flex items-center justify-center gap-2 h-9 px-2 text-t3 hover:text-sf-primary-text transition-colors"
+            className="sf-nav-link inline-flex items-center justify-center gap-2 h-11 min-h-hit min-w-hit px-2 text-t3 hover:text-sf-primary-text transition-colors"
             onClick={() => setSearchOpen(true)}
             aria-label="Search"
           >
@@ -273,7 +274,7 @@ const Header = () => {
           {!loading && user ? (
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
-                <button className="sf-nav-link inline-flex items-center gap-2 px-2 h-9 text-t2 hover:text-sf-primary-text transition-colors">
+                <button className="sf-nav-link inline-flex items-center gap-2 px-2 h-11 min-h-hit min-w-hit text-t2 hover:text-sf-primary-text transition-colors">
                   <Avatar className="w-7 h-7 shrink-0 relative z-[1]">
                     <AvatarImage src={profile?.avatar_url || undefined} />
                     <AvatarFallback className="text-xs">{initials}</AvatarFallback>

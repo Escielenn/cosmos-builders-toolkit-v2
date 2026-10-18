@@ -253,7 +253,7 @@ const RichTextEditor = ({
 
           {/* Theme Picker */}
           <div className="w-px h-5 bg-sf-line-hairline mx-1" />
-          <div className="flex items-center gap-1 ml-0.5">
+          <div className="flex items-center gap-[30px] px-[15px]">
             {WRITING_THEMES.map((theme) => (
               <Tooltip key={theme.id}>
                 <TooltipTrigger asChild>
@@ -261,7 +261,8 @@ const RichTextEditor = ({
                     type="button"
                     onClick={() => updatePreferences({ themeId: theme.id })}
                     className={cn(
-                      "w-3.5 h-3.5 rounded-full border transition-all",
+                      // 14px swatch, 44px hit (.sf-hit); the 30px gap keeps hit boxes apart
+                      "sf-hit w-3.5 h-3.5 rounded-full border transition-all",
                       preferences.themeId === theme.id
                         ? "ring-2 ring-sf-stellar ring-offset-1 ring-offset-background border-sf-stellar"
                         : "border-sf-line hover:border-sf-line-emphasis"

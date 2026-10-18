@@ -17,6 +17,7 @@ import { getToolAccent, accentTextClass, accentArcClass, accentBgClass } from "@
 import CascadeSuggestionToast from "@/components/tools/CascadeSuggestionToast";
 import UpstreamCallout from "@/components/tools/UpstreamCallout";
 import PageShell from "@/components/layout/PageShell";
+import { MainLandmark } from "@/components/layout/MainLandmark";
 import { PageBursts } from "@/components/ui/data-burst";
 import { TOOL_PAGE_BURSTS } from "@/lib/data-bursts";
 import { ToolPageQuote } from "@/components/quotes/ToolPageQuote";
@@ -225,7 +226,7 @@ export default function ToolPageLayout({
 
   return (
     <PageShell className={pageShellClassName}>
-      <main className="relative container mx-auto px-4 xl:pr-[280px] pt-24 pb-16">
+      <MainLandmark className="relative container mx-auto px-4 xl:pr-[280px] pt-24 pb-16">
         <PageBursts bursts={TOOL_PAGE_BURSTS[toolType]} />
 
         {/* ── Back Link (context-aware) ─────────────────────────── */}
@@ -330,7 +331,7 @@ export default function ToolPageLayout({
 
         {/* ── The cascade: what this tool builds on / feeds into ── */}
         <CascadeFooter toolType={toolType} />
-      </main>
+      </MainLandmark>
 
       {/* ── Cascade Suggestion (after save) ──────────────────── */}
       <CascadeSuggestionToast

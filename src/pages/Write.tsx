@@ -1881,6 +1881,8 @@ export default function Write(): JSX.Element {
           className={`flex min-h-0 min-w-0 ${showSplit && split.orientation === "stacked" ? "flex-col" : "flex-row"}`}
         >
         <main
+          id="main"
+          tabIndex={-1}
           ref={mainRef}
           className={`sf-sb min-h-0 min-w-0 overflow-y-auto${fadeClass}${focus ? " sf-write-focus" : ""}`}
           style={showSplit ? { flex: `0 0 calc(${split.ratio * 100}% - 6px)` } : { flex: "1 1 auto" }}
