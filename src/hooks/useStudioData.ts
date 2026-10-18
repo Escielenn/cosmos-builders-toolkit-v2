@@ -89,6 +89,8 @@ export function useStudioData() {
           .eq("created_by", uid)
           // Lore entries are Codex material, not manuscript (writing P1).
           .eq("entry_type", "document")
+          // Trashed documents are not manuscript: not counted, not listed.
+          .is("trashed_at", null)
           .order("updated_at", { ascending: false })
           .limit(60),
         // Characters: world_entries rows typed `character` (F3 — the entity

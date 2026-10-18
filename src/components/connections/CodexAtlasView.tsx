@@ -16,6 +16,7 @@
 // ---------------------------------------------------------------------------
 
 import { Suspense, lazy, useCallback, useMemo, useRef, useState } from "react";
+import { useStorageUrl } from "@/hooks/use-storage-url";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, Crosshair, Flag, MapPin, Route } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
@@ -83,6 +84,8 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
     () => readMapSheet(all.find((e) => e.id === here.id)),
     [all, here.id],
   );
+  // Sheets in the private map-sheets bucket load through a signed URL.
+  const sheetSrc = useStorageUrl(sheet?.url).url;
   const placed = useMemo(() => placedPins(pins), [pins]);
   const unplaced = useMemo(() => unplacedPins(pins), [pins]);
   const reducedMotion = usePrefersReducedMotion();
@@ -299,9 +302,9 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
           role="application"
           aria-label={`Atlas — ${here.label}`}
         >
-          {sheet && (
+          {sheet && sheetSrc && (
             <img
-              src={sheet.url}
+              src={sheetSrc}
               alt=""
               className="absolute inset-0 h-full w-full object-cover"
               draggable={false}

@@ -107,7 +107,7 @@ export default function CommentSection({ worldId }: CommentSectionProps) {
 
                 {/* Body */}
                 <p className="font-sans text-sm text-t2 leading-relaxed whitespace-pre-wrap break-words">
-                  {comment.body}
+                  {comment.content}
                 </p>
               </div>
 

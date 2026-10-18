@@ -111,6 +111,7 @@ const SharedWorksheetView = lazy(() => import("./pages/SharedWorksheetView"));
 const SharedWorldView = lazy(() => import("./pages/SharedWorldView"));
 const InviteAccept = lazy(() => import("./pages/InviteAccept"));
 const Join = lazy(() => import("./pages/Join"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 
 // Lazy loaded simulator wrapper pages
 const RogueSimulator = lazy(() => import("./pages/simulators/RogueSimulator"));
@@ -205,6 +206,7 @@ const App = () => (
                 <Route path="/write" element={<WriteIndex />} />
                 <Route path="/write/:docId" element={<Write />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/auth/reset" element={<ResetPassword />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/roadmap" element={<Roadmap />} />
@@ -457,13 +459,16 @@ const App = () => (
                   }
                 />
                 <Route path="/tools/tidelock/science" element={<TidelockScience />} />
-                {/* TEMPORARILY UNGATED (0.7100), at the owner's request, so the
-                    simulator can be exercised end to end: behind ProToolGuard
-                    the canvas never mounts, which blocks any runtime check of
-                    smoothness or the save round-trip.
-                    To restore: wrap in <ProToolGuard toolId="exosky"> again.
-                    Note this makes a Pro tool free to everyone while it stands. */}
-                <Route path="/tools/exosky" element={<ExoskySimulator />} />
+                {/* Re-gated (was temporarily ungated in 0.7100 for runtime
+                    checks; exercise it with a Pro account instead). */}
+                <Route
+                  path="/tools/exosky"
+                  element={
+                    <ProToolGuard toolId="exosky">
+                      <ExoskySimulator />
+                    </ProToolGuard>
+                  }
+                />
                 <Route path="/tools/exosky/science" element={<ExoskyScience />} />
                 <Route
                   path="/tools/exoforge"
@@ -474,10 +479,14 @@ const App = () => (
                   }
                 />
                 <Route path="/tools/exoforge/science" element={<ExoforgeScience />} />
-                {/* TEMPORARILY UNGATED (0.7100), same reason and same caveat as
-                    /tools/exosky above.
-                    To restore: wrap in <ProToolGuard toolId="solaris"> again. */}
-                <Route path="/tools/solaris" element={<SolarisSimulator />} />
+                <Route
+                  path="/tools/solaris"
+                  element={
+                    <ProToolGuard toolId="solaris">
+                      <SolarisSimulator />
+                    </ProToolGuard>
+                  }
+                />
                 <Route path="/tools/solaris/science" element={<SolarisScience />} />
                 {/* Cartographer Wrapper Pages - Pro gated */}
                 <Route

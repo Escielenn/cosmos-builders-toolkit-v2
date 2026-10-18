@@ -13,6 +13,7 @@ import type {
   AudioPlaylist,
   RepeatMode,
 } from "@/lib/audio/types";
+import { needsSigning, resolveStorageUrl } from "@/services/storage-urls";
 
 // ---------------------------------------------------------------------------
 // localStorage keys
@@ -137,6 +138,9 @@ export function AudioProvider({ children }: { children: ReactNode }) {
 
   // shuffle indices for current playlist
   const shuffleOrderRef = useRef<number[]>([]);
+  // Uploaded tracks live in a private bucket and are signed at load time.
+  // A newer load supersedes any signing still in flight.
+  const loadSeqRef = useRef(0);
 
   // ---- lazy Audio element init ----
   useEffect(() => {
@@ -180,7 +184,16 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       setStatus("loading");
       setCurrentTrack(track);
       setHasEverLoaded(true);
-      audio.src = track.url;
+      const seq = ++loadSeqRef.current;
+      let src: string;
+      try {
+        src = needsSigning(track.url) ? await resolveStorageUrl(track.url) : track.url;
+      } catch {
+        if (seq === loadSeqRef.current) setStatus("error");
+        return;
+      }
+      if (seq !== loadSeqRef.current) return;
+      audio.src = src;
       audio.load();
 
       try {
@@ -378,8 +391,16 @@ export function AudioProvider({ children }: { children: ReactNode }) {
         // Pre-load the source without playing
         const audio = audioRef.current;
         if (audio) {
-          audio.src = track.url;
-          audio.load();
+          const seq = ++loadSeqRef.current;
+          resolveStorageUrl(track.url)
+            .then((src) => {
+              if (seq !== loadSeqRef.current) return;
+              audio.src = src;
+              audio.load();
+            })
+            .catch(() => {
+              if (seq === loadSeqRef.current) setStatus("error");
+            });
         }
       }
     },

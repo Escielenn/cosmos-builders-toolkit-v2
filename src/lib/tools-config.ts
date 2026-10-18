@@ -76,6 +76,19 @@ export const isFreeTool = (toolId: string): boolean => {
   return FREE_TOOL_IDS.includes(toolId);
 };
 
+export type ToolAccess = 'free' | 'pro' | 'early-access';
+
+/**
+ * The one gating decision. Early access wins over Pro; only ids explicitly
+ * listed in FREE_TOOL_IDS are free. Anything unlisted fails CLOSED (Pro), so
+ * a new tool route can never become a paywall bypass by being forgotten here.
+ */
+export const getToolAccess = (toolId: string): ToolAccess => {
+  if (isEarlyAccessTool(toolId)) return 'early-access';
+  if (isFreeTool(toolId)) return 'free';
+  return 'pro';
+};
+
 // Tool display names (slug → human-readable)
 export const TOOL_DISPLAY_NAMES: Record<string, string> = {
   'environmental-chain-reaction': 'Cascade: Environmental Chain Reaction',

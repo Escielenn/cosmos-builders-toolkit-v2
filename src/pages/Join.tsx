@@ -16,7 +16,6 @@ import { UserPlus } from "lucide-react";
 import CubeLogo from "@/components/icons/CubeLogo";
 import { Loader } from "@/components/ui/loader";
 import { useToast } from "@/hooks/use-toast";
-import { z } from "zod";
 import ReactMarkdown from "react-markdown";
 import { TERMS_CONTENT } from "@/lib/legal/terms-content";
 import { PageBursts } from "@/components/ui/data-burst";
@@ -24,9 +23,7 @@ import { AUTH_BURSTS } from "@/lib/data-bursts";
 import { mapError } from "@/lib/ship-voice";
 import { BackLink } from "@/components/ui/back-link";
 import { useMetaTags } from "@/hooks/use-meta-tags";
-
-const emailSchema = z.string().email("VALID EMAIL REQUIRED.");
-const passwordSchema = z.string().min(6, "AT LEAST 6 CHARS REQUIRED.");
+import { emailSchema, passwordSchema } from "@/lib/auth-validation";
 
 // Invite codes that grant access to the sign-up form.
 // Add new codes here as needed. The URL is /join/<code>
@@ -85,9 +82,7 @@ const Join = () => {
     if (error) {
       toast({
         title: "SIGN UP FAILED.",
-        description: error.message === "User already registered"
-          ? "Account already exists. Sign in instead."
-          : mapError(error),
+        description: mapError(error),
         variant: "destructive",
       });
     } else {
@@ -105,7 +100,7 @@ const Join = () => {
     setIsLoading(false);
     if (error) {
       toast({
-        title: `${provider.charAt(0).toUpperCase() + provider.slice(1)} sign up failed`,
+        title: `${provider.toUpperCase()} SIGN UP FAILED.`,
         description: mapError(error),
         variant: "destructive",
       });

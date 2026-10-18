@@ -110,23 +110,14 @@ export const useInviteCollaborator = () => {
         throw new Error("You cannot invite yourself");
       }
 
-      // Check if already a collaborator
-      const { data: lookup } = await supabase.rpc("lookup_user_by_email", {
+      // Check if already a collaborator. Scoped to this world and its owner
+      // so the client can no longer probe whether an email has an account.
+      const { data: alreadyCollaborator } = await supabase.rpc("is_world_collaborator_email", {
+        p_world_id: worldId,
         p_email: email,
       });
-      const lookupResult = lookup as unknown as { found: boolean; user_id?: string };
-
-      if (lookupResult?.found && lookupResult.user_id) {
-        const { data: existing } = await supabase
-          .from("world_collaborators")
-          .select("id")
-          .eq("world_id", worldId)
-          .eq("user_id", lookupResult.user_id)
-          .maybeSingle();
-
-        if (existing) {
-          throw new Error("This user is already a collaborator on this world");
-        }
+      if (alreadyCollaborator) {
+        throw new Error("This user is already a collaborator on this world");
       }
 
       // Check if there's already a pending invite for this email

@@ -9,18 +9,23 @@
 // two sections can never send one section's text to the other's row.
 //
 // Never blocks a keystroke: queue() only stores the HTML and arms a timer.
-// Unsaved text is flushed on unmount and before the tab closes; a failed save
-// stays queued and retries on the next flush.
+// Unsaved text is flushed on unmount, when the tab is hidden and before it
+// closes. Every queued text is also written to the device journal
+// (lib/writing/save-journal.ts) and cleared only on a confirmed save; a
+// failed save stays queued and retries on a backoff, and at once when the
+// connection comes back.
 // ---------------------------------------------------------------------------
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useQueryClient, type QueryClient } from "@tanstack/react-query";
 import type { WorldEntry } from "@/services/world-data";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 import { useUpdateDocumentContent } from "@/hooks/use-writing-documents";
 import { rollWordSession, type WriteDoc } from "@/hooks/use-write-doc";
 import { countWords } from "@/lib/text";
 import { reportWordsWritten } from "@/lib/session-words-bus";
+import { deviceStorage, retryDelay, settleJournal, writeJournal } from "@/lib/writing/save-journal";
 
 const DEBOUNCE_MS = 1200;
 
@@ -60,12 +65,20 @@ interface Pending {
 export function useDocAutosave(worldId: string | undefined, onWordsLedgered?: () => void) {
   const { user } = useAuth();
   const qc = useQueryClient();
-  const updateContent = useUpdateDocumentContent(worldId);
+  // Failures are reported once per failure run (below), not once per retry.
+  const updateContent = useUpdateDocumentContent(worldId, { silentErrors: true });
+  const { toast } = useToast();
+  const toastRef = useRef(toast);
+  toastRef.current = toast;
   const pending = useRef(new Map<string, Pending>());
   const timers = useRef(new Map<string, ReturnType<typeof setTimeout>>());
   const baseline = useRef(new Map<string, number>());
   /** Newest HTML seen per document (opening text, then every queue). */
   const latest = useRef(new Map<string, string>());
+  /** Server updated_at each document's edits sit on (device journal base). */
+  const serverBase = useRef(new Map<string, string | null>());
+  /** Consecutive failed saves per document (retry backoff). */
+  const failures = useRef(new Map<string, number>());
   const inFlight = useRef(0);
   const mounted = useRef(true);
   const [saving, setSaving] = useState(false);
@@ -79,11 +92,18 @@ export function useDocAutosave(worldId: string | undefined, onWordsLedgered?: ()
   const ledgerRef = useRef(onWordsLedgered);
   ledgerRef.current = onWordsLedgered;
 
-  /** Record the word count a document opened with (not counted as writing). */
-  const register = useCallback((docId: string, html: string | null | undefined) => {
-    if (!baseline.current.has(docId)) baseline.current.set(docId, countWords(html ?? ""));
-    if (!latest.current.has(docId)) latest.current.set(docId, html ?? "");
-  }, []);
+  /**
+   * Record the word count a document opened with (not counted as writing),
+   * and the server updated_at of that copy (the device journal's base).
+   */
+  const register = useCallback(
+    (docId: string, html: string | null | undefined, updatedAt?: string | null) => {
+      if (!baseline.current.has(docId)) baseline.current.set(docId, countWords(html ?? ""));
+      if (!latest.current.has(docId)) latest.current.set(docId, html ?? "");
+      if (!serverBase.current.has(docId)) serverBase.current.set(docId, updatedAt ?? null);
+    },
+    [],
+  );
 
   const flushDoc = useCallback((docId: string): Promise<void> => {
     const t = timers.current.get(docId);
@@ -103,8 +123,12 @@ export function useDocAutosave(worldId: string | undefined, onWordsLedgered?: ()
     setSaving(true);
     return mutateRef
       .current({ docId, content: p.html })
-      .then(() => {
+      .then((row) => {
         setSavedAt(new Date());
+        failures.current.delete(docId);
+        // Confirmed: the device copy of exactly this text can go.
+        serverBase.current.set(docId, row?.updated_at ?? null);
+        settleJournal(deviceStorage(), docId, p.html, row?.updated_at ?? null);
         const u = userRef.current;
         if (u && delta > 0) {
           reportWordsWritten(delta);
@@ -112,15 +136,37 @@ export function useDocAutosave(worldId: string | undefined, onWordsLedgered?: ()
         }
       })
       .catch(() => {
-        // The mutation's onError told the writer. Keep the newest text queued.
+        // The mutation's onError told the writer. Keep the newest text queued
+        // (it is also in the device journal) and try again on a backoff.
         if (!pending.current.has(docId)) pending.current.set(docId, p);
         if (base !== undefined) baseline.current.set(docId, base);
+        const attempt = (failures.current.get(docId) ?? 0) + 1;
+        failures.current.set(docId, attempt);
+        if (attempt === 1) {
+          toastRef.current({
+            title: "SAVE FAILED.",
+            description: "Your words are held on this device. Retrying.",
+            variant: "destructive",
+          });
+        }
+        if (mounted.current && !timers.current.has(docId)) {
+          timers.current.set(
+            docId,
+            setTimeout(() => {
+              timers.current.delete(docId);
+              if (typeof navigator !== "undefined" && navigator.onLine === false) return; // "online" retries
+              void flushDocRef.current(docId);
+            }, retryDelay(attempt)),
+          );
+        }
       })
       .finally(() => {
         inFlight.current -= 1;
         if (inFlight.current === 0) setSaving(false);
       });
   }, []);
+  const flushDocRef = useRef(flushDoc);
+  flushDocRef.current = flushDoc;
 
   const flushAll = useCallback(
     (): Promise<void> => Promise.all([...pending.current.keys()].map((id) => flushDoc(id))).then(() => undefined),
@@ -134,6 +180,8 @@ export function useDocAutosave(worldId: string | undefined, onWordsLedgered?: ()
       if (latest.current.get(docId) === html) return;
       latest.current.set(docId, html);
       pending.current.set(docId, { html, words: countWords(html) });
+      // On this device before it is sent; cleared when the save is confirmed.
+      writeJournal(deviceStorage(), docId, html, serverBase.current.get(docId) ?? null);
       // Any editor that mounts this document next (the main editor, after
       // leaving Scrivenings) must open on these words, not a stale fetch.
       primeDocCaches(qc, worldId, docId, html, true);
@@ -162,9 +210,21 @@ export function useDocAutosave(worldId: string | undefined, onWordsLedgered?: ()
       void flushAll();
       e.preventDefault();
     };
+    // A hidden tab may never come back (mobile, tab discard): send now.
+    const onHide = () => {
+      if (document.visibilityState === "hidden") void flushAll();
+    };
+    const onPageHide = () => void flushAll();
+    const onOnline = () => void flushAll();
     window.addEventListener("beforeunload", onBeforeUnload);
+    window.addEventListener("pagehide", onPageHide);
+    window.addEventListener("online", onOnline);
+    document.addEventListener("visibilitychange", onHide);
     return () => {
       window.removeEventListener("beforeunload", onBeforeUnload);
+      window.removeEventListener("pagehide", onPageHide);
+      window.removeEventListener("online", onOnline);
+      document.removeEventListener("visibilitychange", onHide);
       mounted.current = false;
       void flushAll();
     };

@@ -551,6 +551,9 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
             }
           >
             <WikiEditor
+              // One editor per entry: its pending words flush to the entry
+              // they were typed in, and never meet another entry's text.
+              key={entry.id}
               worldId={worldId}
               content={entry.content || ""}
               onChange={handleContentChange}
@@ -617,6 +620,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
       {isEntityType(entry.entry_type) && acceptsMapSheet(cascadeEntityType) && (
         <MapSheetSection
           entryId={entry.id}
+          worldId={entry.world_id}
           url={mapSheet?.url ?? null}
           projection={mapSheet?.projection ?? "equirectangular"}
           canEdit={!!canEdit}

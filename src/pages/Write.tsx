@@ -68,7 +68,7 @@ import {
 } from "@/hooks/use-writing-documents";
 import { useDocumentVersions, type DocumentSnapshot } from "@/hooks/use-document-versions";
 import { useWritingLabels } from "@/hooks/use-writing-labels";
-import { Trash2, RotateCcw, X, ArrowLeft, Columns2 } from "lucide-react";
+import { Trash2, RotateCcw, X, ArrowLeft, Columns2, Check, AlertTriangle, WifiOff, LifeBuoy } from "lucide-react";
 import { useWriteDoc, useLatestDoc, rollWordSession, countWords } from "@/hooks/use-write-doc";
 import { useSessionTarget } from "@/hooks/use-session-target";
 import { useWorldSetting } from "@/hooks/use-world-setting";
@@ -96,6 +96,34 @@ import { buildPlaceChoices, buildPovChoices, resolveSceneWorld } from "@/lib/wri
 import type { PinnedItem } from "@/hooks/use-writing-pins";
 import type { WorldEntry } from "@/services/world-data";
 import { useMetaTags } from "@/hooks/use-meta-tags";
+import {
+  decideRecovery,
+  deriveSaveState,
+  deviceStorage,
+  dropJournal,
+  readJournal,
+  retryDelay,
+  settleJournal,
+  writeJournal,
+  type SaveState,
+} from "@/lib/writing/save-journal";
+import { exportAuthor } from "@/lib/writing/export-author";
+
+/**
+ * Words found in this device's journal for the open document (see
+ * lib/writing/save-journal.ts). "recovered": already restored into the
+ * editor, not yet saved. "older": the server copy moved on after they were
+ * written, so they are only offered.
+ */
+interface RecoveryNotice {
+  docId: string;
+  kind: "recovered" | "older";
+  journalHtml: string;
+  /** The text the recovered words would replace (snapshotted before saving). */
+  replacedHtml: string;
+  /** replacedHtml is on file as a snapshot (once per notice). */
+  replacedKept: boolean;
+}
 
 type WriteView = "editor" | "board" | "outline" | "scrivenings";
 
@@ -146,10 +174,10 @@ function writeSplit(worldId: string, s: SplitState): void {
 export default function Write(): JSX.Element {
   const { docId } = useParams<{ docId: string }>();
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
+  const { user, profile, loading } = useAuth();
   const { toast } = useToast();
 
-  const { data: doc, isLoading: docLoading } = useWriteDoc(docId);
+  const { data: doc, isLoading: docLoading, isFetching: docFetching } = useWriteDoc(docId);
   // Sticky while the next document loads, so a click in the binder does not
   // blank the binder, the split pane and Scrivenings for a round-trip.
   const lastWorldId = useRef<string | undefined>(undefined);
@@ -171,7 +199,14 @@ export default function Write(): JSX.Element {
   // pane's picker and collections all walk this.
   const readingDocs = useMemo(() => orderedDocs.map((o) => o.doc), [orderedDocs]);
   const qc = useQueryClient();
-  const updateContent = useUpdateDocumentContent(worldId);
+  // Failures show in the footer (UNSAVED, RETRYING) and one toast per run.
+  const updateContent = useUpdateDocumentContent(worldId, { silentErrors: true });
+  // The mutation result is a new object every render; its mutateAsync is the
+  // observer's bound method and stable. flushPending depends on this, not the
+  // object, so its identity (and the flush-on-leave cleanup keyed on it) does
+  // not churn on every render and fire saves, or retries, ahead of the
+  // debounce and the backoff.
+  const saveContent = updateContent.mutateAsync;
   const createDoc = useCreateDocument(worldId);
   const createFolder = useCreateFolder(worldId);
   const reorderDocs = useReorderDocuments(worldId);
@@ -305,8 +340,28 @@ export default function Write(): JSX.Element {
   const pending = useRef<{ docId: string; html: string; words: number } | null>(null);
   const lastSent = useRef<{ docId: string; html: string } | null>(null);
 
+  // SAVE SAFETY -------------------------------------------------------------
+  // Words the editor holds that its 1.5s debounce has not handed over yet.
+  const editorUnsent = useRef(false);
+  // Words anywhere between the keyboard and a confirmed save, for the footer.
+  const [dirty, setDirty] = useState(false);
+  const inFlight = useRef(0);
+  // Consecutive failed saves (retry backoff), and the timer for the next.
+  const failures = useRef(0);
+  const [saveFailed, setSaveFailed] = useState(false);
+  const retryTimer = useRef<ReturnType<typeof setTimeout>>();
+  const [online, setOnline] = useState(() => (typeof navigator === "undefined" ? true : navigator.onLine !== false));
+  // The server updated_at each document's edits sit on (journal base).
+  const serverBase = useRef(new Map<string, string | null>());
+  const journalTimer = useRef<ReturnType<typeof setTimeout>>();
+  const [recovery, setRecovery] = useState<RecoveryNotice | null>(null);
+  const recoveryRef = useRef<RecoveryNotice | null>(null);
+  recoveryRef.current = recovery;
+  const recoveryChecked = useRef<string | null>(null);
+
   useEffect(() => {
     if (doc) {
+      serverBase.current.set(doc.id, doc.updated_at ?? null);
       setTitle(doc.title ?? "");
       const w = countWords(doc.content);
       setWords(w);
@@ -451,6 +506,10 @@ export default function Write(): JSX.Element {
       clearTimeout(debounce.current);
       debounce.current = undefined;
     }
+    if (retryTimer.current) {
+      clearTimeout(retryTimer.current);
+      retryTimer.current = undefined;
+    }
     const p = pending.current;
     if (!p) return Promise.resolve();
     pending.current = null;
@@ -462,10 +521,28 @@ export default function Write(): JSX.Element {
       lastCount.current = p.words;
       setWords(p.words);
     }
-    return updateContent
-      .mutateAsync({ docId: p.docId, content: p.html })
-      .then(() => {
+
+    // Recovered words are about to replace the server copy: put the copy
+    // they replace on file first (once). Saving is the writer's choice made
+    // by KEEP RECOVERED, RESTORE, or simply writing on.
+    const r = recoveryRef.current;
+    let gate: Promise<unknown> = Promise.resolve();
+    if (r && r.docId === p.docId && r.kind === "recovered" && !r.replacedKept) {
+      r.replacedKept = true;
+      gate = createSnapshot({ name: "Before recovered words", content: r.replacedHtml }).catch(() => null);
+      setRecovery(null);
+    }
+
+    inFlight.current += 1;
+    return gate
+      .then(() => saveContent({ docId: p.docId, content: p.html }))
+      .then((row) => {
         setSavedAt(new Date());
+        failures.current = 0;
+        setSaveFailed(false);
+        // Confirmed: this device's copy of exactly this text can go.
+        serverBase.current.set(p.docId, row?.updated_at ?? null);
+        settleJournal(deviceStorage(), p.docId, p.html, row?.updated_at ?? null);
         if (user && delta > 0) {
           // Await nothing, but refresh the footer once the ledger is written
           // so today's total advances as you type instead of on next refetch.
@@ -474,11 +551,32 @@ export default function Write(): JSX.Element {
         }
       })
       .catch(() => {
-        // The mutation's own onError already told the writer. Keep the text
-        // queued so the next flush retries instead of dropping it.
+        // Keep the text queued (it is also in the device journal) and retry
+        // on a backoff while it is unsaved; at once when the line returns.
         if (!pending.current) pending.current = p;
+        failures.current += 1;
+        setSaveFailed(true);
+        if (failures.current === 1) {
+          toast({
+            title: "SAVE FAILED.",
+            description: "Your words are held on this device. Retrying.",
+            variant: "destructive",
+          });
+        }
+        if (retryTimer.current) clearTimeout(retryTimer.current);
+        retryTimer.current = setTimeout(() => {
+          retryTimer.current = undefined;
+          if (typeof navigator !== "undefined" && navigator.onLine === false) return;
+          void flushRef.current();
+        }, retryDelay(failures.current));
+      })
+      .finally(() => {
+        inFlight.current -= 1;
+        if (inFlight.current === 0 && !pending.current && !editorUnsent.current) setDirty(false);
       });
-  }, [docId, updateContent, user, refreshToday]);
+  }, [docId, saveContent, user, refreshToday, createSnapshot, toast]);
+  const flushRef = useRef(flushPending);
+  flushRef.current = flushPending;
 
   function onContentChange(html: string) {
     if (!docId) return;
@@ -492,8 +590,15 @@ export default function Write(): JSX.Element {
         : doc?.id === docId
           ? doc.content ?? ""
           : null;
-    if (!pending.current && html === lastText) return;
+    editorUnsent.current = false;
+    if (!pending.current && html === lastText) {
+      if (inFlight.current === 0) setDirty(false);
+      return;
+    }
     pending.current = { docId, html, words: countWords(html) };
+    setDirty(true);
+    // On this device before it is sent; cleared when the save is confirmed.
+    writeJournal(deviceStorage(), docId, html, serverBase.current.get(docId) ?? null);
     // The binder list is what Scrivenings and the split pane open from.
     primeDocCaches(qc, worldId, docId, html, false);
     if (debounce.current) clearTimeout(debounce.current);
@@ -504,15 +609,66 @@ export default function Write(): JSX.Element {
   // the last <=1.2s of typing is silently lost.
   useEffect(() => () => void flushPending(), [docId, flushPending]);
 
+  /**
+   * A keystroke changed the document. Called before the editor's debounce,
+   * so the footer and the close-tab guard know at once, and the words reach
+   * the device journal within a moment rather than at the next save.
+   */
+  const onEditorDirty = useCallback(() => {
+    editorUnsent.current = true;
+    setDirty(true);
+    if (journalTimer.current) clearTimeout(journalTimer.current);
+    const target = editorState;
+    journalTimer.current = setTimeout(() => {
+      if (!target || target.editor.isDestroyed) return;
+      writeJournal(
+        deviceStorage(),
+        target.docId,
+        target.editor.getHTML(),
+        serverBase.current.get(target.docId) ?? null,
+      );
+    }, 400);
+  }, [editorState]);
+
+  // The latest handOffMain for window listeners (it closes over the editor).
+  const handOffRef = useRef<() => void>(() => undefined);
+
   useEffect(() => {
     const onBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (!pending.current) return;
-      flushPending();
+      if (!pending.current && !editorUnsent.current && inFlight.current === 0) return;
+      handOffRef.current();
       e.preventDefault();
     };
+    // Hidden may mean never coming back (mobile, tab discard): send now.
+    const onHide = () => {
+      if (document.visibilityState === "hidden") handOffRef.current();
+    };
+    const onPageHide = () => handOffRef.current();
+    const onOnline = () => {
+      setOnline(true);
+      handOffRef.current();
+    };
+    const onOffline = () => setOnline(false);
     window.addEventListener("beforeunload", onBeforeUnload);
-    return () => window.removeEventListener("beforeunload", onBeforeUnload);
-  }, [flushPending]);
+    window.addEventListener("pagehide", onPageHide);
+    window.addEventListener("online", onOnline);
+    window.addEventListener("offline", onOffline);
+    document.addEventListener("visibilitychange", onHide);
+    return () => {
+      window.removeEventListener("beforeunload", onBeforeUnload);
+      window.removeEventListener("pagehide", onPageHide);
+      window.removeEventListener("online", onOnline);
+      window.removeEventListener("offline", onOffline);
+      document.removeEventListener("visibilitychange", onHide);
+    };
+  }, []);
+  useEffect(
+    () => () => {
+      if (journalTimer.current) clearTimeout(journalTimer.current);
+      if (retryTimer.current) clearTimeout(retryTimer.current);
+    },
+    [],
+  );
 
   // The live text: the editor is authoritative; the pending buffer and the
   // last saved copy are fallbacks for the instant before it mounts.
@@ -580,6 +736,87 @@ export default function Write(): JSX.Element {
     [doc, editorInstance, flushPending, restoreVersion, liveHtml, updateContent, toast],
   );
 
+  // RECOVERY -----------------------------------------------------------------
+  // Once per document opening, after the server copy has settled and the
+  // editor is mounted on it: words this device holds that the server never
+  // confirmed are restored (or offered), never silently dropped.
+  useEffect(() => {
+    if (!doc || docFetching) return;
+    if (!editorState || editorState.docId !== doc.id || editorState.editor.isDestroyed) return;
+    if (recoveryChecked.current === doc.id) return;
+    recoveryChecked.current = doc.id;
+
+    const storage = deviceStorage();
+    const entry = readJournal(storage, doc.id);
+    const decision = decideRecovery(entry, { content: doc.content, updated_at: doc.updated_at });
+    if (decision === "settled") {
+      dropJournal(storage, doc.id);
+      return;
+    }
+    if (!entry || (decision !== "recover" && decision !== "older")) return;
+
+    const ed = editorState.editor;
+    const live = ed.getHTML();
+    // Words already typed in this session are not overwritten automatically.
+    const typedHere = editorUnsent.current || pending.current?.docId === doc.id;
+    if (decision === "recover" && !typedHere) {
+      ed.commands.setContent(entry.html, { emitUpdate: false });
+      setWords(countWords(entry.html));
+      setRecovery({ docId: doc.id, kind: "recovered", journalHtml: entry.html, replacedHtml: live, replacedKept: false });
+    } else {
+      setRecovery({ docId: doc.id, kind: "older", journalHtml: entry.html, replacedHtml: live, replacedKept: false });
+    }
+  }, [doc, docFetching, editorState]);
+
+  // A notice belongs to one document.
+  useEffect(() => {
+    setRecovery((r) => (r && r.docId !== docId ? null : r));
+  }, [docId]);
+
+  /** Keep the recovered words: the text they replace goes on file first. */
+  const keepRecovered = useCallback(() => {
+    const r = recoveryRef.current;
+    if (!r || !editorState || editorState.docId !== r.docId || editorState.editor.isDestroyed) return;
+    const ed = editorState.editor;
+    if (r.kind === "older") {
+      // Restoring now: snapshot whatever is on screen, then put them back.
+      r.replacedHtml = ed.getHTML();
+      ed.commands.setContent(r.journalHtml, { emitUpdate: false });
+      setWords(countWords(r.journalHtml));
+      r.kind = "recovered";
+    }
+    onContentChange(ed.getHTML());
+    void flushPending();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editorState, flushPending]);
+
+  /**
+   * Discard the device's words. The writer chose it; they still go on file
+   * as a snapshot, because words are never thrown away outright.
+   */
+  const discardRecovered = useCallback(() => {
+    const r = recoveryRef.current;
+    if (!r) return;
+    setRecovery(null);
+    void createSnapshot({ name: "Unsaved words, discarded", content: r.journalHtml }).catch(() => null);
+    dropJournal(deviceStorage(), r.docId);
+    if (r.kind === "recovered" && editorState && editorState.docId === r.docId && !editorState.editor.isDestroyed) {
+      editorState.editor.commands.setContent(r.replacedHtml, { emitUpdate: false });
+      setWords(countWords(r.replacedHtml));
+      if (pending.current?.docId === r.docId) pending.current = null;
+      editorUnsent.current = false;
+      if (inFlight.current === 0) setDirty(false);
+    }
+  }, [createSnapshot, editorState]);
+
+  const saveState: SaveState = deriveSaveState({
+    online,
+    dirty,
+    saving: updateContent.isPending,
+    failed: saveFailed,
+    savedOnce: !!savedAt,
+  });
+
   /** Trash a document, saving any unsaved words first (the hook snapshots it). */
   const trashDocument = useCallback(
     async (id: string) => {
@@ -604,6 +841,7 @@ export default function Write(): JSX.Element {
     void flushPending();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [doc, editorInstance, flushPending]);
+  handOffRef.current = handOffMain;
 
   const switchView = (v: Exclude<WriteView, "scrivenings">) => {
     if (effectiveView === "editor" && v !== "editor") handOffMain();
@@ -717,7 +955,8 @@ export default function Write(): JSX.Element {
       }
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "s") {
         e.preventDefault();
-        flushPending();
+        // Including the words still inside the editor's debounce.
+        handOffRef.current();
         return;
       }
       if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === "f") {
@@ -744,14 +983,21 @@ export default function Write(): JSX.Element {
   const exportDoc = useCallback(
     async (format: "docx" | "md" | "txt") => {
       if (!doc) return;
-      flushPending();
+      // The words on screen, not the last fetched copy: hand the editor's
+      // debounced text over and let the save land before reading.
+      handOffMain();
+      await flushPending();
+      const html =
+        editorState && editorState.docId === doc.id && !editorState.editor.isDestroyed
+          ? editorState.editor.getHTML()
+          : liveHtml();
 
-      const name = doc.title || "Untitled";
+      const name = title.trim() || doc.title || "Untitled";
       const meta = {
         title: name,
-        author: user?.user_metadata?.display_name ?? "Unknown Author",
+        author: exportAuthor(profile?.display_name, user?.user_metadata),
       };
-      const chapters = [{ id: doc.id, title: name, content: doc.content || "" }];
+      const chapters = [{ id: doc.id, title: name, content: html }];
       const safeName = name.replace(/[^\w\d-]+/g, "-").replace(/^-+|-+$/g, "") || "document";
 
       try {
@@ -783,7 +1029,7 @@ export default function Write(): JSX.Element {
         });
       }
     },
-    [doc, user, flushPending, toast],
+    [doc, user, profile, title, handOffMain, flushPending, editorState, liveHtml, toast],
   );
 
   // INSERTING FROM THE RAIL --------------------------------------------------
@@ -1403,12 +1649,47 @@ export default function Write(): JSX.Element {
             {/* The index-card fields (synopsis, label, status, POV...) moved
                 to the inspector's Doc tab, out of the writer's eyeline. */}
             <div className="my-6 text-center text-t4" aria-hidden="true">· · ·</div>
+            {recovery && doc && recovery.docId === doc.id && (
+              <div
+                role="status"
+                className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 border border-sf-line bg-sf-surface px-4 py-3"
+              >
+                <LifeBuoy className="h-4 w-4 shrink-0 text-sf-amber" aria-hidden="true" />
+                <p className="min-w-[12rem] flex-1 font-mono text-[12px] uppercase text-t1">
+                  {recovery.kind === "recovered"
+                    ? "UNSAVED WORDS RECOVERED FROM THIS DEVICE."
+                    : "UNSAVED WORDS FOUND ON THIS DEVICE. THE SERVER COPY IS NEWER."}
+                  <span className="mt-1 block font-sans text-[13px] normal-case text-t2">
+                    {recovery.kind === "recovered"
+                      ? "They are on screen and not yet saved. Keeping them files the copy they replace as a snapshot."
+                      : "Nothing was changed. Restoring them files the current text as a snapshot first."}
+                  </span>
+                </p>
+                <div className="flex shrink-0 gap-2">
+                  <button
+                    type="button"
+                    onClick={keepRecovered}
+                    className="min-h-hit border border-sf-primary bg-sf-primary/[0.06] px-3 font-sans text-[12px] font-medium uppercase text-sf-primary-text transition-colors duration-base hover:border-sf-line-emphasis"
+                  >
+                    {recovery.kind === "recovered" ? "Keep recovered" : "Restore"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={discardRecovered}
+                    className="min-h-hit border border-sf-line px-3 font-sans text-[12px] font-medium uppercase text-t2 transition-colors duration-base hover:border-sf-line-emphasis hover:text-t1"
+                  >
+                    Discard
+                  </button>
+                </div>
+              </div>
+            )}
             {doc && (
               <StellarForgeEditor
                 onEditorReady={onEditorReady}
                 key={doc.id}
                 content={doc.content ?? ""}
                 onChange={onContentChange}
+                onDirty={onEditorDirty}
                 worldId={worldId}
                 preset="full"
                 placeholder="Begin writing. Use @ to mention entities, [[ to link wiki pages…"
@@ -1462,10 +1743,36 @@ export default function Write(): JSX.Element {
 
       {/* status bar */}
       <footer className="flex items-center justify-between border-t border-sf-line-hairline pl-4 pr-20">
-        <div className="flex items-center gap-2.5">
-          <span className={`h-1.5 w-1.5 rounded-full bg-sf-primary ${updateContent.isPending ? "animate-sf-pulse" : ""}`} aria-hidden="true" />
-          <span className="font-serif text-[12px] italic text-t3">
-            {updateContent.isPending ? "Saving…" : savedAt ? `Saved · ${savedAgo}` : "Ready"}
+        {/* Save state: icon and words, never colour alone. A failed save
+            used to read "Saved" here. */}
+        <div className="flex items-center gap-2" role="status" aria-live="polite">
+          {saveState === "offline" ? (
+            <WifiOff className="h-3.5 w-3.5 shrink-0 text-sf-amber" aria-hidden="true" />
+          ) : saveState === "retrying" ? (
+            <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-sf-crimson" aria-hidden="true" />
+          ) : saveState === "saving" ? (
+            <span className="h-1.5 w-1.5 shrink-0 bg-sf-primary animate-sf-pulse" aria-hidden="true" />
+          ) : (
+            <Check className="h-3.5 w-3.5 shrink-0 text-sf-primary" aria-hidden="true" />
+          )}
+          <span
+            className={`font-mono text-[12px] uppercase ${
+              saveState === "retrying"
+                ? "text-sf-crimson-text"
+                : saveState === "offline"
+                  ? "text-sf-amber-text"
+                  : "text-t3"
+            }`}
+          >
+            {saveState === "offline"
+              ? "OFFLINE · HELD ON THIS DEVICE"
+              : saveState === "retrying"
+                ? "UNSAVED, RETRYING"
+                : saveState === "saving"
+                  ? "SAVING"
+                  : saveState === "saved"
+                    ? `SAVED · ${savedAgo.toUpperCase()}`
+                    : "READY"}
           </span>
         </div>
         {/* Progress toward today's goal, not an astronomical date. The editor
