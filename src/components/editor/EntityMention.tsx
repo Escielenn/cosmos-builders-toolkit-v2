@@ -13,6 +13,7 @@
 import { Node, mergeAttributes } from "@tiptap/core";
 import { useState, useCallback, useEffect } from "react";
 import type { Editor } from "@tiptap/react";
+import { selectionHandlers, wireInlineRefHover } from "@/components/editor/inline-ref-events";
 import {
   ENTITY_TYPE_COLORS,
   ENTITY_TYPE_LABELS,
@@ -67,7 +68,7 @@ export const EntityMention = Node.create({
   },
 
   addNodeView() {
-    return ({ node }) => {
+    return ({ node, editor, getPos }) => {
       const dom = document.createElement("span");
       const entityType = node.attrs.entityType as EntityType;
       const color =
@@ -91,6 +92,10 @@ export const EntityMention = Node.create({
       text.textContent = node.attrs.label || "Unknown";
       dom.appendChild(text);
 
+      // Hover card (the Studio listens; elsewhere nobody does).
+      const refCtx = { attrs: () => node.attrs as Record<string, unknown>, editor, getPos };
+      wireInlineRefHover(dom, "entity", refCtx);
+
       dom.addEventListener("click", (e) => {
         e.preventDefault();
         if (node.attrs.id) {
@@ -112,7 +117,7 @@ export const EntityMention = Node.create({
         }
       });
 
-      return { dom };
+      return { dom, ...selectionHandlers(dom, "entity", refCtx) };
     };
   },
 });

@@ -82,3 +82,26 @@ describe("DocumentInspector", () => {
     await waitFor(() => expect(screen.getByLabelText(/Snapshot name/)).toHaveValue(""));
   });
 });
+
+describe("DocumentInspector scene context", () => {
+  it("still shows a free-text POV from before the picker", () => {
+    mount("card", { pov: "Old Ix" });
+    expect(screen.getByLabelText("POV")).toHaveValue("Old Ix");
+    expect(screen.queryByText(/ON FILE/)).not.toBeInTheDocument();
+  });
+
+  it("typing a different name unbinds a picked character", () => {
+    const p = mount("card", { pov: "Kael", povEntityId: "e1", povDossierId: "d1" });
+    expect(screen.getByText(/ON FILE/)).toBeInTheDocument();
+    const box = screen.getByLabelText("POV");
+    fireEvent.change(box, { target: { value: "Someone else" } });
+    fireEvent.blur(box);
+    expect(p.onChange).toHaveBeenCalledWith({ pov: "Someone else", povEntityId: "", povDossierId: "" });
+  });
+
+  it("shows SET IN and TIMELINE", () => {
+    mount("card", { setInPlaceId: "gone", branchId: "b9" });
+    expect(screen.getByText("A place no longer on file")).toBeInTheDocument();
+    expect(screen.getByText("Unknown branch")).toBeInTheDocument();
+  });
+});

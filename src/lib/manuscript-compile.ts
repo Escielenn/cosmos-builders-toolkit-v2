@@ -9,6 +9,7 @@
 // docx + file-saver (~350 kB) are loaded inside compileManuscriptDocx, at
 // the moment the writer exports, not when Write/WorldCompile first load.
 import type { Paragraph } from "docx";
+import { flattenFactRefs } from "@/lib/writing/fact-ref";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -31,8 +32,12 @@ export interface ManuscriptMeta {
 // HTML → text helpers
 // ---------------------------------------------------------------------------
 
+// Every converter flattens cited facts (fact-ref) to the plain text of their
+// STORED value first: a manuscript prints what the writer inserted, never the
+// live tool value and never markup. Documents without refs pass through.
+
 function htmlToText(html: string): string {
-  return html
+  return flattenFactRefs(html)
     .replace(/<br\s*\/?>/gi, "\n")
     .replace(/<\/p>/gi, "\n\n")
     .replace(/<\/h[1-6]>/gi, "\n\n")
@@ -50,7 +55,7 @@ function htmlToText(html: string): string {
 }
 
 function htmlToMarkdown(html: string): string {
-  return html
+  return flattenFactRefs(html)
     .replace(/<h1[^>]*>(.*?)<\/h1>/gi, "# $1\n\n")
     .replace(/<h2[^>]*>(.*?)<\/h2>/gi, "## $1\n\n")
     .replace(/<h3[^>]*>(.*?)<\/h3>/gi, "### $1\n\n")
@@ -81,7 +86,7 @@ function htmlToMarkdown(html: string): string {
  * Returns an array of { text, bold, italic } segments per paragraph.
  */
 function htmlToParagraphs(html: string): { text: string; bold?: boolean; italic?: boolean }[][] {
-  const blocks = html.split(/<\/p>|<br\s*\/?>|<\/h[1-6]>/gi).filter(Boolean);
+  const blocks = flattenFactRefs(html).split(/<\/p>|<br\s*\/?>|<\/h[1-6]>/gi).filter(Boolean);
   return blocks.map((block) => {
     const segments: { text: string; bold?: boolean; italic?: boolean }[] = [];
     // Simple tag-aware splitting

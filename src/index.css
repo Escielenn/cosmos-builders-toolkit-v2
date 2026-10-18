@@ -2634,6 +2634,69 @@ html {
 }
 
 /* ------------------------------------------------------------------ */
+/* Cited fact (fact-ref): the value in the prose's own type, with a   */
+/* quiet dotted underline in the producing tool's cascade colour.     */
+/* ------------------------------------------------------------------ */
+
+.sf-fact-ref {
+  --fact-accent: var(--sf-teal);
+  font: inherit;
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--fact-accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  cursor: pointer;
+  transition: background-color 120ms cubic-bezier(0.2, 0, 0, 1);
+}
+.sf-fact-ref[data-accent="amber"] { --fact-accent: var(--sf-amber); }
+.sf-fact-ref[data-accent="azure"] { --fact-accent: var(--sf-azure); }
+.sf-fact-ref[data-accent="emerald"] { --fact-accent: var(--sf-emerald); }
+.sf-fact-ref[data-accent="violet"] { --fact-accent: var(--sf-violet); }
+.sf-fact-ref[data-accent="stellar"] { --fact-accent: var(--sf-stellar); }
+.sf-fact-ref[data-accent="magenta"] { --fact-accent: var(--sf-magenta); }
+.sf-fact-ref[data-accent="crimson"] { --fact-accent: var(--sf-crimson); }
+
+.sf-fact-ref:hover {
+  background: color-mix(in srgb, var(--fact-accent) 10%, transparent);
+}
+
+/* Source moved on since this value was cited: a small square marker.
+   The hover card says what changed; the marker is shape, not just hue. */
+.sf-fact-ref[data-state="stale"]::after,
+.sf-fact-ref[data-state="missing"]::after {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-left: 2px;
+  vertical-align: super;
+  background: var(--sf-amber);
+}
+.sf-fact-ref[data-state="missing"]::after {
+  background: transparent;
+  outline: 1px solid var(--sf-amber);
+  outline-offset: -1px;
+}
+
+.ProseMirror-selectednode.sf-fact-ref,
+.ProseMirror-selectednode.sf-entity-mention,
+.ProseMirror-selectednode.sf-wiki-link {
+  outline: 2px solid var(--sf-focus);
+  outline-offset: 2px;
+}
+
+/* Focus mode: the chrome goes, the words stay. A cited value reads as
+   plain prose. */
+.sf-write-focus .sf-fact-ref {
+  text-decoration: none;
+  cursor: text;
+}
+.sf-write-focus .sf-fact-ref:hover { background: none; }
+.sf-write-focus .sf-fact-ref::after { display: none; }
+
+/* ------------------------------------------------------------------ */
 /* Entity Mention autocomplete suggestion list                        */
 /* ------------------------------------------------------------------ */
 

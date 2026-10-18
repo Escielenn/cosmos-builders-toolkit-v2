@@ -77,6 +77,8 @@ That block is the product. Everything else is infrastructure for that block.
 
 **`Check`** — see 2.3.
 
+*Status 2026-10-18 (writing phase 3):* Entities and Refs rank by the open scene (IN THIS SCENE, POV, SETTING, SUBJECT, LINKED, each row says why) and show PINNED at the top; mention and wiki-link hover/focus cards (type, one line, three facts, `OPEN CODEX →`); clicking a mention opens it read-only in the split pane; World renders the influence block from the Card's POV, SET IN, WHEN and TIMELINE using the tools' own narratives (Dossier, Surface Cartographer, Gravitas). Values insert as **cited facts** (`fact-ref`: the value as written plus its source; a STALE marker and `WAS · NOW` card when the source moves on; `UPDATE THIS MENTION` only on click; compile prints the stored value). `/` at a word boundary or Ctrl/Cmd+J opens the world palette in the prose. Backing query is `lib/writing/world-index.ts` until `canon.forDoc` exists. Inline-edit from Refs is still a link to the source.
+
 **[NEW] A fifth tab: `Situations`** — story hooks derived from graph tension, scoped to this document's entities and epoch. Each is a scene seed with `INSERT AS BEAT` and `LOG TO CHRONICLE` actions.
 
 ### 2.2 — Canon Capture (prose → facts)

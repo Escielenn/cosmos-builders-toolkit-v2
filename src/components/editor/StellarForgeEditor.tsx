@@ -13,6 +13,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useEditor, EditorContent, type Editor } from "@tiptap/react";
+import { Extension } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -44,6 +45,11 @@ import { WikiLinkAutocomplete } from "@/components/editor/WikiLinkAutocomplete";
 import { useWikiLinkTrigger } from "@/components/editor/useWikiLinkTrigger";
 import { EntityMention, useEntityMentionTrigger } from "@/components/editor/EntityMention";
 import { CurrentBlock } from "@/components/editor/CurrentBlockExtension";
+import { FactRef } from "@/components/editor/FactRefExtension";
+import { WorldPalette } from "@/components/editor/WorldPalette";
+import { useWorldPaletteTrigger } from "@/components/editor/useWorldPaletteTrigger";
+import { useStudioWorld } from "@/components/writing/studio-world";
+import { forgetEditor, setActiveEditor } from "@/lib/writing/live-facts";
 import type { AnyExtension } from "@tiptap/core";
 import { EntityMentionList } from "@/components/editor/EntityMentionList";
 import { useEntities } from "@/hooks/use-entity-graph";
@@ -200,6 +206,12 @@ export function StellarForgeEditor({
   // Entities for @mentions (only fetched when worldId present)
   const { data: entities } = useEntities(worldId);
 
+  // The Studio's world index, when this editor sits in the Studio. Outside it
+  // (wiki pages, notes) there is no world palette.
+  const studio = useStudioWorld();
+  const paletteOn = !!studio && !!worldId && !readOnly;
+  const openPaletteRef = useRef<() => boolean>(() => false);
+
   // Build extensions based on preset
   const extensions = useMemo(() => {
     const exts: AnyExtension[] = [
@@ -212,6 +224,21 @@ export function StellarForgeEditor({
       Placeholder.configure({ placeholder }),
       WikiLink,
       EntityMention,
+      // Always registered, so a document with cited facts reads the same in
+      // every editor; only the Studio offers to insert them.
+      FactRef,
+      // Ctrl/Cmd+J: the world palette at the caret. Ctrl/Cmd+K is the global
+      // command palette; J is free in the Studio and in Tiptap.
+      Extension.create({
+        name: "worldPaletteKey",
+        addKeyboardShortcuts() {
+          return {
+            // Only claimed where the palette exists; elsewhere the key is
+            // left to the browser.
+            "Mod-j": () => openPaletteRef.current(),
+          };
+        },
+      }),
     ];
 
     if (config.showUnderline) {
@@ -256,6 +283,10 @@ export function StellarForgeEditor({
       debounceRef.current = setTimeout(() => {
         onChangeRef.current(html);
       }, DEBOUNCE_MS);
+    },
+    onFocus: ({ editor: ed }) => {
+      // The rail inserts into the editor the writer was last in.
+      setActiveEditor(ed as Editor);
     },
     onBlur: ({ editor: ed }) => {
       // Flush on blur for auto-save
@@ -307,6 +338,10 @@ export function StellarForgeEditor({
     return () => onEditorReady?.(null);
   }, [editor, onEditorReady]);
   useEffect(() => {
+    if (!editor) return;
+    return () => forgetEditor(editor);
+  }, [editor]);
+  useEffect(() => {
     return () => {
       if (debounceRef.current) {
         clearTimeout(debounceRef.current);
@@ -330,6 +365,13 @@ export function StellarForgeEditor({
 
   // Entity mention trigger
   const entityMention = useEntityMentionTrigger(worldId ? editor : null);
+
+  // World palette: "/" at a word boundary, or Ctrl/Cmd+J.
+  const palette = useWorldPaletteTrigger(
+    paletteOn ? editor : null,
+    paletteOn && !entityMention.isActive && !wikiLink.isActive,
+  );
+  openPaletteRef.current = palette.openHotkey;
 
   // Insert @ trigger text
   const handleInsertAtTrigger = useCallback(() => {
@@ -636,6 +678,11 @@ export function StellarForgeEditor({
             onSelect={wikiLink.insertWikiLink}
             onClose={wikiLink.closeAutocomplete}
           />
+        )}
+
+        {/* World palette */}
+        {paletteOn && palette.state.open && (
+          <WorldPalette editor={editor} state={palette.state} onClose={palette.close} />
         )}
 
         {/* Entity mention autocomplete popover */}
