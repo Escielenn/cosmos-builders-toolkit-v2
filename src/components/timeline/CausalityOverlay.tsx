@@ -11,7 +11,6 @@ import { LINK_TYPE_CONFIG } from "@/lib/timeline/constants";
 import {
   TRACK_HEIGHT,
   COLLAPSED_TRACK_HEIGHT,
-  TRACK_HEADER_WIDTH,
 } from "@/lib/timeline/constants";
 
 interface CausalityOverlayProps {
@@ -55,7 +54,7 @@ const CausalityOverlay = memo(
     return (
       <svg
         className="absolute top-0 left-0 w-full pointer-events-none"
-        style={{ height: totalHeight, marginLeft: TRACK_HEADER_WIDTH }}
+        style={{ height: totalHeight, marginLeft: mapper.headerWidth }}
       >
         {/* Arrowhead marker */}
         <defs>
@@ -94,8 +93,8 @@ const CausalityOverlay = memo(
             targetEvent.startDay
           );
 
-          const sourceX = mapper.yearToX(sourceDecimal) - TRACK_HEADER_WIDTH;
-          const targetX = mapper.yearToX(targetDecimal) - TRACK_HEADER_WIDTH;
+          const sourceX = mapper.yearToX(sourceDecimal) - mapper.headerWidth;
+          const targetX = mapper.yearToX(targetDecimal) - mapper.headerWidth;
 
           // For duration events, use the end of the source bar
           let adjustedSourceX = sourceX;
@@ -105,7 +104,7 @@ const CausalityOverlay = memo(
               sourceEvent.endMonth,
               sourceEvent.endDay
             );
-            adjustedSourceX = mapper.yearToX(endDecimal) - TRACK_HEADER_WIDTH;
+            adjustedSourceX = mapper.yearToX(endDecimal) - mapper.headerWidth;
           }
 
           // Y positions

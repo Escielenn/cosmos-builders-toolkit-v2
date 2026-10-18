@@ -1,5 +1,4 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from "react";
-import { useWorldId } from "@/hooks/use-world-id";
+import { useState, useMemo, lazy, Suspense } from "react";
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 import { Link, useSearchParams } from "react-router-dom";
 import { Download, Save, Info, Printer, ExternalLink, HelpCircle, Image as ImageIcon, Calculator } from "lucide-react";
@@ -15,7 +14,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
-import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useAuth } from "@/contexts/AuthContext";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
@@ -24,19 +22,38 @@ import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
+// FormState, defaults and codec: lib/tool-worksheets/drake.
+import {
+  codec as drakeCodec,
+  type FormState,
+  TOOL_TYPE,
+  LOCAL_STORAGE_KEY,
+} from "@/lib/tool-worksheets/drake";
+import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import type { MoodboardImage } from "@/hooks/use-moodboard";
-import { useTags } from "@/hooks/use-tags";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import { DrakeSummaryTemplate, DrakeFullReportTemplate } from "@/lib/pdf/templates";
-import { Json } from "@/integrations/supabase/types";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
-import { writeStandaloneBackup } from "@/lib/standalone-backup";
+import {
+  calculateDrakeN,
+  formatDrakeNumber,
+  getDrakeInterpretation,
+  type DrakeBand,
+} from "@/lib/drake";
+
+const DRAKE_BAND_COLOR: Record<DrakeBand, string> = {
+  "very-lonely": "text-sf-violet-text",
+  lonely: "text-sf-azure-text",
+  sparse: "text-sf-emerald-text",
+  moderate: "text-sf-amber-text",
+  crowded: "text-sf-crimson-text",
+  teeming: "text-sf-magenta-text",
+};
 
 // Section definitions for navigation
 const SECTIONS: Section[] = [
@@ -189,151 +206,43 @@ const PRESETS = [
   },
 ];
 
-// Form state interface
-interface FormState {
-  values: {
-    rStar: number;
-    fp: number;
-    ne: number;
-    fl: number;
-    fi: number;
-    fc: number;
-    L: number;
-  };
-  notes: {
-    rStar: string;
-    fp: string;
-    ne: string;
-    fl: string;
-    fi: string;
-    fc: string;
-    L: string;
-  };
-  worldbuilding: {
-    fermiAnswer: string;
-    greatFilterLocation: string;
-    galaxyCharacter: string;
-    storyImplications: string;
-    civilizationTypes: string;
-  };
-  generalNotes: string;
-  moodboard: MoodboardImage[];
-}
-
-const initialFormState: FormState = {
-  values: {
-    rStar: 1.5,
-    fp: 1,
-    ne: 0.4,
-    fl: 0.5,
-    fi: 0.5,
-    fc: 0.2,
-    L: 10000,
-  },
-  notes: {
-    rStar: "",
-    fp: "",
-    ne: "",
-    fl: "",
-    fi: "",
-    fc: "",
-    L: "",
-  },
-  worldbuilding: {
-    fermiAnswer: "",
-    greatFilterLocation: "",
-    galaxyCharacter: "",
-    storyImplications: "",
-    civilizationTypes: "",
-  },
-  generalNotes: "",
-  moodboard: [],
-};
-
-// Local storage key
-const LOCAL_STORAGE_KEY = "drake-equation-calculator-v1";
-
-const TOOL_TYPE = "drake-equation-calculator";
 
 const DrakeEquationCalculator = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = useWorldId();
-  const worksheetId = searchParams.get("worksheetId");
+
+  const worksheet = useToolWorksheet(TOOL_TYPE, {
+    ...drakeCodec,
+    displayName: "Drake Equation",
+    localKey: LOCAL_STORAGE_KEY,
+    autosaveDraftMs: 500,
+    loadedToast: true,
+    onDraftCreated: (id, title) => entityMatch.check(id, title),
+  });
+  const { state: formState, setState: setFormState, worldId } = worksheet;
+  const currentWorksheetId = worksheet.worksheetId;
+  const currentWorksheetTitle = worksheet.worksheetTitle;
+  const worksheetId = worksheet.worksheetId;
 
   const { worlds } = useWorlds();
   const entityMatch = useEntityMatch(worldId);
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
-    onDraftCreated: entityMatch.check,
-  });
-  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
-  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
-  const renameWorksheet = useRenameWorksheet();
-  const { updateWorksheetTags } = useTags();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
-
-  const [formState, setFormState] = useState<FormState>(initialFormState);
-  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
-  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
-  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const [notesSheetOpen, setNotesSheetOpen] = useState(false);
   const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
-  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const [lastSavedToCloud, setLastSavedToCloud] = useState<Date | null>(null);
-  const [isSavingToCloud, setIsSavingToCloud] = useState(false);
 
   // Calculate N (result of Drake Equation)
-  const N = useMemo(() => {
-    const { rStar, fp, ne, fl, fi, fc, L } = formState.values;
-    return rStar * fp * ne * fl * fi * fc * L;
-  }, [formState.values]);
+  const N = useMemo(() => calculateDrakeN(formState.values), [formState.values]);
 
   // Format large numbers
-  const formatNumber = (n: number): string => {
-    if (n < 1) return n.toFixed(4);
-    if (n < 10) return n.toFixed(2);
-    if (n < 1000) return n.toFixed(1);
-    if (n < 1000000) return Math.round(n).toLocaleString();
-    if (n < 1000000000) return (n / 1000000).toFixed(1) + " million";
-    return (n / 1000000000).toFixed(1) + " billion";
-  };
+  const formatNumber = formatDrakeNumber;
 
-  // Get interpretation of result
+  // Get interpretation of result (copy from @/lib/drake, colour per band here)
   const getInterpretation = (n: number): { label: string; color: string; description: string } => {
-    if (n < 1) return {
-      label: "Very Lonely",
-      color: "text-sf-violet-text",
-      description: "Fewer than one civilization expected. We may be alone in the galaxy, or civilizations are so rare that contact is essentially impossible."
-    };
-    if (n < 10) return {
-      label: "Lonely",
-      color: "text-sf-azure-text",
-      description: "A handful of civilizations might exist. Finding each other would be like finding needles in a cosmic haystack."
-    };
-    if (n < 100) return {
-      label: "Sparse",
-      color: "text-sf-emerald-text",
-      description: "Dozens of civilizations. Contact is possible but requires patience and luck. Good for stories about first contact as a rare, meaningful event."
-    };
-    if (n < 1000) return {
-      label: "Moderate",
-      color: "text-sf-amber-text",
-      description: "Hundreds of civilizations. Enough for a network, but vast distances mean most remain isolated. Good for stories about distant rumors."
-    };
-    if (n < 10000) return {
-      label: "Crowded",
-      color: "text-sf-crimson-text",
-      description: "Thousands of civilizations. Regional groupings, alliances, and conflicts become possible. Classic space opera territory."
-    };
-    return {
-      label: "Teeming",
-      color: "text-sf-magenta-text",
-      description: "A galaxy full of life. Civilizations bump into each other regularly. Think Star Trek or Star Wars. The Fermi Paradox becomes very pressing."
-    };
+    const { band, label, description } = getDrakeInterpretation(n);
+    return { label, description, color: DRAKE_BAND_COLOR[band] };
   };
 
   const interpretation = getInterpretation(N);
@@ -374,61 +283,6 @@ const DrakeEquationCalculator = () => {
     ];
   }, [formState, N, interpretation.label]);
 
-  // Show worksheet selector when worldId is present but no worksheetId
-  useEffect(() => {
-    if (worldId && !worksheetId && !worksheetsLoading && user) {
-      setWorksheetSelectorOpen(true);
-    }
-  }, [worldId, worksheetId, worksheetsLoading, user]);
-
-  // Load from localStorage on mount (standalone mode)
-  useEffect(() => {
-    if (!worldId && !worksheetId) {
-      const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          setFormState(parsed);
-        } catch (e) {
-          console.error("Failed to load saved data:", e);
-        }
-      }
-    }
-  }, [worldId, worksheetId]);
-
-  // Load from worksheet if editing
-  useEffect(() => {
-    if (existingWorksheet?.data) {
-      try {
-        const data = existingWorksheet.data as unknown as FormState;
-        setFormState(data);
-        setCurrentWorksheetId(existingWorksheet.id);
-        setCurrentWorksheetTitle(existingWorksheet.title);
-        if (existingWorksheet?.tags) {
-          setWorksheetTags(existingWorksheet.tags);
-        }
-        setLastSavedToCloud(new Date(existingWorksheet.updated_at));
-        toast({
-          title: "WORKSHEET LOADED.",
-          description: "WORK RESTORED FROM CLOUD.",
-        });
-      } catch (e) {
-        console.error("Failed to load worksheet:", e);
-      }
-    }
-  }, [existingWorksheet]);
-
-  // Auto-save to localStorage (standalone mode only)
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
-      setHasUnsavedChanges(true);
-    }, 500);
-    return () => clearTimeout(timeoutId);
-    // worldId/user are read from the same render as formState; re-running on
-    // auth or world changes alone would flag unsaved changes spuriously.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formState]);
 
   // Update a single value
   const updateValue = (key: keyof FormState["values"], value: number) => {
@@ -466,82 +320,6 @@ const DrakeEquationCalculator = () => {
     });
   };
 
-  // Save to cloud
-  const handleSave = async () => {
-    // Browser backup in standalone mode only (see lib/standalone-backup)
-    writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
-
-    // If we have a worldId and user is authenticated, save to Supabase
-    if (worldId && user) {
-      const worksheetData = formState as unknown as Json;
-      setIsSavingToCloud(true);
-
-      try {
-        if (currentWorksheetId || worksheetId) {
-          // Update existing worksheet - preserve user-provided title
-          await updateWorksheet.mutateAsync({
-            worksheetId: currentWorksheetId || worksheetId!,
-            data: worksheetData,
-          });
-          setLastSavedToCloud(new Date());
-          setHasUnsavedChanges(false);
-        } else {
-          // Should not reach here - worksheet must be created via selector first
-          toast({
-            title: "OPERATION FAILED.",
-            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
-            variant: "destructive",
-          });
-        }
-      } catch {
-        // Error already handled by the mutation
-      } finally {
-        setIsSavingToCloud(false);
-      }
-    } else {
-      toast({
-        title: "DRAFT SAVED.",
-        description: "WORK SECURED TO LOCAL STORAGE.",
-      });
-    }
-  };
-
-  const handleWorksheetSelect = (selectedWorksheetId: string) => {
-    setSearchParams({ worldId: worldId!, worksheetId: selectedWorksheetId });
-    setWorksheetSelectorOpen(false);
-  };
-
-  const handleWorksheetCreate = async (name: string): Promise<string> => {
-    const worksheetData = initialFormState as unknown as Json;
-    const result = await createWorksheet.mutateAsync({
-      worldId: worldId!,
-      toolType: TOOL_TYPE,
-      title: name,
-      data: worksheetData,
-    });
-    setCurrentWorksheetId(result.id);
-    setCurrentWorksheetTitle(result.title);
-    setSearchParams({ worldId: worldId!, worksheetId: result.id });
-    return result.id;
-  };
-
-  // Handle worksheet rename
-  const handleRename = async (newTitle: string) => {
-    const wsId = currentWorksheetId || worksheetId;
-    if (!wsId) return;
-
-    await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
-    setCurrentWorksheetTitle(newTitle);
-  };
-
-  const handleTagsChange = (newTags: string[]) => {
-    setWorksheetTags(newTags);
-    const wsId = currentWorksheetId || worksheetId;
-    if (wsId) {
-      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
-    }
-  };
-
   // Open export dialog
   const handleExport = () => {
     setExportDialogOpen(true);
@@ -558,16 +336,12 @@ const DrakeEquationCalculator = () => {
 
   return (
     <ToolPageLayout
+      {...worksheet.layoutProps}
       toolType={TOOL_TYPE}
-      onSave={handleSave}
-      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
       onPrint={handlePrint}
       onExport={handleExport}
       onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
       isShared={!!shareConfig?.enabled}
-      hasUnsavedChanges={hasUnsavedChanges}
-      isSaving={isSavingToCloud}
-      isCloudEnabled={!!(worldId && user)}
       onNotesClick={() => setNotesSheetOpen(true)}
       onMoodboardClick={() => setMoodboardSheetOpen(true)}
       moodboardCount={formState.moodboard?.length || 0}
@@ -581,13 +355,6 @@ const DrakeEquationCalculator = () => {
           defaultFilename="drake-equation"
         />
       }
-      worksheetId={currentWorksheetId || worksheetId}
-      worksheetTitle={currentWorksheetTitle}
-      onRenameWorksheet={handleRename}
-      worksheetLoading={worksheetLoading}
-      worksheetTags={worksheetTags}
-      onTagsChange={handleTagsChange}
-      isLoggedIn={!!user}
     >
         {/* Desktop Sidebars - Right side */}
         <ToolSidebar>
@@ -636,14 +403,17 @@ const DrakeEquationCalculator = () => {
           <div className="space-y-8">
             {DRAKE_VARIABLES.map((variable) => (
               <div key={variable.id} className="space-y-3">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                  <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <Label className="text-base font-medium">
                         {variable.symbol}, {variable.name}
                       </Label>
                       <Tooltip>
-                        <TooltipTrigger>
+                        <TooltipTrigger
+                          aria-label={`About ${variable.name}`}
+                          className="-my-3 inline-flex min-h-hit min-w-hit items-center justify-center"
+                        >
                           <HelpCircle className="w-4 h-4 text-t2" />
                         </TooltipTrigger>
                         <TooltipContent className="max-w-xs">
@@ -654,7 +424,7 @@ const DrakeEquationCalculator = () => {
                     </div>
                     <p className="text-sm text-t2 mb-2">{variable.description}</p>
                   </div>
-                  <div className="text-right min-w-[100px]">
+                  <div className="sm:text-right sm:min-w-[100px]">
                     <span className="text-2xl font-mono font-medium text-sf-primary-text">
                       {variable.useLogScale
                         ? formatNumber(formState.values[variable.id as keyof FormState["values"]])
@@ -929,20 +699,12 @@ const DrakeEquationCalculator = () => {
           </Link>
         </div>
 
-
       {/* Worksheet Selector Dialog */}
       {worldId && (
         <WorksheetSelectorDialog
-          open={worksheetSelectorOpen}
-          onOpenChange={setWorksheetSelectorOpen}
-          worldId={worldId}
+          {...worksheet.selectorProps}
           worldName={currentWorld?.name}
-          toolType={TOOL_TYPE}
           toolDisplayName="Signal"
-          worksheets={existingWorksheets}
-          isLoading={worksheetsLoading}
-          onSelect={handleWorksheetSelect}
-          onCreate={handleWorksheetCreate}
         />
       )}
 

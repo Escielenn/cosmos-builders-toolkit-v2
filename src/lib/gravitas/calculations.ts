@@ -26,6 +26,13 @@ import {
   PHYSICS_VIOLATIONS,
   TILT_TABLE,
 } from "./data";
+import {
+  calculateBrachistochrone,
+  G_ACCEL as TD_G_ACCEL,
+} from "@/lib/time-dilation/calculations";
+
+const SECONDS_PER_YEAR = 365.25 * 86400;
+const COAST_BURN_S = 86400 * 7; // one week of proper (ship) time per burn
 
 // ─── Spin Gravity ───────────────────────────────────────────────────
 
@@ -83,6 +90,11 @@ export function calculateThrustGravity(input: ThrustGravityInput): ThrustGravity
   const accel_ms2 = acceleration_g * EARTH_G;
   const distance_m = mission_distance_au * AU_M;
 
+  if (include_relativity && accel_ms2 > 0 && distance_m > 0) {
+    return relativisticThrust(acceleration_g, accel_ms2, distance_m, propulsion_mode);
+  }
+
+  // Newtonian kinematics (relativity switched off). Valid while v << c.
   let trip_duration_s: number;
   let delta_v_ms: number;
   let peak_velocity_ms: number;
@@ -102,7 +114,7 @@ export function calculateThrustGravity(input: ThrustGravityInput): ThrustGravity
     delta_v_ms = peak_velocity_ms;
   } else {
     // Coast with burn phases: 1-week burns at each end
-    const burn_duration = 86400 * 7;
+    const burn_duration = COAST_BURN_S;
     const burn_distance = 0.5 * accel_ms2 * burn_duration * burn_duration;
     const coast_distance = Math.max(0, distance_m - 2 * burn_distance);
     const coast_velocity = accel_ms2 * burn_duration;
@@ -113,20 +125,10 @@ export function calculateThrustGravity(input: ThrustGravityInput): ThrustGravity
     delta_v_ms = coast_velocity * 2;
   }
 
-  // Cap peak velocity at 0.99c for sanity
+  // Newtonian speeds are unbounded; cap the display at 0.99c.
   peak_velocity_ms = Math.min(peak_velocity_ms, C * 0.99);
   const peak_velocity_c = peak_velocity_ms / C;
-
-  // Relativistic corrections
-  let time_dilation_factor = 1;
-  const earth_time_years = trip_duration_s / (365.25 * 86400);
-  let ship_time_years = earth_time_years;
-
-  if (include_relativity && peak_velocity_c > 0.01) {
-    const v2c2 = peak_velocity_c * peak_velocity_c;
-    time_dilation_factor = 1 / Math.sqrt(1 - v2c2);
-    ship_time_years = earth_time_years / time_dilation_factor;
-  }
+  const earth_time_years = trip_duration_s / SECONDS_PER_YEAR;
 
   return {
     effective_g: acceleration_g,
@@ -134,35 +136,149 @@ export function calculateThrustGravity(input: ThrustGravityInput): ThrustGravity
     delta_v_kms: delta_v_ms / 1000,
     peak_velocity_kms: peak_velocity_ms / 1000,
     peak_velocity_c,
-    time_dilation_factor,
-    ship_time_years,
+    time_dilation_factor: 1,
+    ship_time_years: earth_time_years,
     earth_time_years,
+  };
+}
+
+/**
+ * Relativistic thrust trips. Ship (proper) time and Earth (coordinate) time
+ * come from the hyperbolic-motion equations for constant proper
+ * acceleration a (Rindler; see also Baez & Gibbs, "The Relativistic Rocket",
+ * math.ucr.edu/home/baez/physics/Relativity/SR/Rocket/rocket.html):
+ *   x = (c²/a)(cosh(aτ/c) − 1),  t = (c/a) sinh(aτ/c),  v = c tanh(aτ/c).
+ * The brachistochrone case calls the Time Dilation engine directly, the same
+ * call the Ark makes, so both tools agree on every trip.
+ * Delta-v is reported as a·τ (the proper velocity change the drive must
+ * supply), which reduces to the Newtonian Δv at low speed.
+ */
+function relativisticThrust(
+  acceleration_g: number,
+  accel_ms2: number,
+  distance_m: number,
+  propulsion_mode: ThrustGravityInput["propulsion_mode"]
+): ThrustGravityOutput {
+  let earth_s: number;
+  let ship_s: number;
+  let peak_c: number;
+  let burn_proper_s: number;
+
+  if (propulsion_mode === "brachistochrone") {
+    // calculateBrachistochrone takes standard-g multiples (9.80665 m/s²).
+    const r = calculateBrachistochrone(distance_m, accel_ms2 / TD_G_ACCEL, 1, false);
+    earth_s = r.observerTimeSeconds;
+    ship_s = r.shipTimeSeconds;
+    peak_c = r.peakVelocityFraction;
+    burn_proper_s = ship_s; // thrusting the whole way (accelerate, then decelerate)
+  } else if (propulsion_mode === "constant") {
+    // Accelerate the entire distance from rest (flyby at the destination).
+    const ratio = (distance_m * accel_ms2) / (C * C) + 1;
+    earth_s = (C / accel_ms2) * Math.sqrt(ratio * ratio - 1);
+    ship_s = (C / accel_ms2) * Math.acosh(ratio);
+    peak_c = Math.tanh((accel_ms2 * ship_s) / C);
+    burn_proper_s = ship_s;
+  } else {
+    // One-week burns (ship time) at each end, coast between.
+    const rapidity = (accel_ms2 * COAST_BURN_S) / C;
+    const burn_dist = ((C * C) / accel_ms2) * (Math.cosh(rapidity) - 1);
+    const burn_coord = (C / accel_ms2) * Math.sinh(rapidity);
+    peak_c = Math.tanh(rapidity);
+    const coast_v = peak_c * C;
+    const coast_dist = Math.max(0, distance_m - 2 * burn_dist);
+    const coast_coord = coast_v > 0 ? coast_dist / coast_v : 0;
+    earth_s = 2 * burn_coord + coast_coord;
+    ship_s = 2 * COAST_BURN_S + coast_coord / Math.cosh(rapidity);
+    burn_proper_s = 2 * COAST_BURN_S;
+  }
+
+  const gamma = 1 / Math.sqrt(1 - Math.min(peak_c * peak_c, 1 - 1e-15));
+  return {
+    effective_g: acceleration_g,
+    trip_duration_days: earth_s / 86400,
+    delta_v_kms: (accel_ms2 * burn_proper_s) / 1000,
+    peak_velocity_kms: (peak_c * C) / 1000,
+    peak_velocity_c: peak_c,
+    time_dilation_factor: gamma,
+    ship_time_years: ship_s / SECONDS_PER_YEAR,
+    earth_time_years: earth_s / SECONDS_PER_YEAR,
   };
 }
 
 // ─── Combined Vector ────────────────────────────────────────────────
 
+/**
+ * Spin + thrust gravity felt on the rim of a rotating hull under thrust.
+ *
+ * Spin gravity points radially outward, in the plane perpendicular to the
+ * spin axis. Thrust gravity points aft along the thrust line. Let θ be the
+ * angle between the SPIN AXIS and the THRUST LINE, and φ the position of a
+ * point around the rim. In the rim's local frame the felt acceleration is
+ *   radial (floor-normal):  s + t·sinθ·cosφ
+ *   in the floor plane:     t·cosθ (axial) and t·sinθ·sinφ (spinward)
+ * so |g|² = s² + t² + 2·s·t·sinθ·cosφ.
+ *
+ *   θ = 0  (axis parallel to thrust, the usual design): the two vectors are
+ *          perpendicular everywhere: |g| = √(s² + t²), tilt = atan(t/s),
+ *          identical at every point on the rim.
+ *   θ = 90 (axis perpendicular to thrust): |g| sweeps from |s − t| to s + t
+ *          once per revolution, and the floor tilt changes with it.
+ *
+ * Outputs report the rim range and the point of WORST tilt (the value the
+ * architecture has to survive). vector_angle_deg is the angle between the
+ * two gravity vectors at that point, for the vector diagram.
+ */
 export function calculateCombinedVector(input: CombinedVectorInput): CombinedVectorOutput {
   const { spin_g, thrust_g, axis_orientation, custom_angle_deg } = input;
 
-  // Determine angle between vectors
-  let angle_deg: number;
-  if (axis_orientation === "parallel") angle_deg = 0;
-  else if (axis_orientation === "perpendicular") angle_deg = 90;
-  else angle_deg = custom_angle_deg;
+  // Angle between the spin axis and the thrust line.
+  let axis_angle_deg: number;
+  if (axis_orientation === "parallel") axis_angle_deg = 0;
+  else if (axis_orientation === "perpendicular") axis_angle_deg = 90;
+  else axis_angle_deg = custom_angle_deg;
 
-  const angle_rad = (angle_deg * Math.PI) / 180;
+  const rawSin = Math.sin((axis_angle_deg * Math.PI) / 180);
+  const rawCos = Math.cos((axis_angle_deg * Math.PI) / 180);
+  // Snap floating-point residue (sin(180°) ≈ 1e-16) so parallel cases stay exact.
+  const sinT = Math.abs(rawSin) < 1e-12 ? 0 : Math.abs(rawSin);
+  const cosT = Math.abs(rawCos) < 1e-12 ? 0 : rawCos;
+  const inPlane = thrust_g * sinT;
+  const axial = thrust_g * cosT;
 
-  // Vector addition
-  const resultant_g = Math.sqrt(
-    spin_g * spin_g +
-    thrust_g * thrust_g +
-    2 * spin_g * thrust_g * Math.cos(angle_rad)
-  );
+  const components = (phi: number) => {
+    const radial = spin_g + inPlane * Math.cos(phi);
+    const tangential = inPlane * Math.sin(phi);
+    const lateral = Math.sqrt(tangential * tangential + axial * axial);
+    return { radial, lateral };
+  };
+  const magnitudeAt = (phi: number) => {
+    const { radial, lateral } = components(phi);
+    return Math.sqrt(radial * radial + lateral * lateral);
+  };
+  const tiltAt = (phi: number) => {
+    const { radial, lateral } = components(phi);
+    return (Math.atan2(lateral, radial) * 180) / Math.PI;
+  };
 
-  // Tilt angle (from spin "down" toward thrust "down")
-  const tilt_angle_deg = (Math.atan2(thrust_g * Math.sin(angle_rad), spin_g + thrust_g * Math.cos(angle_rad)) * 180) / Math.PI;
-  const abs_tilt = Math.abs(tilt_angle_deg);
+  // The magnitude extremes sit at φ = 0 and φ = 180°. Tilt has no tidy
+  // closed form for a general θ, so sample the rim at 0.5° steps.
+  const resultant_max_g = magnitudeAt(0);
+  const resultant_min_g = magnitudeAt(Math.PI);
+  let worstPhi = 0;
+  let abs_tilt = tiltAt(0);
+  for (let i = 1; i < 720; i++) {
+    const phi = (i * Math.PI) / 360;
+    const tilt = tiltAt(phi);
+    if (tilt > abs_tilt + 1e-9) {
+      abs_tilt = tilt;
+      worstPhi = phi;
+    }
+  }
+  const resultant_g = magnitudeAt(worstPhi);
+  // Angle between the spin vector and the thrust vector at that point.
+  const vector_angle_deg = thrust_g > 0
+    ? (Math.acos(Math.max(-1, Math.min(1, sinT * Math.cos(worstPhi)))) * 180) / Math.PI
+    : 0;
 
   // Walking difficulty (1–10)
   let walking_difficulty: number;
@@ -183,6 +299,9 @@ export function calculateCombinedVector(input: CombinedVectorInput): CombinedVec
 
   return {
     resultant_g,
+    resultant_min_g,
+    resultant_max_g,
+    vector_angle_deg,
     tilt_angle_deg: abs_tilt,
     walking_difficulty,
     architectural_impact,
@@ -382,7 +501,7 @@ export function buildCopyText(
   } else if (mode === "combined" && results.combined) {
     const r = results.combined;
     lines.push(`Mode: Combined Vector`);
-    lines.push(`Resultant Gravity: ${formatG(r.resultant_g)}`);
+    lines.push(`Resultant Gravity: ${formatG(r.resultant_g)} (range around rim ${formatG(r.resultant_min_g)} to ${formatG(r.resultant_max_g)})`);
     lines.push(`Tilt Angle: ${r.tilt_angle_deg.toFixed(1)}°`);
     lines.push(`Walking Difficulty: ${r.walking_difficulty}/10`);
     lines.push(`Architectural Impact: ${r.architectural_impact}`);

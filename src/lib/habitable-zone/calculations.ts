@@ -9,6 +9,7 @@ import {
   type PlanetZone,
   type WorldbuildingImplication,
 } from "./data";
+import { kopparapuEdges, KOPPARAPU_T_SUN, KOPPARAPU_T_MIN, KOPPARAPU_T_MAX } from "./kopparapu";
 
 // ─── Physical Constants ──────────────────────────────────────────────
 
@@ -20,7 +21,9 @@ export const AU_IN_METERS = 1.496e11;     // 1 AU in meters
 export const SECONDS_PER_YEAR = 365.25 * 24 * 3600;
 export const EARTH_DAYS_PER_YEAR = 365.25;
 
-// ─── Kopparapu et al. (2013) S_eff values ───────────────────────────
+// ─── Kopparapu et al. (2014) S_eff values at Teff = 5780 K ──────────
+// The Teff-dependent polynomial lives in ./kopparapu.ts; these are its
+// solar-temperature constants, kept for display and back-compat.
 
 export const S_EFF = {
   recentVenus: 1.776,
@@ -65,26 +68,32 @@ export interface HZBoundaries {
   snowline: number;          // AU
   optimisticWidth: number;   // AU
   conservativeWidth: number; // AU
+  /** True when Teff fell outside 2600–7200 K and was clamped for the polynomial. */
+  teffClamped: boolean;
 }
 
-export function calcHZBoundaries(luminosity: number): HZBoundaries {
+/**
+ * HZ edges from luminosity (L☉) and effective temperature (K), using the
+ * Kopparapu et al. 2013/2014 S_eff(Teff) polynomial (see ./kopparapu.ts).
+ * Inner conservative edge = runaway greenhouse, outer = maximum greenhouse.
+ * Teff defaults to the Sun's, which reproduces the solar S_eff constants
+ * for callers that only know luminosity.
+ */
+export function calcHZBoundaries(luminosity: number, temperatureK: number = KOPPARAPU_T_SUN): HZBoundaries {
   const L = Math.max(luminosity, 1e-10);
   const sqrtL = Math.sqrt(L);
-
-  const recentVenus = sqrtL / Math.sqrt(S_EFF.recentVenus);
-  const runawayGreenhouse = sqrtL / Math.sqrt(S_EFF.runawayGreenhouse);
-  const maxGreenhouse = sqrtL / Math.sqrt(S_EFF.maxGreenhouse);
-  const earlyMars = sqrtL / Math.sqrt(S_EFF.earlyMars);
+  const edges = kopparapuEdges(temperatureK, L);
   const snowline = 2.7 * sqrtL;
 
   return {
-    recentVenus,
-    runawayGreenhouse,
-    maxGreenhouse,
-    earlyMars,
+    recentVenus: edges.recentVenus,
+    runawayGreenhouse: edges.runawayGreenhouse,
+    maxGreenhouse: edges.maxGreenhouse,
+    earlyMars: edges.earlyMars,
     snowline,
-    optimisticWidth: earlyMars - recentVenus,
-    conservativeWidth: maxGreenhouse - runawayGreenhouse,
+    optimisticWidth: edges.earlyMars - edges.recentVenus,
+    conservativeWidth: edges.maxGreenhouse - edges.runawayGreenhouse,
+    teffClamped: edges.teffClamped,
   };
 }
 
@@ -264,7 +273,7 @@ export function calculateHabitableZone(formState: FormStateForCalc): HabitableZo
     return makeErrorResult("Orbital distance must be greater than zero.");
   }
 
-  const hz = calcHZBoundaries(star.luminosity);
+  const hz = calcHZBoundaries(star.luminosity, star.temperature);
   const zone = classifyPlanetZone(planet.orbitalDistance, hz);
   const pctHZ = percentThroughHZ(planet.orbitalDistance, hz);
   const eqTemp = equilibriumTemperature(star.luminosity, planet.orbitalDistance);
@@ -322,7 +331,7 @@ function generateNarrative(
   if (result.percentThroughHZ >= 0) {
     narrative += `It sits ${Math.round(result.percentThroughHZ)}% of the way through the habitable zone (from inner to outer edge). `;
   } else if (result.planetZone === "scorched") {
-    narrative += `It lies inside the habitable zone, too close to its star for liquid surface water. `;
+    narrative += `It lies inside the inner edge of the habitable zone, too close to its star for liquid surface water. `;
   } else if (result.planetZone === "frozen" || result.planetZone === "near-snowline") {
     narrative += `It lies beyond the habitable zone, too far from its star for unassisted liquid water. `;
   }
@@ -331,6 +340,10 @@ function generateNarrative(
   narrative += `Estimated surface temperature (with greenhouse): ${result.estimatedSurfaceTempFormatted}. `;
   narrative += `Stellar flux: ${result.stellarFluxFormatted} (Earth = 1.0). `;
   narrative += `Year length: ${result.orbitalPeriodFormatted}.`;
+
+  if (result.hz.teffClamped) {
+    narrative += ` Note: the habitable-zone fit (Kopparapu et al.) is calibrated for stars of ${KOPPARAPU_T_MIN.toLocaleString()} to ${KOPPARAPU_T_MAX.toLocaleString()} K; this star's ${Math.round(star.temperature).toLocaleString()} K was clamped to that range, so treat the edges as approximate.`;
+  }
 
   return narrative;
 }
@@ -398,6 +411,7 @@ function makeErrorResult(error: string): HabitableZoneResult {
     snowline: 0,
     optimisticWidth: 0,
     conservativeWidth: 0,
+    teffClamped: false,
   };
   return {
     valid: false,

@@ -8,6 +8,7 @@ import {
   PDFResultBox,
 } from "../components";
 import { deepStripHtml } from "@/lib/html-utils";
+import { calculateDrakeN, formatDrakeNumber, getDrakeInterpretation } from "@/lib/drake";
 
 // Drake variable definitions with full info
 const DRAKE_VARIABLES = [
@@ -95,48 +96,10 @@ interface DrakeFullReportTemplateProps {
   date?: string;
 }
 
-// Calculate N from values
-const calculateN = (values: DrakeFormState["values"]): number => {
-  return values.rStar * values.fp * values.ne * values.fl * values.fi * values.fc * values.L;
-};
-
-// Format large numbers
-const formatNumber = (n: number): string => {
-  if (n < 1) return n.toFixed(4);
-  if (n < 10) return n.toFixed(2);
-  if (n < 1000) return n.toFixed(1);
-  if (n < 1000000) return Math.round(n).toLocaleString();
-  if (n < 1000000000) return (n / 1000000).toFixed(1) + " million";
-  return (n / 1000000000).toFixed(1) + " billion";
-};
-
-// Get interpretation
-const getInterpretation = (n: number): { label: string; description: string } => {
-  if (n < 1) return {
-    label: "Very Lonely",
-    description: "Fewer than one civilization expected. We may be alone in the galaxy, or civilizations are so rare that contact is essentially impossible.",
-  };
-  if (n < 10) return {
-    label: "Lonely",
-    description: "A handful of civilizations might exist. Finding each other would be like finding needles in a cosmic haystack.",
-  };
-  if (n < 100) return {
-    label: "Sparse",
-    description: "Dozens of civilizations. Contact is possible but requires patience and luck. Good for stories about first contact as a rare, meaningful event.",
-  };
-  if (n < 1000) return {
-    label: "Moderate",
-    description: "Hundreds of civilizations. Enough for a network, but vast distances mean most remain isolated. Good for stories about distant rumors.",
-  };
-  if (n < 10000) return {
-    label: "Crowded",
-    description: "Thousands of civilizations. Regional groupings, alliances, and conflicts become possible. Classic space opera territory.",
-  };
-  return {
-    label: "Teeming",
-    description: "A galaxy full of life. Civilizations bump into each other regularly. Think Star Trek or Star Wars. The Fermi Paradox becomes very pressing.",
-  };
-};
+// N, number format and interpretation come from @/lib/drake.
+const calculateN = (values: DrakeFormState["values"]): number => calculateDrakeN(values);
+const formatNumber = formatDrakeNumber;
+const getInterpretation = getDrakeInterpretation;
 
 const DrakeFullReportTemplate = ({
   formState: rawFormState,

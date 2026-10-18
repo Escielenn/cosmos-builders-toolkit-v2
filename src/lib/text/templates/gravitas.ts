@@ -88,7 +88,8 @@ export function generateGravitasText(formState: GravitasFormState): string {
     lines.push(`| Spin Component | ${data.combined.spin_g.toFixed(2)} g |`);
     lines.push(`| Thrust Component | ${data.combined.thrust_g.toFixed(2)} g |`);
     lines.push(`| Axis | ${data.combined.axis_orientation} |`);
-    lines.push(`| Resultant | ${formatG(combined.resultant_g)} |`);
+    lines.push(`| Resultant (worst-tilt point) | ${formatG(combined.resultant_g)} |`);
+    lines.push(`| Range Around Rim | ${formatG(combined.resultant_min_g)} to ${formatG(combined.resultant_max_g)} |`);
     lines.push(`| Tilt Angle | ${combined.tilt_angle_deg.toFixed(1)}° |`);
     lines.push(`| Walking Difficulty | ${combined.walking_difficulty}/10 |`);
     lines.push(`| Impact | ${combined.architectural_impact} |`);

@@ -1,8 +1,26 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
-import { useWorldId } from "@/hooks/use-world-id";
 import { useSearchParams } from "react-router-dom";
 import { Download, Save, Info, Printer, Plus, Trash2, FileText, Image as ImageIcon } from "lucide-react";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
+// FormState, defaults and codec: lib/tool-worksheets/empire.
+import {
+  codec as empireCodec,
+  type FormState,
+  TOOL_TYPE,
+  LOCAL_STORAGE_KEY,
+  type Foundation,
+  type PowerStructure,
+  type TerritoryScale,
+  type Economy,
+  type Military,
+  type Culture,
+  type Faction,
+  type ExternalRelations,
+  type Stability,
+  type Synthesis,
+  createEmptyFaction,
+} from "@/lib/tool-worksheets/empire";
+import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,7 +42,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
@@ -37,15 +54,12 @@ import ExportDialog from "@/components/tools/ExportDialog";
 import { EmpireSummaryTemplate, EmpireFullReportTemplate } from "@/lib/pdf/templates";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import type { MoodboardImage } from "@/hooks/use-moodboard";
-import { useTags } from "@/hooks/use-tags";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import UpgradeDialog from "@/components/subscription/UpgradeDialog";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
-import { Json } from "@/integrations/supabase/types";
 import {
   GOVERNMENT_TYPES,
   LEGITIMACY_SOURCES,
@@ -60,7 +74,6 @@ import {
   STABILITY_FACTORS,
   SF_EMPIRE_EXAMPLES,
 } from "@/lib/empire-data";
-import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 
@@ -78,233 +91,35 @@ const SECTIONS: Section[] = [
   { id: "section-synthesis", title: "Final Synthesis" },
 ];
 
-interface Foundation {
-  name: string;
-  governmentType: string;
-  governmentSubtype: string;
-  legitimacySource: string;
-  age: string;
-  foundingStory: string;
-  rulerTitle: string;
-  currentRuler: string;
-}
-
-interface PowerStructure {
-  branches: string[];
-  checksAndBalances: string;
-  successionMethod: string;
-  powerCenters: string;
-  bureaucracyStyle: string;
-  corruptionLevel: string;
-}
-
-interface TerritoryScale {
-  scale: string;
-  population: string;
-  capitalLocation: string;
-  regions: string;
-  administrationStyle: string;
-  bordersSecurity: string;
-}
-
-interface Economy {
-  system: string;
-  primaryResources: string;
-  tradeRelations: string;
-  currency: string;
-  wealthDistribution: string;
-  economicChallenges: string;
-}
-
-interface Military {
-  doctrine: string;
-  size: string;
-  technology: string;
-  specialUnits: string;
-  veteranStatus: string;
-  civilianRelations: string;
-}
-
-interface Culture {
-  coreValues: string[];
-  symbols: string;
-  propaganda: string;
-  language: string;
-  religion: string;
-  socialClasses: string;
-  culturalTaboos: string;
-}
-
-interface Faction {
-  id: string;
-  name: string;
-  type: string;
-  goals: string;
-  strength: string;
-  leader: string;
-}
-
-interface ExternalRelations {
-  diplomaticStance: string;
-  allies: string;
-  enemies: string;
-  treaties: string;
-  foreignPerception: string;
-  expansionPlans: string;
-}
-
-interface Stability {
-  strengths: string[];
-  vulnerabilities: string[];
-  currentCrisis: string;
-  trajectory: string;
-  projectedLifespan: string;
-}
-
-interface Synthesis {
-  primaryConflict: string;
-  uniqueFeature: string;
-  storyPotential: string;
-  consistencyNotes: string;
-  oneSentenceSummary: string;
-}
-
-interface FormState {
-  foundation: Foundation;
-  power: PowerStructure;
-  territory: TerritoryScale;
-  economy: Economy;
-  military: Military;
-  culture: Culture;
-  factions: Faction[];
-  external: ExternalRelations;
-  stability: Stability;
-  synthesis: Synthesis;
-  generalNotes: string;
-  moodboard: MoodboardImage[];
-}
-
-const createEmptyFaction = (): Faction => ({
-  id: crypto.randomUUID(),
-  name: "",
-  type: "",
-  goals: "",
-  strength: "",
-  leader: "",
-});
-
-const initialFormState: FormState = {
-  foundation: {
-    name: "",
-    governmentType: "",
-    governmentSubtype: "",
-    legitimacySource: "",
-    age: "",
-    foundingStory: "",
-    rulerTitle: "",
-    currentRuler: "",
-  },
-  power: {
-    branches: [],
-    checksAndBalances: "",
-    successionMethod: "",
-    powerCenters: "",
-    bureaucracyStyle: "",
-    corruptionLevel: "",
-  },
-  territory: {
-    scale: "",
-    population: "",
-    capitalLocation: "",
-    regions: "",
-    administrationStyle: "",
-    bordersSecurity: "",
-  },
-  economy: {
-    system: "",
-    primaryResources: "",
-    tradeRelations: "",
-    currency: "",
-    wealthDistribution: "",
-    economicChallenges: "",
-  },
-  military: {
-    doctrine: "",
-    size: "",
-    technology: "",
-    specialUnits: "",
-    veteranStatus: "",
-    civilianRelations: "",
-  },
-  culture: {
-    coreValues: [],
-    symbols: "",
-    propaganda: "",
-    language: "",
-    religion: "",
-    socialClasses: "",
-    culturalTaboos: "",
-  },
-  factions: [createEmptyFaction()],
-  external: {
-    diplomaticStance: "",
-    allies: "",
-    enemies: "",
-    treaties: "",
-    foreignPerception: "",
-    expansionPlans: "",
-  },
-  stability: {
-    strengths: [],
-    vulnerabilities: [],
-    currentCrisis: "",
-    trajectory: "",
-    projectedLifespan: "",
-  },
-  synthesis: {
-    primaryConflict: "",
-    uniqueFeature: "",
-    storyPotential: "",
-    consistencyNotes: "",
-    oneSentenceSummary: "",
-  },
-  generalNotes: "",
-  moodboard: [],
-};
-
-const TOOL_TYPE = "empire-designer";
-
 const EmpireDesigner = () => {
-  const [formState, setFormState] = useState<FormState>(initialFormState);
-  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
-  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
   const { isSubscribed } = useSubscription();
   const { worlds } = useWorlds();
-  const { updateWorksheetTags } = useTags();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = useWorldId();
-  const worksheetId = searchParams.get("worksheetId");
+
+  const worksheet = useToolWorksheet(TOOL_TYPE, {
+    ...empireCodec,
+    displayName: "Empire",
+    localKey: LOCAL_STORAGE_KEY,
+    loadedToast: true,
+    onDraftCreated: (id, title) => entityMatch.check(id, title),
+  });
+  const { state: formState, setState: setFormState, worldId } = worksheet;
+  const currentWorksheetId = worksheet.worksheetId;
+  const currentWorksheetTitle = worksheet.worksheetTitle;
+  const worksheetId = worksheet.worksheetId;
 
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
   const worldName = currentWorld?.name;
 
   const entityMatch = useEntityMatch(worldId);
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
-    onDraftCreated: entityMatch.check,
-  });
-  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
-  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
-  const renameWorksheet = useRenameWorksheet();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [notesSheetOpen, setNotesSheetOpen] = useState(false);
   const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
-  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
 
   useEffect(() => {
@@ -312,45 +127,6 @@ const EmpireDesigner = () => {
       setUpgradeDialogOpen(true);
     }
   }, [user, isSubscribed]);
-
-  useEffect(() => {
-    if (worldId && !worksheetId && !worksheetsLoading && user) {
-      setWorksheetSelectorOpen(true);
-    }
-  }, [worldId, worksheetId, worksheetsLoading, user]);
-
-  useEffect(() => {
-    if (existingWorksheet && existingWorksheet.data) {
-      try {
-        const data = existingWorksheet.data as unknown as FormState;
-        setFormState(data);
-        setCurrentWorksheetId(existingWorksheet.id);
-        setCurrentWorksheetTitle(existingWorksheet.title);
-        if (existingWorksheet?.tags) {
-          setWorksheetTags(existingWorksheet.tags);
-        }
-        toast({
-          title: "WORKSHEET LOADED.",
-          description: "WORK RESTORED FROM CLOUD.",
-        });
-      } catch {
-        // Ignore parse errors
-      }
-    }
-  }, [existingWorksheet]);
-
-  useEffect(() => {
-    if (!worldId && !worksheetId) {
-      const saved = localStorage.getItem("ed-worksheet");
-      if (saved) {
-        try {
-          setFormState(JSON.parse(saved));
-        } catch {
-          // Ignore parse errors
-        }
-      }
-    }
-  }, [worldId, worksheetId]);
 
   const keyChoicesSections: KeyChoicesSection[] = useMemo(() => {
     const govType = GOVERNMENT_TYPES.find(g => g.id === formState.foundation.governmentType);
@@ -531,86 +307,18 @@ const EmpireDesigner = () => {
     });
   };
 
-  const handleSave = async () => {
-    writeStandaloneBackup("ed-worksheet", formState, { worldId, signedIn: !!user });
-
-    if (worldId && user) {
-      const worksheetData = formState as unknown as Json;
-      try {
-        if (currentWorksheetId || worksheetId) {
-          await updateWorksheet.mutateAsync({
-            worksheetId: currentWorksheetId || worksheetId!,
-            data: worksheetData,
-          });
-        } else {
-          toast({
-            title: "OPERATION FAILED.",
-            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
-            variant: "destructive",
-          });
-        }
-      } catch {
-        // Error handled by mutation
-      }
-    } else {
-      toast({
-        title: "DRAFT SAVED.",
-        description: "WORK SECURED TO LOCAL STORAGE.",
-      });
-    }
-  };
-
-  const handleWorksheetSelect = (selectedWorksheetId: string) => {
-    setSearchParams({ worldId: worldId!, worksheetId: selectedWorksheetId });
-    setWorksheetSelectorOpen(false);
-  };
-
-  const handleWorksheetCreate = async (name: string): Promise<string> => {
-    const worksheetData = initialFormState as unknown as Json;
-    const result = await createWorksheet.mutateAsync({
-      worldId: worldId!,
-      toolType: TOOL_TYPE,
-      title: name,
-      data: worksheetData,
-    });
-    setCurrentWorksheetId(result.id);
-    setCurrentWorksheetTitle(result.title);
-    setSearchParams({ worldId: worldId!, worksheetId: result.id });
-    return result.id;
-  };
-
-  // Handle worksheet rename
-  const handleRename = async (newTitle: string) => {
-    const wsId = currentWorksheetId || worksheetId;
-    if (!wsId) return;
-
-    await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
-    setCurrentWorksheetTitle(newTitle);
-  };
-
-  const handleTagsChange = (newTags: string[]) => {
-    setWorksheetTags(newTags);
-    const wsId = currentWorksheetId || worksheetId;
-    if (wsId) {
-      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
-    }
-  };
-
   const selectedGovType = GOVERNMENT_TYPES.find(
     (g) => g.id === formState.foundation.governmentType
   );
 
   return (
     <ToolPageLayout
+      {...worksheet.layoutProps}
       toolType={TOOL_TYPE}
-      onSave={handleSave}
-      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
       onExport={() => setExportDialogOpen(true)}
       onPrint={() => window.print()}
       onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
       isShared={!!shareConfig?.enabled}
-      isSaving={updateWorksheet.isPending}
-      isCloudEnabled={!!(worldId && user)}
       onNotesClick={() => setNotesSheetOpen(true)}
       onMoodboardClick={() => setMoodboardSheetOpen(true)}
       moodboardCount={formState.moodboard?.length || 0}
@@ -624,13 +332,6 @@ const EmpireDesigner = () => {
           defaultFilename="empire-designer"
         />
       }
-      worksheetId={currentWorksheetId || worksheetId}
-      worksheetTitle={currentWorksheetTitle}
-      onRenameWorksheet={handleRename}
-      worksheetLoading={worksheetLoading}
-      worksheetTags={worksheetTags}
-      onTagsChange={handleTagsChange}
-      isLoggedIn={!!user}
     >
         {/* Mobile Sidebars - Right side floating buttons */}
         <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
@@ -1604,16 +1305,9 @@ const EmpireDesigner = () => {
       />
 
       <WorksheetSelectorDialog
-        open={worksheetSelectorOpen}
-        onOpenChange={setWorksheetSelectorOpen}
-        worldId={worldId!}
+        {...worksheet.selectorProps}
         worldName={worldName}
-        toolType={TOOL_TYPE}
         toolDisplayName="Dominion"
-        worksheets={existingWorksheets}
-        isLoading={worksheetsLoading}
-        onSelect={handleWorksheetSelect}
-        onCreate={handleWorksheetCreate}
       />
 
       <UpgradeDialog

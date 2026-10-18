@@ -1,6 +1,5 @@
-import { useState, useEffect, useMemo, useCallback, lazy, Suspense } from "react";
+import { useState, useMemo, useCallback, lazy } from "react";
 import { useWorldId } from "@/hooks/use-world-id";
-import { useSearchParams } from "react-router-dom";
 import {
   Copy,
   Eye,
@@ -24,15 +23,8 @@ import KeyChoicesSidebar, {
   MobileKeyChoices,
 } from "@/components/tools/KeyChoicesSidebar";
 import { useToast } from "@/hooks/use-toast";
-import {
-  useWorksheets,
-  useWorksheet,
-  useWorksheetsByType,
-  useRenameWorksheet,
-} from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import WorksheetLinkSelector from "@/components/tools/WorksheetLinkSelector";
-import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, {
   Section,
   MobileSectionNav,
@@ -45,7 +37,6 @@ import { useWorksheetShare } from "@/hooks/use-sharing";
 import { motion } from "framer-motion";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
-import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import QuestionSection from "@/components/tools/QuestionSection";
@@ -54,8 +45,6 @@ import {
   SensoriumFullReportTemplate,
 } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
-import { useTags } from "@/hooks/use-tags";
-import { Json } from "@/integrations/supabase/types";
 
 // Domain-specific imports
 import type {
@@ -88,6 +77,8 @@ import {
 } from "@/lib/sensorium/calculations";
 import { recordSensoriumInsights } from "@/lib/sensorium/push-to-worksheet";
 import { mapError } from "@/lib/ship-voice";
+import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
+import { codec as sensoriumCodec, LOCAL_STORAGE_KEY, TOOL_TYPE } from "@/lib/tool-worksheets/sensorium";
 import { generatePerceptualNarrative } from "@/lib/sensorium/perceptual-narrative";
 import {
   LinkedWorksheetRef,
@@ -120,14 +111,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 
 // ─── Constants ────────────────────────────────────────────────────
 
-const TOOL_TYPE = "sensorium";
-const LOCAL_STORAGE_KEY = "sensorium-v1";
+// Worksheet codec, tool type and draft key: lib/tool-worksheets/sensorium.
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   electromagnetic: <Sun className="h-3.5 w-3.5" />,
@@ -146,23 +135,26 @@ const sections: Section[] = SENSORIUM_SECTIONS.map((s) => ({
 
 const Sensorium = () => {
   const { toast } = useToast();
-  const { user } = useAuth();
-  const [searchParams] = useSearchParams();
-  const worldId = useWorldId();
-  const worksheetId = searchParams.get("worksheetId");
+  const boundWorldId = useWorldId();
+  const entityMatch = useEntityMatch(boundWorldId);
+  const worksheet = useToolWorksheet(TOOL_TYPE, {
+    ...sensoriumCodec,
+    displayName: "Untitled Sensorium",
+    localKey: LOCAL_STORAGE_KEY,
+    onDraftCreated: (id, title) => entityMatch.check(id, title),
+  });
+  const { state: formState, setState: setFormState, worldId } = worksheet;
+  const currentWorksheetId = worksheet.worksheetId;
+  const currentWorksheetTitle = worksheet.worksheetTitle;
+  const worksheetId = worksheet.worksheetId;
   const { data: worlds = [] } = useWorlds();
   const currentWorld = worlds.find((w) => w.id === worldId);
 
   // State
-  const [formState, setFormState] = useState<SensoriumFormState>(DEFAULT_FORM_STATE);
-  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(worksheetId);
-  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [notesSheetOpen, setNotesSheetOpen] = useState(false);
   const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
-  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
     new Set(["section-environment"])
   );
@@ -172,53 +164,13 @@ const Sensorium = () => {
     () => localStorage.getItem("sf-sensorium-tutorial-seen") === "true"
   );
 
-  // Worksheet hooks
-  const entityMatch = useEntityMatch(worldId);
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
-    onDraftCreated: entityMatch.check,
-  });
-  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
-  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
-  const renameWorksheet = useRenameWorksheet();
-  const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
-  const { updateWorksheetTags } = useTags();
+  const { data: shareConfig } = useWorksheetShare(currentWorksheetId || undefined);
 
   // Link configurations
   const linkConfigs = getLinkConfigsForTool(TOOL_TYPE);
 
   // ─── Effects ──────────────────────────────────────────────────
 
-  useEffect(() => {
-    if (worldId && !worksheetId && !worksheetsLoading) {
-      setWorksheetSelectorOpen(true);
-    }
-  }, [worldId, worksheetId, worksheetsLoading]);
-
-  useEffect(() => {
-    if (existingWorksheet) {
-      const wsData = existingWorksheet.data as Record<string, unknown> | null;
-      if (wsData) {
-        setFormState({ ...DEFAULT_FORM_STATE, ...wsData } as SensoriumFormState);
-      }
-      setCurrentWorksheetId(existingWorksheet.id);
-      setCurrentWorksheetTitle(existingWorksheet.title);
-      setWorksheetTags((existingWorksheet as Record<string, unknown>).tags as string[] || []);
-    }
-  }, [existingWorksheet]);
-
-  useEffect(() => {
-    if (!worldId && !worksheetId) {
-      try {
-        const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          setFormState({ ...DEFAULT_FORM_STATE, ...parsed });
-        }
-      } catch (e) {
-        console.error("Failed to load from localStorage", e);
-      }
-    }
-  }, [worldId, worksheetId]);
 
   // ─── Computed Values ──────────────────────────────────────────
 
@@ -410,78 +362,8 @@ const Sensorium = () => {
     toast({ title: "COPIED TO CLIPBOARD." });
   };
 
-  const handleSave = async () => {
-    // Browser backup in standalone mode only (see lib/standalone-backup)
-    try {
-      writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
-    } catch (e) {
-      console.error("localStorage save failed", e);
-    }
 
-    if (!worldId || !user) {
-      toast({ title: "SAVED LOCALLY." });
-      return;
-    }
-
-    if (currentWorksheetId) {
-      await updateWorksheet.mutateAsync({
-        worksheetId: currentWorksheetId,
-        title: currentWorksheetTitle || "Untitled Sensorium",
-        data: formState as unknown as Json,
-      });
-    } else {
-      const created = await createWorksheet.mutateAsync({
-        worldId,
-        toolType: TOOL_TYPE,
-        title: currentWorksheetTitle || "Untitled Sensorium",
-        data: formState as unknown as Json,
-      });
-      setCurrentWorksheetId(created.id);
-      if (!currentWorksheetTitle) setCurrentWorksheetTitle(created.title);
-    }
-    toast({ title: "SAVED TO CLOUD." });
-  };
-
-  const handleWorksheetSelect = (ws: { id: string; title: string; data: unknown }) => {
-    const wsData = ws.data as Record<string, unknown> | null;
-    if (wsData) {
-      setFormState({ ...DEFAULT_FORM_STATE, ...wsData } as SensoriumFormState);
-    }
-    setCurrentWorksheetId(ws.id);
-    setCurrentWorksheetTitle(ws.title);
-    setWorksheetSelectorOpen(false);
-  };
-
-  const handleWorksheetCreate = async (title: string) => {
-    if (!worldId || !user) return;
-    const created = await createWorksheet.mutateAsync({
-      worldId,
-      toolType: TOOL_TYPE,
-      title,
-      data: DEFAULT_FORM_STATE as unknown as Json,
-    });
-    setFormState(DEFAULT_FORM_STATE);
-    setCurrentWorksheetId(created.id);
-    setCurrentWorksheetTitle(created.title);
-    setWorksheetSelectorOpen(false);
-  };
-
-  const handleRename = async (newTitle: string) => {
-    const id = currentWorksheetId || worksheetId;
-    if (!id) return;
-    await renameWorksheet.mutateAsync({ worksheetId: id, title: newTitle });
-    setCurrentWorksheetTitle(newTitle);
-  };
-
-  const handleTagsChange = async (tags: string[]) => {
-    setWorksheetTags(tags);
-    const id = currentWorksheetId || worksheetId;
-    if (id) {
-      await updateWorksheetTags.mutateAsync({ worksheetId: id, tags });
-    }
-  };
-
-  // Ctrl/Cmd+S is handled by ToolPageLayout (it calls onSave={handleSave}).
+  // Ctrl/Cmd+S is handled by ToolPageLayout (it calls the hook's save via onSave).
 
   const dismissTutorial = () => {
     setTutorialDismissed(true);
@@ -507,7 +389,7 @@ const Sensorium = () => {
 
   // ─── Render ───────────────────────────────────────────────────
 
-  if (worksheetLoading) {
+  if (worksheet.isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader />
@@ -518,9 +400,7 @@ const Sensorium = () => {
   return (
     <ToolPageLayout
       toolType={TOOL_TYPE}
-      onSave={handleSave}
-      isSaving={updateWorksheet.isPending || createWorksheet.isPending}
-      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
+      {...worksheet.layoutProps}
       onPrint={() => window.print()}
       onExport={() => setExportDialogOpen(true)}
       onShare={
@@ -529,7 +409,6 @@ const Sensorium = () => {
           : undefined
       }
       isShared={!!shareConfig?.enabled}
-      isCloudEnabled={!!(worldId && user)}
       onNotesClick={() => setNotesSheetOpen(true)}
       onMoodboardClick={() => setMoodboardSheetOpen(true)}
       moodboardCount={formState.moodboard?.length || 0}
@@ -554,13 +433,6 @@ const Sensorium = () => {
           defaultFilename="sensorium"
         />
       }
-      worksheetId={currentWorksheetId || worksheetId}
-      worksheetTitle={currentWorksheetTitle}
-      onRenameWorksheet={handleRename}
-      worksheetLoading={worksheetLoading}
-      worksheetTags={worksheetTags}
-      onTagsChange={handleTagsChange}
-      isLoggedIn={!!user}
     >
         {/* Main layout: sidebar + content */}
         <div className="flex gap-6">
@@ -1656,16 +1528,9 @@ const Sensorium = () => {
       )}
 
       <WorksheetSelectorDialog
-        open={worksheetSelectorOpen}
-        onOpenChange={setWorksheetSelectorOpen}
-        worldId={worldId || ""}
+        {...worksheet.selectorProps}
         worldName={currentWorld?.name}
-        toolType={TOOL_TYPE}
         toolDisplayName="Sensorium"
-        worksheets={existingWorksheets}
-        isLoading={worksheetsLoading}
-        onSelect={handleWorksheetSelect}
-        onCreate={handleWorksheetCreate}
       />
 
       <WorksheetNotesSheet

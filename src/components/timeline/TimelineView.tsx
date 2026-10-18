@@ -6,7 +6,6 @@ import { GlassPanel } from "@/components/ui/glass-panel";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import type { TimelineTrack } from "@/lib/timeline/types";
 import {
-  TRACK_HEADER_WIDTH,
   TRACK_HEIGHT,
   COLLAPSED_TRACK_HEIGHT,
   TIME_AXIS_HEIGHT,
@@ -28,6 +27,7 @@ import {
   getFilteredEventIds,
   getVisibleTracks,
   getFoldedTrackEvents,
+  visibleTickLabels,
 } from "@/lib/timeline/utils";
 import { useTimeline } from "@/lib/timeline/context";
 import TrackLane from "./TrackLane";
@@ -81,6 +81,10 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
     () => createYearMapper(centerYear, pixelsPerYear, viewportWidth, state.compressions),
     [centerYear, pixelsPerYear, viewportWidth, state.compressions]
   );
+  // Narrow (phone) viewports get a compact track-name column.
+  const headerW = mapper.headerWidth;
+  const headerWRef = useRef(headerW);
+  headerWRef.current = headerW;
 
   // ─── Filtering (Phase 3) ───────────────────────────────────────────
 
@@ -95,6 +99,13 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
   const visibleRange = getVisibleRange(centerYear, pixelsPerYear, viewportWidth);
   const visibleEvents = getEventsInRange(state.events, visibleRange);
   const ticks = generateTicksWithCompressions(visibleRange, pixelsPerYear, state.compressions);
+  // Thin the year labels that would collide: ~7px a character at 12px,
+  // never under 48px, so "2350" and "-12,000 BCE" both stay legible.
+  const labelGap = Math.max(48, ticks.reduce((m, t) => Math.max(m, t.label.length), 0) * 7 + 8);
+  const labelled = visibleTickLabels(
+    ticks.map((t) => ({ x: mapper.yearToX(t.year), isMajor: t.isMajor })),
+    labelGap,
+  );
 
   // ─── Mouse wheel zoom (native listener for passive: false) ───────
 
@@ -126,15 +137,15 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
     return () => el.removeEventListener("wheel", handleWheel);
   }, [hasTracks]);
 
-  // ─── Pan (mouse drag) ─────────────────────────────────────────────
+  // ─── Pan (pointer drag: mouse, pen and touch) ──────────────────────
 
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent) => {
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent) => {
       if (e.button !== 0) return;
       const rect = containerRef.current?.getBoundingClientRect();
       if (!rect) return;
       const clickX = e.clientX - rect.left;
-      if (clickX < TRACK_HEADER_WIDTH) return;
+      if (clickX < headerWRef.current) return;
 
       setIsPanning(true);
       panStart.current = { x: e.clientX, centerYear };
@@ -145,7 +156,7 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
   useEffect(() => {
     if (!isPanning) return;
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handleMouseMove = (e: PointerEvent) => {
       if (!panStart.current) return;
       const dx = e.clientX - panStart.current.x;
       const yearDelta = dx / pixelsPerYear;
@@ -163,11 +174,13 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
       panStart.current = null;
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("pointermove", handleMouseMove);
+    window.addEventListener("pointerup", handleMouseUp);
+    window.addEventListener("pointercancel", handleMouseUp);
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("pointermove", handleMouseMove);
+      window.removeEventListener("pointerup", handleMouseUp);
+      window.removeEventListener("pointercancel", handleMouseUp);
     };
   }, [isPanning, pixelsPerYear, dispatch]);
 
@@ -230,7 +243,7 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
   return (
     <div ref={ref} className="space-y-2">
       {/* Zoom Toolbar */}
-      <div className="flex items-center gap-3 px-2">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 px-2">
         <Button variant="ghost" size="icon" className="w-7 h-7 min-h-hit min-w-hit" aria-label="Zoom out timeline" onClick={() => {
           dispatch({
             type: "SET_VIEW_STATE",
@@ -239,7 +252,7 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
         }}>
           <ZoomOut className="w-4 h-4" />
         </Button>
-        <div className="w-32">
+        <div className="w-24 sm:w-32">
           <Slider
             value={[sliderValue]}
             onValueChange={handleZoomSlider}
@@ -259,7 +272,7 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
         <Button
           variant="ghost"
           size="sm"
-          className="text-xs"
+          className="text-xs min-h-hit"
           onClick={handleFitAll}
           disabled={state.events.length === 0}
         >
@@ -277,8 +290,10 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
             style={{
               cursor: isPanning ? "grabbing" : "grab",
               maxHeight: "60vh",
+              // Horizontal drags pan the timeline; vertical swipes still scroll.
+              touchAction: "pan-y",
             }}
-            onMouseDown={handleMouseDown}
+            onPointerDown={handlePointerDown}
           >
             {/* Time Axis */}
             <div
@@ -288,29 +303,31 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
               {/* Header spacer */}
               <div
                 className="shrink-0 border-r border-sf-line-hairline"
-                style={{ width: TRACK_HEADER_WIDTH }}
+                style={{ width: headerW }}
               />
               {/* Tick marks */}
               <div className="relative flex-1 min-w-0 overflow-hidden">
                 {ticks.map((tick, i) => {
                   const x = mapper.yearToX(tick.year);
-                  if (x < TRACK_HEADER_WIDTH || x > viewportWidth + 50) return null;
+                  if (x < headerW || x > viewportWidth + 50) return null;
 
                   return (
                     <div
                       key={i}
                       className="absolute top-0 h-full flex flex-col items-center justify-end"
-                      style={{ left: x - TRACK_HEADER_WIDTH }}
+                      style={{ left: x - headerW }}
                     >
-                      <span
-                        className={`text-[12px] leading-none mb-1 whitespace-nowrap ${
-                          tick.isMajor
-                            ? "text-t2 font-medium"
-                            : "text-t4"
-                        }`}
-                      >
-                        {tick.label}
-                      </span>
+                      {labelled.has(i) && (
+                        <span
+                          className={`text-[12px] leading-none mb-1 whitespace-nowrap ${
+                            tick.isMajor
+                              ? "text-t2 font-medium"
+                              : "text-t4"
+                          }`}
+                        >
+                          {tick.label}
+                        </span>
+                      )}
                       <div
                         className={`w-px ${
                           tick.isMajor ? "h-2 bg-foreground/30" : "h-1 bg-foreground/15"
@@ -345,19 +362,19 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
               className="absolute top-0 left-0 w-full pointer-events-none"
               style={{
                 height: totalHeight + TIME_AXIS_HEIGHT,
-                marginLeft: TRACK_HEADER_WIDTH,
+                marginLeft: headerW,
               }}
             >
               {ticks
                 .filter((t) => t.isMajor)
                 .map((tick, i) => {
                   const x = mapper.yearToX(tick.year);
-                  if (x < TRACK_HEADER_WIDTH || x > viewportWidth + 50) return null;
+                  if (x < headerW || x > viewportWidth + 50) return null;
                   return (
                     <div
                       key={i}
                       className="absolute top-0 w-px h-full bg-foreground/5"
-                      style={{ left: x - TRACK_HEADER_WIDTH }}
+                      style={{ left: x - headerW }}
                     />
                   );
                 })}
@@ -370,7 +387,7 @@ const TimelineView = forwardRef<HTMLDivElement, TimelineViewProps>(({
                 style={{
                   top: TIME_AXIS_HEIGHT,
                   height: totalHeight,
-                  paddingLeft: TRACK_HEADER_WIDTH,
+                  paddingLeft: headerW,
                 }}
               >
                 <div className="relative w-full h-full pointer-events-auto">

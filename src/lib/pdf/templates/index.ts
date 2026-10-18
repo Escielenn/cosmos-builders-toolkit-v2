@@ -45,5 +45,8 @@ export const GravitasFullReportTemplate = lazyPdfTemplate(() => import("./Gravit
 export const KardashevSummaryTemplate = lazyPdfTemplate(() => import("./KardashevSummaryTemplate"));
 export const KardashevFullReportTemplate = lazyPdfTemplate(() => import("./KardashevFullReportTemplate"));
 export const DossierSummaryTemplate = lazyPdfTemplate(() => import("./DossierSummaryTemplate"));
+export const DossierFullReportTemplate = lazyPdfTemplate(() => import("./DossierFullReportTemplate"));
+export const SimRunReportTemplate = lazyPdfTemplate(() => import("./SimRunReportTemplate"));
+export const SurfaceGazetteerTemplate = lazyPdfTemplate(() => import("./SurfaceGazetteerTemplate"));
 export const GenerationShipSummaryTemplate = lazyPdfTemplate(() => import("./GenerationShipSummaryTemplate"));
 export const GenerationShipFullReportTemplate = lazyPdfTemplate(() => import("./GenerationShipFullReportTemplate"));

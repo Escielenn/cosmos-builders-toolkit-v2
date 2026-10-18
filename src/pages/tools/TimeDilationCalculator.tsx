@@ -1,9 +1,6 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from "react";
-import { useWorldId } from "@/hooks/use-world-id";
+import { useState, useMemo, lazy, Suspense } from "react";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
-import { useTags } from "@/hooks/use-tags";
-import { useSearchParams } from "react-router-dom";
 import {
   Copy,
   Clock,
@@ -31,14 +28,7 @@ import {
   SelectLabel,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import {
-  useWorksheets,
-  useWorksheet,
-  useWorksheetsByType,
-  useRenameWorksheet,
-} from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
-import { useAuth } from "@/contexts/AuthContext";
 import { MobileSectionNav } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import SectionNavigation from "@/components/tools/SectionNavigation";
@@ -54,7 +44,6 @@ import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
-import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import {
@@ -62,7 +51,6 @@ import {
   TimeDilationFullReportTemplate,
 } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
-import { Json } from "@/integrations/supabase/types";
 
 import {
   JOURNEY_PRESETS,
@@ -76,8 +64,9 @@ import {
   buildCopyText,
   formatDuration,
 } from "@/lib/time-dilation/calculations";
-import type { FormStateForCalc } from "@/lib/time-dilation/calculations";
-import { writeStandaloneBackup } from "@/lib/standalone-backup";
+import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
+// FormState, defaults and codec: lib/tool-worksheets/paradox.
+import { codec as paradoxCodec, type FormState, TOOL_TYPE, LOCAL_STORAGE_KEY } from "@/lib/tool-worksheets/paradox";
 import { manifest as paradoxManifest } from "@/tools/paradox/manifest";
 import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
 import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
@@ -85,52 +74,6 @@ import { CanonProvenance } from "@/components/canon/CanonProvenance";
 
 // ─── FormState ───────────────────────────────────────────────────────
 
-interface FormState extends FormStateForCalc {
-  storyNotes: {
-    departureMoment: string;
-    timeDilationImpact: string;
-    returnExperience: string;
-    socialConsequences: string;
-  };
-  generalNotes: string;
-  moodboard: MoodboardImage[];
-}
-
-const initialFormState: FormState = {
-  journey: {
-    presetCategory: "",
-    presetId: "",
-    customDistance: "",
-    customDistanceUnit: "ly",
-    originName: "",
-    destinationName: "",
-  },
-  propulsion: {
-    method: "",
-    customMaxVelocity: "",
-  },
-  velocityProfile: {
-    mode: "constant",
-    velocityFraction: "",
-    gForce: "1",
-  },
-  referenceFrame: {
-    frame: "earth",
-    customName: "",
-  },
-  roundTrip: false,
-  alcubierreNoDilation: true,
-  storyNotes: {
-    departureMoment: "",
-    timeDilationImpact: "",
-    returnExperience: "",
-    socialConsequences: "",
-  },
-  generalNotes: "",
-  moodboard: [],
-};
-
-const TOOL_TYPE = "time-dilation";
 
 /** propulsion.type (Impulse's slugs) → this picker's method id. Drives it has no card for are not prefilled. */
 const PARADOX_METHOD: Record<string, string> = {
@@ -143,7 +86,6 @@ const PARADOX_METHOD: Record<string, string> = {
   antimatter: "antimatter",
   alcubierre: "alcubierre",
 };
-const LOCAL_STORAGE_KEY = "time-dilation-calculator-v1";
 
 // ─── Severity color helpers ──────────────────────────────────────────
 
@@ -179,18 +121,27 @@ function velocityToSlider(velocity: number, maxV: number): number {
 // ─── Component ───────────────────────────────────────────────────────
 
 const TimeDilationCalculator = () => {
-  const [formState, setFormState] = useState<FormState>(initialFormState);
-  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
-  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const { toast } = useToast();
-  const { user } = useAuth();
   const { worlds } = useWorlds();
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = useWorldId();
-  const worksheetId = searchParams.get("worksheetId");
+  const worksheet = useToolWorksheet(TOOL_TYPE, {
+    ...paradoxCodec,
+    displayName: "Paradox",
+    localKey: LOCAL_STORAGE_KEY,
+    loadedToast: true,
+    onDraftCreated: (id, title) => entityMatch.check(id, title),
+    onSaved: (saved, { worksheetId: savedId }) =>
+      canonEmit.emit(saved, {
+        subjectId: canonSubjectId,
+        worksheetId: savedId,
+        inputs: { "propulsion.cruise_fraction_c": parseFloat(saved.velocityProfile.velocityFraction) },
+      }),
+  });
+  const { state: formState, setState: setFormState, worldId } = worksheet;
+  const currentWorksheetId = worksheet.worksheetId;
+  const currentWorksheetTitle = worksheet.worksheetTitle;
+  const worksheetId = worksheet.worksheetId;
 
   // One home per value (1.5 item 10): the drive is Impulse's; Paradox reads it and owns the dilation it derives.
   const canonSubjectId = useToolSubject(currentWorksheetId || worksheetId);
@@ -200,61 +151,10 @@ const TimeDilationCalculator = () => {
   const worldName = currentWorld?.name;
 
   const entityMatch = useEntityMatch(worldId);
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
-    onDraftCreated: entityMatch.check,
-  });
-  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
-  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
-  const renameWorksheet = useRenameWorksheet();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [notesSheetOpen, setNotesSheetOpen] = useState(false);
   const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
-  const { updateWorksheetTags } = useTags();
-  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
-
-  // Show worksheet selector when worldId is present but no worksheetId
-  useEffect(() => {
-    if (worldId && !worksheetId && !worksheetsLoading && user) {
-      setWorksheetSelectorOpen(true);
-    }
-  }, [worldId, worksheetId, worksheetsLoading, user]);
-
-  // Load existing worksheet from Supabase
-  useEffect(() => {
-    if (existingWorksheet && existingWorksheet.data) {
-      try {
-        const data = existingWorksheet.data as unknown as FormState;
-        setFormState(data);
-        setCurrentWorksheetId(existingWorksheet.id);
-        setCurrentWorksheetTitle(existingWorksheet.title);
-        if (existingWorksheet.tags) {
-          setWorksheetTags(existingWorksheet.tags);
-        }
-        toast({
-          title: "WORKSHEET LOADED.",
-          description: "WORK RESTORED FROM CLOUD.",
-        });
-      } catch {
-        // Ignore parse errors
-      }
-    }
-  }, [existingWorksheet]);
-
-  // Fallback to localStorage if no worldId
-  useEffect(() => {
-    if (!worldId && !worksheetId) {
-      const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (saved) {
-        try {
-          setFormState(JSON.parse(saved));
-        } catch {
-          // Ignore parse errors
-        }
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [worldId, worksheetId]);
 
   // ─── Computed Results ──────────────────────────────────────────────
 
@@ -436,71 +336,6 @@ const TimeDilationCalculator = () => {
 
   // ─── Save / Load / Export ──────────────────────────────────────────
 
-  const handleSave = async () => {
-    writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
-
-    if (worldId && user) {
-      const worksheetData = formState as unknown as Json;
-      try {
-        if (currentWorksheetId || worksheetId) {
-          await updateWorksheet.mutateAsync({
-            worksheetId: currentWorksheetId || worksheetId!,
-            data: worksheetData,
-          });
-          await canonEmit.emit(formState, {
-            subjectId: canonSubjectId,
-            worksheetId: currentWorksheetId || worksheetId,
-            inputs: { "propulsion.cruise_fraction_c": parseFloat(formState.velocityProfile.velocityFraction) },
-          });
-        } else {
-          toast({
-            title: "OPERATION FAILED.",
-            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
-            variant: "destructive",
-          });
-        }
-      } catch {
-        // Error handled by mutation
-      }
-    } else {
-      toast({ title: "DRAFT SAVED.", description: "WORK SECURED TO LOCAL STORAGE." });
-    }
-  };
-
-  const handleWorksheetSelect = (selectedWorksheetId: string) => {
-    setSearchParams({ worldId: worldId!, worksheetId: selectedWorksheetId });
-    setWorksheetSelectorOpen(false);
-  };
-
-  const handleWorksheetCreate = async (name: string): Promise<string> => {
-    const worksheetData = initialFormState as unknown as Json;
-    const result = await createWorksheet.mutateAsync({
-      worldId: worldId!,
-      toolType: TOOL_TYPE,
-      title: name,
-      data: worksheetData,
-    });
-    setCurrentWorksheetId(result.id);
-    setCurrentWorksheetTitle(result.title);
-    setSearchParams({ worldId: worldId!, worksheetId: result.id });
-    return result.id;
-  };
-
-  const handleRename = async (newTitle: string) => {
-    const wsId = currentWorksheetId || worksheetId;
-    if (!wsId) return;
-    await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
-    setCurrentWorksheetTitle(newTitle);
-  };
-
-  const handleTagsChange = (newTags: string[]) => {
-    setWorksheetTags(newTags);
-    const wsId = currentWorksheetId || worksheetId;
-    if (wsId) {
-      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
-    }
-  };
-
   const handleCopyNarrative = () => {
     if (!calculationResult.valid) return;
     const text = buildCopyText(calculationResult, formState);
@@ -516,14 +351,12 @@ const TimeDilationCalculator = () => {
 
   return (
     <ToolPageLayout
+      {...worksheet.layoutProps}
       toolType={TOOL_TYPE}
-      onSave={handleSave}
-      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
       onPrint={() => window.print()}
       onExport={() => setExportDialogOpen(true)}
       onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
       isShared={!!shareConfig?.enabled}
-      isCloudEnabled={!!(worldId && user)}
       onNotesClick={() => setNotesSheetOpen(true)}
       onMoodboardClick={() => setMoodboardSheetOpen(true)}
       moodboardCount={formState.moodboard?.length || 0}
@@ -537,13 +370,6 @@ const TimeDilationCalculator = () => {
           defaultFilename="time-dilation"
         />
       }
-      worksheetId={currentWorksheetId || worksheetId}
-      worksheetTitle={currentWorksheetTitle}
-      onRenameWorksheet={handleRename}
-      worksheetLoading={worksheetLoading}
-      worksheetTags={worksheetTags}
-      onTagsChange={handleTagsChange}
-      isLoggedIn={!!user}
     >
         {/* Introduction */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
@@ -877,9 +703,15 @@ const TimeDilationCalculator = () => {
                     <Label className="cursor-pointer text-sm">
                       {formState.alcubierreNoDilation
                         ? "No dilation inside bubble (consensus interpretation)"
-                        : "Apply effective dilation (dramatic interpretation)"}
+                        : "SPECULATIVE: inverted dilation (story device)"}
                     </Label>
                   </div>
+                  {!formState.alcubierreNoDilation && (
+                    <p className="text-xs text-t3 mt-2">
+                      {"// "}SPECULATIVE. No published warp-metric solution predicts this: the traveller
+                      aging by the warp factor is an invented rule for drama, not a physics result.
+                    </p>
+                  )}
                 </div>
               )}
             </div>
@@ -1081,7 +913,7 @@ const TimeDilationCalculator = () => {
                   calculationResult.accelerationPhaseSeconds !== undefined && (
                     <GlassPanel className="p-5">
                       <p className="font-mono text-xs uppercase tracking-wide text-t2 mb-3">
-                        Flight Profile
+                        {formState.roundTrip ? "Flight Profile (each leg)" : "Flight Profile"}
                       </p>
                       <div className="space-y-2">
                         <div className="flex justify-between items-center">
@@ -1334,16 +1166,9 @@ const TimeDilationCalculator = () => {
         />
       )}
       <WorksheetSelectorDialog
-        open={worksheetSelectorOpen}
-        onOpenChange={setWorksheetSelectorOpen}
-        worldId={worldId || ""}
+        {...worksheet.selectorProps}
         worldName={worldName}
-        toolType={TOOL_TYPE}
         toolDisplayName="Paradox"
-        worksheets={existingWorksheets}
-        isLoading={worksheetsLoading}
-        onSelect={handleWorksheetSelect}
-        onCreate={handleWorksheetCreate}
       />
 
       <EntityMatchDialog {...entityMatch.dialogProps} />

@@ -4,6 +4,8 @@
  * shown in the wiki page DATA PROFILE section.
  */
 
+import { calculateDrakeN } from "@/lib/drake";
+
 export interface InfoboxField {
   label: string;
   value: string | number | null | undefined;
@@ -104,10 +106,8 @@ const templates: Record<
 
   "drake-equation-calculator": (d) => {
     const vals = (get(d, "values") as Record<string, unknown>) || {};
-    const product =
-      [vals.rStar, vals.fp, vals.ne, vals.fl, vals.fi, vals.fc, vals.L]
-        .filter((v) => v != null && v !== "")
-        .reduce<number>((acc, v) => acc * Number(v), 1);
+    // Blank factors are skipped (count as 1), as this infobox always did.
+    const product = calculateDrakeN(vals, { missingAs: 1 });
     return [
       {
         label: "N (Civilizations)",

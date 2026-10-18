@@ -45,6 +45,11 @@ interface ExportDialogProps {
   summaryTemplate?: ReactElement;
   fullTemplate?: ReactElement;
   defaultFilename?: string;
+  /**
+   * A purpose-built Markdown rendering. When given, the Text tab exports
+   * this (.md) instead of the generic plain-text dump of `formState`.
+   */
+  markdown?: () => string;
 }
 
 const ExportDialog = ({
@@ -57,6 +62,7 @@ const ExportDialog = ({
   summaryTemplate,
   fullTemplate,
   defaultFilename = "export",
+  markdown,
 }: ExportDialogProps) => {
   const { toast } = useToast();
   const { user } = useAuth();
@@ -96,7 +102,7 @@ const ExportDialog = ({
       case "pdf-full":
         return "pdf";
       case "text":
-        return isTimelineData(formState) ? "md" : "txt";
+        return markdown || isTimelineData(formState) ? "md" : "txt";
       case "word":
         return "docx";
       case "json":
@@ -131,7 +137,11 @@ const ExportDialog = ({
 
         case "text": {
           const isTimeline = isTimelineData(formState);
-          if (isTimeline) {
+          if (markdown) {
+            const blob = new Blob([markdown()], { type: "text/markdown;charset=utf-8" });
+            downloadBlob(blob, `${filename}.md`);
+            toast({ title: "EXPORT COMPLETE.", description: "MARKDOWN FILE DOWNLOADED." });
+          } else if (isTimeline) {
             const { generateTimelineMarkdown } = await loadTextGenerator();
             const mdContent = generateTimelineMarkdown({
               worksheetTitle,
@@ -301,7 +311,9 @@ const ExportDialog = ({
         }
 
         case "text": {
-          if (isTimelineData(formState)) {
+          if (markdown) {
+            previewBlob(new Blob([markdown()], { type: "text/markdown;charset=utf-8" }));
+          } else if (isTimelineData(formState)) {
             const { generateTimelineMarkdown } = await loadTextGenerator();
             const mdContent = generateTimelineMarkdown({
               worksheetTitle,
@@ -534,10 +546,12 @@ const ExportDialog = ({
               <FileType className="w-5 h-5 text-t3" />
               <div className="flex-1">
                 <span className="font-medium">
-                  {isTimelineData(formState) ? "Markdown (.md)" : "Plain Text (.txt)"}
+                  {markdown || isTimelineData(formState) ? "Markdown (.md)" : "Plain Text (.txt)"}
                 </span>
                 <p className="text-xs text-t3 mt-1">
-                  {isTimelineData(formState)
+                  {markdown
+                    ? "Structured Markdown, ready for notes, wikis and the manuscript folder."
+                    : isTimelineData(formState)
                     ? "Structured Markdown with tracks, events, and links. Great for documentation and wikis."
                     : "Universal format, works everywhere. ASCII formatted with sections and tables."}
                 </p>

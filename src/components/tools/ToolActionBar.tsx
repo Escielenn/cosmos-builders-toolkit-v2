@@ -221,7 +221,7 @@ const ToolActionBar = ({
 
       <div className="bg-[hsl(222_25%_9%/0.95)] backdrop-blur-xl border-t border-sf-line-hairline">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
+          <div className="flex min-w-0 items-center gap-2">
             <Button
               variant={hasUnsavedChanges ? "default" : "outline"}
               size="sm"
@@ -247,9 +247,10 @@ const ToolActionBar = ({
                 the top bar's version offers. */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <Download className="w-4 h-4 mr-2" />
-                  {exportLabel}
+                <Button variant="outline" size="sm" aria-label={exportLabel}>
+                  <Download className="w-4 h-4 sm:mr-2" />
+                  {/* Label hides at phone width: the bar used to run 76px off a 375px screen. */}
+                  <span className="hidden sm:inline">{exportLabel}</span>
                   <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
                 </Button>
               </DropdownMenuTrigger>
@@ -273,11 +274,12 @@ const ToolActionBar = ({
           <Button
             variant="ghost"
             size="sm"
-            className="text-t4 hover:text-t2"
+            className="shrink-0 text-t4 hover:text-t2"
+            aria-label="Back to top"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           >
-            <ChevronUp className="w-4 h-4 mr-1" />
-            Top
+            <ChevronUp className="w-4 h-4 sm:mr-1" />
+            <span className="hidden sm:inline">Top</span>
           </Button>
         </div>
       </div>

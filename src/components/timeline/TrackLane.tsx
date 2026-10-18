@@ -3,7 +3,6 @@ import type { TimelineTrack, TimelineEvent } from "@/lib/timeline/types";
 import {
   TRACK_HEIGHT,
   COLLAPSED_TRACK_HEIGHT,
-  TRACK_HEADER_WIDTH,
   NESTED_ROW_HEIGHT,
 } from "@/lib/timeline/constants";
 import {
@@ -116,13 +115,15 @@ const TrackLane = memo(
         {/* Track Header, sticky left */}
         <div
           className="sticky left-0 z-10 flex items-center gap-1.5 px-2 bg-background/95 backdrop-blur-sm border-r border-sf-line-hairline shrink-0"
-          style={{ width: TRACK_HEADER_WIDTH }}
+          style={{ width: mapper.headerWidth }}
         >
           {/* Collapse toggle */}
           <button
             type="button"
             onClick={() => onToggleCollapse(track.id)}
-            className="text-t3 hover:text-t1 transition-colors p-0.5"
+            aria-label={track.isCollapsed ? `Expand ${track.name}` : `Collapse ${track.name}`}
+            /* 44px hit area via the ::after, without widening the header. */
+            className="relative text-t3 hover:text-t1 transition-colors p-0.5 after:absolute after:-inset-3 after:content-['']"
           >
             {track.isCollapsed ? (
               <ChevronRight className="w-3.5 h-3.5" />
@@ -136,9 +137,16 @@ const TrackLane = memo(
             className="w-2.5 h-2.5 rounded-full shrink-0"
             style={{ backgroundColor: track.color }}
           />
-          <span className="text-xs font-medium truncate flex-1">
+          {/* Tapping the name opens the track editor: the hover-only actions
+              below never appear on touch screens. */}
+          <button
+            type="button"
+            onClick={() => onEditTrack(track)}
+            title="Edit track"
+            className="min-h-hit min-w-0 flex-1 truncate text-left text-xs font-medium"
+          >
             {track.name}
-          </span>
+          </button>
 
           {/* Folded track chips */}
           {foldedTracks.length > 0 && (

@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+/* Theme bridge: legacy cyan is retired. When embedded same-origin, adopt the
+   host page's --sf-primary role colour; standalone, keep the default teal. */
+(function(){try{var h=window.parent!==window?window.parent.document.documentElement:null;if(!h)return;var cs=getComputedStyle(h);var p=cs.getPropertyValue('--sf-primary').trim();var b=cs.getPropertyValue('--sf-primary-bright').trim();var r=document.documentElement.style;if(p)r.setProperty('--sf-accent',p);if(b)r.setProperty('--sf-accent-bright',b);}catch(e){}})();
+</script>
 <meta charset="UTF-8">
 <!--
   SOLARIS — Multi-Star System & Habitable-Zone Simulator
@@ -28,24 +33,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <link href="https://fonts.cdnfonts.com/css/md-nichrome-test" rel="stylesheet">
 <style>
+:root{--sf-accent:#15C17B;--sf-accent-bright:#3DFFCD}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{background:#09090B;color:#FAFAFA;font-family:'DM Sans',sans-serif;overflow:hidden;height:100vh;width:100vw;user-select:none}
 body.math-open{overflow:hidden}
 #math-overlay{pointer-events:all!important}
 canvas{display:block;position:fixed;top:0;left:0;width:100vw;height:100vh}
-::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.14);border-radius:0}
-.panel{position:fixed;background:rgba(13,13,15,0.94);border:1px solid rgba(255,255,255,0.09);backdrop-filter:blur(20px);border-radius:0;padding:14px 18px;z-index:20;max-height:calc(100vh - 80px);overflow-y:auto;overflow-x:hidden}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(21,193,123,0.14);border-radius:0}
+.panel{position:fixed;background:rgba(13,13,15,0.94);border:1px solid #50555E;backdrop-filter:blur(20px);border-radius:0;padding:14px 18px;z-index:20;max-height:calc(100vh - 80px);overflow-y:auto;overflow-x:hidden}
 #title-block{position:fixed;top:18px;left:18px;width:272px;padding:0;background:none;border:none;backdrop-filter:none;z-index:20;pointer-events:none}
 #title-block button{pointer-events:auto}
-.tool-name{font-family:'MD Nichrome Test','Space Grotesk',sans-serif;font-weight:300;font-size:22px;letter-spacing:5px;text-transform:uppercase;color:#FAFAFA;line-height:1}
+.tool-name{font-family:'MD Nichrome Test','Jura',sans-serif;font-weight:300;font-size:22px;letter-spacing:5px;text-transform:uppercase;color:#FAFAFA;line-height:1}
 .tool-sub{font-family:'MD Nichrome Test','DM Sans',sans-serif;font-size:10px;font-weight:300;letter-spacing:3px;text-transform:uppercase;color:rgba(0,229,160,0.35);margin-top:5px}
-.tool-ctx{font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(0,212,255,0.65);margin-top:6px;min-height:14px}
+.tool-ctx{font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(21,193,123,0.65);margin-top:6px;min-height:14px}
 .credit{font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:1px;color:rgba(255,255,255,0.12);margin-top:8px;text-transform:uppercase;pointer-events:none}
-#badge{position:fixed;top:128px;left:18px;padding:5px 14px;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;border-radius:0;transition:all 0.5s;z-index:20;background:rgba(0,212,255,0.03);border:1px solid rgba(0,212,255,0.08);color:rgba(0,212,255,0.4)}
-#badge.active{background:rgba(0,212,255,0.08);border-color:rgba(0,212,255,0.2);color:#00D4FF}
-#badge.gen{background:rgba(255,165,0,0.08);border-color:rgba(255,165,0,0.2);color:#FFA500;animation:pulse 1.2s infinite}
-#badge.ok{background:rgba(46,204,113,0.08);border-color:rgba(46,204,113,0.2);color:#2ECC71;animation:pulse 2s infinite}
-#badge.edit{background:rgba(255,215,0,0.08);border-color:rgba(255,215,0,0.2);color:#FFD43B}
+#badge{position:fixed;top:128px;left:18px;padding:5px 14px;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;border-radius:0;transition:all 0.5s;z-index:20;background:rgba(21,193,123,0.03);border:1px solid #50555E;color:rgba(21,193,123,0.4)}
+#badge.active{background:rgba(21,193,123,0.08);border-color:#8C909A;color:var(--sf-accent)}
+#badge.gen{background:rgba(255,165,0,0.08);border-color:rgb(255,165,0);color:#FFA500;animation:pulse 1.2s infinite}
+#badge.ok{background:rgba(46,204,113,0.08);border-color:rgb(46,204,113);color:#2ECC71;animation:pulse 2s infinite}
+#badge.edit{background:rgba(255,215,0,0.08);border-color:rgb(255,215,0);color:#FFD43B}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.55}}
 #main-panel{top:170px;left:18px;width:272px;padding:0;max-height:calc(100vh - 200px)}
 /* Between the 640px mobile floor and a full desktop, the control panel
@@ -53,30 +59,30 @@ canvas{display:block;position:fixed;top:0;left:0;width:100vw;height:100vh}
    Tidelock solves with a toggle-behind-a-button, replicated here. Only
    #main-panel is always-on; #info-panel/#moon-panel are already opt-in
    (shown only once a planet or moon is selected), so they're left alone. */
-#mobile-toggle-main{display:none;position:fixed;z-index:25;bottom:18px;left:18px;width:36px;height:36px;border-radius:0;font-size:16px;line-height:36px;text-align:center;padding:0;background:rgba(13,13,15,0.94);border:1px solid rgba(255,255,255,0.09);color:rgba(255,255,255,0.5);cursor:pointer;backdrop-filter:blur(16px)}
+#mobile-toggle-main{display:none;position:fixed;z-index:25;bottom:18px;left:18px;width:36px;height:36px;border-radius:0;font-size:16px;line-height:36px;text-align:center;padding:0;background:rgba(13,13,15,0.94);border:1px solid #50555E;color:rgba(255,255,255,0.5);cursor:pointer;backdrop-filter:blur(16px)}
 @media(max-width:1024px){
   #main-panel{display:none}
   #main-panel.mobile-visible{display:block}
   #mobile-toggle-main{display:block}
   #main-panel{top:auto;bottom:80px;left:18px;right:18px;width:auto;max-height:45vh}
 }
-.tab-bar{display:flex;border-bottom:1px solid rgba(255,255,255,0.07);padding:0 10px;overflow-x:auto}
+.tab-bar{display:flex;border-bottom:1px solid #50555E;padding:0 10px;overflow-x:auto}
 .tab{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;padding:10px 7px 8px;color:rgba(255,255,255,0.3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;white-space:nowrap;flex-shrink:0}
 .tab:hover{color:rgba(255,255,255,0.6)}
-.tab.active{color:#00D4FF;border-bottom-color:#00D4FF}
+.tab.active{color:var(--sf-accent);border-bottom-color:var(--sf-accent)}
 .tab-content{display:none;padding:14px 16px 18px}
 .tab-content.active{display:block}
-.sec{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:rgba(0,212,255,0.35);border-bottom:1px solid rgba(0,212,255,0.06);padding-bottom:6px;margin-bottom:10px;margin-top:14px}
+.sec{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:rgba(21,193,123,0.35);border-bottom:1px solid #50555E;padding-bottom:6px;margin-bottom:10px;margin-top:14px}
 .sec:first-child{margin-top:0}
 label{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:300;color:rgba(255,255,255,0.55);display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
 .val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;color:rgba(255,255,255,0.85)}
 input[type=range]{-webkit-appearance:none;width:100%;height:3px;background:rgba(255,255,255,0.1);border-radius:0;outline:none;margin-bottom:12px;cursor:pointer}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:0;background:#00D4FF;border:2px solid rgba(0,0,0,0.6);cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:0;background:var(--sf-accent);border:2px solid #09090B;cursor:pointer}
 .panel,.panel *{cursor:default!important}
 .panel button,.panel button *{cursor:pointer!important}
-button{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;padding:7px 12px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.6);cursor:pointer;border-radius:0;transition:all 0.2s}
-button:hover{background:rgba(0,212,255,0.08);border-color:rgba(0,212,255,0.2);color:#fff}
-button.active{background:rgba(0,212,255,0.10);border-color:rgba(0,212,255,0.30);color:#00D4FF}
+button{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;padding:7px 12px;border:1px solid #50555E;background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.6);cursor:pointer;border-radius:0;transition:all 0.2s}
+button:hover{background:rgba(21,193,123,0.08);border-color:#8C909A;color:#fff}
+button.active{background:rgba(21,193,123,0.10);border-color:var(--sf-accent);color:var(--sf-accent)}
 .btn-row{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
 .btn-row button{flex:1;font-size:12px;padding:6px 4px}
 .star-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:10px}
@@ -87,33 +93,33 @@ button.active{background:rgba(0,212,255,0.10);border-color:rgba(0,212,255,0.30);
 .smode-row.g4{grid-template-columns:1fr 1fr 1fr 1fr}
 .smode-btn{padding:6px 4px;font-size:12px;letter-spacing:0.8px;text-align:center}
 .chk-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
-.chk-row input[type=checkbox]{accent-color:#00D4FF;width:11px;height:11px;cursor:pointer}
+.chk-row input[type=checkbox]{accent-color:var(--sf-accent);width:16px;height:16px;cursor:pointer}
 .chk-row span{font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:0.8px;text-transform:uppercase;color:rgba(255,255,255,0.45)}
-input[type=text]{font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.82);border:1px solid rgba(255,255,255,0.1);padding:7px 10px;border-radius:0;outline:none;width:100%;margin-bottom:10px;font-weight:300}
-input[type=text]:focus{border-color:rgba(0,212,255,0.38)}
-#gen-btn{width:100%;padding:10px;margin-top:6px;font-size:12px;letter-spacing:2px;background:rgba(0,212,255,0.10);border-color:rgba(0,212,255,0.30);color:#00D4FF}
-#gen-btn:hover{background:rgba(0,212,255,0.18);border-color:rgba(0,212,255,0.5)}
+input[type=text]{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.82);border:1px solid #50555E;padding:7px 10px;border-radius:0;outline:none;width:100%;margin-bottom:10px;font-weight:300}
+input[type=text]:focus{border-color:var(--sf-accent)}
+#gen-btn{width:100%;padding:10px;margin-top:6px;font-size:12px;letter-spacing:2px;background:rgba(21,193,123,0.10);border-color:var(--sf-accent);color:var(--sf-accent)}
+#gen-btn:hover{background:rgba(21,193,123,0.18);border-color:var(--sf-accent)}
 .pal-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px}
 .pal-pages{display:flex;gap:3px;margin-bottom:10px;flex-wrap:wrap}
-.pal-pg{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:4px 9px;border-radius:0;cursor:pointer;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);color:rgba(255,255,255,0.4);transition:all 0.18s}
-.pal-pg:hover{color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.15)}
-.pal-pg.active{background:rgba(0,212,255,0.08);border-color:rgba(0,212,255,0.25);color:#00D4FF}
-.pal-item{display:flex;align-items:center;gap:7px;padding:7px 9px;cursor:grab;border-radius:0;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);transition:all 0.2s}
-.pal-item:hover{background:rgba(0,212,255,0.06);border-color:rgba(0,212,255,0.18)}
+.pal-pg{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:4px 9px;border-radius:0;cursor:pointer;border:1px solid #50555E;background:rgba(255,255,255,0.02);color:rgba(255,255,255,0.4);transition:all 0.18s}
+.pal-pg:hover{color:rgba(255,255,255,0.7);border-color:#787D87}
+.pal-pg.active{background:rgba(21,193,123,0.08);border-color:#8C909A;color:var(--sf-accent)}
+.pal-item{display:flex;align-items:center;gap:7px;padding:7px 9px;cursor:grab;border-radius:0;border:1px solid #41454D;background:rgba(255,255,255,0.02);transition:all 0.2s}
+.pal-item:hover{background:rgba(21,193,123,0.06);border-color:#50555E}
 .pal-item.dragging{opacity:0.35}
 .pal-dot{width:20px;height:20px;border-radius:50%;flex-shrink:0}
 .pal-name{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.8px;text-transform:uppercase;color:rgba(255,255,255,0.78);line-height:1.3}
 .pal-tag{font-family:'DM Sans',sans-serif;font-size:9px;color:rgba(255,255,255,0.28);margin-top:1px}
-.drag-hint{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-bottom:8px;text-align:center;padding:4px;border:1px dashed rgba(0,212,255,0.12);border-radius:0}
-#drag-ghost{position:fixed;pointer-events:none;z-index:999;width:36px;height:36px;border-radius:50%;border:2px solid rgba(0,212,255,0.7);box-shadow:0 0 16px rgba(0,212,255,0.5);display:none;transform:translate(-50%,-50%)}
+.drag-hint{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-bottom:8px;text-align:center;padding:4px;border:1px dashed #50555E;border-radius:0}
+#drag-ghost{position:fixed;pointer-events:none;z-index:999;width:36px;height:36px;border-radius:50%;border:2px solid var(--sf-accent);box-shadow:0 0 16px rgba(21,193,123,0.5);display:none;transform:translate(-50%,-50%)}
 /* INFO PANEL */
 #info-panel{top:16px;right:16px;width:272px;display:none}
 #info-panel.visible{display:block}
 .planet-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px;position:relative;overflow:visible}
 #icon-canvas{width:36px;height:36px;border-radius:50%;flex-shrink:0}
 .planet-hdr>div{min-width:0;flex:1;padding-right:24px}
-.p-name-input{font-family:'Space Grotesk',sans-serif;font-weight:300;font-size:15px;letter-spacing:2px;text-transform:uppercase;color:#FAFAFA;background:transparent;border:none;border-bottom:1px solid transparent;outline:none;width:100%;transition:border-color 0.2s;cursor:pointer;padding:0}
-.p-name-input:focus{border-bottom-color:rgba(0,212,255,0.4);cursor:text}
+.p-name-input{font-family:'DM Sans',sans-serif;font-weight:300;font-size:15px;letter-spacing:2px;text-transform:uppercase;color:#FAFAFA;background:transparent;border:none;border-bottom:1px solid transparent;outline:none;width:100%;transition:border-color 0.2s;cursor:pointer;padding:0}
+.p-name-input:focus{border-bottom-color:var(--sf-accent);cursor:text}
 .p-type-lbl{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-top:2px}
 .close-x{position:absolute;top:0;right:0;padding:3px 7px;font-size:12px;letter-spacing:1px}
 .dbl-slider{display:flex;align-items:center;gap:8px;margin-bottom:10px}
@@ -122,50 +128,50 @@ input[type=text]:focus{border-color:rgba(0,212,255,0.38)}
 .dgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px 12px;margin-top:8px}
 .di .dl{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:300;color:rgba(255,255,255,0.55);margin-bottom:1px}
 .di .dv{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;color:rgba(255,255,255,0.85)}
-.dv.cyan{color:#00D4FF}.dv.green{color:#2ECC71}.dv.orange{color:#FFA500}.dv.gold{color:#FFD43B}.dv.red{color:#E74C3C}
+.dv.cyan{color:var(--sf-accent)}.dv.green{color:#2ECC71}.dv.orange{color:#FFA500}.dv.gold{color:#FFD43B}.dv.red{color:#E74C3C}
 .remove-btn{width:100%;margin-top:8px;font-size:12px}
-.remove-btn:hover{background:rgba(231,76,60,0.1);border-color:rgba(231,76,60,0.3);color:#E74C3C}
+.remove-btn:hover{background:rgba(231,76,60,0.1);border-color:rgb(231,76,60);color:#E74C3C}
 .handoff-row{display:flex;flex-direction:column;gap:4px;margin-top:10px}
-.handoff-btn{width:100%;font-size:11px;letter-spacing:1px;background:rgba(21,193,123,0.08);border-color:rgba(21,193,123,0.25);color:#15C17B}
-.handoff-btn:hover{background:rgba(21,193,123,0.16);border-color:rgba(21,193,123,0.4);color:#3DFFCD}
+.handoff-btn{width:100%;font-size:11px;letter-spacing:1px;background:rgba(21,193,123,0.08);border-color:#8C909A;color:#15C17B}
+.handoff-btn:hover{background:rgba(21,193,123,0.16);border-color:var(--sf-accent);color:#3DFFCD}
 /* MOON PANEL */
 #moon-panel{top:16px;right:302px;width:200px;display:none;z-index:25}
 #moon-panel.visible{display:block}
-.moon-hdr{font-family:'Space Grotesk',sans-serif;font-weight:300;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#FAFAFA;margin-bottom:4px}
+.moon-hdr{font-family:'DM Sans',sans-serif;font-weight:300;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#FAFAFA;margin-bottom:4px}
 .moon-sub{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:10px}
 .moon-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;margin-top:6px}
-.world-note{font-family:'DM Sans',sans-serif;font-size:11px;line-height:1.5;color:rgba(255,255,255,0.38);padding:7px 10px;border-left:2px solid rgba(0,212,255,0.15);margin-top:10px;background:rgba(0,212,255,0.02);border-radius:0}
+.world-note{font-family:'DM Sans',sans-serif;font-size:11px;line-height:1.5;color:rgba(255,255,255,0.38);padding:7px 10px;border-left:2px solid #50555E;margin-top:10px;background:rgba(21,193,123,0.02);border-radius:0}
 /* SAVE PANEL */
 #save-list{margin-top:8px}
-.save-entry{display:flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid rgba(255,255,255,0.06);border-radius:0;margin-bottom:5px;background:rgba(255,255,255,0.02)}
+.save-entry{display:flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid #41454D;border-radius:0;margin-bottom:5px;background:rgba(255,255,255,0.02)}
 .save-name{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.72);flex:1}
 .save-meta{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,0.3);flex-shrink:0}
 .save-btns{display:flex;gap:3px;flex-shrink:0}
 .save-btns button{padding:3px 7px;font-size:12px;letter-spacing:1px}
-.save-btns .del-btn:hover{background:rgba(231,76,60,0.1);border-color:rgba(231,76,60,0.3);color:#E74C3C}
+.save-btns .del-btn:hover{background:rgba(231,76,60,0.1);border-color:rgb(231,76,60);color:#E74C3C}
 /* TRANSPORT */
-#transport{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:6px;align-items:center;z-index:20;background:rgba(13,13,15,0.94);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(16px);border-radius:0;padding:8px 14px}
+#transport{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:6px;align-items:center;z-index:20;background:rgba(13,13,15,0.94);border:1px solid #50555E;backdrop-filter:blur(16px);border-radius:0;padding:8px 14px}
 .tbtn{padding:6px 10px;font-size:12px;letter-spacing:0;min-width:32px;text-align:center}
-.tbtn.playing{background:rgba(0,212,255,0.08);border-color:rgba(0,212,255,0.2);color:#00D4FF}
+.tbtn.playing{background:rgba(21,193,123,0.08);border-color:#8C909A;color:var(--sf-accent)}
 #spd-disp{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,0.4);padding:0 8px;min-width:38px;text-align:center}
 .t-div{width:1px;height:16px;background:rgba(255,255,255,0.1);margin:0 4px}
 #zoom-ind{position:fixed;bottom:16px;right:16px;text-align:right;z-index:20;pointer-events:none}
-#z-val{font-family:'Space Grotesk',sans-serif;font-weight:300;font-size:15px;color:rgba(0,212,255,0.5);line-height:1}
+#z-val{font-family:'DM Sans',sans-serif;font-weight:300;font-size:15px;color:rgba(21,193,123,0.5);line-height:1}
 #z-lbl{font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.18)}
-#hz-leg{position:fixed;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:14px;align-items:center;z-index:20;background:rgba(13,13,15,0.9);border:1px solid rgba(255,255,255,0.06);backdrop-filter:blur(12px);border-radius:0;padding:6px 16px;opacity:0;transition:opacity 0.5s;pointer-events:none}
+#hz-leg{position:fixed;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:14px;align-items:center;z-index:20;background:rgba(13,13,15,0.9);border:1px solid #41454D;backdrop-filter:blur(12px);border-radius:0;padding:6px 16px;opacity:0;transition:opacity 0.5s;pointer-events:none}
 #hz-leg.vis{opacity:1}
 .leg-i{display:flex;align-items:center;gap:5px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.35)}
 .leg-d{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-#phys-note{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(255,215,0,0.6);background:rgba(255,215,0,0.04);border:1px solid rgba(255,215,0,0.12);padding:6px 18px;border-radius:0;z-index:20;pointer-events:none;opacity:0;transition:opacity 0.5s;white-space:nowrap;max-width:90vw;text-align:center}
+#phys-note{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(255,215,0,0.6);background:rgba(255,215,0,0.04);border:1px solid rgb(255,215,0);padding:6px 18px;border-radius:0;z-index:20;pointer-events:none;opacity:0;transition:opacity 0.5s;white-space:nowrap;max-width:90vw;text-align:center}
 #phys-note.vis{opacity:1}
 #empty-hint{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;z-index:5}
-#empty-hint p{font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.07);margin-bottom:6px}
+#empty-hint p{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.07);margin-bottom:6px}
 /* ARCHITECTURE BADGE */
-.arch-badge{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:1px;color:rgba(255,215,0,0.5);background:rgba(255,215,0,0.04);border:1px solid rgba(255,215,0,0.1);border-radius:0;padding:4px 10px;margin-bottom:10px;text-align:center}
+.arch-badge{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:1px;color:rgba(255,215,0,0.5);background:rgba(255,215,0,0.04);border:1px solid rgb(255,215,0);border-radius:0;padding:4px 10px;margin-bottom:10px;text-align:center}
 /* NAV LINKS */
 #title-block .nav-links{display:flex;gap:10px;margin-top:7px}
-#title-block .nav-links a{font-size:11px;font-family:'DM Sans',sans-serif;font-weight:300;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);text-decoration:none;padding:3px 8px;border:1px solid rgba(255,255,255,0.08);border-radius:0;transition:all 0.2s}
-#title-block .nav-links a:hover{color:#00D4FF;border-color:rgba(0,212,255,0.25);background:rgba(0,212,255,0.06)}
+#title-block .nav-links a{font-size:11px;font-family:'DM Sans',sans-serif;font-weight:300;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);text-decoration:none;padding:3px 8px;border:1px solid #50555E;border-radius:0;transition:all 0.2s}
+#title-block .nav-links a:hover{color:var(--sf-accent);border-color:#8C909A;background:rgba(21,193,123,0.06)}
 </style>
   <link rel="stylesheet" href="../_shared/sim-mobile.css">
 </head>
@@ -177,7 +183,7 @@ input[type=text]:focus{border-color:rgba(0,212,255,0.38)}
   <div class="tool-sub">Multi-Star System Simulator</div>
   <div class="tool-ctx" id="sys-label">No system generated</div>
   <div style="margin-top:8px">
-    <button onclick="openMathPage()" style="width:100%;font-size:11px;letter-spacing:1.5px;padding:5px 8px;background:rgba(0,212,255,0.03);border-color:rgba(0,212,255,0.12);color:rgba(0,212,255,0.45)" id="math-link-btn">Show Your Work ↗</button>
+    <button onclick="openMathPage()" style="width:100%;font-size:11px;letter-spacing:1.5px;padding:5px 8px;background:rgba(21,193,123,0.03);border-color:#50555E;color:rgba(21,193,123,0.45)" id="math-link-btn">Show Your Work ↗</button>
   </div>
 </div>
 <div id="badge">Standby</div>
@@ -247,7 +253,7 @@ input[type=text]:focus{border-color:rgba(0,212,255,0.38)}
       <button class="star-btn" onclick="pickStar('a','yellow',this)"><span class="sdot" style="background:#FFD700"></span>Yellow</button>
       <button class="star-btn" onclick="pickStar('a','orange',this)"><span class="sdot" style="background:#FF8C42"></span>Orange</button>
       <button class="star-btn" onclick="pickStar('a','red',this)"><span class="sdot" style="background:#FF5555"></span>Red</button>
-      <button class="star-btn active" onclick="pickStar('a','random',this)"><span class="sdot" style="background:rgba(0,212,255,0.7)"></span>Random</button>
+      <button class="star-btn active" onclick="pickStar('a','random',this)"><span class="sdot" style="background:rgba(21,193,123,0.7)"></span>Random</button>
     </div>
 
     <div id="companion-stars"></div>
@@ -303,7 +309,7 @@ input[type=text]:focus{border-color:rgba(0,212,255,0.38)}
     <div class="chk-row"><input type="checkbox" id="chk-oort-comets" checked><span>Active Comets</span></div>
     <label>Comet Count <span class="val" id="oort-comets-val">3</span></label>
     <input type="range" id="oort-comets" min="0" max="8" value="3" oninput="document.getElementById('oort-comets-val').textContent=this.value">
-    <button style="width:100%;margin-top:4px;background:rgba(46,204,113,0.08);border-color:rgba(46,204,113,0.25);color:#2ECC71;font-size:12px;padding:9px;letter-spacing:2px" onclick="generateOort()">⊕ Apply Oort Cloud</button>
+    <button style="width:100%;margin-top:4px;background:rgba(46,204,113,0.08);border-color:rgb(46,204,113);color:#2ECC71;font-size:12px;padding:9px;letter-spacing:2px" onclick="generateOort()">⊕ Apply Oort Cloud</button>
     <button style="width:100%;margin-top:6px;font-size:12px" onclick="clearOort()">Clear Oort Cloud</button>
     <div class="world-note" style="margin-top:12px">The inner Hills Cloud (~2k–20k AU) is toroidal. The outer shell (~20k–100k AU) is spherical. Gravitational perturbations from passing stars send Oort bodies inward as long-period comets.</div>
   </div>
@@ -327,7 +333,7 @@ input[type=text]:focus{border-color:rgba(0,212,255,0.38)}
   <div class="tab-content" id="tab-save">
     <div class="sec">Save System</div>
     <input id="save-name-input" type="text" placeholder="SYSTEM NAME" style="text-transform:uppercase">
-    <button style="width:100%;background:rgba(0,229,160,0.08);border-color:rgba(0,229,160,0.25);color:#00E5A0;font-size:12px;padding:9px;letter-spacing:2px" onclick="saveSystem()">⊕ Save Current System</button>
+    <button style="width:100%;background:rgba(0,229,160,0.08);border-color:#50555E;color:#00E5A0;font-size:12px;padding:9px;letter-spacing:2px" onclick="saveSystem()">⊕ Save Current System</button>
     <div class="sec" style="margin-top:14px">Saved Systems</div>
     <div id="save-list"><div style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(255,255,255,0.22);text-align:center;padding:12px 0">No saved systems</div></div>
     <div class="sec" style="margin-top:14px">Export</div>
@@ -429,14 +435,53 @@ const ghostEl=document.getElementById('drag-ghost');
 let savedSystems=[];
 
 // ── STAR DEFS ──
+// lum is the sim luminosity (L☉) and teffK the effective temperature.
+// mass (M☉) and hz (AU) are DERIVED below, never hand-set:
+//   mass: main-sequence mass-luminosity relation inverted (L ∝ M^4 for
+//         0.43–2 M☉, L = 0.23 M^2.3 below, L = 1.4 M^3.5 above), the same
+//         relation as src/lib/habitable-zone/calculations.ts.
+//   hz:   conservative habitable zone, d = √(L / S_eff(Teff)), with the
+//         Kopparapu et al. 2014 (ApJ 787:L29, 1 M⊕) polynomial, the same
+//         table as src/lib/habitable-zone/kopparapu.ts. Sun: 0.95–1.68 AU.
 const STARS={
-  blue:  {color:'#9BB8FF',glow:'rgba(155,184,255,',r:24,name:'Blue Star',  hz:[3.5,7.0],lum:4.5,temp:'Very Hot'},
-  white: {color:'#FFFDE7',glow:'rgba(255,253,231,',r:20,name:'White Star', hz:[2.4,4.5],lum:2.2,temp:'Hot'},
-  yellow:{color:'#FFD700',glow:'rgba(255,215,0,',  r:19,name:'Yellow Star',hz:[1.6,3.0],lum:1.0,temp:'Moderate'},
-  orange:{color:'#FF8C42',glow:'rgba(255,140,66,', r:16,name:'Orange Star',hz:[0.8,1.7],lum:0.42,temp:'Cool'},
-  red:   {color:'#FF5555',glow:'rgba(255,85,85,',  r:13,name:'Red Dwarf',  hz:[0.2,0.7],lum:0.08,temp:'Very Cool'}
+  blue:  {color:'#9BB8FF',glow:'rgba(155,184,255,',r:24,name:'Blue Star',  lum:4.5, teffK:30000,temp:'Very Hot'},
+  white: {color:'#FFFDE7',glow:'rgba(255,253,231,',r:20,name:'White Star', lum:2.2, teffK:8500, temp:'Hot'},
+  yellow:{color:'#FFD700',glow:'rgba(255,215,0,',  r:19,name:'Yellow Star',lum:1.0, teffK:5780, temp:'Moderate'},
+  orange:{color:'#FF8C42',glow:'rgba(255,140,66,', r:16,name:'Orange Star',lum:0.42,teffK:4500, temp:'Cool'},
+  red:   {color:'#FF5555',glow:'rgba(255,85,85,',  r:13,name:'Red Dwarf',  lum:0.08,teffK:3200, temp:'Very Cool'}
 };
 const SKEYS=['blue','white','yellow','orange','red'];
+
+// Kopparapu et al. 2014, Table 1 (1 M⊕): [S_eff☉, a, b, c, d], valid 2600–7200 K.
+const KOP={
+  runaway:[1.107,1.332e-4,1.58e-8,-8.308e-12,-1.931e-15],
+  maxGH:  [0.356,6.171e-5,1.698e-9,-3.198e-12,-5.575e-16]
+};
+function kopSeff(teffK,c){
+  const t=Math.max(2600,Math.min(7200,teffK))-5780;
+  return c[0]+c[1]*t+c[2]*t*t+c[3]*t*t*t+c[4]*t*t*t*t;
+}
+// Conservative HZ [inner, outer] in AU for total luminosity L (L☉) at Teff.
+function kopHZ(L,teffK){
+  const l=Math.max(L,1e-10);
+  return [Math.sqrt(l/kopSeff(teffK,KOP.runaway)),Math.sqrt(l/kopSeff(teffK,KOP.maxGH))];
+}
+// Main-sequence mass (M☉) from luminosity (L☉): inverse of the piecewise
+// mass-luminosity relation used by the Habitable Zone calculator.
+function massFromLum(L){
+  const l=Math.max(L,1e-6);
+  if(l<0.23*Math.pow(0.43,2.3))return Math.pow(l/0.23,1/2.3);
+  if(l<16)return Math.pow(l,0.25);
+  return Math.pow(l/1.4,1/3.5);
+}
+// Combined HZ for several stars: flux ∝ ΣL/d², so use the total luminosity
+// once, at the luminosity-weighted Teff. (Do not also scale a per-star HZ.)
+function combinedHZ(defs){
+  const L=defs.reduce((s,d)=>s+(d.lum||0),0)||1;
+  const T=defs.reduce((s,d)=>s+(d.lum||0)*(d.teffK||5780),0)/L;
+  return kopHZ(L,T);
+}
+SKEYS.forEach(k=>{const d=STARS[k];d.mass=massFromLum(d.lum);d.hz=kopHZ(d.lum,d.teffK)});
 
 // ── MULTI-STAR ARCHITECTURES ──
 // binary: A–B pair, planets circumbinary (P-type)
@@ -546,7 +591,7 @@ function setStarMode(mode,btn){
       <button class="star-btn" onclick="pickStar('${l}','yellow',this)"><span class="sdot" style="background:#FFD700"></span>Yellow</button>
       <button class="star-btn" onclick="pickStar('${l}','orange',this)"><span class="sdot" style="background:#FF8C42"></span>Orange</button>
       <button class="star-btn" onclick="pickStar('${l}','red',this)"><span class="sdot" style="background:#FF5555"></span>Red</button>
-      <button class="star-btn active" onclick="pickStar('${l}','random',this)"><span class="sdot" style="background:rgba(0,212,255,0.7)"></span>Random</button>
+      <button class="star-btn active" onclick="pickStar('${l}','random',this)"><span class="sdot" style="background:rgba(21,193,123,0.7)"></span>Random</button>
     </div>`;
   });
 
@@ -663,9 +708,9 @@ function doGen(){
   if(mode!=='single'){
     const skB=resolveStarKey('b');
     // Keplerian angular speed of B orbiting A/B barycenter:
-    //   Total mass ≈ lum_A + lum_B (mass proxy). Period scales as a^1.5 / sqrt(M_total).
-    //   Simplified: T_AB = 14 × bsepAU^1.5 / sqrt((lum_A+lum_B)/2)
-    const lum_AB = ((STARS[skA]?.lum||1) + (STARS[skB]?.lum||1)) / 2;
+    //   Period scales as a^1.5 / sqrt(M_total), with stellar masses (M☉).
+    //   Simplified: T_AB = 14 × bsepAU^1.5 / sqrt((M_A+M_B)/2)
+    const lum_AB = ((STARS[skA]?.mass||1) + (STARS[skB]?.mass||1)) / 2;
     const angSpdB = (2*Math.PI) / (14 * Math.pow(Math.max(bsepAU,0.05), 1.5) / Math.sqrt(lum_AB));
     stars.push({key:skB,def:STARS[skB],x:-bSep*0.5,y:0,nameStr:sName+' B',
       isBcomp:true,bAngle:Math.PI,angSpd:angSpdB,bSep});
@@ -688,7 +733,7 @@ function doGen(){
       // C+D form a second binary pair, that pair orbits the AB barycenter
       stars[2].cdPair=true;                    // C is inner of the CD pair
       // CD binary separation ≈ bSep (same scale as AB). Keplerian period for CD.
-      const lum_CD = ((STARS[skC]?.lum||1) + (STARS[skD]?.lum||1)) / 2;
+      const lum_CD = ((STARS[skC]?.mass||1) + (STARS[skD]?.mass||1)) / 2;
       const angSpdD_cd = (2*Math.PI) / (14 * Math.pow(Math.max(bsepAU,0.05), 1.5) / Math.sqrt(lum_CD));
       stars.push({key:skD,def:STARS[skD],x:cSep+bSep*0.5,y:0,nameStr:sName+' D',
         isDcomp:true,isDcd:true,dAngle:Math.PI,angSpd:angSpdD_cd,bSep,cSep});
@@ -720,11 +765,14 @@ function doGen(){
   // For binary alone the outer limit is very large — no constraint needed.
 
   const hardMax = (au) => Math.min(au, outerStableLimitAU);
+  // Bands are keyed to the combined Kopparapu HZ so the "habitable" band
+  // is the habitable zone drawn on screen.
+  const [hzInAU,hzOutAU]=combinedHZ(stars.map(st=>st.def));
   const bandRanges={
-    inner:{   min:Math.max(innerClearAU,0.5*lum),    max:hardMax(Math.max(innerClearAU+0.8,1.2*lum))},
-    habitable:{min:Math.max(innerClearAU+0.8,1.2*lum),max:hardMax(Math.max(innerClearAU+2.5,2.5*lum))},
-    outer:{   min:Math.max(innerClearAU+2.5,2.5*lum),max:hardMax(Math.max(innerClearAU+5,5.5*lum))},
-    remote:{  min:Math.max(innerClearAU+5,5.5*lum),  max:hardMax(Math.max(innerClearAU+9,9.0*lum))}
+    inner:{   min:Math.max(innerClearAU,0.45*hzInAU),   max:hardMax(Math.max(innerClearAU+0.8,hzInAU))},
+    habitable:{min:Math.max(innerClearAU+0.8,hzInAU),   max:hardMax(Math.max(innerClearAU+2.5,hzOutAU))},
+    outer:{   min:Math.max(innerClearAU+2.5,hzOutAU),   max:hardMax(Math.max(innerClearAU+5,3.3*hzOutAU))},
+    remote:{  min:Math.max(innerClearAU+5,3.3*hzOutAU), max:hardMax(Math.max(innerClearAU+9,5.4*hzOutAU))}
   };
   // Clamp mins to be <= maxes (stability limit may compress bands)
   Object.values(bandRanges).forEach(b=>{if(b.min>=b.max)b.min=b.max*0.85});
@@ -773,7 +821,7 @@ function doGen(){
     const oP=planets.filter(p=>p.band==='outer');
     let bAU;
     if(hP.length&&oP.length)bAU=(hP[hP.length-1].orbitPx/AU+oP[0].orbitPx/AU)/2;
-    else bAU=rnd(2,4)*lum;
+    else bAU=rnd(1.2,2.4)*hzOutAU;
     const bR=bAU*AU,spread=AU*rnd(0.3,0.5),pts=[];
     for(let a=0;a<80;a++){
       const r=bR+rnd(-spread/2,spread/2),ang=rnd(0,Math.PI*2);
@@ -785,14 +833,12 @@ function doGen(){
   planets.sort((a,b)=>a.orbitPx-b.orbitPx);
   planets.forEach((p,i)=>{p.index=i;p.name=sName+'-'+toRoman(i+1)});
 
-  // Combined habitable zone: HZ scales as sqrt(total luminosity)
-  // Each star contributes flux ∝ L/r² — sum them at the AB barycenter.
-  // For a circumbinary system, effective HZ ≈ single-star HZ scaled by sqrt(sumLum).
-  const sumLum = stars.reduce((s,st)=>s+(st.def.lum||1),0);
-  const lumScale = Math.sqrt(sumLum);
+  // Combined habitable zone: each star contributes flux ∝ L/r², so the HZ
+  // comes from the TOTAL luminosity once (d = √(ΣL / S_eff)). Scaling a
+  // single-star HZ by √ΣL would count star A's luminosity twice.
   system={
     name:sName,starMode:mode,arch,stars,AU,planets,asteroidBelt:ast,oort:null,
-    hz:{inner:starA.hz[0]*AU*lumScale,outer:starA.hz[1]*AU*lumScale}
+    hz:{inner:hzInAU*AU,outer:hzOutAU*AU}
   };
 
   document.getElementById('sys-label').textContent=sName+' System';
@@ -1341,7 +1387,7 @@ function loop(ts){
       });
     } else {
       // ── N-BODY: Velocity Verlet with adaptive substeps ──
-      // GM calibration: circular orbit at r=AU around lum=1 star has
+      // GM calibration: circular orbit at r=AU around a 1 M☉ star has
       //   period T = 14 sim-seconds  (matches Keplerian angSpd = 2π/14)
       //   v_circ = 2π·AU/T  →  GM = v²·r  →  GM_base = (2π/14)²·AU³
       const AU  = system.AU;
@@ -1355,7 +1401,7 @@ function loop(ts){
       // Snapshot star positions once per frame
       const starSnap = system.stars.map(s => ({
         x: s.x, y: s.y,
-        GM: GM_base * (s.def.lum || 1)
+        GM: GM_base * (s.def.mass || 1)
       }));
 
       // Acceleration helper — closed over starSnap
@@ -1607,11 +1653,11 @@ function drawPlanet(p,showLbl,showGrav,showRot,ts){
   // Selection ring
   if(isSel){
     ctx.beginPath();ctx.arc(0,0,r+7,0,Math.PI*2);
-    ctx.strokeStyle='rgba(0,212,255,0.55)';ctx.lineWidth=1.5;ctx.stroke();
+    ctx.strokeStyle='rgba(21,193,123,0.55)';ctx.lineWidth=1.5;ctx.stroke();
     for(let t=0;t<4;t++){
       const a=t*Math.PI/2+ts*0.0012;
       ctx.beginPath();ctx.moveTo(Math.cos(a)*(r+5),Math.sin(a)*(r+5));ctx.lineTo(Math.cos(a)*(r+9),Math.sin(a)*(r+9));
-      ctx.strokeStyle='rgba(0,212,255,0.85)';ctx.lineWidth=1.8;ctx.stroke();
+      ctx.strokeStyle='rgba(21,193,123,0.85)';ctx.lineWidth=1.8;ctx.stroke();
     }
   }
 
@@ -1725,11 +1771,11 @@ function drawPlanet(p,showLbl,showGrav,showRot,ts){
   // ── RETROGRADE indicator ──
   if(p.retrograde){
     ctx.save();ctx.rotate(p.rotAngle*0.5);
-    ctx.strokeStyle='rgba(0,212,255,0.3)';ctx.lineWidth=1.2;
+    ctx.strokeStyle='rgba(21,193,123,0.3)';ctx.lineWidth=1.2;
     ctx.beginPath();ctx.arc(0,0,r+4,Math.PI*0.1,Math.PI*1.7,true);ctx.stroke();
     const ax=Math.cos(Math.PI*0.1)*(r+4),ay=Math.sin(Math.PI*0.1)*(r+4);
     ctx.beginPath();ctx.moveTo(ax-3,ay-3);ctx.lineTo(ax,ay);ctx.lineTo(ax+3,ay-2);
-    ctx.strokeStyle='rgba(0,212,255,0.5)';ctx.stroke();
+    ctx.strokeStyle='rgba(21,193,123,0.5)';ctx.stroke();
     ctx.restore();
   }
 
@@ -1940,17 +1986,17 @@ function setMathTab(tab){
   mathTabActive=tab;
   const tg=document.getElementById('math-tab-general');
   const ts=document.getElementById('math-tab-system');
-  const activeStyle='border-bottom:2px solid #00D4FF;color:#00D4FF';
+  const activeStyle='border-bottom:2px solid var(--sf-accent);color:var(--sf-accent)';
   const inactiveStyle='border-bottom:2px solid transparent;color:rgba(255,255,255,0.3)';
   tg.style.cssText=tg.style.cssText.replace(/border-bottom:[^;]+/,'').replace(/color:[^;]+/,'');
   ts.style.cssText=ts.style.cssText.replace(/border-bottom:[^;]+/,'').replace(/color:[^;]+/,'');
   if(tab==='general'){
-    tg.style.borderBottom='2px solid #00D4FF'; tg.style.color='#00D4FF';
+    tg.style.borderBottom='2px solid var(--sf-accent)'; tg.style.color='var(--sf-accent)';
     ts.style.borderBottom='2px solid transparent'; ts.style.color='rgba(255,255,255,0.3)';
     document.getElementById('math-refresh-btn').style.display='none';
     buildGeneralPage();
   } else {
-    ts.style.borderBottom='2px solid #00D4FF'; ts.style.color='#00D4FF';
+    ts.style.borderBottom='2px solid var(--sf-accent)'; ts.style.color='var(--sf-accent)';
     tg.style.borderBottom='2px solid transparent'; tg.style.color='rgba(255,255,255,0.3)';
     document.getElementById('math-refresh-btn').style.display='inline-block';
     if(!system){
@@ -2043,7 +2089,6 @@ function refreshMathPage(){
   const k  = 2*Math.PI/14;
   const GM_base = k*k*AU*AU*AU;
 
-  const starLumLabels = {blue:'~16 M☉ (O/B type)',white:'~2.1 M☉ (A type)',yellow:'~1.0 M☉ (G type)',orange:'~0.7 M☉ (K type)',red:'~0.3 M☉ (M type)'};
   const starTempLabels = {blue:'25,000–50,000 K',white:'7,500–10,000 K',yellow:'5,300–6,000 K',orange:'3,700–5,200 K',red:'2,400–3,700 K'};
 
   let cards = [];
@@ -2065,17 +2110,17 @@ function refreshMathPage(){
     const lbl = ['A','B','C','D'][i]||String(i);
     let rows = '';
     rows += mrow('Type', s.def.name + ' (' + s.key + ')');
-    rows += mrow('Approx. mass', starLumLabels[s.key]||'—');
+    rows += mrow('Approx. mass', s.def.mass.toFixed(2)+' M☉ (from luminosity, mass–luminosity relation)');
     rows += mrow('Surface temp.', starTempLabels[s.key]||'—');
     rows += mrow('Luminosity (sim)', s.def.lum.toFixed(2) + ' L☉');
-    rows += mrow('GM', (GM_base * s.def.lum).toExponential(3) + ' px³/sim-s²');
+    rows += mrow('GM', (GM_base * s.def.mass).toExponential(3) + ' px³/sim-s²');
     if(i===0){
       rows += '<hr class="math-divider">';
       const sumLum=system.stars.reduce((s,st)=>s+(st.def.lum||1),0);
       const lumScale=Math.sqrt(sumLum).toFixed(3);
       rows += mrow('Habitable zone', (system.hz.inner/AU).toFixed(2)+'–'+(system.hz.outer/AU).toFixed(2)+' AU (combined)');
-      rows += mrow('Combined lum.', sumLum.toFixed(2)+' L☉ → HZ scale factor: √'+sumLum.toFixed(2)+' = '+lumScale);
-      rows += mrow('HZ method','Sum all stellar luminosities, scale single-star HZ by √L_total (Kopparapu et al. 2013)');
+      rows += mrow('Combined lum.', sumLum.toFixed(2)+' L☉ → √L_total = '+lumScale);
+      rows += mrow('HZ method','d = √(L_total / S_eff), S_eff from Teff (Kopparapu et al. 2014; runaway to maximum greenhouse; Teff clamped to 2,600–7,200 K)');
     }
     if(s.isBcomp){
       const bAU = (s.bSep/AU).toFixed(2);
@@ -2128,7 +2173,7 @@ function refreshMathPage(){
     let speedStr = '—';
     if(p.vx !== undefined){
       const v = Math.hypot(p.vx, p.vy);
-      const v_circ = Math.sqrt(GM_base * system.stars[0].def.lum / p.orbitPx);
+      const v_circ = Math.sqrt(GM_base * system.stars[0].def.mass / p.orbitPx);
       const ratio = (v/v_circ).toFixed(3);
       speedStr = v.toFixed(1)+' px/sim-s  (v/v_circ = '+ratio+')';
     }
@@ -2136,7 +2181,7 @@ function refreshMathPage(){
     // Hill sphere: r_H = a × (m_planet / 3M_star)^(1/3)
     // Mass proxy: sz³ / 100000 (dimensionless, terrestrial density assumption)
     const m_proxy = Math.pow(p.sz,3)/100000;
-    const r_Hill_AU = au * Math.pow(m_proxy / (3 * system.stars[0].def.lum * 1e4), 1/3);
+    const r_Hill_AU = au * Math.pow(m_proxy / (3 * system.stars[0].def.mass * 1e4), 1/3);
     const hillStr = r_Hill_AU > 0.0001 ? r_Hill_AU.toFixed(4)+' AU (approx)' : '< 0.0001 AU';
 
     let rows = '';
@@ -2185,13 +2230,13 @@ function updateMathBtn(){
   if(!btn) return;
   if(system){
     btn.style.opacity='1';
-    btn.style.color='rgba(0,212,255,0.7)';
-    btn.style.borderColor='rgba(0,212,255,0.25)';
+    btn.style.color='rgba(21,193,123,0.7)';
+    btn.style.borderColor='#8C909A';
     btn.style.cursor='pointer';
   } else {
     btn.style.opacity='0.3';
-    btn.style.color='rgba(0,212,255,0.35)';
-    btn.style.borderColor='rgba(0,212,255,0.08)';
+    btn.style.color='rgba(21,193,123,0.35)';
+    btn.style.borderColor='#50555E';
     btn.style.cursor='default';
   }
 }
@@ -2403,22 +2448,22 @@ function publishSelectedPlanet(){
   <div style="
     position:sticky;top:0;z-index:10;
     background:rgba(9,9,11,0.96);backdrop-filter:blur(20px);
-    border-bottom:1px solid rgba(255,255,255,0.06);
+    border-bottom:1px solid #41454D;
     padding:14px 24px 0;
   ">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
       <div>
-        <div style="font-family:'MD Nichrome Test','Space Grotesk',sans-serif;font-weight:300;font-size:18px;letter-spacing:3px;text-transform:uppercase;color:#FAFAFA">Show Your Work</div>
+        <div style="font-family:'MD Nichrome Test','Jura',sans-serif;font-weight:300;font-size:18px;letter-spacing:3px;text-transform:uppercase;color:#FAFAFA">Show Your Work</div>
         <div style="font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.28);margin-top:2px;letter-spacing:1px">Orbital mechanics · SOLARIS</div>
       </div>
       <div style="display:flex;align-items:center;gap:8px;padding-top:4px">
-        <button onclick="refreshMathPage()" id="math-refresh-btn" style="font-size:12px;letter-spacing:1.5px;padding:5px 12px;background:rgba(0,212,255,0.06);border-color:rgba(0,212,255,0.2);color:rgba(0,212,255,0.6);display:none">↺ Refresh</button>
+        <button onclick="refreshMathPage()" id="math-refresh-btn" style="font-size:12px;letter-spacing:1.5px;padding:5px 12px;background:rgba(21,193,123,0.06);border-color:#8C909A;color:rgba(21,193,123,0.6);display:none">↺ Refresh</button>
         <button onclick="closeMathPage()" style="font-size:12px;letter-spacing:1.5px;padding:5px 12px">✕ Close</button>
       </div>
     </div>
     <!-- Mode tabs -->
     <div style="display:flex;gap:0">
-      <div id="math-tab-general" onclick="setMathTab('general')" style="font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;padding:8px 18px 10px;cursor:pointer;border-bottom:2px solid #00D4FF;color:#00D4FF;transition:all 0.2s">How It Works</div>
+      <div id="math-tab-general" onclick="setMathTab('general')" style="font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;padding:8px 18px 10px;cursor:pointer;border-bottom:2px solid var(--sf-accent);color:var(--sf-accent);transition:all 0.2s">How It Works</div>
       <div id="math-tab-system" onclick="setMathTab('system')" style="font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;padding:8px 18px 10px;cursor:pointer;border-bottom:2px solid transparent;color:rgba(255,255,255,0.3);transition:all 0.2s" id="math-tab-system">This System</div>
     </div>
   </div>
@@ -2433,14 +2478,14 @@ function publishSelectedPlanet(){
 <style>
 .math-card{
   background:rgba(13,13,15,0.94);
-  border:1px solid rgba(255,255,255,0.06);
+  border:1px solid #41454D;
   padding:20px 22px;
 }
 .math-card-title{
   font-family:'DM Sans',sans-serif;font-weight:500;
   font-size:12px;letter-spacing:2.5px;text-transform:uppercase;
-  color:rgba(0,212,255,0.4);
-  border-bottom:1px solid rgba(0,212,255,0.06);
+  color:rgba(21,193,123,0.4);
+  border-bottom:1px solid #50555E;
   padding-bottom:10px;margin-bottom:14px;
 }
 .math-row{
@@ -2464,15 +2509,15 @@ function publishSelectedPlanet(){
 .math-val.warn{color:#FFA500}
 .math-val.danger{color:#E74C3C}
 .math-formula{
-  background:rgba(0,212,255,0.03);border:1px solid rgba(0,212,255,0.07);
+  background:rgba(21,193,123,0.03);border:1px solid #50555E;
   padding:10px 14px;margin:10px 0;font-family:'JetBrains Mono',monospace;
-  font-size:10px;color:rgba(0,212,255,0.55);line-height:1.7;
+  font-size:10px;color:rgba(21,193,123,0.55);line-height:1.7;
 }
 .math-divider{
-  border:none;border-top:1px solid rgba(255,255,255,0.04);margin:10px 0;
+  border:none;border-top:1px solid #41454D;margin:10px 0;
 }
 .math-planet-header{
-  font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:300;
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:300;
   color:rgba(255,255,255,0.75);margin-bottom:4px;
 }
 .math-planet-sub{

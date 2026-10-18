@@ -1,12 +1,10 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from "react";
-import { useWorldId } from "@/hooks/use-world-id";
+import { useState, useMemo, lazy, Suspense } from "react";
 import { logToSlider, sliderToLog } from "@/lib/sliders";
 import { evaluateGravitasFlags } from "@/sims/flags";
 import { SimFlagStrip } from "@/components/simulators/SimFlagStrip";
 import { useDismissedFlags } from "@/hooks/use-dismissed-flags";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
-import { useTags } from "@/hooks/use-tags";
 import { useSearchParams } from "react-router-dom";
 import {
   Copy,
@@ -22,6 +20,14 @@ import {
   Wand2,
 } from "lucide-react";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
+// FormState, defaults and codec: lib/tool-worksheets/gravitas.
+import {
+  codec as gravitasCodec,
+  type FormState,
+  TOOL_TYPE,
+  LOCAL_STORAGE_KEY,
+} from "@/lib/tool-worksheets/gravitas";
+import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,12 +45,6 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import {
-  useWorksheets,
-  useWorksheet,
-  useWorksheetsByType,
-  useRenameWorksheet,
-} from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
@@ -56,7 +56,6 @@ import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
-import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import {
@@ -64,7 +63,6 @@ import {
   GravitasFullReportTemplate,
 } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
-import { Json } from "@/integrations/supabase/types";
 
 import type {
   GravitasFormState,
@@ -110,12 +108,8 @@ import {
   generateMythologicalSeeds,
   generateNarrativeSnippet,
 } from "@/lib/gravitas/experiential";
-import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 // ─── Constants ────────────────────────────────────────────────────────
-
-const TOOL_TYPE = "gravitas";
-const LOCAL_STORAGE_KEY = "gravitas-v1";
 
 const SECTIONS: Section[] = [
   { id: "realism", title: "Realism Mode" },
@@ -144,11 +138,7 @@ const MODE_ICONS: Record<CalculationMode, typeof RotateCcw> = {
 // ─── Component ────────────────────────────────────────────────────────
 
 const Gravitas = () => {
-  const [formState, setFormState] = useState<GravitasFormState>(INITIAL_FORM_STATE);
-  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
-  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [notesSheetOpen, setNotesSheetOpen] = useState(false);
   const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
@@ -160,57 +150,24 @@ const Gravitas = () => {
   const { worlds } = useWorlds();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = useWorldId();
-  const worksheetId = searchParams.get("worksheetId");
+
+  const worksheet = useToolWorksheet(TOOL_TYPE, {
+    ...gravitasCodec,
+    displayName: "Gravitas",
+    localKey: LOCAL_STORAGE_KEY,
+    loadedToast: true,
+    onDraftCreated: (id, title) => entityMatch.check(id, title),
+  });
+  const { state: formState, setState: setFormState, worldId } = worksheet;
+  const currentWorksheetId = worksheet.worksheetId;
+  const currentWorksheetTitle = worksheet.worksheetTitle;
+  const worksheetId = worksheet.worksheetId;
 
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
   const worldName = currentWorld?.name;
 
   const entityMatch = useEntityMatch(worldId);
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
-    onDraftCreated: entityMatch.check,
-  });
-  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
-  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
-  const renameWorksheet = useRenameWorksheet();
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
-  const { updateWorksheetTags } = useTags();
-  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
-
-  // Show worksheet selector
-  useEffect(() => {
-    if (worldId && !worksheetId && !worksheetsLoading && user) {
-      setWorksheetSelectorOpen(true);
-    }
-  }, [worldId, worksheetId, worksheetsLoading, user]);
-
-  // Load from Supabase
-  useEffect(() => {
-    if (existingWorksheet && existingWorksheet.data) {
-      try {
-        const data = existingWorksheet.data as unknown as GravitasFormState;
-        setFormState(data);
-        setCurrentWorksheetId(existingWorksheet.id);
-        setCurrentWorksheetTitle(existingWorksheet.title);
-        if (existingWorksheet.tags) setWorksheetTags(existingWorksheet.tags);
-        toast({ title: "WORKSHEET LOADED.", description: "WORK RESTORED." });
-      } catch {
-        console.error("Failed to load worksheet data");
-      }
-    }
-  }, [existingWorksheet]);
-
-  // Load from localStorage fallback
-  useEffect(() => {
-    if (!worldId && !worksheetId) {
-      try {
-        const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-        if (saved) setFormState(JSON.parse(saved));
-      } catch {
-        // ignore
-      }
-    }
-  }, [worldId, worksheetId]);
 
   // ─── Calculations ───────────────────────────────────────────────────
 
@@ -304,70 +261,6 @@ const Gravitas = () => {
     toast({ title: "COPIED TO CLIPBOARD.", description: "RESULTS COPIED TO CLIPBOARD." });
   };
 
-  // ─── Save / Worksheet Management ───────────────────────────────────
-
-  const handleSave = async () => {
-    writeStandaloneBackup(LOCAL_STORAGE_KEY, formState, { worldId, signedIn: !!user });
-
-    if (worldId && user) {
-      const wsId = currentWorksheetId || worksheetId;
-      if (wsId) {
-        await updateWorksheet.mutateAsync({
-          worksheetId: wsId,
-          data: formState as unknown as Json,
-        });
-        toast({ title: "FILE SECURED.", description: "WORKSHEET SECURED TO CLOUD." });
-      } else {
-        const ws = await createWorksheet.mutateAsync({
-          worldId,
-          toolType: TOOL_TYPE,
-          title: "Gravitas",
-          data: formState as unknown as Json,
-        });
-        setCurrentWorksheetId(ws.id);
-        setCurrentWorksheetTitle(ws.title);
-        setSearchParams({ worldId, worksheetId: ws.id });
-        toast({ title: "CREATED.", description: "NEW WORKSHEET ON FILE." });
-      }
-    } else {
-      toast({ title: "SAVED LOCALLY.", description: "WORK SECURED TO THIS BROWSER." });
-    }
-  };
-
-  const handleWorksheetSelect = (wsId: string) => {
-    setSearchParams({ worldId: worldId!, worksheetId: wsId });
-    setWorksheetSelectorOpen(false);
-  };
-
-  const handleWorksheetCreate = async (name: string): Promise<string> => {
-    const ws = await createWorksheet.mutateAsync({
-      worldId: worldId!,
-      toolType: TOOL_TYPE,
-      title: name,
-      data: INITIAL_FORM_STATE as unknown as Json,
-    });
-    setCurrentWorksheetId(ws.id);
-    setCurrentWorksheetTitle(ws.title);
-    setSearchParams({ worldId: worldId!, worksheetId: ws.id });
-    return ws.id;
-  };
-
-  const handleRename = async (newTitle: string) => {
-    const wsId = currentWorksheetId || worksheetId;
-    if (wsId) {
-      await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
-      setCurrentWorksheetTitle(newTitle);
-    }
-  };
-
-  const handleTagsChange = async (tags: string[]) => {
-    const wsId = currentWorksheetId || worksheetId;
-    if (wsId) {
-      await updateWorksheetTags.mutateAsync({ worksheetId: wsId, tags });
-      setWorksheetTags(tags);
-    }
-  };
-
   const worldNameForExport = worldId ? worldName : undefined;
 
   // ─── Status Color ──────────────────────────────────────────────────
@@ -390,15 +283,12 @@ const Gravitas = () => {
 
   return (
     <ToolPageLayout
+      {...worksheet.layoutProps}
       toolType={TOOL_TYPE}
-      onSave={handleSave}
-      isSaving={updateWorksheet.isPending || createWorksheet.isPending}
-      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
       onPrint={() => window.print()}
       onExport={() => setExportDialogOpen(true)}
       onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
       isShared={!!shareConfig?.enabled}
-      isCloudEnabled={!!(worldId && user)}
       onNotesClick={() => setNotesSheetOpen(true)}
       onMoodboardClick={() => setMoodboardSheetOpen(true)}
       moodboardCount={formState.moodboard?.length || 0}
@@ -411,13 +301,6 @@ const Gravitas = () => {
           fullTemplate={<GravitasFullReportTemplate formState={formState} worldName={worldNameForExport} />}
         />
       }
-      worksheetId={currentWorksheetId || worksheetId}
-      worksheetTitle={currentWorksheetTitle}
-      onRenameWorksheet={handleRename}
-      worksheetLoading={worksheetLoading}
-      worksheetTags={worksheetTags}
-      onTagsChange={handleTagsChange}
-      isLoggedIn={!!user}
     >
 
         {/* Mobile Navigation */}
@@ -614,6 +497,16 @@ const Gravitas = () => {
                   Enter the spin and thrust gravity components to calculate the resultant vector.
                   You can use values from the Spin and Thrust modes.
                 </p>
+                <p className="text-sm text-t2">
+                  Spin gravity points outward from the spin axis; thrust gravity points aft. With the
+                  spin axis parallel to the thrust line (the usual design) the two always meet at a right
+                  angle: felt gravity is √(spin² + thrust²) and the floor tilts aft by the same amount
+                  everywhere. Tilt the spin axis away from the thrust line and felt gravity sweeps around
+                  the rim once per revolution, here from{" "}
+                  <span className="font-mono">{formatG(combinedResult.resultant_min_g)}</span> to{" "}
+                  <span className="font-mono">{formatG(combinedResult.resultant_max_g)}</span>. Results
+                  show the point on the rim with the worst tilt.
+                </p>
 
                 {/* Spin g component */}
                 <div className="space-y-2">
@@ -643,12 +536,12 @@ const Gravitas = () => {
 
                 {/* Axis orientation */}
                 <div className="space-y-2">
-                  <Label>Spin Axis Orientation</Label>
+                  <Label>Spin Axis vs Thrust Line</Label>
                   <Select value={formState.combined.axis_orientation} onValueChange={(v) => updateCombined("axis_orientation", v)}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="parallel">Parallel (0°)</SelectItem>
-                      <SelectItem value="perpendicular">Perpendicular (90°)</SelectItem>
+                      <SelectItem value="parallel">Axis parallel to thrust (0°)</SelectItem>
+                      <SelectItem value="perpendicular">Axis perpendicular to thrust (90°)</SelectItem>
                       <SelectItem value="custom">Custom Angle</SelectItem>
                     </SelectContent>
                   </Select>
@@ -657,7 +550,7 @@ const Gravitas = () => {
                 {formState.combined.axis_orientation === "custom" && (
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label>Custom Angle</Label>
+                      <Label>Axis-to-Thrust Angle</Label>
                       <span className="font-mono text-sf-primary-text">{formState.combined.custom_angle_deg}°</span>
                     </div>
                     <Slider
@@ -951,7 +844,7 @@ const Gravitas = () => {
                 )}
                 {formState.activeMode === "thrust" && (
                   <>
-                    <ResultItem label="Trip Duration" value={formatDuration(thrustResult.trip_duration_days)} />
+                    <ResultItem label={formState.thrust.include_relativity ? "Trip Duration (Earth)" : "Trip Duration"} value={formatDuration(thrustResult.trip_duration_days)} />
                     <ResultItem label="Delta-V" value={`${thrustResult.delta_v_kms.toFixed(1)} km/s`} />
                     <ResultItem label="Peak Velocity" value={`${thrustResult.peak_velocity_kms.toFixed(1)} km/s`} />
                     <ResultItem label="Peak V (%c)" value={`${(thrustResult.peak_velocity_c * 100).toFixed(4)}%`} />
@@ -983,10 +876,10 @@ const Gravitas = () => {
 
                         // Spin vector always points "down" (positive Y)
                         const spinLen = spinG * scale;
-                        // Thrust vector at the configured angle from spin
-                        const angleDeg = formState.combined.axis_orientation === "parallel" ? 0
-                          : formState.combined.axis_orientation === "perpendicular" ? 90
-                          : formState.combined.custom_angle_deg;
+                        // Thrust vector at its angle from the spin vector at the
+                        // worst-tilt point on the rim (90° when the axis is parallel
+                        // to thrust; see calculateCombinedVector).
+                        const angleDeg = combinedResult.vector_angle_deg;
                         const angleRad = (angleDeg * Math.PI) / 180;
                         const thrustLen = thrustG * scale;
                         const thrustDx = Math.sin(angleRad) * thrustLen;
@@ -1269,16 +1162,9 @@ const Gravitas = () => {
         </ToolSidebar>
       {/* Dialogs */}
       <WorksheetSelectorDialog
-        open={worksheetSelectorOpen}
-        onOpenChange={setWorksheetSelectorOpen}
-        worldId={worldId || ""}
+        {...worksheet.selectorProps}
         worldName={worldName}
-        toolType={TOOL_TYPE}
         toolDisplayName="Gravitas"
-        worksheets={existingWorksheets}
-        onSelect={handleWorksheetSelect}
-        onCreate={handleWorksheetCreate}
-        isLoading={worksheetsLoading}
       />
 
       <ExportDialog

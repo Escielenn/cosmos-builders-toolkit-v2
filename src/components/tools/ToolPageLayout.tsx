@@ -36,6 +36,7 @@ import { PinToWritingButton } from "@/components/tools/PinToWritingButton";
 import { useWorksheets } from "@/hooks/use-worksheets";
 import { extractWorksheetFacts, summarizeFacts } from "@/lib/worksheet-facts";
 import { ProBadge } from "@/components/ui/pro-badge";
+import { ToolWorldBar } from "@/components/tools/ToolWorldBar";
 
 // ─── Props ───────────────────────────────────────────────────────────
 
@@ -72,12 +73,23 @@ interface ToolPageLayoutProps {
   /** Whether the user is logged in (used for worksheet rename disabled state) */
   isLoggedIn?: boolean;
 
+  /**
+   * The "no world open" bar, shown above the tool's content whenever no world
+   * is bound (one way to bind a world, in every instrument). Pass a reason to
+   * say why this tool wants one, or false where the page places its own.
+   */
+  worldBar?: false | { reason?: string; accent?: WorldBarAccent };
+
   /** Optional className on the PageShell */
   pageShellClassName?: string;
 
   /** Everything below the intro section: CollapsibleSections, sidebars, etc. */
   children: ReactNode;
 }
+
+type WorldBarAccent = NonNullable<Parameters<typeof ToolWorldBar>[0]["accent"]>;
+
+const DEFAULT_WORLD_BAR_REASON = "WORKSHEETS ARE FILED TO A WORLD. CHOOSE ONE.";
 
 // ─── Component ───────────────────────────────────────────────────────
 
@@ -157,6 +169,7 @@ export default function ToolPageLayout({
   onTagsChange,
   worksheetIcon,
   isLoggedIn = false,
+  worldBar,
   pageShellClassName,
   children,
 }: ToolPageLayoutProps) {
@@ -303,6 +316,14 @@ export default function ToolPageLayout({
 
         {/* ── Upstream Context Callouts (only when inside a world) */}
         {worldId && <UpstreamCallout toolType={toolType} worldId={worldId} />}
+
+        {/* ── No world bound: the one place to bind one ─────────── */}
+        {!worldId && worldBar !== false && (
+          <ToolWorldBar
+            accent={worldBar?.accent ?? (accent === "crimson" ? "teal" : accent)}
+            reason={worldBar?.reason ?? DEFAULT_WORLD_BAR_REASON}
+          />
+        )}
 
         {/* ── Tool-specific content ─────────────────────────────── */}
         {children}

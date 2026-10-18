@@ -1,10 +1,19 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
-import { useWorldId } from "@/hooks/use-world-id";
-import { useTags } from "@/hooks/use-tags";
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 import { useSearchParams } from "react-router-dom";
 import { Plus, Trash2, ArrowRight, RefreshCw, Dna, Users } from "lucide-react";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
+// FormState, defaults and codec: lib/tool-worksheets/sim.
+import {
+  codec as simCodec,
+  type FormState,
+  TOOL_TYPE,
+  LOCAL_STORAGE_KEY,
+  type Species,
+  type SpeciesPair,
+  createEmptySpecies,
+} from "@/lib/tool-worksheets/sim";
+import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,7 +28,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { useWorksheets, useWorksheet, useWorksheetsByType, useRenameWorksheet } from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
@@ -32,7 +40,6 @@ import ExportDialog from "@/components/tools/ExportDialog";
 import { SpeciesMatrixSummaryTemplate, SpeciesMatrixFullReportTemplate } from "@/lib/pdf/templates";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import UpgradeDialog from "@/components/subscription/UpgradeDialog";
@@ -41,7 +48,6 @@ import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import { useWorlds } from "@/hooks/use-worlds";
 import type { SpeciesMatrixSpecies } from "@/lib/field-mappings";
-import { Json } from "@/integrations/supabase/types";
 import {
   RELATIONSHIP_LEVELS,
   PHYSICAL_COMPATIBILITY,
@@ -55,7 +61,6 @@ import {
   SF_INTERACTION_EXAMPLES,
   STORY_PROMPT_TEMPLATES,
 } from "@/lib/species-interaction-data";
-import { writeStandaloneBackup } from "@/lib/standalone-backup";
 
 const SECTIONS: Section[] = [
   { id: "section-registry", title: "1. Species Registry" },
@@ -70,80 +75,6 @@ const SECTIONS: Section[] = [
   { id: "section-examples", title: "SF Examples" },
   { id: "section-synthesis", title: "Synthesis" },
 ];
-
-interface Species {
-  id: string;
-  name: string;
-  shortDescription: string;
-  homeworld: string;
-  physicalTraits: string;
-  culturalTraits: string;
-}
-
-interface SpeciesPair {
-  speciesAId: string;
-  speciesBId: string;
-  overallRelationship: string;
-  environmentCompatibility: string;
-  biologyCompatibility: string;
-  reproductionCompatibility: string;
-  lifespanDifference: string;
-  physicalNotes: string;
-  languageStatus: string;
-  perceptionOverlap: string;
-  nonverbalUnderstanding: string;
-  culturalConceptGap: string;
-  communicationNotes: string;
-  tradeRelationship: string;
-  resourceRelationship: string;
-  laborRelationship: string;
-  economicDependency: string;
-  economicNotes: string;
-  sovereignty: string;
-  alliance: string;
-  representation: string;
-  treatyStatus: string;
-  politicalNotes: string;
-  culturalAdoption: string;
-  populationMixing: string;
-  attitudesEach: string;
-  hybridStatus: string;
-  culturalNotes: string;
-  firstContactTime: string;
-  firstContactType: string;
-  warHistory: string;
-  cooperationHistory: string;
-  historicalNotes: string;
-  currentTensions: string;
-  futureRisks: string;
-  tensionNotes: string;
-}
-
-interface FormState {
-  species: Species[];
-  pairs: SpeciesPair[];
-  overallEquilibrium: string;
-  overallTrajectory: string;
-  dominantSpecies: string;
-  mostVolatilePair: string;
-  synthesisNotes: string;
-  storyPrompt: string;
-  centralConflict: string;
-  peaceOpportunity: string;
-  wildcardFactor: string;
-  notes: string;
-  generalNotes: string;
-  moodboard: MoodboardImage[];
-}
-
-const createEmptySpecies = (): Species => ({
-  id: crypto.randomUUID(),
-  name: "",
-  shortDescription: "",
-  homeworld: "",
-  physicalTraits: "",
-  culturalTraits: "",
-});
 
 const createEmptyPair = (speciesAId: string, speciesBId: string): SpeciesPair => ({
   speciesAId,
@@ -184,31 +115,8 @@ const createEmptyPair = (speciesAId: string, speciesBId: string): SpeciesPair =>
   tensionNotes: "",
 });
 
-const initialFormState: FormState = {
-  species: [createEmptySpecies(), createEmptySpecies()],
-  pairs: [],
-  overallEquilibrium: "",
-  overallTrajectory: "",
-  dominantSpecies: "",
-  mostVolatilePair: "",
-  synthesisNotes: "",
-  storyPrompt: "",
-  centralConflict: "",
-  peaceOpportunity: "",
-  wildcardFactor: "",
-  notes: "",
-  generalNotes: "",
-  moodboard: [],
-};
-
-const TOOL_TYPE = "species-interaction-matrix";
-
 const SpeciesInteractionMatrix = () => {
-  const [formState, setFormState] = useState<FormState>(initialFormState);
-  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
-  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
   const [importModalOpen, setImportModalOpen] = useState(false);
   const [importTargetIndex, setImportTargetIndex] = useState<number | null>(null);
@@ -219,25 +127,27 @@ const SpeciesInteractionMatrix = () => {
   const { worlds } = useWorlds();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = useWorldId();
-  const worksheetId = searchParams.get("worksheetId");
+
+  const worksheet = useToolWorksheet(TOOL_TYPE, {
+    ...simCodec,
+    displayName: "Species Interaction Matrix",
+    localKey: LOCAL_STORAGE_KEY,
+    loadedToast: true,
+    onDraftCreated: (id, title) => entityMatch.check(id, title),
+  });
+  const { state: formState, setState: setFormState, worldId } = worksheet;
+  const currentWorksheetId = worksheet.worksheetId;
+  const currentWorksheetTitle = worksheet.worksheetTitle;
+  const worksheetId = worksheet.worksheetId;
 
   const currentWorld = worldId ? worlds.find((w) => w.id === worldId) : null;
   const worldName = currentWorld?.name;
 
   const entityMatch = useEntityMatch(worldId);
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
-    onDraftCreated: entityMatch.check,
-  });
-  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
-  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
-  const renameWorksheet = useRenameWorksheet();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [notesSheetOpen, setNotesSheetOpen] = useState(false);
   const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
-  const { updateWorksheetTags } = useTags();
-  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
 
   // Generate all pairs when species change
   const allPairs = useMemo(() => {
@@ -281,45 +191,6 @@ const SpeciesInteractionMatrix = () => {
       setUpgradeDialogOpen(true);
     }
   }, [user, isSubscribed]);
-
-  useEffect(() => {
-    if (worldId && !worksheetId && !worksheetsLoading && user) {
-      setWorksheetSelectorOpen(true);
-    }
-  }, [worldId, worksheetId, worksheetsLoading, user]);
-
-  useEffect(() => {
-    if (existingWorksheet && existingWorksheet.data) {
-      try {
-        const data = existingWorksheet.data as unknown as FormState;
-        setFormState(data);
-        setCurrentWorksheetId(existingWorksheet.id);
-        setCurrentWorksheetTitle(existingWorksheet.title);
-        if (existingWorksheet.tags) {
-          setWorksheetTags(existingWorksheet.tags);
-        }
-        toast({
-          title: "WORKSHEET LOADED.",
-          description: "WORK RESTORED FROM CLOUD.",
-        });
-      } catch {
-        // Ignore parse errors
-      }
-    }
-  }, [existingWorksheet]);
-
-  useEffect(() => {
-    if (!worldId && !worksheetId) {
-      const saved = localStorage.getItem("sim-worksheet");
-      if (saved) {
-        try {
-          setFormState(JSON.parse(saved));
-        } catch {
-          // Ignore parse errors
-        }
-      }
-    }
-  }, [worldId, worksheetId]);
 
   const keyChoicesSections: KeyChoicesSection[] = useMemo(() => {
     const speciesCount = formState.species.filter(s => s.name).length;
@@ -460,71 +331,6 @@ const SpeciesInteractionMatrix = () => {
     }));
   };
 
-  const handleSave = async () => {
-    writeStandaloneBackup("sim-worksheet", formState, { worldId, signedIn: !!user });
-
-    if (worldId && user) {
-      const worksheetData = formState as unknown as Json;
-      try {
-        if (currentWorksheetId || worksheetId) {
-          await updateWorksheet.mutateAsync({
-            worksheetId: currentWorksheetId || worksheetId!,
-            data: worksheetData,
-          });
-        } else {
-          toast({
-            title: "OPERATION FAILED.",
-            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
-            variant: "destructive",
-          });
-        }
-      } catch {
-        // Error handled by mutation
-      }
-    } else {
-      toast({
-        title: "DRAFT SAVED.",
-        description: "WORK SECURED TO LOCAL STORAGE.",
-      });
-    }
-  };
-
-  const handleWorksheetSelect = (selectedWorksheetId: string) => {
-    setSearchParams({ worldId: worldId!, worksheetId: selectedWorksheetId });
-    setWorksheetSelectorOpen(false);
-  };
-
-  const handleWorksheetCreate = async (name: string): Promise<string> => {
-    const worksheetData = initialFormState as unknown as Json;
-    const result = await createWorksheet.mutateAsync({
-      worldId: worldId!,
-      toolType: TOOL_TYPE,
-      title: name,
-      data: worksheetData,
-    });
-    setCurrentWorksheetId(result.id);
-    setCurrentWorksheetTitle(result.title);
-    setSearchParams({ worldId: worldId!, worksheetId: result.id });
-    return result.id;
-  };
-
-  // Handle worksheet rename
-  const handleRename = async (newTitle: string) => {
-    const wsId = currentWorksheetId || worksheetId;
-    if (!wsId) return;
-
-    await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
-    setCurrentWorksheetTitle(newTitle);
-  };
-
-  const handleTagsChange = (newTags: string[]) => {
-    setWorksheetTags(newTags);
-    const wsId = currentWorksheetId || worksheetId;
-    if (wsId) {
-      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
-    }
-  };
-
   const getSpeciesById = (id: string) => formState.species.find((s) => s.id === id);
 
   const generateRandomStoryPrompt = () => {
@@ -538,15 +344,12 @@ const SpeciesInteractionMatrix = () => {
 
   return (
     <ToolPageLayout
+      {...worksheet.layoutProps}
       toolType={TOOL_TYPE}
-      onSave={handleSave}
-      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
       onExport={() => setExportDialogOpen(true)}
       onPrint={() => window.print()}
       onShare={(currentWorksheetId || worksheetId) ? () => setShareDialogOpen(true) : undefined}
       isShared={!!shareConfig?.enabled}
-      isSaving={updateWorksheet.isPending}
-      isCloudEnabled={!!(worldId && user)}
       onNotesClick={() => setNotesSheetOpen(true)}
       onMoodboardClick={() => setMoodboardSheetOpen(true)}
       moodboardCount={formState.moodboard?.length || 0}
@@ -560,13 +363,6 @@ const SpeciesInteractionMatrix = () => {
           defaultFilename="species-interaction-matrix"
         />
       }
-      worksheetId={currentWorksheetId || worksheetId}
-      worksheetTitle={currentWorksheetTitle}
-      onRenameWorksheet={handleRename}
-      worksheetLoading={worksheetLoading}
-      worksheetTags={worksheetTags}
-      onTagsChange={handleTagsChange}
-      isLoggedIn={!!user}
     >
         {/* Mobile Sidebars - Right side floating buttons */}
         <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
@@ -1549,16 +1345,9 @@ const SpeciesInteractionMatrix = () => {
       />
 
       <WorksheetSelectorDialog
-        open={worksheetSelectorOpen}
-        onOpenChange={setWorksheetSelectorOpen}
-        worldId={worldId!}
+        {...worksheet.selectorProps}
         worldName={worldName}
-        toolType={TOOL_TYPE}
         toolDisplayName="Symbiosis"
-        worksheets={existingWorksheets}
-        isLoading={worksheetsLoading}
-        onSelect={handleWorksheetSelect}
-        onCreate={handleWorksheetCreate}
       />
 
       <UpgradeDialog

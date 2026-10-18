@@ -127,6 +127,20 @@ Atlas becomes the sole producer of `planet.surface_gravity`. Genesis consumes it
 
 Roadmap folds (`05-NEW-SYSTEMS.md` Tier C) happen opportunistically inside these quarters, not as a project.
 
+### 2.0 items (deferred, decided)
+
+- **Merge the Timeline tool into Chronicle** (Tool Charter #27: two timeline
+  surfaces is a Law VII violation). Deferred from 1.5 (2026-10-18); not merged
+  then because Timeline's tracks, compressions and calendars have no Chronicle
+  equivalent yet. Until 2.0 the Timeline page carries a non-dismissible
+  `ChronicleMergeNotice` linking the world's Chronicle and Branches view.
+  The merge must: migrate each Timeline worksheet's tracks and events into
+  Chronicle events (no orphan data, Law I; nothing the writer typed is
+  dropped), carry custom calendars and compressions across as Chronicle view
+  settings, redirect `/tools/timeline` to the world's Chronicle, and retire the
+  Timeline manifest and PDF templates. Name the view it absorbs (Law VII):
+  Chronicle absorbs Timeline.
+
 ---
 
 ## Paste-ready briefs

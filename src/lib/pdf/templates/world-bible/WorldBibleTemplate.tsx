@@ -9,6 +9,7 @@ import {
   TOOL_NAMES,
 } from "./helpers";
 import type { ExportSection, ExportSubsection } from "@/services/worldExportFormatter";
+import { calculateDrakeN } from "@/lib/drake";
 
 interface WorldBibleTemplateProps {
   worldName: string;
@@ -349,8 +350,7 @@ const RenderDrake = ({ ws }: { ws: WorksheetRecord }) => {
   const d = ws.data;
   const values = d.values as Record<string, number> | undefined;
   if (!values) return null;
-  const N = (values.rStar || 0) * (values.fp || 0) * (values.ne || 0) *
-    (values.fl || 0) * (values.fi || 0) * (values.fc || 0) * (values.L || 0);
+  const N = calculateDrakeN(values);
   const fmt = (n: number) => {
     if (n < 1) return n.toFixed(4);
     if (n < 1000) return n.toFixed(1);

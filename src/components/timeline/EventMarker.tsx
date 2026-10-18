@@ -105,6 +105,8 @@ const EventMarker = memo(
               className={cn(
                 "absolute top-1/2 -translate-y-1/2 rounded-none cursor-pointer transition-sf duration-fast",
                 "hover:brightness-110",
+                // Touch: a 40px+ hit area around a bar that may be only a few px tall.
+                "before:absolute before:content-[''] before:-inset-2 [@media(pointer:coarse)]:before:-inset-4",
                 isSelected && "ring-2 ring-sf-primary ring-offset-1 ring-offset-background",
                 isDimmed && "pointer-events-none",
                 isFolded && "border border-dashed border-sf-line-interactive"
@@ -161,6 +163,8 @@ const EventMarker = memo(
             className={cn(
               "absolute top-1/2 -translate-y-1/2 rounded-full cursor-pointer transition-sf duration-fast",
               "hover:scale-125 hover:brightness-110",
+              // Touch: the dot is ~10px; its ::before carries the hit area.
+              "before:absolute before:content-[''] before:-inset-2 [@media(pointer:coarse)]:before:-inset-4",
               isSelected && "ring-2 ring-sf-primary ring-offset-1 ring-offset-background scale-125",
               isDimmed && "pointer-events-none",
               isFolded && "border border-dashed border-sf-line-interactive"

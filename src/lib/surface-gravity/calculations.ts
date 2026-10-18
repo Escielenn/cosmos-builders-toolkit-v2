@@ -200,10 +200,26 @@ export function calcAtmosphericRetention(
   });
 }
 
+/**
+ * Delta-v to reach low orbit, first-order approximation:
+ *   Δv ≈ k · v_orb(surface),  v_orb = √(GM/R)
+ * where k folds gravity losses and atmospheric drag losses into one
+ * multiplier on the ideal circular-orbit speed. k is calibrated so Earth
+ * reproduces the usual ~9.4 km/s budget to LEO (7.9 km/s orbital speed plus
+ * ~1.5 km/s of gravity and drag losses; see e.g. Sutton & Biblarz, "Rocket
+ * Propulsion Elements", 9th ed., §4.4, and NASA's 9.3–10 km/s LEO figure),
+ * giving k ≈ 1.19. The Earth reference is computed with the SAME formula, so
+ * Earth compares as exactly 1.00×. It ignores how losses scale with a
+ * different atmosphere or surface gravity, so treat other worlds as an
+ * order-of-magnitude guide.
+ */
+export const EARTH_DELTA_V_TO_ORBIT_KMS = 9.4;
+export const DELTA_V_LOSS_FACTOR = EARTH_DELTA_V_TO_ORBIT_KMS / calcOrbitalVelocity(1, 1);
+
 export function calcDeltaV(massEarth: number, radiusEarth: number): DeltaVResult {
   const vOrb = calcOrbitalVelocity(massEarth, radiusEarth);
-  const deltaV = 1.5 * vOrb; // includes gravity + drag losses
-  const earthDeltaV = 9.4; // km/s
+  const deltaV = DELTA_V_LOSS_FACTOR * vOrb; // includes gravity + drag losses
+  const earthDeltaV = DELTA_V_LOSS_FACTOR * calcOrbitalVelocity(1, 1); // = 9.4 km/s
   const exhaustV = 4.4; // km/s (LOX/LH2 best case)
   const massRatio = Math.exp(deltaV / exhaustV);
 

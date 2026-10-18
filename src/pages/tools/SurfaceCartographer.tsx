@@ -94,6 +94,7 @@ import {
   PLACE_TYPE_LABELS,
   UNPLACE_PATCH,
   buildGazetteerMarkdown,
+  buildGazetteerReport,
   gazetteerSnapshot,
   placeMetadataPatch,
   placesOnBody,
@@ -101,7 +102,10 @@ import {
   type PlaceType,
   type SurfaceCartographerState,
   type SurfacePlace,
+  type GazetteerReport,
 } from "@/lib/surface-cartographer/places";
+import ExportDialog from "@/components/tools/ExportDialog";
+import { SurfaceGazetteerTemplate } from "@/lib/pdf/templates";
 import { MAX_SHEET_BYTES, checkSheet } from "@/lib/surface-cartographer/sheet";
 import { resolveStorageUrl, uploadMapSheet } from "@/services/storage-urls";
 import { bindGlobe } from "@/gl/bind/globe";
@@ -115,6 +119,7 @@ import {
   paintBaseMap,
   readImageSize,
   toEquirectCanvas,
+  composeMapSheet,
   type GeneratedMap,
 } from "@/components/tools/surface-cartographer/sheet-canvas";
 
@@ -628,8 +633,8 @@ const SurfaceCartographer = () => {
     }
   };
 
-  const gazetteerMarkdown = () => {
-    const rows = places.map((p) => {
+  const gazetteerRows = () =>
+    places.map((p) => {
       if (!p.at) return { place: p };
       const sky = placeSky(p.at, {
         tiltDeg: facts.tiltDeg?.value ?? null,
@@ -640,27 +645,31 @@ const SurfaceCartographer = () => {
       });
       return { place: p, band: sky.band };
     });
-    return buildGazetteerMarkdown(facts.name, rows, {
-      radiusKm: facts.radiusEarth ? facts.radiusEarth.value * 6371 : null,
-      locked,
-      substellarLon: state.substellarLon,
-    });
-  };
+  const gazetteerExtras = () => ({
+    radiusKm: facts.radiusEarth ? facts.radiusEarth.value * 6371 : null,
+    locked,
+    substellarLon: state.substellarLon,
+  });
+  const gazetteerMarkdown = () => buildGazetteerMarkdown(facts.name, gazetteerRows(), gazetteerExtras());
 
-  const handleExport = () => {
-    try {
-      const md = gazetteerMarkdown();
-      const blob = new Blob([md], { type: "text/markdown" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${(facts.name || "surface").toLowerCase().replace(/[^a-z0-9]+/g, "-")}-gazetteer.md`;
-      a.click();
-      URL.revokeObjectURL(url);
-      toast({ title: VOICE.exportComplete, description: "GAZETTEER WRITTEN AS MARKDOWN." });
-    } catch {
-      toast({ title: VOICE.exportFailed, variant: "destructive" });
+  // Export: the format dialog (Markdown, PDF map sheet, JSON). The PDF's map
+  // image is composed once, when the dialog opens, with numbered pins that
+  // match the printed gazetteer.
+  const [exportOpen, setExportOpen] = useState(false);
+  const [exportReport, setExportReport] = useState<GazetteerReport | null>(null);
+  const [exportMap, setExportMap] = useState<string | null>(null);
+  const handleExport = async () => {
+    const report = buildGazetteerReport(facts.name, gazetteerRows(), gazetteerExtras());
+    setExportReport(report);
+    setExportMap(null);
+    if (imageUrl) {
+      try {
+        setExportMap(await composeMapSheet(imageUrl, mapProjection, report.groups.flatMap((g) => g.entries)));
+      } catch {
+        // The gazetteer still prints; the template says the map is unavailable.
+      }
     }
+    setExportOpen(true);
   };
 
   const copyGazetteer = async () => {
@@ -730,6 +739,8 @@ const SurfaceCartographer = () => {
       }}
       worksheetLoading={worksheetLoading}
       isLoggedIn={!!user}
+      // The world bar sits in the Body section, where the body picker goes.
+      worldBar={false}
     >
       <div className="fixed bottom-4 right-4 z-40 flex flex-col gap-2 no-print xl:hidden">
         <MobileSectionNav sections={SECTIONS} />
@@ -1289,6 +1300,22 @@ const SurfaceCartographer = () => {
         onOpenChange={setNotesOpen}
         content={state.generalNotes}
         onChange={(html) => setState((s) => ({ ...s, generalNotes: html }))}
+      />
+
+      <ExportDialog
+        open={exportOpen}
+        onOpenChange={setExportOpen}
+        toolName="Surface Cartographer"
+        worldName={worldName}
+        worksheetTitle={facts.name || undefined}
+        formState={{ bodyName: facts.name, gazetteer: gazetteerSnapshot(places) }}
+        summaryTemplate={
+          exportReport ? (
+            <SurfaceGazetteerTemplate report={exportReport} mapImage={exportMap} worldName={worldName} />
+          ) : undefined
+        }
+        markdown={gazetteerMarkdown}
+        defaultFilename={`${(facts.name || "surface").toLowerCase().replace(/[^a-z0-9]+/g, "-")}-gazetteer`}
       />
     </ToolPageLayout>
   );

@@ -15,6 +15,8 @@ import {
   MIN_PIXELS_PER_YEAR,
   MAX_PIXELS_PER_YEAR,
   TRACK_HEADER_WIDTH,
+  TRACK_HEADER_WIDTH_COMPACT,
+  COMPACT_TIMELINE_WIDTH,
   MONTH_NAMES,
   MONTH_NAMES_FULL,
 } from "./constants";
@@ -23,6 +25,19 @@ import {
 
 export function generateId(): string {
   return crypto.randomUUID();
+}
+
+// ─── Layout ───────────────────────────────────────────────────────
+
+/**
+ * Width of the track-name column for a given timeline viewport width.
+ * At phone widths a 200px header left ~140px of lanes; the compact header
+ * keeps the lanes the larger share. Every coordinate helper below derives
+ * the header from the same viewport width, so axis, lanes and hit-testing
+ * always agree.
+ */
+export function trackHeaderWidth(viewportWidth: number): number {
+  return viewportWidth < COMPACT_TIMELINE_WIDTH ? TRACK_HEADER_WIDTH_COMPACT : TRACK_HEADER_WIDTH;
 }
 
 // ─── Coordinate Conversion ────────────────────────────────────────
@@ -34,9 +49,9 @@ export function yearToX(
   pixelsPerYear: number,
   viewportWidth: number
 ): number {
-  const contentWidth = viewportWidth - TRACK_HEADER_WIDTH;
+  const contentWidth = viewportWidth - trackHeaderWidth(viewportWidth);
   const contentCenter = contentWidth / 2;
-  return TRACK_HEADER_WIDTH + contentCenter + (year - centerYear) * pixelsPerYear;
+  return trackHeaderWidth(viewportWidth) + contentCenter + (year - centerYear) * pixelsPerYear;
 }
 
 /** Convert an x-pixel position in the viewport to a year value. */
@@ -46,9 +61,9 @@ export function xToYear(
   pixelsPerYear: number,
   viewportWidth: number
 ): number {
-  const contentWidth = viewportWidth - TRACK_HEADER_WIDTH;
+  const contentWidth = viewportWidth - trackHeaderWidth(viewportWidth);
   const contentCenter = contentWidth / 2;
-  return centerYear + (x - TRACK_HEADER_WIDTH - contentCenter) / pixelsPerYear;
+  return centerYear + (x - trackHeaderWidth(viewportWidth) - contentCenter) / pixelsPerYear;
 }
 
 // ─── Visible Range ────────────────────────────────────────────────
@@ -64,7 +79,7 @@ export function getVisibleRange(
   pixelsPerYear: number,
   viewportWidth: number
 ): VisibleRange {
-  const contentWidth = viewportWidth - TRACK_HEADER_WIDTH;
+  const contentWidth = viewportWidth - trackHeaderWidth(viewportWidth);
   const halfSpan = contentWidth / 2 / pixelsPerYear;
   return {
     startYear: centerYear - halfSpan,
@@ -111,7 +126,7 @@ export function fitAllEvents(
   const span = maxYear - minYear;
   const padding = Math.max(span * 0.1, 1); // at least 1 year padding
   const totalSpan = span + padding * 2;
-  const contentWidth = viewportWidth - TRACK_HEADER_WIDTH;
+  const contentWidth = viewportWidth - trackHeaderWidth(viewportWidth);
 
   const pixelsPerYear = clampZoom(contentWidth / totalSpan);
   const centerYear = minYear + span / 2;
@@ -137,9 +152,9 @@ export function zoomAtCursor(
   const factor = 1 - deltaY * 0.002;
   const newPPY = clampZoom(viewState.pixelsPerYear * factor);
 
-  const contentWidth = viewportWidth - TRACK_HEADER_WIDTH;
+  const contentWidth = viewportWidth - trackHeaderWidth(viewportWidth);
   const contentCenter = contentWidth / 2;
-  const newCenterYear = cursorYear - (cursorX - TRACK_HEADER_WIDTH - contentCenter) / newPPY;
+  const newCenterYear = cursorYear - (cursorX - trackHeaderWidth(viewportWidth) - contentCenter) / newPPY;
 
   return { pixelsPerYear: newPPY, centerYear: newCenterYear };
 }
@@ -227,6 +242,29 @@ export function generateTicks(
   }
 
   return ticks;
+}
+
+/**
+ * Which tick labels to draw so none collide. Majors are placed first, then
+ * minors fill the gaps; a label is kept only if it sits at least `minGap` px
+ * from every kept label. The tick marks themselves are always drawn. At phone
+ * width a decade of minor labels used to print on top of each other.
+ */
+export function visibleTickLabels(
+  ticks: ReadonlyArray<{ x: number; isMajor: boolean }>,
+  minGap: number,
+): Set<number> {
+  const kept: number[] = [];
+  const out = new Set<number>();
+  const fits = (x: number) => kept.every((k) => Math.abs(k - x) >= minGap);
+  for (const pass of [true, false]) {
+    ticks.forEach((t, i) => {
+      if (t.isMajor !== pass || !fits(t.x)) return;
+      kept.push(t.x);
+      out.add(i);
+    });
+  }
+  return out;
 }
 
 // ─── Date Formatting ──────────────────────────────────────────────
@@ -556,6 +594,8 @@ import type { TimeCompression } from "./types";
 export interface YearMapper {
   yearToX(year: number): number;
   xToYear(x: number): number;
+  /** Track-name column width this mapper was built for (see trackHeaderWidth). */
+  headerWidth: number;
 }
 
 /**
@@ -577,6 +617,7 @@ export function createYearMapper(
   if (active.length === 0) {
     // No compressions, use standard conversion
     return {
+      headerWidth: trackHeaderWidth(viewportWidth),
       yearToX: (year: number) => yearToX(year, centerYear, pixelsPerYear, viewportWidth),
       xToYear: (x: number) => xToYear(x, centerYear, pixelsPerYear, viewportWidth),
     };
@@ -594,6 +635,7 @@ export function createYearMapper(
   });
 
   return {
+    headerWidth: trackHeaderWidth(viewportWidth),
     yearToX(year: number): number {
       // Start from the standard position, then adjust for compressions
       let adjustment = 0;

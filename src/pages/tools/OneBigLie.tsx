@@ -1,8 +1,6 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from "react";
-import { useWorldId } from "@/hooks/use-world-id";
+import { useState, useMemo, lazy, Suspense } from "react";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
-import { useTags } from "@/hooks/use-tags";
 import { useSearchParams } from "react-router-dom";
 import { ExternalLink, ChevronDown } from "lucide-react";
 import {
@@ -14,12 +12,6 @@ import { GlassPanel } from "@/components/ui/glass-panel";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
-import {
-  useWorksheets,
-  useWorksheet,
-  useWorksheetsByType,
-  useRenameWorksheet,
-} from "@/hooks/use-worksheets";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, { MobileSectionNav } from "@/components/tools/SectionNavigation";
@@ -27,104 +19,33 @@ import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
+// FormState, defaults and codec: lib/tool-worksheets/axiom.
+import {
+  codec as axiomCodec,
+  type FormState,
+  TOOL_TYPE,
+  LOCAL_STORAGE_KEY,
+} from "@/lib/tool-worksheets/axiom";
+import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
 import { useWorksheetShare } from "@/hooks/use-sharing";
-import type { MoodboardImage } from "@/hooks/use-moodboard";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { WorksheetMoodboardSheet } from "@/components/tools/WorksheetMoodboardSheet";
 import { OneBigLieSummaryTemplate, OneBigLieFullReportTemplate } from "@/lib/pdf/templates";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useEntityMatch } from "@/hooks/use-entity-match";
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
-import { Json } from "@/integrations/supabase/types";
 import {
   ONE_BIG_LIE_SECTIONS,
   APPROACH_OPTIONS,
   SF_EXAMPLES,
   SECTION_HELPERS,
 } from "@/lib/one-big-lie-data";
-import { writeStandaloneBackup } from "@/lib/standalone-backup";
 import { manifest as axiomManifest } from "@/tools/axiom/manifest";
 import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
 import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
-
-// Types
-interface FormState {
-  approach: {
-    type: "big-lie" | "what-if" | "";
-  };
-  coreStatement: {
-    statement: string;
-    scienceBroken: string;
-  };
-  justification: {
-    narrativeJustification: string;
-    whatBecomesPossible: string;
-    whatBecomesImpossible: string;
-  };
-  testability: {
-    inWorldTest: string;
-    rules: string;
-    knownUnknowns: string;
-  };
-  physicalConsequences: {
-    primaryImpact: string;
-    secondOrderEffects: string;
-  };
-  techConsequences: {
-    technologicalImpact: string;
-    economicPowerImpact: string;
-  };
-  socialConsequences: {
-    socialPsychologicalImpact: string;
-    culturalMythologicalImpact: string;
-  };
-  rigorCommitment: {
-    rigorArea1: string;
-    rigorArea2: string;
-    rigorArea3: string;
-  };
-  consistencyTest: {
-    hardestQuestion: string;
-    edgeCase: string;
-    connectionToWorld: string;
-  };
-  declaration: {
-    formalDeclaration: string;
-  };
-  generalNotes: string;
-  moodboard: MoodboardImage[];
-}
-
-const initialFormState: FormState = {
-  approach: { type: "" },
-  coreStatement: { statement: "", scienceBroken: "" },
-  justification: {
-    narrativeJustification: "",
-    whatBecomesPossible: "",
-    whatBecomesImpossible: "",
-  },
-  testability: { inWorldTest: "", rules: "", knownUnknowns: "" },
-  physicalConsequences: { primaryImpact: "", secondOrderEffects: "" },
-  techConsequences: { technologicalImpact: "", economicPowerImpact: "" },
-  socialConsequences: {
-    socialPsychologicalImpact: "",
-    culturalMythologicalImpact: "",
-  },
-  rigorCommitment: { rigorArea1: "", rigorArea2: "", rigorArea3: "" },
-  consistencyTest: {
-    hardestQuestion: "",
-    edgeCase: "",
-    connectionToWorld: "",
-  },
-  declaration: { formalDeclaration: "" },
-  generalNotes: "",
-  moodboard: [],
-};
-
-const TOOL_TYPE = "one-big-lie";
 
 const EXTERNAL_RESOURCES = [
   {
@@ -155,23 +76,29 @@ const stripHtml = (html: string): string =>
   html.replace(/<[^>]*>/g, "").trim();
 
 const OneBigLie = () => {
-  const [formState, setFormState] = useState<FormState>(initialFormState);
-  const [currentWorksheetId, setCurrentWorksheetId] = useState<string | null>(null);
-  const [currentWorksheetTitle, setCurrentWorksheetTitle] = useState<string | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [worksheetSelectorOpen, setWorksheetSelectorOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [notesSheetOpen, setNotesSheetOpen] = useState(false);
   const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
-  const [worksheetTags, setWorksheetTags] = useState<string[]>([]);
   const { toast } = useToast();
   const { user } = useAuth();
   const { worlds } = useWorlds();
-  const { updateWorksheetTags } = useTags();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const worldId = useWorldId();
-  const worksheetId = searchParams.get("worksheetId");
+
+  const worksheet = useToolWorksheet(TOOL_TYPE, {
+    ...axiomCodec,
+    displayName: "One Big Lie",
+    localKey: LOCAL_STORAGE_KEY,
+    loadedToast: true,
+    onDraftCreated: (id, title) => entityMatch.check(id, title),
+    onSaved: (saved, { worksheetId: savedId }) =>
+      canonEmit.emit(saved, { subjectId: canonSubjectId, worksheetId: savedId }),
+  });
+  const { state: formState, setState: setFormState, worldId } = worksheet;
+  const currentWorksheetId = worksheet.worksheetId;
+  const currentWorksheetTitle = worksheet.worksheetTitle;
+  const worksheetId = worksheet.worksheetId;
 
   // One home per value (1.5 item 10): the One Big Lie is Axiom's; Exodus reads it.
   const canonSubjectId = useToolSubject(currentWorksheetId || worksheetId);
@@ -181,56 +108,7 @@ const OneBigLie = () => {
   const worldName = currentWorld?.name;
 
   const entityMatch = useEntityMatch(worldId);
-  const { createWorksheet, updateWorksheet } = useWorksheets(worldId || undefined, false, {
-    onDraftCreated: entityMatch.check,
-  });
-  const { data: existingWorksheet, isLoading: worksheetLoading } = useWorksheet(worksheetId || undefined);
-  const { data: existingWorksheets = [], isLoading: worksheetsLoading } = useWorksheetsByType(worldId || undefined, TOOL_TYPE);
-  const renameWorksheet = useRenameWorksheet();
   const { data: shareConfig } = useWorksheetShare(currentWorksheetId || worksheetId || undefined);
-
-  // Show worksheet selector when worldId present but no worksheetId
-  useEffect(() => {
-    if (worldId && !worksheetId && !worksheetsLoading && user) {
-      setWorksheetSelectorOpen(true);
-    }
-  }, [worldId, worksheetId, worksheetsLoading, user]);
-
-  // Load existing worksheet from Supabase
-  useEffect(() => {
-    if (existingWorksheet && existingWorksheet.data) {
-      try {
-        const data = existingWorksheet.data as unknown as FormState;
-        setFormState(data);
-        setCurrentWorksheetId(existingWorksheet.id);
-        setCurrentWorksheetTitle(existingWorksheet.title);
-        if (existingWorksheet.tags) {
-          setWorksheetTags(existingWorksheet.tags);
-        }
-        toast({
-          title: "WORKSHEET LOADED.",
-          description: "WORK RESTORED FROM CLOUD.",
-        });
-      } catch {
-        // Ignore parse errors
-      }
-    }
-  }, [existingWorksheet]);
-
-  // Fallback to localStorage
-  useEffect(() => {
-    if (!worldId && !worksheetId) {
-      const saved = localStorage.getItem("one-big-lie-worksheet");
-      if (saved) {
-        try {
-          setFormState(JSON.parse(saved));
-        } catch {
-          // Ignore parse errors
-        }
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [worldId, worksheetId]);
 
   // Key choices sidebar
   const keyChoicesSections: KeyChoicesSection[] = useMemo(() => {
@@ -369,79 +247,13 @@ const OneBigLie = () => {
     }));
   };
 
-  // Save
-  const handleSave = async () => {
-    writeStandaloneBackup("one-big-lie-worksheet", formState, { worldId, signedIn: !!user });
-
-    if (worldId && user) {
-      const worksheetData = formState as unknown as Json;
-      try {
-        if (currentWorksheetId || worksheetId) {
-          await updateWorksheet.mutateAsync({
-            worksheetId: currentWorksheetId || worksheetId!,
-            data: worksheetData,
-          });
-          await canonEmit.emit(formState, { subjectId: canonSubjectId, worksheetId: currentWorksheetId || worksheetId });
-        } else {
-          toast({
-            title: "OPERATION FAILED.",
-            description: "SELECT OR CREATE A WORKSHEET BEFORE TRANSMITTING.",
-            variant: "destructive",
-          });
-        }
-      } catch {
-        // Error handled by mutation
-      }
-    } else {
-      toast({
-        title: "DRAFT SAVED.",
-        description: "WORK SECURED TO LOCAL STORAGE.",
-      });
-    }
-  };
-
-  const handleWorksheetSelect = (selectedWorksheetId: string) => {
-    setSearchParams({ worldId: worldId!, worksheetId: selectedWorksheetId });
-    setWorksheetSelectorOpen(false);
-  };
-
-  const handleWorksheetCreate = async (name: string): Promise<string> => {
-    const worksheetData = initialFormState as unknown as Json;
-    const result = await createWorksheet.mutateAsync({
-      worldId: worldId!,
-      toolType: TOOL_TYPE,
-      title: name,
-      data: worksheetData,
-    });
-    setCurrentWorksheetId(result.id);
-    setCurrentWorksheetTitle(result.title);
-    setSearchParams({ worldId: worldId!, worksheetId: result.id });
-    return result.id;
-  };
-
-  const handleRename = async (newTitle: string) => {
-    const wsId = currentWorksheetId || worksheetId;
-    if (!wsId) return;
-    await renameWorksheet.mutateAsync({ worksheetId: wsId, title: newTitle });
-    setCurrentWorksheetTitle(newTitle);
-  };
-
-  const handleTagsChange = (newTags: string[]) => {
-    setWorksheetTags(newTags);
-    const wsId = currentWorksheetId || worksheetId;
-    if (wsId) {
-      updateWorksheetTags.mutate({ worksheetId: wsId, tags: newTags });
-    }
-  };
-
   const handleExport = () => setExportDialogOpen(true);
   const handlePrint = () => window.print();
 
   return (
     <ToolPageLayout
+      {...worksheet.layoutProps}
       toolType={TOOL_TYPE}
-      onSave={handleSave}
-      onOpen={worldId ? () => setWorksheetSelectorOpen(true) : undefined}
       onPrint={handlePrint}
       onExport={handleExport}
       onShare={
@@ -450,7 +262,6 @@ const OneBigLie = () => {
           : undefined
       }
       isShared={!!shareConfig?.enabled}
-      isCloudEnabled={!!(worldId && user)}
       onNotesClick={() => setNotesSheetOpen(true)}
       onMoodboardClick={() => setMoodboardSheetOpen(true)}
       moodboardCount={formState.moodboard?.length || 0}
@@ -468,13 +279,6 @@ const OneBigLie = () => {
           defaultFilename="one-big-lie"
         />
       }
-      worksheetId={currentWorksheetId || worksheetId}
-      worksheetTitle={currentWorksheetTitle}
-      onRenameWorksheet={handleRename}
-      worksheetLoading={worksheetLoading}
-      worksheetTags={worksheetTags}
-      onTagsChange={handleTagsChange}
-      isLoggedIn={!!user}
     >
 
         {/* Introduction Panel */}
@@ -1254,16 +1058,9 @@ const OneBigLie = () => {
       {/* Worksheet Selector */}
       {worldId && (
         <WorksheetSelectorDialog
-          open={worksheetSelectorOpen}
-          onOpenChange={setWorksheetSelectorOpen}
-          worldId={worldId}
+          {...worksheet.selectorProps}
           worldName={worldName}
-          toolType={TOOL_TYPE}
           toolDisplayName="Axiom"
-          worksheets={existingWorksheets}
-          isLoading={worksheetsLoading}
-          onSelect={handleWorksheetSelect}
-          onCreate={handleWorksheetCreate}
         />
       )}
 
