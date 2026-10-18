@@ -28,6 +28,11 @@ const loadingMessages: Record<string, string[]> = {
     "CALIBRATING ENERGY SENSORS...",
     "SCANNING CIVILIZATIONAL OUTPUT...",
   ],
+  "tools/generation-ship": [
+    "PRESSURIZING HABITAT RING...",
+    "CENSUSING THE CREW MANIFEST...",
+    "BALANCING THE CLOSED LOOP...",
+  ],
   "tools/evolutionary-biology": [
     "SURVEYING BIOSPHERE...",
     "COMPILING MORPHOLOGICAL DATA...",

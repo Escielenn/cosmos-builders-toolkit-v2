@@ -146,6 +146,12 @@ const proTools = [
     status: "available",
   },
   {
+    id: "generation-ship",
+    title: "Ark: Generation Ship Designer",
+    description: "Design self-sustaining interstellar arks from real numbers: crew genetics, closed-loop life support, spin habitats, and the drift events a centuries-long voyage writes into your Chronicle.",
+    status: "available",
+  },
+  {
     id: "stellar-cartographer",
     title: "Stellar Cartographer: Galaxy Mapper",
     description: "Interactive galaxy mapping tool. Generate procedural galaxies with 3D projection, empire territories, trade routes, and wormholes.",
@@ -195,7 +201,6 @@ const comingSoonByCategory = [
       { title: "Character Development", subtitle: "Individual characters connected to your world" },
 
       { title: "AI Development", subtitle: "Explore artificial intelligence in your universe" },
-      { title: "Generation Ship Designer", subtitle: "Design self-sustaining interstellar arks" },
       { title: "Quantum and Beyond", subtitle: "Technology beyond our understanding" },
       { title: "BDO: Big Dumb Object", subtitle: "Create megastructures and cosmic artifacts" },
       { title: "Warp Travel Calculator", subtitle: "Calculate warp-based journey parameters" },

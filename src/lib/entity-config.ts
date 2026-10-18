@@ -42,7 +42,7 @@ export const ENTITY_TYPE_TO_TOOLS = buildEntityTypeToTools();
 const EXTRA_TOOLS: Partial<Record<string, string[]>> = {
   planet: ["habitable-zone-calculator", "surface-gravity-calculator"],
   species: ["sensorium", "species-interaction-matrix"],
-  vessel: ["propulsion-consequences-map", "gravitas"],
+  vessel: ["propulsion-consequences-map", "gravitas", "generation-ship"],
   faction: ["space-expansion-modeler"],
   star_system: ["habitable-zone-calculator"],
 };
@@ -553,6 +553,53 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
       key: "gravityFailureMode",
       type: "text",
       worksheetPaths: { gravitas: "artificial.failure_mode" },
+    },
+    // ── Ark: Generation Ship Designer ──
+    // Inputs at their own paths; computed values from the `derived` snapshot
+    // the tool writes on every save, rounded the way a writer would quote them.
+    // Distance, speed and spin are deliberately not mapped here: Paradox,
+    // Impulse and Gravitas own those, and Ark imports them with provenance.
+    {
+      label: "Founding Population",
+      key: "foundingPopulation",
+      type: "number",
+      worksheetPaths: { "generation-ship": "population.founding" },
+    },
+    {
+      label: "Voyage Duration (ship-years)",
+      key: "voyageShipYears",
+      type: "number",
+      worksheetPaths: { "generation-ship": "derived.shipYears" },
+    },
+    {
+      label: "Voyage Duration (home years)",
+      key: "voyageHomeYears",
+      type: "number",
+      worksheetPaths: { "generation-ship": "derived.earthYears" },
+    },
+    {
+      label: "Generations Aboard",
+      key: "generationsAboard",
+      type: "number",
+      worksheetPaths: { "generation-ship": "derived.generations" },
+    },
+    {
+      label: "Effective Population (Ne)",
+      key: "effectivePopulation",
+      type: "number",
+      worksheetPaths: { "generation-ship": "derived.effectivePopulation" },
+    },
+    {
+      label: "Inbreeding at Arrival (F)",
+      key: "inbreedingAtArrival",
+      type: "number",
+      worksheetPaths: { "generation-ship": "derived.inbreedingAtArrival" },
+    },
+    {
+      label: "Closed-Loop Efficiency (%)",
+      key: "closedLoopEfficiency",
+      type: "number",
+      worksheetPaths: { "generation-ship": "derived.closedLoopEfficiencyPct" },
     },
   ],
 
