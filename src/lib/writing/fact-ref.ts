@@ -26,9 +26,9 @@
 export const FACT_REF_TAG = "fact-ref";
 
 /** Where a cited value lives, which decides how OPEN SOURCE gets there. */
-export type FactSourceKind = "worksheet" | "simulation" | "entity" | "chronicle";
+export type FactSourceKind = "worksheet" | "simulation" | "entity" | "chronicle" | "canon";
 
-const SOURCE_KINDS: readonly FactSourceKind[] = ["worksheet", "simulation", "entity", "chronicle"];
+const SOURCE_KINDS: readonly FactSourceKind[] = ["worksheet", "simulation", "entity", "chronicle", "canon"];
 
 export interface FactRefAttrs {
   /** The fact's key in its source, e.g. "surfaceGravity". */
@@ -38,8 +38,10 @@ export interface FactRefAttrs {
   /** Tool slug, simulator type, "codex" or "chronicle". */
   tool: string;
   /**
-   * Id of the source record: a worksheet, a simulation save or a chronicle
-   * event/branch. Null for a value read off a Codex entity's own infobox.
+   * Id of the source record: a worksheet, a simulation save, a chronicle
+   * event/branch, or a proposed canon fact (public.facts). Null for a value
+   * read off a Codex entity's own infobox, and for a canon fact, whose ref
+   * names its (subject, predicate) slot so it survives a supersede.
    */
   worksheetId: string | null;
   sourceKind: FactSourceKind;

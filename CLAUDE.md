@@ -975,8 +975,15 @@ architectural decision. The seven laws are not aspirational.
 
 - All world data reads and writes go through `src/canon/`. A component that
   imports Supabase to read world data is a Constitution violation.
-- Every tool has a `manifest.ts` conforming to `ToolManifest`. No manifest,
-  no merge.
+  The facade exists (`canon.facts / assert / propose / promote / retract`,
+  hooks in `src/canon/hooks.ts`); only `src/canon/supabase-store.ts` touches
+  `public.facts`. Projected facts are still computed on read (AMENDMENTS
+  2026-10-19); older hooks that read worksheet tables directly predate it.
+- Every tool has a `manifest.ts` conforming to `ToolManifest`
+  (`src/canon/manifest.ts`), colocated at `src/tools/<id>/manifest.ts` and
+  listed in `src/canon/manifests/index.ts`. No manifest, no merge for new
+  tools; existing tools gain one per `/sf-wire` session (Genesis and Atlas
+  are wired so far).
 - Predicates come from `src/canon/vocabulary.ts`. Adding one is deliberate —
   use `/sf-fact`. Never rename a predicate; deprecate and alias.
 - `canon.assert()` never silently overwrites `confidence:'canon'`.

@@ -20,6 +20,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AlertTriangle, ArrowUpRight, Columns2, RefreshCw } from "lucide-react";
 import { useStudioWorld } from "@/components/writing/studio-world";
+import { ConfidenceTag } from "@/components/writing/ConfidenceTag";
 import {
   INLINE_REF_EVENT,
   type InlineRefDetail,
@@ -216,7 +217,10 @@ function FactCard({ detail, onDone }: { detail: InlineRefDetail; onDone: () => v
     <div className="flex flex-col gap-2">
       <p className="font-heading text-sf-eyebrow uppercase text-t4">{attrs.label || "Cited fact"}</p>
       <p className="break-words font-mono text-[16px] text-t1">{attrs.value}</p>
-      <p className="font-sans text-[13px] text-t3">{source}</p>
+      <p className="flex flex-wrap items-center gap-1.5 font-sans text-[13px] text-t3">
+        {live && <ConfidenceTag confidence={live.confidence} outranked={!!live.outrankedBy} />}
+        <span>{source}</span>
+      </p>
       {status?.state === "current" && (
         <p className="font-mono text-[12px] text-t3">// CURRENT. MATCHES THE SOURCE.</p>
       )}

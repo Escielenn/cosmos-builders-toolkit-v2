@@ -21,6 +21,7 @@ import { useChronicleData } from "@/hooks/use-chronicle";
 import { useChronicleBranches } from "@/hooks/use-chronicle-branches";
 import { buildWorldFacts, indexFacts, type WorldFact } from "@/lib/writing/world-index";
 import { setLiveFacts, clearLiveFacts } from "@/lib/writing/live-facts";
+import { useCanonRows } from "@/canon/hooks";
 import type { SceneContext } from "@/lib/writing/scene-context";
 import type { Entity, EntityConnection } from "@/services/entity-graph-types";
 
@@ -93,13 +94,18 @@ export function useStudioWorldIndex(worldId: string | undefined): Omit<StudioWor
     [branchData],
   );
   const events = useMemo(() => chronicle?.events ?? [], [chronicle]);
+  // Stored canon / proposed facts, read through the canon facade. A failed
+  // read (e.g. the facts table not yet migrated) leaves the projected index
+  // exactly as it was.
+  const { data: canonRows } = useCanonRows(worldId);
+  const asserted = useMemo(() => canonRows ?? [], [canonRows]);
 
   const facts = useMemo(
     () =>
       worldId
-        ? buildWorldFacts({ worldId, worksheets, simulations, subjects, entities, events, branches })
+        ? buildWorldFacts({ worldId, worksheets, simulations, subjects, entities, events, branches, asserted })
         : [],
-    [worldId, worksheets, simulations, subjects, entities, events, branches],
+    [worldId, worksheets, simulations, subjects, entities, events, branches, asserted],
   );
 
   const loading = !!worldId && (wsLoading || simLoading || entLoading);

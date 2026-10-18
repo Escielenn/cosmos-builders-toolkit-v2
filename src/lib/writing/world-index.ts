@@ -22,6 +22,9 @@ import { getToolDisplayName, getToolRoute } from "@/lib/tools-config";
 import { getToolAccent, type ToolAccent } from "@/lib/tool-accents";
 import { ENTITY_TYPE_LABELS, type Entity } from "@/services/entity-graph-types";
 import { factRefId, type FactRefAttrs, type FactSourceKind } from "@/lib/writing/fact-ref";
+import { mergeCanonFacts, rowToCanonFact, sourceKindLabel } from "@/canon/merge";
+import { resolvePredicate } from "@/canon/vocabulary";
+import type { CanonFactRow, Confidence } from "@/canon/types";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -51,6 +54,21 @@ export interface WorldFact {
   accent: ToolAccent;
   /** The fact's own provenance line, when its reader supplied one. */
   provenance?: string;
+  /**
+   * Canon tier: 'canon' / 'proposed' for a stored fact (public.facts),
+   * 'projected' for one computed on read. Absent reads as 'projected'.
+   */
+  confidence?: Confidence;
+  /** Canonical predicate (src/canon/vocabulary) this fact answers. */
+  predicate?: string;
+  /** public.facts id, for stored facts (promote / retract). */
+  factId?: string;
+  /**
+   * Ref of the stored fact that outranks this one for the same (subject,
+   * predicate). The value is still what its source records; the rail shows
+   * both, the winner first.
+   */
+  outrankedBy?: string;
 }
 
 export interface IndexWorksheet {
@@ -92,6 +110,8 @@ export interface WorldIndexInput {
   entities: readonly Entity[];
   events?: readonly IndexEvent[];
   branches?: readonly IndexBranch[];
+  /** Stored canon / proposed rows (canon.rows). Omit for projected only. */
+  asserted?: readonly CanonFactRow[];
 }
 
 // ---------------------------------------------------------------------------
@@ -102,6 +122,7 @@ export interface WorldIndexInput {
 export function toolBrand(tool: string): string {
   if (tool === "codex") return "Codex";
   if (tool === "chronicle") return "Chronicle";
+  if (tool === "canon") return "Canon";
   const full = getToolDisplayName(tool);
   const i = full.indexOf(":");
   return i > 0 ? full.slice(0, i) : full;
@@ -162,6 +183,8 @@ function fromWorksheetFact(
     href: base.href,
     accent: getToolAccent(base.tool),
     ...(f.source ? { provenance: f.source } : {}),
+    confidence: "projected",
+    predicate: resolvePredicate(f.key).predicate,
   };
 }
 
@@ -189,6 +212,8 @@ export function entityInfoboxFacts(entity: Entity, worldId: string): WorldFact[]
       entityId: entity.id,
       href: `/worlds/${worldId}/codex/${entity.id}`,
       accent: "teal",
+      confidence: "projected",
+      predicate: resolvePredicate(field.key).predicate,
     });
   }
   return out;
@@ -216,6 +241,13 @@ function flattenEvents(events: readonly IndexEvent[]): IndexEvent[] {
  * Duplicate refs keep their first occurrence.
  */
 export function buildWorldFacts(input: WorldIndexInput): WorldFact[] {
+  const projected = buildProjectedFacts(input);
+  if (!input.asserted?.length) return projected;
+  return withCanon(input, projected, input.asserted);
+}
+
+/** The computed-on-read facts, exactly as before the facts table existed. */
+function buildProjectedFacts(input: WorldIndexInput): WorldFact[] {
   const { worldId } = input;
   const out: WorldFact[] = [];
   const seen = new Set<string>();
@@ -270,6 +302,7 @@ export function buildWorldFacts(input: WorldIndexInput): WorldFact[] {
       entityId: ev.linkedEntryId ?? null,
       href: `/worlds/${worldId}/chronicle`,
       accent: getToolAccent("chronicle"),
+      confidence: "projected",
     });
   }
   for (const b of input.branches ?? []) {
@@ -288,7 +321,91 @@ export function buildWorldFacts(input: WorldIndexInput): WorldFact[] {
       entityId: null,
       href: `/worlds/${worldId}/chronicle`,
       accent: getToolAccent("chronicle"),
+      confidence: "projected",
     });
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// Canon tier
+// ---------------------------------------------------------------------------
+
+/** One stored row as a WorldFact the rail, palette and chips can read. */
+export function canonRowToWorldFact(
+  row: CanonFactRow,
+  ctx: { worldId: string; subjectName?: string | null },
+): WorldFact {
+  const c = rowToCanonFact(row);
+  const isCanon = row.confidence === "canon";
+  // A canon fact's ref names its SLOT, not its row, so a citation survives a
+  // supersede and reads "WAS 1.4 g · NOW 1.6 g" instead of "NO LONGER ON
+  // FILE". A proposal is one claim among possibly several, so it keeps its row.
+  const sourceId = isCanon ? null : row.id;
+  const src = row.source_ref ?? {};
+  const tool = typeof src.tool === "string" ? src.tool : null;
+  const worksheetId = typeof src.worksheet_id === "string" ? src.worksheet_id : null;
+  const href =
+    (tool && worksheetId ? worksheetHref(ctx.worldId, tool, worksheetId) : null) ??
+    (row.subject_id ? `/worlds/${ctx.worldId}/codex/${row.subject_id}` : null);
+  return {
+    ref: factRefId({ sourceKind: "canon", worksheetId: sourceId, entityId: row.subject_id, factKey: c.predicate }),
+    factKey: c.predicate,
+    label: c.label,
+    value: c.valueText,
+    insert: c.valueText,
+    tool: "canon",
+    toolLabel: "Canon",
+    sourceKind: "canon",
+    sourceId,
+    sourceTitle: ctx.subjectName || "World",
+    entityId: row.subject_id,
+    href,
+    accent: "teal",
+    provenance: sourceKindLabel(row.source_kind),
+    confidence: row.confidence,
+    predicate: c.predicate,
+    factId: row.id,
+  };
+}
+
+/**
+ * Stored facts first (canon, then proposed), then every projected fact,
+ * unchanged. Precedence comes from canon's merge (canon > proposed >
+ * projected per (subject, predicate)); a projected fact that loses is kept
+ * and marked `outrankedBy`, because its source still records it and fact
+ * refs to it must keep resolving.
+ */
+function withCanon(input: WorldIndexInput, projected: WorldFact[], asserted: readonly CanonFactRow[]): WorldFact[] {
+  const { worldId } = input;
+  const names = new Map(input.entities.map((e) => [e.id, e.name]));
+  const live = asserted.filter((r) => r.world_id === worldId && !r.superseded_at);
+  const storedById = new Map<string, WorldFact>();
+  for (const r of live) {
+    storedById.set(r.id, canonRowToWorldFact(r, { worldId, subjectName: r.subject_id ? names.get(r.subject_id) : null }));
+  }
+
+  const merged = mergeCanonFacts(worldId, live, projected);
+  const outranked = new Map<string, string>();
+  for (const winner of merged) {
+    const win = storedById.get(winner.id);
+    if (!win) continue;
+    for (const loser of winner.outranks) {
+      const ref = loser.confidence === "projected" ? loser.id : storedById.get(loser.id)?.ref;
+      if (ref && ref !== win.ref) outranked.set(ref, win.ref);
+    }
+  }
+
+  const stored = [...storedById.values()].sort(
+    (a, b) => (a.confidence === "canon" ? 0 : 1) - (b.confidence === "canon" ? 0 : 1),
+  );
+  const out: WorldFact[] = [];
+  const seen = new Set<string>();
+  for (const f of [...stored, ...projected]) {
+    if (seen.has(f.ref)) continue;
+    seen.add(f.ref);
+    const by = outranked.get(f.ref);
+    out.push(by ? { ...f, outrankedBy: by } : f);
   }
   return out;
 }
