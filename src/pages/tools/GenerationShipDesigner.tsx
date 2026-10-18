@@ -34,6 +34,7 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState, lazy, Suspense } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { ToolWorldBar } from "@/components/tools/ToolWorldBar";
 import { Copy, Download, FileText, History, Ship } from "lucide-react";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
@@ -498,6 +499,9 @@ const GenerationShipDesigner = () => {
       worksheetIcon={<Ship className="h-4 w-4 text-sf-primary-text" aria-hidden="true" />}
       isLoggedIn={!!user}
     >
+      {!worldId && (
+        <ToolWorldBar accent="teal" reason="IMPORTS AND CHRONICLE LOGGING NEED A WORLD. CHOOSE ONE." />
+      )}
       <div className="space-y-6">
         {/* ── 1. Voyage ──────────────────────────────────────────────── */}
         <CollapsibleSection

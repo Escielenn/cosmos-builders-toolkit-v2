@@ -104,6 +104,7 @@ import { buildDossierMarkdown, buildDramatisPersonae, buildSnapshot, deriveBody,
 import { feltWeightRatio, fmt, narrateFeltWeight, narrateLocalAge, narrateNativeGravity } from "@/lib/dossier/derive";
 import { RELATIONSHIP_LABELS } from "@/lib/dossier/relationships";
 import { CREATABLE_ENTITY_TYPES } from "@/lib/entity-config";
+import { ToolWorldBar } from "@/components/tools/ToolWorldBar";
 
 // ─── Constants ───────────────────────────────────────────────────────
 
@@ -628,9 +629,7 @@ const Dossier = (): JSX.Element => {
       isLoggedIn={!!user}
     >
       {!worldId && (
-        <p className="mb-6 border border-sf-magenta bg-sf-magenta/[0.06] p-4 font-mono text-[12px] uppercase tracking-[0.10em] text-sf-magenta-text">
-          // NO WORLD OPEN. A CHARACTER INHERITS FROM A WORLD. OPEN ONE, OR SAVE AND CHOOSE ONE.
-        </p>
+        <ToolWorldBar accent="magenta" reason="A CHARACTER INHERITS FROM A WORLD. CHOOSE ONE." />
       )}
 
       {originLine && (
