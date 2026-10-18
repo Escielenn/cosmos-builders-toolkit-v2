@@ -40,9 +40,11 @@ export const ENTITY_TYPE_TO_TOOLS = buildEntityTypeToTools();
 // Additional tools relevant to an entity type even if they don't directly
 // produce that type (e.g. a planet also benefits from habitable-zone-calculator)
 const EXTRA_TOOLS: Partial<Record<string, string[]>> = {
-  planet: ["habitable-zone-calculator", "surface-gravity-calculator"],
+  planet: ["habitable-zone-calculator", "surface-gravity-calculator", "surface-cartographer"],
   species: ["sensorium", "species-interaction-matrix"],
   vessel: ["propulsion-consequences-map", "gravitas"],
+  location: ["surface-cartographer"],
+  moon: ["surface-cartographer"],
   faction: ["space-expansion-modeler"],
   star_system: ["habitable-zone-calculator"],
 };
@@ -695,7 +697,19 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
   ],
 
   character: [...GENERIC_FIELDS],
-  location: [...GENERIC_FIELDS],
+  // Written by the Surface Cartographer onto each place it files. No
+  // worksheetPaths: these live on the entity, not in a worksheet blob.
+  location: [
+    ...GENERIC_FIELDS,
+    { label: "Latitude (°N)", key: "lat", type: "number" },
+    { label: "Longitude (°E)", key: "lon", type: "number" },
+    {
+      label: "Place Type",
+      key: "placeType",
+      type: "select",
+      options: ["city", "settlement", "region", "landmark", "biome", "ruin", "station", "port", "sacred", "hazard"],
+    },
+  ],
   artifact: [...GENERIC_FIELDS],
   custom: [...GENERIC_FIELDS],
 };

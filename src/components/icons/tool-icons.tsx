@@ -36,6 +36,7 @@ const ICON_FILES: Record<string, string> = {
   "stellar-cartographer": "003-map.svg",
   "kardashev-scale": "011-sun.svg",
   "solaris": "022-solar system.svg",
+  "surface-cartographer": "001-compass.svg",
 };
 
 function createImgIcon(filename: string): React.FC<ToolIconProps> {

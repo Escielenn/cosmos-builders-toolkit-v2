@@ -28,6 +28,7 @@ export const TOOL_ACCENTS: Record<string, ToolAccent> = {
   "planetary-profile": "azure",
   "environmental-chain-reaction": "azure",
   "sensorium": "azure",
+  "surface-cartographer": "azure",
 
   // Life / biology, emerald
   "evolutionary-biology": "emerald",

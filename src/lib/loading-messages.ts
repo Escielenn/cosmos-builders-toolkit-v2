@@ -20,6 +20,11 @@ const loadingMessages: Record<string, string[]> = {
     "COMPUTING ATMOSPHERIC MODEL...",
     "SCANNING STELLAR NEIGHBORHOOD...",
   ],
+  "tools/surface-cartographer": [
+    "SURVEYING SURFACE...",
+    "PROJECTING GRATICULE...",
+    "PLOTTING SETTLEMENTS...",
+  ],
   "tools/gravitas": [
     "COMPUTING GRAVITATIONAL FIELD...",
     "RESOLVING SURFACE CONDITIONS...",
