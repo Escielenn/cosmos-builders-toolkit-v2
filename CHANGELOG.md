@@ -1,5 +1,23 @@
 # StellarForge Changelog
 
+## 0.7446
+Writing space phase 3 of 4: the world in the room.
+- Cited facts: values inserted from Refs (or the world picker) become
+  chips tied to their source. If the source changes, the chip shows STALE
+  with "WAS / NOW"; UPDATE THIS MENTION changes only that chip, only on
+  click. Compile and export print the stored value as plain text.
+- World picker while writing: "/" after a space, or Ctrl/Cmd+J, searches
+  worksheet and simulator values, characters, places, Chronicle events and
+  entities; Enter inserts a cited fact or a mention.
+- Mentions and [[links]] show a card on hover or focus; clicking opens the
+  entity beside the text. Rail insert buttons insert real mentions.
+- The rail ranks by this scene: IN THIS SCENE, POV, SETTING, SUBJECT,
+  LINKED. Pinned items finally show, at the top of Refs and Entities.
+- Card gains a POV character picker (free text still works), SET IN
+  (Surface Cartographer places) and TIMELINE (Chronicle branches).
+- World tab shows the scene's influence block: up to ten facts from the
+  POV, setting and time, in the tools' own words.
+
 ## 0.7436
 Writing space phase 2 of 4: Scrivener views.
 - Outliner beside Editor and Board: binder in reading order with label,
