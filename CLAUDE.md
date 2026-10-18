@@ -203,7 +203,7 @@ Use the primitives in `src/components/ui/` rather than restyling raw elements.
 
 ```tsx
 <Button variant="sf-primary">Get Started</Button>  // filled: bg-sf-primary text-sf-on-primary
-<Button variant="sf-ghost">Cancel</Button>         // outline: border-sf-line-interactive
+<Button variant="sf-ghost">Cancel</Button>         // outline: border-sf-line (soft; text identifies it)
 ```
 
 DM Sans, weight 500, `rounded-none`, `min-h-hit`. Hover may add `shadow-sf-glow-teal`; focus uses the global `:focus-visible` ring.
