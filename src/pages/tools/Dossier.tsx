@@ -104,7 +104,6 @@ import { buildDossierMarkdown, buildDramatisPersonae, buildSnapshot, deriveBody,
 import { feltWeightRatio, fmt, narrateFeltWeight, narrateLocalAge, narrateNativeGravity } from "@/lib/dossier/derive";
 import { RELATIONSHIP_LABELS } from "@/lib/dossier/relationships";
 import { CREATABLE_ENTITY_TYPES } from "@/lib/entity-config";
-import { ToolWorldBar } from "@/components/tools/ToolWorldBar";
 
 // ─── Constants ───────────────────────────────────────────────────────
 
@@ -627,10 +626,8 @@ const Dossier = (): JSX.Element => {
       }}
       worksheetIcon={<ContactRound className="h-5 w-5 text-sf-magenta" aria-hidden />}
       isLoggedIn={!!user}
+      worldBar={{ accent: "magenta", reason: "A CHARACTER INHERITS FROM A WORLD. CHOOSE ONE." }}
     >
-      {!worldId && (
-        <ToolWorldBar accent="magenta" reason="A CHARACTER INHERITS FROM A WORLD. CHOOSE ONE." />
-      )}
 
       {originLine && (
         <p className="mb-6 font-mono text-[12px] uppercase tracking-[0.10em] text-sf-magenta-text" aria-live="polite">
