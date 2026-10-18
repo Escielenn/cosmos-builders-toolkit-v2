@@ -156,4 +156,11 @@ export const TOOL_PAGE_BURSTS: Record<string, DataBurstConfig[]> = {
     { content: "REF: Smith, Acta Astronautica, 2014", position: { top: "52%", right: "2%" }, variant: "coordinates", parallax: -0.06 },
     { content: "O₂ 0.84 kg · H₂O 3.5 kg / crew / day", position: { top: "68%", left: "1%" }, variant: "margin", animation: "live", parallax: -0.1 },
   ],
+  "dossier": [
+    { content: "DOSSIER // PERSONNEL FILE", position: { top: "8%", right: "3%" }, variant: "status", parallax: -0.05 },
+    { content: "W = m · g_local", position: { top: "18%", left: "1%" }, variant: "margin", animation: "breathe", parallax: -0.08 },
+    { content: "age_local = age_std × 365.25 d / P_orb", position: { top: "34%", left: "1%" }, variant: "margin", animation: "live", parallax: -0.12 },
+    { content: "REF: Forster, Aspects of the Novel, 1927", position: { top: "52%", right: "2%" }, variant: "coordinates", parallax: -0.06 },
+    { content: "LINEAGE: RESOLVING", position: { top: "68%", left: "1%" }, variant: "margin", animation: "live", parallax: -0.1 },
+  ],
 };

@@ -7,12 +7,13 @@
  *   emerald, Life / biology tools
  *   violet , Civilizations tools
  *   stellar, Mythology tools
+ *   magenta, Psychology tools (Dossier)
  *   teal   , Integration / meta tools (default)
  *
  * Maps tool slug → accent token name.
  */
 
-export type ToolAccent = "amber" | "azure" | "emerald" | "violet" | "stellar" | "teal" | "crimson";
+export type ToolAccent = "amber" | "azure" | "emerald" | "violet" | "stellar" | "teal" | "crimson" | "magenta";
 
 export const TOOL_ACCENTS: Record<string, ToolAccent> = {
   // Physics / Stars & Systems, amber
@@ -39,6 +40,9 @@ export const TOOL_ACCENTS: Record<string, ToolAccent> = {
   "space-expansion-modeler": "violet",
   "one-big-lie": "violet",
   "lexdrift": "violet",
+
+  // Psychology, magenta
+  "dossier": "magenta",
 
   // Mythology, stellar
   "xenomythology-framework-builder": "stellar",
@@ -67,6 +71,7 @@ const TEXT: Record<ToolAccent, string> = {
   stellar: "text-sf-stellar-text",
   teal: "text-sf-teal-text",
   crimson: "text-sf-crimson-text",
+  magenta: "text-sf-magenta-text",
 };
 
 const BORDER: Record<ToolAccent, string> = {
@@ -77,6 +82,7 @@ const BORDER: Record<ToolAccent, string> = {
   stellar: "border-sf-stellar",
   teal: "border-sf-teal",
   crimson: "border-sf-crimson",
+  magenta: "border-sf-magenta",
 };
 
 const CHIP: Record<ToolAccent, string> = {
@@ -87,6 +93,7 @@ const CHIP: Record<ToolAccent, string> = {
   stellar: "bg-sf-stellar/[0.06] border-sf-stellar text-sf-stellar-text",
   teal: "bg-sf-teal/[0.06] border-sf-teal text-sf-teal-text",
   crimson: "bg-sf-crimson/[0.06] border-sf-crimson text-sf-crimson-text",
+  magenta: "bg-sf-magenta/[0.06] border-sf-magenta text-sf-magenta-text",
 };
 
 const ARC: Record<ToolAccent, string> = {
@@ -97,6 +104,7 @@ const ARC: Record<ToolAccent, string> = {
   stellar: "from-sf-stellar via-sf-stellar/30 to-transparent",
   teal: "from-sf-teal via-sf-teal/30 to-transparent",
   crimson: "from-sf-crimson via-sf-crimson/30 to-transparent",
+  magenta: "from-sf-magenta via-sf-magenta/30 to-transparent",
 };
 
 const BG: Record<ToolAccent, string> = {
@@ -107,6 +115,7 @@ const BG: Record<ToolAccent, string> = {
   stellar: "bg-sf-stellar",
   teal: "bg-sf-teal",
   crimson: "bg-sf-crimson",
+  magenta: "bg-sf-magenta",
 };
 
 export const accentTextClass = (accent: ToolAccent): string => TEXT[accent];

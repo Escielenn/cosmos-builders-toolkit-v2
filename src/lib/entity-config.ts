@@ -1,4 +1,5 @@
 import { TOOL_TYPE_MAP, ENTITY_TYPE_LABELS, ENTITY_TYPE_ICONS } from "@/services/world-data";
+import { DOSSIER_MASTER_FIELDS } from "@/lib/dossier/fields";
 
 // ---------------------------------------------------------------------------
 // Creatable entity types (user-facing, excludes output-only/system types)
@@ -741,7 +742,10 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
     },
   ],
 
-  character: [...GENERIC_FIELDS],
+  // ── Dossier ── a character's own decisions plus the traits it inherited
+  // from Phylo, Sensorium, Mythos, Dominion, Lexdrift and Genesis, read from
+  // the save-time snapshot. See src/lib/dossier/fields.ts.
+  character: [...GENERIC_FIELDS, ...DOSSIER_MASTER_FIELDS],
   location: [...GENERIC_FIELDS],
   artifact: [...GENERIC_FIELDS],
   custom: [...GENERIC_FIELDS],

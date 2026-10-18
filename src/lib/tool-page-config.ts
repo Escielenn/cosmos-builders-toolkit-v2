@@ -181,6 +181,12 @@ export const TOOL_PAGE_CONFIGS: Record<string, ToolPageConfig> = {
     "Generation Ship Designer",
     "Size a multi-generational voyage from real numbers: the genetics of a sealed crew, the air and water loops, the spin habitat, and the history the trip will write.",
   ),
+  "dossier": config(
+    "dossier",
+    "Dossier",
+    "Character Development",
+    "Characters who inherit their bodies, senses and beliefs from your world, with every departure marked as yours.",
+  ),
 };
 
 /** Look up config by tool slug. Throws if not found. */

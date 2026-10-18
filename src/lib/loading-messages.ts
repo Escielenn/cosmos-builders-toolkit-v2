@@ -24,6 +24,10 @@ const loadingMessages: Record<string, string[]> = {
     "COMPUTING GRAVITATIONAL FIELD...",
     "RESOLVING SURFACE CONDITIONS...",
   ],
+  "tools/dossier": [
+    "RETRIEVING PERSONNEL FILE...",
+    "RESOLVING LINEAGE AGAINST CANON...",
+  ],
   "tools/kardashev-scale": [
     "CALIBRATING ENERGY SENSORS...",
     "SCANNING CIVILIZATIONAL OUTPUT...",

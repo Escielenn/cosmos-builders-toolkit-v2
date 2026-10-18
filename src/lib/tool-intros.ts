@@ -781,4 +781,38 @@ export const TOOL_INTROS: Record<string, ToolIntroData> = {
       },
     ],
   },
+  "dossier": {
+    title: "People Are Downstream",
+    purpose:
+      "Build characters who are made of their world. Name a homeworld, a species, a polity and a culture, and the dossier inherits lifespan, senses, native gravity, phonology, gods and funeral customs from the tools that already hold them. Override anything on purpose; the psychology and the voice are yours to write.",
+    examples: [
+      {
+        bookTitle: "Dune",
+        author: "Frank Herbert",
+        year: "1965",
+        isbn: "9780441013593",
+        quotes: [],
+        explanation:
+          "The Fremen are a desert written onto people: water discipline becomes ethics, the stillsuit becomes etiquette, and the dead are rendered for their water. Paul is legible only because Herbert knows exactly what Caladan and Arrakis each made of the people born there.",
+      },
+      {
+        bookTitle: "The Left Hand of Darkness",
+        author: "Ursula K. Le Guin",
+        year: "1969",
+        isbn: "9780441478125",
+        quotes: [],
+        explanation:
+          "Estraven is Gethenian before he is anything else: the kemmer cycle, the ice, and the code of shifgrethor shape every choice he makes. Genly Ai's failure to read him is the novel, and it only works because the biology and the culture were decided first.",
+      },
+      {
+        bookTitle: "Leviathan Wakes",
+        author: "James S.A. Corey",
+        year: "2011",
+        isbn: "9780316129084",
+        quotes: [],
+        explanation:
+          "A Belter's height, posture, gestures and creole are inherited from low gravity and long isolation, not chosen for flavour. Corey's characters carry their birthplace in their bodies, which is why a Belter on Earth is a scene before anyone speaks.",
+      },
+    ],
+  },
 };

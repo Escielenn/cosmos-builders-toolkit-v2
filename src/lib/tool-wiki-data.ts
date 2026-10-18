@@ -630,6 +630,29 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
     ],
   },
 
+  // ── PRO: PSYCHOLOGY ─────────────────────────────────────────
+  dossier: {
+    id: 'dossier',
+    tagline: 'Characters who inherit their bodies, senses, language and beliefs from your world, with overrides.',
+    category: 'civilizations',
+    complexity: 'intermediate',
+    type: 'worksheet',
+    cascade: 'psychology',
+    workshopWeek: 6,
+    timeEstimate: '15-30 min',
+    buildsOn: [
+      { toolId: 'evolutionary-biology', strength: 'recommended', note: 'Species sets lifespan, body and cognition' },
+      { toolId: 'sensorium', strength: 'recommended', note: 'What this person can and cannot perceive' },
+      { toolId: 'planetary-profile', strength: 'recommended', note: 'Native gravity and the length of a local year' },
+      { toolId: 'xenomythology-framework-builder', strength: 'optional', note: 'Gods sworn by, taboos, funeral customs' },
+      { toolId: 'empire-designer', strength: 'optional', note: 'The polity and house they were raised under' },
+      { toolId: 'lexdrift', strength: 'optional', note: 'Native language and phonology' },
+    ],
+    feedsInto: [
+      { toolId: 'timeline', strength: 'optional', note: 'Arc beats bound to events in the world\'s history' },
+    ],
+  },
+
   // ── PRO CARTOGRAPHER ────────────────────────────────────────
   'stellar-cartographer': {
     id: 'stellar-cartographer',

@@ -216,6 +216,8 @@ export interface CreateEventInput {
 export interface ChronicleWriteResult {
   error: unknown;
   branchesOffline: boolean;
+  /** The written row, when the write returned one. */
+  data?: { id: string } | null;
 }
 
 export async function createChronicleEvent(
@@ -247,13 +249,13 @@ export async function createChronicleEvent(
       .select()
       .single();
     if (!res.error || !isSchemaMissingError(res.error)) {
-      return { error: res.error, branchesOffline: false };
+      return { error: res.error, branchesOffline: false, data: res.data };
     }
     const retry = await supabase.from("chronicle_events").insert(row).select().single();
-    return { error: retry.error, branchesOffline: true };
+    return { error: retry.error, branchesOffline: true, data: retry.data };
   }
   const res = await supabase.from("chronicle_events").insert(row).select().single();
-  return { error: res.error, branchesOffline: false };
+  return { error: res.error, branchesOffline: false, data: res.data };
 }
 
 export interface UpdateEventInput {

@@ -90,6 +90,7 @@ const TimelineTool = lazy(() => import("./pages/tools/Timeline"));
 const Sensorium = lazy(() => import("./pages/tools/Sensorium"));
 const Gravitas = lazy(() => import("./pages/tools/Gravitas"));
 const KardashevScale = lazy(() => import("./pages/tools/KardashevScale"));
+const Dossier = lazy(() => import("./pages/tools/Dossier"));
 const GenerationShipDesigner = lazy(() => import("./pages/tools/GenerationShipDesigner"));
 
 // Lazy loaded learn pages
@@ -407,6 +408,14 @@ const App = () => (
                   element={
                     <ProToolGuard toolId="generation-ship">
                       <GenerationShipDesigner />
+                    </ProToolGuard>
+                  }
+                />
+                <Route
+                  path="/tools/dossier"
+                  element={
+                    <ProToolGuard toolId="dossier">
+                      <Dossier />
                     </ProToolGuard>
                   }
                 />
