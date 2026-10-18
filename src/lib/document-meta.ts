@@ -42,6 +42,19 @@ export interface DocumentMeta {
    * the on-ramp to future set_in/POV binding.
    */
   subjectEntityId: string;
+  /**
+   * Per-document notes (Scrivener's Document Notes). Distinct from the
+   * synopsis: the synopsis is what the card shows, notes are the writer's
+   * private scratch about this scene. Ephemeral by Law I: manuscript
+   * annotation, never canon.
+   */
+  notes: string;
+  /** Id of a world-level writing label (see writing-labels.ts). "" = none. */
+  labelId: string;
+  /** Free keywords, for filtering and collections. Trimmed, de-duplicated. */
+  keywords: string[];
+  /** Word-count target for this document. 0 = no target. */
+  target: number;
 }
 
 export const EMPTY_DOC_META: DocumentMeta = {
@@ -50,6 +63,10 @@ export const EMPTY_DOC_META: DocumentMeta = {
   status: "",
   when: "",
   subjectEntityId: "",
+  notes: "",
+  labelId: "",
+  keywords: [],
+  target: 0,
 };
 
 export const STATUS_LABELS: Record<DocStatus, string> = {
@@ -75,6 +92,25 @@ function str(v: unknown): string {
   return typeof v === "string" ? v : "";
 }
 
+function keywordList(v: unknown): string[] {
+  if (!Array.isArray(v)) return [];
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const k of v) {
+    if (typeof k !== "string") continue;
+    const t = k.trim();
+    if (!t || seen.has(t.toLowerCase())) continue;
+    seen.add(t.toLowerCase());
+    out.push(t);
+  }
+  return out;
+}
+
+function wordTarget(v: unknown): number {
+  const n = typeof v === "number" ? v : typeof v === "string" ? Number(v) : NaN;
+  return Number.isFinite(n) && n > 0 ? Math.min(Math.round(n), 10_000_000) : 0;
+}
+
 function isStatus(v: unknown): v is DocStatus {
   return typeof v === "string" && (DOC_STATUSES as readonly string[]).includes(v);
 }
@@ -88,7 +124,7 @@ function isStatus(v: unknown): v is DocStatus {
  */
 export function readDocMeta(metadata: unknown): DocumentMeta {
   if (!metadata || typeof metadata !== "object" || Array.isArray(metadata)) {
-    return { ...EMPTY_DOC_META };
+    return { ...EMPTY_DOC_META, keywords: [] };
   }
   const m = metadata as Record<string, unknown>;
   return {
@@ -97,6 +133,10 @@ export function readDocMeta(metadata: unknown): DocumentMeta {
     status: isStatus(m.status) ? m.status : "",
     when: str(m.when),
     subjectEntityId: str(m.subjectEntityId),
+    notes: str(m.notes),
+    labelId: str(m.labelId),
+    keywords: keywordList(m.keywords),
+    target: wordTarget(m.target),
   };
 }
 
@@ -118,8 +158,14 @@ export function writeDocMeta(
     metadata && typeof metadata === "object" && !Array.isArray(metadata)
       ? { ...(metadata as Record<string, unknown>) }
       : {};
-  for (const [k, v] of Object.entries(patch)) {
-    if (v === "" || v === undefined || v === null) delete base[k];
+  for (const [k, raw] of Object.entries(patch)) {
+    let v: unknown = raw;
+    if (k === "keywords") v = keywordList(raw);
+    if (k === "target") v = wordTarget(raw);
+    const empty =
+      v === "" || v === undefined || v === null || v === 0 ||
+      (Array.isArray(v) && v.length === 0);
+    if (empty) delete base[k];
     else base[k] = v;
   }
   return base;
@@ -128,4 +174,10 @@ export function writeDocMeta(
 /** True when a document carries nothing worth showing on a card. */
 export function isDocMetaEmpty(meta: DocumentMeta): boolean {
   return !meta.synopsis && !meta.pov && !meta.status && !meta.when;
+}
+
+/** Progress toward a document target, 0..1 (0 when no target is set). */
+export function targetProgress(words: number, target: number): number {
+  if (!target || target <= 0) return 0;
+  return Math.max(0, Math.min(1, words / target));
 }
