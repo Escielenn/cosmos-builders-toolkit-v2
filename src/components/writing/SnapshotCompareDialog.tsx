@@ -79,7 +79,7 @@ export function SnapshotCompareDialog({
       <DialogContent className="flex max-h-[90vh] max-w-4xl flex-col gap-4 overflow-hidden">
         <DialogHeader>
           <p className="font-heading text-sf-eyebrow uppercase text-t4">{"// SNAPSHOT"}</p>
-          <DialogTitle className="font-serif text-[22px] font-normal italic text-t1">{title}</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           {snapshot && (
             <DialogDescription className="font-mono text-[12px] text-t3">
               {formatSnapshotTime(snapshot.timestamp)} · {snapshot.wordCount.toLocaleString()} WORDS

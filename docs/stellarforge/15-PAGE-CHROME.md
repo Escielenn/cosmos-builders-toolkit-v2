@@ -30,12 +30,18 @@ Lede in DM Sans 16px, t2, sf-measure
 ──                                       ← light arc
 ```
 
-- **Sizes.** `page` for standalone pages (`text-sf-h1`), `space` inside a world (`text-sf-h2`). Same anatomy.
+- **Sizes.** `page` for standalone pages (`text-sf-h1`), `space` inside a world (`text-sf-h2`), `card` for the title of a compact centred card or gate screen (`text-sf-h2`, tighter rhythm, 14px lede): sign-in and reset-password cards, invite and join flows, shared-link errors, the Pro lock screens, the connection-lost overlay, SYSTEM FAULT. Same anatomy at every size.
+- **Alignment.** `align="center"` centres every row (eyebrow gets a hairline on both sides, the light arc becomes symmetric). Use it only where the surrounding card or page is centred (card flows, 404). Default is `start`. Both props are optional; existing callers are unchanged.
 - **H1** is always MD Nichrome, weight 300. Written in title or sentence case as the page names itself, never forced uppercase, never a trailing period, never an italic Lora accent word. (Lora stays in the *prose* of writing surfaces and in marketing heroes. Landing, Pricing and Features keep their marketing heroes and do not use `PageHeader`.)
 - **Eyebrow** is always `// LABEL`. Its accent is the page's cascade colour (tools: their category; Codex: integration teal; Chronicle: stellar) or `primary` for everything else.
 - **Breadcrumbs XOR back link.** Inside a world: breadcrumbs (`WORLD NAME / SPACE / ITEM`), no back link, because the world nav is the navigation. Standalone child pages (a tool, a learn article, a guide section) get one back link to their real parent: `BACK TO TOOLS`, `BACK TO LEARN`. There is no "RETURN HOME"; the logo goes home.
 - **Actions** sit right of the title on desktop and wrap under it on phones. Primary action uses `sf-primary` fill; the rest are `sf-ghost`.
 - **Tool pages:** header first, then the sticky `ToolActionBar`, then the quote. (The action bar used to sit above the title.)
+
+### Simulators
+
+- **Canvas title.** A simulator canvas is full-bleed and has no `PageHeader`. Its one title block is `SimulatorTitle` (`src/components/simulators/SimulatorTitle.tsx`): MD Nichrome 300 uppercase at 26px / 0.24em (20px / 0.12em on phones), a DM Sans 12px uppercase subtitle in `t3`, an optional 13px context line in primary `-text` (the system or planet in view), then the status badge. It owns the canvas `h1` and is on the guard's allow-list. The four static iframe sims (Rogue, Tidelock, ExoForge, Solaris) match it through `public/tools/_shared/sim-title.css`; keep the two in step.
+- **Science pages** are standalone child pages of their simulator: `SimulatorSciencePage` renders `PageContainer` + `PageHeader` (`BACK TO ROGUE`, `// THE SCIENCE`, "Showing our work") above the static explainer in an auto-height iframe. The explainer hides its own title block when framed (`public/tools/_shared/science-embed.js`); opened directly it is unchanged.
 
 ## 3 · The notice (`Notice`)
 
@@ -50,7 +56,14 @@ One inline notice for hints, explainers, cautions and inline errors.
 - `h2`: `font-heading text-sf-eyebrow uppercase text-t4` with a `sf-line-hairline` rule beneath (the section-header pattern), or `font-display text-sf-h3` for a named block. Pick per page; never mix both on one page.
 - `CollapsibleSection` keeps its numbered badge.
 
-## 5 · Enforcement
+## 5 · Overlay titles (dialogs, sheets, alert dialogs)
+
+- One title style, owned by the primitives in `src/components/ui/` (`DialogTitle`, `SheetTitle`, `AlertDialogTitle`): Jura at `text-sf-h3`, weight 400, `t1`, written in sentence case. Descriptions are DM Sans 14px `t2`.
+- Callers pass layout classes only (`flex items-center gap-2`, `sr-only`). Never a font, size, case, tracking or colour override; no Lora, no mono caps. The one kept colour is `text-sf-crimson-text` on a destructive confirm.
+- A short Ship's-Voice label above the title (`// INPUT REQUIRED`) is a separate mono `text-sf-mono` line, not the title.
+
+## 6 · Enforcement
 
 - `src/components/layout/page-chrome/` owns `PageHeader`, `Breadcrumbs`, `PageContainer`, `Notice`.
-- CI (`scripts/check-page-chrome.mjs`): an `<h1` outside `page-chrome/`, marketing heroes and the allow-list fails the build. Back-link labels must start with `BACK TO`.
+- CI (`scripts/check-page-chrome.mjs`, `npm run check:chrome`, the "Page chrome guard" step in `.github/workflows/sf2-guardrails.yml`): an `<h1` outside `page-chrome/`, marketing heroes and the allow-list fails the build. Back-link labels must start with `BACK TO`.
+- Allow-list: marketing heroes (`landing/`, Pricing, Features and its `ShowcaseHero`, WorldShowcase), print templates, `dev/`, editor document headings, and `SimulatorTitle`.

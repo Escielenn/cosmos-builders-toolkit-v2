@@ -1,6 +1,7 @@
 import { Component, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { captureException } from "@/lib/sentry";
+import { PageHeader } from "@/components/layout/page-chrome";
 
 interface Props {
   children: ReactNode;
@@ -44,7 +45,7 @@ class ErrorBoundary extends Component<Props, State> {
             {/* Crimson bracket panel */}
             <div
               className="relative border border-sf-crimson bg-sf-surface/90 p-8"
-              style={{ boxShadow: "0 0 20px rgba(255,51,102,0.15)" }}
+              style={{ boxShadow: "0 0 20px rgb(var(--sf-crimson-rgb) / 0.15)" }}
             >
               {/* Corner brackets (crimson variant of .sf-bracket) */}
               <span
@@ -56,16 +57,16 @@ class ErrorBoundary extends Component<Props, State> {
                 aria-hidden
               />
 
-              <p className="font-mono text-[12px] tracking-wide text-sf-crimson-text uppercase mb-3">
-                // STATUS: FAULT
-              </p>
-              <h1 className="font-display text-3xl md:text-4xl font-light uppercase tracking-title text-t1 mb-4">
-                SYSTEM FAULT
-              </h1>
-              <p className="font-mono text-[12px] tracking-wide uppercase text-t3 leading-relaxed mb-6">
-                {this.props.fallbackMessage ||
-                  "AN UNEXPECTED CONDITION HAS BEEN ENCOUNTERED. INCIDENT LOGGED AUTOMATICALLY."}
-              </p>
+              <PageHeader
+                size="card"
+                accent="crimson"
+                eyebrow="STATUS: FAULT"
+                title="System fault"
+                lede={
+                  this.props.fallbackMessage ||
+                  "An unexpected condition has been encountered. Incident logged automatically."
+                }
+              />
 
               {this.state.error && (
                 <pre className="font-mono text-[12px] text-left bg-sf-void/60 text-t4 p-4 rounded-none overflow-auto max-h-48 border border-sf-line sf-sb leading-relaxed">

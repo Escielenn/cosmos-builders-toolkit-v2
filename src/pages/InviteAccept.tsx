@@ -5,6 +5,7 @@ import { Loader } from "@/components/ui/loader";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import SharedPageHeader from "@/components/sharing/SharedPageHeader";
+import { PageHeader } from "@/components/layout/page-chrome";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAcceptInvite } from "@/hooks/use-collaborators";
 import { PageBursts } from "@/components/ui/data-burst";
@@ -36,13 +37,14 @@ const InviteAccept = () => {
         <PageBursts bursts={INVITE_ACCEPT_BURSTS} />
         <main className="container mx-auto px-4 py-16 max-w-md relative z-10">
           <GlassPanel className="p-8 text-center">
-            <Globe className="w-12 h-12 text-sf-primary-text mx-auto mb-4" />
-            <h1 className="font-heading text-2xl font-medium mb-2">
-              World Invitation
-            </h1>
-            <p className="text-t2 mb-6">
-              Sign in to accept this invitation and start collaborating.
-            </p>
+            <PageHeader
+              size="card"
+              align="center"
+              icon={<Globe className="w-12 h-12 text-sf-primary-text" aria-hidden />}
+              eyebrow="INVITATION"
+              title="World invitation"
+              lede="Sign in to accept this invitation and start collaborating."
+            />
             <Button asChild>
               <Link to={`/auth?redirect=/invite/${token}`}>
                 Sign in to accept
@@ -79,21 +81,27 @@ const InviteAccept = () => {
         <PageBursts bursts={INVITE_ACCEPT_BURSTS} />
         <main className="container mx-auto px-4 py-16 max-w-md relative z-10">
           <GlassPanel className="p-8 text-center">
-            <CheckCircle2 className="w-12 h-12 text-sf-emerald mx-auto mb-4" />
-            <h1 className="font-heading text-2xl font-medium mb-2">
-              {result.already_member
-                ? "Already a collaborator"
-                : result.is_owner
-                  ? "This is your world"
-                  : "INVITATION ACCEPTED."}
-            </h1>
-            <p className="text-t2 mb-6">
-              {result.already_member
-                ? "You already have access to this world."
-                : result.is_owner
-                  ? "You own this world, no invite needed."
-                  : `You now have ${result.role} access to this world.`}
-            </p>
+            <PageHeader
+              size="card"
+              align="center"
+              accent="emerald"
+              icon={<CheckCircle2 className="w-12 h-12 text-sf-emerald" aria-hidden />}
+              eyebrow="INVITATION"
+              title={
+                result.already_member
+                  ? "Already a collaborator"
+                  : result.is_owner
+                    ? "This is your world"
+                    : "Invitation accepted"
+              }
+              lede={
+                result.already_member
+                  ? "You already have access to this world."
+                  : result.is_owner
+                    ? "You own this world, no invite needed."
+                    : `You now have ${result.role} access to this world.`
+              }
+            />
             <Button onClick={() => navigate(`/worlds/${result.world_id}`)}>
               Go to World
             </Button>
@@ -110,14 +118,18 @@ const InviteAccept = () => {
       <PageBursts bursts={INVITE_ACCEPT_BURSTS} />
       <main className="container mx-auto px-4 py-16 max-w-md relative z-10">
         <GlassPanel className="p-8 text-center">
-          <AlertCircle className="w-12 h-12 text-t3 mx-auto mb-4" />
-          <h1 className="font-heading text-2xl font-medium mb-2">
-            Invitation unavailable
-          </h1>
-          <p className="text-t2 mb-6">
-            {acceptInvite.error?.message ||
-              "This invite may have expired, been cancelled, or was sent to a different email address."}
-          </p>
+          <PageHeader
+            size="card"
+            align="center"
+            accent="crimson"
+            icon={<AlertCircle className="w-12 h-12 text-t3" aria-hidden />}
+            eyebrow="INVITATION"
+            title="Invitation unavailable"
+            lede={
+              acceptInvite.error?.message ||
+              "This invite may have expired, been cancelled, or was sent to a different email address."
+            }
+          />
           <Button asChild>
             <Link to="/">Go to StellarForge</Link>
           </Button>

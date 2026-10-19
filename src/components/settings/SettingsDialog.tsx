@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { Notice } from "@/components/layout/page-chrome";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -184,7 +185,7 @@ const SettingsDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto sf-sb">
         <DialogHeader>
-          <DialogTitle className="font-heading text-xl">Settings</DialogTitle>
+          <DialogTitle>Settings</DialogTitle>
           <DialogDescription>
             Manage your account, background, and integrations.
           </DialogDescription>
@@ -640,12 +641,9 @@ const SettingsDialog = ({
                 </div>
 
                 {subscription.status === "past_due" && (
-                  <div className="p-3 rounded-none bg-sf-crimson/[0.06] border border-sf-crimson flex items-center gap-2">
-                    <AlertCircle className="w-5 h-5 text-sf-crimson" />
-                    <p className="text-sm text-sf-crimson-text">
-                      Payment failed. Please update your payment method.
-                    </p>
-                  </div>
+                  <Notice tone="danger" compact icon={<AlertCircle className="w-4 h-4" />}>
+                    Payment failed. Please update your payment method.
+                  </Notice>
                 )}
 
                 <div className="grid grid-cols-2 gap-4 text-sm">

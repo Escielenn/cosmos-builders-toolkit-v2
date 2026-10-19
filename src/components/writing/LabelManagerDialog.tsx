@@ -76,7 +76,7 @@ export function LabelManagerDialog({
       <DialogContent className="max-w-md">
         <DialogHeader>
           <p className="font-heading text-sf-eyebrow uppercase text-t4">{"// WRITING LABELS"}</p>
-          <DialogTitle className="font-heading text-sf-h3 font-normal uppercase text-t1">Labels</DialogTitle>
+          <DialogTitle>Labels</DialogTitle>
           <DialogDescription className="font-sans text-[14px] text-t3">
             One set per world. Give each document a label from the inspector; its colour shows in the
             binder.

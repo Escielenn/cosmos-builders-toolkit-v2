@@ -3,6 +3,7 @@ import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { mapError } from "@/lib/ship-voice";
+import { PageHeader } from "@/components/layout/page-chrome";
 
 interface Profile {
   id: string;
@@ -197,26 +198,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // instead of an infinite spinner (the paused-DB failure mode).
   if (connectionError && !session) {
     return (
-      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[hsl(var(--sf-void-hsl))] px-6">
-        <div className="max-w-md border border-sf-line bg-sf-surface/90 p-8 text-center">
-          <div className="mb-4 font-mono text-[12px] uppercase tracking-[3px] text-sf-crimson-text">
-            {"// connection lost"}
-          </div>
-          <h1 className="mb-3 font-display text-2xl font-light tracking-[0.04em] text-t1">
-            Can't reach the forge
-          </h1>
-          <p className="mb-6 text-sm leading-relaxed text-t2">
-            StellarForge couldn't reach its servers. This is usually a brief
-            network hiccup, not your worlds — they're safe. Give it a moment,
-            then try again.
-          </p>
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-sf-void px-6">
+        <div role="alert" className="max-w-md border border-sf-line bg-sf-surface/90 p-8 text-center">
+          <PageHeader
+            size="card"
+            align="center"
+            accent="crimson"
+            eyebrow="CONNECTION LOST"
+            title="Can't reach the forge"
+            lede="StellarForge couldn't reach its servers. This is usually a brief network hiccup, not your worlds — they're safe. Give it a moment, then try again."
+          />
           <button
             onClick={() => {
               setConnectionError(false);
               setLoading(true);
               setRetryNonce((n) => n + 1);
             }}
-            className="bg-sf-primary px-6 py-2.5 font-sans text-[13px] font-medium uppercase tracking-[1.2px] text-[hsl(var(--accent-on-accent))] transition-shadow hover:shadow-sf-glow-teal"
+            type="button"
+            className="min-h-hit bg-sf-primary px-6 py-2.5 font-sans text-[13px] font-medium uppercase tracking-[1.2px] text-[hsl(var(--accent-on-accent))] transition-shadow hover:shadow-sf-glow-teal"
           >
             Reconnect →
           </button>

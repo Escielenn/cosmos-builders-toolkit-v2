@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Compass, Radio } from "lucide-react";
 import { heroReveal, staggerContainer, fadeUpItem } from "@/lib/animations";
 import { useMetaTags } from "@/hooks/use-meta-tags";
+import { PageHeader } from "@/components/layout/page-chrome";
 
 // Lightweight starfield canvas
 function StarfieldCanvas() {
@@ -135,31 +136,16 @@ const NotFound = () => {
           <SignalPulse />
         </motion.div>
 
-        {/* Error code */}
-        <motion.div
-          className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-primary-text text-[13px] tracking-wide mb-7 justify-center"
-          variants={fadeUpItem}
-        >
-          <span aria-hidden className="block w-12 h-px bg-sf-primary" />
-          <span>// SIGNAL LOST, ERROR 404</span>
+        {/* Header: the shared PageHeader, centred (spec 15). */}
+        <motion.div variants={heroReveal}>
+          <PageHeader
+            align="center"
+            eyebrow="SIGNAL LOST, ERROR 404"
+            title="Coordinates do not match"
+            lede="The coordinates entered do not correspond to any charted record. Vessel has drifted beyond known space."
+            className="mb-2"
+          />
         </motion.div>
-
-        {/* Title, text-sf-h1 (56px) sentence case */}
-        <motion.h1
-          className="font-display font-light text-sf-h1 leading-[1] text-t1 mb-7"
-          variants={heroReveal}
-        >
-          Coordinates do not <span className="text-sf-crimson-text">match.</span>
-        </motion.h1>
-
-        {/* Description */}
-        <motion.p
-          className="font-sans text-sf-body text-t3 leading-[1.55] max-w-[560px] mx-auto mb-2"
-          variants={fadeUpItem}
-        >
-          The coordinates entered do not correspond to any charted record.
-          Vessel has drifted beyond known space.
-        </motion.p>
 
         {/* Failed coordinates readout */}
         {showCoords && (

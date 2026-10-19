@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Notice } from "@/components/layout/page-chrome";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
@@ -290,18 +291,13 @@ const SpeciesLinkModal = ({
 
           {/* Selected species summary */}
           {selectedId && selectedWorksheetData && (
-            <div className="p-3 bg-sf-emerald/10 border border-sf-emerald rounded-none">
-              <div className="flex items-center gap-2">
-                <Dna className="w-4 h-4 text-sf-emerald" />
-                <span className="font-medium text-sf-emerald">
-                  {speciesName}
-                </span>
-              </div>
-              <p className="text-xs text-t3 mt-1">
+            <Notice tone="success" compact icon={<Dna className="w-4 h-4" />}>
+              <p className="font-medium text-t1">{speciesName}</p>
+              <p className="mt-1">
                 {selectedFields.size} of {fieldsWithValues.length} fields
                 selected for import
               </p>
-            </div>
+            </Notice>
           )}
         </div>
 

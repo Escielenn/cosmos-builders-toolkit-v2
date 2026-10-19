@@ -136,7 +136,7 @@ const AccountDataSettings = () => {
       <AlertDialog open={dialogOpen} onOpenChange={(open) => !deleting && setDialogOpen(open)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>DELETE ACCOUNT</AlertDialogTitle>
+            <AlertDialogTitle>Delete account</AlertDialogTitle>
             <AlertDialogDescription className="text-t2">
               Billing stops now and every world you own is erased. There is no recovery.
             </AlertDialogDescription>

@@ -4,6 +4,7 @@ import { CheckCircle2, XCircle } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { useNotion } from "@/hooks/use-notion";
 import { useMetaTags } from "@/hooks/use-meta-tags";
+import { PageHeader } from "@/components/layout/page-chrome";
 
 const NotionCallback = () => {
   useMetaTags({ title: "Notion Link" });
@@ -46,34 +47,36 @@ const NotionCallback = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
-      <div className="text-center space-y-4 p-8">
-        {status === "loading" && (
-          <>
-            <Loader />
-            <p className="text-lg text-t2">{message}</p>
-          </>
-        )}
-
-        {status === "success" && (
-          <>
-            <CheckCircle2 className="w-12 h-12 text-sf-emerald mx-auto" />
-            <p className="text-lg text-t1">{message}</p>
-          </>
-        )}
-
+      <main id="main" tabIndex={-1} className="w-full max-w-md p-8 text-center">
+        <PageHeader
+          size="card"
+          align="center"
+          accent={status === "error" ? "crimson" : status === "success" ? "emerald" : "primary"}
+          eyebrow="NOTION LINK"
+          icon={
+            status === "loading" ? (
+              <Loader />
+            ) : status === "success" ? (
+              <CheckCircle2 className="w-12 h-12 text-sf-emerald" aria-hidden />
+            ) : (
+              <XCircle className="w-12 h-12 text-sf-crimson" aria-hidden />
+            )
+          }
+          title={
+            status === "loading" ? "Linking Notion" : status === "success" ? "Notion linked" : "Notion link failed"
+          }
+          lede={<span role={status === "error" ? "alert" : "status"}>{message}</span>}
+        />
         {status === "error" && (
-          <>
-            <XCircle className="w-12 h-12 text-sf-crimson mx-auto" />
-            <p className="text-lg text-t1">{message}</p>
-            <button
-              onClick={() => window.close()}
-              className="text-sm text-t3 underline hover:text-t1"
-            >
-              Close window
-            </button>
-          </>
+          <button
+            type="button"
+            onClick={() => window.close()}
+            className="inline-flex min-h-hit items-center text-sm text-t3 underline hover:text-t1"
+          >
+            Close window
+          </button>
         )}
-      </div>
+      </main>
     </div>
   );
 };

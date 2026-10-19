@@ -1,23 +1,7 @@
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import { useMetaTags } from "@/hooks/use-meta-tags";
+import SimulatorSciencePage from "@/components/simulators/SimulatorSciencePage";
 
-const RogueScience = () => {
-  useMetaTags({ title: "Rogue: The Science" });
-  return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Header />
-      <main id="main" tabIndex={-1} className="flex flex-1 flex-col">
-        <iframe
-          src="/rogue/science.html"
-          title="Rogue, The Science"
-          className="flex-1 w-full border-0"
-          style={{ marginTop: 64, minHeight: "calc(100vh - 64px)" }}
-        />
-      </main>
-      <Footer />
-    </div>
-  );
-};
+const RogueScience = () => (
+  <SimulatorSciencePage name="Rogue" simulatorPath="/rogue" src="/rogue/science.html" />
+);
 
 export default RogueScience;

@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Notice } from "@/components/layout/page-chrome";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -354,18 +355,13 @@ const SpeciesMatrixImportModal = ({
 
           {/* Selected species summary */}
           {selectedSpecies && (
-            <div className="p-3 bg-sf-emerald/[0.06] border border-sf-emerald rounded-none">
-              <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-sf-emerald" />
-                <span className="font-medium text-sf-emerald-text">
-                  {selectedSpecies.name}
-                </span>
-              </div>
-              <p className="text-xs text-t3 mt-1">
+            <Notice tone="success" compact icon={<Users className="w-4 h-4" />}>
+              <p className="font-medium text-t1">{selectedSpecies.name}</p>
+              <p className="mt-1">
                 {selectedFields.size} of {fieldsWithValues.length} fields
                 selected for import
               </p>
-            </div>
+            </Notice>
           )}
         </div>
 

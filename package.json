@@ -10,6 +10,7 @@
     "build": "node scripts/typecheck-strict.mjs && vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
+    "check:chrome": "node scripts/check-page-chrome.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
