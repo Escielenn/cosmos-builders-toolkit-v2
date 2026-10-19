@@ -19,7 +19,7 @@ export default function ArchivePanel() {
   return (
     <div>
       <div className="flex items-center gap-3 mb-6">
-        <h2 className="font-heading text-sf-h3 text-t1 uppercase">Archived worlds</h2>
+        <h2 className="font-display text-sf-h3 font-light text-t1">Archived worlds</h2>
         {archivedWorlds.length > 0 && (
           <Badge variant="secondary" className="text-xs">
             {archivedWorlds.length}

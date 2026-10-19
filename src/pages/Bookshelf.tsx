@@ -4,7 +4,7 @@ import { BookOpen, ExternalLink, ShoppingCart, Search } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
-import { SectionHero } from "@/components/ui/section-hero";
+import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
@@ -50,9 +50,9 @@ const BookCard = ({ book }: { book: BookEntry }) => {
 
       {/* Content */}
       <div className="p-4 flex flex-col flex-1">
-        <h3 className="font-heading font-medium leading-tight">
+        <h2 className="font-sans text-sf-body font-medium leading-tight text-t1">
           <em>{book.title}</em>
-        </h3>
+        </h2>
         <p className="text-sm text-t2 mt-1">
           {book.author} ({book.year})
         </p>
@@ -120,18 +120,17 @@ const Bookshelf = () => {
     <div className="relative min-h-screen bg-background">
       <Header />
       <PageBursts bursts={BOOKSHELF_BURSTS} />
-      <main className="container mx-auto px-4 pt-24 pb-16 relative z-10">
-        {/* Hero */}
-        <div className="mb-12">
-          <SectionHero
-            eyebrow={`// CATALOG · ${searchTerm.length >= 2 ? `${filteredBooks.length} OF ${BOOKSHELF_DATA.length}` : `${BOOKSHELF_DATA.length} WORKS`}`}
-            title={<>The StellarForge <span className="text-sf-primary-text">bookshelf.</span></>}
-            subtitle="The science fiction novels that inspired our worldbuilding tools. Each book demonstrates how a single constraint (environmental, biological, technological, or political) cascades through an entire world."
-          />
-        </div>
+      <main className="relative z-10">
+        <PageContainer variant="wide">
+        <PageHeader
+          size="page"
+          eyebrow={`Catalog · ${searchTerm.length >= 2 ? `${filteredBooks.length} of ${BOOKSHELF_DATA.length}` : `${BOOKSHELF_DATA.length} works`}`}
+          title="Bookshelf"
+          lede="The science fiction novels that inspired our worldbuilding tools. Each book demonstrates how a single constraint (environmental, biological, technological, or political) cascades through an entire world."
+        />
 
         {/* Search */}
-        <div className="relative max-w-md mx-auto mb-10">
+        <div className="relative max-w-md mb-10">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-t3" />
           <Input
             placeholder="Search by title, author, or topic..."
@@ -161,6 +160,7 @@ const Bookshelf = () => {
             at no extra cost to you.
           </p>
         </div>
+        </PageContainer>
       </main>
       <Footer />
     </div>

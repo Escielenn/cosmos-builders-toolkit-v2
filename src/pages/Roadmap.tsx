@@ -21,6 +21,7 @@ import { PageBursts } from "@/components/ui/data-burst";
 import { ROADMAP_BURSTS } from "@/lib/data-bursts";
 import { mapError } from "@/lib/ship-voice";
 import { useMetaTags } from "@/hooks/use-meta-tags";
+import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
 
 const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
   planned: {
@@ -216,17 +217,18 @@ const Roadmap = () => {
     <div className="min-h-screen bg-sf-void">
       <Header />
 
-      <main className="relative container mx-auto px-4 pt-24 pb-16 max-w-4xl">
+      <main className="relative">
+        <PageContainer variant="standalone">
         <PageBursts bursts={ROADMAP_BURSTS} />
-        {/* Hero */}
-        <section className="text-center mb-8">
-          <h1 className="font-display text-sf-h1 tracking-title text-t1 mb-3">
-            ROADMAP
-          </h1>
-          <p className="text-t2 max-w-xl mx-auto">
-            Shape what comes next. Vanguard members vote to prioritize upcoming tools and features.
-          </p>
-        </section>
+        <PageHeader
+          size="page"
+          eyebrow="What comes next"
+          title="Roadmap"
+          lede="Shape what comes next. Vanguard members vote to prioritize upcoming tools and features."
+        />
+
+        {/* Reading column, left-aligned on the shared edge. */}
+        <div className="max-w-4xl">
 
         {/* Vote budget (Vanguard only) */}
         {isVanguard && (
@@ -243,7 +245,9 @@ const Roadmap = () => {
             <button
               key={tab.value}
               onClick={() => setStatusFilter(tab.value)}
-              className={`px-4 py-2 text-xs font-heading uppercase tracking-wide border transition-colors whitespace-nowrap ${
+              type="button"
+              aria-pressed={statusFilter === tab.value}
+              className={`inline-flex min-h-hit items-center px-4 font-sans text-xs font-medium uppercase tracking-wide border transition-colors duration-base whitespace-nowrap ${
                 statusFilter === tab.value
                   ? 'border-sf-primary bg-sf-primary/[0.06] text-sf-primary-text'
                   : 'border-sf-line text-t3 hover:border-sf-line-emphasis hover:text-t2'
@@ -277,9 +281,9 @@ const Roadmap = () => {
         {!isVanguard && (
           <GlassPanel className="p-6 mt-8 border-sf-violet text-center">
             <Telescope className="w-8 h-8 text-sf-violet mx-auto mb-3" />
-            <h3 className="font-heading text-lg font-light uppercase tracking-[2px] mb-2">
+            <h2 className="font-display text-sf-h3 font-light text-t1 mb-2">
               Want to shape the roadmap?
-            </h3>
+            </h2>
             <p className="text-sm text-t2 mb-4 max-w-md mx-auto">
               Vanguard members get 10 votes per month to prioritize what gets built next, plus early access to new tools, Office Hours, and more.
             </p>
@@ -292,6 +296,8 @@ const Roadmap = () => {
             </Button>
           </GlassPanel>
         )}
+        </div>
+        </PageContainer>
       </main>
 
       <Footer />

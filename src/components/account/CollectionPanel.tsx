@@ -77,7 +77,7 @@ export default function CollectionPanel() {
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-3">
-          <h2 className="font-serif text-[20px] italic text-t1">Worksheets</h2>
+          <h2 className="font-display text-sf-h3 font-light text-t1">Worksheets</h2>
           <Badge variant="secondary" className="text-xs">
             {filteredWorksheets.length}
           </Badge>

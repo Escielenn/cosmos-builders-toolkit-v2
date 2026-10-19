@@ -100,7 +100,7 @@ const AccountDataSettings = () => {
     <div className="space-y-6">
       <div className="flex items-center gap-2">
         <ShieldAlert className="w-5 h-5 text-sf-primary-text" aria-hidden="true" />
-        <h3 className="font-heading text-lg font-medium">Your Data</h3>
+        <h2 className="font-display text-sf-h3 font-light text-t1">Your data</h2>
       </div>
 
       <div className="space-y-2">

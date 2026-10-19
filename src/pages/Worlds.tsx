@@ -1,4 +1,4 @@
-/** Register: WRITER (Lora) — a library a writer browses, not an instrument readout. */
+/** Worlds index. Page chrome per docs/stellarforge/15-PAGE-CHROME.md. */
 import { useState, useMemo, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Upload, Globe } from "lucide-react";
@@ -19,11 +19,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { PageBursts } from "@/components/ui/data-burst";
 import { WORLDS_BURSTS } from "@/lib/data-bursts";
 import ExampleWorldBanner from "@/components/community/ExampleWorldBanner";
-import { ParallaxStrips } from "@/components/ambient/ParallaxStrips";
 import { EmptyState } from "@/components/ui/empty-state";
-import { SectionHero } from "@/components/ui/section-hero";
-
-import { BackLink } from "@/components/ui/back-link";
+import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
 import { BranchesWorldPicker } from "@/components/world/chronicle/branches/BranchesWorldPicker";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 const Worlds = () => {
@@ -75,8 +72,10 @@ const Worlds = () => {
     return (
       <div className="min-h-screen bg-background sf-atmosphere">
         <Header />
-        <main className="container mx-auto px-4 pt-24 pb-16 flex items-center justify-center">
-          <Loader />
+        <main>
+          <PageContainer variant="standalone" className="flex items-center justify-center">
+            <Loader />
+          </PageContainer>
         </main>
       </div>
     );
@@ -85,37 +84,36 @@ const Worlds = () => {
   return (
     <div className="min-h-screen bg-background sf-atmosphere">
       <Header />
-      <main className="container mx-auto px-4 pt-24 pb-16 relative z-10">
+      <main className="relative z-10">
+        <PageContainer variant="standalone">
         <PageBursts bursts={WORLDS_BURSTS} />
-        {/* Back Navigation */}
-        <BackLink to="/" label="RETURN HOME" className="mb-6" />
 
-        {/* Header, parallax telemetry backdrop */}
-        <div className="relative overflow-hidden mb-12">
-          <div className="absolute inset-0 opacity-40 pointer-events-none -z-0">
-            <ParallaxStrips height={220} />
-          </div>
-          <div className="relative z-10 flex flex-col gap-6 py-10">
-            <div className="flex items-end justify-between gap-6 flex-wrap">
-              <SectionHero
-                warm
-                eyebrow="World index"
-                title={<>My <span className="text-sf-primary-text">worlds.</span></>}
-                subtitle="Each world is its own cascade, physics shapes environment, environment shapes biology, biology shapes culture. Pick one to continue, or begin a new survey."
-                className="flex-1 min-w-[280px]"
+        {/* Top-level page: no back link (the logo goes home). */}
+        <PageHeader
+          size="page"
+          eyebrow="World index"
+          title="Your worlds"
+          lede="Each world is its own cascade: physics shapes environment, environment shapes biology, biology shapes culture. Pick one to continue, or begin a new survey."
+          actions={
+            <>
+              <Button variant="sf-ghost" size="sf-md" onClick={() => setImportDialogOpen(true)}>
+                <Upload className="w-4 h-4" aria-hidden />
+                Import
+              </Button>
+              <ArchiveToggle
+                showArchived={showArchived}
+                onToggle={setShowArchived}
+                archivedCount={archivedCount}
               />
-            <div className="flex items-center gap-2 shrink-0">
-            <Button variant="outline" size="sm" onClick={() => setImportDialogOpen(true)}>
-              <Upload className="w-4 h-4 mr-2" />
-              Import
-            </Button>
-            <ArchiveToggle
-              showArchived={showArchived}
-              onToggle={setShowArchived}
-              archivedCount={archivedCount}
-            />
-            </div>
-          </div>
+              <Button asChild variant="sf-ghost" size="sf-md">
+                <Link to="/community">
+                  <Globe className="w-4 h-4" aria-hidden />
+                  Community worlds
+                </Link>
+              </Button>
+            </>
+          }
+        >
           {availableTags.length > 0 && (
             <TagFilter
               availableTags={availableTags}
@@ -129,8 +127,7 @@ const Worlds = () => {
               onClear={() => setSelectedTags([])}
             />
           )}
-          </div>
-        </div>
+        </PageHeader>
 
         {/* Arrived from the Time Travel Timelines entry: pick a world first. */}
         {searchParams.get("open") === "chronicle-branches" && !isLoading && (
@@ -139,17 +136,6 @@ const Worlds = () => {
 
         {/* Example World Banner */}
         <ExampleWorldBanner />
-
-        {/* Browse Community Link */}
-        <div className="flex items-center justify-end mb-4">
-          <Link
-            to="/community"
-            className="inline-flex items-center gap-1.5 font-serif text-[14px] italic text-sf-primary-text hover:text-sf-primary-bright transition-colors duration-base"
-          >
-            <Globe className="w-3.5 h-3.5" />
-            Browse community worlds
-          </Link>
-        </div>
 
         {/* Worlds Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
@@ -208,6 +194,7 @@ const Worlds = () => {
 
         {/* Shared with Me */}
         <SharedWorldsSection />
+        </PageContainer>
       </main>
 
       <Footer />

@@ -42,7 +42,7 @@ import {
   getToolRoute,
   isProTool,
 } from "@/lib/tools-config";
-import CubeLogo from "@/components/icons/CubeLogo";
+import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
 import { GuideNav } from "@/components/layout/GuideNav";
 import { CascadeRibbon } from "@/components/tools/CascadeRibbon";
 import { useMetaTags } from "@/hooks/use-meta-tags";
@@ -297,16 +297,16 @@ function SectionGroup({
   if (tools.length === 0) return null;
   return (
     <div className="mb-8">
-      <div className="flex items-center gap-3 mb-1">
+      <div className="flex items-center gap-3 mb-2 border-b border-sf-line-hairline pb-3">
         {color && (
-          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
+          <div className="w-2 h-2" style={{ backgroundColor: color }} aria-hidden="true" />
         )}
-        <h3 className="font-heading text-sm font-light uppercase tracking-wide text-[hsl(var(--sf-section-green))]">
+        <h2 className="font-heading text-sf-eyebrow uppercase text-t4">
           {title}
-        </h3>
+        </h2>
       </div>
       {description && (
-        <p className="text-t4 text-xs ml-5 mb-3">{description}</p>
+        <p className="text-t3 text-sf-small ml-5 mb-3">{description}</p>
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-3">
         {tools.map((tool) => (
@@ -387,35 +387,25 @@ const ToolsWiki = () => {
     <div className="min-h-screen bg-sf-void sf-atmosphere">
       <Header />
 
-      <main className="max-w-[1200px] mx-auto px-4 md:px-6 pt-24 pb-16">
-        <GuideNav />
-
-        {/* Page header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <CubeLogo size={36} />
-            <div>
-              <span className="font-heading text-sf-eyebrow uppercase text-t3 block leading-none">
-                STELLARFORGE
-              </span>
-              <h1 className="font-display text-sf-h1 tracking-title text-t1 leading-tight">
-                TOOL REFERENCE
-              </h1>
-            </div>
-          </div>
-          <p className="text-t2 text-sm max-w-2xl leading-relaxed mt-3">
-            {allTools.length} tools organized by the Environmental Cascade.
-            Each tool builds on what comes before, each output becomes input for what follows.
-          </p>
-          <div className="mt-4">
-            <Link to="/getting-started">
-              <Button variant="ghost" size="sm" className="text-sf-primary-text hover:text-sf-primary-text">
-                New here? Start with the Cascade Tutorial
-                <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
-              </Button>
-            </Link>
-          </div>
-        </div>
+      <main>
+        <PageContainer variant="standalone">
+        <PageHeader
+          size="page"
+          back={{ label: "Back to Guide", to: "/guide" }}
+          eyebrow="Guide · Tool reference"
+          title="Tool reference"
+          lede={`${allTools.length} tools organized by the Environmental Cascade. Each tool builds on what comes before; each output becomes input for what follows.`}
+          actions={
+            <Button asChild variant="sf-ghost" size="sf-md">
+              <Link to="/getting-started">
+                Cascade tutorial
+                <ArrowRight className="w-4 h-4" aria-hidden />
+              </Link>
+            </Button>
+          }
+        >
+          <GuideNav />
+        </PageHeader>
 
         {/* View tabs */}
         <Tabs defaultValue="category" className="w-full">
@@ -509,6 +499,7 @@ const ToolsWiki = () => {
             ))}
           </TabsContent>
         </Tabs>
+        </PageContainer>
       </main>
 
       {/* Detail sheet */}
