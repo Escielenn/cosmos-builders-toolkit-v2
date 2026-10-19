@@ -260,7 +260,7 @@ const KardashevScale = () => {
           id="presets"
           title="CIVILIZATION PRESETS"
           levelNumber={1}
-          helper={SECTION_HELPERS.presets}
+          guidance={SECTION_HELPERS.presets}
         >
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
             {CIVILIZATION_PRESETS.map((preset) => (
@@ -299,7 +299,7 @@ const KardashevScale = () => {
           id="energy-inputs"
           title="ENERGY CONFIGURATION"
           levelNumber={2}
-          helper={SECTION_HELPERS["energy-inputs"]}
+          guidance={SECTION_HELPERS["energy-inputs"]}
         >
           <div className="space-y-6">
             {/* Power slider */}
@@ -420,7 +420,7 @@ const KardashevScale = () => {
             id="results"
             title="CLASSIFICATION RESULTS"
             levelNumber={3}
-            helper={SECTION_HELPERS.results}
+            guidance={SECTION_HELPERS.results}
             defaultOpen
           >
             <div className="space-y-6">
@@ -574,7 +574,7 @@ const KardashevScale = () => {
             id="energy-budget"
             title="ENERGY BUDGET BREAKDOWN"
             levelNumber={4}
-            helper={SECTION_HELPERS["energy-budget"]}
+            guidance={SECTION_HELPERS["energy-budget"]}
           >
             <div className="space-y-4">
               {BUDGET_CATEGORIES.map((cat) => {
@@ -627,7 +627,7 @@ const KardashevScale = () => {
             id="cascade"
             title="CASCADE IMPLICATIONS"
             levelNumber={5}
-            helper={SECTION_HELPERS.cascade}
+            guidance={SECTION_HELPERS.cascade}
           >
             <Tabs defaultValue={CASCADE_CONTENT[0]?.category}>
               <TabsList className="mb-4 flex flex-wrap gap-1 h-auto bg-transparent">
@@ -739,7 +739,7 @@ const KardashevScale = () => {
           id="story-notes"
           title="STORY NOTES"
           levelNumber={6}
-          helper={SECTION_HELPERS["story-notes"]}
+          guidance={SECTION_HELPERS["story-notes"]}
         >
           <div className="space-y-6">
             {[

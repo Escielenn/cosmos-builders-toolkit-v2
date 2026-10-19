@@ -17,6 +17,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Json } from "@/integrations/supabase/types";
+import { isJsonObject } from "@/lib/rpc-json";
 
 interface ECRWorksheet {
   id: string;
@@ -130,7 +131,8 @@ const ImportFromECRModal = ({
   const [previewExpanded, setPreviewExpanded] = useState(false);
 
   const selectedWorksheet = worksheets.find(w => w.id === selectedWorksheetId);
-  const ecrData = selectedWorksheet?.data as ECRFormState | undefined;
+  const rawEcrData = selectedWorksheet?.data;
+  const ecrData = isJsonObject(rawEcrData) ? (rawEcrData as unknown as ECRFormState) : undefined;
 
   // Generate preview of what will be imported
   const getImportPreview = () => {

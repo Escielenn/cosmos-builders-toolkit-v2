@@ -120,7 +120,7 @@ cosmos-builders-toolkit-v2/
 │   ├── EXOFORGE/                  # Procedural exoplanet generator
 │   └── solaris/                   # Procedural star system sim
 │
-├── cartographers/                 # Stellar Cartographer subproject
+├── docs/archive/cartographers/   # Stellar Cartographer subproject (archived)
 │   └── stellar_cartographer/src/  # Galaxy mapping (components, hooks, utils)
 │
 ├── public/
@@ -205,7 +205,7 @@ cosmos-builders-toolkit-v2/
 
 | ID | Name | Description |
 |----|------|-------------|
-| `stellar-cartographer` | **Stellar Cartographer:** Galaxy Mapper | Procedural galaxy mapping with star types, naming, seeded randomization. Separate subproject in `/cartographers/`. |
+| `stellar-cartographer` | **Stellar Cartographer:** Galaxy Mapper | Procedural galaxy mapping with star types, naming, seeded randomization. Archived subproject in `docs/archive/cartographers/`. |
 
 ### Tool Categories (Cascade Order)
 

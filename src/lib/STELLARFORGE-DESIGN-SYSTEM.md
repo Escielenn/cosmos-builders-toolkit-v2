@@ -11,7 +11,7 @@
 > 2. `CLAUDE.md` — design-system rules, typography law, component
 >    patterns, z-index ladder.
 > 3. `docs/DESIGN-TOKENS.md` — token architecture & usage policy.
-> 4. `StellarForge.tools Part IIi/STELLARFORGE_II_IMPLEMENTATION_PLAN_v2.md`
+> 4. `docs/archive/sf-ii/STELLARFORGE_II_IMPLEMENTATION_PLAN_v2.md`
 >    — the definitive roadmap and settled decisions.
 >
 > Settled decisions baked into the current system (2026-06-11):

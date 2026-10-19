@@ -1,4 +1,4 @@
-import { useMemo, useRef, useEffect } from "react";
+import { useMemo, useEffect } from "react";
 import * as THREE from "three";
 import { auToScene } from "../utils/scaleAU";
 
@@ -13,8 +13,6 @@ export function OrbitalPath({
   eccentricity,
   colorHex,
 }: OrbitalPathProps) {
-  const lineRef = useRef<THREE.Line>(null);
-
   const geometry = useMemo(() => {
     const a = auToScene(semiMajorAxisAU);
     const b = a * Math.sqrt(1 - eccentricity * eccentricity);
@@ -41,22 +39,29 @@ export function OrbitalPath({
     return geo;
   }, [semiMajorAxisAU, eccentricity]);
 
+  const material = useMemo(
+    () =>
+      new THREE.LineDashedMaterial({
+        color: colorHex,
+        transparent: true,
+        opacity: 0.07,
+        dashSize: 0.4,
+        gapSize: 0.8,
+      }),
+    [colorHex],
+  );
+
+  // A THREE.Line built here and mounted as a primitive: the JSX intrinsic
+  // `<line>` collides with SVG's <line> in React's typings.
+  const line = useMemo(() => new THREE.Line(geometry, material), [geometry, material]);
+
   // Compute line distances after geometry is attached so dashes render
   useEffect(() => {
-    if (lineRef.current) {
-      lineRef.current.computeLineDistances();
-    }
-  }, [geometry]);
+    line.computeLineDistances();
+  }, [line]);
 
-  return (
-    <line ref={lineRef as React.RefObject<THREE.Line>} geometry={geometry}>
-      <lineDashedMaterial
-        color={colorHex}
-        transparent
-        opacity={0.07}
-        dashSize={0.4}
-        gapSize={0.8}
-      />
-    </line>
-  );
+  useEffect(() => () => geometry.dispose(), [geometry]);
+  useEffect(() => () => material.dispose(), [material]);
+
+  return <primitive object={line} />;
 }

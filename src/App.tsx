@@ -31,11 +31,12 @@ import { useBadgeEvaluator } from "./hooks/use-badge-evaluator";
 import { useAuth } from "./contexts/AuthContext";
 
 // Eagerly loaded pages (small, frequently accessed)
-import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import Auth from "./pages/Auth";
 
-// Lazy loaded pages (larger, less frequently accessed)
+// Lazy loaded pages. Index (signed-in home + marketing landing) and Auth are
+// lazy too, so neither sits in the entry chunk (1.5 Tier 5 bundle budget).
+const Index = lazy(() => import("./pages/Index"));
+const Auth = lazy(() => import("./pages/Auth"));
 const Profile = lazy(() => import("./pages/Profile"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Studio = lazy(() => import("./pages/Studio"));

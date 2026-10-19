@@ -21,12 +21,16 @@ export interface SimulatorNarrativeConfig {
   questions: NarrativeQuestion[];
 }
 
+// Cascade-layer meaning hues, read from the generated tokens so they follow
+// the solved palette. The label is body-size accent text, so it uses the
+// `-text` stop. (These were keyed `color` while the panel reads `layerColor`,
+// so the layer labels used to render uncoloured.)
 const SHARED_LAYERS = {
-  environment: { layer: "Environment", color: "#4D9FFF" },
-  biology:     { layer: "Biology", color: "#00FF88" },
-  culture:     { layer: "Culture", color: "#9B5DE5" },
-  mythology:   { layer: "Mythology", color: "#5B8DEF" },
-};
+  environment: { layer: "Environment", layerColor: "var(--sf-azure-text)" },
+  biology:     { layer: "Biology", layerColor: "var(--sf-emerald-text)" },
+  culture:     { layer: "Culture", layerColor: "var(--sf-violet-text)" },
+  mythology:   { layer: "Mythology", layerColor: "var(--sf-stellar-text)" },
+} as const satisfies Record<string, Pick<NarrativeQuestion, "layer" | "layerColor">>;
 
 export const SIMULATOR_NARRATIVE_CONFIGS: Record<string, SimulatorNarrativeConfig> = {
   rogue: {

@@ -100,6 +100,7 @@ import {
   TOOL_TYPE,
   LOCAL_STORAGE_KEY,
 } from "@/lib/tool-worksheets/mythos";
+import type { ObjectKeys } from "@/lib/type-utils";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 
@@ -401,7 +402,7 @@ const XenomythologyFrameworkBuilder = () => {
   }, [formState.evolutionaryPressures.survivalChallenges]);
 
   // Generic update functions
-  const updateField = <T extends keyof FormState>(
+  const updateField = <T extends ObjectKeys<FormState>>(
     section: T,
     field: keyof FormState[T],
     value: FormState[T][keyof FormState[T]]
@@ -1674,7 +1675,7 @@ const XenomythologyFrameworkBuilder = () => {
                   id="primordial-state"
                   label="Primordial State"
                   prompts={[SECTION_GUIDANCE.creationNarrative.primordialState.prompt]}
-                  examples={SECTION_GUIDANCE.creationNarrative.primordialState.examples}
+                  example={SECTION_GUIDANCE.creationNarrative.primordialState.examples.join("; ")}
                   value={formState.creationNarrative.primordialState}
                   onChange={(value) => updateField("creationNarrative", "primordialState", value)}
                 />
@@ -1721,7 +1722,7 @@ const XenomythologyFrameworkBuilder = () => {
                   id="primary-division"
                   label="Primary Cosmological Division"
                   prompts={[SECTION_GUIDANCE.cosmologicalStructure.primaryDivision.prompt]}
-                  examples={SECTION_GUIDANCE.cosmologicalStructure.primaryDivision.examples}
+                  example={SECTION_GUIDANCE.cosmologicalStructure.primaryDivision.examples.join("; ")}
                   value={formState.cosmologicalStructure.primaryDivision}
                   onChange={(value) => updateField("cosmologicalStructure", "primaryDivision", value)}
                 />
@@ -2049,7 +2050,7 @@ const XenomythologyFrameworkBuilder = () => {
                   id="what-makes-sacred"
                   label="What Makes Space Sacred?"
                   prompts={[SECTION_GUIDANCE.sacredSpaces.whatMakesSacred.prompt]}
-                  examples={SECTION_GUIDANCE.sacredSpaces.whatMakesSacred.examples}
+                  example={SECTION_GUIDANCE.sacredSpaces.whatMakesSacred.examples.join("; ")}
                   value={formState.sacredSpaces.whatMakesSacred}
                   onChange={(value) => updateField("sacredSpaces", "whatMakesSacred", value)}
                 />
@@ -2086,7 +2087,7 @@ const XenomythologyFrameworkBuilder = () => {
                   id="consciousness-at-death"
                   label="What Happens at Death?"
                   prompts={[SECTION_GUIDANCE.deathPractices.consciousnessAtDeath.prompt]}
-                  examples={SECTION_GUIDANCE.deathPractices.consciousnessAtDeath.examples}
+                  example={SECTION_GUIDANCE.deathPractices.consciousnessAtDeath.examples.join("; ")}
                   value={formState.deathPractices.consciousnessAtDeath}
                   onChange={(value) => updateField("deathPractices", "consciousnessAtDeath", value)}
                 />

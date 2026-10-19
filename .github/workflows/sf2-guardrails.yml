@@ -51,11 +51,30 @@ jobs:
       - name: Typecheck (strict gate — blocking)
         run: node scripts/typecheck-strict.mjs
 
+      # Full app typecheck burned down to zero on 2026-10-18 (was 190).
+      # Blocking from here on: any new tsc error fails the job.
+      - name: Typecheck (full app — blocking)
+        run: npx tsc --noEmit -p tsconfig.app.json
+
       # Lint errors burned down to zero on 2026-10-17 (was 226 at 0.6652,
       # 70 at repairs/2026-10-17). Blocking from here on; warnings are
       # still allowed but should not grow.
       - name: Lint (blocking)
         run: npm run lint
+
+      # Mechanical half of /sf-contrast (scripts/check-contrast.mjs): alpha
+      # borders, opacity states, retired tokens, tracked small text, legacy
+      # cyan, parallel truth (check 14), radius, banned fonts, focus
+      # suppression, generated-file drift (needs python3, preinstalled on
+      # ubuntu-latest). Rules with legacy hits ratchet per file against
+      # scripts/contrast-baseline.json; the rest are zero-tolerance.
+      - name: Contrast guard (blocking)
+        run: npm run check:contrast
+
+      # Constitution: components/pages never import the Supabase client for
+      # world data. Legacy offenders in scripts/canon-imports-baseline.json.
+      - name: Canon import guard (blocking)
+        run: npm run check:canon
 
       # docs/stellarforge/15-PAGE-CHROME.md §5: no raw <h1> outside
       # page-chrome/ and the allow-list (pages title through PageHeader),
@@ -68,6 +87,45 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Bundle budget (blocking)
+        run: npm run check:bundle
+
+  e2e:
+    name: Playwright smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CI: "true"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      # .env.e2e points the build at https://fakeproj.supabase.co, which
+      # e2e/fixtures.ts answers from an in-memory store. No secrets.
+      - name: Build (fake backend)
+        run: npm run build:e2e
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Smoke tests
+        run: npm run test:e2e
+
+      - name: Upload traces on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 7
 
   edge-functions:
     name: Edge function tests

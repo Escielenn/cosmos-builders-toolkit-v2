@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo, type ReactNode } from "react";
 import { useEntities, useUpdateEntity } from "@/hooks/use-entity-graph";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useToast } from "@/hooks/use-toast";
@@ -286,7 +286,9 @@ function generateBackgroundField(count, seed) {
     // Generate in galactic coordinates, heavily concentrated on plane
     // Galactic latitude: exponential concentration toward b=0
     const u = rand();
-    const galB = (Math.random < 0.5 ? 1 : -1) * Math.pow(rand(), 0.3) * 90; // Degrees, concentrated near 0
+    // A former draft drew an unused latitude here (it compared the function
+    // Math.random to 0.5). The draw is kept so the seeded field is unchanged.
+    rand();
     // Actually use a proper distribution:
     const bSign = rand() < 0.5 ? 1 : -1;
     // 70% within ±12° of plane, 20% within ±30°, 10% everywhere
@@ -409,7 +411,10 @@ const CONSTELLATION_LINES = [
 ];
 
 // ── PROJECTION ────────────────────────────────────────────────
-function projectStar(ra, dec, viewRa, viewDec, fov, W, H, margin) {
+function projectStar(
+  ra: number, dec: number, viewRa: number, viewDec: number, fov: number,
+  W: number, H: number, margin?: number,
+): { x: number; y: number } | null {
   const m = margin !== undefined ? margin : 80;
   const sRa = ra * DEG, sDec = dec * DEG, vRa = viewRa * DEG, vDec = viewDec * DEG;
   const sx = Math.cos(sDec)*Math.cos(sRa), sy = Math.cos(sDec)*Math.sin(sRa), sz = Math.sin(sDec);
@@ -2136,7 +2141,7 @@ export default function ExoSkyV2({
           </div>
 
           <div style={{...SH,marginTop:14}}>DISPLAY</div>
-          {[
+          {([
             ["Milky Way Band", showMilkyWay, setShowMilkyWay],
             ["Atmosphere Effects", showAtmosphere, setShowAtmosphere],
             ["Horizon Line", showHorizon, setShowHorizon],
@@ -2144,7 +2149,7 @@ export default function ExoSkyV2({
             ["Earth Constellations", showConstellations, setShowConstellations],
             ["Coordinate Grid", showGrid, setShowGrid],
             ["Highlight Sol", highlightSol, setHighlightSol],
-          ].map(([label, val, set]) => (
+          ] as const satisfies ReadonlyArray<readonly [string, boolean, (v: boolean) => void]>).map(([label, val, set]) => (
             <label key={label} style={CKL}>
               <input type="checkbox" checked={val} onChange={e=>set(e.target.checked)} style={CK} />{label}
             </label>
@@ -2479,7 +2484,7 @@ export default function ExoSkyV2({
 }
 
 // ── DATA ROW COMPONENT ────────────────────────────────────────
-function DR({ l, v, vc }) {
+function DR({ l, v, vc }: { l: ReactNode; v: ReactNode; vc?: string }) {
   return (
     <div style={{display:"flex",justifyContent:"space-between",lineHeight:1.9,alignItems:"baseline"}}>
       <span style={{color:"var(--t3)",fontWeight:400,fontFamily:FONT_SANS,fontSize:12}}>{l}</span>

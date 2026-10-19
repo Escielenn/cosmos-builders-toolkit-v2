@@ -1,4 +1,4 @@
-import { View, Text, Svg, Path, Defs, G, Filter } from "@react-pdf/renderer";
+import { View, Text, Svg, Path } from "@react-pdf/renderer";
 import { styles } from "../styles";
 import { printPalette } from "../palette";
 

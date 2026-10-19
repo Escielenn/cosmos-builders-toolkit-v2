@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { toJson } from "@/lib/rpc-json";
 import type { WorldEntry, EntryType } from "./world-data";
 import { getTypeForTool } from "./world-data";
 
@@ -61,11 +62,16 @@ export async function createEntry(
   userId: string
 ): Promise<WorldEntry> {
   // Get the next sort_order for the target parent
-  const { data: siblings } = await supabase
+  // `.is()` only takes null/boolean; a uuid parent needs `.eq()`. (Passing
+  // the uuid to `.is()` made the sibling query fail, so every nested entry
+  // got sort_order 0.)
+  const siblingQuery = supabase
     .from("world_entries")
     .select("sort_order")
-    .eq("world_id", input.worldId)
-    .is("parent_id", input.parentId ?? null)
+    .eq("world_id", input.worldId);
+  const { data: siblings } = await (input.parentId
+    ? siblingQuery.eq("parent_id", input.parentId)
+    : siblingQuery.is("parent_id", null))
     .order("sort_order", { ascending: false })
     .limit(1);
 
@@ -81,7 +87,7 @@ export async function createEntry(
       entry_type: input.entryType,
       parent_id: input.parentId ?? null,
       content: input.content ?? null,
-      metadata: input.metadata ?? {},
+      metadata: toJson(input.metadata ?? {}),
       sort_order: nextSortOrder,
       created_by: userId,
     })

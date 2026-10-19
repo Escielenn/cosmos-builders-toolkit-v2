@@ -6,7 +6,7 @@
  * sections, long-form pages, or the background of empty states. Non-essential,
  * non-blocking.
  *
- * Port of design_handoff_April_2026/reference-components/ParallaxStrips.tsx.
+ * Port of design/design_handoff/reference-components/ParallaxStrips.tsx.
  */
 import { useEffect, useRef } from "react";
 

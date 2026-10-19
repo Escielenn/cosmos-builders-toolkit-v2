@@ -21,7 +21,6 @@ interface Props {
     consistencyTest: { hardestQuestion: string; edgeCase: string; connectionToWorld: string };
     declaration: { formalDeclaration: string };
     generalNotes: string;
-    [key: string]: unknown;
   };
   worldName?: string;
   date?: string;

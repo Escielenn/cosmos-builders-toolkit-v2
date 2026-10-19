@@ -1181,16 +1181,17 @@ const Gravitas = () => {
         <ShareDialog
           open={shareDialogOpen}
           onOpenChange={setShareDialogOpen}
-          worksheetId={(currentWorksheetId || worksheetId)!}
-          toolType={TOOL_TYPE}
+          entityType="worksheet"
+          entityId={(currentWorksheetId || worksheetId)!}
+          entityTitle={currentWorksheetTitle || "Untitled Worksheet"}
         />
       )}
 
       <WorksheetNotesSheet
         open={notesSheetOpen}
         onOpenChange={setNotesSheetOpen}
-        notes={formState.generalNotes}
-        onNotesChange={(notes) => setFormState((prev) => ({ ...prev, generalNotes: notes }))}
+        content={formState.generalNotes}
+        onChange={(notes) => setFormState((prev) => ({ ...prev, generalNotes: notes }))}
       />
 
       <WorksheetMoodboardSheet

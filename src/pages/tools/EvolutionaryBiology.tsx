@@ -105,6 +105,7 @@ import {
   HUMAN_ASSUMPTIONS_TO_AVOID,
   SECTION_GUIDANCE,
 } from "@/lib/evolutionary-biology-data";
+import type { ObjectKeys } from "@/lib/type-utils";
 
 // Section definitions for navigation
 const SECTIONS: Section[] = [
@@ -156,7 +157,7 @@ const EvolutionaryBiology = () => {
 
 
 
-  const updateFormState = <K extends keyof FormState>(
+  const updateFormState = <K extends ObjectKeys<FormState>>(
     section: K,
     updates: Partial<FormState[K]>
   ) => {

@@ -1,0 +1,17 @@
+{
+  "_comment": "Components/pages that imported @/integrations/supabase/client when scripts/check-canon-imports.mjs landed. Shrink only: move the query into src/canon, a hook, or a service and delete the line.",
+  "files": [
+    "src/components/community/ExampleWorldBanner.tsx",
+    "src/components/editor/WikiLinkAutocomplete.tsx",
+    "src/components/sharing/ShareDialog.tsx",
+    "src/components/world/HeaderImageUpload.tsx",
+    "src/components/world/RecentActivity.tsx",
+    "src/components/world/WikiPage.tsx",
+    "src/components/world/WorksheetLauncherGrid.tsx",
+    "src/components/world/WorldBibleDialog.tsx",
+    "src/components/world/WorldExportDialog.tsx",
+    "src/components/world/chronicle/ChronicleEventDialog.tsx",
+    "src/pages/WorldDashboard.tsx",
+    "src/pages/WorldShowcase.tsx"
+  ]
+}

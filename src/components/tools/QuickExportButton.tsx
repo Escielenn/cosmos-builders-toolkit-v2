@@ -98,7 +98,7 @@ const QuickExportButton = ({
         }
 
         case "text": {
-          const { generateGenericText } = await import("@/lib/text");
+          const { generateGenericText } = await import("@/lib/text/index");
           const textContent = generateGenericText({
             toolName,
             worldName,

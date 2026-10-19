@@ -11,7 +11,6 @@ interface Props {
     cascade?: Record<string, string>;
     storyNotes?: Record<string, string>;
     generalNotes?: string;
-    [key: string]: unknown;
   };
   worldName?: string;
   date?: string;
@@ -53,7 +52,7 @@ const SurfaceGravityFullReportTemplate = ({ formState: rawFormState, worldName, 
               <PDFResultBox
                 label="Surface Gravity"
                 value={formatGravity(result.gravity)}
-                subtitle={`${result.gravityMs2.toFixed(2)} m/s², ${result.regimeLabel}`}
+                description={`${result.gravityMs2.toFixed(2)} m/s², ${result.regimeLabel}`}
               />
               <View style={{ flexDirection: "row", gap: spacing.md, marginTop: spacing.sm }}>
                 <View style={{ flex: 1 }}>
@@ -132,7 +131,7 @@ const SurfaceGravityFullReportTemplate = ({ formState: rawFormState, worldName, 
               <PDFResultBox
                 label="Δv to Low Orbit"
                 value={`${result.deltaV.deltaVToOrbit.toFixed(1)} km/s`}
-                subtitle={`${result.deltaV.earthComparison.toFixed(2)}× Earth's 9.4 km/s`}
+                description={`${result.deltaV.earthComparison.toFixed(2)}× Earth's 9.4 km/s`}
               />
               <View style={{ marginTop: spacing.sm }}>
                 <PDFKeyValuePair label="Verdict" value={result.deltaV.verdict.label} />

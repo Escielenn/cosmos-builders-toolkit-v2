@@ -60,11 +60,16 @@ const VENDOR_GROUPS: Record<string, string[]> = {
   "vendor-query": ["@tanstack/react-query"],
   // Framer Motion (landing page animations)
   "vendor-motion": ["framer-motion", "motion-dom", "motion-utils"],
-  // Sanity CMS (Learn pages only)
-  "vendor-sanity": ["@sanity/client", "@sanity/image-url"],
+  // Sanity CMS client (blog / Learn / prompt of the day; loaded on first
+  // fetch, see src/lib/sanity/client.ts). @sanity/image-url is tiny and
+  // synchronous, so it is left to Rollup rather than dragging this in.
+  "vendor-sanity": ["@sanity/client"],
   // Shared by @react-pdf (textkit) and drei (troika text). Pinned on its own
   // so a PDF export does not have to download vendor-three, or vice versa.
   "vendor-bidi": ["bidi-js"],
+  // Shared by @react-pdf and mammoth (manuscript .docx import). Pinned so
+  // opening a .docx import does not download all of vendor-pdf.
+  "vendor-base64": ["base64-js"],
 };
 const VENDOR_CHUNKS: Record<string, string> = Object.fromEntries(
   Object.entries(VENDOR_GROUPS).flatMap(([chunk, pkgs]) => pkgs.map((p) => [p, chunk])),
@@ -130,6 +135,9 @@ export default defineConfig({
     // ever survives a failed deletion. When SENTRY_UPLOAD_ENABLED is false,
     // disable map generation entirely.
     sourcemap: SENTRY_UPLOAD_ENABLED ? "hidden" : false,
+    // dist/.vite/manifest.json: read by scripts/check-bundle-budget.mjs to
+    // measure the entry chunk and its static imports.
+    manifest: true,
     rollupOptions: {
       output: {
         // Function form, not the object form: the object form pulls each
@@ -139,6 +147,24 @@ export default defineConfig({
         // of three.js on every page. Here only the named packages are pinned;
         // everything else is left to Rollup's normal shared-chunk splitting.
         manualChunks(id: string) {
+          // Vite's dynamic-import preload helper is shared by every chunk
+          // that lazy-loads anything, and Rollup hoists it into whichever
+          // shared chunk it likes. Once Index went lazy it chose
+          // vendor-three, so the entry statically imported all of three.js
+          // just to get `__vitePreload`. Pin it to vendor-react, which the
+          // entry loads anyway.
+          if (id.includes("vite/preload-helper")) return "vendor-react";
+          // Same story for Rollup's CommonJS interop helpers (commonjsHelpers,
+          // commonjs-dynamic-modules) and Vite's browser-external stub: left
+          // alone they land in vendor-pdf, so opening a .zip (jszip)
+          // downloaded all of @react-pdf. They are a few hundred bytes.
+          if (
+            id.startsWith("\0commonjsHelpers") ||
+            id.startsWith("\0commonjs-dynamic-modules") ||
+            id.includes("__vite-browser-external")
+          ) {
+            return "vendor-react";
+          }
           const m = id.match(/node_modules\/((?:@[^/]+\/)?[^/]+)\//);
           if (!m) return undefined;
           return VENDOR_CHUNKS[m[1]];

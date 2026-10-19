@@ -1,10 +1,14 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, lazy, Suspense } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { BookOpen, HelpCircle, Compass, MessageCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAudioPlayer } from "@/hooks/use-audio-player";
-import FieldManualSheet from "../onboarding/FieldManualSheet";
-import ContactDialog from "../contact/ContactDialog";
+
+// Both panels are on every page but rarely opened; the contact forms carry
+// zod + react-hook-form. Loaded on first open, then kept mounted so the
+// close transition still plays.
+const FieldManualSheet = lazy(() => import("../onboarding/FieldManualSheet"));
+const ContactDialog = lazy(() => import("../contact/ContactDialog"));
 
 const SIMULATOR_ROUTES = [
   "/rogue",
@@ -22,6 +26,8 @@ const FABStack = () => {
   const [helpOpen, setHelpOpen] = useState(false);
   const [fieldManualOpen, setFieldManualOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
+  const [fieldManualMounted, setFieldManualMounted] = useState(false);
+  const [contactMounted, setContactMounted] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const isSimulator = SIMULATOR_ROUTES.some(
@@ -90,6 +96,7 @@ const FABStack = () => {
               className="sf-fab-menu-item"
               onClick={() => {
                 setFieldManualOpen(true);
+                setFieldManualMounted(true);
                 setHelpOpen(false);
               }}
             >
@@ -102,6 +109,7 @@ const FABStack = () => {
             className="sf-fab-menu-item"
             onClick={() => {
               setContactOpen(true);
+              setContactMounted(true);
               setHelpOpen(false);
             }}
           >
@@ -121,8 +129,12 @@ const FABStack = () => {
         </button>
       </div>
 
-      <FieldManualSheet open={fieldManualOpen} onOpenChange={setFieldManualOpen} />
-      <ContactDialog open={contactOpen} onOpenChange={setContactOpen} />
+      <Suspense fallback={null}>
+        {fieldManualMounted && (
+          <FieldManualSheet open={fieldManualOpen} onOpenChange={setFieldManualOpen} />
+        )}
+        {contactMounted && <ContactDialog open={contactOpen} onOpenChange={setContactOpen} />}
+      </Suspense>
     </>
   );
 };

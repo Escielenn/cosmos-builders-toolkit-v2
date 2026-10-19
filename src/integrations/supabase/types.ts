@@ -359,6 +359,30 @@ export type Database = {
           },
         ]
       }
+      contact_rate_limits: {
+        Row: {
+          confirmed: boolean
+          created_at: string
+          email_hash: string | null
+          id: number
+          ip_hash: string
+        }
+        Insert: {
+          confirmed?: boolean
+          created_at?: string
+          email_hash?: string | null
+          id?: number
+          ip_hash: string
+        }
+        Update: {
+          confirmed?: boolean
+          created_at?: string
+          email_hash?: string | null
+          id?: number
+          ip_hash?: string
+        }
+        Relationships: []
+      }
       contact_submissions: {
         Row: {
           admin_notes: string | null
@@ -2491,6 +2515,11 @@ export type Database = {
         }
         Returns: undefined
       }
+      can_read_worksheet_storage: {
+        Args: { p_worksheet_id: string }
+        Returns: boolean
+      }
+      can_read_world_storage: { Args: { p_world_id: string }; Returns: boolean }
       cast_roadmap_vote: {
         Args: { p_roadmap_item_id: string; p_vote_count?: number }
         Returns: Json
@@ -2509,6 +2538,7 @@ export type Database = {
         Args: { check_user_id: string }
         Returns: string
       }
+      html_word_count: { Args: { p_html: string }; Returns: number }
       increment_writing_session: {
         Args: { p_day: string; p_delta: number; p_user_id: string }
         Returns: undefined
@@ -2528,9 +2558,12 @@ export type Database = {
         Args: { p_label?: string; p_world_id: string }
         Returns: Json
       }
+      storage_segment_uuid: { Args: { p_segment: string }; Returns: string }
       world_comment_authors: {
         Args: { p_world_id: string }
         Returns: {
+          // Kept nullable by hand: the generator marks RETURNS TABLE columns
+          // non-null, but these come from profiles columns that are nullable.
           avatar_url: string | null
           display_name: string | null
           user_id: string

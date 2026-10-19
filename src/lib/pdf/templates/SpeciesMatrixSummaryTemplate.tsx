@@ -29,7 +29,6 @@ interface SpeciesPair {
   politicalNotes: string;
   culturalNotes: string;
   currentTensions: string;
-  [key: string]: string;
 }
 
 interface FormState {
