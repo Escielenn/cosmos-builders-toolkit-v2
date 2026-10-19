@@ -1,7 +1,7 @@
 {
   "name": "stellarforge",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.80.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,6 +11,7 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "check:chrome": "node scripts/check-page-chrome.mjs",
+    "check:bundle": "node scripts/check-bundle-budget.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",

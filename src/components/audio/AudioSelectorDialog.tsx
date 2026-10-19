@@ -15,6 +15,7 @@ import PlaylistCard from "./PlaylistCard";
 import TrackRow from "./TrackRow";
 import UserPlaylistsTab from "./UserPlaylistsTab";
 import UploadTab from "./UploadTab";
+import { OPEN_AUDIO_SELECTOR_EVENT } from "./audio-events";
 
 // ---------------------------------------------------------------------------
 // Tabs (expandable in Phases 3 + 4)
@@ -32,8 +33,7 @@ const TABS: { id: Tab; label: string; pro?: boolean }[] = [
 // AudioSelectorDialog
 // ---------------------------------------------------------------------------
 
-/** Open the audio selector from anywhere (e.g. the player bar). */
-export const OPEN_AUDIO_SELECTOR_EVENT = "sf:open-audio-selector";
+export { OPEN_AUDIO_SELECTOR_EVENT };
 
 export default function AudioSelectorDialog() {
   const [open, setOpen] = useState(false);
