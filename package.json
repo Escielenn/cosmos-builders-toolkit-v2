@@ -11,6 +11,10 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "check:chrome": "node scripts/check-page-chrome.mjs",
+    "check:contrast": "node scripts/check-contrast.mjs",
+    "check:canon": "node scripts/check-canon-imports.mjs",
+    "build:e2e": "vite build --mode e2e",
+    "test:e2e": "playwright test",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -99,6 +103,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
+    "@playwright/test": "^1.58.2",
     "@sentry/vite-plugin": "^5.2.1",
     "@tailwindcss/typography": "^0.5.16",
     "@testing-library/jest-dom": "^6.6.0",

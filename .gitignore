@@ -55,3 +55,8 @@ src/lib/pdf/templates/test123.txt
 # Dropbox selective-sync conflict copies. The node_modules one holds 49k
 # files and is not otherwise ignored, so a stray 'git add .' would stage it.
 *Selective Sync Conflict*/
+
+# Playwright smoke suite output
+/test-results/
+/playwright-report/
+/blob-report/
