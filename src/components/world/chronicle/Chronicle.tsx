@@ -26,6 +26,9 @@ import { BRANCHES_OFFLINE } from "@/services/chronicle-branches";
 import type { ChronicleWriteResult } from "@/services/chronicle-data";
 import { useChronicleBranches } from "@/hooks/use-chronicle-branches";
 import { BranchesView } from "./branches/BranchesView";
+import { PageContainer, PageHeader, Notice } from "@/components/layout/page-chrome";
+import { Button } from "@/components/ui/button";
+import { worldCrumbs } from "@/lib/world-crumbs";
 
 /** Chronicle views. BRANCHES = time-travel timelines (?view=branches). */
 const VIEWS = [
@@ -175,41 +178,39 @@ export function Chronicle({ worldId }: ChronicleProps) {
 
   if (error || !data) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <p className="font-mono text-[12px] uppercase tracking-wide text-sf-crimson-text">
-          CHRONICLE UNAVAILABLE. RETRY WHEN READY.
-        </p>
-      </div>
+      <PageContainer variant="space">
+        <Notice tone="danger" label="CHRONICLE UNAVAILABLE">
+          The Chronicle could not be read. Retry when ready.
+        </Notice>
+      </PageContainer>
     );
   }
 
   const isEmpty = data.events.length === 0 && data.eras.length === 0;
 
   return (
-    <div className="sf-chronicle">
-      {/* Header */}
-      <div className="sf-chronicle-header">
-        <div>
-          <h1 className="sf-chronicle-heading">Chronicle</h1>
-          <p className="font-mono text-[12px] uppercase tracking-wide text-t4 mt-1">
-            {data.worldName}
-            {data.calendarConfig.era_label && (
-              <span>
-                {" "}
-                &middot; {data.calendarConfig.era_label}
-              </span>
-            )}
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={handleAddEvent}
-          className="sf-fill-sweep px-3 py-1.5 border border-sf-primary text-sf-primary-text text-[12px] font-mono uppercase tracking-wide flex items-center gap-1.5 hover:text-sf-primary-bright transition-colors duration-base"
-        >
-          <Plus className="w-3 h-3" />
-          LOG EVENT
-        </button>
-      </div>
+    <PageContainer variant="space">
+      {/* 15-PAGE-CHROME §2: the Chronicle is a world space. Stellar is its
+          cascade colour; the title is MD Nichrome like every other space
+          (it used to be a 20px Lora italic). */}
+      <PageHeader
+        size="space"
+        breadcrumbs={worldCrumbs({ id: worldId, name: data.worldName }, "Chronicle")}
+        eyebrow="CHRONICLE"
+        accent="stellar"
+        title="Chronicle"
+        lede={
+          data.calendarConfig.era_label
+            ? `Every dated event in this world, on the ${data.calendarConfig.era_label} calendar.`
+            : "Every dated event in this world, in order."
+        }
+        actions={
+          <Button variant="sf-primary" size="sf-sm" onClick={handleAddEvent}>
+            <Plus className="w-4 h-4 mr-2" aria-hidden />
+            Log event
+          </Button>
+        }
+      />
 
       {/* View toggle */}
       <div className="mb-6 flex border-b border-sf-line-hairline" role="group" aria-label="Chronicle view">
@@ -257,7 +258,7 @@ export function Chronicle({ worldId }: ChronicleProps) {
 
       {/* Timeline */}
       {view === "list" && !isEmpty && (
-        <div className="sf-chronicle-timeline">
+        <div className="sf-chronicle-timeline max-w-[960px]">
           {/* Spine */}
           <div className="sf-chronicle-spine" />
 
@@ -357,6 +358,6 @@ export function Chronicle({ worldId }: ChronicleProps) {
         eventTitle={deletingEvent?.title || ""}
         onConfirm={handleConfirmDelete}
       />
-    </div>
+    </PageContainer>
   );
 }

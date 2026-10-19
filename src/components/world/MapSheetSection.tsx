@@ -111,7 +111,7 @@ export function MapSheetSection({
 
   return (
     <>
-      <div className="sf-wiki-section-header">Map Sheet</div>
+      <h2 className="mt-9 mb-4 border-b border-sf-line-hairline pb-2 font-heading text-sf-eyebrow uppercase text-t4">Map sheet</h2>
 
       {url ? (
         <div className="space-y-2">

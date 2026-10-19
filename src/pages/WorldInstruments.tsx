@@ -26,6 +26,9 @@ import { accentChipClass, getToolAccent } from "@/lib/tool-accents";
 import { useEntities } from "@/hooks/use-entity-graph";
 import { ENTITY_TYPE_LABELS } from "@/services/entity-graph-types";
 import { useMetaTags } from "@/hooks/use-meta-tags";
+import { PageContainer, PageHeader, Notice } from "@/components/layout/page-chrome";
+import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
+import { worldCrumbs } from "@/lib/world-crumbs";
 
 const ALL_TOOL_IDS = [...FREE_TOOL_IDS, ...PRO_TOOL_IDS];
 
@@ -35,6 +38,7 @@ const TIME_TRAVEL_NAME = "Time Travel Timelines";
 export default function WorldInstruments() {
   useMetaTags({ title: "Instruments" });
   const { worldId } = useParams<{ worldId: string }>();
+  const worldChrome = useWorldLayoutContext();
   const { data: entities, isLoading } = useEntities(worldId);
   const [query, setQuery] = useState("");
   const [subjectId, setSubjectId] = useState<string>("");
@@ -69,33 +73,37 @@ export default function WorldInstruments() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-6 md:px-6">
-      <h1 className="font-serif text-[24px] italic text-t1">Instruments</h1>
-      <p className="mt-1 text-[12px] text-t4">
-        {tools.length} on file · every one opens on a subject
-      </p>
+    <PageContainer variant="space">
+      <PageHeader
+        size="space"
+        breadcrumbs={worldCrumbs({ id: worldId ?? "", name: worldChrome?.worldName }, "Instruments")}
+        eyebrow="INSTRUMENTS"
+        accent="primary"
+        title="Instruments"
+        lede={`${tools.length} on file. Every one opens on a subject: pick it first, then launch.`}
+      />
 
       {/* Pick the subject FIRST. That is the F4 order, and it is why the
           launch links below carry an entityId. */}
-      <div className="mt-6 border border-sf-line bg-sf-surface p-3">
-        <span className="mb-2 flex items-center gap-1.5 font-heading text-[12px] uppercase tracking-wide text-t3">
+      <div className="border border-sf-line bg-sf-surface p-3">
+        <span className="mb-2 flex items-center gap-1.5 font-heading text-sf-eyebrow uppercase text-t3">
           <Crosshair className="h-3 w-3" aria-hidden />
           Survey
         </span>
         {isLoading ? (
           <Loader size="sm" />
         ) : subjects.length === 0 ? (
-          <p className="text-[13px] text-t3">
-            No entities on file yet. Instruments will open blank until this
-            world has something to survey —{" "}
+          <Notice compact label="NO SUBJECTS ON FILE">
+            Instruments will open blank until this world has something to
+            survey.{" "}
             <Link
               to={`/worlds/${worldId}/codex`}
               className="text-sf-primary-text underline-offset-4 hover:underline"
             >
-              start in the Codex
+              Start in the Codex
             </Link>
             .
-          </p>
+          </Notice>
         ) : (
           <div className="flex flex-wrap items-center gap-2">
             <select
@@ -195,6 +203,6 @@ export default function WorldInstruments() {
           NO INSTRUMENT MATCHES THAT.
         </p>
       )}
-    </div>
+    </PageContainer>
   );
 }

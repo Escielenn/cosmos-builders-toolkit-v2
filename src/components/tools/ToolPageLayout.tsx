@@ -39,6 +39,7 @@ import { useWorksheets } from "@/hooks/use-worksheets";
 import { extractWorksheetFacts, summarizeFacts } from "@/lib/worksheet-facts";
 import { ProBadge } from "@/components/ui/pro-badge";
 import { ToolWorldBar } from "@/components/tools/ToolWorldBar";
+import { useIsWorldLayout } from "@/contexts/WorldLayoutContext";
 
 // ─── Props ───────────────────────────────────────────────────────────
 
@@ -178,6 +179,10 @@ export default function ToolPageLayout({
   const cfg = getToolPageConfig(toolType);
   const worldId = useWorldId();
   const saveGate = useSaveWorldGate(onSave, isCloudEnabled, !!worldId);
+  // Inside WorldLayout the frame already clears the site header and world
+  // nav (and .sf-tool-content pads 24px), so the 96px header offset would
+  // push the H1 a screen down (15-PAGE-CHROME §1).
+  const inWorldLayout = useIsWorldLayout();
 
   // QoL: warn before closing the tab on unsaved work, and Ctrl/Cmd+S saves
   // from anywhere on a tool page (it used to open the browser's save dialog).
@@ -228,7 +233,7 @@ export default function ToolPageLayout({
 
   return (
     <PageShell className={pageShellClassName}>
-      <MainLandmark className="relative container mx-auto px-4 xl:pr-[280px] pt-24 pb-16">
+      <MainLandmark className={`relative container mx-auto px-4 xl:pr-[280px] pb-16 ${inWorldLayout ? "pt-2" : "pt-24"}`}>
         <PageBursts bursts={TOOL_PAGE_BURSTS[toolType]} />
 
         {/* ── Header (15-PAGE-CHROME): breadcrumbs in a world, back to Tools outside ── */}

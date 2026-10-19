@@ -10,6 +10,7 @@
 import { Suspense, lazy, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { Link, Navigate, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { manuscriptPath } from "@/lib/manuscript-path";
+import { Breadcrumbs } from "@/components/layout/page-chrome";
 import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
@@ -1734,26 +1735,44 @@ export default function Write(): JSX.Element {
     <div className={`relative z-10 grid ${worldChrome ? "h-full" : "h-screen"} grid-rows-[44px_1fr_44px] bg-[hsl(var(--sf-void-hsl))]`}>
       {/* topbar */}
       <header className="flex items-center gap-3 border-b border-sf-line-hairline px-4">
-        {/* explicit way back to the Studio overview */}
-        <Link
-          to="/studio"
-          className="flex min-h-hit items-center gap-1.5 border border-sf-line px-2.5 py-1 font-heading text-sf-eyebrow uppercase text-t3 transition-colors duration-base hover:border-sf-primary hover:text-t1"
-          title="Return to Studio"
-          aria-label="Return to Studio"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" /> Studio
-        </Link>
-        <Wordmark size="sm" suffix="Studio" to="/studio" className="hidden sm:inline-flex" />
-        <div className="hidden min-w-0 items-baseline gap-2 text-[13px] text-t4 md:flex">
-          <span className="text-t4">/</span>
-          {worldId && (
-            <>
-              <Link to={`/worlds/${worldId}`} className="hover:text-t2">World</Link>
+        {worldChrome ? (
+          // Inside a world the site header and the world nav are already on
+          // screen (15-PAGE-CHROME §1), so the topbar names where you are
+          // instead of repeating a logo and a back link.
+          <div className="hidden min-w-0 items-center gap-2 md:flex">
+            <Breadcrumbs
+              items={[
+                { label: worldChrome.worldName, to: `/worlds/${worldChrome.worldId}` },
+                { label: "Manuscript" },
+              ]}
+            />
+            <span className="text-t4" aria-hidden>/</span>
+            <span className="truncate font-serif italic text-[13px] text-t2">{doc?.title || "Untitled"}</span>
+          </div>
+        ) : (
+          <>
+            {/* explicit way back to the Studio overview */}
+            <Link
+              to="/studio"
+              className="flex min-h-hit items-center gap-1.5 border border-sf-line px-2.5 py-1 font-heading text-sf-eyebrow uppercase text-t3 transition-colors duration-base hover:border-sf-primary hover:text-t1"
+              title="Back to Studio"
+              aria-label="Back to Studio"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" /> Studio
+            </Link>
+            <Wordmark size="sm" suffix="Studio" to="/studio" className="hidden sm:inline-flex" />
+            <div className="hidden min-w-0 items-baseline gap-2 text-[13px] text-t4 md:flex">
               <span className="text-t4">/</span>
-            </>
-          )}
-          <span className="truncate font-serif italic text-t2">{doc?.title || "Untitled"}</span>
-        </div>
+              {worldId && (
+                <>
+                  <Link to={`/worlds/${worldId}`} className="hover:text-t2">World</Link>
+                  <span className="text-t4">/</span>
+                </>
+              )}
+              <span className="truncate font-serif italic text-t2">{doc?.title || "Untitled"}</span>
+            </div>
+          </>
+        )}
         <div className="ml-auto flex items-center gap-2">
           <span className="hidden font-mono text-[12px] tracking-wider text-t4 sm:block">● {words.toLocaleString()} words</span>
           {/* mobile panel toggles — binder + inspector are sheets below lg */}

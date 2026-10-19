@@ -1,7 +1,8 @@
-/** Register: WRITER (Lora) for chrome; event data stays mono. */
+/** Chrome follows 15-PAGE-CHROME (PageHeader inside Chronicle); event data stays mono. */
 import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
 import { Chronicle } from "@/components/world/chronicle/Chronicle";
 import { useMetaTags } from "@/hooks/use-meta-tags";
+import { PageContainer, Notice } from "@/components/layout/page-chrome";
 
 /**
  * Route component for /worlds/:worldId/chronicle
@@ -14,11 +15,11 @@ const WorldChronicle = () => {
 
   if (!worldId) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <p className="font-serif text-[14px] italic text-t2">
-          World not found.
-        </p>
-      </div>
+      <PageContainer variant="space">
+        <Notice tone="danger" label="WORLD NOT FOUND">
+          This Chronicle has no world to belong to.
+        </Notice>
+      </PageContainer>
     );
   }
 

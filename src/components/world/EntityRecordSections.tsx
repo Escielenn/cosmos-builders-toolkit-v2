@@ -13,7 +13,7 @@ export function EntityMentionsSection({ worldId, mentions }: { worldId: string; 
   if (mentions.length === 0) return null;
   return (
     <>
-      <div className="sf-wiki-section-header">Mentioned in</div>
+      <h2 className="mt-9 mb-4 border-b border-sf-line-hairline pb-2 font-heading text-sf-eyebrow uppercase text-t4">Mentioned in</h2>
       <div className="space-y-1">
         {mentions.map((m) => (
           <div key={m.id} className="sf-wiki-backlink">
@@ -32,7 +32,7 @@ export function EntityChronicleSection({ worldId, events }: { worldId: string; e
   if (events.length === 0) return null;
   return (
     <>
-      <div className="sf-wiki-section-header">Chronicle</div>
+      <h2 className="mt-9 mb-4 border-b border-sf-line-hairline pb-2 font-heading text-sf-eyebrow uppercase text-t4">Chronicle</h2>
       <div className="space-y-1">
         {events.map((e) => (
           <div key={e.id} className="sf-wiki-connection">

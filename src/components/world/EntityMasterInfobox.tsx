@@ -77,7 +77,7 @@ export default function EntityMasterInfobox({
     if (!canEdit) return null;
     return (
       <div className="space-y-2">
-        <h3 className="font-heading text-xs font-light uppercase tracking-wide text-sf-emerald">
+        <h3 className="font-heading text-sf-eyebrow uppercase text-t3">
           Details
         </h3>
         <button
@@ -95,7 +95,7 @@ export default function EntityMasterInfobox({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="font-heading text-xs font-light uppercase tracking-wide text-sf-emerald">
+        <h3 className="font-heading text-sf-eyebrow uppercase text-t3">
           Details
         </h3>
         {canEdit && !editing && (

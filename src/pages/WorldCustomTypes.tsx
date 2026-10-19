@@ -34,7 +34,9 @@ import {
 import { TemplateFieldEditor } from "@/components/world/TemplateFieldEditor";
 import { cn } from "@/lib/utils";
 
-import { BackLink } from "@/components/ui/back-link";
+import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
+import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
+import { worldCrumbs } from "@/lib/world-crumbs";
 import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
 function slugifyKey(s: string): string {
   return s
@@ -51,6 +53,7 @@ function slugifyKey(s: string): string {
 
 export default function WorldCustomTypes() {
   const { worldId } = useParams<{ worldId: string }>();
+  const worldChrome = useWorldLayoutContext();
 
   useMetaTags({ title: "Custom Element Types" });
 
@@ -93,21 +96,15 @@ export default function WorldCustomTypes() {
   if (!worldId) return null;
 
   return (
-    <div className="min-h-screen bg-[hsl(222_30%_5%)]">
-      <div className="max-w-6xl mx-auto px-6 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <BackLink to={`/worlds/${worldId}`} label="RETURN TO WORLD" className="mb-3" />
-          <h1 className="font-display text-3xl md:text-4xl tracking-[0.08em] text-t1 mb-1">
-            CUSTOM ELEMENT TYPES
-          </h1>
-          <p className="text-sm text-t2 max-w-2xl">
-            Define your own element types with custom fields. Every entity
-            created from a template will carry these fields, great for homebrew
-            concepts like sword styles, deities, trading routes, or anything
-            unique to your world.
-          </p>
-        </div>
+    <PageContainer variant="space">
+        <PageHeader
+          size="space"
+          breadcrumbs={worldCrumbs({ id: worldId, name: worldChrome?.worldName }, "Codex", "Custom types")}
+          eyebrow="CODEX · CUSTOM TYPES"
+          accent="teal"
+          title="Custom entry types"
+          lede="Define your own entry types with custom fields. Every entry created from a template carries them: sword styles, deities, trading routes, anything unique to your world."
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-4">
           {/* Sidebar: list of templates */}
@@ -198,9 +195,9 @@ export default function WorldCustomTypes() {
               <div className="h-full min-h-[400px] flex items-center justify-center border border-dashed border-sf-line p-8">
                 <div className="text-center max-w-sm">
                   <Shapes className="w-10 h-10 mx-auto mb-3 text-t4" aria-hidden="true" />
-                  <h3 className="font-heading text-sm uppercase tracking-wide text-t2 mb-2">
+                  <h2 className="font-heading text-sf-eyebrow uppercase text-t3 mb-2">
                     No template selected
-                  </h3>
+                  </h2>
                   <p className="text-xs text-t4">
                     Create or pick a template on the left to edit its fields.
                   </p>
@@ -209,8 +206,7 @@ export default function WorldCustomTypes() {
             )}
           </section>
         </div>
-      </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -370,9 +366,9 @@ function TemplateDetailEditor({
       <div>
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h3 className="font-heading text-sm uppercase tracking-wide text-sf-emerald-text">
+            <h2 className="font-heading text-sf-eyebrow uppercase text-t4">
               Fields
-            </h3>
+            </h2>
             <p className="text-xs text-t4 mt-0.5">
               Every {template.label.toLowerCase()} entity will carry these fields.
             </p>

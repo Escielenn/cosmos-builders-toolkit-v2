@@ -83,7 +83,9 @@ import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/hooks/use-toast";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 import RecentActivity from "@/components/world/RecentActivity";
-import { BackLink } from "@/components/ui/back-link";
+import { PageContainer, PageHeader, Notice } from "@/components/layout/page-chrome";
+import WorldIconRenderer from "@/components/world/WorldIconRenderer";
+import { worldCrumbs } from "@/lib/world-crumbs";
 // Secondary panels, collapsed into a single rail. Ordered by how often a
 // writer reaches for them when opening a world.
 //
@@ -670,7 +672,7 @@ const WorldDashboard = () => {
     );
 
     if (isInWorldLayout) {
-      return <div className="sf-tool-content">{loadingSkeleton}</div>;
+      return <PageContainer variant="space">{loadingSkeleton}</PageContainer>;
     }
     return (
       <div className="min-h-screen bg-background">
@@ -683,27 +685,26 @@ const WorldDashboard = () => {
   if (worldError || !world) {
     const errorContent = (
       <>
-        <BackLink to="/" label="RETURN TO BRIDGE" className="mb-6" />
-        <GlassPanel className="p-12 text-center">
-          <p className="font-mono text-[12px] tracking-wide text-sf-crimson-text uppercase mb-4">// STATUS: UNREACHABLE</p>
-          <h1 className="font-display text-3xl md:text-4xl font-light tracking-title uppercase text-t1 mb-4">WORLD NOT FOUND</h1>
-          <p className="font-mono text-[12px] tracking-wide uppercase text-t3 mb-6">
-            RECORD DOES NOT EXIST OR CLEARANCE INSUFFICIENT.
-          </p>
-          <Button variant="sf-primary" size="sf-md" asChild>
-            <Link to="/">Return to Bridge</Link>
-          </Button>
-        </GlassPanel>
+        <PageHeader
+          size={isInWorldLayout ? "space" : "page"}
+          eyebrow="STATUS: UNREACHABLE"
+          accent="crimson"
+          title="World not found"
+          back={{ label: "Back to worlds", to: "/worlds" }}
+        />
+        <Notice tone="danger" label="RECORD UNAVAILABLE">
+          This world does not exist, or your clearance does not reach it.
+        </Notice>
       </>
     );
 
     if (isInWorldLayout) {
-      return <div className="sf-tool-content">{errorContent}</div>;
+      return <PageContainer variant="space">{errorContent}</PageContainer>;
     }
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <main id="main" tabIndex={-1} className="container mx-auto px-4 pt-24 pb-16">{errorContent}</main>
+        <main id="main" tabIndex={-1}><PageContainer>{errorContent}</PageContainer></main>
       </div>
     );
   }
@@ -711,29 +712,42 @@ const WorldDashboard = () => {
   const dashboardContent = (
     <>
       <PageBursts bursts={WORLD_DASHBOARD_BURSTS} />
-        {/* Back Navigation */}
-        <div className="flex items-center justify-between mb-6">
-          <BackLink to="/" label="RETURN HOME" />
-          <div className="flex items-center gap-2">
-            <Button size="sm" asChild>
+        {/* 15-PAGE-CHROME §2: the world name is the Bridge's title, at the
+            top of the page. It used to be a Jura heading inside the cover
+            card, 370px down, under a "RETURN HOME" link. */}
+        <PageHeader
+          size="space"
+          breadcrumbs={worldCrumbs({ id: worldId!, name: world.name }, "Bridge")}
+          eyebrow="BRIDGE"
+          accent="primary"
+          title={world.name}
+          icon={
+            <span className="flex h-11 w-11 items-center justify-center border border-sf-line bg-sf-surface">
+              <WorldIconRenderer iconId={world.icon || "globe"} className="h-7 w-7 text-sf-primary-text" />
+            </span>
+          }
+          lede={world.description || undefined}
+          actions={
+          <>
+            <Button variant="sf-primary" size="sf-sm" asChild>
               <Link to={`/worlds/${worldId}/write`}>
-                <PenLine className="w-4 h-4 mr-2" />
-                Manuscript
+                <PenLine className="w-4 h-4 mr-2" aria-hidden />
+                Open Manuscript
               </Link>
             </Button>
-            <Button variant="outline" size="sm" asChild>
-              <Link to={`/worlds/${worldId}/codex`}>
-                <Library className="w-4 h-4 mr-2" />
-                Codex
-              </Link>
-            </Button>
+            {isOwner && (
+              <Button variant="sf-ghost" size="sf-sm" onClick={() => setEditDialogOpen(true)}>
+                <Edit className="w-4 h-4 mr-2" aria-hidden />
+                Edit
+              </Button>
+            )}
             {/* One Export control. Export, Export View, World Bible and
                 Snapshot used to sit here as four peer buttons, reading as four
                 unrelated features rather than four ways to get data out. */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <Download className="w-4 h-4 mr-2" />
+                <Button variant="sf-ghost" size="sf-sm">
+                  <Download className="w-4 h-4 mr-2" aria-hidden />
                   Export
                   <ChevronDown className="w-3.5 h-3.5 ml-1.5" aria-hidden="true" />
                 </Button>
@@ -771,11 +785,17 @@ const WorldDashboard = () => {
             </DropdownMenu>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="h-8 w-8 min-h-hit min-w-hit" aria-label="World actions">
+                <Button variant="sf-ghost" size="icon" className="min-h-hit min-w-hit" aria-label="World actions">
                   <MoreVertical className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem asChild>
+                  <Link to={`/worlds/${worldId}/codex`}>
+                    <Library className="w-4 h-4 mr-2" />
+                    Codex
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to={`/worlds/${worldId}/codex?view=web`}>
                     <Network className="w-4 h-4 mr-2" />
@@ -824,17 +844,22 @@ const WorldDashboard = () => {
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
-        </div>
+          </>
+          }
+        />
 
-        {/* Collaborator Banner */}
+        {/* Collaborator notice */}
         {!isOwner && role && (
-          <div className="mb-4 p-3 rounded-none bg-primary/5 border border-primary flex items-center gap-2 text-sm">
-            <Users className="w-4 h-4 text-sf-primary-text shrink-0" />
-            <span>
-              You have <Badge variant="secondary" className="mx-1">{role === "editor" ? "Editor" : "Viewer"}</Badge> access to this world
-            </span>
-          </div>
+          <Notice
+            className="mb-6"
+            compact
+            icon={<Users className="w-4 h-4" />}
+            label={role === "editor" ? "SHARED WORLD · EDITOR" : "SHARED WORLD · VIEWER"}
+          >
+            {role === "editor"
+              ? "You can edit this world. The owner controls sharing and deletion."
+              : "You can read this world. Ask the owner for editor access to change it."}
+          </Notice>
         )}
 
         {/* Theme Cover Image */}
@@ -849,29 +874,27 @@ const WorldDashboard = () => {
           </div>
         )}
 
-        {/* World Header */}
+        {/* Cover: image, tags, last updated, cascade progress. No second title. */}
         <div className="mb-8">
           <WorldHeader
             name={world.name}
-            description={world.description}
             headerImageUrl={world.header_image_url}
             headerImageFocusY={world.header_image_focus_y}
-            icon={world.icon || "globe"}
             tags={world.tags || []}
             onEditClick={isOwner ? () => setEditDialogOpen(true) : undefined}
             onAddTag={() => setTagsDialogOpen(true)}
             canEdit={canEdit}
+            meta={
+              <>
+                <p className="font-mono text-sf-mono uppercase text-t4">
+                  Updated {format(new Date(world.updated_at), "MMM d, yyyy")}
+                </p>
+                {worksheets.length > 0 && (
+                  <CascadeProgressBar worksheetToolTypes={worksheets.map((w) => w.tool_type)} />
+                )}
+              </>
+            }
           />
-          <div className="flex items-center gap-3 mt-3 px-1">
-            <p className="text-sm text-t2">
-              Last updated {format(new Date(world.updated_at), "MMMM d, yyyy")}
-            </p>
-            {worksheets.length > 0 && (
-              <CascadeProgressBar
-                worksheetToolTypes={worksheets.map((w) => w.tool_type)}
-              />
-            )}
-          </div>
         </div>
 
         {/* Recent Activity */}
@@ -884,14 +907,14 @@ const WorldDashboard = () => {
             World Elements and Saved Worksheets both duplicating what the Codex
             sidebar already navigates. One opens at a time; nothing was removed,
             and the choice persists per world. */}
-        <div className="mb-8 flex flex-wrap items-center gap-2 border-y border-sf-line-hairline py-2">
+        <div className="mb-8 flex flex-wrap items-center gap-1 border-y border-sf-line-hairline">
           {DRAWERS.filter((d) => !d.ownerOnly || isOwner).map((d) => (
             <button
               key={d.id}
               onClick={() => setOpenDrawer((cur) => (cur === d.id ? null : d.id))}
               aria-expanded={openDrawer === d.id}
-              className={`px-3 py-1.5 font-serif text-[15px] italic transition-colors ${
-                openDrawer === d.id ? "text-sf-primary-text" : "text-t3 hover:text-t1"
+              className={`min-h-hit border-b-2 px-3 font-heading text-sf-eyebrow uppercase transition-colors duration-base ${
+                openDrawer === d.id ? "border-sf-primary text-sf-primary-text" : "border-transparent text-t3 hover:text-t1"
               }`}
             >
               {d.label}
@@ -900,7 +923,7 @@ const WorldDashboard = () => {
           {openDrawer && (
             <button
               onClick={() => setOpenDrawer(null)}
-              className="ml-auto px-2 py-1.5 font-serif text-[13px] italic text-t4 hover:text-t2"
+              className="ml-auto min-h-hit px-3 font-heading text-sf-eyebrow uppercase text-t4 transition-colors duration-base hover:text-t2"
             >
               Close
             </button>
@@ -923,7 +946,7 @@ const WorldDashboard = () => {
 
         {openDrawer === "build" && (<>
         <section className="mb-8">
-          <h2 className="text-xl font-medium mb-4">Worldbuilding Tools</h2>
+          <h2 className="mb-4 border-b border-sf-line-hairline pb-2 font-heading text-sf-eyebrow uppercase text-t4">Worldbuilding tools</h2>
           <DndContext
             sensors={dndSensors}
             collisionDetection={closestCenter}
@@ -948,7 +971,7 @@ const WorldDashboard = () => {
 
         {openDrawer === "worksheets" && (<>
         <section>
-          <h2 className="text-xl font-medium mb-4">Saved Worksheets</h2>
+          <h2 className="mb-4 border-b border-sf-line-hairline pb-2 font-heading text-sf-eyebrow uppercase text-t4">Saved worksheets</h2>
           {worksheetsLoading ? (
             <div className="space-y-3">
               <Skeleton className="h-20 w-full" />
@@ -1003,12 +1026,12 @@ const WorldDashboard = () => {
   return (
     <>
       {isInWorldLayout ? (
-        <div className="sf-tool-content">{dashboardContent}</div>
+        <PageContainer variant="space" className="relative">{dashboardContent}</PageContainer>
       ) : (
         <div className="min-h-screen bg-background">
           <Header />
-          <main id="main" tabIndex={-1} className="relative container mx-auto px-4 pt-24 pb-16">
-            {dashboardContent}
+          <main id="main" tabIndex={-1}>
+            <PageContainer className="relative">{dashboardContent}</PageContainer>
           </main>
         </div>
       )}

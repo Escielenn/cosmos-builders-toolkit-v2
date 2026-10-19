@@ -3,6 +3,7 @@ import { AlertTriangle, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { acceptPendingChanges, dismissPendingChanges } from "@/services/entity-sync";
 import { getToolDisplayName } from "@/lib/tools-config";
+import { Notice } from "@/components/layout/page-chrome";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -60,27 +61,44 @@ export default function EntitySyncNotice({
   const toolName = sourceTool ? getToolDisplayName(sourceTool) : "worksheet";
 
   return (
-    <div className="border border-sf-amber bg-sf-amber/[0.06] p-3 space-y-2">
-      <div className="flex items-start gap-2">
-        <AlertTriangle className="w-4 h-4 text-sf-amber shrink-0 mt-0.5" />
-        <div className="flex-1 min-w-0">
-          <p className="text-xs font-heading uppercase tracking-wider text-sf-amber-text">
-            Worksheet Update Available
-          </p>
-          <p className="text-[12px] text-t3 mt-1">
-            {toolName} has new data that differs from this entity's details.
-          </p>
-        </div>
-      </div>
-
-      <div className="space-y-1 ml-6">
+    <Notice
+      tone="caution"
+      icon={<AlertTriangle className="w-4 h-4" />}
+      label="WORKSHEET UPDATE AVAILABLE"
+      actions={
+        <>
+          <Button
+            size="sm"
+            variant="sf-ghost"
+            onClick={() => acceptMutation.mutate(undefined)}
+            disabled={isAnyPending}
+            className="min-h-hit gap-1 text-[12px]"
+          >
+            <Check className="w-3 h-3" aria-hidden />
+            Accept all
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => dismissMutation.mutate()}
+            disabled={isAnyPending}
+            className="min-h-hit gap-1 text-[12px]"
+          >
+            <X className="w-3 h-3" aria-hidden />
+            Dismiss
+          </Button>
+        </>
+      }
+    >
+      <p>{toolName} has new data that differs from this entry's details.</p>
+      <div className="mt-2 space-y-1">
         {pendingChanges.map((change) => (
-          <div key={change.field} className="flex items-center gap-2 text-[12px]">
-            <span className="text-t3 font-medium">{change.label}:</span>
+          <div key={change.field} className="flex items-center gap-2 text-[13px]">
+            <span className="text-t2 font-medium">{change.label}:</span>
             <span className="text-t4 line-through">
               {formatValue(change.oldValue)}
             </span>
-            <span className="text-t2">→</span>
+            <span className="text-t2" aria-hidden>→</span>
             <span className="text-sf-amber-text font-mono">
               {formatValue(change.newValue)}
             </span>
@@ -90,38 +108,15 @@ export default function EntitySyncNotice({
               onClick={() => acceptMutation.mutate([change.field])}
               disabled={isAnyPending}
               aria-label={`Accept ${change.label}`}
-              className="ml-auto gap-1 h-6 text-[12px] text-sf-amber-text hover:bg-sf-amber/[0.06]"
+              className="ml-auto min-h-hit gap-1 text-[12px] text-sf-amber-text"
             >
-              <Check className="w-3 h-3" />
+              <Check className="w-3 h-3" aria-hidden />
               Accept
             </Button>
           </div>
         ))}
       </div>
-
-      <div className="flex items-center gap-2 ml-6">
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => acceptMutation.mutate(undefined)}
-          disabled={isAnyPending}
-          className="gap-1 h-6 text-[12px] border-sf-amber text-sf-amber-text hover:bg-sf-amber/[0.06]"
-        >
-          <Check className="w-3 h-3" />
-          Accept All
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={() => dismissMutation.mutate()}
-          disabled={isAnyPending}
-          className="gap-1 h-6 text-[12px]"
-        >
-          <X className="w-3 h-3" />
-          Dismiss
-        </Button>
-      </div>
-    </div>
+    </Notice>
   );
 }
 

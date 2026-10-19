@@ -31,6 +31,9 @@ import { CodexWebView } from "@/components/connections";
 import CodexAtlasView from "@/components/connections/CodexAtlasView";
 import CodexTimelineView from "@/components/connections/CodexTimelineView";
 import { useMetaTags } from "@/hooks/use-meta-tags";
+import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
+import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
+import { worldCrumbs } from "@/lib/world-crumbs";
 
 /** The Codex's views: projections of one list, never separate places. */
 type CodexView = "list" | "web" | "atlas" | "timeline";
@@ -67,6 +70,7 @@ function getIconComponent(iconName: string): LucideIcon {
 export default function WikiBrowse() {
   useMetaTags({ title: "Codex Index" });
   const { worldId } = useParams<{ worldId: string }>();
+  const worldChrome = useWorldLayoutContext();
   const navigate = useNavigate();
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -202,25 +206,24 @@ export default function WikiBrowse() {
   }
 
   return (
-    <div
-      className={`mx-auto px-4 py-6 md:px-6 ${
-        view === "list" ? "max-w-5xl" : "max-w-[1400px]"
-      }`}
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="font-serif text-[24px] italic text-t1">
-            Codex
-          </h1>
-          <p className="text-[12px] text-t4 mt-1">
+    <PageContainer variant="space">
+      {/* 15-PAGE-CHROME §2: Codex is a world space; integration teal. */}
+      <PageHeader
+        size="space"
+        breadcrumbs={worldCrumbs({ id: worldId ?? "", name: worldChrome?.worldName }, "Codex")}
+        eyebrow="CODEX"
+        accent="teal"
+        title="Codex"
+        lede={
+          <span className="font-mono text-sf-mono uppercase text-t4">
             {allEntries.length} {allEntries.length === 1 ? "entry" : "entries"}
             {view === "list" &&
               filtered.length !== allEntries.length &&
               ` · ${filtered.length} shown`}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
+          </span>
+        }
+        actions={
+          <>
           {/* List · Web — two projections of the same rows, not two places. */}
           <div className="flex border border-sf-line" role="group" aria-label="Codex view">
             {CODEX_VIEWS.map(({ id, label, Icon }, i) => (
@@ -239,17 +242,14 @@ export default function WikiBrowse() {
             ))}
           </div>
           {view === "list" && (
-            <Button
-              onClick={handleCreateEntry}
-              className="font-sans text-xs uppercase tracking-wider"
-              size="sm"
-            >
-              <Plus className="w-3.5 h-3.5 mr-1.5" />
-              New Entry
+            <Button onClick={handleCreateEntry} variant="sf-primary" size="sf-sm">
+              <Plus className="w-3.5 h-3.5 mr-1.5" aria-hidden />
+              New entry
             </Button>
           )}
-        </div>
-      </div>
+          </>
+        }
+      />
 
       {view === "atlas" && worldId && <CodexAtlasView worldId={worldId} />}
 
@@ -298,7 +298,7 @@ export default function WikiBrowse() {
       {showFilters && (
         <GlassPanel className="mb-4 p-4">
           <div className="flex items-center justify-between mb-3">
-            <span className="font-serif text-[13px] italic text-t3">
+            <span className="font-heading text-sf-eyebrow uppercase text-t3">
               Filters
             </span>
             {hasActiveFilters && (
@@ -308,7 +308,7 @@ export default function WikiBrowse() {
                   setActiveType(null);
                   setActiveTags([]);
                 }}
-                className="font-serif text-[13px] italic text-t4 hover:text-t2 transition-colors"
+                className="min-h-hit px-2 font-heading text-sf-eyebrow uppercase text-t4 hover:text-t2 transition-colors"
               >
                 Clear all
               </button>
@@ -318,7 +318,7 @@ export default function WikiBrowse() {
           {/* Layer filter */}
           {availableLayers.length > 0 && (
             <div className="mb-3">
-              <span className="font-serif text-[13px] italic text-t4 block mb-1.5">
+              <span className="font-heading text-sf-eyebrow uppercase text-t4 block mb-1.5">
                 Cascade layer
               </span>
               <div className="flex flex-wrap gap-2">
@@ -344,7 +344,7 @@ export default function WikiBrowse() {
           {/* Type filter */}
           {availableTypes.length > 0 && (
             <div className="mb-3">
-              <span className="font-serif text-[13px] italic text-t4 block mb-1.5">
+              <span className="font-heading text-sf-eyebrow uppercase text-t4 block mb-1.5">
                 Entity type
               </span>
               <div className="flex flex-wrap gap-2">
@@ -370,7 +370,7 @@ export default function WikiBrowse() {
           {/* Tag filter */}
           {codexData && codexData.worldTags.length > 0 && (
             <div>
-              <span className="font-serif text-[13px] italic text-t4 block mb-1.5">
+              <span className="font-heading text-sf-eyebrow uppercase text-t4 block mb-1.5">
                 Tags
               </span>
               <div className="flex flex-wrap gap-2">
@@ -503,6 +503,6 @@ export default function WikiBrowse() {
       )}
         </>
       )}
-    </div>
+    </PageContainer>
   );
 }
