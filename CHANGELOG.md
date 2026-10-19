@@ -1,5 +1,28 @@
 # StellarForge Changelog
 
+## 1.5000 · StellarForge 1.5
+Tier 5 of the 1.5 programme closes it out: guardrails so the work holds.
+- Type safety: the full app type-checks with zero errors, and CI now blocks
+  any regression. Database types regenerated from the live schema.
+- Bugs found on the way: Sensorium's section guidance crashed the page and its
+  share, notes and moodboard wiring was misnamed; "Think like" prompts now
+  show. Several tools' share and notes sheets ignored their props. Text and
+  Markdown export loaded the wrong module. Nested Codex entries all saved at
+  sort order 0. Article tag search sent a reserved parameter. PDF result-box
+  subtitles never printed. Narrative Bridge layer labels had no colour.
+- Faster first load: initial JavaScript 475 KB to 282 KB (gzip). Home, sign
+  in, Sentry, Sanity, help panels and every heavy library (PDF, DOCX, 3D,
+  editor) load on demand. Opening a .zip no longer downloads the PDF engine.
+- CI guardrails: full typecheck, design-rule audit (/sf-contrast checks with a
+  ratchet), canon import guard, page-chrome guard, bundle budget, and a
+  Playwright smoke suite (sign in, Home, create world, Manuscript save,
+  export).
+- Database: Chronicle branch and jump policies evaluate auth once per query;
+  facts.asserted_by indexed.
+- Cleanup: 41 unused modules, about 460 lines of dead CSS and 1 MB of
+  duplicated design handoff removed; old sub-projects archived under
+  docs/archive/.
+
 ## 0.7900 · One Frame
 The continuity pass. One header, one frame, one notice, everywhere
 (docs/stellarforge/15-PAGE-CHROME.md).
