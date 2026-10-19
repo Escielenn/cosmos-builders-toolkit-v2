@@ -965,8 +965,8 @@ const SurfaceGravityCalculator = () => {
       <WorksheetNotesSheet
         open={notesSheetOpen}
         onOpenChange={setNotesSheetOpen}
-        notes={formState.generalNotes}
-        onNotesChange={(val) => setFormState((prev) => ({ ...prev, generalNotes: val }))}
+        content={formState.generalNotes}
+        onChange={(val) => setFormState((prev) => ({ ...prev, generalNotes: val }))}
       />
 
       <WorksheetMoodboardSheet

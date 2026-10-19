@@ -7,7 +7,6 @@ const Switch = React.forwardRef<
   React.ElementRef<typeof SwitchPrimitives.Root>,
   React.ComponentPropsWithoutRef<typeof SwitchPrimitives.Root>
 >(({ className, ...props }, ref) => (
-  // @ts-expect-error - Radix renders as button, needs type="button" to prevent form submission
   <SwitchPrimitives.Root
     type="button"
     className={cn(

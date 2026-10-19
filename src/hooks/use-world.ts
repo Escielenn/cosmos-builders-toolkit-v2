@@ -2,13 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
-export interface WorldTheme {
+export type WorldTheme = {
   accent_color?: string;
   cover_image_url?: string;
   icon?: string;
   font_mood?: "bridge" | "archive" | "terminal";
   soundtrack_playlist_id?: string;
-}
+};
 
 interface World {
   id: string;

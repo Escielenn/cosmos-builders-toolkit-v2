@@ -147,7 +147,7 @@ const Sensorium = () => {
   const currentWorksheetId = worksheet.worksheetId;
   const currentWorksheetTitle = worksheet.worksheetTitle;
   const worksheetId = worksheet.worksheetId;
-  const { data: worlds = [] } = useWorlds();
+  const { worlds } = useWorlds();
   const currentWorld = worlds.find((w) => w.id === worldId);
 
   // State
@@ -155,9 +155,6 @@ const Sensorium = () => {
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [notesSheetOpen, setNotesSheetOpen] = useState(false);
   const [moodboardSheetOpen, setMoodboardSheetOpen] = useState(false);
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(["section-environment"])
-  );
   const [activeCategory, setActiveCategory] = useState<string>("electromagnetic");
   const [isPushing, setIsPushing] = useState(false);
   const [tutorialDismissed, setTutorialDismissed] = useState(
@@ -475,16 +472,9 @@ const Sensorium = () => {
               id="section-environment"
               title="Environment"
               levelNumber={1}
-              guidance={SECTION_GUIDANCE.environment}
+              thinkLike={SECTION_GUIDANCE.environment.thinkLike}
+              guidance={SECTION_GUIDANCE.environment.guidance}
               defaultOpen
-              expandedSections={expandedSections}
-              onToggle={(id) =>
-                setExpandedSections((prev) => {
-                  const next = new Set(prev);
-                  if (next.has(id)) next.delete(id); else next.add(id);
-                  return next;
-                })
-              }
             >
               <div className="space-y-6">
                 {/* Star Preset */}
@@ -780,16 +770,9 @@ const Sensorium = () => {
               id="section-sensory-palette"
               title="Sensory Palette"
               levelNumber={2}
-              guidance={SECTION_GUIDANCE["sensory-palette"]}
+              thinkLike={SECTION_GUIDANCE["sensory-palette"].thinkLike}
+              guidance={SECTION_GUIDANCE["sensory-palette"].guidance}
               defaultOpen
-              expandedSections={expandedSections}
-              onToggle={(id) =>
-                setExpandedSections((prev) => {
-                  const next = new Set(prev);
-                  if (next.has(id)) next.delete(id); else next.add(id);
-                  return next;
-                })
-              }
             >
               <div className="space-y-4">
                 {/* Species name */}
@@ -981,15 +964,8 @@ const Sensorium = () => {
               id="section-metabolic-budget"
               title="Metabolic Budget"
               levelNumber={3}
-              guidance={SECTION_GUIDANCE["metabolic-budget"]}
-              expandedSections={expandedSections}
-              onToggle={(id) =>
-                setExpandedSections((prev) => {
-                  const next = new Set(prev);
-                  if (next.has(id)) next.delete(id); else next.add(id);
-                  return next;
-                })
-              }
+              thinkLike={SECTION_GUIDANCE["metabolic-budget"].thinkLike}
+              guidance={SECTION_GUIDANCE["metabolic-budget"].guidance}
             >
               <div className="space-y-4">
                 {/* Budget bar */}
@@ -1047,15 +1023,8 @@ const Sensorium = () => {
               id="section-perception-profile"
               title="Perception Profile"
               levelNumber={4}
-              guidance={SECTION_GUIDANCE["perception-profile"]}
-              expandedSections={expandedSections}
-              onToggle={(id) =>
-                setExpandedSections((prev) => {
-                  const next = new Set(prev);
-                  if (next.has(id)) next.delete(id); else next.add(id);
-                  return next;
-                })
-              }
+              thinkLike={SECTION_GUIDANCE["perception-profile"].thinkLike}
+              guidance={SECTION_GUIDANCE["perception-profile"].guidance}
             >
               <div className="space-y-4">
                 {formState.finalSelection.length > 0 && (
@@ -1135,15 +1104,8 @@ const Sensorium = () => {
               id="section-worldbuilding"
               title="Worldbuilding Implications"
               levelNumber={5}
-              guidance={SECTION_GUIDANCE.worldbuilding}
-              expandedSections={expandedSections}
-              onToggle={(id) =>
-                setExpandedSections((prev) => {
-                  const next = new Set(prev);
-                  if (next.has(id)) next.delete(id); else next.add(id);
-                  return next;
-                })
-              }
+              thinkLike={SECTION_GUIDANCE.worldbuilding.thinkLike}
+              guidance={SECTION_GUIDANCE.worldbuilding.guidance}
             >
               <div className="space-y-6">
                 {formState.finalSelection.length === 0 ? (
@@ -1218,15 +1180,8 @@ const Sensorium = () => {
               id="section-perception-gaps"
               title="Perception Gaps"
               levelNumber={6}
-              guidance={SECTION_GUIDANCE["perception-gaps"]}
-              expandedSections={expandedSections}
-              onToggle={(id) =>
-                setExpandedSections((prev) => {
-                  const next = new Set(prev);
-                  if (next.has(id)) next.delete(id); else next.add(id);
-                  return next;
-                })
-              }
+              thinkLike={SECTION_GUIDANCE["perception-gaps"].thinkLike}
+              guidance={SECTION_GUIDANCE["perception-gaps"].guidance}
             >
               <div className="space-y-4">
                 {formState.finalSelection.length === 0 ? (
@@ -1389,15 +1344,8 @@ const Sensorium = () => {
               id="section-synthesis"
               title="Synthesis"
               levelNumber={7}
-              guidance={SECTION_GUIDANCE.synthesis}
-              expandedSections={expandedSections}
-              onToggle={(id) =>
-                setExpandedSections((prev) => {
-                  const next = new Set(prev);
-                  if (next.has(id)) next.delete(id); else next.add(id);
-                  return next;
-                })
-              }
+              thinkLike={SECTION_GUIDANCE.synthesis.thinkLike}
+              guidance={SECTION_GUIDANCE.synthesis.guidance}
             >
               <div className="space-y-4">
                 <QuestionSection
@@ -1521,9 +1469,9 @@ const Sensorium = () => {
         <ShareDialog
           open={shareDialogOpen}
           onOpenChange={setShareDialogOpen}
-          worksheetId={(currentWorksheetId || worksheetId)!}
-          worksheetTitle={currentWorksheetTitle || "Untitled Sensorium"}
-          worldId={worldId || undefined}
+          entityType="worksheet"
+          entityId={(currentWorksheetId || worksheetId)!}
+          entityTitle={currentWorksheetTitle || "Untitled Sensorium"}
         />
       )}
 
@@ -1536,7 +1484,7 @@ const Sensorium = () => {
       <WorksheetNotesSheet
         open={notesSheetOpen}
         onOpenChange={setNotesSheetOpen}
-        value={formState.generalNotes}
+        content={formState.generalNotes}
         onChange={(v) => setFormState((prev) => ({ ...prev, generalNotes: v }))}
       />
 
@@ -1544,9 +1492,8 @@ const Sensorium = () => {
         open={moodboardSheetOpen}
         onOpenChange={setMoodboardSheetOpen}
         images={formState.moodboard || []}
-        onChange={(imgs) => setFormState((prev) => ({ ...prev, moodboard: imgs }))}
-        worksheetId={currentWorksheetId || worksheetId || undefined}
-        worldId={worldId || undefined}
+        onImagesChange={(imgs) => setFormState((prev) => ({ ...prev, moodboard: imgs }))}
+        worksheetId={currentWorksheetId || worksheetId || "local"}
       />
 
       <EntityMatchDialog {...entityMatch.dialogProps} />

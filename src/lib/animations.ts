@@ -3,15 +3,15 @@
  * Reusable framer-motion variants, easing functions, and hooks.
  */
 
-import type { Variants, Transition } from "framer-motion";
+import type { Variants, Transition, BezierDefinition } from "framer-motion";
 
 // ─── Easing curves ────────────────────────────────────────────────────────────
 
 export const easing = {
-  outExpo: [0.16, 1, 0.3, 1] as const,
-  outBack: [0.34, 1.56, 0.64, 1] as const,
-  spring: [0.5, 1.5, 0.5, 1] as const,
-};
+  outExpo: [0.16, 1, 0.3, 1],
+  outBack: [0.34, 1.56, 0.64, 1],
+  spring: [0.5, 1.5, 0.5, 1],
+} as const satisfies Record<string, BezierDefinition>;
 
 // ─── Durations ────────────────────────────────────────────────────────────────
 
@@ -42,7 +42,7 @@ export const fadeUpItem: Variants = {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { duration: 0.4, ease: easing.outExpo as unknown as number[] },
+    transition: { duration: 0.4, ease: easing.outExpo },
   },
 };
 
@@ -58,7 +58,7 @@ export const heroReveal: Variants = {
     opacity: 1,
     scale: 1,
     filter: "blur(0px)",
-    transition: { duration: 0.6, ease: easing.outExpo as unknown as number[] },
+    transition: { duration: 0.6, ease: easing.outExpo },
   },
 };
 
@@ -69,7 +69,7 @@ export const scrollReveal: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: easing.outExpo as unknown as number[] },
+    transition: { duration: 0.5, ease: easing.outExpo },
   },
 };
 
@@ -108,7 +108,7 @@ export const modalContent: Variants = {
     opacity: 1,
     scale: 1,
     y: 0,
-    transition: { duration: 0.25, ease: easing.outExpo as unknown as number[] },
+    transition: { duration: 0.25, ease: easing.outExpo },
   },
   exit: {
     opacity: 0,

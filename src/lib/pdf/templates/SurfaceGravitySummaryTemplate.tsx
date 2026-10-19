@@ -11,7 +11,6 @@ interface Props {
     cascade?: Record<string, string>;
     storyNotes?: Record<string, string>;
     generalNotes?: string;
-    [key: string]: unknown;
   };
   worldName?: string;
   date?: string;
@@ -52,7 +51,7 @@ const SurfaceGravitySummaryTemplate = ({ formState: rawFormState, worldName, dat
             <PDFResultBox
               label="Surface Gravity"
               value={formatGravity(result.gravity)}
-              subtitle={`${result.gravityMs2.toFixed(2)} m/s², ${result.regimeLabel}`}
+              description={`${result.gravityMs2.toFixed(2)} m/s², ${result.regimeLabel}`}
             />
             <View style={{ flexDirection: "row", gap: spacing.md, marginTop: spacing.sm }}>
               <View style={{ flex: 1 }}>

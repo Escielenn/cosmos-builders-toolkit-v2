@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import type { TablesInsert } from "@/integrations/supabase/types";
 import type { WorldConnection } from "./world-data";
 import {
   ALL_RELATIONSHIP_TYPES,
@@ -48,7 +49,7 @@ export async function createConnection(
   input: CreateConnectionInput,
   userId: string
 ): Promise<WorldConnection> {
-  const row: Record<string, unknown> = {
+  const row: TablesInsert<"world_connections"> = {
     world_id: input.worldId,
     connection_type: input.connectionType,
     description: input.description ?? null,

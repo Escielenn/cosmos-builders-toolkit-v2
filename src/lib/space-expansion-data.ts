@@ -1,3 +1,4 @@
+import type { MoodboardImage } from "@/hooks/use-moodboard";
 // Space Expansion Modeler - Data Constants
 // Section navigation, force categories, modifier types, templates, SF examples
 
@@ -101,7 +102,8 @@ export interface ModifierNode {
 export interface ConsequenceCell {
   forceA: ForceCategory;
   forceB: ForceCategory;
-  interaction: InteractionResult;
+  /** "" until the writer picks an interaction for this pair. */
+  interaction: InteractionResult | "";
   description: string;
   narrativeHook: string;
 }
@@ -111,10 +113,7 @@ export interface ConsequenceMatrix {
   cells: ConsequenceCell[];
 }
 
-export interface MoodboardImage {
-  id: string;
-  url: string;
-}
+export type { MoodboardImage } from "@/hooks/use-moodboard";
 
 // ─── Main FormState ─────────────────────────────────────────────────
 
@@ -427,7 +426,7 @@ export function createEmptyConsequenceMatrix(phaseId: ExpansionPhaseId): Consequ
     cells: pairs.map((p) => ({
       forceA: p.forceA,
       forceB: p.forceB,
-      interaction: "" as InteractionResult,
+      interaction: "",
       description: "",
       narrativeHook: "",
     })),

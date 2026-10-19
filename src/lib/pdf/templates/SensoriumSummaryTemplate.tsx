@@ -7,13 +7,13 @@ import { getModalityById, SPECTRAL_PRESETS, ATMOSPHERE_PRESETS, MODALITY_CATEGOR
 import type { SensoriumFormState } from "@/lib/sensorium/types";
 
 interface Props {
-  formState: SensoriumFormState & { [key: string]: unknown };
+  formState: SensoriumFormState;
   worldName?: string;
   date?: string;
 }
 
 const SensoriumSummaryTemplate = ({ formState: rawFormState, worldName, date }: Props) => {
-  const data = deepStripHtml(rawFormState) as unknown as SensoriumFormState;
+  const data = deepStripHtml(rawFormState);
 
   const starPreset = SPECTRAL_PRESETS.find((p) => p.id === data?.environment?.star?.preset);
   const atmoPreset = ATMOSPHERE_PRESETS.find((p) => p.id === data?.environment?.atmosphere?.preset);

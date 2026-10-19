@@ -14,6 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { mapError } from "@/lib/ship-voice";
+import { toJson } from "@/lib/rpc-json";
 
 export interface SimulationSave {
   id: string;
@@ -107,10 +108,10 @@ export function useSimulationSave({
           user_id: user.id,
           simulator_type: simulatorType,
           name: input.name,
-          data: {
+          data: toJson({
             parameters: input.data.parameters,
             results: input.data.results,
-          },
+          }),
           narrative_notes: input.narrativeNotes ?? null,
         })
         .select()

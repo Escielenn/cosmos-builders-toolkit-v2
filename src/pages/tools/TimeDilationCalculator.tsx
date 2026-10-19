@@ -1161,8 +1161,9 @@ const TimeDilationCalculator = () => {
         <ShareDialog
           open={shareDialogOpen}
           onOpenChange={setShareDialogOpen}
-          worksheetId={(currentWorksheetId || worksheetId)!}
-          worldId={worldId || undefined}
+          entityType="worksheet"
+          entityId={(currentWorksheetId || worksheetId)!}
+          entityTitle={currentWorksheetTitle || "Untitled Worksheet"}
         />
       )}
       <WorksheetSelectorDialog

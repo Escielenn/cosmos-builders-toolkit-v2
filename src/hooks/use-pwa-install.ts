@@ -32,7 +32,7 @@ export function usePwaInstall(): UsePwaInstallReturn {
   const isStandalone =
     typeof window !== "undefined" &&
     (window.matchMedia("(display-mode: standalone)").matches ||
-      (navigator as Record<string, unknown>).standalone === true);
+      (navigator as Navigator & { standalone?: boolean }).standalone === true);
 
   const platform = useMemo((): Platform => {
     const ua = navigator.userAgent;

@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { rpcArray, rpcObject } from "@/lib/rpc-json";
 
 // ── Types ──────────────────────────────────────────────────────
 
@@ -126,7 +127,7 @@ export const useAdminStats = () =>
     queryFn: async () => {
       const { data, error } = await supabase.rpc("admin_get_stats");
       if (error) throw error;
-      return data as AdminStats;
+      return rpcObject<AdminStats>(data);
     },
     staleTime: 60_000,
   });
@@ -142,7 +143,7 @@ export const useAdminTickets = (status?: string, category?: string) =>
         p_offset: 0,
       });
       if (error) throw error;
-      return (data ?? []) as AdminTicket[];
+      return rpcArray<AdminTicket>(data);
     },
     staleTime: 30_000,
   });
@@ -157,7 +158,7 @@ export const useAdminContacts = (status?: string) =>
         p_offset: 0,
       });
       if (error) throw error;
-      return (data ?? []) as AdminContact[];
+      return rpcArray<AdminContact>(data);
     },
     staleTime: 30_000,
   });
@@ -171,7 +172,7 @@ export const useAdminUsers = () =>
         p_offset: 0,
       });
       if (error) throw error;
-      return (data ?? []) as AdminUser[];
+      return rpcArray<AdminUser>(data);
     },
     staleTime: 60_000,
   });
@@ -185,7 +186,7 @@ export const useAdminSearchUsers = (query: string) =>
         p_limit: 30,
       });
       if (error) throw error;
-      return (data ?? []) as AdminUser[];
+      return rpcArray<AdminUser>(data);
     },
     enabled: query.length >= 2,
     staleTime: 30_000,
@@ -199,7 +200,7 @@ export const useAdminUserDetail = (userId: string | null) =>
         p_user_id: userId!,
       });
       if (error) throw error;
-      return data as AdminUserDetail;
+      return rpcObject<AdminUserDetail>(data);
     },
     enabled: !!userId,
     staleTime: 60_000,
@@ -211,7 +212,7 @@ export const useAdminSubscriptionStats = () =>
     queryFn: async () => {
       const { data, error } = await supabase.rpc("admin_get_subscription_stats");
       if (error) throw error;
-      return data as SubscriptionStats;
+      return rpcObject<SubscriptionStats>(data);
     },
     staleTime: 60_000,
   });
@@ -225,7 +226,7 @@ export const useAdminSubscriptionList = (status?: string) =>
         p_limit: 100,
       });
       if (error) throw error;
-      return (data ?? []) as AdminSubscription[];
+      return rpcArray<AdminSubscription>(data);
     },
     staleTime: 60_000,
   });
@@ -238,7 +239,7 @@ export const useAdminRecentActivity = () =>
         p_limit: 15,
       });
       if (error) throw error;
-      return (data ?? []) as ActivityItem[];
+      return rpcArray<ActivityItem>(data);
     },
     staleTime: 30_000,
   });
@@ -311,7 +312,7 @@ export const useAdminTodos = (status?: string) =>
         p_limit: 50,
       });
       if (error) throw error;
-      return (data ?? []) as AdminTodo[];
+      return rpcArray<AdminTodo>(data);
     },
     staleTime: 15_000,
   });
@@ -340,7 +341,7 @@ export const useCreateTodo = () => {
         p_linked_contact_id: linkedContactId ?? null,
       });
       if (error) throw error;
-      return data as AdminTodo;
+      return rpcObject<AdminTodo>(data);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin", "todos"] });
@@ -429,7 +430,7 @@ export const useAdminRoadmapItems = (status?: string) =>
         p_limit: 50,
       });
       if (error) throw error;
-      return (data ?? []) as AdminRoadmapItem[];
+      return rpcArray<AdminRoadmapItem>(data);
     },
     staleTime: 30_000,
   });
@@ -455,7 +456,7 @@ export const useCreateRoadmapItem = () => {
         p_target_quarter: targetQuarter ?? null,
       });
       if (error) throw error;
-      return data as AdminRoadmapItem;
+      return rpcObject<AdminRoadmapItem>(data);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin", "roadmap"] });

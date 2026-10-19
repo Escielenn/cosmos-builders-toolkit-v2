@@ -8,7 +8,7 @@ import { localDay } from "@/lib/local-day";
 import { useEarnedBadges, useEarnBadge } from "@/hooks/use-badges";
 import { useBadgeContext } from "@/contexts/BadgeContext";
 import { BADGE_DEFINITIONS, type BadgeEvalData } from "@/lib/badges/definitions";
-import { TOOL_WIKI } from "@/lib/tool-wiki-data";
+import { TOOL_WIKI, type CascadePosition } from "@/lib/tool-wiki-data";
 import { supabase } from "@/integrations/supabase/client";
 
 /**
@@ -120,7 +120,7 @@ export function useBadgeEvaluator() {
         ...writing,
         worksheetCascadePositions: worksheets
           .map((ws) => TOOL_WIKI[ws.tool_type]?.cascade)
-          .filter((c): c is string => !!c),
+          .filter((c): c is CascadePosition => !!c),
         worldWorksheetCounts: (() => {
           const m = new Map<string, Set<string>>();
           for (const ws of worksheets) {

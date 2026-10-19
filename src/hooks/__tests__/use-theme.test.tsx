@@ -9,6 +9,7 @@ import {
   THEME_BASES,
   THEME_PRIMARIES,
   primaryHex,
+  type ThemeBase,
 } from "@/hooks/use-theme";
 import AppearanceSettings from "@/components/settings/AppearanceSettings";
 
@@ -23,7 +24,7 @@ beforeEach(() => {
 
 describe("theme catalogue", () => {
   it("ships 10 bases × 6 primaries (cyan retired), every pair solved", () => {
-    const bases = Object.keys(THEME_BASES);
+    const bases = Object.keys(THEME_BASES) as ThemeBase[];
     expect(bases).toHaveLength(10);
     expect(THEME_PRIMARIES).toHaveLength(6);
     expect(THEME_PRIMARIES).not.toContain("cyan");

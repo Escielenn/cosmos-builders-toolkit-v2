@@ -1,3 +1,4 @@
+import type { MoodboardImage } from "@/hooks/use-moodboard";
 // GRAVITAS, TypeScript interfaces for all calculation modes
 
 // ─── Calculation & Realism Modes ────────────────────────────────────
@@ -199,8 +200,4 @@ export interface GravitasFormState {
 }
 
 // Moodboard image type (matches other tools)
-export interface MoodboardImage {
-  id: string;
-  url: string;
-  caption?: string;
-}
+export type { MoodboardImage } from "@/hooks/use-moodboard";

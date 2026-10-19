@@ -471,8 +471,9 @@ const Timeline = () => {
       <ShareDialog
         open={shareDialogOpen}
         onOpenChange={setShareDialogOpen}
-        worksheetId={currentWorksheetId || worksheetId || undefined}
-        worldId={worldId || undefined}
+        entityType="worksheet"
+        entityId={currentWorksheetId || worksheetId || ""}
+        entityTitle={currentWorksheetTitle || "Untitled Timeline"}
       />
 
       <WorksheetNotesSheet

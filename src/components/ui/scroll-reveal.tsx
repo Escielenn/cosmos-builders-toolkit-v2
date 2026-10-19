@@ -20,7 +20,7 @@ export const ScrollReveal = ({ children, delay = 0, className }: ScrollRevealPro
         transition: {
           duration: 0.5,
           delay,
-          ease: easing.outExpo as unknown as number[],
+          ease: easing.outExpo,
         },
       },
     }}

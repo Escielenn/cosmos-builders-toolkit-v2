@@ -1,3 +1,4 @@
+import type { MoodboardImage } from "@/hooks/use-moodboard";
 // Timeline Tool, Type Definitions (Phase 1 + Phase 2)
 
 export type TrackType =
@@ -144,11 +145,7 @@ export interface ViewState {
   centerYear: number;
 }
 
-export interface MoodboardImage {
-  id: string;
-  url: string;
-  caption?: string;
-}
+export type { MoodboardImage } from "@/hooks/use-moodboard";
 
 // ─── Filter Types (Phase 3, ephemeral, not persisted) ──────────────
 

@@ -17,9 +17,11 @@ import {
   type KardashevFormState,
 } from "@/lib/kardashev/calculations";
 import { GROWTH_RATES, BUDGET_CATEGORIES } from "@/lib/kardashev/data";
+import type { FormState as KardashevWorksheetState } from "@/lib/tool-worksheets/kardashev";
 
 interface Props {
-  formState: Record<string, unknown>;
+  // Partial: older saved worksheets may lack fields; reads below default each one.
+  formState: Partial<KardashevWorksheetState>;
   worldName?: string;
   date?: string;
 }
@@ -50,14 +52,14 @@ const KardashevSummaryTemplate = ({ formState: rawFormState, worldName, date }: 
               <PDFResultBox
                 label="Kardashev Number"
                 value={formatKardashev(results.kardashevNumber)}
-                subtitle={`Type ${results.level}`}
+                description={`Type ${results.level}`}
               />
             </View>
             <View style={{ flex: 1 }}>
               <PDFResultBox
                 label="Total Power Output"
                 value={formatPower(results.totalPowerWatts)}
-                subtitle={`10^${results.log10Power.toFixed(2)} W`}
+                description={`10^${results.log10Power.toFixed(2)} W`}
               />
             </View>
           </View>
@@ -74,7 +76,7 @@ const KardashevSummaryTemplate = ({ formState: rawFormState, worldName, date }: 
               <PDFKeyValuePair label="Band" value={results.band.label} />
               <PDFKeyValuePair
                 label="Earth Multiple"
-                value={formatMultiple(results.earthMultiple, "Earth")}
+                value={formatMultiple(results.earthMultiple)}
               />
             </View>
           </View>
@@ -84,11 +86,11 @@ const KardashevSummaryTemplate = ({ formState: rawFormState, worldName, date }: 
         <PDFSection title="Scale Comparisons">
           <PDFKeyValuePair
             label="Solar Multiple"
-            value={formatMultiple(results.solarMultiple, "Sun")}
+            value={formatMultiple(results.solarMultiple)}
           />
           <PDFKeyValuePair
             label="Galactic Multiple"
-            value={formatMultiple(results.galaxyMultiple, "Galaxy")}
+            value={formatMultiple(results.galaxyMultiple)}
           />
           {results.yearsToNextLevel != null && (
             <PDFKeyValuePair
