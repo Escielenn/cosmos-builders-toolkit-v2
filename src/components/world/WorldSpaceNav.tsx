@@ -86,7 +86,7 @@ export function WorldSpaceNav({ worldId }: WorldSpaceNavProps) {
   return (
     <nav
       aria-label="World"
-      className="flex items-stretch border-b border-sf-line-hairline bg-sf-surface"
+      className="relative z-10 flex items-stretch border-b border-sf-line-hairline bg-sf-surface"
     >
       {SPACES.map(({ id, label, hint, to, Icon, match }) => {
         const active = match(pathname, worldId);
