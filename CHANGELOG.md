@@ -1,5 +1,25 @@
 # StellarForge Changelog
 
+## 0.7900 · One Frame
+The continuity pass. One header, one frame, one notice, everywhere
+(docs/stellarforge/15-PAGE-CHROME.md).
+- Every page title is MD Nichrome, written as the page names itself: no Lora
+  or Jura titles, no forced caps, no trailing periods. Standalone pages use the
+  page size, world spaces one step smaller.
+- The site header stays on every app page, the Manuscript included. The world
+  nav sits under it on every world route; the world index hides on the
+  Manuscript, where the binder is the index.
+- Breadcrumbs inside a world, one "Back to ..." link on child pages. Every
+  RETURN HOME / RETURN TO BRIDGE link is gone; the logo goes home.
+- The Bridge leads with the world's name; the cover card no longer repeats it.
+  In-world tool titles start at the top of the page.
+- Studio is titled Studio; the greeting moves to the lede. Worlds is "Your
+  worlds". Studio's All tools link now goes to the tool catalog.
+- One Notice for hints, cautions and inline errors: tone rule, // LABEL,
+  sentence-case body. One dialog title style across dialogs and sheets.
+- One title block across the simulators; Science pages get the page header.
+- CI guard (npm run check:chrome) fails on a raw h1 or a banned back label.
+
 ## 0.7800 · The Way In
 Tier 4 of the 1.5 programme.
 - The Manuscript lives inside the world: /worlds/:id/write/:doc keeps the
