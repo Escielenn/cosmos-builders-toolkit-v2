@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { isManuscriptPath } from "@/lib/manuscript-path";
 import { JulianDayClock } from "@/components/ambient/JulianDayClock";
 import { SolCounter } from "@/components/ambient/SolCounter";
 import { LunarPhase } from "@/components/ambient/LunarPhase";
@@ -26,7 +27,7 @@ const getSectorLabel = (pathname: string): string => {
   if (pathname.startsWith("/tools/space-expansion")) return "TOOLS → EXODUS";
   if (pathname.startsWith("/tools/habitable-zone")) return "TOOLS → GOLDILOCKS";
   if (pathname.startsWith("/tools/lexdrift")) return "TOOLS → LEXDRIFT";
-  if (pathname.startsWith("/tools/surface-gravity")) return "TOOLS → ATLAS";
+  if (pathname.startsWith("/tools/surface-gravity")) return "TOOLS → BALLAST";
   if (pathname.startsWith("/tools/timeline")) return "TOOLS → TIMELINE";
   if (pathname.startsWith("/tools/sensorium")) return "TOOLS → SENSORIUM";
   if (pathname.startsWith("/tools/gravitas")) return "TOOLS → GRAVITAS";
@@ -60,7 +61,7 @@ const StatusBar = () => {
   );
   // The manuscript editor is a focused full-screen surface with its own
   // status footer — the global bar would overlap it.
-  const isEditor = pathname.startsWith("/write");
+  const isEditor = isManuscriptPath(pathname);
 
   useEffect(() => {
     const interval = setInterval(() => setElapsed((s) => s + 1), 1000);

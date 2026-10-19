@@ -1,5 +1,6 @@
 import { Component, useState, useCallback, useRef } from "react";
 import PageShell from "@/components/layout/PageShell";
+import { MainLandmark } from "@/components/layout/MainLandmark";
 import type { ReactNode, ErrorInfo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import ChronicleMergeNotice from "@/components/timeline/ChronicleMergeNotice";
@@ -559,7 +560,7 @@ class TimelineErrorBoundary extends Component<
     if (this.state.error) {
       return (
         <PageShell>
-          <main className="container mx-auto px-4 pt-24 pb-16">
+          <MainLandmark className="container mx-auto px-4 pt-24 pb-16">
             <GlassPanel className="p-8 text-center">
               <h2 className="text-xl font-medium text-sf-crimson-text mb-4">
                 Timeline failed to render
@@ -573,7 +574,7 @@ class TimelineErrorBoundary extends Component<
                 Try Again
               </Button>
             </GlassPanel>
-          </main>
+          </MainLandmark>
         </PageShell>
       );
     }

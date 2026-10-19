@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -51,14 +51,7 @@ const Join = () => {
   // Validate the join code
   const isValidCode = !!(code && VALID_CODES.has(code));
 
-  // Prevent crawling of this page
-  useEffect(() => {
-    const meta = document.createElement("meta");
-    meta.name = "robots";
-    meta.content = "noindex, nofollow";
-    document.head.appendChild(meta);
-    return () => { document.head.removeChild(meta); };
-  }, []);
+  // noindex for /join/* comes from the route policy (src/lib/seo/routes.ts).
 
   // Don't auto-redirect, show the page even if logged in
   // (user may be testing the link or sharing the screen)

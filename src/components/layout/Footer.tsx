@@ -15,7 +15,7 @@ const Footer = () => {
     product: [
       { name: "Features", href: "/features" },
       { name: "Pricing", href: "/pricing" },
-      { name: "Tools", href: "/#tools" },
+      { name: "Tools", href: "/tools" },
       { name: "Roadmap", href: "/roadmap" },
       { name: "Writing Prompts", href: "/prompts" },
       { name: "Community", href: "/community" },

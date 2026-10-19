@@ -27,7 +27,7 @@ const SurfaceGravityFullReportTemplate = ({ formState: rawFormState, worldName, 
       {/* Page 1: Parameters & Core Results */}
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Atlas"
+          toolName="Ballast"
           worldName={worldName}
           date={date}
           hideLogo
@@ -87,7 +87,7 @@ const SurfaceGravityFullReportTemplate = ({ formState: rawFormState, worldName, 
 
       {/* Page 2: Atmosphere & Delta-V */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Atlas" hideLogo />
+        <PDFHeader toolName="Ballast" hideLogo />
 
         {result.valid && (
           <>
@@ -150,7 +150,7 @@ const SurfaceGravityFullReportTemplate = ({ formState: rawFormState, worldName, 
 
       {/* Page 3: Worldbuilding Cascade */}
       <Page size="LETTER" style={styles.page}>
-        <PDFHeader toolName="Atlas" hideLogo />
+        <PDFHeader toolName="Ballast" hideLogo />
 
         {result.valid && CASCADE_CONTENT.map((category) => {
           const block = category.blocks.find((b) => b.regime === result.gravityRegime) || category.blocks[2];
@@ -187,7 +187,7 @@ const SurfaceGravityFullReportTemplate = ({ formState: rawFormState, worldName, 
       {/* Page 4: Story Notes */}
       {data?.storyNotes && Object.values(data.storyNotes).some((v) => v) && (
         <Page size="LETTER" style={styles.page}>
-          <PDFHeader toolName="Atlas" hideLogo />
+          <PDFHeader toolName="Ballast" hideLogo />
 
           {data.storyNotes.physicalExperience && (
             <PDFSection title="Physical Experience">

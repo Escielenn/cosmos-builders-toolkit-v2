@@ -19,8 +19,8 @@
          External file, not inline, so it isn't blocked by the CSP's script-src
          (no 'unsafe-inline' there on purpose). -->
     <script src="/no-flash.js"></script>
-    <title>StellarForge - Science Fiction Worldbuilding Tools</title>
-    <meta name="description" content="Science fiction worldbuilding tools. Create rich, lived-in worlds with comprehensive tools for spacecraft, planets, cultures, and more." />
+    <title>StellarForge - Science Fiction Worldbuilding and Writing Studio</title>
+    <meta name="description" content="Decide what is true about your universe, then write it. StellarForge is the science fiction worldbuilding and writing studio where the world pushes back on the page." />
     <meta name="author" content="StellarForge" />
 
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
@@ -32,19 +32,21 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-    <meta property="og:title" content="StellarForge - Science Fiction Worldbuilding Tools" />
-    <meta property="og:description" content="Science fiction worldbuilding tools for creating rich, lived-in worlds." />
+    <meta property="og:title" content="StellarForge - Science Fiction Worldbuilding and Writing Studio" />
+    <meta property="og:description" content="Decide what is true about your universe, then write it. StellarForge is the science fiction worldbuilding and writing studio where the world pushes back on the page." />
     <meta property="og:url" content="https://stellarforge.tools" />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="https://stellarforge.tools/og-image.png" />
     <meta property="og:site_name" content="StellarForge" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="StellarForge - Science Fiction Worldbuilding Tools" />
-    <meta name="twitter:description" content="Science fiction worldbuilding tools for creating rich, lived-in worlds." />
+    <meta name="twitter:title" content="StellarForge - Science Fiction Worldbuilding and Writing Studio" />
+    <meta name="twitter:description" content="Decide what is true about your universe, then write it. StellarForge is the science fiction worldbuilding and writing studio where the world pushes back on the page." />
     <meta name="twitter:image" content="https://stellarforge.tools/og-image.png" />
 
-    <link rel="canonical" href="https://stellarforge.tools" />
+    <!-- No static <link rel="canonical">: a hardcoded homepage canonical told
+         crawlers every route was a duplicate of "/". RouteSeo
+         (src/components/common/RouteSeo.tsx) writes it per route. -->
 
     <!-- Structured Data for SEO -->
     <script type="application/ld+json">
@@ -52,7 +54,7 @@
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "StellarForge",
-      "description": "Science fiction worldbuilding tools for creating rich, lived-in worlds with comprehensive tools for spacecraft, planets, cultures, and more.",
+      "description": "Decide what is true about your universe, then write it. StellarForge is the science fiction worldbuilding and writing studio where the world pushes back on the page. Worldbuilding instruments, simulators, a Scrivener-style writing Studio, Codex and Chronicle, bound by one canon.",
       "url": "https://stellarforge.tools",
       "applicationCategory": "CreativeWork",
       "operatingSystem": "Web Browser",
@@ -61,11 +63,6 @@
         "price": "4.99",
         "priceCurrency": "USD",
         "priceValidUntil": "2027-12-31"
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "5",
-        "ratingCount": "1"
       }
     }
     </script>

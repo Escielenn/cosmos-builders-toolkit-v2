@@ -127,7 +127,7 @@ export default function WorldAppearanceDialog({
             </DialogHeader>
             <div className="py-4 text-center">
               <p className="text-sm text-t2 mb-4">
-                Pro includes custom theming, all export formats, 365-day version history, and unlimited worlds.
+                Pro includes custom world theming, every instrument, the World Bible PDF, and Word, Markdown and Scrivener world exports.
               </p>
               <Button onClick={() => setUpgradeOpen(true)}>
                 <Zap className="w-4 h-4 mr-2" />

@@ -1,5 +1,25 @@
 # StellarForge Changelog
 
+## 0.7800 · The Way In
+Tier 4 of the 1.5 programme.
+- The Manuscript lives inside the world: /worlds/:id/write/:doc keeps the
+  four-space nav above the Studio. Old /write links redirect.
+- One name per thing: Worksheets and Entries in the world index, Manuscript for
+  the editor, Writing Prompts, Bridge for the world dashboard. The gravity tool
+  is now Ballast (Atlas belongs to the Codex map). The Elements tab is gone.
+- New signed-in home: your worlds with CONTINUE, recent activity, BEGIN SURVEY.
+  The tool catalog moved to /tools; Coming Soon lists only what isn't built.
+- Getting Started is free end to end: world, a free instrument on an entity,
+  first scene. Pro tools are marked as the optional next step.
+- Command palette finds Codex entries and documents and opens worksheets in
+  their world. Collection and Archive are profile tabs.
+- Pricing sells the product (Studio, Codex, Chronicle, Canon, Compile) and only
+  claims what is enforced. New hero: decide what is true, then write it.
+- SEO: per-route canonical, a generated sitemap without paywalled pages,
+  noindex on private routes. /early redirects home.
+- Phones: the world index opens as a sheet. Skip link and main landmark
+  everywhere; keyboard-resizable sidebar; 44px header buttons.
+
 ## 0.7700 · True Instruments
 Tier 3 of the 1.5 programme.
 - Science fixes, each with tests against published values:

@@ -7,8 +7,9 @@
 import { Link } from "react-router-dom";
 import type { ChronicleEvent } from "@/services/chronicle-data";
 import type { MentioningDocument } from "@/hooks/use-codex-entity";
+import { manuscriptPath } from "@/lib/manuscript-path";
 
-export function EntityMentionsSection({ mentions }: { mentions: MentioningDocument[] }) {
+export function EntityMentionsSection({ worldId, mentions }: { worldId: string; mentions: MentioningDocument[] }) {
   if (mentions.length === 0) return null;
   return (
     <>
@@ -16,7 +17,7 @@ export function EntityMentionsSection({ mentions }: { mentions: MentioningDocume
       <div className="space-y-1">
         {mentions.map((m) => (
           <div key={m.id} className="sf-wiki-backlink">
-            <Link to={`/write/${m.id}`} className="sf-wiki-link">
+            <Link to={manuscriptPath(worldId, m.id)} className="sf-wiki-link">
               {m.title}
             </Link>
             <span className="text-t4 text-xs">manuscript</span>

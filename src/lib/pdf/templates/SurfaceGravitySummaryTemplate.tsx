@@ -26,7 +26,7 @@ const SurfaceGravitySummaryTemplate = ({ formState: rawFormState, worldName, dat
     <Document>
       <Page size="LETTER" style={styles.page}>
         <PDFHeader
-          toolName="Atlas"
+          toolName="Ballast"
           worldName={worldName}
           date={date}
           hideLogo

@@ -481,7 +481,7 @@ When adding a new tool, these files MUST be updated:
 | `src/lib/{tool-name}-data.ts` | Data constants, sections, dropdowns | Yes |
 | `src/pages/tools/{ToolName}.tsx` | Main tool page component | Yes |
 | `src/App.tsx` | Route definition | Yes |
-| `src/pages/Index.tsx` | Homepage tools array (logged-in view) | Yes |
+| `src/pages/Tools.tsx` | `/tools` catalog array (`TOOLS_BY_CATEGORY`) | Yes |
 | `src/components/landing/ToolShowcase.tsx` | Landing page tools (logged-out view) | Yes |
 | `src/lib/tools-config.ts` | Pro/Free tool classification | Yes |
 | `src/pages/WorldDashboard.tsx` | World detail page TOOLS array | Yes |
@@ -509,7 +509,7 @@ When adding a new tool, these files MUST be updated:
 - [ ] Add route in `App.tsx` (with `ProToolGuard` if Pro tool)
 
 ### 2. Homepage & Navigation (ALL REQUIRED)
-- [ ] Add to `src/pages/Index.tsx` tools array (logged-in homepage)
+- [ ] Add to `src/pages/Tools.tsx` catalog array (`/tools`)
 - [ ] Add to `src/components/landing/ToolShowcase.tsx` (logged-out landing page)
 - [ ] **Add to `src/lib/tools-config.ts`** - CRITICAL for lock/unlock badges
 - [ ] Add to `src/pages/WorldDashboard.tsx` TOOLS array

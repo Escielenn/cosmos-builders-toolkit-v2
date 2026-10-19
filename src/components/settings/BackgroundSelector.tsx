@@ -114,7 +114,7 @@ const BackgroundSelector = () => {
         <TooltipTrigger asChild>
           <button
             className={cn(
-              "sf-nav-link inline-flex items-center justify-center w-9 h-9 transition-colors",
+              "sf-nav-link inline-flex items-center justify-center w-11 h-11 min-h-hit min-w-hit transition-colors",
               backgroundVisible
                 ? "text-t3 hover:text-sf-primary-text"
                 : "text-t4 hover:text-t1"

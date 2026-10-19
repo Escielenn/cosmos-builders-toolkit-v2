@@ -16,6 +16,7 @@ import {
   type StudioWorld,
 } from "@/hooks/useStudioData";
 import { useMetaTags } from "@/hooks/use-meta-tags";
+import { manuscriptPath } from "@/lib/manuscript-path";
 import { WordHistoryChart } from "@/components/writing/WordHistoryChart";
 
 // ── small helpers ───────────────────────────────────────────────────
@@ -79,7 +80,7 @@ function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
               // World-scoped: bare /write opens the globally most-recent doc,
               // which under a "Workbench · <world>" heading could open a
               // different world's manuscript.
-              { label: "Write", to: `/worlds/${worlds[0].id}/write` },
+              { label: "Manuscript", to: manuscriptPath(worlds[0].id) },
               { label: "Codex", to: `/worlds/${worlds[0].id}/codex` },
               { label: "Chronicle", to: `/worlds/${worlds[0].id}/chronicle` },
               { label: "Web", to: `/worlds/${worlds[0].id}/codex?view=web` },
@@ -100,7 +101,7 @@ function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
         {[
           { label: "All tools", to: "/" },
           { label: "Chain reaction", to: "/tools/environmental-chain-reaction" },
-          { label: "Prompts", to: "/prompts" },
+          { label: "Writing prompts", to: "/prompts" },
         ].map((i) => (
           <Link
             key={i.label}
@@ -157,7 +158,7 @@ export default function Studio(): JSX.Element {
       <div className="mx-auto flex max-w-[1280px] pt-16">
         <Rail worlds={data?.worlds ?? []} />
 
-        <main className="min-w-0 flex-1 px-6 py-10 md:px-10">
+        <main id="main" tabIndex={-1} className="min-w-0 flex-1 px-6 py-10 md:px-10">
           {/* greeting */}
           <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
             <div>
@@ -240,7 +241,7 @@ export default function Studio(): JSX.Element {
                   )}
                   <div className="mt-6 flex flex-wrap items-center gap-2.5">
                     <Link
-                      to={`/write/${entry.id}`}
+                      to={entry.world_id ? manuscriptPath(entry.world_id, entry.id) : `/write/${entry.id}`}
                       className="bg-sf-primary px-5 py-2.5 font-sans text-[13px] font-medium tracking-wider text-[hsl(var(--accent-on-accent))] transition-shadow hover:shadow-sf-glow-teal"
                     >
                       Continue writing

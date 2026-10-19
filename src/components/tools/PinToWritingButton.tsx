@@ -51,7 +51,7 @@ export function PinToWritingButton({
       removePin(itemId);
       toast({
         title: "UNPINNED.",
-        description: "REMOVED FROM WRITING SPACE.",
+        description: "REMOVED FROM THE MANUSCRIPT.",
       });
     } else {
       addPin({
@@ -61,8 +61,8 @@ export function PinToWritingButton({
         content: content.slice(0, 200),
       });
       toast({
-        title: "PINNED TO WRITING SPACE.",
-        description: `"${title}" ADDED TO THE WRITING SPACE REFERENCE PANEL.`,
+        title: "PINNED TO MANUSCRIPT.",
+        description: `"${title}" ADDED TO THE MANUSCRIPT REFERENCE PANEL.`,
       });
     }
   }, [isPinned, itemId, itemType, title, content, addPin, removePin, toast]);
@@ -77,14 +77,14 @@ export function PinToWritingButton({
           : "text-t4 hover:text-sf-amber",
         className,
       )}
-      title={isPinned ? "Unpin from Writing Space" : "Pin to Writing Space"}
+      title={isPinned ? "Unpin from the Manuscript" : "Pin to the Manuscript"}
     >
       {isPinned ? (
         <PinOff className="w-3 h-3" />
       ) : (
         <Pin className="w-3 h-3" />
       )}
-      <span>{isPinned ? "Unpin" : "Pin to Writing"}</span>
+      <span>{isPinned ? "Unpin" : "Pin to Manuscript"}</span>
     </button>
   );
 }

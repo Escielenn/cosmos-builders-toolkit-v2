@@ -5,7 +5,7 @@
 // edges, and an empty "Chapter One"), then the caches the Studio reads are
 // invalidated and the world palette's entity index is prefetched, so the
 // first "/" in Chapter One already finds the star, the planet and the
-// species. The caller navigates to /write/:documentId on success.
+// species. The caller navigates to /worlds/:worldId/write/:documentId on success.
 //
 // Retry-safe: the run (payload, world id, what is already written) is kept
 // across a failure, and the next mutate() resumes it from the failed step

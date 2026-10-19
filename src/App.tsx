@@ -5,6 +5,7 @@ import "@/lib/preload-error-recovery";
 import { Suspense, lazy } from "react";
 import { MotionConfig } from "framer-motion";
 import { Toaster } from "@/components/ui/toaster";
+import { SkipLink } from "@/components/layout/SkipLink";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -13,6 +14,7 @@ import { BackgroundProvider } from "@/hooks/use-background";
 import { AudioProvider } from "@/hooks/use-audio-player";
 import AudioPlayer from "@/components/audio/AudioPlayer";
 import ScrollToTop from "./components/ScrollToTop";
+import RouteSeo from "./components/common/RouteSeo";
 import FABStack from "./components/layout/FABStack";
 import CookieConsent from "./components/common/CookieConsent";
 import AmbientEffects from "./components/layout/AmbientEffects";
@@ -36,11 +38,11 @@ import Auth from "./pages/Auth";
 // Lazy loaded pages (larger, less frequently accessed)
 const Profile = lazy(() => import("./pages/Profile"));
 const Pricing = lazy(() => import("./pages/Pricing"));
-const EarlyAccess = lazy(() => import("./pages/EarlyAccess"));
 const Studio = lazy(() => import("./pages/Studio"));
 const Write = lazy(() => import("./pages/Write"));
 const WriteIndex = lazy(() => import("./pages/Write").then((m) => ({ default: m.WriteIndex })));
 const WorldWriteRedirect = lazy(() => import("./pages/Write").then((m) => ({ default: m.WorldWriteRedirect })));
+const LegacyWriteRedirect = lazy(() => import("./pages/Write").then((m) => ({ default: m.LegacyWriteRedirect })));
 const Roadmap = lazy(() => import("./pages/Roadmap"));
 const Features = lazy(() => import("./pages/Features"));
 const Guide = lazy(() => import("./pages/Guide"));
@@ -61,8 +63,7 @@ const WorldChronicle = lazy(() => import("./pages/WorldChronicle"));
 const WorldCustomTypes = lazy(() => import("./pages/WorldCustomTypes"));
 const WorldCompile = lazy(() => import("./pages/WorldCompile"));
 const WikiBrowse = lazy(() => import("./pages/WikiBrowse"));
-const Collection = lazy(() => import("./pages/Collection"));
-const Archive = lazy(() => import("./pages/Archive"));
+const Tools = lazy(() => import("./pages/Tools"));
 const Commendations = lazy(() => import("./pages/Commendations"));
 const AboutUs = lazy(() => import("./pages/AboutUs"));
 const WorldShowcase = lazy(() => import("./pages/WorldShowcase"));
@@ -187,7 +188,10 @@ const App = () => (
         <TooltipProvider>
           <Toaster />
           <BrowserRouter>
+            {/* First focusable element on every page (WCAG 2.4.1). */}
+            <SkipLink />
             <ScrollToTop />
+            <RouteSeo />
             <BackgroundLayer />
             <KonamiCode />
             <BadgeEvaluatorMount />
@@ -197,13 +201,14 @@ const App = () => (
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={<Index />} />
-                {/* Public launch waitlist (Cowork Implementation Guide §2) */}
-                <Route path="/early" element={<EarlyAccess />} />
+                {/* The launch waitlist closed with open early access; old links land home. */}
+                <Route path="/early" element={<Navigate to="/" replace />} />
                 {/* Writer-register studio home (Cowork Implementation Guide §3) */}
                 <Route path="/studio" element={<Studio />} />
-                {/* Manuscript editor (Implementation Guide §4) */}
+                {/* Manuscript editor (Implementation Guide §4). It lives inside
+                    its world now (1.5 #26); these two only redirect there. */}
                 <Route path="/write" element={<WriteIndex />} />
-                <Route path="/write/:docId" element={<Write />} />
+                <Route path="/write/:docId" element={<LegacyWriteRedirect />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/auth/reset" element={<ResetPassword />} />
                 <Route path="/profile" element={<Profile />} />
@@ -216,8 +221,11 @@ const App = () => (
                 <Route path="/getting-started" element={<GettingStarted />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/admin" element={<Admin />} />
-                <Route path="/collection" element={<Collection />} />
-                <Route path="/archive" element={<Archive />} />
+                {/* Folded into the profile as tabs (onboarding review item 10). */}
+                <Route path="/collection" element={<Navigate to="/profile?tab=collection" replace />} />
+                <Route path="/archive" element={<Navigate to="/profile?tab=archive" replace />} />
+                {/* The full catalog; the signed-in home is worlds + writing now. */}
+                <Route path="/tools" element={<Tools />} />
                 <Route path="/commendations" element={<Commendations />} />
                 <Route path="/about" element={<AboutUs />} />
                 <Route path="/community" element={<Community />} />
@@ -239,8 +247,10 @@ const App = () => (
                   {/* F3: one graph. Both retired routes land on the Codex Web view. */}
                   <Route path="graph" element={<WorldWebRedirect />} />
                   <Route path="connections" element={<WorldWebRedirect />} />
-                  {/* Legacy Writing Space unified into Studio (redirects) */}
+                  {/* MANUSCRIPT: the editor, inside the world (1.5 #26).
+                      Bare /write opens the world's latest document. */}
                   <Route path="write" element={<WorldWriteRedirect />} />
+                  <Route path="write/:docId" element={<Write />} />
                   <Route path="custom-types" element={<WorldCustomTypes />} />
                   <Route path="compile" element={<WorldCompile />} />
                 </Route>

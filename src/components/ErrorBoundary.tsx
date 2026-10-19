@@ -88,7 +88,7 @@ class ErrorBoundary extends Component<Props, State> {
                   size="sf-md"
                   onClick={() => (window.location.href = "/")}
                 >
-                  RETURN TO BRIDGE
+                  RETURN HOME
                 </Button>
               </div>
             </div>

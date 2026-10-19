@@ -91,8 +91,8 @@ describe("BeginSurveyDialog", () => {
       planet: { presetId: "ocean", name: "" },
       species: { name: "Vethari", bodyPlanId: "radial", line: "They sing in tides." },
     });
-    opts.onSuccess({ documentId: "doc-9" });
-    expect(navigate).toHaveBeenCalledWith("/write/doc-9");
+    opts.onSuccess({ worldId: "w-1", documentId: "doc-9" });
+    expect(navigate).toHaveBeenCalledWith("/worlds/w-1/write/doc-9");
   });
 
   it("skips steps: a skipped star and a skipped life step file as null", () => {

@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { manuscriptPath } from "@/lib/manuscript-path";
 import { Loader } from "@/components/ui/loader";
 import { useCodexData } from "@/hooks/use-codex-data";
 import { useCreateEntry, useDeleteEntry, useUpdateEntry, useMoveEntry } from "@/hooks/use-world-entries";
@@ -189,9 +190,9 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
   // Default click handler, respects defaultView preference
   const navigateToElement = useCallback(
     (element: CodexElement) => {
-      // Writing entries → navigate to Writing Prompts
+      // Writing entries → open in the Manuscript, inside this world
       if (element.kind === "writing") {
-        navigate(`/write/${element.id}`);
+        navigate(manuscriptPath(worldId, element.id));
         return;
       }
       // World notes → navigate to dashboard notes section
@@ -325,7 +326,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
     return (
       <div className="p-3">
         <p className="font-mono text-[12px] uppercase tracking-wider text-sf-crimson-text">
-          Registry unavailable.
+          Worksheets unavailable.
         </p>
       </div>
     );
@@ -338,7 +339,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
         <button
           onClick={onCollapse}
           className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center h-6 border border-transparent text-t3 hover:text-t2 hover:border-sf-line-emphasis transition-colors"
-          aria-label="Collapse Registry"
+          aria-label="Collapse sidebar"
         >
           <span className="text-[12px]">◀</span>
         </button>

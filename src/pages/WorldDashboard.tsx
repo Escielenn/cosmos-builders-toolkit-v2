@@ -11,7 +11,6 @@ import { getTagColor } from "@/hooks/use-tags";
 import { format } from "date-fns";
 import Header from "@/components/layout/Header";
 import { GlassPanel } from "@/components/ui/glass-panel";
-import { EmptyState } from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
@@ -76,11 +75,6 @@ import WorldBibleDialog from "@/components/world/WorldBibleDialog";
 import WorldSnapshotDialog from "@/components/world/WorldSnapshotDialog";
 import WorldAppearanceDialog from "@/components/world/WorldAppearanceDialog";
 import VersionHistory from "@/components/world/VersionHistory";
-import EntityPickerDialog from "@/components/world/EntityPickerDialog";
-import CreateElementDialog from "@/components/world/CreateElementDialog";
-import { FLAGS } from "@/lib/feature-flags";
-import { useWorldEntities } from "@/hooks/use-world-entities";
-import { ENTITY_TYPE_LABELS } from "@/lib/entity-config";
 import { useIsWorldLayout } from "@/contexts/WorldLayoutContext";
 import { PageBursts } from "@/components/ui/data-burst";
 import { WORLD_DASHBOARD_BURSTS } from "@/lib/data-bursts";
@@ -92,9 +86,15 @@ import RecentActivity from "@/components/world/RecentActivity";
 import { BackLink } from "@/components/ui/back-link";
 // Secondary panels, collapsed into a single rail. Ordered by how often a
 // writer reaches for them when opening a world.
+//
+// "Elements" is gone (1.5 #27, 13-THE-LIFT §1): it listed the world's Codex
+// entries a second time, under a second name. The Codex List view is that
+// list. "Notes" stays until its fold into the Manuscript binder is decided:
+// world_notes are per-writer and private, binder documents are shared with
+// collaborators, so moving them is a privacy call and a migration, not a
+// rename.
 const DRAWERS: { id: string; label: string; ownerOnly?: boolean }[] = [
   { id: "worksheets", label: "Worksheets" },
-  { id: "elements", label: "Elements" },
   { id: "build", label: "Build" },
   { id: "notes", label: "Notes" },
   { id: "history", label: "History", ownerOnly: true },
@@ -215,7 +215,7 @@ const TOOLS = [
   },
   {
     id: "surface-gravity-calculator",
-    name: "Atlas: Surface Gravity Calculator",
+    name: "Ballast: Surface Gravity Calculator",
     description: "Calculate surface gravity and trace how weight shapes your world",
     icon: Weight,
     path: "/tools/surface-gravity-calculator",
@@ -552,7 +552,9 @@ const WorldDashboard = () => {
   const [snapshotDialogOpen, setSnapshotDialogOpen] = useState(false);
   const [openDrawer, setOpenDrawer] = useState<string | null>(() => {
     try {
-      return localStorage.getItem(`sf-world-drawer-${worldId}`) || null;
+      // A remembered drawer that no longer exists ("elements") opens nothing.
+      const saved = localStorage.getItem(`sf-world-drawer-${worldId}`);
+      return saved && DRAWERS.some((d) => d.id === saved) ? saved : null;
     } catch {
       return null;
     }
@@ -564,8 +566,6 @@ const WorldDashboard = () => {
     } catch { /* storage unavailable */ }
   }, [openDrawer, worldId]);
   const [appearanceDialogOpen, setAppearanceDialogOpen] = useState(false);
-  const [entityPickerOpen, setEntityPickerOpen] = useState(false);
-  const { entities: worldEntities, grouped: entitiesByType } = useWorldEntities(worldId);
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editIcon, setEditIcon] = useState("globe");
@@ -675,7 +675,7 @@ const WorldDashboard = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="container mx-auto px-4 pt-24 pb-16">{loadingSkeleton}</main>
+        <main id="main" tabIndex={-1} className="container mx-auto px-4 pt-24 pb-16">{loadingSkeleton}</main>
       </div>
     );
   }
@@ -703,7 +703,7 @@ const WorldDashboard = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="container mx-auto px-4 pt-24 pb-16">{errorContent}</main>
+        <main id="main" tabIndex={-1} className="container mx-auto px-4 pt-24 pb-16">{errorContent}</main>
       </div>
     );
   }
@@ -713,12 +713,12 @@ const WorldDashboard = () => {
       <PageBursts bursts={WORLD_DASHBOARD_BURSTS} />
         {/* Back Navigation */}
         <div className="flex items-center justify-between mb-6">
-          <BackLink to="/" label="RETURN TO BRIDGE" />
+          <BackLink to="/" label="RETURN HOME" />
           <div className="flex items-center gap-2">
             <Button size="sm" asChild>
               <Link to={`/worlds/${worldId}/write`}>
                 <PenLine className="w-4 h-4 mr-2" />
-                Write
+                Manuscript
               </Link>
             </Button>
             <Button variant="outline" size="sm" asChild>
@@ -921,71 +921,6 @@ const WorldDashboard = () => {
           </section>
         )}
 
-        {/* World Elements, entity-first entries */}
-        {worldId && openDrawer === "elements" && (
-          <section className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-medium">World Elements</h2>
-              {canEdit && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setEntityPickerOpen(true)}
-                  className="gap-1.5"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  New Element
-                </Button>
-              )}
-            </div>
-
-            {worldEntities.length === 0 ? (
-              <GlassPanel>
-                <EmptyState
-                  hideDial
-                  className="py-10"
-                  eyebrow="// ELEMENT INDEX"
-                  title="INDEX: EMPTY"
-                  description="NO ELEMENTS ON FILE. CREATE PLANETS, SPECIES, FACTIONS, THEN ATTACH WORKSHEETS."
-                  actionLabel={canEdit ? "CREATE FIRST ELEMENT" : undefined}
-                  onAction={canEdit ? () => setEntityPickerOpen(true) : undefined}
-                />
-              </GlassPanel>
-            ) : (
-              <div className="space-y-3">
-                {Object.entries(entitiesByType).map(([type, entries]) => (
-                  <div key={type}>
-                    <h3 className="font-heading text-xs font-light uppercase tracking-wide text-t3 mb-2">
-                      {ENTITY_TYPE_LABELS[type] ?? type}
-                    </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                      {entries.map((entry) => (
-                        <Link
-                          key={entry.id}
-                          to={`/worlds/${worldId}/codex/${entry.id}`}
-                        >
-                          <GlassPanel className="p-3 hover:bg-accent/50 transition-colors cursor-pointer group">
-                            <div className="flex items-center gap-2">
-                              <span className="font-heading text-sm text-t2 group-hover:text-t1 transition-colors truncate">
-                                {entry.title}
-                              </span>
-                            </div>
-                            {(entry.metadata as Record<string, unknown>)?.description && (
-                              <p className="text-[12px] text-t4 mt-1 line-clamp-1">
-                                {String((entry.metadata as Record<string, unknown>).description)}
-                              </p>
-                            )}
-                          </GlassPanel>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-        )}
-
         {openDrawer === "build" && (<>
         <section className="mb-8">
           <h2 className="text-xl font-medium mb-4">Worldbuilding Tools</h2>
@@ -1072,7 +1007,7 @@ const WorldDashboard = () => {
       ) : (
         <div className="min-h-screen bg-background">
           <Header />
-          <main className="relative container mx-auto px-4 pt-24 pb-16">
+          <main id="main" tabIndex={-1} className="relative container mx-auto px-4 pt-24 pb-16">
             {dashboardContent}
           </main>
         </div>
@@ -1274,22 +1209,6 @@ const WorldDashboard = () => {
         worldId={worldId!}
         currentTheme={world.theme}
       />
-
-      {worldId && (
-        FLAGS.UNIFIED_ENTITIES ? (
-          <CreateElementDialog
-            open={entityPickerOpen}
-            onOpenChange={setEntityPickerOpen}
-            worldId={worldId}
-          />
-        ) : (
-          <EntityPickerDialog
-            open={entityPickerOpen}
-            onOpenChange={setEntityPickerOpen}
-            worldId={worldId}
-          />
-        )
-      )}
 
       {/* Edit Tags Dialog */}
       <Dialog open={tagsDialogOpen} onOpenChange={setTagsDialogOpen}>

@@ -2,7 +2,8 @@ import { ReactNode } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
-import { getToolAccess, PRO_TOOL_COUNT } from "@/lib/tools-config";
+import { getToolAccess } from "@/lib/tools-config";
+import { PRO_UNLOCK_SUMMARY } from "@/lib/plan-features";
 import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -32,7 +33,7 @@ function GuardShell({ embedded, children }: { embedded: boolean; children: React
   return (
     <div className="min-h-screen bg-sf-void">
       <Header />
-      <main className="container mx-auto px-4 pt-24 pb-16 flex items-center justify-center">
+      <main id="main" tabIndex={-1} className="container mx-auto px-4 pt-24 pb-16 flex items-center justify-center">
         {children}
       </main>
     </div>
@@ -50,7 +51,8 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
   const isEarlyAccess = access === "early-access";
   const embedded = world !== null;
   const backTo = world ? `/worlds/${world.worldId}` : "/";
-  const backLabel = world ? "Return to World" : "Return to Bridge";
+  // "Bridge" is the world dashboard (13-THE-LIFT §1); outside a world it is home.
+  const backLabel = world ? "Return to Bridge" : "Return Home";
   const here = `${location.pathname}${location.search}`;
   const signInTo = `/auth?tab=login&redirect=${encodeURIComponent(here)}`;
 
@@ -200,10 +202,9 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
           <div className="mt-8 pt-6 border-t border-sf-line-hairline">
             <p className="font-heading text-sf-eyebrow uppercase text-t4 mb-2">Pro includes</p>
             <ul className="text-sm text-t2 space-y-1">
-              <li>All {PRO_TOOL_COUNT} Pro worldbuilding tools</li>
-              <li>Unlimited worlds and worksheets</li>
-              <li>Cloud sync across devices</li>
-              <li>Future tools and features</li>
+              {PRO_UNLOCK_SUMMARY.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
             </ul>
           </div>
         </GlassPanel>

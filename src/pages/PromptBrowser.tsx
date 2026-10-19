@@ -60,7 +60,7 @@ const PromptBrowserPage = () => {
   const [pending, setPending] = useState<WritingPrompt | null>(null);
 
   useMetaTags({
-    title: "Prompt Browser",
+    title: "Writing Prompts",
     description: "Weekly writing prompts for science fiction worldbuilders.",
   });
 
@@ -100,7 +100,7 @@ const PromptBrowserPage = () => {
         {/* ── Page header ────────────────────────────────────── */}
         <div className="mb-10">
           <h1 className="font-display text-sf-h1 tracking-title text-t1 mb-3">
-            PROMPT BROWSER
+            WRITING PROMPTS
           </h1>
           <div className="flex flex-wrap items-center gap-4 text-sm">
             <div className="flex items-center gap-2 text-t2">

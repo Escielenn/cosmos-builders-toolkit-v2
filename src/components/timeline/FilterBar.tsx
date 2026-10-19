@@ -107,15 +107,16 @@ const FilterBar = () => {
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           placeholder="Search events..."
-          className="pl-7 h-8 text-xs"
+          className="pl-7 pr-9"
         />
         {searchInput && (
           <button
             type="button"
             onClick={() => setSearchInput("")}
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-t3 hover:text-t1"
+            aria-label="Clear search"
+            className="sf-hit absolute right-2 top-1/2 -translate-y-1/2 text-t3 hover:text-t1"
           >
-            <X className="w-3 h-3" />
+            <X className="w-3 h-3" aria-hidden="true" />
           </button>
         )}
       </div>
@@ -252,7 +253,6 @@ const FilterBar = () => {
               <label className="text-[12px] text-t3 font-medium">From Year</label>
               <Input
                 type="number"
-                className="h-7 text-xs"
                 placeholder="Start year"
                 value={filter.dateRange?.start ?? ""}
                 onChange={(e) => {
@@ -273,7 +273,6 @@ const FilterBar = () => {
               <label className="text-[12px] text-t3 font-medium">To Year</label>
               <Input
                 type="number"
-                className="h-7 text-xs"
                 placeholder="End year"
                 value={filter.dateRange?.end ?? ""}
                 onChange={(e) => {
