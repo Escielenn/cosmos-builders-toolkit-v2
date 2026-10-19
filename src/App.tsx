@@ -63,8 +63,7 @@ const WorldChronicle = lazy(() => import("./pages/WorldChronicle"));
 const WorldCustomTypes = lazy(() => import("./pages/WorldCustomTypes"));
 const WorldCompile = lazy(() => import("./pages/WorldCompile"));
 const WikiBrowse = lazy(() => import("./pages/WikiBrowse"));
-const Collection = lazy(() => import("./pages/Collection"));
-const Archive = lazy(() => import("./pages/Archive"));
+const Tools = lazy(() => import("./pages/Tools"));
 const Commendations = lazy(() => import("./pages/Commendations"));
 const AboutUs = lazy(() => import("./pages/AboutUs"));
 const WorldShowcase = lazy(() => import("./pages/WorldShowcase"));
@@ -222,8 +221,11 @@ const App = () => (
                 <Route path="/getting-started" element={<GettingStarted />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/admin" element={<Admin />} />
-                <Route path="/collection" element={<Collection />} />
-                <Route path="/archive" element={<Archive />} />
+                {/* Folded into the profile as tabs (onboarding review item 10). */}
+                <Route path="/collection" element={<Navigate to="/profile?tab=collection" replace />} />
+                <Route path="/archive" element={<Navigate to="/profile?tab=archive" replace />} />
+                {/* The full catalog; the signed-in home is worlds + writing now. */}
+                <Route path="/tools" element={<Tools />} />
                 <Route path="/commendations" element={<Commendations />} />
                 <Route path="/about" element={<AboutUs />} />
                 <Route path="/community" element={<Community />} />

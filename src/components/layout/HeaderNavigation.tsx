@@ -258,13 +258,22 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                   );
                 })}
               </div>
-              <div className="border-t border-sf-line-hairline mt-4 pt-3">
+              <div className="border-t border-sf-line-hairline mt-4 pt-3 flex flex-wrap gap-x-6">
+                <NavigationMenuLink asChild>
+                  <Link
+                    to="/tools"
+                    className="flex items-center gap-2 px-1 py-1.5 text-xs text-sf-primary-text hover:text-sf-primary-text transition-colors"
+                  >
+                    <Wrench className="w-3.5 h-3.5" />
+                    All Tools
+                  </Link>
+                </NavigationMenuLink>
                 <NavigationMenuLink asChild>
                   <Link
                     to="/guide/tools"
                     className="flex items-center gap-2 px-1 py-1.5 text-xs text-sf-primary-text hover:text-sf-primary-text transition-colors"
                   >
-                    <Wrench className="w-3.5 h-3.5" />
+                    <BookOpen className="w-3.5 h-3.5" />
                     Tool Reference
                   </Link>
                 </NavigationMenuLink>

@@ -223,7 +223,8 @@ cosmos-builders-toolkit-v2/
 ## Routing Map
 
 ### Public Routes
-- `/` — Homepage (WelcomeHero for logged-out, LoggedInHero + worlds for logged-in)
+- `/` — Homepage (WelcomeHero for logged-out; for logged-in, your worlds + continue writing + recent activity)
+- `/tools` — Full tool catalog
 - `/auth` — Login/signup
 - `/pricing` — Subscription tiers
 - `/features` — Feature showcase

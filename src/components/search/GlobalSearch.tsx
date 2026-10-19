@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   CommandDialog,
@@ -25,12 +25,14 @@ import {
   Cpu,
   Users,
   User,
+  BookOpen,
+  PenLine,
 } from "lucide-react";
 import { useWorlds } from "@/hooks/use-worlds";
-import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
+import { useRecentWork } from "@/hooks/use-recent-work";
 import { getToolDisplayName } from "@/lib/worksheet-links-config";
 import { TOOL_ROUTES } from "@/lib/tools-config";
+import { shapePaletteGroups, type PaletteItem } from "@/lib/command-palette";
 
 // Tool icon mapping. Deliberately partial — TOOL_ROUTES below is the full
 // catalog (shared with the header nav and landing showcase), and any tool
@@ -53,131 +55,98 @@ const TOOL_ICONS: Record<string, React.ElementType> = {
   "species-interaction-matrix": Users,
 };
 
-interface Worksheet {
-  id: string;
-  title: string | null;
-  tool_type: string;
-  world_id: string;
-  data: {
-    speciesName?: string;
-    [key: string]: unknown;
-  };
-}
-
 interface GlobalSearchProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
+function PaletteRow({
+  item,
+  icon: Icon,
+  onSelect,
+}: {
+  item: PaletteItem;
+  icon: React.ElementType;
+  onSelect: (href: string) => void;
+}) {
+  return (
+    <CommandItem value={item.value} onSelect={() => onSelect(item.href)} className="flex items-center">
+      <Icon className="mr-2 h-4 w-4 shrink-0 text-sf-primary-text" aria-hidden="true" />
+      <span className="truncate">{item.label}</span>
+      <span className="ml-2 shrink-0 truncate text-xs text-t3">{item.detail}</span>
+    </CommandItem>
+  );
+}
+
 const GlobalSearch = ({ open, onOpenChange }: GlobalSearchProps) => {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const { worlds } = useWorlds();
-  const [worksheets, setWorksheets] = useState<Worksheet[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const worldIds = useMemo(() => worlds.map((w) => w.id), [worlds]);
+  // Same cache as the signed-in home, so opening ⌘K there costs no extra
+  // read. Codex entries and documents are searched by title only.
+  const { data, isLoading } = useRecentWork(worldIds, { enabled: open });
 
-  // Fetch all worksheets when dialog opens
-  useEffect(() => {
-    if (open && user) {
-      setIsLoading(true);
-      supabase
-        .from("worksheets")
-        .select("id, title, tool_type, world_id, data")
-        .eq("user_id", user.id)
-        .order("updated_at", { ascending: false })
-        .limit(50)
-        .then(({ data, error }) => {
-          if (!error && data) {
-            setWorksheets(data as Worksheet[]);
-          }
-          setIsLoading(false);
-        });
-    }
-  }, [open, user]);
-
-  const handleSelect = useCallback(
-    (type: "world" | "worksheet" | "tool", id: string, extra?: string) => {
-      onOpenChange(false);
-
-      if (type === "world") {
-        navigate(`/worlds/${id}`);
-      } else if (type === "worksheet" && extra) {
-        const route = TOOL_ROUTES[extra];
-        if (route) {
-          const worksheet = worksheets.find((w) => w.id === id);
-          navigate(`${route}?worldId=${worksheet?.world_id}&worksheetId=${id}`);
-        }
-      } else if (type === "tool") {
-        const route = TOOL_ROUTES[id];
-        if (route) {
-          navigate(route);
-        }
-      }
-    },
-    [navigate, onOpenChange, worksheets]
+  const groups = useMemo(
+    () =>
+      shapePaletteGroups({
+        worlds,
+        docs: data.docs,
+        entries: data.entries,
+        worksheets: data.worksheets,
+      }),
+    [worlds, data],
   );
 
-  // Get world name for a worksheet
-  const getWorldName = (worldId: string) => {
-    return worlds.find((w) => w.id === worldId)?.name || "Unknown World";
-  };
-
-  // Get display name for worksheet
-  const getWorksheetDisplayName = (worksheet: Worksheet) => {
-    if (worksheet.data?.speciesName) {
-      return worksheet.data.speciesName as string;
-    }
-    return worksheet.title || getToolDisplayName(worksheet.tool_type);
-  };
+  const go = useCallback(
+    (href: string) => {
+      onOpenChange(false);
+      navigate(href);
+    },
+    [navigate, onOpenChange],
+  );
 
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange}>
-      <CommandInput placeholder="Type to search worlds, worksheets, and tools..." autoFocus />
+      <CommandInput placeholder="Search worlds, documents, Codex, worksheets and tools..." autoFocus />
       <CommandList>
         <CommandEmpty>
           {isLoading ? "SCANNING ARCHIVE..." : "NO MATCHING RECORDS."}
         </CommandEmpty>
 
-        {/* Worlds */}
-        {worlds.length > 0 && (
+        {groups.worlds.length > 0 && (
           <CommandGroup heading="Worlds">
-            {worlds.slice(0, 5).map((world) => (
-              <CommandItem
-                key={world.id}
-                value={`world-${world.name}`}
-                onSelect={() => handleSelect("world", world.id)}
-              >
-                <Globe className="mr-2 h-4 w-4 text-sf-primary-text" />
-                <span>{world.name}</span>
-              </CommandItem>
+            {groups.worlds.map((item) => (
+              <PaletteRow key={item.key} item={item} icon={Globe} onSelect={go} />
             ))}
           </CommandGroup>
         )}
 
-        <CommandSeparator />
+        {groups.documents.length > 0 && (
+          <CommandGroup heading="Documents">
+            {groups.documents.map((item) => (
+              <PaletteRow key={item.key} item={item} icon={PenLine} onSelect={go} />
+            ))}
+          </CommandGroup>
+        )}
 
-        {/* Recent Worksheets */}
-        {worksheets.length > 0 && (
-          <CommandGroup heading="Recent Worksheets">
-            {worksheets.slice(0, 8).map((worksheet) => {
-              const Icon = TOOL_ICONS[worksheet.tool_type] || FileText;
-              return (
-                <CommandItem
-                  key={worksheet.id}
-                  value={`worksheet-${getWorksheetDisplayName(worksheet)}-${worksheet.tool_type}`}
-                  onSelect={() =>
-                    handleSelect("worksheet", worksheet.id, worksheet.tool_type)
-                  }
-                  className="flex items-center"
-                >
-                  <Icon className="mr-2 h-4 w-4 shrink-0 text-sf-primary-text" />
-                  <span className="truncate">{getWorksheetDisplayName(worksheet)}</span>
-                  <span className="ml-2 shrink-0 text-xs text-t3">
-                    {getToolDisplayName(worksheet.tool_type)}
-                  </span>
-                </CommandItem>
-              );
-            })}
+        {groups.codex.length > 0 && (
+          <CommandGroup heading="Codex">
+            {groups.codex.map((item) => (
+              <PaletteRow key={item.key} item={item} icon={BookOpen} onSelect={go} />
+            ))}
+          </CommandGroup>
+        )}
+
+        {groups.worksheets.length > 0 && (
+          <CommandGroup heading="Worksheets">
+            {groups.worksheets.map((item) => (
+              <PaletteRow
+                key={item.key}
+                item={item}
+                icon={(item.toolType && TOOL_ICONS[item.toolType]) || FileText}
+                onSelect={go}
+              />
+            ))}
           </CommandGroup>
         )}
 
@@ -190,10 +159,10 @@ const GlobalSearch = ({ open, onOpenChange }: GlobalSearchProps) => {
             return (
               <CommandItem
                 key={toolType}
-                value={`tool-${getToolDisplayName(toolType)}`}
-                onSelect={() => handleSelect("tool", toolType)}
+                value={`tool ${getToolDisplayName(toolType)}`}
+                onSelect={() => go(route)}
               >
-                <Icon className="mr-2 h-4 w-4 text-sf-primary-text" />
+                <Icon className="mr-2 h-4 w-4 text-sf-primary-text" aria-hidden="true" />
                 <span>{getToolDisplayName(toolType)}</span>
               </CommandItem>
             );
@@ -205,28 +174,23 @@ const GlobalSearch = ({ open, onOpenChange }: GlobalSearchProps) => {
         {/* Quick Actions */}
         <CommandGroup heading="Quick Actions">
           <CommandItem
-            value="action-new-world"
+            value="action begin survey create new world"
             onSelect={() => {
-              onOpenChange(false);
               // Same deep link HeaderNavigation's "Create New World" uses —
-              // CreateWorldButton (rendered on /worlds) opens its own dialog
-              // when it sees this param. The previous scroll-to-homepage
-              // approach opened nothing for a signed-out user and scrolled to
-              // a section that only renders when signed in.
-              navigate("/worlds?create=true");
+              // CreateWorldButton (rendered on /worlds) opens BEGIN SURVEY
+              // when it sees this param.
+              go("/worlds?create=true");
             }}
           >
-            <Plus className="mr-2 h-4 w-4" />
-            <span>Create New World</span>
+            <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
+            <span>Begin Survey</span>
           </CommandItem>
-          <CommandItem
-            value="action-settings"
-            onSelect={() => {
-              onOpenChange(false);
-              navigate("/profile");
-            }}
-          >
-            <User className="mr-2 h-4 w-4" />
+          <CommandItem value="action all tools catalog" onSelect={() => go("/tools")}>
+            <Wrench className="mr-2 h-4 w-4" aria-hidden="true" />
+            <span>All Tools</span>
+          </CommandItem>
+          <CommandItem value="action open profile" onSelect={() => go("/profile")}>
+            <User className="mr-2 h-4 w-4" aria-hidden="true" />
             <span>Open Profile</span>
           </CommandItem>
         </CommandGroup>
