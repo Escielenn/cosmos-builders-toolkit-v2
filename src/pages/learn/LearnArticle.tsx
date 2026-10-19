@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { Calendar } from "lucide-react";
-import { BackLink } from "@/components/ui/back-link";
+import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 import { Loader } from "@/components/ui/loader";
@@ -76,8 +76,10 @@ const LearnArticle = () => {
     return (
       <div className="min-h-screen bg-sf-void">
         <Header />
-        <main className="container mx-auto px-4 pt-24 pb-16 flex justify-center">
-          <Loader />
+        <main>
+          <PageContainer variant="standalone" className="flex justify-center">
+            <Loader />
+          </PageContainer>
         </main>
       </div>
     );
@@ -88,14 +90,21 @@ const LearnArticle = () => {
     return (
       <div className="min-h-screen bg-sf-void">
         <Header />
-        <main className="container mx-auto px-4 pt-24 pb-16">
-          <BackLink to="/learn" label="Return to Archive" className="mb-6" />
-          <EmptyState
-            title="ARTICLE NOT ON FILE."
-            description="This article doesn't exist or hasn't been published yet."
-            actionLabel="RETURN TO ARCHIVE"
-            actionTo="/learn"
-          />
+        <main>
+          <PageContainer variant="standalone">
+            <PageHeader
+              size="page"
+              back={{ label: "Back to SF University", to: "/learn" }}
+              eyebrow="SF University"
+              title="Article not on file"
+              lede="This article doesn't exist or hasn't been published yet."
+            />
+            <EmptyState
+              title="ARTICLE NOT ON FILE."
+              actionLabel="OPEN THE ARCHIVE"
+              actionTo="/learn"
+            />
+          </PageContainer>
         </main>
       </div>
     );
@@ -108,24 +117,24 @@ const LearnArticle = () => {
     <div className="min-h-screen bg-sf-void">
       <Header />
 
-      <main className="relative container mx-auto px-4 pt-24 pb-16 max-w-4xl">
+      <main className="relative">
+        <PageContainer variant="standalone">
         <PageBursts bursts={LEARN_ARTICLE_BURSTS} />
-        <BackLink to="/learn" label="Return to Archive" className="mb-6" />
 
-        {/* Article Header */}
-        <header className="mb-8">
-          <Badge className={categoryColors[article.category]}>
-            {categoryLabels[article.category]}
-          </Badge>
-          <h1 className="font-display text-sf-h1 tracking-title text-t1 mt-4 mb-4">
-            {article.title}
-          </h1>
-          <p className="text-lg text-t2 mb-4">
-            {article.description}
-          </p>
-          <div className="flex items-center gap-4 text-sm text-t3">
+        {/* Child page: one back link to its real parent. */}
+        <PageHeader
+          size="page"
+          back={{ label: "Back to SF University", to: "/learn" }}
+          eyebrow={categoryLabels[article.category] ?? "SF University"}
+          title={article.title}
+          lede={article.description}
+        >
+          <div className="flex flex-wrap items-center gap-4 text-sm text-t3">
+            <Badge className={categoryColors[article.category]}>
+              {categoryLabels[article.category]}
+            </Badge>
             <span className="flex items-center gap-1">
-              <Calendar className="w-4 h-4" />
+              <Calendar className="w-4 h-4" aria-hidden />
               {new Date(article.publishedDate).toLocaleDateString("en-US", {
                 month: "long",
                 day: "numeric",
@@ -133,7 +142,10 @@ const LearnArticle = () => {
               })}
             </span>
           </div>
-        </header>
+        </PageHeader>
+
+        {/* Reading column, left-aligned on the shared edge. */}
+        <div className="max-w-4xl">
 
         {/* Featured Image */}
         {useSanityContent && sanityArticle.featuredImage?.asset && (
@@ -160,10 +172,8 @@ const LearnArticle = () => {
             )}
           </article>
         </GlassPanel>
-
-        <div className="mt-8 flex justify-center">
-          <BackLink to="/learn" label="Return to Archive" />
         </div>
+        </PageContainer>
       </main>
 
       <Footer />

@@ -23,7 +23,7 @@ const FieldManualSheet = ({ open, onOpenChange }: FieldManualSheetProps) => {
           <div className="font-mono text-[12px] uppercase tracking-wide text-sf-primary-text mb-1">
             // Field Manual
           </div>
-          <SheetTitle className="font-heading text-sm uppercase tracking-wide text-t2 font-light">
+          <SheetTitle>
             Operational Reference
           </SheetTitle>
           <p className="font-mono text-[12px] uppercase tracking-wide text-t4 mt-0.5">

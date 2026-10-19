@@ -111,9 +111,9 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
   if (isLoading) {
     return (
       <section className="mb-8">
-        <h2 className="font-heading text-sm font-light uppercase tracking-wide text-sf-emerald mb-3 flex items-center gap-2">
-          <Activity className="w-3.5 h-3.5" />
-          Recent Activity
+        <h2 className="mb-4 flex items-center gap-2 border-b border-sf-line-hairline pb-2 font-heading text-sf-eyebrow uppercase text-t4">
+          <Activity className="w-3.5 h-3.5" aria-hidden />
+          Recent activity
         </h2>
         <GlassPanel className="p-4 space-y-3">
           {Array.from({ length: 4 }).map((_, i) => (
@@ -128,9 +128,9 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
 
   return (
     <section className="mb-8">
-      <h2 className="font-heading text-sm font-light uppercase tracking-wide text-sf-emerald mb-3 flex items-center gap-2">
-        <Activity className="w-3.5 h-3.5" />
-        Recent Activity
+      <h2 className="mb-4 flex items-center gap-2 border-b border-sf-line-hairline pb-2 font-heading text-sf-eyebrow uppercase text-t4">
+        <Activity className="w-3.5 h-3.5" aria-hidden />
+        Recent activity
       </h2>
       <GlassPanel className="p-0 divide-y divide-sf-line-hairline">
         {items.map((item) => {

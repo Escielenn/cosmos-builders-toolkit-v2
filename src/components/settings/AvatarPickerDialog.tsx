@@ -105,7 +105,7 @@ const AvatarPickerDialog = ({
     <Dialog open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) setSelected(null); }}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="font-heading font-light uppercase tracking-wider">
+          <DialogTitle>
             Choose Avatar
           </DialogTitle>
         </DialogHeader>

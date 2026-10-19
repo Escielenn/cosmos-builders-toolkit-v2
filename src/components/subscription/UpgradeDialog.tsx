@@ -59,9 +59,9 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 font-heading text-xl">
+          <DialogTitle className="flex items-center gap-2">
             <Zap className="w-5 h-5 text-sf-amber-text" />
-            UPGRADE CLEARANCE
+            Upgrade clearance
           </DialogTitle>
           <DialogDescription>
             {toolName

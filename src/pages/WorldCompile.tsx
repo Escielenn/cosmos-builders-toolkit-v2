@@ -37,7 +37,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { BackLink } from "@/components/ui/back-link";
+import { PageContainer, PageHeader, Notice } from "@/components/layout/page-chrome";
+import { worldCrumbs } from "@/lib/world-crumbs";
+import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 import { useReorderDocuments, useWritingDocuments, type BinderDoc } from "@/hooks/use-writing-documents";
 import { useWorldDocumentContents } from "@/hooks/use-document-contents";
@@ -131,6 +133,7 @@ export default function WorldCompile() {
   const { worldId } = useParams<{ worldId: string }>();
   const { user } = useAuth();
   const { worlds } = useWorlds();
+  const worldChrome = useWorldLayoutContext();
   const { toast } = useToast();
   const { data: documents, tree, isLoading: listLoading } = useWritingDocuments(worldId);
   // Compile reads every document's text: loaded here, where it is used.
@@ -263,19 +266,20 @@ export default function WorldCompile() {
   const fontApplies = s.format === "docx" || s.format === "pdf";
 
   return (
-    <div className="min-h-screen bg-sf-void">
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-        <div className="mb-8">
-          <BackLink to={`/worlds/${worldId}/write`} label="RETURN TO MANUSCRIPT" className="mb-3" />
-          <h1 className="mb-1 font-display text-sf-h1 tracking-title text-t1">COMPILE MANUSCRIPT</h1>
-          <p className="sf-measure text-sf-body text-t2">
-            Choose what goes in and in what order, dress it for where it is going, and download. The binder
-            is never rearranged by anything here.
-          </p>
-          {stored.isLocal && (
-            <p className="mt-2 font-mono text-[12px] text-t4">SETTINGS HELD IN THIS BROWSER UNTIL THE WORLD SETTINGS UPDATE LANDS.</p>
-          )}
-        </div>
+    <PageContainer variant="space">
+        <PageHeader
+          size="space"
+          breadcrumbs={worldCrumbs({ id: worldId, name: currentWorld?.name ?? worldChrome?.worldName }, "Manuscript", "Compile")}
+          eyebrow="COMPILE"
+          accent="primary"
+          title="Compile manuscript"
+          lede="Choose what goes in and in what order, dress it for where it is going, and download. Reordering here reorders the binder: one order everywhere."
+        />
+        {stored.isLocal && (
+          <Notice compact tone="caution" label="SETTINGS HELD LOCALLY" className="mb-6">
+            These compile settings live in this browser until the world settings update lands.
+          </Notice>
+        )}
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px]">
           {/* Left: front matter, contents, back matter, preview */}
@@ -527,8 +531,7 @@ export default function WorldCompile() {
             </GlassPanel>
           </div>
         </div>
-      </div>
-    </div>
+    </PageContainer>
   );
 }
 

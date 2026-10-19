@@ -1,8 +1,16 @@
-import { X } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useHintDismissed } from "@/hooks/use-hint-dismissed";
 import { HINTS } from "@/lib/onboarding/hints";
-import type { LucideIcon } from "lucide-react";
+import { Notice } from "@/components/layout/page-chrome";
 
+/**
+ * FirstTimeHint renders a one-time hint through the shared Notice
+ * (15-PAGE-CHROME): a short mono label and a readable sentence-case body,
+ * instead of a box of uppercase mono text.
+ *
+ * Hint copy is written "LABEL: body". The part before the first colon becomes
+ * the label; the rest is the body.
+ */
 interface FirstTimeHintProps {
   hintId: string;
   icon?: LucideIcon;
@@ -10,64 +18,31 @@ interface FirstTimeHintProps {
   className?: string;
 }
 
+export function splitHint(copy: string): { label: string | undefined; body: string } {
+  const i = copy.indexOf(":");
+  if (i > 0 && i < 40 && copy.slice(0, i) === copy.slice(0, i).toUpperCase()) {
+    return { label: copy.slice(0, i).trim(), body: copy.slice(i + 1).trim() };
+  }
+  return { label: undefined, body: copy };
+}
+
 const FirstTimeHint = ({ hintId, icon: Icon, variant, className = "" }: FirstTimeHintProps) => {
   const [isDismissed, dismiss] = useHintDismissed(hintId);
   const hint = HINTS[hintId];
-
   if (isDismissed || !hint) return null;
-
-  const resolvedVariant = variant ?? hint.variant;
-
-  const borderColor =
-    resolvedVariant === "warning"
-      ? "border-sf-amber"
-      : "border-primary";
-
-  const bgColor =
-    resolvedVariant === "warning"
-      ? "bg-sf-amber/[0.06]"
-      : "bg-primary/5";
-
-  const textColor =
-    resolvedVariant === "warning"
-      ? "text-sf-amber-text"
-      : "text-sf-primary-text";
-
-  const iconColor =
-    resolvedVariant === "warning"
-      ? "text-sf-amber-text"
-      : "text-sf-primary-text";
-
-  const fontSize =
-    resolvedVariant === "compact"
-      ? "text-[12px]"
-      : "text-[12px]";
-
-  const iconSize =
-    resolvedVariant === "compact"
-      ? "w-3 h-3"
-      : "w-3.5 h-3.5";
-
+  const resolved = variant ?? hint.variant;
+  const { label, body } = splitHint(hint.copy);
   return (
-    <div
-      className={`relative border ${borderColor} ${bgColor} px-3 py-2 animate-in fade-in duration-slow ${className}`}
+    <Notice
+      label={label}
+      tone={resolved === "warning" ? "caution" : "info"}
+      icon={Icon ? <Icon className="h-4 w-4" /> : undefined}
+      onDismiss={dismiss}
+      compact={resolved === "compact"}
+      className={className}
     >
-      <div className="flex items-start gap-2 pr-5">
-        {Icon && (
-          <Icon className={`${iconSize} ${iconColor} shrink-0 mt-0.5`} />
-        )}
-        <p className={`font-mono ${fontSize} uppercase tracking-wider ${textColor} leading-relaxed`}>
-          {hint.copy}
-        </p>
-      </div>
-      <button
-        onClick={dismiss}
-        className="absolute top-1.5 right-1.5 text-t4 hover:text-t4 transition-colors"
-        aria-label="Dismiss hint"
-      >
-        <X className="w-3 h-3" />
-      </button>
-    </div>
+      {body}
+    </Notice>
   );
 };
 

@@ -31,8 +31,8 @@ const AuthRequiredDialog = ({ open, onOpenChange }: AuthRequiredDialogProps) => 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-heading text-xl">
-            AUTHENTICATION REQUIRED
+          <DialogTitle>
+            Authentication required
           </DialogTitle>
           <DialogDescription>
             Establish credentials to access the archive.

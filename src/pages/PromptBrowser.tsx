@@ -24,7 +24,7 @@ import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { BackLink } from "@/components/ui/back-link";
+import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWeeklyPrompts } from "@/hooks/use-weekly-prompts";
 import { useMetaTags } from "@/hooks/use-meta-tags";
@@ -53,6 +53,10 @@ const DIFFICULTY_COLORS: Record<string, string> = {
 };
 
 // ─── Component ─────────────────────────────────────────────────────────
+
+// Section headings (15-PAGE-CHROME §4): the section-header pattern.
+const sectionHeading =
+  "font-heading text-sf-eyebrow uppercase text-t4 border-b border-sf-line-hairline pb-3";
 
 const PromptBrowserPage = () => {
   const navigate = useNavigate();
@@ -93,53 +97,45 @@ const PromptBrowserPage = () => {
     <div className="min-h-screen bg-sf-void">
       <Header />
 
-      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 pt-8 pb-16">
-        {/* ── Back link ──────────────────────────────────────── */}
-        <BackLink onClick={() => navigate(-1)} label="Return" className="mb-6" />
-
-        {/* ── Page header ────────────────────────────────────── */}
-        <div className="mb-10">
-          <h1 className="font-display text-sf-h1 tracking-title text-t1 mb-3">
-            WRITING PROMPTS
-          </h1>
+      <main>
+        <PageContainer variant="wide">
+        {/* Top-level page: no back link (the logo goes home). */}
+        <PageHeader
+          size="page"
+          eyebrow="Weekly rotation"
+          title="Writing prompts"
+          lede="Seven prompts rotate each week, one for every day. Act on them before Sunday or they vanish. Each prompt is tuned for science fiction worldbuilders at different experience levels."
+        >
           <div className="flex flex-wrap items-center gap-4 text-sm">
             <div className="flex items-center gap-2 text-t2">
-              <Calendar className="w-4 h-4 text-sf-primary-text" />
-              <span className="font-heading text-sm font-light uppercase tracking-[1.5px]">
-                {weekLabel}
-              </span>
+              <Calendar className="w-4 h-4 text-sf-primary-text" aria-hidden />
+              <span className="font-mono text-sf-mono uppercase">{weekLabel}</span>
             </div>
 
             <div className="flex items-center gap-2 text-t3">
-              <Clock className="w-3.5 h-3.5" />
-              <span className="font-mono text-xs">
+              <Clock className="w-4 h-4" aria-hidden />
+              <span className="font-mono text-sf-mono">
                 {daysRemaining} {daysRemaining === 1 ? "day" : "days"} remaining
               </span>
             </div>
 
             {expiredCount > 0 && (
               <div className="flex items-center gap-2 text-sf-amber-text">
-                <AlertTriangle className="w-3.5 h-3.5" />
-                <span className="font-mono text-xs">
+                <AlertTriangle className="w-4 h-4" aria-hidden />
+                <span className="font-mono text-sf-mono">
                   {expiredCount} prompt{expiredCount !== 1 ? "s" : ""} expired last week
                 </span>
               </div>
             )}
           </div>
-
-          <p className="text-t2 text-sm mt-3 max-w-2xl leading-relaxed">
-            Seven prompts rotate each week, one for every day. Act on them before
-            Sunday or they vanish. Each prompt is tuned for science fiction
-            worldbuilders at different experience levels.
-          </p>
-        </div>
+        </PageHeader>
 
         {/* ── Today's prompt (highlighted) ───────────────────── */}
         <section className="mb-10">
-          <p className="text-xs font-medium uppercase tracking-wide text-t3 mb-3 flex items-center gap-2">
-            <Sparkles className="w-3.5 h-3.5 text-sf-primary-text" />
-            Today's Prompt
-          </p>
+          <h2 className={`${sectionHeading} mb-4 flex items-center gap-2`}>
+            <Sparkles className="w-4 h-4 text-sf-primary-text" aria-hidden />
+            Today's prompt
+          </h2>
 
           <GlassPanel glow className="p-6 md:p-8">
             <TodayPromptContent
@@ -152,8 +148,8 @@ const PromptBrowserPage = () => {
 
         {/* ── This Week's Prompts grid ───────────────────────── */}
         <section>
-          <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1 mb-6">
-            This Week's Prompts
+          <h2 className={`${sectionHeading} mb-6`}>
+            This week's prompts
           </h2>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -186,6 +182,7 @@ const PromptBrowserPage = () => {
             </span>
           </div>
         </div>
+        </PageContainer>
       </main>
 
       <Footer />
@@ -238,9 +235,9 @@ function TodayPromptContent({
         )}
       </div>
 
-      <h2 className="font-heading text-lg font-light uppercase tracking-[2px] text-t1 mb-3">
+      <h3 className="font-display text-sf-h3 font-light text-t1 mb-3">
         {prompt.title}
-      </h2>
+      </h3>
 
       <p className="text-t2 italic leading-relaxed mb-5">
         {prompt.prompt}

@@ -53,11 +53,21 @@ const AlertDialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDiv
 );
 AlertDialogFooter.displayName = "AlertDialogFooter";
 
+/**
+ * The one overlay title style (docs/stellarforge/15-PAGE-CHROME.md §5):
+ * Jura at sf-h3, weight 400, sentence case as written, t1. Descriptions are
+ * DM Sans 14px t2. Callers pass layout classes only (flex, gap, sr-only);
+ * never a font, size, case or colour override.
+ */
 const AlertDialogTitle = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Title>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Title>
 >(({ className, ...props }, ref) => (
-  <AlertDialogPrimitive.Title ref={ref} className={cn("text-lg font-medium", className)} {...props} />
+  <AlertDialogPrimitive.Title
+    ref={ref}
+    className={cn("font-heading text-sf-h3 font-normal leading-tight text-t1", className)}
+    {...props}
+  />
 ));
 AlertDialogTitle.displayName = AlertDialogPrimitive.Title.displayName;
 
@@ -65,7 +75,7 @@ const AlertDialogDescription = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Description>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Description>
 >(({ className, ...props }, ref) => (
-  <AlertDialogPrimitive.Description ref={ref} className={cn("text-sm text-t2", className)} {...props} />
+  <AlertDialogPrimitive.Description ref={ref} className={cn("font-sans text-sm text-t2", className)} {...props} />
 ));
 AlertDialogDescription.displayName = AlertDialogPrimitive.Description.displayName;
 

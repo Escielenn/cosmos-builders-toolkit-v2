@@ -24,6 +24,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Notice } from "@/components/layout/page-chrome";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -254,16 +255,15 @@ export default function BeginSurveyDialog({
 
         {/* ── SEEDING INCOMPLETE ──────────────────────────────────── */}
         {stalled && partialWorldId && (
-          <div role="alert" className="space-y-4">
-            <div className="border border-sf-crimson bg-sf-crimson/[0.06] px-4 py-3 space-y-1">
-              <p className="flex items-center gap-2 font-heading text-sf-eyebrow uppercase text-sf-crimson-text">
-                <AlertTriangle className="w-4 h-4 shrink-0 text-sf-crimson" aria-hidden="true" />
-                {"// WORLD CREATED. SEEDING INCOMPLETE."}
-              </p>
-              <p className="text-sm text-t2">
-                The world is on file. Retry resumes from the failed entry; nothing already written is written twice.
-              </p>
-            </div>
+          <div className="space-y-4">
+            {/* Notice tone="danger" carries role="alert". */}
+            <Notice
+              tone="danger"
+              icon={<AlertTriangle className="w-4 h-4" />}
+              label="WORLD CREATED. SEEDING INCOMPLETE."
+            >
+              The world is on file. Retry resumes from the failed entry; nothing already written is written twice.
+            </Notice>
             <div className="flex flex-col-reverse sm:flex-row gap-2">
               <Button type="button" variant="sf-ghost" size="sf-md" className="sm:mr-auto" onClick={() => openWorld(partialWorldId)}>
                 Open world

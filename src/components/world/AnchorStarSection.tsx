@@ -98,7 +98,7 @@ export function AnchorStarSection({
 
   return (
     <>
-      <div className="sf-wiki-section-header">Real Sky</div>
+      <h2 className="mt-9 mb-4 border-b border-sf-line-hairline pb-2 font-heading text-sf-eyebrow uppercase text-t4">Real sky</h2>
 
       {error ? (
         <p className="font-mono text-[12px] uppercase tracking-wider text-sf-crimson-text">

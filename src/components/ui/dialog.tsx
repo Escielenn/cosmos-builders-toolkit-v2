@@ -62,13 +62,19 @@ const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivEleme
 );
 DialogFooter.displayName = "DialogFooter";
 
+/**
+ * The one overlay title style (docs/stellarforge/15-PAGE-CHROME.md §5):
+ * Jura at sf-h3, weight 400, sentence case as written, t1. Descriptions are
+ * DM Sans 14px t2. Callers pass layout classes only (flex, gap, sr-only);
+ * never a font, size, case or colour override.
+ */
 const DialogTitle = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Title>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
-    className={cn("text-lg font-medium leading-none tracking-tight", className)}
+    className={cn("font-heading text-sf-h3 font-normal leading-tight text-t1", className)}
     {...props}
   />
 ));
@@ -78,7 +84,7 @@ const DialogDescription = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Description>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
 >(({ className, ...props }, ref) => (
-  <DialogPrimitive.Description ref={ref} className={cn("text-sm text-t2", className)} {...props} />
+  <DialogPrimitive.Description ref={ref} className={cn("font-sans text-sm text-t2", className)} {...props} />
 ));
 DialogDescription.displayName = DialogPrimitive.Description.displayName;
 

@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useSubscription } from "@/hooks/use-subscription";
 import { AlertTriangle, Clock, Zap, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Notice } from "@/components/layout/page-chrome";
 
 const SubscriptionBanner = () => {
   const { isExpiringSoon, daysUntilExpiry, hasLapsedSubscription, isVanguard } = useSubscription();
@@ -11,15 +12,13 @@ const SubscriptionBanner = () => {
   const TierIcon = isVanguard ? Sparkles : Zap;
 
   if (isExpiringSoon && daysUntilExpiry !== null) {
-    const borderColor = isVanguard ? "border-sf-violet" : "border-sf-amber";
-    const bgColor = isVanguard ? "bg-sf-violet/5" : "bg-sf-amber/5";
     const textColor = isVanguard ? "text-sf-violet-text" : "text-sf-amber-text";
 
     return (
       <div className="mx-auto max-w-2xl mb-4">
-        <div className={`flex items-center gap-2 px-3 py-1.5 border ${borderColor} ${bgColor}`}>
-          <Clock className={`w-3.5 h-3.5 ${textColor} shrink-0`} />
-          <p className="text-xs text-t3 flex-1">
+        <Notice tone="caution" compact icon={<Clock className="w-3.5 h-3.5" />}>
+          <div className="flex items-center gap-2">
+          <p className="flex-1">
             {tierLabel} expires in{" "}
             <span className={`font-mono ${textColor}`}>
               {daysUntilExpiry}d
@@ -32,7 +31,8 @@ const SubscriptionBanner = () => {
           >
             Renew
           </button>
-        </div>
+          </div>
+        </Notice>
       </div>
     );
   }
@@ -40,9 +40,9 @@ const SubscriptionBanner = () => {
   if (hasLapsedSubscription) {
     return (
       <div className="mx-auto max-w-2xl mb-4">
-        <div className="flex items-center gap-2 px-3 py-1.5 border border-sf-crimson bg-sf-crimson/5">
-          <AlertTriangle className="w-3.5 h-3.5 text-sf-crimson-text shrink-0" />
-          <p className="text-xs text-t3 flex-1">
+        <Notice tone="danger" compact icon={<AlertTriangle className="w-3.5 h-3.5" />}>
+          <div className="flex items-center gap-2">
+          <p className="flex-1">
             {tierLabel} access expired. Your data is safe.
           </p>
           <button
@@ -52,7 +52,8 @@ const SubscriptionBanner = () => {
           >
             Resubscribe
           </button>
-        </div>
+          </div>
+        </Notice>
       </div>
     );
   }

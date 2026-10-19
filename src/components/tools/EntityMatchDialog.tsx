@@ -53,7 +53,7 @@ export default function EntityMatchDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md bg-sf-surface border-sf-line">
         <DialogHeader>
-          <DialogTitle className="font-heading text-sm font-light uppercase tracking-[0.12em] text-sf-primary-text">
+          <DialogTitle>
             Entity Match Detected
           </DialogTitle>
           <DialogDescription className="text-t2 mt-3 leading-relaxed">

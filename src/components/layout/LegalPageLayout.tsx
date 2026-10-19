@@ -8,39 +8,50 @@ import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
 import { PageBursts } from "@/components/ui/data-burst";
 import type { DataBurstConfig } from "@/lib/data-bursts";
+import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
 
-import { BackLink } from "@/components/ui/back-link";
+/**
+ * Legal and reference documents (Privacy, Terms, Credits, Changelog).
+ * Page chrome per docs/stellarforge/15-PAGE-CHROME.md: PageContainer +
+ * PageHeader, no "RETURN HOME" (the logo goes home). These pages have no
+ * parent route, so they take a back link only when a caller names one.
+ */
 interface LegalPageLayoutProps {
   title: string;
   subtitle?: string;
   lastUpdated: string;
+  /** @deprecated The eyebrow is text-only (`// LABEL`); the icon is no longer drawn. */
   badgeIcon?: ReactNode;
+  /** Eyebrow label, e.g. "Privacy". */
   badgeText: string;
+  /** Optional back link to a real parent page. */
+  back?: { label: string; to: string };
   content?: string;
   children?: ReactNode;
   bursts?: DataBurstConfig[];
 }
 
-// Custom markdown components, April 2026 handoff: mono eyebrows, t-tier text, zero radius.
+// Markdown components. Section headings follow 15-PAGE-CHROME §4: h2 is a
+// named block in display h3; sub-headings step down in DM Sans, sentence
+// case as written (no forced uppercase).
 const markdownComponents: Components = {
   h2: ({ children }) => (
-    <h2 className="flex items-center gap-3 font-heading text-2xl font-light uppercase tracking-[0.08em] text-t1 mt-12 mb-6 pt-8 border-t border-sf-line-hairline first:mt-0 first:pt-0 first:border-t-0">
-      <span className="w-1 h-8 bg-sf-primary" />
+    <h2 className="font-display text-sf-h3 font-light text-t1 mt-12 mb-6 pt-8 border-t border-sf-line-hairline first:mt-0 first:pt-0 first:border-t-0">
       {children}
     </h2>
   ),
   h3: ({ children }) => (
-    <h3 className="font-heading text-lg font-medium uppercase tracking-[0.12em] text-t1 mt-8 mb-4 pl-4 border-l-2 border-sf-primary">
+    <h3 className="font-sans text-sf-body font-medium text-t1 mt-8 mb-4">
       {children}
     </h3>
   ),
   h4: ({ children }) => (
-    <h4 className="font-heading text-base font-medium uppercase tracking-wide text-t2 mt-6 mb-3">
+    <h4 className="font-sans text-sf-small font-medium text-t2 mt-6 mb-3">
       {children}
     </h4>
   ),
   p: ({ children }) => (
-    <p className="text-t2 leading-relaxed my-4">
+    <p className="sf-measure text-t2 leading-relaxed my-4">
       {children}
     </p>
   ),
@@ -84,8 +95,8 @@ const LegalPageLayout = ({
   title,
   subtitle,
   lastUpdated,
-  badgeIcon,
   badgeText,
+  back,
   content,
   children,
   bursts,
@@ -94,32 +105,24 @@ const LegalPageLayout = ({
     <div className="min-h-screen bg-background sf-atmosphere">
       <Header />
 
-      <main id="main" tabIndex={-1} className="relative container mx-auto px-4 pt-24 pb-16 max-w-4xl">
+      <main id="main" tabIndex={-1} className="relative">
+        <PageContainer variant="standalone">
         {bursts && <PageBursts bursts={bursts} />}
-        {/* Back Link */}
-        <BackLink to="/" label="RETURN HOME" className="mb-6" />
-
-        {/* Header */}
-        <header className="mb-8">
-          <p className="font-mono text-[12px] tracking-wide text-sf-primary-text uppercase mb-4 flex items-center gap-2">
-            <span>//</span>
-            {badgeIcon}
-            {badgeText}
-          </p>
-          <h1 className="font-display text-3xl md:text-4xl font-light tracking-title mb-4 text-t1 uppercase">
-            {title}
-          </h1>
-          {subtitle && (
-            <p className="text-lg text-t2 mb-4">{subtitle}</p>
-          )}
-          <div className="flex items-center gap-2 font-mono text-[12px] tracking-wide uppercase text-t4">
-            <Calendar className="w-3 h-3" />
-            LAST UPDATED · {lastUpdated}
+        <PageHeader
+          size="page"
+          back={back}
+          eyebrow={badgeText}
+          title={title}
+          lede={subtitle}
+        >
+          <div className="flex items-center gap-2 font-mono text-sf-mono uppercase text-t4">
+            <Calendar className="w-4 h-4" aria-hidden />
+            Last updated · {lastUpdated}
           </div>
-        </header>
+        </PageHeader>
 
-        {/* Content */}
-        <GlassPanel className="p-6 md:p-10">
+        {/* Content: a reading column, left-aligned on the shared edge. */}
+        <GlassPanel className="max-w-4xl p-6 md:p-10">
           <article className="max-w-none">
             {content ? (
               <ReactMarkdown
@@ -133,6 +136,7 @@ const LegalPageLayout = ({
             )}
           </article>
         </GlassPanel>
+        </PageContainer>
       </main>
 
       <Footer />

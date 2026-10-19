@@ -74,7 +74,7 @@ export default function ForkButton({
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="font-heading uppercase tracking-[2px]">
+            <AlertDialogTitle>
               Fork World
             </AlertDialogTitle>
             <AlertDialogDescription className="text-t2">

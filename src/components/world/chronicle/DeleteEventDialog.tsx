@@ -27,10 +27,10 @@ export function DeleteEventDialog({
           </DialogTitle>
         </DialogHeader>
 
-        <p className="font-mono text-xs uppercase tracking-wider text-t3 mt-2">
+        <p className="font-sans text-sf-body text-t2 mt-2">
           Remove{" "}
-          <span className="text-t2">{eventTitle}</span>{" "}
-          from Chronicle
+          <span className="text-t1">{eventTitle}</span>{" "}
+          from the Chronicle?
         </p>
 
         <div className="flex items-center justify-end gap-2 mt-6">

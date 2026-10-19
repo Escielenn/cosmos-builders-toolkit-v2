@@ -208,7 +208,7 @@ export function ProjectReplaceDialog(props: ProjectReplaceDialogProps): JSX.Elem
       <DialogContent className="flex max-h-[90vh] max-w-3xl flex-col gap-4 overflow-hidden">
         <DialogHeader>
           <p className="font-heading text-sf-eyebrow uppercase text-t4">{"// PROJECT REPLACE"}</p>
-          <DialogTitle className="font-heading text-sf-h3 font-normal text-t1">Replace across the manuscript</DialogTitle>
+          <DialogTitle>Replace across the manuscript</DialogTitle>
           <DialogDescription className="font-sans text-[14px] text-t2">
             Document text only. Titles, cards and notes are not changed; cited facts, mentions and wiki links are never
             rewritten. Every affected document is snapshotted first.

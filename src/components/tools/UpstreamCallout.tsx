@@ -6,7 +6,7 @@
  * individually dismissable via localStorage.
  */
 
-import { X } from "lucide-react";
+import { Notice } from "@/components/layout/page-chrome";
 import { useUpstreamContext, type UpstreamCallout as CalloutData } from "@/hooks/use-upstream-context";
 import { useHintDismissed } from "@/hooks/use-hint-dismissed";
 
@@ -27,24 +27,16 @@ function CalloutItem({ callout, toolType, index }: CalloutItemProps) {
   if (isDismissed) return null;
 
   return (
-    <div className="relative mb-4 px-4 py-2.5 border border-sf-primary bg-sf-primary/[0.03] animate-in fade-in duration-slow">
-      <p className="font-mono text-[12px] uppercase tracking-wider text-sf-primary-text mb-1">
-        Upstream Context
-      </p>
-      <p className="text-xs text-t3 leading-relaxed pr-5">
-        {callout.message}
-      </p>
-      <p className="text-[12px] text-t4 mt-1">
-        Source: {callout.sourceBrandName}
-      </p>
-      <button
-        onClick={dismiss}
-        className="absolute right-1.5 top-1.5 flex min-h-hit min-w-hit items-center justify-center text-t4 transition-colors hover:text-t2"
-        aria-label="Dismiss upstream callout"
-      >
-        <X className="w-3 h-3" />
-      </button>
-    </div>
+    <Notice
+      tone="info"
+      compact
+      label="UPSTREAM CONTEXT"
+      onDismiss={dismiss}
+      className="mb-4 animate-in fade-in duration-slow"
+    >
+      <p>{callout.message}</p>
+      <p className="mt-1 text-[12px] text-t4">Source: {callout.sourceBrandName}</p>
+    </Notice>
   );
 }
 

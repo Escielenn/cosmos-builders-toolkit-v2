@@ -61,7 +61,7 @@ export function MoodboardPickerDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="font-heading">Choose from Moodboard</DialogTitle>
+          <DialogTitle>Choose from Moodboard</DialogTitle>
           <DialogDescription>
             Select an image from your moodboard collection across all worksheets.
           </DialogDescription>

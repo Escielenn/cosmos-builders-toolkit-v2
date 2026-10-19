@@ -35,12 +35,16 @@ const ITEMS: GuideNavItem[] = [
   },
 ];
 
-export function GuideNav() {
+/**
+ * Guide section tabs. Sits inside the PageHeader (as its children) on every
+ * guide page, left-aligned with the title (15-PAGE-CHROME).
+ */
+export function GuideNav({ className }: { className?: string } = {}) {
   const { pathname } = useLocation();
 
   return (
     <nav
-      className="flex flex-wrap items-center justify-center gap-2 mb-8"
+      className={cn("flex flex-wrap items-center gap-2", className)}
       aria-label="Guide navigation"
     >
       {ITEMS.map((item) => {
@@ -50,10 +54,10 @@ export function GuideNav() {
             key={item.to}
             to={item.to}
             className={cn(
-              "px-4 py-2 text-xs uppercase tracking-wider border rounded-none transition-all",
+              "inline-flex min-h-hit items-center px-4 font-sans text-xs font-medium uppercase tracking-wider border rounded-none transition-colors duration-base ease-sf-out",
               active
-                ? "text-sf-primary-text border-primary bg-primary/[0.06]"
-                : "text-t3 hover:text-sf-primary-text border-sf-line hover:border-primary"
+                ? "text-sf-primary-text border-sf-primary bg-sf-primary/[0.06]"
+                : "text-t3 hover:text-sf-primary-text border-sf-line hover:border-sf-line-emphasis"
             )}
             aria-current={active ? "page" : undefined}
           >

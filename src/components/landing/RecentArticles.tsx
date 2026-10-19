@@ -39,7 +39,7 @@ const RecentArticles = () => {
         viewport={viewportOnce}
         variants={scrollReveal}
       >
-        <h2 className="font-heading font-light text-2xl uppercase tracking-wide flex items-center gap-3">
+        <h2 className="font-display text-sf-h3 font-light text-t1 flex items-center gap-3">
           <BookOpen className="w-5 h-5 text-sf-primary-text" />
           Latest from SF University
         </h2>

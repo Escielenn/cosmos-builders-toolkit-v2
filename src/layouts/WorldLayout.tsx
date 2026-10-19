@@ -54,9 +54,9 @@ const WorldLayout = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { data: world, isLoading, error } = useWorld(worldId);
-  // The Manuscript (1.5 #26) renders in slim chrome: the space nav over the
-  // full-height Studio, no site header, no Codex sidebar. Focus mode hides
-  // the nav too.
+  // The Manuscript (1.5 #26) keeps the site header and the space nav like
+  // every other world route (15-PAGE-CHROME §1) but drops the world sidebar:
+  // its binder is that surface's index. Focus mode hides header and nav.
   const manuscript = !!worldId && isWorldManuscriptPath(pathname, worldId);
   const manuscriptRef = useRef(manuscript);
   manuscriptRef.current = manuscript;
@@ -210,20 +210,13 @@ const WorldLayout = () => {
     setCollapsed((prev) => !prev);
   }, [sheetMode]);
 
-  // Loading / error states
-  if ((isLoading || !worldId) && manuscript) {
-    return (
-      <div className="flex h-[100dvh] items-center justify-center bg-background">
-        <LoadingState message="LOADING WORLD FILE..." />
-      </div>
-    );
-  }
-
+  // Loading / error states: same frame as the loaded page (site header, no
+  // world nav yet because there is no world to navigate).
   if (isLoading || !worldId) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="flex items-center justify-center" style={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
+        <div className="flex items-center justify-center" style={{ height: `calc(100dvh - ${HEADER_HEIGHT}px)`, marginTop: HEADER_HEIGHT }}>
           <LoadingState message="LOADING WORLD FILE..." />
         </div>
       </div>
@@ -234,8 +227,8 @@ const WorldLayout = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="flex items-center justify-center" style={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
-          <p className="font-mono text-[12px] uppercase tracking-wide text-sf-crimson-text">
+        <div className="flex items-center justify-center" style={{ height: `calc(100dvh - ${HEADER_HEIGHT}px)`, marginTop: HEADER_HEIGHT }}>
+          <p className="font-mono text-sf-mono uppercase text-sf-crimson-text">
             // WORLD DATA UNAVAILABLE. RETRY WHEN READY.
           </p>
         </div>
@@ -251,139 +244,136 @@ const WorldLayout = () => {
     setChromeHidden,
   };
 
-  if (manuscript) {
-    // Slim world chrome: the four spaces stay one click away, and the Studio
-    // keeps its own full-height grid (topbar, binder, page, rail, footer).
-    // No WorldThemeProvider: its accent override is scoped to
-    // .sf-world-layout, which the Studio never sat inside.
-    return (
-      <WorldLayoutProvider value={layoutValue}>
-        <div className="grid h-[100dvh] grid-rows-[auto_minmax(0,1fr)] bg-background">
-          {chromeHidden ? <div /> : <WorldSpaceNav worldId={worldId} />}
-          <div className="min-h-0">
-            <Outlet />
-          </div>
-        </div>
-      </WorldLayoutProvider>
-    );
-  }
+  // 15-PAGE-CHROME §1: one frame on every world route. Site header, then the
+  // world nav directly beneath it, then the space. Focus mode (Manuscript
+  // only) is the one thing that hides the header and the nav.
+  const showChrome = !(manuscript && chromeHidden);
+  const frameOffset = showChrome ? HEADER_HEIGHT : 0;
 
   return (
     <WorldLayoutProvider value={layoutValue}>
       <WorldThemeProvider theme={world.theme} isPro={isSubscribed}>
         <div className="min-h-screen bg-background">
-          <Header />
+          {showChrome && <Header />}
 
           <div
-            className="sf-world-layout"
-            style={{ height: `calc(100vh - ${HEADER_HEIGHT}px)`, marginTop: HEADER_HEIGHT }}
+            className="grid grid-rows-[auto_minmax(0,1fr)]"
+            data-world-frame={manuscript ? "manuscript" : "space"}
+            style={{ height: `calc(100dvh - ${frameOffset}px)`, marginTop: frameOffset }}
           >
-            {/* Sidebar: inline column at md+, left Sheet below md */}
-            <CodexSidebarContainer
-              sheetMode={sheetMode}
-              open={sheetOpen}
-              onOpenChange={setSheetOpen}
-              triggerBottomClassName={sheetTriggerBottom}
-            >
-            <aside
-              id={CODEX_ID}
-              aria-label="World index"
-              className={`sf-codex sf-sb ${collapsed ? "sf-codex--collapsed" : ""} ${sheetMode ? "sf-codex--sheet" : ""}`}
-              style={sheetMode ? undefined : { width: collapsed ? COLLAPSED_WIDTH : width }}
-            >
-              {/* Tab toggle, hidden when collapsed */}
-              {!collapsed && (
-                <div className="flex border-b border-sf-line-hairline" role="tablist" aria-label="World sidebar">
-                  {SIDEBAR_TABS.map(({ id, label, title, Icon }) => {
-                    const selected = sidebarTab === id;
-                    return (
-                      <button
-                        key={id}
-                        type="button"
-                        role="tab"
-                        id={`sf-sidebar-tab-${id}`}
-                        aria-selected={selected}
-                        aria-controls="sf-sidebar-panel"
-                        tabIndex={selected ? 0 : -1}
-                        onClick={() => handleSidebarTabChange(id)}
-                        onKeyDown={(e) => {
-                          // Arrow keys move between the two tabs (WAI-ARIA tabs).
-                          if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
-                          e.preventDefault();
-                          const next = SIDEBAR_TABS[(SIDEBAR_TABS.findIndex((t) => t.id === id) + 1) % SIDEBAR_TABS.length];
-                          handleSidebarTabChange(next.id);
-                          document.getElementById(`sf-sidebar-tab-${next.id}`)?.focus();
-                        }}
-                        className={cn(
-                          "flex min-h-hit flex-1 items-center justify-center gap-1.5 border-b-2 px-2 font-heading text-[12px] font-medium uppercase tracking-wide transition-colors duration-base",
-                          selected
-                            ? "border-sf-primary bg-sf-primary/[0.06] text-sf-primary-text"
-                            : "border-transparent text-t3 hover:text-t1"
-                        )}
-                        title={title}
-                      >
-                        <Icon className="h-3 w-3" aria-hidden />
-                        {label}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
+            {showChrome ? <WorldSpaceNav worldId={worldId} /> : <div />}
 
-              {/* Active sidebar content */}
-              <div
-                id="sf-sidebar-panel"
-                role={collapsed ? undefined : "tabpanel"}
-                aria-labelledby={collapsed ? undefined : `sf-sidebar-tab-${sidebarTab}`}
-                className="h-full"
-              >
-              {sidebarTab === "codex" ? (
-                <Codex
-                  worldId={worldId}
-                  collapsed={collapsed}
-                  onCollapse={toggleCollapse}
-                />
-              ) : (
-                collapsed ? (
-                  <Codex
-                    worldId={worldId}
-                    collapsed={collapsed}
-                    onCollapse={toggleCollapse}
-                  />
-                ) : (
-                  <EntitySidebar
-                    worldId={worldId}
-                    onEntityClick={(entityId) => navigate(`/worlds/${worldId}/codex/${entityId}`)}
-                    onCreateEntity={() => navigate(`/worlds/${worldId}/codex?view=web&create=true`)}
-                    onDeleteEntity={setDeleteEntityId}
-                  />
-                )
-              )}
+            {manuscript ? (
+              // The Manuscript keeps its own full-height grid (topbar, binder,
+              // page, rail, footer). The binder is its index, so the world
+              // sidebar stands aside here. Outside .sf-world-layout on purpose:
+              // the world accent override never reached the Studio.
+              <div className="min-h-0">
+                <Outlet />
               </div>
-            </aside>
-            </CodexSidebarContainer>
+            ) : (
+              <div className="sf-world-layout min-h-0">
+                {/* Sidebar: inline column at md+, left Sheet below md */}
+                <CodexSidebarContainer
+                  sheetMode={sheetMode}
+                  open={sheetOpen}
+                  onOpenChange={setSheetOpen}
+                  triggerBottomClassName={sheetTriggerBottom}
+                >
+                <aside
+                  id={CODEX_ID}
+                  aria-label="World index"
+                  className={`sf-codex sf-sb ${collapsed ? "sf-codex--collapsed" : ""} ${sheetMode ? "sf-codex--sheet" : ""}`}
+                  style={sheetMode ? undefined : { width: collapsed ? COLLAPSED_WIDTH : width }}
+                >
+                  {/* Tab toggle, hidden when collapsed */}
+                  {!collapsed && (
+                    <div className="flex border-b border-sf-line-hairline" role="tablist" aria-label="World sidebar">
+                      {SIDEBAR_TABS.map(({ id, label, title, Icon }) => {
+                        const selected = sidebarTab === id;
+                        return (
+                          <button
+                            key={id}
+                            type="button"
+                            role="tab"
+                            id={`sf-sidebar-tab-${id}`}
+                            aria-selected={selected}
+                            aria-controls="sf-sidebar-panel"
+                            tabIndex={selected ? 0 : -1}
+                            onClick={() => handleSidebarTabChange(id)}
+                            onKeyDown={(e) => {
+                              // Arrow keys move between the two tabs (WAI-ARIA tabs).
+                              if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+                              e.preventDefault();
+                              const next = SIDEBAR_TABS[(SIDEBAR_TABS.findIndex((t) => t.id === id) + 1) % SIDEBAR_TABS.length];
+                              handleSidebarTabChange(next.id);
+                              document.getElementById(`sf-sidebar-tab-${next.id}`)?.focus();
+                            }}
+                            className={cn(
+                              "flex min-h-hit flex-1 items-center justify-center gap-1.5 border-b-2 px-2 font-heading text-[12px] font-medium uppercase tracking-wide transition-colors duration-base",
+                              selected
+                                ? "border-sf-primary bg-sf-primary/[0.06] text-sf-primary-text"
+                                : "border-transparent text-t3 hover:text-t1"
+                            )}
+                            title={title}
+                          >
+                            <Icon className="h-3 w-3" aria-hidden />
+                            {label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
 
-            {/* Resize handle: drag, or focus and use the arrow keys */}
-            {!collapsed && !sheetMode && (
-              <CodexResizeHandle
-                width={width}
-                onWidthChange={setWidth}
-                onMouseDown={startResize}
-                controls={CODEX_ID}
-              />
+                  {/* Active sidebar content */}
+                  <div
+                    id="sf-sidebar-panel"
+                    role={collapsed ? undefined : "tabpanel"}
+                    aria-labelledby={collapsed ? undefined : `sf-sidebar-tab-${sidebarTab}`}
+                    className="h-full"
+                  >
+                  {sidebarTab === "codex" ? (
+                    <Codex
+                      worldId={worldId}
+                      collapsed={collapsed}
+                      onCollapse={toggleCollapse}
+                    />
+                  ) : (
+                    collapsed ? (
+                      <Codex
+                        worldId={worldId}
+                        collapsed={collapsed}
+                        onCollapse={toggleCollapse}
+                      />
+                    ) : (
+                      <EntitySidebar
+                        worldId={worldId}
+                        onEntityClick={(entityId) => navigate(`/worlds/${worldId}/codex/${entityId}`)}
+                        onCreateEntity={() => navigate(`/worlds/${worldId}/codex?view=web&create=true`)}
+                        onDeleteEntity={setDeleteEntityId}
+                      />
+                    )
+                  )}
+                  </div>
+                </aside>
+                </CodexSidebarContainer>
+
+                {/* Resize handle: drag, or focus and use the arrow keys */}
+                {!collapsed && !sheetMode && (
+                  <CodexResizeHandle
+                    width={width}
+                    onWidthChange={setWidth}
+                    onMouseDown={startResize}
+                    controls={CODEX_ID}
+                  />
+                )}
+
+                {/* Main content */}
+                <main id="main" tabIndex={-1} className="sf-world-main sf-sb">
+                  <Outlet />
+                </main>
+              </div>
             )}
-
-            {/* Main content */}
-            <main id="main" tabIndex={-1} className="sf-world-main sf-sb">
-              {/* F6: one answer to "what are the parts of a world". Sticky so
-                  it survives a long Codex list or a tall tool page. */}
-              {worldId && (
-                <div className="sticky top-0 z-20">
-                  <WorldSpaceNav worldId={worldId} />
-                </div>
-              )}
-              <Outlet />
-            </main>
           </div>
         </div>
 

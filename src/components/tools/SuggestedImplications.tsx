@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp, Lightbulb, ArrowRight, X, Sparkles } from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
+import { Notice } from "@/components/layout/page-chrome";
 import { Badge } from "@/components/ui/badge";
 import {
   Collapsible,
@@ -162,17 +163,14 @@ const SuggestedImplications = ({
                         </p>
 
                         {implication.suggestedArchetypeForm && (
-                          <div className="p-3 rounded-none bg-sf-primary/5 border border-sf-primary">
-                            <div className="flex items-center gap-2 mb-1">
-                              <Sparkles className="w-4 h-4 text-sf-primary-text" />
-                              <span className="text-sm font-medium text-sf-primary-text">
-                                Suggested Archetype Form
-                              </span>
-                            </div>
-                            <p className="text-sm italic">
-                              "{implication.suggestedArchetypeForm}"
-                            </p>
-                          </div>
+                          <Notice
+                            tone="info"
+                            compact
+                            icon={<Sparkles className="w-4 h-4" />}
+                            label="Suggested Archetype Form"
+                          >
+                            "{implication.suggestedArchetypeForm}"
+                          </Notice>
                         )}
 
                         {onApply && (

@@ -20,6 +20,10 @@ import { Label } from "@/components/ui/label";
 import CreateWorldButton from "@/components/dashboard/CreateWorldButton";
 import { getToolDisplayName, getToolRoute } from "@/lib/tools-config";
 import { GuideNav } from "@/components/layout/GuideNav";
+import { Notice, PageContainer, PageHeader } from "@/components/layout/page-chrome";
+
+// Section headings (15-PAGE-CHROME §4): named blocks, display h3.
+const sectionHeading = "font-display text-sf-h3 font-light text-t1 mb-2";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorlds } from "@/hooks/use-worlds";
@@ -223,7 +227,7 @@ function StepShell({
         >
           {done ? <Check className="w-3.5 h-3.5" /> : number}
         </span>
-        <h3 className="font-heading text-sf-h3 text-t1 uppercase">
+        <h3 className="font-sans text-sf-body font-medium text-t1">
           {title}
           {done && <span className="sr-only"> (done)</span>}
         </h3>
@@ -267,16 +271,25 @@ const GettingStarted = () => {
     <div className="min-h-screen bg-sf-void sf-atmosphere">
       <Header />
 
-      <main className="max-w-[900px] mx-auto px-4 md:px-6 pt-24 pb-16">
-        <GuideNav />
+      <main>
+        <PageContainer variant="standalone">
+        <PageHeader
+          size="page"
+          back={{ label: "Back to Guide", to: "/guide" }}
+          eyebrow="Guide · Getting started"
+          title="Getting started"
+          lede="Learn the Environmental Cascade, then build your first world in three free steps."
+        >
+          <GuideNav />
+        </PageHeader>
 
         {/* ── Section 1: Cascade Tutorial ─────────────────── */}
-        <section className="mb-16">
-          <h1 className="font-display text-sf-h1 tracking-title text-t1 mb-4">
-            EVERYTHING CASCADES.
-          </h1>
+        <section className="mb-16" aria-labelledby="everything-cascades">
+          <h2 id="everything-cascades" className={sectionHeading}>
+            Everything cascades
+          </h2>
 
-          <div className="space-y-4 text-t2 text-sm leading-relaxed max-w-2xl mb-8">
+          <div className="sf-measure space-y-4 text-t2 text-sf-body leading-relaxed mb-8">
             <p>
               In science fiction, nothing exists in isolation. A planet's gravity
               shapes how life moves. How life moves shapes how minds develop. How
@@ -332,7 +345,7 @@ const GettingStarted = () => {
 
         {/* ── Section 2: The first hour ────────────────────── */}
         <section className="mb-16 pt-6" aria-labelledby="first-hour">
-          <h2 id="first-hour" className="font-heading text-sf-h2 text-t1 uppercase mb-2">
+          <h2 id="first-hour" className={sectionHeading}>
             Your first hour
           </h2>
           <p className="sf-measure text-t2 text-sm mb-8">
@@ -398,9 +411,9 @@ const GettingStarted = () => {
                   ))}
                 </ul>
               ) : (
-                <p className="font-mono text-sf-mono uppercase text-t3">
-                  {user ? "FILE A WORLD FIRST." : "SIGN IN AND FILE A WORLD FIRST."}
-                </p>
+                <Notice compact label="World required">
+                  {user ? "File a world first." : "Sign in and file a world first."}
+                </Notice>
               )}
             </StepShell>
 
@@ -419,7 +432,7 @@ const GettingStarted = () => {
                   </Link>
                 </Button>
               ) : (
-                <p className="font-mono text-sf-mono uppercase text-t3">FILE A WORLD FIRST.</p>
+                <Notice compact label="World required">File a world first.</Notice>
               )}
             </StepShell>
           </ol>
@@ -472,7 +485,7 @@ const GettingStarted = () => {
 
         {/* ── Section 3: Entry Point Router ────────────────── */}
         <section className="pt-6">
-          <h2 className="font-heading text-sf-h2 text-t1 uppercase mb-2">
+          <h2 className={sectionHeading}>
             Where does your world begin?
           </h2>
           <p className="text-t2 text-sm mb-6">
@@ -570,6 +583,7 @@ const GettingStarted = () => {
             </GlassPanel>
           )}
         </section>
+        </PageContainer>
       </main>
 
       <Footer />

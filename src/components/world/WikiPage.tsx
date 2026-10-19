@@ -38,6 +38,10 @@ import { manuscriptPath } from "@/lib/manuscript-path";
 import { useCodexEntity } from "@/hooks/use-codex-entity";
 import { useUpdateEntityMetadata } from "@/hooks/use-world-entities";
 import { entityAliases, parseAliases, entityEpochRange, formatEpochRange } from "@/lib/codex-entity";
+import { PageContainer, PageHeader, Notice } from "@/components/layout/page-chrome";
+import { Button } from "@/components/ui/button";
+import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
+import { worldCrumbs } from "@/lib/world-crumbs";
 
 const WikiEditor = lazy(() =>
   import("@/components/editor/WikiEditor").then((m) => ({
@@ -51,6 +55,7 @@ interface WikiPageProps {
 }
 
 export function WikiPage({ worldId, entryId }: WikiPageProps) {
+  const worldChrome = useWorldLayoutContext();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { data: role } = useMyWorldRole(worldId);
@@ -277,63 +282,78 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
 
   if (error || !entry) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <p className="font-mono text-xs uppercase tracking-wider text-sf-crimson-text">
-          Page unavailable.
-        </p>
-      </div>
+      <PageContainer variant="space">
+        <PageHeader
+          size="space"
+          breadcrumbs={worldCrumbs({ id: worldId, name: worldChrome?.worldName }, "Codex", "Unavailable")}
+          eyebrow="CODEX"
+          accent="teal"
+          title="Entry unavailable"
+        />
+        <Notice tone="danger" label="NOT ON FILE">
+          This entry could not be read. It may have been deleted, or your clearance does not reach it.
+        </Notice>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="sf-wiki-page">
-      {/* Header bar */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-1.5 font-mono text-[12px] uppercase tracking-wider text-t3">
-          <Link to={`/worlds/${worldId}`} className="hover:text-t2 transition-colors">
-            Dashboard
-          </Link>
-          <ChevronRight className="w-3 h-3" />
-          <Link to={`/worlds/${worldId}/codex`} className="hover:text-t2 transition-colors">
-            Codex
-          </Link>
-          <ChevronRight className="w-3 h-3" />
-          <span className="text-t3 truncate max-w-[200px]">{entry?.title}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          {saveStatus !== "idle" && (
-            <span className="sf-wiki-save-indicator">
-              {saveStatus === "saving" ? "SAVING..." : "SAVED"}
-            </span>
-          )}
-          {canEdit && (
-            <button
-              type="button"
-              onClick={() => setIsEditing(!isEditing)}
-              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-sf-line hover:border-sf-line-emphasis text-[12px] uppercase tracking-wider"
-            >
-              {isEditing ? (
-                <>
-                  <Eye className="w-3 h-3" /> Preview
-                </>
-              ) : (
-                <>
-                  <Pencil className="w-3 h-3" /> Edit
-                </>
-              )}
-            </button>
-          )}
-          {toolSource && (
-            <button
-              onClick={handleViewInTool}
-              className="sf-fill-sweep sf-fill-sweep--secondary flex items-center gap-1.5 px-3 py-1.5 border border-sf-line hover:border-sf-line-emphasis text-[12px] uppercase tracking-wider"
-            >
-              <ExternalLink className="w-3 h-3" /> View in Tool
-            </button>
-          )}
-        </div>
-      </div>
+    <PageContainer variant="space">
+      {/* 15-PAGE-CHROME §2: an entry is an item in the Codex space. The
+          breadcrumbs replace the old "Dashboard / Codex / title" mono trail;
+          the title stays editable for editors, inside the one H1. */}
+      <PageHeader
+        size="space"
+        breadcrumbs={worldCrumbs({ id: worldId, name: worldChrome?.worldName }, "Codex", entry.title || "Untitled entry")}
+        eyebrow={`CODEX · ${typeLabel.toUpperCase()}`}
+        accent="teal"
+        title={
+          canEdit ? (
+            <input
+              ref={titleRef}
+              type="text"
+              aria-label="Entry title"
+              value={editingTitle}
+              onChange={(e) => setEditingTitle(e.target.value)}
+              onBlur={handleTitleBlur}
+              onKeyDown={handleTitleKeyDown}
+              className="sf-wiki-title--editable [font:inherit] [letter-spacing:inherit] text-t1"
+              placeholder="Entry title..."
+            />
+          ) : (
+            entry.title
+          )
+        }
+        actions={
+          <>
+            {saveStatus !== "idle" && (
+              <span className="sf-wiki-save-indicator" role="status">
+                {saveStatus === "saving" ? "SAVING..." : "SAVED"}
+              </span>
+            )}
+            {canEdit && (
+              <Button variant="sf-ghost" size="sf-sm" onClick={() => setIsEditing(!isEditing)}>
+                {isEditing ? (
+                  <>
+                    <Eye className="w-4 h-4 mr-2" aria-hidden /> Preview
+                  </>
+                ) : (
+                  <>
+                    <Pencil className="w-4 h-4 mr-2" aria-hidden /> Edit
+                  </>
+                )}
+              </Button>
+            )}
+            {toolSource && (
+              <Button variant="sf-ghost" size="sf-sm" onClick={handleViewInTool}>
+                <ExternalLink className="w-4 h-4 mr-2" aria-hidden /> View in tool
+              </Button>
+            )}
+          </>
+        }
+      />
 
+      <div className="max-w-[840px]">
       {/* Cover image */}
       {entry.cover_image_url && (
         <img
@@ -341,22 +361,6 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
           alt=""
           className="sf-wiki-cover"
         />
-      )}
-
-      {/* Title, always editable for editors, static for viewers */}
-      {canEdit ? (
-        <input
-          ref={titleRef}
-          type="text"
-          value={editingTitle}
-          onChange={(e) => setEditingTitle(e.target.value)}
-          onBlur={handleTitleBlur}
-          onKeyDown={handleTitleKeyDown}
-          className="sf-wiki-title sf-wiki-title--editable"
-          placeholder="Entry title..."
-        />
-      ) : (
-        <h1 className="sf-wiki-title">{entry.title}</h1>
       )}
 
       {/* Meta bar */}
@@ -541,7 +545,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
       )}
 
       {/* ── Editor / Content ── */}
-      <div className="sf-wiki-section-header">Content</div>
+      <h2 className="mt-9 mb-4 border-b border-sf-line-hairline pb-2 font-heading text-sf-eyebrow uppercase text-t4">Content</h2>
       {isEditing ? (
         <div>
           <Suspense
@@ -637,7 +641,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
       {/* Connections */}
       {connections.length > 0 && (
         <>
-          <div className="sf-wiki-section-header">Connections</div>
+          <h2 className="mt-9 mb-4 border-b border-sf-line-hairline pb-2 font-heading text-sf-eyebrow uppercase text-t4">Connections</h2>
           <div className="space-y-1">
             {connections.map((conn) => (
               <div key={conn.id} className="sf-wiki-connection">
@@ -661,7 +665,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
       {/* Backlinks */}
       {backlinks.length > 0 && (
         <>
-          <div className="sf-wiki-section-header">Referenced By</div>
+          <h2 className="mt-9 mb-4 border-b border-sf-line-hairline pb-2 font-heading text-sf-eyebrow uppercase text-t4">Referenced by</h2>
           <div className="space-y-1">
             {backlinks.map((bl) => (
               <div key={bl.id} className="sf-wiki-backlink">
@@ -689,7 +693,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
       {/* From the Tools */}
       {toolSource && (
         <>
-          <div className="sf-wiki-section-header">From the Tools</div>
+          <h2 className="mt-9 mb-4 border-b border-sf-line-hairline pb-2 font-heading text-sf-eyebrow uppercase text-t4">From the tools</h2>
           <div className="flex gap-2">
             <button
               onClick={handleViewInTool}
@@ -700,7 +704,8 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
           </div>
         </>
       )}
-    </div>
+      </div>
+    </PageContainer>
   );
 }
 

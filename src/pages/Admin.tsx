@@ -8,6 +8,7 @@ import Header from "@/components/layout/Header";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 import Footer from "@/components/layout/Footer";
 import AdminGuard from "@/components/admin/AdminGuard";
+import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
 import {
   useAdminStats,
   useAdminTickets,
@@ -1086,19 +1087,19 @@ const Admin = () => {
   return (
     <AdminGuard>
       <Header />
-      <main className="min-h-screen pt-20 pb-16">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
-          <div className="flex items-center gap-3 mb-2">
-            <h1 className="font-display text-sf-h1 tracking-title text-t1">
-              MISSION CONTROL
-            </h1>
-            <span className="inline-flex items-center gap-1 rounded-none border px-2 py-0.5 text-xs font-medium uppercase tracking-wider bg-sf-crimson/[0.06] border-sf-crimson text-sf-crimson-text">
-              <AlertTriangle className="w-3 h-3" /> Admin Only
-            </span>
-          </div>
-          <p className="text-t4 text-xs mb-8 font-mono">
-            Secured via SECURITY DEFINER RPCs. All queries verify is_admin before executing.
-          </p>
+      <main className="min-h-screen">
+        <PageContainer variant="wide">
+          <PageHeader
+            size="page"
+            eyebrow="Operations"
+            title="Mission control"
+            badge={
+              <span className="inline-flex items-center gap-1 rounded-none border px-2 py-0.5 text-xs font-medium uppercase tracking-wider bg-sf-crimson/[0.06] border-sf-crimson text-sf-crimson-text">
+                <AlertTriangle className="w-3 h-3" aria-hidden /> Admin only
+              </span>
+            }
+            lede="Secured via SECURITY DEFINER RPCs. Every query verifies is_admin before it runs."
+          />
 
           <div className="flex gap-6">
             {/* Main content area */}
@@ -1173,7 +1174,7 @@ const Admin = () => {
               </SheetContent>
             </Sheet>
           </div>
-        </div>
+        </PageContainer>
       </main>
       <Footer />
     </AdminGuard>

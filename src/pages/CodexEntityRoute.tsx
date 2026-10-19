@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
 import { WikiPage } from "@/components/world/WikiPage";
 import { useMetaTags } from "@/hooks/use-meta-tags";
+import { PageContainer, Notice } from "@/components/layout/page-chrome";
 
 /**
  * /worlds/:worldId/codex/:entityId — one URL per thing (Brief F1).
@@ -19,11 +20,11 @@ const CodexEntityRoute = () => {
 
   if (!worldId || !entityId) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <p className="font-mono text-xs uppercase tracking-wider text-t3">
-          ENTITY NOT ON FILE.
-        </p>
-      </div>
+      <PageContainer variant="space">
+        <Notice tone="danger" label="ENTRY NOT ON FILE">
+          This Codex address does not name an entry in this world.
+        </Notice>
+      </PageContainer>
     );
   }
 

@@ -14,8 +14,8 @@ const SharedWorldsSection = () => {
   return (
     <section className="mb-16 scroll-mt-24">
       <div className="flex items-center justify-between mb-8">
-        <h2 className="font-heading font-light text-2xl uppercase tracking-wide">
-          Shared with Me
+        <h2 className="font-display text-sf-h3 font-light text-t1">
+          Shared with me
         </h2>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -38,6 +38,11 @@ import {
 } from "@/lib/tool-wiki-data";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
+import { Button } from "@/components/ui/button";
+
+// Section headings (15-PAGE-CHROME §4): the section-header pattern.
+const sectionHeading = "font-heading text-sf-eyebrow uppercase text-t4";
 import ToolCard from "@/components/dashboard/ToolCard";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Badge } from "@/components/ui/badge";
@@ -412,31 +417,26 @@ const Tools = () => {
   return (
     <div className="min-h-screen bg-sf-void sf-atmosphere">
       <Header />
-      <main className="container mx-auto px-4 pt-24 pb-16 relative z-10">
+      <main className="relative z-10">
+        <PageContainer variant="wide">
         <section className="mb-16">
+          <PageHeader
+            size="page"
+            eyebrow="Instrument catalog"
+            title="All tools"
+            lede="Inside a world, every instrument opens on a subject from its Codex. Open a world's Instruments to start from an entity; open one here to start standalone."
+            actions={
+              <>
+                <Button asChild variant="sf-ghost" size="sf-md">
+                  <Link to="/getting-started">Getting started</Link>
+                </Button>
+                <Button asChild variant="sf-ghost" size="sf-md">
+                  <Link to="/guide/tools">Tool reference</Link>
+                </Button>
+              </>
+            }
+          />
           <div className="flex flex-col gap-4 mb-8">
-            <p className="font-heading text-sf-eyebrow uppercase text-t4">// INSTRUMENT CATALOG</p>
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <h1 className="font-display text-sf-h1 tracking-title text-t1">ALL TOOLS</h1>
-              <div className="flex flex-wrap items-center gap-2">
-                <Link
-                  to="/getting-started"
-                  className="inline-flex min-h-hit items-center px-3 text-xs font-heading uppercase tracking-wide text-sf-primary-text border border-sf-primary hover:border-sf-line-emphasis rounded-none transition-colors duration-base"
-                >
-                  Getting Started
-                </Link>
-                <Link
-                  to="/guide/tools"
-                  className="inline-flex min-h-hit items-center px-3 text-xs font-heading uppercase tracking-wide text-t3 hover:text-t1 border border-sf-line hover:border-sf-line-emphasis rounded-none transition-colors duration-base"
-                >
-                  Tool Reference
-                </Link>
-              </div>
-            </div>
-            <p className="sf-measure text-sf-body text-t2">
-              Inside a world, every instrument opens on a subject from its Codex. Open a world's
-              Instruments to start from an entity; open one here to start standalone.
-            </p>
             <div
               role="group"
               aria-label="Sort tools"
@@ -485,14 +485,12 @@ const Tools = () => {
           {groupedTools.map(({ key, label, color, description, tools: sectionTools }, idx) => (
             <div key={key} id={`tools-group-${key}`} className="scroll-mt-24">
               {idx > 0 && <SFDivider className="hidden md:block" />}
-              <div className="mt-8 first:mt-0 mb-6">
+              <div className="mt-8 first:mt-0 mb-6 border-b border-sf-line-hairline pb-3">
                 <div className="flex items-center gap-2.5 mb-1">
                   <div className="w-2 h-2" style={{ backgroundColor: color }} aria-hidden="true" />
-                  <h2 className="font-heading font-light text-lg uppercase tracking-wide" style={{ color }}>
-                    {label}
-                  </h2>
+                  <h2 className={sectionHeading}>{label}</h2>
                 </div>
-                <p className="text-xs text-t3 ml-[18px]">{description}</p>
+                <p className="text-sf-small text-t3 ml-[18px]">{description}</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {sectionTools.map((tool) => (
@@ -505,8 +503,8 @@ const Tools = () => {
           <SFDivider className="hidden md:block" />
 
           {/* Coming Soon: only what has no shipping equivalent. */}
-          <div className="mt-8 mb-6 flex items-center justify-between gap-4">
-            <h2 className="font-heading font-light text-lg uppercase tracking-wide text-t3">Coming Soon</h2>
+          <div className="mt-8 mb-6 flex items-center justify-between gap-4 border-b border-sf-line-hairline pb-3">
+            <h2 className={sectionHeading}>Coming soon</h2>
             {isSubscribed && (
               <Link
                 to="/roadmap"
@@ -529,6 +527,7 @@ const Tools = () => {
             </div>
           )}
         </section>
+        </PageContainer>
       </main>
       <Footer />
     </div>

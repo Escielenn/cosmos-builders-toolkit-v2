@@ -5,7 +5,7 @@ import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
-import { SectionHero } from "@/components/ui/section-hero";
+import { Notice, PageContainer, PageHeader } from "@/components/layout/page-chrome";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -94,38 +94,32 @@ const LearnIndex = () => {
     <div className="min-h-screen bg-sf-void">
       <Header />
 
-      <main className="relative container mx-auto px-4 pt-24 pb-16">
+      <main className="relative">
+        <PageContainer variant="standalone">
         <PageBursts bursts={LEARN_INDEX_BURSTS} />
-        {/* Hero Section */}
-        <section className="mb-12">
-          <SectionHero
-            eyebrow="// ARCHIVE"
-            title={<>SF <span className="text-sf-primary-text">university.</span></>}
-            subtitle="Deep dives into worldbuilding concepts, science for storytellers, and the craft of creating believable fictional universes."
-          />
-        </section>
-
-        {/* Cross-section navigation */}
-        <GuideNav />
-
-        {/* Page-specific shortcuts */}
-        <div className="flex justify-center gap-2 -mt-4 mb-8">
-          <a
-            href="#courses"
-            className="px-4 py-2 text-xs uppercase tracking-wider text-t3 hover:text-sf-primary-text border border-sf-line rounded-none hover:border-sf-primary transition-all"
-          >
-            Courses
-          </a>
-          <Link
-            to="/roadmap"
-            className="px-4 py-2 text-xs uppercase tracking-wider text-t3 hover:text-sf-primary-text border border-sf-line rounded-none hover:border-sf-primary transition-all"
-          >
-            Roadmap
-          </Link>
-        </div>
+        {/* Top-level hub: no back link (the logo goes home). */}
+        <PageHeader
+          size="page"
+          eyebrow="Archive"
+          title="SF University"
+          lede="Deep dives into worldbuilding concepts, science for storytellers, and the craft of creating believable fictional universes."
+          actions={
+            <>
+              <Button asChild variant="sf-ghost" size="sf-md">
+                <a href="#courses">Courses</a>
+              </Button>
+              <Button asChild variant="sf-ghost" size="sf-md">
+                <Link to="/roadmap">Roadmap</Link>
+              </Button>
+            </>
+          }
+        >
+          {/* Cross-section navigation */}
+          <GuideNav />
+        </PageHeader>
 
         {/* Search */}
-        <div className="relative max-w-md mx-auto mb-10">
+        <div className="relative max-w-md mb-10">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-t3" />
           <Input
             placeholder="Search articles..."
@@ -144,11 +138,9 @@ const LearnIndex = () => {
 
         {/* Error State */}
         {error && !isLoading && (
-          <GlassPanel className="p-4 mb-8 border-sf-amber">
-            <p className="text-sf-amber-text text-sm">
-              Unable to load articles from CMS. Showing cached content.
-            </p>
-          </GlassPanel>
+          <Notice tone="caution" label="Archive offline" className="mb-8">
+            Unable to load articles from the CMS. Showing cached content.
+          </Notice>
         )}
 
         {/* Search Results */}
@@ -161,7 +153,7 @@ const LearnIndex = () => {
             )}
             {!isSearching && searchResults && searchResults.length > 0 && (
               <>
-                <h2 className="font-heading text-2xl font-light uppercase tracking-[2px] mb-6">
+                <h2 className="font-display text-sf-h3 font-light text-t1 mb-6">
                   Results for &ldquo;{searchTerm}&rdquo;
                 </h2>
                 <div className="space-y-4">
@@ -210,7 +202,7 @@ const LearnIndex = () => {
         {/* Featured Articles */}
         {!isLoading && !isSearchActive && featuredArticles.length > 0 && (
           <section className="mb-12">
-            <h2 className="font-heading text-2xl font-light uppercase tracking-[2px] mb-6">
+            <h2 className="font-display text-sf-h3 font-light text-t1 mb-6">
               Featured
             </h2>
             <div className="grid gap-6 md:grid-cols-2">
@@ -269,8 +261,8 @@ const LearnIndex = () => {
           <section className="mb-12">
             <div className="flex items-center gap-3 mb-6">
               <Beaker className="w-5 h-5 text-t3" />
-              <h2 className="font-heading text-2xl font-light uppercase tracking-[2px]">
-                Simulator Science: Showing Our Work
+              <h2 className="font-display text-sf-h3 font-light text-t1">
+                Simulator science: showing our work
               </h2>
             </div>
             <div className="grid gap-6 md:grid-cols-3">
@@ -373,7 +365,7 @@ const LearnIndex = () => {
           <section id="courses" className="mb-12 scroll-mt-24">
             <div className="flex items-center gap-3 mb-6">
               <GraduationCap className="w-5 h-5 text-sf-violet" />
-              <h2 className="font-heading text-2xl font-light uppercase tracking-[2px]">
+              <h2 className="font-display text-sf-h3 font-light text-t1">
                 Courses
               </h2>
             </div>
@@ -484,8 +476,8 @@ const LearnIndex = () => {
         {/* All Articles */}
         {!isLoading && !isSearchActive && (
           <section>
-            <h2 className="font-heading text-2xl font-light uppercase tracking-[2px] mb-6">
-              All Articles
+            <h2 className="font-display text-sf-h3 font-light text-t1 mb-6">
+              All articles
             </h2>
             <div className="space-y-6">
               {articles.map((article) => (
@@ -542,6 +534,7 @@ const LearnIndex = () => {
             </div>
           </section>
         )}
+        </PageContainer>
       </main>
 
       <Footer />

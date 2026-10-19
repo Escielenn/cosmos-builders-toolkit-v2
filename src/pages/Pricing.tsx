@@ -16,7 +16,6 @@ import { FREE_PLAN_GROUPS, PRO_PLAN_ITEMS } from "@/lib/plan-features";
 import { PageBursts } from "@/components/ui/data-burst";
 import { PRICING_BURSTS } from "@/lib/data-bursts";
 import { ParallaxStrips } from "@/components/ambient/ParallaxStrips";
-import { SectionHero } from "@/components/ui/section-hero";
 import { mapError } from "@/lib/ship-voice";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 
@@ -172,12 +171,18 @@ const Pricing = () => {
             <ParallaxStrips height={300} />
           </div>
           <div className="relative z-10">
-            <SectionHero
-              warm
-              eyebrow="// access tiers"
-              title={<>Write the book free. <span className="text-sf-primary-text">Unlock every instrument.</span></>}
-              subtitle={`The Studio, Codex, Chronicle, Canon and Compile come with every account. Pro opens all ${TOTAL_TOOL_COUNT} instruments and full-world exports. Vanguard shapes what comes next.`}
-            />
+            {/* Marketing hero (15-PAGE-CHROME: Pricing keeps its own hero and
+                does not use PageHeader). Inlined when SectionHero was retired. */}
+            <div className="inline-flex items-center gap-3.5 font-mono text-sf-mono uppercase text-sf-primary-text mb-7">
+              <span aria-hidden className="block w-12 h-px bg-sf-primary-text" />
+              <span>// access tiers</span>
+            </div>
+            <h1 className="m-0 font-serif italic font-light text-t1 text-sf-h1 leading-[1.05]">
+              Write the book free. <span className="text-sf-primary-text">Unlock every instrument.</span>
+            </h1>
+            <p className="font-sans text-sf-body text-t2 mt-7 max-w-[780px] leading-[1.55]">
+              {`The Studio, Codex, Chronicle, Canon and Compile come with every account. Pro opens all ${TOTAL_TOOL_COUNT} instruments and full-world exports. Vanguard shapes what comes next.`}
+            </p>
           </div>
         </section>
 

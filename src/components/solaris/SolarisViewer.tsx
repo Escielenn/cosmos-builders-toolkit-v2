@@ -15,6 +15,7 @@ import type {
 import SolarisScene from "./SolarisScene";
 import SolarisControls from "./SolarisControls";
 import SolarisUI from "./SolarisUI";
+import { SimulatorTitle } from "@/components/simulators/SimulatorTitle";
 
 export default function SolarisViewer({
   system,
@@ -105,14 +106,8 @@ export default function SolarisViewer({
   return (
     <div className="relative w-full" style={{ height }}>
       {/* Title block */}
-      <div className="absolute top-3 left-3 z-10 pointer-events-none">
-        <h1 className="font-display text-[24px] font-light uppercase tracking-ultra text-t1">
-          SOLARIS
-        </h1>
-        <p className="font-sans text-[12px] uppercase tracking-wide text-t4">
-          STELLARFORGE.TOOLS
-        </p>
-      </div>
+      {/* Inset 12px, not 18: the controls panel sits at top-14 below it. */}
+      <SimulatorTitle name="SOLARIS" className="left-3 top-3" />
 
       {/* Three.js canvas */}
       <SolarisScene

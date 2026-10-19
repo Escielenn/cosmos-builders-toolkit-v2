@@ -22,7 +22,7 @@ const ContactDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto sf-sb">
         <DialogHeader>
-          <DialogTitle className="font-heading text-xl">Contact Us</DialogTitle>
+          <DialogTitle>Contact Us</DialogTitle>
           <DialogDescription>
             Get in touch or submit a support ticket.
           </DialogDescription>

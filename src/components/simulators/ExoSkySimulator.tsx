@@ -62,6 +62,7 @@ import {
   precessionMatrix,
 } from "@/lib/simulators/astro";
 import { describeHandoffPlanet, type HandoffPayload } from "@/lib/simulators/handoff";
+import { SimulatorTitle } from "@/components/simulators/SimulatorTitle";
 
 // ── STAR CATALOG (lazy-loaded from /exosky-stars.json) ────────
 // Format: [name, RA(°), Dec(°), dist(pc), absMag, B-V]
@@ -1973,23 +1974,21 @@ export default function ExoSkyV2({
         onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerLeave={onUp} onWheel={onWheel} />
 
       {/* ── TITLE ── */}
-      <div style={{ position:"absolute",top:16,left:18,zIndex:10,pointerEvents:"none" }}>
-        <h1 style={{ margin:0,fontFamily:"var(--font-display)",fontWeight:300,fontSize:26,letterSpacing:"0.24em",textTransform:"uppercase",color:"var(--t1)" }}>EXOSKY</h1>
-        <div style={{ fontFamily:FONT_SANS,fontSize:13,color:"var(--sf-primary-text)",marginTop:4 }}>{planet.planet}</div>
-        <div role="status" style={{ display:"inline-block",marginTop:8,padding:"6px 14px",fontSize:12,fontFamily:FONT_MONO,fontWeight:500,letterSpacing:"0.10em",textTransform:"uppercase",borderRadius:0,
+      <SimulatorTitle name="EXOSKY" subtitle="Alien Night Sky Simulator" context={planet.planet}>
+        <div role="status" style={{ display:"inline-block",padding:"6px 14px",fontSize:12,fontFamily:FONT_MONO,fontWeight:500,letterSpacing:"0.10em",textTransform:"uppercase",borderRadius:0,
           background: mwReady ? "rgb(var(--sf-primary-rgb) / 0.06)" : "rgb(var(--sf-amber-rgb) / 0.06)",
           border: mwReady ? "1px solid var(--sf-primary)" : "1px solid var(--sf-amber)",
           color: mwReady ? "var(--sf-primary-text)" : "var(--sf-amber-text)",
           transition:`background-color ${EASE}, border-color ${EASE}, color ${EASE}`,
         }}>{mwReady ? "● OBSERVING" : "// COMPUTING"}</div>
-      </div>
+      </SimulatorTitle>
 
       {/* ── CONTROL PANEL ── */}
-      <div className="sf-sb" style={{ position:"absolute",top:120,left:18,
+      <div className="sf-sb" style={{ position:"absolute",top:144,left:18,
         width: isMobile ? undefined : 272,
         right: isMobile ? 18 : undefined,
         zIndex:10,
-        maxHeight: isMobile ? "30vh" : "calc(100% - 150px)",
+        maxHeight: isMobile ? "30vh" : "calc(100% - 174px)",
         overflowY:"auto",
         background: PANEL_BG, border:"1px solid var(--sf-line)",
         backdropFilter:"blur(16px)",borderRadius:0,padding:panelOpen?"14px 18px":"8px 14px",transition:`padding ${EASE}` }}>
@@ -2234,7 +2233,7 @@ export default function ExoSkyV2({
         // panel instead of sitting beside it. The offset is computed from the
         // control panel's own top (120) and cap (30vh) rather than a fixed
         // px or vh guess, so the gap holds on any phone height.
-        top: isMobile ? "calc(120px + 30vh + 12px)" : 16,
+        top: isMobile ? "calc(144px + 30vh + 12px)" : 16,
         right: isMobile ? 18 : (narrativeBridgeOpen ? 18 + 320 + 12 : 18),
         left: isMobile ? 18 : undefined,
         width: isMobile ? undefined : 320,

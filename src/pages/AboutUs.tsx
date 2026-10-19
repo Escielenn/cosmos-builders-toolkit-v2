@@ -2,7 +2,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Compass, Layers, User, Sparkles } from "lucide-react";
-import { BackLink } from "@/components/ui/back-link";
+import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 
 const AboutUs = () => {
@@ -15,27 +15,24 @@ const AboutUs = () => {
     <div className="min-h-screen bg-sf-void sf-atmosphere">
       <Header />
 
-      <main className="relative container mx-auto px-4 pt-24 pb-16">
-        {/* Hero */}
-        <section className="text-center mb-16">
-          <h1 className="font-display text-sf-h1 tracking-title text-t1 mb-4">
-            ABOUT STELLARFORGE
-          </h1>
-          <p className="text-lg text-t2 max-w-2xl mx-auto leading-relaxed">
-            A science fiction worldbuilding platform for writers who demand
-            scientific credibility alongside creative imagination.
-          </p>
-        </section>
+      <main className="relative">
+        <PageContainer variant="standalone">
+        <PageHeader
+          size="page"
+          eyebrow="About"
+          title="About StellarForge"
+          lede="A science fiction worldbuilding platform for writers who demand scientific credibility alongside creative imagination."
+        />
 
         {/* The Story */}
-        <section className="max-w-3xl mx-auto mb-16">
+        <section className="max-w-3xl mb-16">
           <GlassPanel className="p-6 sm:p-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-8 h-8 flex items-center justify-center bg-sf-primary/[0.06] border border-sf-primary">
                 <Compass className="w-4 h-4 text-sf-primary-text" />
               </div>
-              <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1">
-                The Story
+              <h2 className="font-display text-sf-h3 font-light text-t1">
+                The story
               </h2>
             </div>
             <div className="space-y-4 text-t2 leading-relaxed">
@@ -66,14 +63,14 @@ const AboutUs = () => {
         </section>
 
         {/* Environmental Cascade */}
-        <section className="max-w-3xl mx-auto mb-16">
+        <section className="max-w-3xl mb-16">
           <GlassPanel className="p-6 sm:p-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-8 h-8 flex items-center justify-center bg-sf-stellar/[0.06] border border-sf-stellar">
                 <Layers className="w-4 h-4 text-sf-stellar-text" />
               </div>
-              <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1">
-                The Cascade
+              <h2 className="font-display text-sf-h3 font-light text-t1">
+                The cascade
               </h2>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-3 py-4">
@@ -110,14 +107,14 @@ const AboutUs = () => {
         </section>
 
         {/* Founder */}
-        <section className="max-w-3xl mx-auto mb-16">
+        <section className="max-w-3xl mb-16">
           <GlassPanel className="p-6 sm:p-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-8 h-8 flex items-center justify-center bg-sf-violet/[0.06] border border-sf-violet">
                 <User className="w-4 h-4 text-sf-violet-text" />
               </div>
-              <h2 className="font-heading text-xl font-light uppercase tracking-[2px] text-t1">
-                The Founder
+              <h2 className="font-display text-sf-h3 font-light text-t1">
+                The founder
               </h2>
             </div>
             <div className="space-y-4 text-t2 leading-relaxed">
@@ -143,7 +140,7 @@ const AboutUs = () => {
         </section>
 
         {/* Mission / Tagline */}
-        <section className="max-w-3xl mx-auto mb-16 text-center">
+        <section className="max-w-3xl mb-16 text-center">
           <GlassPanel className="p-8 sm:p-12" glow>
             <div className="flex items-center justify-center gap-3 mb-6">
               <Sparkles className="w-5 h-5 text-sf-primary-text" />
@@ -163,10 +160,7 @@ const AboutUs = () => {
           </GlassPanel>
         </section>
 
-        {/* Back link */}
-        <div className="flex justify-center">
-          <BackLink to="/" label="Return Home" />
-        </div>
+        </PageContainer>
       </main>
 
       <Footer />

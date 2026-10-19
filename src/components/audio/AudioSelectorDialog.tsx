@@ -60,7 +60,7 @@ export default function AudioSelectorDialog() {
 
       <DialogContent className="sm:max-w-xl max-h-[80vh] flex flex-col">
         <DialogHeader>
-          <DialogTitle className="font-heading text-xl tracking-wider">
+          <DialogTitle>
             AUDIO
           </DialogTitle>
         </DialogHeader>

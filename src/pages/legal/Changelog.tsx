@@ -271,7 +271,7 @@ const Changelog = () => {
             <section key={entry.version} className="relative">
               {/* Version header */}
               <div className="flex flex-wrap items-center gap-3 mb-4">
-                <h2 className="font-heading text-2xl font-medium text-t1">
+                <h2 className="font-display text-sf-h3 font-light text-t1">
                   v{entry.version}
                 </h2>
                 <Badge className={`${style.bg} ${style.text}`}>
@@ -281,7 +281,7 @@ const Changelog = () => {
               </div>
 
               {/* Title */}
-              <h3 className="text-lg font-medium text-t1 mb-3">{entry.title}</h3>
+              <h3 className="font-sans text-sf-body font-medium text-t1 mb-3">{entry.title}</h3>
 
               {/* Changes list */}
               <ul className="space-y-2">
