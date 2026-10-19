@@ -97,7 +97,6 @@ const WorldLayout = () => {
   // 260px column left ~115px of content at 375px). Desktop is unchanged.
   const sheetMode = useCodexSheetMode();
   const [sheetOpen, setSheetOpen] = useState(false);
-  const { pathname } = useLocation();
   useEffect(() => {
     setSheetOpen(false);
   }, [pathname]);

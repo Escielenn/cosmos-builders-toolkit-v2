@@ -45,7 +45,7 @@ function SheetHarness({ sheetMode }: { sheetMode: boolean }) {
   const [open, setOpen] = useState(false);
   return (
     <CodexSidebarContainer sheetMode={sheetMode} open={open} onOpenChange={setOpen}>
-      <aside aria-label="Registry">
+      <aside aria-label="World index">
         <p>Codex contents</p>
       </aside>
     </CodexSidebarContainer>
@@ -72,7 +72,7 @@ describe("CodexSidebarContainer", () => {
     fireEvent.click(screen.getByRole("button", { name: "Open world index" }));
     const dialog = screen.getByRole("dialog");
     expect(dialog).toHaveTextContent("Codex contents");
-    expect(dialog).toHaveAccessibleName("Registry");
+    expect(dialog).toHaveAccessibleName("World index");
     fireEvent.click(screen.getByRole("button", { name: "Close" }));
     expect(screen.queryByText("Codex contents")).toBeNull();
   });
