@@ -11,7 +11,13 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 const SOVEREIGNTY_SHOWN_KEY = "sf-sovereignty-shown";
 
-const CreateWorldButton = () => {
+interface CreateWorldButtonProps {
+  /** "card" is the dashed grid tile; "button" is a BEGIN SURVEY action. */
+  variant?: "card" | "button";
+  className?: string;
+}
+
+const CreateWorldButton = ({ variant = "card", className }: CreateWorldButtonProps = {}) => {
   const { user, loading: authLoading } = useAuth();
   const { createWorld } = useWorlds();
   const navigate = useNavigate();
@@ -82,7 +88,13 @@ const CreateWorldButton = () => {
 
   return (
     <>
-      <button onClick={handleClick} className="w-full text-left">
+      {variant === "button" ? (
+        <Button variant="sf-primary" size="sf-md" className={`gap-2 ${className ?? ""}`} onClick={handleClick}>
+          <Plus className="w-4 h-4" aria-hidden="true" />
+          Begin survey
+        </Button>
+      ) : (
+      <button type="button" onClick={handleClick} className={`w-full text-left ${className ?? ""}`}>
         <GlassPanel
           hover
           className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center gap-3 border-dashed border-2 border-sf-stellar hover:border-sf-stellar group"
@@ -98,6 +110,7 @@ const CreateWorldButton = () => {
           </div>
         </GlassPanel>
       </button>
+      )}
 
       {/* Auth Dialog for unauthenticated users */}
       <AuthRequiredDialog open={showAuthDialog} onOpenChange={setShowAuthDialog} />

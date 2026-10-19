@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import CollectionPanel from "@/components/account/CollectionPanel";
+import ArchivePanel from "@/components/account/ArchivePanel";
+import { ACCOUNT_TABS, parseAccountTab, type AccountTab } from "@/lib/account-tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -44,7 +47,18 @@ const Profile = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [avatarPickerOpen, setAvatarPickerOpen] = useState(false);
 
-  useMetaTags({ title: "Personnel File" });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tab = parseAccountTab(searchParams.get("tab"));
+  const selectTab = (next: AccountTab) => {
+    const sp = new URLSearchParams(searchParams);
+    if (next === "file") sp.delete("tab");
+    else sp.set("tab", next);
+    setSearchParams(sp, { replace: true });
+  };
+
+  useMetaTags({
+    title: tab === "collection" ? "Collection" : tab === "archive" ? "Archive" : "Personnel File",
+  });
 
   // Dirty = any editable field differs from the profile as loaded.
   const isDirty =
@@ -142,16 +156,56 @@ const Profile = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="relative container mx-auto px-4 pt-24 pb-16 max-w-2xl">
+      <main
+        className={`relative container mx-auto px-4 pt-24 pb-16 ${tab === "file" ? "max-w-2xl" : "max-w-4xl"}`}
+      >
         <PageBursts bursts={SETTINGS_BURSTS} />
         <BackLink to="/" label="RETURN TO BRIDGE" className="mb-6" />
 
         <SectionHero
           eyebrow="// PERSONNEL FILE"
           title={<>Personnel <span className="text-sf-primary-text">file.</span></>}
-          className="mb-10"
+          className="mb-8"
         />
 
+        <div role="tablist" aria-label="Account" className="flex flex-wrap gap-1 border-b border-sf-line mb-8">
+          {ACCOUNT_TABS.map((t) => {
+            const active = tab === t.id;
+            return (
+              <button
+                key={t.id}
+                type="button"
+                role="tab"
+                id={`account-tab-${t.id}`}
+                aria-selected={active}
+                aria-controls={`account-panel-${t.id}`}
+                onClick={() => selectTab(t.id)}
+                className={`min-h-hit px-4 -mb-px border-b-2 font-heading text-sf-eyebrow uppercase transition-colors duration-base ${
+                  active
+                    ? "border-sf-primary text-sf-primary-text"
+                    : "border-transparent text-t3 hover:text-t1"
+                }`}
+              >
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {tab === "collection" && (
+          <section role="tabpanel" id="account-panel-collection" aria-labelledby="account-tab-collection">
+            <CollectionPanel />
+          </section>
+        )}
+
+        {tab === "archive" && (
+          <section role="tabpanel" id="account-panel-archive" aria-labelledby="account-tab-archive">
+            <ArchivePanel />
+          </section>
+        )}
+
+        {tab === "file" && (
+        <section role="tabpanel" id="account-panel-file" aria-labelledby="account-tab-file">
         <GlassPanel className="p-8">
           <div className="space-y-6">
             {/* Avatar */}
@@ -370,6 +424,8 @@ const Profile = () => {
         <GlassPanel className="p-8 mt-6">
           <AccountDataSettings />
         </GlassPanel>
+        </section>
+        )}
       </main>
 
       <Footer />

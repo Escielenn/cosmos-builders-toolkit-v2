@@ -1,24 +1,37 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useMemo, useState, type ReactNode } from "react";
+import { Link } from "react-router-dom";
 import {
   Sparkles,
   BookOpen,
   Bug,
   Compass,
   ArrowRight,
-  ArrowLeft,
   ChevronRight,
   ExternalLink,
   Check,
+  PenLine,
 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { ProBadge } from "@/components/ui/pro-badge";
 import { Button } from "@/components/ui/button";
-import { getToolDisplayName, isProTool } from "@/lib/tools-config";
+import { Label } from "@/components/ui/label";
+import CreateWorldButton from "@/components/dashboard/CreateWorldButton";
+import { getToolDisplayName, getToolRoute } from "@/lib/tools-config";
 import { GuideNav } from "@/components/layout/GuideNav";
 import { useMetaTags } from "@/hooks/use-meta-tags";
+import { useAuth } from "@/contexts/AuthContext";
+import { useWorlds } from "@/hooks/use-worlds";
+import { useEntities } from "@/hooks/use-entity-graph";
+import { useRecentWork } from "@/hooks/use-recent-work";
+import { docHref, latestDocByWorld } from "@/lib/recent-work";
+import {
+  FIRST_INSTRUMENT_IDS,
+  PRO_NEXT_STEPS,
+  firstHourProgress,
+  instrumentLinks,
+} from "@/lib/onboarding/first-hour";
 
 // ── Cascade Stage Data ─────────────────────────────────────
 
@@ -76,7 +89,7 @@ const ENTRY_POINTS = [
     label: "I'm starting from scratch",
     description:
       "No specific idea yet. Want to explore what's possible and let a world emerge from the tools.",
-    tone: "Let's build from the ground up. Literally. We'll start with a star, find a habitable zone, design a planet, and watch how that environment shapes everything that lives there.",
+    tone: "Build from the ground up. Begin a survey: a star, a planet, a first species. Open an instrument on the planet, then write the first scene against what it decided.",
     action: "pathway",
   },
   {
@@ -117,50 +130,6 @@ const ENTRY_POINTS = [
     action: "wiki",
   },
 ] as const;
-
-// ── Guided First World Steps ───────────────────────────────
-
-const PATHWAY_STEPS = [
-  {
-    number: 1,
-    title: "Star & Habitable Zone",
-    toolIds: ["habitable-zone-calculator", "star-system-builder"],
-    intro:
-      "Every world orbits something. The star you choose determines almost everything else: how much light and heat reach your planet, what colors dominate the sky, how long a \"year\" feels, and whether your world is tidally locked to a red dwarf or spinning freely around a yellow sun like ours.",
-    cascadeForward:
-      "This star determines where your planet can exist and still have liquid water. Let's place your world in that zone.",
-    output: "Star type, habitable zone boundaries, orbital parameters.",
-  },
-  {
-    number: 2,
-    title: "Planetary Profile",
-    toolIds: ["planetary-profile", "surface-gravity-calculator"],
-    intro:
-      "Now we build the planet itself. Mass determines gravity: how hard it is to stand up, how high creatures can jump, how thick the atmosphere can be. Rotation determines day length: how organisms sleep, hunt, and photosynthesize. These aren't arbitrary numbers; they're the physics that will shape every living thing.",
-    cascadeForward:
-      "Gravity and atmosphere determine climate patterns. Higher gravity means denser air, different weather, and constraints on how large flying creatures can be. Let's see what life emerges.",
-    output: "Mass, gravity, atmosphere, day length, climate zones.",
-  },
-  {
-    number: 3,
-    title: "Life & Evolution",
-    toolIds: ["evolutionary-biology", "sensorium"],
-    intro:
-      "The environment you've built isn't just a backdrop. It's a filter. Every trait your species has exists because it helped their ancestors survive here, in this gravity, under this light, across these biomes. Evolution isn't random; it's a conversation between organisms and their world.",
-    cascadeForward:
-      "Biology becomes psychology. A species with different senses, metabolism, and social structures doesn't think like a human. Their bodies shape their metaphors, their senses shape their art.",
-    output: "Species profile, sensory systems, evolutionary rationale.",
-  },
-  {
-    number: 4,
-    title: "Mythology & Meaning",
-    toolIds: ["xenomythology-framework-builder"],
-    intro:
-      "Culture isn't arbitrary. It emerges from bodies, environments, and minds. A species that sees in infrared has different aesthetics. A species that never experienced winter has no harvest festivals. What do they find sacred? What do they fear? What stories do they tell to explain their existence?",
-    cascadeForward: null,
-    output: "Mythology profile, creation myth, ritual descriptions, cultural foundations.",
-  },
-];
 
 // ── Interactive Cascade Diagram ────────────────────────────
 
@@ -228,106 +197,39 @@ function CascadeDiagram({
   );
 }
 
-// ── Pathway Step Card ──────────────────────────────────────
+// ── Pathway step shell ─────────────────────────────────────
 
-function PathwayStep({
-  step,
-  isActive,
-  isComplete,
-  onActivate,
+function StepShell({
+  number,
+  title,
+  done,
+  children,
 }: {
-  step: (typeof PATHWAY_STEPS)[number];
-  isActive: boolean;
-  isComplete: boolean;
-  onActivate: () => void;
+  number: number;
+  title: string;
+  done: boolean;
+  children: ReactNode;
 }) {
-  const navigate = useNavigate();
-
   return (
-    <div
-      className={`border-l-2 pl-5 pb-8 transition-colors ${
-        isActive
-          ? "border-sf-primary"
-          : isComplete
-          ? "border-sf-primary"
-          : "border-sf-line"
-      }`}
-    >
-      {/* Step header */}
-      <button
-        type="button"
-        onClick={onActivate}
-        className="flex items-center gap-3 mb-3 group w-full text-left"
-      >
-        <div
-          className={`w-7 h-7 rounded-none flex items-center justify-center font-mono text-xs transition-colors ${
-            isActive
-              ? "bg-sf-primary/10 border border-sf-primary text-sf-primary-text"
-              : isComplete
-              ? "bg-sf-primary/5 border border-sf-primary text-sf-primary-text"
-              : "bg-sf-surface-elevated border border-sf-line text-t4"
+    <li className={`border-l-2 pl-5 pb-8 ${done ? "border-sf-primary" : "border-sf-line"}`}>
+      <div className="flex items-center gap-3 mb-3">
+        <span
+          className={`w-8 h-8 rounded-none flex items-center justify-center font-mono text-xs ${
+            done
+              ? "bg-sf-primary/[0.06] border border-sf-primary text-sf-primary-text"
+              : "bg-sf-surface-elevated border border-sf-line text-t3"
           }`}
+          aria-hidden="true"
         >
-          {isComplete ? <Check className="w-3.5 h-3.5" /> : step.number}
-        </div>
-        <h3
-          className={`font-heading text-sm uppercase tracking-wide transition-colors ${
-            isActive
-              ? "text-[hsl(var(--sf-section-green))]"
-              : isComplete
-              ? "text-t3"
-              : "text-t4"
-          }`}
-        >
-          {step.title}
+          {done ? <Check className="w-3.5 h-3.5" /> : number}
+        </span>
+        <h3 className="font-heading text-sf-h3 text-t1 uppercase">
+          {title}
+          {done && <span className="sr-only"> (done)</span>}
         </h3>
-      </button>
-
-      {/* Expanded content */}
-      {isActive && (
-        <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-slow">
-          <p className="text-t2 text-sm leading-relaxed">{step.intro}</p>
-
-          {/* Tool links */}
-          <div className="flex flex-wrap gap-2">
-            {step.toolIds.map((toolId) => {
-              const isPro = isProTool(toolId);
-              return (
-                <Button
-                  key={toolId}
-                  variant="outline"
-                  size="sm"
-                  className="rounded-none text-xs gap-1.5"
-                  onClick={() => navigate(`/tools/${toolId}`)}
-                >
-                  {getToolDisplayName(toolId)}
-                  {isPro && <ProBadge className="ml-1" />}
-                  <ExternalLink className="w-3 h-3 ml-0.5 text-t4" />
-                </Button>
-              );
-            })}
-          </div>
-
-          {/* Expected output */}
-          <GlassPanel className="p-3">
-            <span className="text-t4 text-xs uppercase tracking-wider block mb-1">
-              What you'll create
-            </span>
-            <span className="text-t2 text-xs">{step.output}</span>
-          </GlassPanel>
-
-          {/* Cascade forward */}
-          {step.cascadeForward && (
-            <div className="flex items-start gap-2 pt-1">
-              <ArrowRight className="w-3.5 h-3.5 text-sf-primary-text shrink-0 mt-0.5" />
-              <p className="text-sf-primary-text text-xs italic leading-relaxed">
-                {step.cascadeForward}
-              </p>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+      </div>
+      <div className="space-y-4">{children}</div>
+    </li>
   );
 }
 
@@ -335,29 +237,28 @@ function PathwayStep({
 
 const GettingStarted = () => {
   useMetaTags({ title: "Getting Started" });
+  const { user } = useAuth();
+  const { worlds } = useWorlds();
   const [cascadeActiveStage, setCascadeActiveStage] = useState<string | null>(
     null,
   );
   const [selectedEntry, setSelectedEntry] = useState<string | null>(null);
-  const [activeStep, setActiveStep] = useState(0);
-  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
-  const navigate = useNavigate();
+  const [chosenWorldId, setChosenWorldId] = useState<string | null>(null);
+
+  // The world the pathway works in: the writer's pick, else the most
+  // recently updated (useWorlds orders by updated_at desc).
+  const world = worlds.find((w) => w.id === chosenWorldId) ?? worlds[0] ?? null;
+  const worldId = world?.id ?? null;
+  const worldIds = useMemo(() => (worldId ? [worldId] : []), [worldId]);
+  const { data: entities = [] } = useEntities(worldId ?? undefined);
+  const { data: recent } = useRecentWork(worldIds, { enabled: !!worldId });
+
+  const progress = firstHourProgress({ worldId, worksheets: recent.worksheets });
+  const instruments = instrumentLinks(FIRST_INSTRUMENT_IDS, worldId, entities);
+  const latestDoc = worldId ? latestDocByWorld(recent.docs).get(worldId) ?? null : null;
 
   const handleCascadeClick = (id: string) => {
     setCascadeActiveStage((prev) => (prev === id ? null : id));
-  };
-
-  const handleEntrySelect = (entryId: string) => {
-    setSelectedEntry(entryId);
-  };
-
-  const handleStepComplete = () => {
-    if (!completedSteps.includes(activeStep)) {
-      setCompletedSteps((prev) => [...prev, activeStep]);
-    }
-    if (activeStep < PATHWAY_STEPS.length - 1) {
-      setActiveStep(activeStep + 1);
-    }
   };
 
   const selectedEntryData = ENTRY_POINTS.find((e) => e.id === selectedEntry);
@@ -425,14 +326,154 @@ const GettingStarted = () => {
         {/* ── Divider ─────────────────────────────────────── */}
         <div className="sf-divider relative">
           <span className="absolute left-1/2 -translate-x-1/2 -top-2 bg-sf-void px-4 font-mono text-xs tracking-wider text-t4 uppercase">
+            Guided Pathway
+          </span>
+        </div>
+
+        {/* ── Section 2: The first hour ────────────────────── */}
+        <section className="mb-16 pt-6" aria-labelledby="first-hour">
+          <h2 id="first-hour" className="font-heading text-sf-h2 text-t1 uppercase mb-2">
+            Your first hour
+          </h2>
+          <p className="sf-measure text-t2 text-sm mb-8">
+            Three steps, all free: file a world, open an instrument on something in it, and
+            write the first scene. Progress below is read from your own records.
+          </p>
+
+          {/* World picker, only when there is a choice to make. */}
+          {worlds.length > 1 && (
+            <div className="mb-8 flex flex-wrap items-center gap-3">
+              <Label htmlFor="gs-world">Working in</Label>
+              <select
+                id="gs-world"
+                value={worldId ?? ""}
+                onChange={(e) => setChosenWorldId(e.target.value)}
+                className="sf-field min-h-hit px-3 text-sf-body text-t1 bg-sf-surface border border-sf-line-interactive rounded-none"
+              >
+                {worlds.map((w) => (
+                  <option key={w.id} value={w.id}>
+                    {w.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <ol className="ml-3">
+            <StepShell number={1} title="Create a world" done={progress.world}>
+              <p className="sf-measure text-t2 text-sm leading-relaxed">
+                BEGIN SURVEY names the world, picks a star, a planet and a first species,
+                files all three in the Codex with their derived values, and opens an empty
+                Chapter One on the planet.
+              </p>
+              {world ? (
+                <p className="font-mono text-sf-mono uppercase text-t3">
+                  WORLD ON FILE: <span className="text-t1">{world.name}</span>
+                </p>
+              ) : null}
+              <CreateWorldButton variant="button" />
+            </StepShell>
+
+            <StepShell number={2} title="Open an instrument on it" done={progress.instrument}>
+              <p className="sf-measure text-t2 text-sm leading-relaxed">
+                Instruments open on a subject from your Codex, so what they produce lands on
+                the thing it describes. These three are free.
+              </p>
+              {worldId ? (
+                <ul className="flex flex-col gap-2">
+                  {instruments.map((link) => (
+                    <li key={link.toolId}>
+                      {link.href ? (
+                        <Link
+                          to={link.href}
+                          className="flex min-h-hit items-center justify-between gap-3 px-4 py-2 border border-sf-line hover:border-sf-line-emphasis bg-sf-surface rounded-none transition-colors duration-base"
+                        >
+                          <span className="text-sf-body text-t1">{getToolDisplayName(link.toolId)}</span>
+                          <span className="font-mono text-sf-mono uppercase text-t4 truncate">
+                            {link.subject ? `ON ${link.subject.name}` : "NO SUBJECT"}
+                          </span>
+                        </Link>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="font-mono text-sf-mono uppercase text-t3">
+                  {user ? "FILE A WORLD FIRST." : "SIGN IN AND FILE A WORLD FIRST."}
+                </p>
+              )}
+            </StepShell>
+
+            <StepShell number={3} title="Write the first scene" done={false}>
+              <p className="sf-measure text-t2 text-sm leading-relaxed">
+                The Studio is where the world goes. The rail beside the page shows what
+                your instruments decided, so the scene can lean on it.
+              </p>
+              {worldId ? (
+                <Button variant="sf-primary" size="sf-md" className="gap-2" asChild>
+                  <Link to={latestDoc ? docHref(latestDoc) : `/worlds/${worldId}/write`}>
+                    <PenLine className="w-4 h-4" aria-hidden="true" />
+                    {latestDoc
+                      ? `Continue ${latestDoc.title?.trim() || "writing"}`
+                      : "Open the Studio"}
+                  </Link>
+                </Button>
+              ) : (
+                <p className="font-mono text-sf-mono uppercase text-t3">FILE A WORLD FIRST.</p>
+              )}
+            </StepShell>
+          </ol>
+
+          {/* ── Optional next: Pro instruments ──────────── */}
+          <GlassPanel className="p-5 mt-4">
+            <div className="flex flex-wrap items-center gap-2 mb-1">
+              <h3 className="font-heading text-sf-eyebrow uppercase text-t3">Next, with Pro</h3>
+              <ProBadge />
+            </div>
+            <p className="sf-measure text-t2 text-sm mb-4">
+              Optional. Walk the cascade from star to myth. Each opens on its subject in{" "}
+              {world ? world.name : "your world"}.
+            </p>
+            <ol className="space-y-4">
+              {PRO_NEXT_STEPS.map((step, i) => (
+                <li key={step.title}>
+                  <p className="text-sf-body text-t1">
+                    <span className="font-mono text-t4 mr-2">{i + 1}.</span>
+                    {step.title}
+                  </p>
+                  <p className="text-xs text-t3 mb-2">{step.output}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {instrumentLinks(step.toolIds, worldId, entities).map((link) => {
+                      const href = link.href ?? getToolRoute(link.toolId) ?? "/tools";
+                      return (
+                        <Link
+                          key={link.toolId}
+                          to={href}
+                          className="inline-flex min-h-hit items-center gap-2 px-3 text-xs border border-sf-line hover:border-sf-line-emphasis text-t2 hover:text-t1 rounded-none transition-colors duration-base"
+                        >
+                          {getToolDisplayName(link.toolId)}
+                          {link.isPro && <ProBadge />}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </GlassPanel>
+        </section>
+
+        {/* ── Divider ─────────────────────────────────────── */}
+        <div className="sf-divider relative">
+          <span className="absolute left-1/2 -translate-x-1/2 -top-2 bg-sf-void px-4 font-mono text-xs tracking-wider text-t4 uppercase">
             Entry Points
           </span>
         </div>
 
-        {/* ── Section 2: Entry Point Router ────────────────── */}
-        <section className="mb-16 pt-6">
-          <h2 className="font-heading text-xl font-light uppercase tracking-[2px] gradient-text mb-2">
-            Where Does Your World Begin?
+        {/* ── Section 3: Entry Point Router ────────────────── */}
+        <section className="pt-6">
+          <h2 className="font-heading text-sf-h2 text-t1 uppercase mb-2">
+            Where does your world begin?
           </h2>
           <p className="text-t2 text-sm mb-6">
             Most stories start with a spark: a scene, a creature, a concept.
@@ -447,10 +488,9 @@ const GettingStarted = () => {
                 <button
                   key={entry.id}
                   type="button"
-                  onClick={() => handleEntrySelect(entry.id)}
-                  className={`text-left transition-all ${
-                    isSelected ? "" : "sf-card-hover"
-                  }`}
+                  aria-pressed={isSelected}
+                  onClick={() => setSelectedEntry(entry.id)}
+                  className={`text-left transition-all ${isSelected ? "" : "sf-card-hover"}`}
                 >
                   <GlassPanel
                     className={`p-4 h-full transition-all ${
@@ -464,16 +504,10 @@ const GettingStarted = () => {
                         }`}
                       />
                       <div>
-                        <h3
-                          className={`text-sm font-medium mb-1 ${
-                            isSelected ? "text-t1" : "text-t2"
-                          }`}
-                        >
+                        <h3 className={`text-sm font-medium mb-1 ${isSelected ? "text-t1" : "text-t2"}`}>
                           {entry.label}
                         </h3>
-                        <p className="text-t2 text-sm leading-relaxed">
-                          {entry.description}
-                        </p>
+                        <p className="text-t2 text-sm leading-relaxed">{entry.description}</p>
                       </div>
                     </div>
                   </GlassPanel>
@@ -482,7 +516,6 @@ const GettingStarted = () => {
             })}
           </div>
 
-          {/* Selected entry response */}
           {selectedEntryData && (
             <GlassPanel className="p-5 animate-in fade-in slide-in-from-bottom-2 duration-slow">
               <p className="text-t2 text-sm leading-relaxed italic mb-4">
@@ -490,12 +523,13 @@ const GettingStarted = () => {
               </p>
 
               {selectedEntryData.action === "pathway" && (
-                <div className="flex items-center gap-2">
-                  <ArrowRight className="w-4 h-4 text-sf-primary-text" />
-                  <span className="text-t3 text-xs">
-                    Scroll down for the Guided First World pathway.
-                  </span>
-                </div>
+                <a
+                  href="#first-hour"
+                  className="inline-flex min-h-hit items-center gap-2 text-xs text-sf-primary-text"
+                >
+                  <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                  Start with your first hour, above.
+                </a>
               )}
 
               {selectedEntryData.action === "tools" &&
@@ -505,137 +539,34 @@ const GettingStarted = () => {
                       Suggested starting tools
                     </span>
                     <div className="flex flex-wrap gap-2">
-                      {selectedEntryData.suggestedTools.map((toolId) => (
-                        <Button
-                          key={toolId}
-                          variant="outline"
-                          size="sm"
-                          className="rounded-none text-xs"
-                          onClick={() => navigate(`/tools/${toolId}`)}
+                      {instrumentLinks(selectedEntryData.suggestedTools, worldId, entities).map((link) => (
+                        <Link
+                          key={link.toolId}
+                          to={link.href ?? getToolRoute(link.toolId) ?? "/tools"}
+                          className="inline-flex min-h-hit items-center gap-2 px-3 text-xs border border-sf-line hover:border-sf-line-emphasis text-t2 hover:text-t1 rounded-none transition-colors duration-base"
                         >
-                          {getToolDisplayName(toolId)}
-                          <ExternalLink className="w-3 h-3 ml-1.5" />
-                        </Button>
+                          {getToolDisplayName(link.toolId)}
+                          {link.isPro && <ProBadge />}
+                          <ExternalLink className="w-3 h-3 text-t4" aria-hidden="true" />
+                        </Link>
                       ))}
                     </div>
                   </div>
                 )}
 
               {selectedEntryData.action === "wiki" && (
-                <Link to="/guide/tools">
-                  <Button variant="outline" size="sm" className="rounded-none text-xs">
-                    Browse All Tools
-                    <ArrowRight className="w-3 h-3 ml-1.5" />
+                <div className="flex flex-wrap gap-2">
+                  <Button variant="sf-ghost" size="sf-sm" asChild>
+                    <Link to="/tools">
+                      All tools
+                      <ArrowRight className="w-3 h-3 ml-1.5" aria-hidden="true" />
+                    </Link>
                   </Button>
-                </Link>
+                  <Button variant="sf-ghost" size="sf-sm" asChild>
+                    <Link to="/guide/tools">Tool reference</Link>
+                  </Button>
+                </div>
               )}
-            </GlassPanel>
-          )}
-        </section>
-
-        {/* ── Divider ─────────────────────────────────────── */}
-        <div className="sf-divider relative">
-          <span className="absolute left-1/2 -translate-x-1/2 -top-2 bg-sf-void px-4 font-mono text-xs tracking-wider text-t4 uppercase">
-            Guided Pathway
-          </span>
-        </div>
-
-        {/* ── Section 3: Guided First World ────────────────── */}
-        <section className="pt-6">
-          <h2 className="font-heading text-xl font-light uppercase tracking-[2px] gradient-text mb-2">
-            The Guided First World
-          </h2>
-          <p className="text-t2 text-sm mb-2">
-            Build a documented planet with life and cultural implications in 4 steps.
-          </p>
-          <p className="text-t2 text-sm mb-8">
-            Each step links to the actual tool. Complete them in order to experience the cascade firsthand.
-          </p>
-
-          {/* Progress bar */}
-          <div className="flex items-center gap-1 mb-8">
-            {PATHWAY_STEPS.map((step, i) => (
-              <div
-                key={step.number}
-                className={`h-1 flex-1 rounded-none transition-colors ${
-                  completedSteps.includes(i)
-                    ? "bg-sf-primary"
-                    : i === activeStep
-                    ? "bg-sf-primary/40"
-                    : "bg-sf-surface-elevated"
-                }`}
-              />
-            ))}
-          </div>
-
-          {/* Steps */}
-          <div className="ml-3">
-            {PATHWAY_STEPS.map((step, i) => (
-              <PathwayStep
-                key={step.number}
-                step={step}
-                isActive={activeStep === i}
-                isComplete={completedSteps.includes(i)}
-                onActivate={() => setActiveStep(i)}
-              />
-            ))}
-          </div>
-
-          {/* Navigation */}
-          <div className="flex items-center justify-between mt-6 pt-4 border-t border-sf-line-hairline">
-            <Button
-              variant="ghost"
-              size="sm"
-              disabled={activeStep === 0}
-              onClick={() => setActiveStep(Math.max(0, activeStep - 1))}
-            >
-              <ArrowLeft className="w-3.5 h-3.5 mr-1.5" />
-              Previous
-            </Button>
-
-            {activeStep < PATHWAY_STEPS.length - 1 ? (
-              <Button size="sm" className="rounded-none" onClick={handleStepComplete}>
-                Mark Complete & Continue
-                <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
-              </Button>
-            ) : (
-              <Button
-                size="sm"
-                className="rounded-none"
-                onClick={() => {
-                  handleStepComplete();
-                }}
-              >
-                <Check className="w-3.5 h-3.5 mr-1.5" />
-                Complete Pathway
-              </Button>
-            )}
-          </div>
-
-          {/* Completion message */}
-          {completedSteps.length === PATHWAY_STEPS.length && (
-            <GlassPanel glow className="p-5 mt-8 text-center animate-in fade-in duration-slow">
-              <h3 className="font-heading text-lg font-light uppercase tracking-[2px] text-t1 mb-2">
-                You've Built a World
-              </h3>
-              <p className="text-t2 text-sm leading-relaxed max-w-lg mx-auto mb-4">
-                Not just a planet, but a cascading system where physics led to environment,
-                environment led to biology, biology led to psychology, and psychology
-                led to culture. Everything connects. This is your foundation.
-              </p>
-              <div className="flex flex-wrap justify-center gap-3">
-                <Link to="/guide/tools">
-                  <Button variant="outline" size="sm" className="rounded-none text-xs">
-                    Explore All Tools
-                  </Button>
-                </Link>
-                <Link to="/">
-                  <Button size="sm" className="rounded-none text-xs">
-                    Go to Dashboard
-                    <ArrowRight className="w-3 h-3 ml-1.5" />
-                  </Button>
-                </Link>
-              </div>
             </GlassPanel>
           )}
         </section>

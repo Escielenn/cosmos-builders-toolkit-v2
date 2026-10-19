@@ -53,13 +53,16 @@ const MOBILE_NAV: {
     heading: "Worlds",
     items: [
       { label: "My Worlds", to: "/worlds", icon: Globe },
-      { label: "My Collection", to: "/collection", icon: Library },
-      { label: "Archive", to: "/archive", icon: Archive },
+      { label: "My Collection", to: "/profile?tab=collection", icon: Library },
+      { label: "Archive", to: "/profile?tab=archive", icon: Archive },
     ],
   },
   {
     heading: "Tools",
-    items: [{ label: "All Tools", to: "/guide/tools", icon: Wrench }],
+    items: [
+      { label: "All Tools", to: "/tools", icon: Wrench },
+      { label: "Tool Reference", to: "/guide/tools", icon: BookOpen },
+    ],
   },
   {
     heading: "Studio",
@@ -305,11 +308,11 @@ const Header = () => {
                   <Globe className="w-4 h-4 mr-2" />
                   My Worlds
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/collection")}>
+                <DropdownMenuItem onClick={() => navigate("/profile?tab=collection")}>
                   <Library className="w-4 h-4 mr-2" />
                   My Collection
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/archive")}>
+                <DropdownMenuItem onClick={() => navigate("/profile?tab=archive")}>
                   <Archive className="w-4 h-4 mr-2" />
                   Archive
                 </DropdownMenuItem>
