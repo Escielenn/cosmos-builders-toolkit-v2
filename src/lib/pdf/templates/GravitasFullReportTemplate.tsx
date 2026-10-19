@@ -69,7 +69,7 @@ const GravitasFullReportTemplate = ({ formState: rawFormState, worldName, date }
               <PDFKeyValuePair label="Realism Mode" value={REALISM_LABELS[data.realismMode] || data.realismMode} />
             </View>
             <View style={{ flex: 1 }}>
-              <PDFResultBox label="Effective Gravity" value={formatG(effectiveG)} subtitle={label} />
+              <PDFResultBox label="Effective Gravity" value={formatG(effectiveG)} description={label} />
             </View>
           </View>
         </PDFSection>

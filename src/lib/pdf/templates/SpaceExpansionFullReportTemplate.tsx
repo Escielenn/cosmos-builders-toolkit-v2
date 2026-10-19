@@ -262,7 +262,7 @@ const SpaceExpansionFullReportTemplate = ({ formState, worldName }: Props) => {
       {reachedPhases.map((phase) => {
         const matrix = getConsequenceMatrix(data.consequenceMatrices || [], phase.id);
         if (!matrix) return null;
-        const filledCells = matrix.cells.filter((c) => c.interaction && c.interaction !== "");
+        const filledCells = matrix.cells.filter((c) => Boolean(c.interaction));
         if (filledCells.length === 0) return null;
 
         return (

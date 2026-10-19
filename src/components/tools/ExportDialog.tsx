@@ -29,7 +29,8 @@ import { resolvePdfTemplate } from "@/lib/pdf/lazy-template";
 // Dynamic imports for heavy libraries - only loaded when actually exporting
 const loadPdfRenderer = () => import("@react-pdf/renderer");
 const loadPdfStyles = () => import("@/lib/pdf/styles");
-const loadTextGenerator = () => import("@/lib/text");
+// "@/lib/text" resolves to src/lib/text.ts (word counts), not this folder.
+const loadTextGenerator = () => import("@/lib/text/index");
 const loadDocxGenerator = () => import("@/lib/docx");
 const loadCsvExport = () => import("@/lib/export/csv-export");
 

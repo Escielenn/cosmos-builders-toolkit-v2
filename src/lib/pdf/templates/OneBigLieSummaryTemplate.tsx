@@ -16,7 +16,6 @@ interface FormState {
   socialConsequences: { socialPsychologicalImpact: string; culturalMythologicalImpact: string };
   rigorCommitment: { rigorArea1: string; rigorArea2: string; rigorArea3: string };
   declaration: { formalDeclaration: string };
-  [key: string]: unknown;
 }
 
 interface OneBigLieSummaryTemplateProps {

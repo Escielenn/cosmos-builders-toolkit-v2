@@ -296,7 +296,8 @@ const EmpireDesigner = () => {
     item: string
   ) => {
     setFormState((prev) => {
-      const currentArray = (prev[section] as Record<string, unknown>)[field] as string[];
+      const raw: unknown = Reflect.get(prev[section], field);
+      const currentArray: string[] = Array.isArray(raw) ? raw : [];
       const newArray = currentArray.includes(item)
         ? currentArray.filter((i) => i !== item)
         : [...currentArray, item];

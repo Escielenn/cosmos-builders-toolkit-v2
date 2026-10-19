@@ -278,7 +278,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
                 {!readOnly && (
                   <button
                     type="button"
-                    onClick={() => createNote.mutate()}
+                    onClick={() => createNote.mutate(undefined)}
                     disabled={createNote.isPending}
                     className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center justify-center gap-2 px-3 py-2 border border-sf-line text-[12px] font-heading uppercase tracking-wider text-t3 hover:text-sf-primary-text hover:border-sf-primary transition-colors"
                   >

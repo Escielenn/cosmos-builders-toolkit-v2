@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { toJson } from "@/lib/rpc-json";
 import type { Json } from "@/integrations/supabase/types";
 import { ENTITY_MASTER_FIELDS, readMasterField } from "@/lib/entity-config";
 import { getNestedValue } from "@/lib/entity-prepopulate";
@@ -81,7 +82,7 @@ export async function syncWorksheetToEntity(
       const { _pending_changes, ...rest } = metadata;
       await supabase
         .from("world_entries")
-        .update({ metadata: rest })
+        .update({ metadata: toJson(rest) })
         .eq("id", entityId);
     }
     return;
@@ -91,10 +92,10 @@ export async function syncWorksheetToEntity(
   await supabase
     .from("world_entries")
     .update({
-      metadata: {
+      metadata: toJson({
         ...metadata,
         _pending_changes: changes,
-      },
+      }),
     })
     .eq("id", entityId);
 }
@@ -184,6 +185,6 @@ export async function dismissPendingChanges(entityId: string): Promise<void> {
 
   await supabase
     .from("world_entries")
-    .update({ metadata: rest })
+    .update({ metadata: toJson(rest) })
     .eq("id", entityId);
 }

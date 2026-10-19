@@ -43,8 +43,10 @@ export function buildSensoriumInsights(formState: SensoriumFormState): Sensorium
       overBudget: budget.totalCost > 1.0,
     },
     perceptionGaps: {
-      speciesPerceives: gaps.speciesPerceives.map((s) => s.name),
-      speciesBlind: gaps.speciesBlind.map((s) => s.name),
+      // calculatePerceptionGaps already returns modality names. (This used to
+      // map `.name` over those strings, which pushed arrays of undefined.)
+      speciesPerceives: gaps.speciesPerceives,
+      speciesBlind: gaps.speciesBlind,
     },
     dominantSense: formState.perceptionProfile.dominantSense || modalities[0]?.name || "",
     informs: linkedWorksheetIds(formState).map((w) => w.id),

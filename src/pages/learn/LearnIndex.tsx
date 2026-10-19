@@ -17,11 +17,11 @@ import { urlFor } from "@/lib/sanity/client";
 import { PageBursts } from "@/components/ui/data-burst";
 import { LEARN_INDEX_BURSTS } from "@/lib/data-bursts";
 import { GuideNav } from "@/components/layout/GuideNav";
-import type { CourseListItem } from "@/lib/sanity/types";
+import type { ArticleListItem, CourseListItem } from "@/lib/sanity/types";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 
 // Fallback static articles (shown when Sanity has no content yet)
-const fallbackArticles = [
+const fallbackArticles: ArticleListItem[] = [
   {
     _id: "fallback-drake",
     slug: "drake-equation",

@@ -60,8 +60,9 @@ export async function getArticlesByCategory(
 export async function getArticlesByTag(
   tag: string
 ): Promise<ArticleListItem[]> {
-  const query = `*[_type == "article" && $tag in tags] | order(publishedDate desc) ${articleListProjection}`;
-  return sanityFetch(query, { tag });
+  // `tag` is a reserved fetch option in @sanity/client, not a GROQ param.
+  const query = `*[_type == "article" && $tagName in tags] | order(publishedDate desc) ${articleListProjection}`;
+  return sanityFetch(query, { tagName: tag });
 }
 
 // Search articles by text (searches title, description, and content)

@@ -14,7 +14,6 @@ interface Props {
       worldbuildingNotes?: string;
     };
     generalNotes?: string;
-    [key: string]: unknown;
   };
   worldName?: string;
   date?: string;

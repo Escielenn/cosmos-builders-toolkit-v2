@@ -1032,17 +1032,17 @@ const HabitableZoneCalculator = () => {
         <ShareDialog
           open={shareDialogOpen}
           onOpenChange={setShareDialogOpen}
-          worksheetId={(currentWorksheetId || worksheetId)!}
-          worksheetTitle={currentWorksheetTitle || "Habitable Zone Calculator"}
-          toolType={TOOL_TYPE}
+          entityType="worksheet"
+          entityId={(currentWorksheetId || worksheetId)!}
+          entityTitle={currentWorksheetTitle || "Habitable Zone Calculator"}
         />
       )}
 
       <WorksheetNotesSheet
         open={notesSheetOpen}
         onOpenChange={setNotesSheetOpen}
-        notes={formState.generalNotes}
-        onNotesChange={(val) => setFormState((prev) => ({ ...prev, generalNotes: val }))}
+        content={formState.generalNotes}
+        onChange={(val) => setFormState((prev) => ({ ...prev, generalNotes: val }))}
       />
 
       <WorksheetMoodboardSheet

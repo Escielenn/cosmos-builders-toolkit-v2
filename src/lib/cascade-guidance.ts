@@ -9,7 +9,18 @@
  * Spec: StellarForge_Final_Remediation_Spec_v2, Issue 5
  */
 
-import type { CascadeLayer } from "@/services/world-data";
+/**
+ * The guidance layers. These are the tool-category ids this module has
+ * always used; they are NOT the world-data `CascadeLayer` ids
+ * (environment, biology, ...), which it used to import by mistake.
+ */
+export type GuidanceLayer =
+  | "stars_and_systems"
+  | "worlds"
+  | "life"
+  | "civilizations"
+  | "mythology"
+  | "narrative";
 
 interface CascadeSuggestion {
   toolType: string;
@@ -19,7 +30,7 @@ interface CascadeSuggestion {
 }
 
 /** Cascade layer ordering (upstream → downstream) */
-const CASCADE_ORDER: CascadeLayer[] = [
+const CASCADE_ORDER: GuidanceLayer[] = [
   "stars_and_systems",
   "worlds",
   "life",
@@ -29,7 +40,7 @@ const CASCADE_ORDER: CascadeLayer[] = [
 ];
 
 /** Which tools belong to which cascade layer */
-const LAYER_TOOLS: Record<string, string[]> = {
+const LAYER_TOOLS: Record<GuidanceLayer, string[]> = {
   stars_and_systems: [
     "star-system-builder",
     "habitable-zone-calculator",
@@ -69,7 +80,7 @@ const LAYER_TOOLS: Record<string, string[]> = {
 };
 
 /** Downstream suggestion after completing a tool in each layer */
-const DOWNSTREAM_SUGGESTIONS: Record<string, CascadeSuggestion[]> = {
+const DOWNSTREAM_SUGGESTIONS: Record<GuidanceLayer, CascadeSuggestion[]> = {
   stars_and_systems: [
     { toolType: "planetary-profile", brandName: "Genesis", fullName: "Planetary Profile", prompt: "Your star system defines the stage. Now define the world that inhabits it." },
     { toolType: "habitable-zone-calculator", brandName: "Goldilocks", fullName: "Habitable Zone Calculator", prompt: "Check where habitable planets can orbit in your system." },
@@ -96,9 +107,9 @@ const DOWNSTREAM_SUGGESTIONS: Record<string, CascadeSuggestion[]> = {
 /**
  * Get the cascade layer a tool belongs to.
  */
-export function getToolLayer(toolType: string): CascadeLayer | null {
-  for (const [layer, tools] of Object.entries(LAYER_TOOLS)) {
-    if (tools.includes(toolType)) return layer as CascadeLayer;
+export function getToolLayer(toolType: string): GuidanceLayer | null {
+  for (const layer of CASCADE_ORDER) {
+    if (LAYER_TOOLS[layer].includes(toolType)) return layer;
   }
   return null;
 }
@@ -113,7 +124,7 @@ export function getDownstreamSuggestions(toolType: string): CascadeSuggestion[] 
 }
 
 export interface CascadeLayerStatus {
-  layer: CascadeLayer;
+  layer: GuidanceLayer;
   label: string;
   status: "empty" | "partial" | "populated";
   toolCount: number;
@@ -121,7 +132,7 @@ export interface CascadeLayerStatus {
 }
 
 /** Layer display labels */
-const LAYER_DISPLAY: Record<string, string> = {
+const LAYER_DISPLAY: Record<GuidanceLayer, string> = {
   stars_and_systems: "Stars & Systems",
   worlds: "Worlds",
   life: "Life",

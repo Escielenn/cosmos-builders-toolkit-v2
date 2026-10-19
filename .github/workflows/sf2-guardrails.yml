@@ -51,6 +51,11 @@ jobs:
       - name: Typecheck (strict gate — blocking)
         run: node scripts/typecheck-strict.mjs
 
+      # Full app typecheck burned down to zero on 2026-10-18 (was 190).
+      # Blocking from here on: any new tsc error fails the job.
+      - name: Typecheck (full app — blocking)
+        run: npx tsc --noEmit -p tsconfig.app.json
+
       # Lint errors burned down to zero on 2026-10-17 (was 226 at 0.6652,
       # 70 at repairs/2026-10-17). Blocking from here on; warnings are
       # still allowed but should not grow.

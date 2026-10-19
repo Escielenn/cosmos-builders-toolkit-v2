@@ -57,6 +57,9 @@ export const useContact = () => {
       const { data: ticketData, error: dbError } = await supabase
         .from("support_tickets")
         .insert({
+          // Placeholder: the generate_ticket_number BEFORE INSERT trigger always
+          // overwrites it with the real TKT-YYYYMMDD-NNNN number.
+          ticket_number: "",
           name: data.name,
           email: data.email,
           category: data.category,
@@ -113,6 +116,9 @@ export const useContact = () => {
         const { data: ticketData, error: dbError } = await supabase
           .from("support_tickets")
           .insert({
+            // Placeholder: the generate_ticket_number BEFORE INSERT trigger always
+            // overwrites it with the real TKT-YYYYMMDD-NNNN number.
+            ticket_number: "",
             name: data.name,
             email: data.email,
             category: type,

@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { UserPresence } from "@/hooks/use-timeline-presence";
 import {
   Tooltip,
@@ -27,7 +28,7 @@ const PresenceAvatars = ({ presences }: PresenceAvatarsProps) => {
             <TooltipTrigger asChild>
               <div
                 className="w-6 h-6 rounded-full shrink-0 ring-2 -ml-1 first:ml-0 transition-transform hover:scale-110"
-                style={{ ringColor: p.color, borderColor: p.color }}
+                style={presenceRingStyle(p.color)}
               >
                 {p.avatarUrl ? (
                   <img
@@ -69,3 +70,10 @@ const PresenceAvatars = ({ presences }: PresenceAvatarsProps) => {
 };
 
 export default PresenceAvatars;
+
+// Tailwind's `ring-2` reads its colour from --tw-ring-color. (This used to
+// set a non-existent `ringColor` style, so the ring fell back to the default.)
+type RingStyle = CSSProperties & { "--tw-ring-color": string };
+function presenceRingStyle(color: string): RingStyle {
+  return { "--tw-ring-color": color, borderColor: color };
+}

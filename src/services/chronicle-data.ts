@@ -6,6 +6,7 @@
  */
 
 import { supabase } from "@/integrations/supabase/client";
+import { toJson } from "@/lib/rpc-json";
 import { isSchemaMissingError } from "@/services/chronicle-branches";
 
 // ──────────────────────────────────────────────
@@ -327,7 +328,7 @@ export async function updateCalendarConfig(
 ) {
   return supabase
     .from("worlds")
-    .update({ calendar_config: config as unknown as Record<string, unknown> })
+    .update({ calendar_config: toJson(config) })
     .eq("id", worldId);
 }
 

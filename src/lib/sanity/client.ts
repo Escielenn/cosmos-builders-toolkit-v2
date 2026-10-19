@@ -1,4 +1,4 @@
-import imageUrlBuilder from "@sanity/image-url";
+import { createImageUrlBuilder, type SanityImageSource } from "@sanity/image-url";
 import type { SanityClient } from "@sanity/client";
 
 // Sanity is used only by the blog / Learn surfaces and the prompt of the day.
@@ -31,10 +31,8 @@ export async function sanityFetch<T>(query: string, params?: Record<string, unkn
   return params ? client.fetch<T>(query, params) : client.fetch<T>(query);
 }
 
-// Image URL builder. The source type is taken from the builder itself; the
-// package's deep `lib/types/types` path does not resolve under this tsconfig.
-type SanityImageSource = Parameters<ReturnType<typeof imageUrlBuilder>["image"]>[0];
-const builder = imageUrlBuilder({ projectId: SANITY_CONFIG.projectId, dataset: SANITY_CONFIG.dataset });
+// Image URL builder: takes the project config directly, no client instance.
+const builder = createImageUrlBuilder({ projectId: SANITY_CONFIG.projectId, dataset: SANITY_CONFIG.dataset });
 
 export function urlFor(source: SanityImageSource) {
   return builder.image(source);

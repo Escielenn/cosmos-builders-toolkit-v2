@@ -46,6 +46,7 @@ import {
 import { manifest as axiomManifest } from "@/tools/axiom/manifest";
 import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
 import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
+import type { ObjectKeys } from "@/lib/type-utils";
 
 const EXTERNAL_RESOURCES = [
   {
@@ -236,7 +237,7 @@ const OneBigLie = () => {
   }, [formState]);
 
   // Update helpers
-  const updateSection = <K extends keyof FormState>(
+  const updateSection = <K extends ObjectKeys<FormState>>(
     section: K,
     field: keyof FormState[K],
     value: string
