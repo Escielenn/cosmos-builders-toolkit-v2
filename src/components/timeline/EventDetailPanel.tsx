@@ -120,7 +120,7 @@ const EventDetailPanel = ({
               className="w-3 h-3 rounded-full shrink-0"
               style={{ backgroundColor: color }}
             />
-            <SheetTitle className="text-lg">{event.name}</SheetTitle>
+            <SheetTitle>{event.name}</SheetTitle>
           </div>
           <p className="text-xs text-t3">{dateRangeDisplay}</p>
         </SheetHeader>

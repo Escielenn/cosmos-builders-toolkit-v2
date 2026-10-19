@@ -57,6 +57,12 @@ jobs:
       - name: Lint (blocking)
         run: npm run lint
 
+      # docs/stellarforge/15-PAGE-CHROME.md §5: no raw <h1> outside
+      # page-chrome/ and the allow-list (pages title through PageHeader),
+      # and no "RETURN HOME" style back links. Blocking.
+      - name: Page chrome guard (blocking)
+        run: npm run check:chrome
+
       - name: Unit tests
         run: npm run test
 

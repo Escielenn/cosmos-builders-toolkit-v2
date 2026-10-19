@@ -9,6 +9,7 @@
 // ---------------------------------------------------------------------------
 
 import { Link } from "react-router-dom";
+import { Notice } from "@/components/layout/page-chrome";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -184,14 +185,12 @@ export function PlaceReadouts({
               }`}
             />
           ) : (
-            <div className="border border-sf-amber bg-sf-amber/[0.06] p-3">
-              <p className="font-mono text-[12px] text-sf-amber-text">
-                // RADIUS NOT ON FILE. DISTANCE CANNOT BE MEASURED.{" "}
-                <Link to={setHref} className="underline underline-offset-2">
-                  SET IT AT THE SOURCE.
-                </Link>
-              </p>
-            </div>
+            <Notice tone="caution" compact label="RADIUS NOT ON FILE">
+              Distance cannot be measured.{" "}
+              <Link to={setHref} className="text-sf-amber-text underline underline-offset-2">
+                Set it at the source.
+              </Link>
+            </Notice>
           ))}
       </div>
     </div>

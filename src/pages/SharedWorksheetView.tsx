@@ -5,10 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import SharedPageHeader from "@/components/sharing/SharedPageHeader";
+import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
 import WorksheetDataRenderer from "@/components/sharing/WorksheetDataRenderer";
 import { SocialShareButtons } from "@/components/sharing/SocialShareButtons";
 import { useSharedWorksheet } from "@/hooks/use-sharing";
 import { getToolDisplayName } from "@/lib/tools-config";
+import { getToolAccent } from "@/lib/tool-accents";
 import { PageBursts } from "@/components/ui/data-burst";
 import { SHARED_WORKSHEET_BURSTS } from "@/lib/data-bursts";
 import { useMetaTags } from "@/hooks/use-meta-tags";
@@ -23,7 +25,8 @@ const SharedWorksheetView = () => {
       <SharedPageHeader />
       <PageBursts bursts={SHARED_WORKSHEET_BURSTS} />
 
-      <main className="container mx-auto px-4 py-8 max-w-4xl relative z-10">
+      <main id="main" tabIndex={-1} className="relative z-10">
+      <PageContainer className="max-w-4xl pt-8">
         {isLoading && (
           <div className="flex flex-col items-center justify-center py-24">
             <Loader className="mb-4" />
@@ -32,12 +35,16 @@ const SharedWorksheetView = () => {
         )}
 
         {error && !isLoading && (
-          <div className="flex flex-col items-center justify-center py-24 text-center">
-            <AlertCircle className="w-12 h-12 text-t3 mb-4" />
-            <h1 className="font-heading text-2xl font-medium mb-2">Link not available</h1>
-            <p className="text-t2 mb-6 max-w-md">
-              This share link may have been disabled, expired, or the worksheet may have been deleted.
-            </p>
+          <div className="mx-auto flex max-w-md flex-col items-center justify-center py-24 text-center">
+            <PageHeader
+              size="card"
+              align="center"
+              accent="crimson"
+              icon={<AlertCircle className="w-12 h-12 text-t3" aria-hidden />}
+              eyebrow="SHARED WORKSHEET"
+              title="Link not available"
+              lede="This share link may have been disabled, expired, or the worksheet may have been deleted."
+            />
             <Button asChild>
               <Link to="/">Go to StellarForge</Link>
             </Button>
@@ -47,15 +54,13 @@ const SharedWorksheetView = () => {
         {data && !isLoading && (
           <div className="space-y-6">
             {/* Header */}
-            <div className="space-y-3">
-              <Badge className="bg-primary/10 text-sf-primary-text">
-                {getToolDisplayName(data.tool_type)}
-              </Badge>
-
-              <h1 className="font-display text-3xl md:text-4xl font-medium">
-                {data.title || "Untitled Worksheet"}
-              </h1>
-
+            <PageHeader
+              eyebrow={getToolDisplayName(data.tool_type)}
+              accent={getToolAccent(data.tool_type)}
+              title={data.title || "Untitled Worksheet"}
+              className="mb-0"
+            >
+              <div className="space-y-3">
               <div className="flex flex-wrap items-center gap-4 text-sm text-t3">
                 {data.owner_display_name && (
                   <div className="flex items-center gap-2">
@@ -104,7 +109,8 @@ const SharedWorksheetView = () => {
                   ))}
                 </div>
               )}
-            </div>
+              </div>
+            </PageHeader>
 
             {/* Content */}
             <WorksheetDataRenderer
@@ -132,6 +138,7 @@ const SharedWorksheetView = () => {
             </GlassPanel>
           </div>
         )}
+      </PageContainer>
       </main>
     </div>
   );

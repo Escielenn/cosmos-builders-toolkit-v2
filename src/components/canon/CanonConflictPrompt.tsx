@@ -38,7 +38,7 @@ export function CanonConflictPrompt({ conflicts, resolve, dismiss }: Pick<CanonE
     <AlertDialog open={conflicts.length > 0} onOpenChange={(open) => !open && dismiss()}>
       <AlertDialogContent className="max-w-lg rounded-none border-sf-line bg-sf-surface-elevated">
         <AlertDialogHeader>
-          <AlertDialogTitle className="font-heading text-sf-h3 uppercase text-t1">Canon conflict.</AlertDialogTitle>
+          <AlertDialogTitle>Canon conflict</AlertDialogTitle>
           <AlertDialogDescription className="text-t2">
             WORKSHEET SECURED. CANON HOLDS A DIFFERENT VALUE. CHOOSE WHICH STANDS.
           </AlertDialogDescription>

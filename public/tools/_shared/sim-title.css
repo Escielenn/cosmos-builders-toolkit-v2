@@ -1,0 +1,73 @@
+/* ==========================================================================
+   sim-title.css — one title block for every simulator.
+
+   docs/stellarforge/15-PAGE-CHROME.md §1: simulator canvases are full-bleed
+   and carry no PageHeader. Their title block is the one piece of page chrome
+   they keep, and it must read the same in all of them. The React simulators
+   render it through <SimulatorTitle> (src/components/simulators/
+   SimulatorTitle.tsx); the four static sims link this file so their own
+   title markup matches it without being rewritten:
+
+     NAME            MD Nichrome, weight 300, 26px at 0.24em (20px at 0.12em
+                     on phones), uppercase, t1
+     SUBTITLE        DM Sans 500, 12px, 0.12em, uppercase, t3
+     CONTEXT         DM Sans 400, 13px, primary -text (system / planet name)
+
+   Values mirror the default Void·Teal tokens (src/styles/tokens.css); the
+   static sims cannot read the app's CSS variables. Selectors are the ids
+   each sim already uses; a selector that matches nothing in a given sim
+   costs nothing. !important beats each sim's inline stylesheet, which this
+   file deliberately overrides.
+   ========================================================================== */
+
+#title h1,
+#title-panel h1,
+#title-block h1,
+#title-block .tool-name {
+  margin: 0 !important;
+  font-family: 'MD Nichrome Test', 'MD Nichrome', 'Jura', sans-serif !important;
+  font-weight: 300 !important;
+  font-size: 26px !important;
+  line-height: 1.1 !important;
+  letter-spacing: 0.24em !important;
+  text-transform: uppercase !important;
+  color: #FAFAFA !important;
+}
+
+#title .sub,
+#title-panel .subtitle,
+#title-block .tool-sub,
+#title-block .context-label {
+  margin-top: 6px !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 12px !important;
+  line-height: 1.3 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: #A7AAB0 !important;
+  opacity: 1 !important;
+}
+
+#title .sys-name,
+#title-block .tool-ctx {
+  margin-top: 4px !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+  font-size: 13px !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+  color: #15C17B !important;
+  opacity: 1 !important;
+}
+
+@media (max-width: 767px) {
+  #title h1,
+  #title-panel h1,
+  #title-block h1,
+  #title-block .tool-name {
+    font-size: 20px !important;
+    letter-spacing: 0.12em !important; /* 0.24em is for 24px+ lockups only */
+  }
+}

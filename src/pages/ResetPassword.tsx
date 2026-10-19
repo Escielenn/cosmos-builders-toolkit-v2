@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Loader } from "@/components/ui/loader";
 import { BackLink } from "@/components/ui/back-link";
+import { Notice, PageHeader } from "@/components/layout/page-chrome";
 import CubeLogo from "@/components/icons/CubeLogo";
 import { PageBursts } from "@/components/ui/data-burst";
 import { AUTH_BURSTS } from "@/lib/data-bursts";
@@ -96,12 +97,13 @@ const ResetPassword = () => {
       <PageBursts bursts={AUTH_BURSTS} />
       <div className="flex-1 flex items-center justify-center p-4">
         <GlassPanel className="w-full max-w-md p-8" glow>
-          <div className="text-center mb-6 space-y-4">
-            <CubeLogo size={48} className="rounded-none mx-auto" />
-            <h1 className="font-heading text-xl font-light tracking-title text-t1">
-              SET NEW PASSWORD
-            </h1>
-          </div>
+          <PageHeader
+            size="card"
+            align="center"
+            icon={<CubeLogo size={48} className="rounded-none" />}
+            eyebrow="ACCOUNT RECOVERY"
+            title="Set new password"
+          />
 
           {phase === "checking" && (
             <div className="flex flex-col items-center gap-3 py-6" role="status">
@@ -111,18 +113,15 @@ const ResetPassword = () => {
           )}
 
           {phase === "invalid" && (
-            <div className="space-y-4 text-center" role="alert">
-              <p className="font-mono text-sf-mono uppercase text-sf-crimson-text">
-                // {VOICE.resetLinkInvalid}
-              </p>
-              <p className="text-sm text-t2">
+            <div className="space-y-4">
+              <Notice tone="danger" label={VOICE.resetLinkInvalid}>
                 Reset links work once and expire after one hour. Request a fresh one from the sign-in panel.
-              </p>
+              </Notice>
               <Button className="w-full" size="lg" onClick={() => navigate("/auth?tab=reset")}>
                 REQUEST NEW LINK
               </Button>
               <div className="flex justify-center">
-                <BackLink to="/auth?tab=login" label="Return to sign in" />
+                <BackLink to="/auth?tab=login" label="Back to sign in" />
               </div>
             </div>
           )}

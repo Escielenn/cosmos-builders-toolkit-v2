@@ -184,7 +184,7 @@ export function SimulatorWorldEntityPicker({
             <p className="font-mono text-[13px] tracking-[0.10em] text-sf-primary-text uppercase">
               // BIND TO ENTITY
             </p>
-            <SheetTitle className="font-heading text-xl font-light tracking-title uppercase text-t1">
+            <SheetTitle>
               From your world
             </SheetTitle>
             <SheetDescription className="font-sans text-sm text-t3 leading-[1.55]">

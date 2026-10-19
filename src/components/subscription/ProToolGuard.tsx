@@ -8,6 +8,7 @@ import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { BackLink } from "@/components/ui/back-link";
+import { PageHeader } from "@/components/layout/page-chrome";
 import { Lock, Zap, Clock, Sparkles } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
@@ -50,9 +51,10 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
   const access = getToolAccess(toolId);
   const isEarlyAccess = access === "early-access";
   const embedded = world !== null;
-  const backTo = world ? `/worlds/${world.worldId}` : "/";
-  // "Bridge" is the world dashboard (13-THE-LIFT §1); outside a world it is home.
-  const backLabel = world ? "Return to Bridge" : "Return Home";
+  // Spec 15: one back link to the real parent. In a world that is the Bridge
+  // (the world dashboard, 13-THE-LIFT §1); outside one it is the tool catalog.
+  const backTo = world ? `/worlds/${world.worldId}` : "/tools";
+  const backLabel = world ? "Back to Bridge" : "Back to tools";
   const here = `${location.pathname}${location.search}`;
   const signInTo = `/auth?tab=login&redirect=${encodeURIComponent(here)}`;
 
@@ -79,20 +81,24 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
     return (
       <GuardShell embedded={embedded}>
           <GlassPanel className="max-w-md p-8 text-center">
-            <div className="w-16 h-16 mx-auto mb-6 rounded-none bg-sf-violet/[0.06] border border-sf-violet flex items-center justify-center">
-              <Sparkles className="w-8 h-8 text-sf-violet" />
-            </div>
-
-            <h1 className="font-heading text-2xl font-light tracking-wide text-t1 mb-2">
-              VANGUARD EARLY ACCESS
-            </h1>
-
-            <p className="text-t2 mb-2">
-              This instrument is in early access, available exclusively to Vanguard members.
-            </p>
-            <p className="text-sm text-t2 mb-6">
-              Vanguard members get new tools first, vote on the roadmap, and more.
-            </p>
+            <PageHeader
+              size="card"
+              align="center"
+              accent="violet"
+              icon={
+                <div className="w-16 h-16 rounded-none bg-sf-violet/[0.06] border border-sf-violet flex items-center justify-center">
+                  <Sparkles className="w-8 h-8 text-sf-violet" aria-hidden />
+                </div>
+              }
+              eyebrow="EARLY ACCESS"
+              title="Vanguard early access"
+              lede={
+                <>
+                  <p className="mb-2">This instrument is in early access, available exclusively to Vanguard members.</p>
+                  <p>Vanguard members get new tools first, vote on the roadmap, and more.</p>
+                </>
+              }
+            />
 
             <div className="space-y-3">
               <Button
@@ -123,20 +129,23 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
     return (
       <GuardShell embedded={embedded}>
           <GlassPanel className="max-w-md p-8 text-center">
-            <div className="w-16 h-16 mx-auto mb-6 rounded-none bg-sf-primary/[0.06] border border-sf-primary flex items-center justify-center">
-              <Clock className="w-8 h-8 text-sf-primary-text" />
-            </div>
-
-            <h1 className="font-heading text-2xl font-light tracking-wide text-t1 mb-2">
-              ACCESS EXPIRED
-            </h1>
-
-            <p className="text-t2 mb-2">
-              Your Pro Access has ended, but your worlds and worksheets are exactly where you left them.
-            </p>
-            <p className="text-sm text-t2 mb-6">
-              Resubscribe to pick up right where you left off.
-            </p>
+            <PageHeader
+              size="card"
+              align="center"
+              icon={
+                <div className="w-16 h-16 rounded-none bg-sf-primary/[0.06] border border-sf-primary flex items-center justify-center">
+                  <Clock className="w-8 h-8 text-sf-primary-text" aria-hidden />
+                </div>
+              }
+              eyebrow="PRO ACCESS"
+              title="Access expired"
+              lede={
+                <>
+                  <p className="mb-2">Your Pro Access has ended, but your worlds and worksheets are exactly where you left them.</p>
+                  <p>Resubscribe to pick up right where you left off.</p>
+                </>
+              }
+            />
 
             <div className="space-y-3">
               <Button
@@ -161,17 +170,19 @@ const ProToolGuard = ({ toolId, children }: ProToolGuardProps) => {
   return (
     <GuardShell embedded={embedded}>
         <GlassPanel className="max-w-md p-8 text-center">
-          <div className="w-16 h-16 mx-auto mb-6 rounded-none bg-sf-amber/[0.06] border border-sf-amber flex items-center justify-center">
-            <Lock className="w-8 h-8 text-sf-amber-text" />
-          </div>
-
-          <h1 className="font-heading text-2xl font-light tracking-wide text-t1 mb-2">
-            RESTRICTED INSTRUMENT
-          </h1>
-
-          <p className="text-t2 mb-6">
-            This instrument requires Pro clearance. Upgrade to access the full manifest.
-          </p>
+          <PageHeader
+            size="card"
+            align="center"
+            accent="amber"
+            icon={
+              <div className="w-16 h-16 rounded-none bg-sf-amber/[0.06] border border-sf-amber flex items-center justify-center">
+                <Lock className="w-8 h-8 text-sf-amber-text" aria-hidden />
+              </div>
+            }
+            eyebrow="PRO CLEARANCE"
+            title="Restricted instrument"
+            lede="This instrument requires Pro clearance. Upgrade to access the full manifest."
+          />
 
           <div className="space-y-3">
             <Button

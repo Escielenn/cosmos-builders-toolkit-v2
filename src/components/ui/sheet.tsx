@@ -78,11 +78,21 @@ const SheetFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElemen
 );
 SheetFooter.displayName = "SheetFooter";
 
+/**
+ * The one overlay title style (docs/stellarforge/15-PAGE-CHROME.md §5):
+ * Jura at sf-h3, weight 400, sentence case as written, t1. Descriptions are
+ * DM Sans 14px t2. Callers pass layout classes only (flex, gap, sr-only);
+ * never a font, size, case or colour override.
+ */
 const SheetTitle = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Title>,
   React.ComponentPropsWithoutRef<typeof SheetPrimitive.Title>
 >(({ className, ...props }, ref) => (
-  <SheetPrimitive.Title ref={ref} className={cn("text-lg font-medium text-t1", className)} {...props} />
+  <SheetPrimitive.Title
+    ref={ref}
+    className={cn("font-heading text-sf-h3 font-normal leading-tight text-t1", className)}
+    {...props}
+  />
 ));
 SheetTitle.displayName = SheetPrimitive.Title.displayName;
 
@@ -90,7 +100,7 @@ const SheetDescription = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Description>,
   React.ComponentPropsWithoutRef<typeof SheetPrimitive.Description>
 >(({ className, ...props }, ref) => (
-  <SheetPrimitive.Description ref={ref} className={cn("text-sm text-t2", className)} {...props} />
+  <SheetPrimitive.Description ref={ref} className={cn("font-sans text-sm text-t2", className)} {...props} />
 ));
 SheetDescription.displayName = SheetPrimitive.Description.displayName;
 

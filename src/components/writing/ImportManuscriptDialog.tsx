@@ -138,7 +138,7 @@ export function ImportManuscriptDialog({ worldId, open, onOpenChange, onOpenDocu
       <DialogContent className="max-w-xl" onInteractOutside={(e) => busy && e.preventDefault()}>
         <DialogHeader>
           <p className="font-heading text-sf-eyebrow uppercase text-t4">{"// IMPORT"}</p>
-          <DialogTitle className="font-heading text-sf-h3 font-normal uppercase text-t1">Bring a manuscript</DialogTitle>
+          <DialogTitle>Bring a manuscript</DialogTitle>
           <DialogDescription className="font-sans text-[14px] text-t3">
             Adds to this world. Nothing already here is changed or replaced.
           </DialogDescription>

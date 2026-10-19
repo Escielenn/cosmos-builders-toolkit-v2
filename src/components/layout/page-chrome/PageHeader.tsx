@@ -13,11 +13,15 @@ import { accentArcClass, accentBgClass, accentTextClass, type ToolAccent } from 
  *   Lede in DM Sans t2, bounded by the measure
  *   ── light arc
  *
- * Two sizes:
+ * Three sizes:
  *   page   standalone pages (Home, Worlds, Tools, Studio, Profile, Learn)
  *   space  inside a world space (Bridge, Codex, Chronicle, Instruments,
  *          Compile, in-world tools): same anatomy, one step smaller, because
  *          the world nav already says where you are.
+ *   card   the title of a compact centred card or gate screen (sign-in,
+ *          reset password, invite, locked tool, system fault): MD Nichrome
+ *          at sf-h2, tighter rhythm. Pair with align="center" when the card
+ *          is centred.
  *
  * Rules it enforces so pages can't drift:
  *   - H1 is always MD Nichrome, weight 300, sentence/title case as written.
@@ -49,7 +53,9 @@ export interface PageHeaderProps {
   actions?: React.ReactNode;
   breadcrumbs?: Crumb[];
   back?: { label: string; to: string };
-  size?: "page" | "space";
+  size?: "page" | "space" | "card";
+  /** Centre every row (card flows). Defaults to "start". */
+  align?: "start" | "center";
   /** Extra content under the lede (worksheet title, tags, tabs). */
   children?: React.ReactNode;
   className?: string;
@@ -61,6 +67,19 @@ const PRIMARY = {
   text: "text-sf-primary-text",
   bg: "bg-sf-primary",
   arc: "from-sf-primary via-sf-primary/30 to-transparent",
+};
+
+/** Symmetric arc for centred headers (literal classes so Tailwind keeps them). */
+const CENTRED_ARC: Record<PageAccent, string> = {
+  primary: "via-sf-primary",
+  amber: "via-sf-amber",
+  azure: "via-sf-azure",
+  emerald: "via-sf-emerald",
+  violet: "via-sf-violet",
+  stellar: "via-sf-stellar",
+  teal: "via-sf-teal",
+  crimson: "via-sf-crimson",
+  magenta: "via-sf-magenta",
 };
 
 function accentClasses(accent: PageAccent) {
@@ -109,14 +128,21 @@ export function PageHeader({
   breadcrumbs,
   back,
   size = "page",
+  align = "start",
   children,
   className,
   noArc = false,
 }: PageHeaderProps): JSX.Element {
   const a = accentClasses(accent);
   const isSpace = size === "space";
+  const isCard = size === "card";
+  const compact = isSpace || isCard;
+  const centred = align === "center";
   return (
-    <header className={cn(isSpace ? "mb-8" : "mb-10", className)} data-page-header={size}>
+    <header
+      className={cn(isCard ? "mb-6" : isSpace ? "mb-8" : "mb-10", centred && "text-center", className)}
+      data-page-header={size}
+    >
       {breadcrumbs && breadcrumbs.length > 0 ? (
         <Breadcrumbs items={breadcrumbs} className="mb-4" />
       ) : back ? (
@@ -130,36 +156,71 @@ export function PageHeader({
       ) : null}
 
       {eyebrow && (
-        <div className={cn("mb-5 inline-flex items-center gap-3.5 font-mono text-sf-mono uppercase", a.text)}>
-          <span aria-hidden className={cn("block h-px w-12", a.bg)} />
+        <div
+          className={cn(
+            "inline-flex items-center gap-3.5 font-mono text-sf-mono uppercase",
+            isCard ? "mb-4" : "mb-5",
+            a.text,
+          )}
+        >
+          <span aria-hidden className={cn("block h-px", centred ? "w-8" : "w-12", a.bg)} />
           <span>// {eyebrow.replace(/^\/\/\s*/, "")}</span>
+          {centred && <span aria-hidden className={cn("block h-px w-8", a.bg)} />}
         </div>
       )}
 
-      <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-4">
-        <div className="flex min-w-0 flex-1 items-start gap-4">
-          {icon && <span className="mt-1 shrink-0">{icon}</span>}
+      <div
+        className={cn(
+          "flex flex-wrap items-start gap-x-6 gap-y-4",
+          centred ? "flex-col items-center" : "justify-between",
+        )}
+      >
+        <div
+          className={cn(
+            "flex min-w-0 items-start gap-4",
+            centred ? "flex-col items-center" : "flex-1",
+          )}
+        >
+          {icon && <span className={cn("shrink-0", !centred && "mt-1")}>{icon}</span>}
           <h1
             className={cn(
               "min-w-0 font-display font-light text-t1",
-              isSpace ? "text-sf-h2 leading-[1.1]" : "text-sf-h1 leading-[1.04]",
+              compact ? "text-sf-h2 leading-[1.1]" : "text-sf-h1 leading-[1.04]",
             )}
           >
             {titleLead && <span className="font-normal">{titleLead} </span>}
             {title}
           </h1>
-          {badge && <span className="mt-2 shrink-0 self-start">{badge}</span>}
+          {badge && <span className={cn("shrink-0", centred ? "self-center" : "mt-2 self-start")}>{badge}</span>}
         </div>
         {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
       </div>
 
       {lede && (
-        <div className={cn("sf-measure font-sans text-sf-body leading-[1.55] text-t2", isSpace ? "mt-3" : "mt-5")}>
+        <div
+          className={cn(
+            "sf-measure font-sans leading-[1.55] text-t2",
+            isCard ? "text-sf-small" : "text-sf-body",
+            compact ? "mt-3" : "mt-5",
+            centred && "mx-auto",
+          )}
+        >
           {lede}
         </div>
       )}
 
-      {!noArc && <div aria-hidden className={cn("h-px w-24 bg-gradient-to-r", a.arc, isSpace ? "mt-5" : "mt-7")} />}
+      {!noArc && (
+        <div
+          aria-hidden
+          className={cn(
+            "h-px w-24",
+            centred
+              ? cn("mx-auto bg-gradient-to-r from-transparent to-transparent", CENTRED_ARC[accent])
+              : cn("bg-gradient-to-r", a.arc),
+            compact ? "mt-5" : "mt-7",
+          )}
+        />
+      )}
 
       {children && <div className="mt-6">{children}</div>}
     </header>

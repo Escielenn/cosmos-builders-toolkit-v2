@@ -9,18 +9,15 @@
  */
 import { Link } from "react-router-dom";
 import { ScrollText } from "lucide-react";
+import { Notice } from "@/components/layout/page-chrome";
 
 const LINK =
   "text-sf-primary-text underline underline-offset-2 hover:text-sf-primary-bright inline-flex items-center min-h-hit";
 
 export function ChronicleMergeNotice({ worldId }: { worldId?: string | null }): JSX.Element {
   return (
-    <div
-      role="note"
-      className="mb-6 flex items-start gap-3 rounded-none border border-sf-primary bg-sf-primary/[0.04] px-4 py-3"
-    >
-      <ScrollText className="mt-0.5 h-5 w-5 shrink-0 text-sf-primary-text" aria-hidden="true" />
-      <div className="sf-measure text-sm text-t2">
+    <Notice tone="info" icon={<ScrollText className="h-5 w-5" />} className="mb-6">
+      <div className="sf-measure">
         <p>
           <span className="font-medium text-t1">Timeline is merging into Chronicle.</span>{" "}
           Chronicle is the world's canonical event record: its events bind to scenes and to the Canon
@@ -46,7 +43,7 @@ export function ChronicleMergeNotice({ worldId }: { worldId?: string | null }): 
           </p>
         )}
       </div>
-    </div>
+    </Notice>
   );
 }
 

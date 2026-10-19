@@ -21,11 +21,12 @@ const H1_ALLOW = [
   "src/components/landing/",        // signed-out landing hero
   "src/pages/Pricing.tsx",
   "src/pages/Features.tsx",
-  "src/pages/NotFound.tsx",
   "src/lib/pdf/",                   // print templates
   "src/pages/dev/",
   "src/components/editor/",         // prose headings inside documents
   "src/pages/WorldShowcase.tsx",    // public showcase hero
+  "src/components/showcase/ShowcaseHero.tsx",          // Features marketing hero
+  "src/components/simulators/SimulatorTitle.tsx",      // the one canvas title (full-bleed sims)
 ];
 
 const BACK_BANNED = /label=["'{`]\s*(?:←\s*)?(?:return home|return to bridge|return to world|return to tools|return to known space)/i;

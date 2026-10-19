@@ -16,6 +16,7 @@ import { mapError, VOICE } from "@/lib/ship-voice";
 import { emailSchema, passwordSchema, redirectFromSearch } from "@/lib/auth-validation";
 import { supabase } from "@/integrations/supabase/client";
 import { useMetaTags } from "@/hooks/use-meta-tags";
+import { PageHeader } from "@/components/layout/page-chrome";
 
 const YOUTUBE_VIDEO_ID = "iGYxmAQa8DY";
 
@@ -191,25 +192,27 @@ const Auth = () => {
       <div className="flex-1 overflow-y-auto sf-sb">
         <div className="container mx-auto px-4 max-w-4xl py-12 md:py-20 space-y-12">
 
-          {/* Hero, display-font scale per April 2026 handoff */}
+          {/* Header: the shared PageHeader (spec 15), logo above it. */}
           <div className="space-y-7">
             <CubeLogo size={80} className="rounded-none" />
-            <div className="inline-flex items-center gap-3.5 font-mono uppercase text-sf-primary-text text-[13px] tracking-wide">
-              <span aria-hidden className="block w-12 h-px bg-sf-primary" />
-              <span>// OPEN EARLY ACCESS</span>
-            </div>
-            <h1 className="font-display font-light text-sf-hero leading-[0.98] text-t1 max-w-[12ch]">
-              <span className="text-sf-primary-text">Stellar</span>forge.
-            </h1>
-            <p className="font-heading text-[12px] tracking-wide uppercase text-t3">
-              Science Fiction Worldbuilding Tools
-            </p>
-            <p className="font-sans text-[19px] text-t2 max-w-[780px] leading-[1.55]">
-              Design planets, species, civilizations, and spacecraft with scientific rigor.
-              Every parameter cascades logically: environment shapes biology, biology shapes
-              psychology, psychology shapes mythology, mythology shapes culture.
-              Build worlds that hold together.
-            </p>
+            <PageHeader
+              eyebrow="OPEN EARLY ACCESS"
+              title="StellarForge"
+              className="mb-0"
+              lede={
+                <>
+                  <p className="mb-3 font-heading text-sf-eyebrow uppercase text-t3">
+                    Science Fiction Worldbuilding Tools
+                  </p>
+                  <p>
+                    Design planets, species, civilizations, and spacecraft with scientific rigor.
+                    Every parameter cascades logically: environment shapes biology, biology shapes
+                    psychology, psychology shapes mythology, mythology shapes culture.
+                    Build worlds that hold together.
+                  </p>
+                </>
+              }
+            />
           </div>
 
           {/* Value Props */}
