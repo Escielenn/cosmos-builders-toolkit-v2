@@ -653,7 +653,7 @@ export default function WorldShowcase() {
 
         <div className="relative max-w-5xl mx-auto px-6 py-20 md:py-28">
           {/* Back link */}
-          <BackLink to={`/worlds/${world.id}`} label="RETURN TO WORLD" className="mb-8" />
+          <BackLink to={`/worlds/${world.id}`} label="Back to world" className="mb-8" />
 
           {/* World icon + name */}
           <div className="flex items-center gap-4 mb-4">
