@@ -11,9 +11,10 @@ import { type ReactNode, useState, useEffect, useMemo, useRef } from "react";
 import SubjectEntityBanner from "@/components/tools/SubjectEntityBanner";
 import { useSearchParams } from "react-router-dom";
 import { FileText } from "lucide-react";
-import { BackLink } from "@/components/ui/back-link";
+import { PageHeader } from "@/components/layout/page-chrome";
+import { useWorld } from "@/hooks/use-world";
 import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
-import { getToolAccent, accentTextClass, accentArcClass, accentBgClass } from "@/lib/tool-accents";
+import { getToolAccent } from "@/lib/tool-accents";
 import CascadeSuggestionToast from "@/components/tools/CascadeSuggestionToast";
 import UpstreamCallout from "@/components/tools/UpstreamCallout";
 import PageShell from "@/components/layout/PageShell";
@@ -196,6 +197,7 @@ export default function ToolPageLayout({
   const ToolIcon = getToolIcon(toolType);
   const introData = TOOL_INTROS[cfg.introKey];
   const accent = getToolAccent(toolType);
+  const { data: world } = useWorld(worldId ?? undefined);
 
   // Pin preview from the saved worksheet's real values, not the tool's
   // marketing subtitle — pinning "Genesis: Planetary Profile" used to show a
@@ -229,18 +231,47 @@ export default function ToolPageLayout({
       <MainLandmark className="relative container mx-auto px-4 xl:pr-[280px] pt-24 pb-16">
         <PageBursts bursts={TOOL_PAGE_BURSTS[toolType]} />
 
-        {/* ── Back Link (context-aware) ─────────────────────────── */}
-        <BackLink
-          to={worldId ? `/worlds/${worldId}` : "/"}
-          label={worldId ? "Return to World" : "Return to Tools"}
-          className="mb-6"
-        />
+        {/* ── Header (15-PAGE-CHROME): breadcrumbs in a world, back to Tools outside ── */}
+        <PageHeader
+          accent={accent}
+          eyebrow={`${accent.toUpperCase()} · ${cfg.brandName.toUpperCase()}`}
+          titleLead={`${cfg.brandName}:`}
+          title={cfg.fullName}
+          icon={ToolIcon ? <ToolIcon className="h-10 w-10 rounded-none" /> : undefined}
+          badge={cfg.isPro ? <ProBadge /> : undefined}
+          lede={cfg.subtitle}
+          size={worldId ? "space" : "page"}
+          breadcrumbs={
+            worldId
+              ? [
+                  { label: world?.name ?? "World", to: `/worlds/${worldId}` },
+                  { label: "Instruments", to: `/worlds/${worldId}/tools` },
+                  { label: cfg.brandName },
+                ]
+              : undefined
+          }
+          back={worldId ? undefined : { label: "Back to tools", to: "/tools" }}
+        >
+          {/* Worksheet title + tags (shown when a worksheet is loaded) */}
+          {worksheetId && onRenameWorksheet && (
+            <WorksheetTitle
+              title={worksheetTitle ?? null}
+              onRename={onRenameWorksheet}
+              icon={worksheetIcon ?? <FileText className="w-4 h-4 text-primary" />}
+              disabled={!isLoggedIn || worksheetLoading}
+            />
+          )}
+          {worksheetId && onTagsChange && (
+            <WorksheetTagsBar
+              worksheetId={worksheetId}
+              tags={worksheetTags ?? []}
+              onChange={onTagsChange}
+            />
+          )}
+        </PageHeader>
 
         {/* ── Subject (Brief F4): the entity this instrument is open on ── */}
         <SubjectEntityBanner worldId={worldId} />
-
-        {/* ── Quote Bar ─────────────────────────────────────────── */}
-        <ToolPageQuote toolId={toolType} />
 
         {/* ── Action Bar ────────────────────────────────────────── */}
         <ToolActionBar
@@ -275,42 +306,8 @@ export default function ToolPageLayout({
           />
         )}
 
-        {/* ── Title, section-header pattern with per-tool cascade accent ── */}
-        <div className="mb-10">
-          {/* Mono eyebrow with cascade-color hairline rule */}
-          <div className={`inline-flex items-center gap-3.5 font-mono uppercase ${accentTextClass(accent)} text-[12px] tracking-[2.5px] mb-7`}>
-            <span aria-hidden className={`block w-12 h-px ${accentBgClass(accent)}`} />
-            <span>// {accent.toUpperCase()} · {cfg.brandName.toUpperCase()}</span>
-          </div>
-          <div className="flex items-start gap-4 flex-wrap">
-            {ToolIcon && <ToolIcon className="w-10 h-10 rounded-none shrink-0 mt-1" />}
-            <h1 className="font-display font-light text-sf-h1 leading-[1] text-t1 flex-1 min-w-[280px]">
-              <span className="font-normal">{cfg.brandName}:</span>{" "}
-              <span className="font-light">{cfg.fullName}</span>
-            </h1>
-            {cfg.isPro && <ProBadge className="self-start mt-2 shrink-0" />}
-          </div>
-          <p className="font-sans text-sf-body text-t2 mt-7 max-w-[780px] leading-[1.55]">{cfg.subtitle}</p>
-          {/* Accent light arc under the title */}
-          <div className={`mt-7 h-px w-24 bg-gradient-to-r ${accentArcClass(accent)}`} aria-hidden />
-
-          {/* Worksheet title + tags (shown when a worksheet is loaded) */}
-          {worksheetId && onRenameWorksheet && (
-            <WorksheetTitle
-              title={worksheetTitle ?? null}
-              onRename={onRenameWorksheet}
-              icon={worksheetIcon ?? <FileText className="w-4 h-4 text-primary" />}
-              disabled={!isLoggedIn || worksheetLoading}
-            />
-          )}
-          {worksheetId && onTagsChange && (
-            <WorksheetTagsBar
-              worksheetId={worksheetId}
-              tags={worksheetTags ?? []}
-              onChange={onTagsChange}
-            />
-          )}
-        </div>
+        {/* ── Quote Bar ─────────────────────────────────────────── */}
+        <ToolPageQuote toolId={toolType} />
 
         {/* ── Intro Section (standard for all tools) ────────────── */}
         {introData && <ToolIntroSection data={introData} />}

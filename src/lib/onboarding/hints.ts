@@ -19,12 +19,12 @@ export const HINTS: Record<string, HintDef> = {
   },
   codex: {
     id: "codex",
-    copy: "REGISTRY ACTIVE: This panel indexes all world elements across cascade layers. Click entries to navigate. Use the view toggle below to set Wiki or Tool mode.",
+    copy: "WORLD INDEX: Every worksheet and Codex entry in this world, grouped by cascade layer. Choose one to open it. The toggle below switches between the Codex page and the tool.",
     variant: "compact",
   },
   chronicle: {
     id: "chronicle",
-    copy: "CHRONICLE INITIALIZED: Log events, eras, and sub-events to build a vertical timeline. Gap detection flags temporal lacunae automatically.",
+    copy: "CHRONICLE: Log events, eras and sub-events on your world's timeline. Gaps between events are flagged automatically.",
     variant: "default",
   },
   tags: {
