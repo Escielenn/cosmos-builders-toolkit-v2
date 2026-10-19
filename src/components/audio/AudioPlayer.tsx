@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { useAudioPlayer, useAudioControls } from "@/hooks/use-audio-player";
-import { OPEN_AUDIO_SELECTOR_EVENT } from "./AudioSelectorDialog";
+import { OPEN_AUDIO_SELECTOR_EVENT } from "./audio-events";
 
 function openAudioSelector() {
   window.dispatchEvent(new Event(OPEN_AUDIO_SELECTOR_EVENT));

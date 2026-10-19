@@ -21,15 +21,14 @@
   :root {
     --radius: 0px;
 
-    /* Animation tokens (also mirrored in tokens.css) */
+    /* Legacy animation variables, kept only for the few rules below that
+       still read them. New code uses the tokens.css motion tokens
+       (duration-fast/base/slow, ease-sf-*). */
     --duration-instant: 100ms;
-    --duration-fast: 150ms;
     --duration-normal: 200ms;
     --duration-smooth: 300ms;
-    --duration-dramatic: 500ms;
     --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
     --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
-    --ease-spring: cubic-bezier(0.5, 1.5, 0.5, 1);
 
     /* Teal-bright glow shadows */
     --glow-primary: 0 0 20px rgb(var(--sf-primary-bright-rgb) / 0.3);
@@ -633,23 +632,6 @@
     color: rgb(var(--t1-rgb) / 0.15);
   }
 
-  /* StellarForge card with light arc accent */
-  .sf-card {
-    @apply rounded-none border relative overflow-hidden;
-    background: hsl(var(--sf-surface-hsl));
-    border-color: hsl(var(--sf-text-ghost));
-  }
-
-  .sf-card::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 10%;
-    right: 10%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, hsl(var(--sf-primary-bright-hsl) / 0.5), transparent);
-  }
-
   /* ═══════════════════════════════════════════════════════════════════════
      CUSTOM SCROLLBARS — SITE-WIDE
      Thin, dark, themed. The ship's interface doesn't use OS chrome.
@@ -1198,35 +1180,11 @@ html {
   width: 0;
 }
 
-.sf-data-burst--typewriter.sf-typing {
-  animation:
-    sf-burst-type 2s steps(30) forwards,
-    sf-burst-cursor 0.6s steps(1) infinite;
-}
-
-@keyframes sf-burst-type {
-  from { width: 0; }
-  to { width: 100%; }
-}
-
-@keyframes sf-burst-cursor {
-  0%, 100% { border-right-color: rgba(255, 179, 71, 0.15); }
-  50% { border-right-color: transparent; }
-}
-
-/* After typing completes, remove the cursor */
-.sf-data-burst--typewriter.sf-typed {
-  border-right: none;
-  animation: none;
-  width: auto;
-}
-
 /* Reduced motion: disable ALL animated bursts + parallax */
 @media (prefers-reduced-motion: reduce) {
   .sf-data-burst--breathe,
   .sf-data-burst--flicker,
-  .sf-data-burst--typewriter,
-  .sf-data-burst--typewriter.sf-typing {
+  .sf-data-burst--typewriter {
     animation: none !important;
     opacity: 1 !important;
     width: auto !important;
@@ -1250,20 +1208,6 @@ html {
 }
 
 @layer utilities {
-  /* Animation utilities */
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-
   /* ═══════════════════════════════════════════════════════════════════════
      STELLARFORGE ANIMATION SYSTEM
      ═══════════════════════════════════════════════════════════════════════ */
@@ -1280,40 +1224,11 @@ html {
   .sf-reveal-3 { animation-delay: 0.3s; }
   .sf-reveal-4 { animation-delay: 0.4s; }
   .sf-reveal-5 { animation-delay: 0.5s; }
-  .sf-reveal-6 { animation-delay: 0.6s; }
-  .sf-reveal-7 { animation-delay: 0.7s; }
-  .sf-reveal-8 { animation-delay: 0.8s; }
 
   @keyframes sf-emerge {
     to {
       opacity: 1;
       transform: translateY(0);
-    }
-  }
-
-  /* Glow breathe animation for active/live elements */
-  .sf-breathe {
-    animation: sf-breathe 3s ease-in-out infinite;
-  }
-
-  @keyframes sf-breathe {
-    0%, 100% { opacity: 0.6; }
-    50% { opacity: 1; }
-  }
-
-  /* Light arc sweep animation (for hero elements) */
-  .sf-arc-sweep::after {
-    animation: sf-arc-sweep 1.2s ease-out forwards;
-  }
-
-  @keyframes sf-arc-sweep {
-    from {
-      opacity: 0;
-      transform: scaleX(0);
-    }
-    to {
-      opacity: 1;
-      transform: scaleX(1);
     }
   }
 
@@ -1373,12 +1288,6 @@ html {
   /* ═══════════════════════════════════════════════════════════════════════
      MICRO-ANIMATION SYSTEM
      ═══════════════════════════════════════════════════════════════════════ */
-
-  /* Icon float on card hover */
-  @keyframes sf-icon-float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
-  }
 
   /* Pro badge shimmer sweep */
   .sf-shimmer {
@@ -1505,17 +1414,6 @@ html {
     transform: scaleX(1);
   }
 
-  /* Error shake */
-  .sf-error-shake {
-    animation: sf-shake 0.4s ease-in-out;
-  }
-
-  @keyframes sf-shake {
-    0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-4px); }
-    40%, 80% { transform: translateX(4px); }
-  }
-
   /* Status badge entrance */
   .sf-badge-enter {
     animation: sf-badge-pop var(--duration-smooth) var(--ease-out-back);
@@ -1530,16 +1428,6 @@ html {
       opacity: 1;
       transform: scale(1) translateY(0);
     }
-  }
-
-  /* Section divider draw-in */
-  .sf-divider-draw {
-    width: 0%;
-    animation: sf-draw-in 0.4s var(--ease-out-expo) forwards;
-  }
-
-  @keyframes sf-draw-in {
-    to { width: 100%; }
   }
 
   /* Skeleton shimmer — rectangular sweep, left to right */
@@ -1574,12 +1462,7 @@ html {
   }
 
   /* Skeleton preset shapes */
-  .sf-skeleton--text { height: 12px; width: 80%; margin-bottom: 8px; }
-  .sf-skeleton--text-short { height: 12px; width: 40%; margin-bottom: 8px; }
-  .sf-skeleton--heading { height: 18px; width: 60%; margin-bottom: 12px; }
   .sf-skeleton--card { height: 180px; width: 100%; }
-  .sf-skeleton--value { height: 14px; width: 60px; display: inline-block; }
-  .sf-skeleton--avatar { width: 32px; height: 32px; /* rectangular, not circular */ }
 
   /* Card hover — bottom-edge fill bar */
   .sf-card-hover {
@@ -1650,33 +1533,6 @@ html {
   .sf-btn-lift:active {
     transform: scale(0.98);
     transition-duration: var(--duration-instant);
-  }
-
-  /* Icon hover: brightness lift */
-  .sf-icon-hover {
-    transition: filter var(--duration-normal) ease;
-  }
-
-  .sf-icon-hover:hover {
-    filter: brightness(1.15);
-  }
-
-  /* Data value hover: amber highlight */
-  .sf-data-hover {
-    transition: color var(--duration-normal) ease;
-  }
-
-  .sf-data-hover:hover {
-    color: rgba(255, 179, 71, 0.8);
-  }
-
-  /* Icon button rotation on hover */
-  .sf-icon-rotate {
-    transition: transform var(--duration-normal) var(--ease-out-back);
-  }
-
-  .sf-icon-rotate:hover {
-    transform: rotate(8deg);
   }
 
   /* Switch toggle snap easing */
@@ -1828,15 +1684,6 @@ html {
    Opt-in classes for worksheets, calculators, designers (non-simulator tools)
    ═══════════════════════════════════════════════════════════════════════ */
 
-.sf-tool-title {
-  font-family: var(--sf-font-display);
-  font-weight: 300;
-  font-size: 22px;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: hsl(var(--sf-text-primary));
-}
-
 .sf-tool-section {
   font-family: var(--sf-font-heading);
   font-weight: 500;
@@ -1851,126 +1698,6 @@ html {
 .sf-tool-section::before {
   content: '// ';
   color: rgb(var(--sf-primary-bright-rgb) / 0.25);
-}
-
-.sf-tool-label {
-  font-family: var(--sf-font-body);
-  font-size: 12px;
-  font-weight: 400;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  color: rgb(var(--t1-rgb) / 0.35);
-}
-
-.sf-tool-helper {
-  font-family: var(--sf-font-body);
-  font-size: 13px;
-  font-weight: 300;
-  line-height: 1.5;
-  color: rgb(var(--t1-rgb) / 0.28);
-}
-
-.sf-tool-value {
-  font-family: var(--sf-font-mono);
-  font-size: 13px;
-  font-weight: 400;
-  color: rgb(var(--t1-rgb) / 0.65);
-}
-
-.sf-tool-status {
-  font-family: var(--sf-font-mono);
-  font-size: 12px;
-  font-weight: 300;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: rgb(var(--t1-rgb) / 0.25);
-}
-
-.sf-btn-worksheet {
-  position: relative;
-  overflow: hidden;
-  z-index: 0;
-  font-family: var(--sf-font-heading);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  padding: 9px 16px;
-  border: 1px solid var(--sf-line-interactive);
-  background: rgb(var(--t1-rgb) / 0.03);
-  color: rgb(var(--t1-rgb) / 0.55);
-  border-radius: 2px;
-  cursor: pointer;
-  transition: border-color 0.35s cubic-bezier(0.19, 1, 0.22, 1),
-              color 0.35s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-.sf-btn-worksheet::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgb(var(--sf-primary-bright-rgb) / 0.1);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
-  z-index: -1;
-}
-
-.sf-btn-worksheet:hover::before {
-  transform: scaleX(1);
-}
-
-.sf-btn-worksheet:hover {
-  border-color: var(--sf-primary);
-  color: rgb(var(--t1-rgb) / 0.85);
-}
-
-.sf-btn-worksheet.active {
-  background: rgb(var(--sf-primary-bright-rgb) / 0.1);
-  border-color: var(--sf-primary);
-  color: var(--sf-primary-bright);
-}
-
-/* ── Comm Button (ContactFAB) ── */
-.sf-comm-button {
-  position: relative;
-  overflow: hidden;
-  z-index: 0;
-  font-family: var(--sf-font-heading);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  border: 1px solid var(--sf-primary);
-  background: rgba(14, 19, 32, 0.92);
-  color: rgb(var(--t2-rgb) / 0.6);
-  padding: 10px 16px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  transition: border-color 0.35s cubic-bezier(0.19, 1, 0.22, 1),
-              color 0.35s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-.sf-comm-button::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgb(var(--sf-primary-bright-rgb) / 0.1);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
-  z-index: -1;
-}
-
-.sf-comm-button:hover::before {
-  transform: scaleX(1);
-}
-
-.sf-comm-button:hover {
-  border-color: var(--sf-primary);
-  color: var(--sf-primary-bright);
 }
 
 /* ── FAB Help Trigger (collapsed mode on tool pages) ── */
@@ -2100,39 +1827,6 @@ html {
   right: -1px;
   border-width: 2px 2px 0 0;
 }
-
-.sf-tool-panel {
-  background: rgba(15, 15, 16, 0.95);
-  border: 1px solid var(--sf-line);
-  border-radius: 0px;
-  padding: 20px 24px;
-}
-
-.sf-tool-epigraph {
-  font-family: var(--sf-font-heading);
-  font-size: 12px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: rgb(var(--t1-rgb) / 0.25);
-  line-height: 1.8;
-  max-width: 600px;
-  text-align: center;
-  margin: 0 auto 32px;
-}
-
-.sf-tool-epigraph-attribution {
-  font-family: var(--sf-font-body);
-  font-style: italic;
-  font-size: 12px;
-  color: rgb(var(--t1-rgb) / 0.15);
-  margin-top: 8px;
-}
-
-.sf-tool-section-gap { margin-bottom: 28px; }
-.sf-tool-field-gap { margin-bottom: 16px; }
-
-/* Retro status badge — squared corners for opt-in */
-.sf-status-badge { border-radius: 2px; }
 
 /* ═══════════════════════════════════════════════════════════════════════
    LOADING SYSTEM — SEGMENTED BAR
@@ -2349,50 +2043,6 @@ html {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   TOP PROGRESS BAR — ROUTE TRANSITIONS
-   ═══════════════════════════════════════════════════════════════════════ */
-
-.sf-top-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  z-index: 100; /* toast tier: above Header (50); 9999 is reserved */
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-.sf-top-progress.active {
-  opacity: 1;
-}
-
-.sf-top-progress-bar {
-  height: 100%;
-  background: var(--sf-primary-bright);
-  width: 0%;
-  transition: width 0.28s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-/* Reaches ~85% quickly, then waits for completion */
-.sf-top-progress.active .sf-top-progress-bar {
-  width: 85%;
-  transition: width 8s cubic-bezier(0.1, 0.05, 0, 1);
-}
-
-/* When loaded, snaps to 100% then fades */
-.sf-top-progress.complete .sf-top-progress-bar {
-  width: 100%;
-  transition: width 0.2s ease;
-}
-
-.sf-top-progress.complete {
-  opacity: 0;
-  transition: opacity 0.28s ease 0.12s;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════
    BRACKETED INPUT FIELDS — featured forms (Auth, Contact, World creation)
    ═══════════════════════════════════════════════════════════════════════ */
 
@@ -2479,49 +2129,6 @@ html {
   border-color: var(--sf-line-emphasis);
 }
 
-/* ── Amber (warnings, CTA accent) ── */
-.sf-fill-sweep--amber::before {
-  background: rgba(255, 179, 71, 0.12);
-}
-
-.sf-fill-sweep--amber:hover {
-  border-color: var(--sf-amber-warm);
-  color: #FFB347;
-}
-
-/* ── Stellar Blue (worlds, collaboration) ── */
-.sf-fill-sweep--stellar::before {
-  background: rgba(91, 141, 239, 0.12);
-}
-
-.sf-fill-sweep--stellar:hover {
-  border-color: var(--sf-stellar);
-  color: #5B8DEF;
-}
-
-/* ── Danger (destructive actions) ── */
-.sf-fill-sweep--danger::before {
-  background: rgba(239, 68, 68, 0.12);
-}
-
-.sf-fill-sweep--danger:hover {
-  border-color: var(--sf-crimson);
-  color: #EF4444;
-}
-
-/* ── Modifiers ── */
-.sf-fill-sweep--full::before {
-  background: rgb(var(--sf-primary-bright-rgb) / 0.95);
-}
-
-.sf-fill-sweep--full:hover {
-  color: #0A0E17;
-}
-
-.sf-fill-sweep--right::before {
-  transform-origin: right center;
-}
-
 /* ═══════════════════════════════════════════════════════════════════════
    REDUCED MOTION — respect user preferences
    ═══════════════════════════════════════════════════════════════════════ */
@@ -2560,9 +2167,7 @@ html {
   .sf-nav-link::before,
   .sf-nav-link::after,
   .sf-text-link::after,
-  .sf-card-hover::after,
-  .sf-btn-worksheet::before,
-  .sf-comm-button::before {
+  .sf-card-hover::after {
     transition: none !important;
   }
 
@@ -2571,9 +2176,7 @@ html {
   .sf-nav-link:hover::before,
   .sf-nav-link:hover::after,
   .sf-text-link:hover::after,
-  .sf-card-hover:hover::after,
-  .sf-btn-worksheet:hover::before,
-  .sf-comm-button:hover::before {
+  .sf-card-hover:hover::after {
     transform: scaleX(1);
   }
 }
@@ -3000,29 +2603,12 @@ html {
 /* Wiki editor — uses shared sf-writing-toolbar / sf-writing-surface via BracketPanel */
 
 /* Wiki page layout */
-.sf-wiki-page {
-  max-width: 840px;
-  margin: 0 auto;
-  padding: 24px 32px 48px;
-}
 
 .sf-wiki-cover {
   width: 100%;
   max-height: 240px;
   object-fit: cover;
   margin-bottom: 16px;
-}
-
-.sf-wiki-title {
-  font-family: var(--sf-font-display, 'MD Nichrome', sans-serif);
-  font-size: clamp(24px, 4vw, 36px);
-  font-weight: 300;
-  color: var(--t1);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-bottom: 12px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--sf-line-hairline);
 }
 
 /* Editable title input */
@@ -3051,24 +2637,6 @@ html {
   letter-spacing: 2px;
   color: var(--t4);
   margin-bottom: 20px;
-}
-
-.sf-wiki-section-header {
-  font-family: var(--sf-font-heading, 'Jura', sans-serif);
-  font-size: 12px;
-  font-weight: 300;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.5);
-  margin-top: 36px;
-  margin-bottom: 14px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--sf-line-hairline);
-}
-
-.sf-wiki-section-header::before {
-  content: '// ';
-  color: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.25);
 }
 
 /* Wiki connections list */
@@ -3125,29 +2693,6 @@ html {
 /* ==========================================================================
    CHRONICLE — Vertical Timeline Visualization
    ========================================================================== */
-
-.sf-chronicle {
-  padding: 32px 24px 64px;
-  max-width: 960px;
-  margin: 0 auto;
-}
-
-.sf-chronicle-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 40px;
-}
-
-.sf-chronicle-heading {
-  font-family: 'Lora', Georgia, serif;
-  font-style: italic;
-  font-weight: 300;
-  font-size: 20px;
-  letter-spacing: normal;
-  text-transform: none;
-  color: var(--t1);
-}
 
 /* Timeline container */
 .sf-chronicle-timeline {
@@ -3445,9 +2990,6 @@ html {
 
 /* Mobile: single column */
 @media (max-width: 768px) {
-  .sf-chronicle {
-    padding: 24px 16px 48px;
-  }
 
   .sf-chronicle-spine {
     left: 16px;

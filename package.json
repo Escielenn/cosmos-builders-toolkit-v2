@@ -1,7 +1,7 @@
 {
   "name": "stellarforge",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.80.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -15,6 +15,7 @@
     "check:canon": "node scripts/check-canon-imports.mjs",
     "build:e2e": "vite build --mode e2e",
     "test:e2e": "playwright test",
+    "check:bundle": "node scripts/check-bundle-budget.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",

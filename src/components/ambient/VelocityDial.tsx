@@ -4,7 +4,7 @@
  * Cycles every 3.4s through four real reference frames. Non-interactive , 
  * drop in footers, loading states, or empty states as mission-control flavor.
  *
- * Port of design_handoff_April_2026/reference-components/VelocityDial.tsx.
+ * Port of design/design_handoff/reference-components/VelocityDial.tsx.
  */
 import { useEffect, useState } from "react";
 

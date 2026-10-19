@@ -3,7 +3,7 @@
 //
 // Ported from public/rogue/sim.html, which held real N-body physics with no test
 // coverage at all. That file is the authoritative version (977 lines, the one
-// RogueSimulator.tsx loads); simulators/Rogue/index.html is a stale copy.
+// RogueSimulator.tsx loads); docs/archive/simulators/Rogue/index.html is a stale copy.
 //
 // Units are Gaussian, which is why G is 4pi^2 rather than 6.67e-11:
 //
