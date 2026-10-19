@@ -4,6 +4,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { GuideNav } from "@/components/layout/GuideNav";
+import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
 import { TOTAL_TOOL_COUNT } from "@/lib/tools-config";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 
@@ -59,21 +60,16 @@ const Guide = () => {
     <div className="min-h-screen bg-sf-void sf-atmosphere">
       <Header />
 
-      <main className="relative container mx-auto px-4 pt-24 pb-16 max-w-4xl">
-        <GuideNav />
-
-        {/* Page header */}
-        <header className="text-center mb-12">
-          <div className="font-mono text-xs uppercase tracking-wide text-sf-primary-text mb-3">
-            // Navigation Systems
-          </div>
-          <h1 className="font-display text-sf-h1 tracking-title text-t1 mb-3">
-            STELLARFORGE GUIDE
-          </h1>
-          <p className="text-sm text-t2 max-w-lg mx-auto leading-relaxed">
-            All systems reference. All courses charted.
-          </p>
-        </header>
+      <main className="relative">
+        <PageContainer variant="standalone">
+        <PageHeader
+          size="page"
+          eyebrow="Navigation systems"
+          title="Guide"
+          lede="Every system referenced, every course charted: start with the cascade, look up a tool, or learn the platform."
+        >
+          <GuideNav />
+        </PageHeader>
 
         {/* Section cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -94,11 +90,11 @@ const Guide = () => {
                       <Icon className="w-5 h-5" strokeWidth={1.5} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h2 className="font-heading text-sm font-light uppercase tracking-wide text-t1 mb-2 flex items-center gap-2">
+                      <h2 className="font-display text-sf-h3 font-light text-t1 mb-2 flex items-center gap-2">
                         {section.title}
-                        <ChevronRight className="w-3.5 h-3.5 text-t4 transition-transform duration-slow group-hover:translate-x-0.5" />
+                        <ChevronRight className="w-4 h-4 text-t4 transition-transform duration-slow group-hover:translate-x-0.5" />
                       </h2>
-                      <p className="text-xs text-t3 leading-relaxed">
+                      <p className="text-sf-small text-t2 leading-relaxed">
                         {section.description}
                       </p>
                     </div>
@@ -108,6 +104,7 @@ const Guide = () => {
             );
           })}
         </div>
+        </PageContainer>
       </main>
 
       <Footer />

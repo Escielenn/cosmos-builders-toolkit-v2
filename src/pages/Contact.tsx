@@ -1,8 +1,8 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
-import { Badge } from "@/components/ui/badge";
-import { Mail, MessageSquare, Clock } from "lucide-react";
+import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
+import { MessageSquare, Clock } from "lucide-react";
 import ContactFormTabs from "@/components/contact/ContactFormTabs";
 import { useSearchParams } from "react-router-dom";
 import { PageBursts } from "@/components/ui/data-burst";
@@ -25,35 +25,29 @@ const Contact = () => {
     <div className="min-h-screen bg-sf-void sf-atmosphere">
       <Header />
 
-      <main className="relative container mx-auto px-4 pt-24 pb-16">
+      <main className="relative">
+        <PageContainer variant="standalone">
         <PageBursts bursts={CONTACT_BURSTS} />
-        {/* Hero */}
-        <section className="text-center mb-12">
-          <Badge className="mb-4" variant="secondary">
-            <Mail className="w-3 h-3 mr-1" />
-            COMMUNICATIONS
-          </Badge>
-          <h1 className="font-display text-sf-h1 tracking-title text-t1 mb-4">
-            COMMUNICATIONS CHANNEL
-          </h1>
-          <p className="text-lg text-t2 max-w-2xl mx-auto">
-            Report anomalies, request features, or make contact.
-          </p>
-        </section>
+        <PageHeader
+          size="page"
+          eyebrow="Communications"
+          title="Contact"
+          lede="Report anomalies, request features, or make contact."
+        />
 
         {/* Contact Form */}
-        <section className="max-w-2xl mx-auto mb-16">
+        <section className="max-w-2xl mb-16">
           <GlassPanel className="p-6 sm:p-8">
             <ContactFormTabs defaultTab={defaultTab} />
           </GlassPanel>
         </section>
 
         {/* Alternative Contact Methods */}
-        <section className="max-w-2xl mx-auto">
+        <section className="max-w-2xl">
           <GlassPanel className="p-8">
-            <h3 className="font-heading text-xl font-medium mb-6 text-center">
-              Other Ways to Reach Us
-            </h3>
+            <h2 className="font-display text-sf-h3 font-light text-t1 mb-6">
+              Other ways to reach us
+            </h2>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="text-center p-4">
                 <MessageSquare className="w-8 h-8 text-sf-primary-text mx-auto mb-2" />
@@ -72,6 +66,7 @@ const Contact = () => {
             </div>
           </GlassPanel>
         </section>
+        </PageContainer>
       </main>
 
       <Footer />

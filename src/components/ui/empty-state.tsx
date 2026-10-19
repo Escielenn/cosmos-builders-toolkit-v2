@@ -37,11 +37,11 @@ interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Hide the velocity dial centerpiece (e.g. on dense lists) */
   hideDial?: boolean;
   /**
-   * WRITER-register variant, mirroring SectionHero's `warm` prop: title
+   * WRITER-register variant: title
    * renders in Lora italic serif (sentence case in the caller) instead of
    * MD Nichrome uppercase, for pages a writer inhabits rather than an
    * instrument surface. The eyebrow/description stay mono - only the title
-   * carries the register shift, same split SectionHero uses.
+   * carries the register shift.
    */
   warm?: boolean;
 }

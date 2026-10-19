@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { GlassPanel } from "@/components/ui/glass-panel";
-import { SectionHero } from "@/components/ui/section-hero";
+import { Notice, PageContainer, PageHeader } from "@/components/layout/page-chrome";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Save, Upload, Zap, Calendar, CreditCard, AlertCircle, Award, ChevronRight } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
@@ -29,7 +29,6 @@ import AvatarPickerDialog from "@/components/settings/AvatarPickerDialog";
 import { PageBursts } from "@/components/ui/data-burst";
 import { SETTINGS_BURSTS } from "@/lib/data-bursts";
 import { mapError } from "@/lib/ship-voice";
-import { BackLink } from "@/components/ui/back-link";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
 
@@ -156,18 +155,20 @@ const Profile = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main
-        className={`relative container mx-auto px-4 pt-24 pb-16 ${tab === "file" ? "max-w-2xl" : "max-w-4xl"}`}
-      >
+      <main className="relative">
+        <PageContainer variant="standalone">
         <PageBursts bursts={SETTINGS_BURSTS} />
-        <BackLink to="/" label="RETURN TO BRIDGE" className="mb-6" />
 
-        <SectionHero
-          eyebrow="// PERSONNEL FILE"
-          title={<>Personnel <span className="text-sf-primary-text">file.</span></>}
-          className="mb-8"
+        {/* Top-level page: no back link (the logo goes home). */}
+        <PageHeader
+          size="page"
+          eyebrow="Account"
+          title="Personnel file"
+          lede="Your profile, appearance, writing surface, exports and subscription."
         />
 
+        {/* Narrower reading column, left-aligned so the edge stays shared. */}
+        <div className={tab === "file" ? "max-w-2xl" : "max-w-4xl"}>
         <div role="tablist" aria-label="Account" className="flex flex-wrap gap-1 border-b border-sf-line mb-8">
           {ACCOUNT_TABS.map((t) => {
             const active = tab === t.id;
@@ -324,7 +325,7 @@ const Profile = () => {
 
         {/* Subscription Section */}
         <GlassPanel className="p-8 mt-6">
-          <h2 className="font-heading text-sf-h3 text-t1 mb-4 flex items-center gap-2">
+          <h2 className="font-display text-sf-h3 font-light text-t1 mb-4 flex items-center gap-2">
             <Zap className="w-5 h-5 text-sf-amber" aria-hidden="true" />
             Subscription
           </h2>
@@ -341,12 +342,14 @@ const Profile = () => {
               </div>
 
               {subscription.status === 'past_due' && (
-                <div className="p-3 rounded-none bg-sf-crimson/[0.06] border border-sf-crimson flex items-center gap-2">
-                  <AlertCircle className="w-5 h-5 text-sf-crimson" aria-hidden="true" />
-                  <p className="text-sm text-sf-crimson-text">
-                    Payment failed. Update payment method to restore access.
-                  </p>
-                </div>
+                <Notice
+                  tone="danger"
+                  compact
+                  label="Payment failed"
+                  icon={<AlertCircle className="w-4 h-4" />}
+                >
+                  Update your payment method to restore access.
+                </Notice>
               )}
 
               <div className="grid grid-cols-2 gap-4 text-sm">
@@ -426,6 +429,8 @@ const Profile = () => {
         </GlassPanel>
         </section>
         )}
+        </div>
+        </PageContainer>
       </main>
 
       <Footer />

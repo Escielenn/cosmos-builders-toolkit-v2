@@ -1,9 +1,10 @@
 /**
  * /studio — the writer's home (Cowork Implementation Guide §3).
  * Reference: design/Home (Writers).html
- * Register: WRITER — Lora italic voice, sentence case, no // prefixes,
- * no ALL-CAPS mono labels. Glowing status dots stay. One telemetry
- * strip, in the footer only.
+ * Register: WRITER — Lora italic voice in the modules, sentence case.
+ * Page chrome (H1 "Studio", greeting as the DM Sans lede, display h3
+ * section headings) follows docs/stellarforge/15-PAGE-CHROME.md.
+ * Glowing status dots stay. One telemetry strip, in the footer only.
  * Data maps onto the live schema (see useStudioData). Modules that
  * need the Phase-4 editor schema (world prompt, beats) arrive with it.
  */
@@ -18,6 +19,10 @@ import {
 import { useMetaTags } from "@/hooks/use-meta-tags";
 import { manuscriptPath } from "@/lib/manuscript-path";
 import { WordHistoryChart } from "@/components/writing/WordHistoryChart";
+import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
+
+// Section headings (15-PAGE-CHROME §4): named blocks, display h3.
+const sectionHeading = "mb-4 font-display text-sf-h3 font-light text-t1";
 
 // ── small helpers ───────────────────────────────────────────────────
 
@@ -54,7 +59,7 @@ const COVER_GRADIENTS = [
 
 function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
   return (
-    <aside className="sf-sb sf-sb--slim hidden w-[230px] shrink-0 overflow-y-auto border-r border-sf-line-hairline py-6 pl-6 pr-4 lg:block">
+    <aside className="sf-sb sf-sb--slim hidden w-[200px] shrink-0 overflow-y-auto border-r border-sf-line-hairline pr-4 lg:block">
       <div className="mb-2 font-serif text-[13px] italic text-t4">Worlds</div>
       <nav className="mb-7 space-y-0.5">
         {worlds.slice(0, 6).map((w) => (
@@ -99,7 +104,7 @@ function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
       <div className="mb-2 font-serif text-[13px] italic text-t4">Tools</div>
       <nav className="space-y-0.5">
         {[
-          { label: "All tools", to: "/" },
+          { label: "All tools", to: "/tools" },
           { label: "Chain reaction", to: "/tools/environmental-chain-reaction" },
           { label: "Writing prompts", to: "/prompts" },
         ].map((i) => (
@@ -155,32 +160,38 @@ export default function Studio(): JSX.Element {
   return (
     <div className="relative z-10 min-h-screen">
       <Header />
-      <div className="mx-auto flex max-w-[1280px] pt-16">
-        <Rail worlds={data?.worlds ?? []} />
-
-        <main id="main" tabIndex={-1} className="min-w-0 flex-1 px-6 py-10 md:px-10">
-          {/* greeting */}
-          <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
-            <div>
-              <h1 className="font-serif text-[34px] italic leading-tight text-t1 md:text-[44px]">
-                {greeting()}, {firstName}.
-              </h1>
-              <p className="mt-2 font-serif text-[15px] italic text-t2">
+      <main id="main" tabIndex={-1}>
+        <PageContainer variant="standalone">
+          {/* Header spans rail + content so the H1 sits on the shared left edge.
+              The greeting is the lede (DM Sans), not the title. */}
+          <PageHeader
+            size="page"
+            eyebrow="Writing desk"
+            title="Studio"
+            lede={
+              <>
+                {greeting()}, {firstName}.{" "}
                 {entry
                   ? `You were last writing in “${entry.title || "an untitled piece"}” ${timeAgo(entry.updated_at)}.`
                   : "A blank page is just a world that hasn't introduced itself yet."}
-              </p>
-            </div>
-            {data && data.streakDays > 0 && (
-              <div className="font-serif text-[14px] italic text-t3">
-                Day {data.streakDays}
-                {data.streakDays > 2 ? ` · ${data.streakDays} sessions in a row` : ""}
-              </div>
-            )}
-          </div>
+              </>
+            }
+            actions={
+              data && data.streakDays > 0 ? (
+                <span className="font-mono text-sf-mono uppercase text-t3">
+                  Day {data.streakDays}
+                  {data.streakDays > 2 ? ` · ${data.streakDays} sessions in a row` : ""}
+                </span>
+              ) : undefined
+            }
+          />
 
+          <div className="flex gap-10">
+        <Rail worlds={data?.worlds ?? []} />
+
+        <div className="min-w-0 flex-1">
           {/* streak strip */}
-          <div className="mt-8 flex flex-wrap items-end justify-between gap-6 border-y border-sf-line-hairline py-5">
+          <div className="flex flex-wrap items-end justify-between gap-6 border-y border-sf-line-hairline py-5">
             <div>
               <div className="mb-1.5 font-serif text-[13px] italic text-t4">The last fourteen days</div>
               <div className="flex h-8 items-end gap-1">
@@ -289,7 +300,7 @@ export default function Studio(): JSX.Element {
 
           {/* bookshelf */}
           <section className="mt-12">
-            <h2 className="mb-4 font-serif text-[20px] italic text-t1">Your shelf</h2>
+            <h2 className={sectionHeading}>Your shelf</h2>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {(data?.worlds ?? []).slice(0, 4).map((w, i) => (
                 <Link key={w.id} to={`/worlds/${w.id}`} className="group block">
@@ -331,7 +342,7 @@ export default function Studio(): JSX.Element {
           {/* cast + scratchpad */}
           <div className="mt-12 grid gap-10 lg:grid-cols-[1.2fr_1fr]">
             <section>
-              <h2 className="mb-4 font-serif text-[20px] italic text-t1">The cast, lately</h2>
+              <h2 className={sectionHeading}>The cast, lately</h2>
               {data && data.characters.length > 0 ? (
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                   {data.characters.map((c) => (
@@ -363,7 +374,7 @@ export default function Studio(): JSX.Element {
             </section>
 
             <section>
-              <h2 className="mb-4 font-serif text-[20px] italic text-t1">Scratchpad</h2>
+              <h2 className={sectionHeading}>Scratchpad</h2>
               {data && data.notes.length > 0 ? (
                 <div className="space-y-3">
                   {data.notes.map((n) => {
@@ -397,7 +408,7 @@ export default function Studio(): JSX.Element {
           {/* activity */}
           {data && data.recentEntries.length > 1 && (
             <section className="mt-12">
-              <h2 className="mb-4 font-serif text-[20px] italic text-t1">The log</h2>
+              <h2 className={sectionHeading}>The log</h2>
               <div className="divide-y divide-sf-line-hairline border-y border-sf-line-hairline">
                 {data.recentEntries.map((e) => {
                   const w = data.worlds.find((x) => x.id === e.world_id);
@@ -433,8 +444,10 @@ export default function Studio(): JSX.Element {
               JD {julianDay().toFixed(1)} · 39.87°N 104.97°W
             </div>
           </footer>
-        </main>
-      </div>
+        </div>
+          </div>
+        </PageContainer>
+      </main>
     </div>
   );
 }

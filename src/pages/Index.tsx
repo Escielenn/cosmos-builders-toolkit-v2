@@ -28,6 +28,8 @@ import { HomepageQuote } from "@/components/quotes/HomepageQuote";
 import { CosmicTelemetry } from "@/components/layout/CosmicVelocityTicker";
 import SFDivider from "@/components/ui/sf-divider";
 import { PageBursts } from "@/components/ui/data-burst";
+import { Button } from "@/components/ui/button";
+import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useRecentWork } from "@/hooks/use-recent-work";
@@ -40,8 +42,8 @@ import { dismissWelcome, isWelcomeDismissed, shouldShowWelcome } from "@/lib/onb
 const CONTINUE_LIMIT = 6;
 const ACTIVITY_LIMIT = 8;
 
-const secondaryLink =
-  "inline-flex min-h-hit items-center px-4 text-xs font-heading uppercase tracking-wide text-t2 hover:text-t1 border border-sf-line hover:border-sf-line-emphasis rounded-none transition-colors duration-base";
+// Section headings (15-PAGE-CHROME §4): named blocks, display h3.
+const sectionHeading = "font-display text-sf-h3 font-light text-t1 mb-6";
 
 function SignedInHome() {
   const { user } = useAuth();
@@ -83,28 +85,30 @@ function SignedInHome() {
 
   return (
     <>
-      <section className="mb-10">
-        <p className="font-heading text-sf-eyebrow uppercase text-t4 mb-2">// BRIDGE</p>
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <h1 className="font-display text-sf-h1 tracking-title text-t1">YOUR WORLDS</h1>
-          <div className="flex flex-wrap items-center gap-2">
+      <PageHeader
+        size="page"
+        eyebrow="Overview"
+        title="Home"
+        lede="Pick up the scene you left, see what changed across your worlds, and take today's prompt."
+        actions={
+          <>
             {/* The one CreateWorldButton on this page: it owns BEGIN SURVEY
                 and the ?create=true deep link. */}
             <CreateWorldButton variant="button" />
-            <Link to="/worlds" className={secondaryLink}>
-              All worlds
-            </Link>
-            <Link to="/tools" className={secondaryLink}>
-              All tools
-            </Link>
-          </div>
-        </div>
-      </section>
+            <Button asChild variant="sf-ghost" size="sf-md">
+              <Link to="/worlds">All worlds</Link>
+            </Button>
+            <Button asChild variant="sf-ghost" size="sf-md">
+              <Link to="/tools">All tools</Link>
+            </Button>
+          </>
+        }
+      />
 
       <SubscriptionBanner />
 
       <section aria-labelledby="home-continue" className="mb-16">
-        <h2 id="home-continue" className="font-heading text-sf-h2 text-t1 uppercase mb-6">
+        <h2 id="home-continue" className={sectionHeading}>
           Continue writing
         </h2>
         <ContinueWriting
@@ -116,7 +120,7 @@ function SignedInHome() {
 
       {worlds.length > 0 && (
         <section aria-labelledby="home-activity" className="mb-16">
-          <h2 id="home-activity" className="font-heading text-sf-h2 text-t1 uppercase mb-6">
+          <h2 id="home-activity" className={sectionHeading}>
             Recent activity
           </h2>
           <RecentActivityFeed items={activity} />
@@ -126,7 +130,7 @@ function SignedInHome() {
       <SharedWorldsSection />
 
       <section aria-labelledby="home-prompt" className="mb-16">
-        <h2 id="home-prompt" className="font-heading text-sf-h2 text-t1 uppercase mb-6">
+        <h2 id="home-prompt" className={sectionHeading}>
           Today's writing prompt
         </h2>
         <PromptOfTheDay />
@@ -168,15 +172,27 @@ const Index = () => {
         <BetaBanner position="top" />
       </div>
 
-      <main className="container mx-auto px-4 pt-8 pb-16 relative z-10">
-        <PageBursts bursts={ALL_DASHBOARD_BURSTS} />
-        {user ? <SignedInHome /> : <SignedOutLanding />}
-
-        <SFDivider label=",  ··, COMMS: LEARN, ·· , " className="hidden md:block" />
-
-        {/* Latest from Learn - shown to all users */}
-        <RecentArticles />
-      </main>
+      {user ? (
+        // Signed in: the standard frame. The banner above already clears the
+        // fixed header, so the container drops its own header offset.
+        <main className="relative z-10">
+          <PageContainer variant="standalone" className="pt-8">
+            <PageBursts bursts={ALL_DASHBOARD_BURSTS} />
+            <SignedInHome />
+            <SFDivider label=",  ··, COMMS: LEARN, ·· , " className="hidden md:block" />
+            <RecentArticles />
+          </PageContainer>
+        </main>
+      ) : (
+        // Signed out: the marketing landing keeps its own hero and frame.
+        <main className="container mx-auto px-4 pt-8 pb-16 relative z-10">
+          <PageBursts bursts={ALL_DASHBOARD_BURSTS} />
+          <SignedOutLanding />
+          <SFDivider label=",  ··, COMMS: LEARN, ·· , " className="hidden md:block" />
+          {/* Latest from Learn - shown to all users */}
+          <RecentArticles />
+        </main>
+      )}
 
       <BetaBanner position="bottom" />
 

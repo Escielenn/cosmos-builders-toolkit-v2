@@ -65,7 +65,7 @@ const AppearanceSettings = () => {
     <div className="space-y-6">
       <div className="mb-2 flex items-center gap-2">
         <Palette className="h-5 w-5 text-sf-primary-text" />
-        <h3 className="font-heading text-lg font-medium">Appearance</h3>
+        <h2 className="font-display text-sf-h3 font-light text-t1">Appearance</h2>
         <span className="ml-auto font-mono text-sf-mono uppercase text-t4">{id}</span>
       </div>
 

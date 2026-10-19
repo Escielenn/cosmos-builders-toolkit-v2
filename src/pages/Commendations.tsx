@@ -1,9 +1,6 @@
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { GlassPanel } from "@/components/ui/glass-panel";
-import { SectionHero } from "@/components/ui/section-hero";
+import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
 import { BADGE_DEFINITIONS, type BadgeTier, type BadgeCategory } from "@/lib/badges/definitions";
 import { TIER_STYLES, TIER_LABELS } from "@/lib/badges/tiers";
 import { useEarnedBadges } from "@/hooks/use-badges";
@@ -31,7 +28,6 @@ const CATEGORY_DESCRIPTIONS: Record<BadgeCategory, string> = {
 
 export default function Commendations() {
   useMetaTags({ title: "Commendations" });
-  const navigate = useNavigate();
   const { user } = useAuth();
   const { earnedSet, earnedMap, isLoading } = useEarnedBadges();
   const [activeCategory, setActiveCategory] = useState<BadgeCategory | null>(null);
@@ -78,26 +74,19 @@ export default function Commendations() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 pb-24">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-24 sm:pt-28">
-          {/* Back nav */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="gap-1.5 text-t4 hover:text-t2 mb-6 -ml-2"
-            onClick={() => navigate("/profile")}
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Profile
-          </Button>
-
-          {/* Header */}
-          <SectionHero
-            eyebrow="// COMMENDATIONS"
-            title={<>Marks of <span className="text-sf-primary-text">progress.</span></>}
-            subtitle="Each commendation is earned through use: worlds built, words written, systems explored. The cascade rewards the doer, not the visitor."
-            className="mb-12"
+      <main className="flex-1">
+        <PageContainer variant="standalone">
+          {/* Child of the personnel file: one back link to its real parent. */}
+          <PageHeader
+            size="page"
+            back={{ label: "Back to Personnel file", to: "/profile" }}
+            eyebrow="Marks of progress"
+            title="Commendations"
+            lede="Each commendation is earned through use: worlds built, words written, systems explored. The cascade rewards the doer, not the visitor."
           />
+
+          {/* Reading column, left-aligned on the shared edge. */}
+          <div className="max-w-4xl">
 
           {/* Progress overview */}
           <GlassPanel className="p-6 mb-8">
@@ -222,7 +211,8 @@ export default function Commendations() {
               })}
             </div>
           )}
-        </div>
+          </div>
+        </PageContainer>
       </main>
       <Footer />
     </div>
