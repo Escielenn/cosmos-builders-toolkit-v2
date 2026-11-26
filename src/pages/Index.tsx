@@ -195,7 +195,7 @@ const Index = () => {
     <div className="min-h-screen bg-sf-void sf-atmosphere">
       <Header />
       <div className="pt-16">
-        <BetaBanner position="top" />
+        <BetaBanner />
       </div>
 
       {user ? (
@@ -219,8 +219,6 @@ const Index = () => {
           <RecentArticles />
         </main>
       )}
-
-      <BetaBanner position="bottom" />
 
       <Footer />
     </div>

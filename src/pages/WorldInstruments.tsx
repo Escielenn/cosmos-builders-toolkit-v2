@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // WorldInstruments — the INSTRUMENTS space (F6, 13-THE-LIFT.md §1).
 //
-// "The 27 tools + 5 sims, opened ON an entity, never in a vacuum."
+// "Every instrument, simulators included, opened ON an entity, never in a vacuum."
 //
 // A world had no index of its own instruments: you reached a tool through the
 // global marketing catalogue, or a link on the dashboard, or by knowing the
@@ -16,8 +16,7 @@ import { Crosshair, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
 import {
-  FREE_TOOL_IDS,
-  PRO_TOOL_IDS,
+  INSTRUMENT_IDS,
   SIMULATOR_TOOL_IDS,
   getToolDisplayName,
   getToolRoute,
@@ -37,7 +36,7 @@ import { PageContainer, PageHeader, Notice } from "@/components/layout/page-chro
 import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
 import { worldCrumbs } from "@/lib/world-crumbs";
 
-const ALL_TOOL_IDS = [...FREE_TOOL_IDS, ...PRO_TOOL_IDS];
+const ALL_TOOL_IDS = INSTRUMENT_IDS;
 
 /** Time-travel timelines are a Chronicle view, not a /tools route (Law VII). */
 const TIME_TRAVEL_NAME = "Time Travel Timelines";

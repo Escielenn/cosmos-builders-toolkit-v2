@@ -50,38 +50,20 @@ interface PageBurstsProps {
   className?: string;
 }
 
-export const PageBursts = ({ bursts, className }: PageBurstsProps) => (
-  <div
-    className={cn(
-      "absolute inset-0 pointer-events-none select-none z-0",
-      className
-    )}
-    // Every ambient layer multiplies --sf-ambient (Display > Reduce Ambient).
-    style={{ opacity: "var(--sf-ambient, 1)" }}
-    aria-hidden="true"
-  >
-    {bursts.map((burst, i) => (
-      burst.animation === "live" ? (
-        <LiveDataBurst
-          key={i}
-          content={burst.content}
-          position={burst.position}
-          variant={burst.variant}
-          parallax={burst.parallax}
-        />
-      ) : (
-        <DataBurst
-          key={i}
-          content={burst.content}
-          position={burst.position}
-          variant={burst.variant}
-          animation={burst.animation}
-          parallax={burst.parallax}
-        />
-      )
-    ))}
-  </div>
-);
+/**
+ * Per-page floating telemetry (1.6 "Quiet Instrument", finding 8).
+ *
+ * Every page used to scatter absolutely positioned mono readouts across its
+ * content area, where they collided with headings, cards and prose. Floating
+ * telemetry no longer renders over content: this component now renders
+ * nothing. It keeps its signature so existing callers compile; remove a call
+ * site whenever its page is next touched. Telemetry lives in the footer, the
+ * optional bottom bar and loading states.
+ */
+export const PageBursts = (props: PageBurstsProps): null => {
+  void props;
+  return null;
+};
 
 /* ── Live Data Burst ─────────────────────────────────────────────── */
 

@@ -13,7 +13,7 @@ import { ProBadge } from "@/components/ui/pro-badge";
 import { Button } from "@/components/ui/button";
 import { getToolIcon } from "@/components/icons/tool-icons";
 import { scrollRevealStagger, fadeUpItem, scrollReveal, viewportOnce } from "@/lib/animations";
-import { getToolRoute } from "@/lib/tools-config";
+import { getToolRoute, FREE_TOOL_COUNT, PRO_NON_SIMULATOR_COUNT, SIMULATOR_COUNT } from "@/lib/tools-config";
 
 const freeTools = [
   {
@@ -315,7 +315,7 @@ const ToolShowcase = () => {
           <h2 className="font-serif italic text-[26px] text-t1">Free forever</h2>
           <Badge variant="secondary" className="bg-sf-emerald/[0.06] border border-sf-emerald text-sf-emerald-text sf-badge-enter">
             <Check className="w-3 h-3 mr-1" />
-            {freeTools.length} Tools
+            {FREE_TOOL_COUNT} Tools
           </Badge>
         </motion.div>
         <motion.div
@@ -345,7 +345,7 @@ const ToolShowcase = () => {
           <h2 className="font-serif italic text-[26px] text-t1">Pro tools</h2>
           <Badge variant="secondary" className="bg-sf-amber/[0.06] border border-sf-amber text-sf-amber-text sf-badge-enter">
             <Zap className="w-3 h-3 mr-1" />
-            {proTools.length} Tools
+            {PRO_NON_SIMULATOR_COUNT} Tools
           </Badge>
         </motion.div>
         <motion.div
@@ -375,7 +375,7 @@ const ToolShowcase = () => {
           <h2 className="font-serif italic text-[26px] text-t1">Simulators</h2>
           <Badge variant="secondary" className="bg-sf-amber/[0.06] border border-sf-amber text-sf-amber-text sf-badge-enter">
             <Zap className="w-3 h-3 mr-1" />
-            {simulators.length} Pro
+            {SIMULATOR_COUNT} Pro
           </Badge>
         </motion.div>
         <motion.div
