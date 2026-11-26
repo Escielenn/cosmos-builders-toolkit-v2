@@ -51,7 +51,7 @@ export function RoomStatus({ worldId, documentId }: RoomStatusProps): JSX.Elemen
             <span className={running ? "text-sf-primary-text" : ""}>{clock}</span>
             {!running && <span className="hidden sm:inline">PAUSED</span>}
           </button>
-          <span aria-hidden="true">·</span>
+          <span aria-hidden="true" className="sf-room-sep">·</span>
         </>
       )}
       {assistantOn && (
@@ -74,7 +74,7 @@ export function RoomStatus({ worldId, documentId }: RoomStatusProps): JSX.Elemen
               {phase === "failed" ? "// OFF" : phase === "loading" ? "LOADING" : issues}
             </span>
           </button>
-          <span aria-hidden="true">·</span>
+          <span aria-hidden="true" className="sf-room-sep">·</span>
         </span>
       )}
     </>
