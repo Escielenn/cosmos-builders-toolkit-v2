@@ -38,7 +38,7 @@
 :root{
   --accent-cyan:#15C17B;
   --accent-green:#00E5A0;
-  --surface-base:rgba(15,15,16,0.92);
+  --surface-base:#0F0F10;
   --surface-elevated:rgba(15,15,16,0.98);
   --border-subtle:rgba(255,255,255,0.08);
   --text-primary:rgba(255,255,255,0.85);
@@ -53,7 +53,7 @@ body{background:#09090B;color:#c8c8c8;font-family:var(--font-body);overflow:hidd
 body.dragging{cursor:grabbing}
 canvas{display:block;position:absolute;top:0;left:0}
 #ui{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10}
-.p{pointer-events:all;background:var(--surface-base);border:1px solid var(--border-subtle);backdrop-filter:blur(16px);border-radius:0}
+.p{pointer-events:all;background:var(--surface-base);border:1px solid var(--border-subtle);border-radius:0}
 #title{position:fixed;top:18px;left:18px;padding:0;background:none;border:none;backdrop-filter:none;z-index:20;pointer-events:none}
 #title h1{font-family:var(--font-display);font-size:26px;font-weight:300;color:#fff;letter-spacing:6px;margin-bottom:2px;text-transform:uppercase}
 #title .sub{font-family:var(--font-body);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.45)}
@@ -92,7 +92,7 @@ button.a{background:rgba(21,193,123,.1);border-color:rgba(21,193,123,.3);color:v
 button.ab{background:rgba(21,193,123,.1);border-color:rgba(21,193,123,.3);color:var(--accent-cyan)}
 
 /* Transport controls - bottom-center dock, matching Solaris's #transport */
-#transport-dock{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:20;pointer-events:all;background:rgba(13,13,15,.94);border:1px solid rgba(255,255,255,.08);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-radius:0;padding:8px 14px}
+#transport-dock{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:20;pointer-events:all;background:#0D0D0F;border:1px solid rgba(255,255,255,.08);border-radius:0;padding:8px 14px}
 .transport{display:flex;gap:3px;align-items:center;margin-top:0}
 .transport button{flex:1;text-align:center;margin:0;font-size:10px;padding:7px 6px;letter-spacing:0}
 .transport #btn-go{flex:2}
@@ -127,7 +127,7 @@ select option{background:#0F0F10;color:#c8c8c8}
 #zoom-info .zh{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.18)}
 
 /* Builder Modal */
-#builder-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(9,9,11,.94);z-index:100;pointer-events:all;overflow-y:auto;backdrop-filter:blur(20px)}
+#builder-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(9,9,11,.94);z-index:100;pointer-events:all;overflow-y:auto}
 #builder-overlay.open{display:flex;align-items:flex-start;justify-content:center;padding:40px 20px}
 #builder{max-width:680px;width:100%;padding:30px 36px;background:var(--surface-elevated);border:1px solid rgba(0,229,160,.08);border-radius:0}
 #builder h2{font-family:var(--font-display);font-size:28px;font-weight:300;color:#fff;margin-bottom:4px;letter-spacing:4px;text-transform:uppercase}
@@ -147,7 +147,7 @@ select option{background:#0F0F10;color:#c8c8c8}
 .star-preview{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-left:6px;box-shadow:0 0 8px currentColor}
 .b-note{font-size:9px;font-family:var(--font-body);color:rgba(0,229,160,.15);letter-spacing:.5px;margin-top:4px;font-style:italic}
 #share-msg{font-size:9px;color:var(--accent-cyan);margin-left:10px;opacity:0;transition:opacity .3s}
-#kb-help{display:none;position:fixed;top:14px;right:280px;z-index:50;pointer-events:all;padding:14px 18px;width:210px;background:var(--surface-base);border:1px solid var(--border-subtle);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-radius:0}
+#kb-help{display:none;position:fixed;top:14px;right:280px;z-index:50;pointer-events:all;padding:14px 18px;width:210px;background:var(--surface-base);border:1px solid var(--border-subtle);border-radius:0}
 #kb-help.open{display:block}
 #kb-help .kh-title{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2.5px;text-transform:uppercase;color:rgba(0,229,160,.55);margin-bottom:8px;padding-bottom:3px;border-bottom:1px solid rgba(0,229,160,.1)}
 #kb-help .kh-row{display:flex;justify-content:space-between;align-items:baseline;line-height:2}
@@ -160,6 +160,8 @@ select option{background:#0F0F10;color:#c8c8c8}
 
   <link rel="stylesheet" href="/tools/_shared/sim-mobile.css">
   <link rel="stylesheet" href="/tools/_shared/sim-title.css">
+  <link rel="stylesheet" href="/tools/_shared/sim-perf.css">
+  <script src="/tools/_shared/sim-loop.js"></script>
 </head>
 <body>
 <canvas id="sim"></canvas>
@@ -442,7 +444,7 @@ let trailStepCounter=0;
 let currentSystem='solar', customSystem=null;
 let cam={x:0,y:0,zoom:55}, targetCam={x:0,y:0,zoom:55}, camMode='free';
 let isDrag=false, dragS={x:0,y:0}, camDragS={x:0,y:0}, touchDist=0;
-let lastFrameTime=performance.now(), frameDt=16.67;
+let frameDt=16.67;
 let isRewinding=false, showLabels=true, lastDomUpdate=0;
 
 // State history for rewind
@@ -466,13 +468,13 @@ function rewindSteps(n){
   if(stateHistory.length>0)restoreState(stateHistory[stateHistory.length-1]);
 }
 
-// Previous frame body positions for interpolation
-let prevPositions={};
-function storePrevPositions(){for(const b of bodies)prevPositions[b.name]={x:b.x,y:b.y};}
+// (1.7) prevPositions was written every frame, one new object per body, and
+// never read: the integrator runs dozens of sub-steps per frame, so the
+// drawn position is already the position "now". Removed with its garbage.
 
 let stars=[];for(let i=0;i<500;i++)stars.push({x:Math.random()*4000-2000,y:Math.random()*4000-2000,b:Math.random()*.3+.05,s:Math.random()<.07?1.6:Math.random()<.2?1.1:.6});
 
-let W=window.innerWidth, H=window.innerHeight, dpr=1;
+let W=window.innerWidth, H=window.innerHeight, dpr=1, starTile=null;
 function resize(){
   dpr=Math.min(window.devicePixelRatio||1,2);
   W=window.innerWidth;H=window.innerHeight;
@@ -480,8 +482,12 @@ function resize(){
   c.width=W*dpr;c.height=H*dpr;
   c.style.width=W+'px';c.style.height=H+'px';
   ctx.setTransform(dpr,0,0,dpr,0,0);
+  starTile=null;
 }
-addEventListener('resize',resize);resize();
+// Debounced: a window drag fires resize continuously and each one
+// reallocates the canvas backing store.
+let _resizeTimer=0;
+addEventListener('resize',()=>{clearTimeout(_resizeTimer);_resizeTimer=setTimeout(resize,80);});resize();
 function toS(wx,wy){return{sx:W/2+(wx-cam.x)*cam.zoom,sy:H/2-(wy-cam.y)*cam.zoom}}
 function toW(sx,sy){return{wx:(sx-W/2)/cam.zoom+cam.x,wy:-(sy-H/2)/cam.zoom+cam.y}}
 // Parse hex color to RGB components — cached to avoid repeated parseInt calls
@@ -656,33 +662,46 @@ function step(dt){
   simTime+=dt;
   trailStepCounter++;
   if(trailStepCounter>=4){trailStepCounter=0;for(const b of bodies){if(b.isIntruder&&!b.active)continue;if(!trails[b.name])trails[b.name]=new TrailBuffer();trails[b.name].push(b.x,b.y);}}
-  checkStatus();
+  trackEjections();
 }
 
-function checkStatus(){
-  // Find primary star (or CoM for binary)
-  const allStars=bodies.filter(b=>b.isStar);
-  const totalStarMass=allStars.reduce((s,b)=>s+b.mass,0);
-  const comX=allStars.reduce((s,b)=>s+b.x*b.mass,0)/totalStarMass;
-  const comY=allStars.reduce((s,b)=>s+b.y*b.mass,0)/totalStarMass;
-  const comVX=allStars.reduce((s,b)=>s+b.vx*b.mass,0)/totalStarMass;
-  const comVY=allStars.reduce((s,b)=>s+b.vy*b.mass,0)/totalStarMass;
-
-  ejectedSet=new Set();
-  for(const b of bodies){
+// (1.7) checkStatus() used to run after EVERY integrator step: 60 to 500
+// times a frame it built four filtered arrays and a new Set, then rewrote
+// the status badge's className and textContent. That was the largest single
+// source of garbage and layout work in the loop. It is now two halves:
+//   trackEjections()  per step, allocation-free: the same energy test, the
+//                     same ejectedSet contents and the same maxSpeed.
+//   refreshStatus()   once per rendered frame (and after a manual step):
+//                     the badge, which is all the DOM ever needed.
+const _com={x:0,y:0,vx:0,vy:0,m:0};
+function starCom(){
+  let m=0,x=0,y=0,vx=0,vy=0;
+  for(let i=0;i<bodies.length;i++){const b=bodies[i];if(!b.isStar)continue;m+=b.mass;x+=b.x*b.mass;y+=b.y*b.mass;vx+=b.vx*b.mass;vy+=b.vy*b.mass;}
+  _com.m=m;_com.x=x/m;_com.y=y/m;_com.vx=vx/m;_com.vy=vy/m;
+  return _com;
+}
+function trackEjections(){
+  const c=starCom();
+  ejectedSet.clear();
+  for(let i=0;i<bodies.length;i++){
+    const b=bodies[i];
     if(b.isStar||b.isIntruder)continue;
-    const dx=b.x-comX,dy=b.y-comY,r=Math.sqrt(dx*dx+dy*dy);
-    const dvx=b.vx-comVX,dvy=b.vy-comVY,v2=dvx*dvx+dvy*dvy;
-    const E=0.5*v2-G*totalStarMass/r;
+    const dx=b.x-c.x,dy=b.y-c.y,r=Math.sqrt(dx*dx+dy*dy);
+    const dvx=b.vx-c.vx,dvy=b.vy-c.vy,v2=dvx*dvx+dvy*dvy;
+    const E=0.5*v2-G*c.m/r;
     if(E>0&&r>(b.a||1)*1.5)ejectedSet.add(b.name);
     const spd=Math.sqrt(v2)*AUtoKM;if(spd>maxSpeed)maxSpeed=spd;
   }
+}
+function refreshStatus(){
   if(!launched)return;
-  const nPlanets=bodies.filter(b=>b.isPlanet).length;
+  let nPlanets=0;for(let i=0;i<bodies.length;i++)if(bodies[i].isPlanet)nPlanets++;
   if(ejectedSet.size>=Math.max(1,Math.floor(nPlanets*.4)))setStatus('chaos','● System Disrupted — '+ejectedSet.size+' Ejected');
   else if(ejectedSet.size>0)setStatus('eject','● '+ejectedSet.size+' Planet'+(ejectedSet.size>1?'s':'')+' Ejected');
-  else{const intruder=bodies.find(b=>b.isIntruder);if(intruder&&intruder.active){const dx=intruder.x-comX,dy=intruder.y-comY;if(Math.sqrt(dx*dx+dy*dy)<(getSystemDef().planets||[]).reduce((m,p)=>Math.max(m,p.a),2)*2)setStatus('perturb','● Orbits Perturbed');else setStatus('orbit','● Post-Encounter');}}
+  else{const intruder=bodies.find(b=>b.isIntruder);if(intruder&&intruder.active){const c=starCom();const dx=intruder.x-c.x,dy=intruder.y-c.y;if(Math.sqrt(dx*dx+dy*dy)<(getSystemDef().planets||[]).reduce((m,p)=>Math.max(m,p.a),2)*2)setStatus('perturb','● Orbits Perturbed');else setStatus('orbit','● Post-Encounter');}}
 }
+// Kept under its old name for any caller that wants both halves at once.
+function checkStatus(){trackEjections();refreshStatus();}
 
 // Package surviving planets as a shareable system, in the same {n,sm,st,b,p}
 // shape saveToURL/loadFromURL already use — so this can be handed to the same
@@ -749,14 +768,15 @@ function updateAftermathButton(){
   if(!btn)return;
   const survivors=bodies.filter(b=>b.isPlanet&&!ejectedSet.has(b.name)).length;
   const show=launched&&simTime>0&&survivors>0;
-  btn.style.display=show?'':'none';
+  SFSim.style(btn,'display',show?'':'none');
 }
 
 // Status badge. When the encounter CLASS changes (orbit → perturb → eject →
 // chaos) the parent app is told once, so its consequence flags can re-read
 // state at the moment something happened — event-driven, never polled.
 let lastStatusClass=null;
-function setStatus(c,t){const b=document.getElementById('badge');b.className='p st-'+c;b.textContent=t;
+let _statusText=null;
+function setStatus(c,t){if(c!==lastStatusClass||t!==_statusText){const b=document.getElementById('badge');b.className='p st-'+c;b.textContent=t;_statusText=t;}
   if(c!==lastStatusClass){lastStatusClass=c;try{window.parent.postMessage({type:'STELLARFORGE_STATUS',status:c,simTime:simTime},'*');}catch(e){}}}
 function launch(){
   const i=bodies.find(b=>b.isIntruder);if(i)i.active=true;
@@ -770,7 +790,7 @@ function launch(){
   updateTransportUI();
 }
 function reset(){
-  running=false;isRewinding=false;stateHistory=[];prevPositions={};
+  running=false;isRewinding=false;stateHistory=[];stepBudget.reset();rewindBudget.reset();snapshotClock=0;
   initBodies();setStatus('wait','● Awaiting Launch');
   document.getElementById('btn-go').style.display='';
   document.getElementById('btn-rewind').style.display='none';
@@ -795,19 +815,43 @@ function makeGrad(cx,cy,r0,r1,stops){
 }
 
 // === DRAWING ===
-function drawStars2(){for(const s of stars){const px=((W/2+s.x-cam.x*.04*cam.zoom)%W+W)%W,py=((H/2+s.y+cam.y*.04*cam.zoom)%H+H)%H;ctx.fillStyle=`rgba(255,255,255,${s.b})`;ctx.beginPath();ctx.arc(px,py,s.s,0,Math.PI*2);ctx.fill();}}
+// (1.7) The starfield wraps every star modulo the screen, so the whole
+// field is one W x H tile shifted by the parallax offset. It is painted
+// once (on resize) onto an opaque offscreen canvas and blitted as four
+// pieces that together cover the screen. Before: 500 arc paths and 500 fresh rgba() strings every frame.
+function buildStarTile(){
+  const t=document.createElement('canvas');t.width=Math.max(1,Math.round(W*dpr));t.height=Math.max(1,Math.round(H*dpr));
+  const c=t.getContext('2d',{alpha:false});c.setTransform(dpr,0,0,dpr,0,0);
+  c.fillStyle='#09090B';c.fillRect(0,0,W,H);
+  for(const s of stars){
+    const px=((W/2+s.x)%W+W)%W,py=((H/2+s.y)%H+H)%H;
+    c.fillStyle=`rgba(255,255,255,${s.b})`;
+    // Copies across the seam so a star on the tile edge is never cut in half.
+    for(let ox=-1;ox<=1;ox++){const x=px+ox*W;if(x<-2||x>W+2)continue;for(let oy=-1;oy<=1;oy++){const y=py+oy*H;if(y<-2||y>H+2)continue;c.beginPath();c.arc(x,y,s.s,0,Math.PI*2);c.fill();}}
+  }
+  return t;
+}
+function drawStars2(){
+  ctx.fillStyle='#09090B';ctx.fillRect(0,0,W,H);
+  if(!starTile)starTile=buildStarTile();
+  const ox=((-cam.x*.04*cam.zoom)%W+W)%W,oy=((cam.y*.04*cam.zoom)%H+H)%H;
+  ctx.drawImage(starTile,ox,oy,W,H);
+  if(ox>0)ctx.drawImage(starTile,ox-W,oy,W,H);
+  if(oy>0)ctx.drawImage(starTile,ox,oy-H,W,H);
+  if(ox>0&&oy>0)ctx.drawImage(starTile,ox-W,oy-H,W,H);
+}
 
-function drawGrid(){if(!document.getElementById('chk-grid').checked)return;const vau=W/cam.zoom;let sp=1;if(vau>15)sp=2;if(vau>30)sp=5;if(vau>80)sp=10;if(vau>200)sp=25;if(vau>500)sp=50;if(vau<4)sp=.5;if(vau<1.5)sp=.25;if(vau<.5)sp=.1;if(vau<.15)sp=.02;if(vau<.05)sp=.005;const l=toW(0,0).wx,r=toW(W,0).wx,t=toW(0,0).wy,bt=toW(0,H).wy;ctx.strokeStyle='rgba(255,255,255,.02)';ctx.lineWidth=1;for(let x=Math.floor(l/sp)*sp;x<=r+sp;x+=sp){const s=toS(x,0);ctx.beginPath();ctx.moveTo(s.sx,0);ctx.lineTo(s.sx,H);ctx.stroke();}for(let y=Math.floor(bt/sp)*sp;y<=t+sp;y+=sp){const s=toS(0,y);ctx.beginPath();ctx.moveTo(0,s.sy);ctx.lineTo(W,s.sy);ctx.stroke();}}
+function drawGrid(){if(!$id('chk-grid').checked)return;const vau=W/cam.zoom;let sp=1;if(vau>15)sp=2;if(vau>30)sp=5;if(vau>80)sp=10;if(vau>200)sp=25;if(vau>500)sp=50;if(vau<4)sp=.5;if(vau<1.5)sp=.25;if(vau<.5)sp=.1;if(vau<.15)sp=.02;if(vau<.05)sp=.005;const l=toW(0,0).wx,r=toW(W,0).wx,t=toW(0,0).wy,bt=toW(0,H).wy;ctx.strokeStyle='rgba(255,255,255,.02)';ctx.lineWidth=1;for(let x=Math.floor(l/sp)*sp;x<=r+sp;x+=sp){const s=toS(x,0);ctx.beginPath();ctx.moveTo(s.sx,0);ctx.lineTo(s.sx,H);ctx.stroke();}for(let y=Math.floor(bt/sp)*sp;y<=t+sp;y+=sp){const s=toS(0,y);ctx.beginPath();ctx.moveTo(0,s.sy);ctx.lineTo(W,s.sy);ctx.stroke();}}
 
-function drawOrbitalPaths(){if(!document.getElementById('chk-orbits').checked)return;const sys=getSystemDef();const allStars=bodies.filter(b=>b.isStar);const tm=allStars.reduce((s,b)=>s+b.mass,0);const cx=allStars.reduce((s,b)=>s+b.x*b.mass,0)/tm,cy=allStars.reduce((s,b)=>s+b.y*b.mass,0)/tm;const cs=toS(cx,cy);(sys.planets||[]).forEach(pd=>{const rPx=pd.a*cam.zoom;if(rPx<2||rPx>10000)return;ctx.strokeStyle=hexRGBA(pd.color,.07);ctx.lineWidth=1;ctx.setLineDash([2,4]);ctx.beginPath();ctx.arc(cs.sx,cs.sy,rPx,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);});}
+function drawOrbitalPaths(){if(!$id('chk-orbits').checked)return;const sys=getSystemDef();const _c=starCom();const cs=toS(_c.x,_c.y);(sys.planets||[]).forEach(pd=>{const rPx=pd.a*cam.zoom;if(rPx<2||rPx>10000)return;ctx.strokeStyle=hexRGBA(pd.color,.07);ctx.lineWidth=1;ctx.setLineDash([2,4]);ctx.beginPath();ctx.arc(cs.sx,cs.sy,rPx,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);});}
 
-function drawHabitableZone(){if(!document.getElementById('chk-habzone').checked)return;const sys=getSystemDef();if(!sys.habZone)return;const allStars=bodies.filter(b=>b.isStar);const tm=allStars.reduce((s,b)=>s+b.mass,0);const cx=allStars.reduce((s,b)=>s+b.x*b.mass,0)/tm,cy=allStars.reduce((s,b)=>s+b.y*b.mass,0)/tm;const cs=toS(cx,cy);const inner=sys.habZone[0]*cam.zoom,outer=sys.habZone[1]*cam.zoom;if(inner<1)return;ctx.fillStyle='rgba(46,204,113,.03)';ctx.beginPath();ctx.arc(cs.sx,cs.sy,outer,0,Math.PI*2);ctx.arc(cs.sx,cs.sy,inner,0,Math.PI*2,true);ctx.fill();ctx.strokeStyle='rgba(46,204,113,.08)';ctx.lineWidth=1;ctx.setLineDash([3,5]);ctx.beginPath();ctx.arc(cs.sx,cs.sy,inner,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.arc(cs.sx,cs.sy,outer,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);}
+function drawHabitableZone(){if(!$id('chk-habzone').checked)return;const sys=getSystemDef();if(!sys.habZone)return;const _c=starCom();const cs=toS(_c.x,_c.y);const inner=sys.habZone[0]*cam.zoom,outer=sys.habZone[1]*cam.zoom;if(inner<1)return;ctx.fillStyle='rgba(46,204,113,.03)';ctx.beginPath();ctx.arc(cs.sx,cs.sy,outer,0,Math.PI*2);ctx.arc(cs.sx,cs.sy,inner,0,Math.PI*2,true);ctx.fill();ctx.strokeStyle='rgba(46,204,113,.08)';ctx.lineWidth=1;ctx.setLineDash([3,5]);ctx.beginPath();ctx.arc(cs.sx,cs.sy,inner,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.arc(cs.sx,cs.sy,outer,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);}
 
-function drawTrails(){if(!document.getElementById('chk-trails').checked)return;for(const b of bodies){if((b.isIntruder&&!b.active)||b.isStar)continue;const t=trails[b.name];if(!t||t.count<2)continue;const len=t.count,step=Math.max(1,Math.floor(len/500));ctx.lineWidth=b.isIntruder?1.2:b.name==='Earth'?1.5:.8;ctx.beginPath();let started=false;for(let i=0;i<len;i+=step){const pt=t.get(i);const p=toS(pt.x,pt.y);if(!started){ctx.moveTo(p.sx,p.sy);started=true;}else ctx.lineTo(p.sx,p.sy);}ctx.strokeStyle=cachedHexRGBA(b.color,b.isIntruder?.2:.15);ctx.stroke();}}
+function drawTrails(){if(!$id('chk-trails').checked)return;for(const b of bodies){if((b.isIntruder&&!b.active)||b.isStar)continue;const t=trails[b.name];if(!t||t.count<2)continue;const len=t.count,step=Math.max(1,Math.floor(len/500));ctx.lineWidth=b.isIntruder?1.2:b.name==='Earth'?1.5:.8;ctx.beginPath();let started=false;for(let i=0;i<len;i+=step){const pt=t.get(i);const p=toS(pt.x,pt.y);if(!started){ctx.moveTo(p.sx,p.sy);started=true;}else ctx.lineTo(p.sx,p.sy);}ctx.strokeStyle=cachedHexRGBA(b.color,b.isIntruder?.2:.15);ctx.stroke();}}
 
-function drawGravityLines(){if(!document.getElementById('chk-grav').checked)return;const planets=bodies.filter(b=>b.isPlanet);if(!planets.length)return;const target=planets.find(b=>b.name==='Earth')||planets[0];const es=toS(target.x,target.y);for(const b of bodies){if(b===target)continue;if(b.isIntruder&&!b.active)continue;if(!b.isStar&&!b.isIntruder)continue;const dx=b.x-target.x,dy=b.y-target.y,dist=Math.sqrt(dx*dx+dy*dy),force=G*b.mass/(dist*dist);const bs=toS(b.x,b.y),alpha=Math.min(.3,.02*b.mass/Math.max(.001,dist*dist));ctx.strokeStyle=hexRGBA(b.color,alpha);ctx.lineWidth=1;ctx.setLineDash([2,5]);ctx.beginPath();ctx.moveTo(es.sx,es.sy);ctx.lineTo(bs.sx,bs.sy);ctx.stroke();ctx.setLineDash([]);}}
+function drawGravityLines(){if(!$id('chk-grav').checked)return;const planets=bodies.filter(b=>b.isPlanet);if(!planets.length)return;const target=planets.find(b=>b.name==='Earth')||planets[0];const es=toS(target.x,target.y);for(const b of bodies){if(b===target)continue;if(b.isIntruder&&!b.active)continue;if(!b.isStar&&!b.isIntruder)continue;const dx=b.x-target.x,dy=b.y-target.y,dist=Math.sqrt(dx*dx+dy*dy),force=G*b.mass/(dist*dist);const bs=toS(b.x,b.y),alpha=Math.min(.3,.02*b.mass/Math.max(.001,dist*dist));ctx.strokeStyle=hexRGBA(b.color,alpha);ctx.lineWidth=1;ctx.setLineDash([2,5]);ctx.beginPath();ctx.moveTo(es.sx,es.sy);ctx.lineTo(bs.sx,bs.sy);ctx.stroke();ctx.setLineDash([]);}}
 
-function drawVelocityVectors(){if(!document.getElementById('chk-vec').checked)return;const vScale=cam.zoom*.02;for(const b of bodies){if(b.isIntruder&&!b.active)continue;const v2=b.vx*b.vx+b.vy*b.vy;if(b.isStar&&v2<.01)continue;const s=toS(b.x,b.y),ex=s.sx+b.vx*vScale,ey=s.sy-b.vy*vScale,dx=ex-s.sx,dy=ey-s.sy,len=Math.sqrt(dx*dx+dy*dy);if(len<3)continue;ctx.strokeStyle=b.color;ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(s.sx,s.sy);ctx.lineTo(ex,ey);ctx.stroke();const angle=Math.atan2(dy,dx),hl=Math.min(6,len*.3);ctx.fillStyle=b.color;ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(ex-hl*Math.cos(angle-.4),ey-hl*Math.sin(angle-.4));ctx.lineTo(ex-hl*Math.cos(angle+.4),ey-hl*Math.sin(angle+.4));ctx.closePath();ctx.fill();}}
+function drawVelocityVectors(){if(!$id('chk-vec').checked)return;const vScale=cam.zoom*.02;for(const b of bodies){if(b.isIntruder&&!b.active)continue;const v2=b.vx*b.vx+b.vy*b.vy;if(b.isStar&&v2<.01)continue;const s=toS(b.x,b.y),ex=s.sx+b.vx*vScale,ey=s.sy-b.vy*vScale,dx=ex-s.sx,dy=ey-s.sy,len=Math.sqrt(dx*dx+dy*dy);if(len<3)continue;ctx.strokeStyle=b.color;ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(s.sx,s.sy);ctx.lineTo(ex,ey);ctx.stroke();const angle=Math.atan2(dy,dx),hl=Math.min(6,len*.3);ctx.fillStyle=b.color;ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(ex-hl*Math.cos(angle-.4),ey-hl*Math.sin(angle-.4));ctx.lineTo(ex-hl*Math.cos(angle+.4),ey-hl*Math.sin(angle+.4));ctx.closePath();ctx.fill();}}
 
 /**
  * Net gravitational force, as an arrow per body — distinct from the dashed
@@ -819,7 +863,7 @@ function drawVelocityVectors(){if(!document.getElementById('chk-vec').checked)re
  */
 const GRAV_VEC_COLOR='#9B5DE5';
 function drawGravityVectors(){
-  if(!document.getElementById('chk-gravvec').checked)return;
+  if(!$id('chk-gravvec').checked)return;
   const active=bodies.filter(b=>!(b.isIntruder&&!b.active));
   if(active.length<2)return;
   const acc=computeAccel(active,launched);
@@ -891,17 +935,19 @@ function drawIntruder(b){
   else{const r=Math.max(4,Math.min(starPx*.5,cam.zoom*.03+2));const cg=makeGrad(s.sx-r*.3,s.sy-r*.3,0,r,[[0,'#b89860'],[.8,'#5a4410'],[1,'#2a2008']]);ctx.fillStyle=cg;ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.fill();if(showLabels){ctx.fillStyle='rgba(139,105,20,.4)';ctx.font=`${labelFontPx()}px "DM Sans"`;ctx.textAlign='center';ctx.fillText('◉ ROGUE PLANET',s.sx,s.sy+r+14);}}
 }
 
+const $id=(()=>{const m={};return id=>m[id]||(m[id]=document.getElementById(id));})();
 function updateData(){
-  const allStars=bodies.filter(b=>b.isStar),intruder=bodies.find(b=>b.isIntruder);
-  const tm=allStars.reduce((s,b)=>s+b.mass,0);
-  if(allStars.length){const s=allStars[0];document.getElementById('d-sdisp').textContent=Math.sqrt(s.x*s.x+s.y*s.y).toFixed(4)+' AU';document.getElementById('d-svel').textContent=(Math.sqrt(s.vx*s.vx+s.vy*s.vy)*AUtoKM).toFixed(2)+' km/s';}
-  document.getElementById('d-itype').textContent=ITYPES[intruderType].name;document.getElementById('d-itype').style.color=ITYPES[intruderType].color;
-  document.getElementById('d-imass').textContent=getIntruderMass().display;document.getElementById('d-imass').style.color=ITYPES[intruderType].color;
-  if(intruder&&intruder.active&&allStars.length){const dx=intruder.x-allStars[0].x,dy=intruder.y-allStars[0].y;document.getElementById('d-isdist').textContent=Math.sqrt(dx*dx+dy*dy).toFixed(2)+' AU';}else document.getElementById('d-isdist').textContent='—';
-  document.getElementById('d-pej').textContent=ejectedSet.size+' / '+bodies.filter(b=>b.isPlanet).length;document.getElementById('d-pej').style.color=ejectedSet.size>0?'#2ecc71':'rgba(255,255,255,.7)';
-  document.getElementById('d-time').textContent=simTime.toFixed(2)+' yr';
+  let star0=null,nPlanets=0;
+  for(let i=0;i<bodies.length;i++){const b=bodies[i];if(b.isStar&&!star0)star0=b;if(b.isPlanet)nPlanets++;}
+  const intruder=bodies.find(b=>b.isIntruder);
+  if(star0){const s=star0;SFSim.text($id('d-sdisp'),Math.sqrt(s.x*s.x+s.y*s.y).toFixed(4)+' AU');SFSim.text($id('d-svel'),(Math.sqrt(s.vx*s.vx+s.vy*s.vy)*AUtoKM).toFixed(2)+' km/s');}
+  SFSim.text($id('d-itype'),ITYPES[intruderType].name);SFSim.style($id('d-itype'),'color',ITYPES[intruderType].color);
+  SFSim.text($id('d-imass'),getIntruderMass().display);SFSim.style($id('d-imass'),'color',ITYPES[intruderType].color);
+  if(intruder&&intruder.active&&star0){const dx=intruder.x-star0.x,dy=intruder.y-star0.y;SFSim.text($id('d-isdist'),Math.sqrt(dx*dx+dy*dy).toFixed(2)+' AU');}else SFSim.text($id('d-isdist'),'—');
+  SFSim.text($id('d-pej'),ejectedSet.size+' / '+nPlanets);SFSim.style($id('d-pej'),'color',ejectedSet.size>0?'#2ecc71':'rgba(255,255,255,.7)');
+  SFSim.text($id('d-time'),simTime.toFixed(2)+' yr');
   let html='';for(const b of bodies){if(!b.isPlanet)continue;const ej=ejectedSet.has(b.name);html+=`<div class="dr"><span class="dl">${b.sym||'●'} ${b.name}</span><span class="dv" style="color:${ej?'#2ecc71':b.color}">${ej?'EJECTED':'orbiting'}</span></div>`;}
-  document.getElementById('planet-status-list').innerHTML=html;
+  SFSim.html($id('planet-status-list'),html);
 }
 
 function updateSliders(){document.getElementById('mass-val').textContent=getIntruderMass().display;document.getElementById('dist-val').textContent=parseFloat(document.getElementById('sl-dist').value).toFixed(document.getElementById('sl-dist').step<0.01?3:1)+' AU';document.getElementById('speed-val').textContent=document.getElementById('sl-speed').value+' km/s';document.getElementById('angle-val').textContent=document.getElementById('sl-angle').value+'°';const tv=parseFloat(document.getElementById('sl-time').value);document.getElementById('time-val').textContent=(tv>=10?Math.round(tv):tv.toFixed(1))+'×';}
@@ -913,48 +959,60 @@ function updateCam(){
   // Delta-time camera smoothing (framerate independent)
   const smoothing=1-Math.pow(0.0001,frameDt/1000);
   cam.x+=(targetCam.x-cam.x)*smoothing;cam.y+=(targetCam.y-cam.y)*smoothing;cam.zoom+=(targetCam.zoom-cam.zoom)*smoothing;
-  document.getElementById('zv-text').textContent=(W/cam.zoom).toFixed(cam.zoom>500?3:1)+' AU';
+  SFSim.text($id('zv-text'),(W/cam.zoom).toFixed(cam.zoom>500?3:1)+' AU');
 }
 function updateCamBtns(){document.querySelectorAll('#cam-btns button, #planet-cam-btns button').forEach(b=>{b.className=b.dataset.cam===camMode?'ab':'';});}
 function fitAll(){let minX=0,maxX=0,minY=0,maxY=0;for(const b of bodies){if(b.isIntruder&&!b.active)continue;minX=Math.min(minX,b.x);maxX=Math.max(maxX,b.x);minY=Math.min(minY,b.y);maxY=Math.max(maxY,b.y);}const pad=Math.max(1,(maxX-minX)*.1);targetCam.x=(minX+maxX)/2;targetCam.y=(minY+maxY)/2;targetCam.zoom=Math.min(W/((maxX-minX)+pad*2),H/((maxY-minY)+pad*2))*.85;targetCam.zoom=Math.max(1,Math.min(5000,targetCam.zoom));}
 function fitInner(){const sys=getSystemDef();const inner=Math.max(.1,...(sys.planets||[]).slice(0,Math.min(4,(sys.planets||[]).length)).map(p=>p.a));targetCam.x=0;targetCam.y=0;targetCam.zoom=Math.min(W,H)/(inner*2.5);}
 
-function animate(timestamp){
-  // Delta time tracking
-  frameDt=timestamp-lastFrameTime;lastFrameTime=timestamp;
-  if(frameDt>100)frameDt=16.67; // cap after tab switch
-
-  ctx.fillStyle='#09090B';ctx.fillRect(0,0,W,H);
+// (1.7) The loop. Before: the integrator ran a fixed number of steps PER
+// FRAME, so simulated time followed the frame rate: a slow frame was a
+// visible hitch in every orbit, and a 120 Hz display ran the encounter at
+// double speed. Now the step count follows elapsed time (SFSim.stepBudget
+// carries the fraction), so the same wall second is the same simulated span
+// at any frame rate. Step size and order are untouched, so a given number
+// of steps still lands on exactly the same state as before.
+const stepBudget=SFSim.stepBudget();
+const rewindBudget=SFSim.stepBudget();
+let snapshotClock=0;
+const SNAPSHOT_MS=66.7; // one rewind snapshot per ~4 frames, as before, but on the clock
+function stepPlan(){
+  const ts=parseFloat($id('sl-time').value);
+  const sc=getSystemScale();const dtScale=Math.min(1,sc.minOrb/.5);
+  const dt=dt_base*dtScale;
+  const compensation=Math.min(80,Math.max(1,1/dtScale));
+  const stepsNeeded=Math.floor(60*ts*compensation);
+  const perFrame=Math.max(1,Math.min(500,stepsNeeded));
+  // If we hit the cap, increase dt to compensate so high time scales still work
+  const dtMul=stepsNeeded>500?stepsNeeded/500:1;
+  return{perFrame,effDt:dt*dtMul};
+}
+function animate(timestamp,dt){
+  frameDt=dt;
   // Cache checkbox reads once per frame to avoid repeated DOM queries in draw functions
-  showLabels=document.getElementById('chk-labels').checked;
+  showLabels=$id('chk-labels').checked;
   updateCam();drawStars2();drawGrid();drawHabitableZone();drawOrbitalPaths();drawTrails();drawGravityLines();
   for(const b of bodies){if(b.isStar)drawStar(b);else if(b.isIntruder){if(b.active)drawIntruder(b);}else drawPlanet(b);}
   drawVelocityVectors();drawGravityVectors();
 
   if(isRewinding&&launched){
     // Rewind: step back through history proportional to time scale
-    const ts=Math.max(1,parseFloat(document.getElementById('sl-time').value));
-    const rSteps=Math.max(1,Math.round(ts*.5));
-    rewindSteps(rSteps);
+    const ts=Math.max(1,parseFloat($id('sl-time').value));
+    const rSteps=rewindBudget.take(dt,Math.max(1,Math.round(ts*.5))*60);
+    if(rSteps>0){rewindSteps(rSteps);refreshStatus();}
   }
   else if(running){
-    const ts=parseFloat(document.getElementById('sl-time').value);
-    const sc=getSystemScale();const dtScale=Math.min(1,sc.minOrb/.5);
-    const dt=dt_base*dtScale;
-    const compensation=Math.min(80,Math.max(1,1/dtScale));
-    const steps=Math.max(1,Math.min(500,Math.floor(60*ts*compensation)));
-    // If we hit the cap, increase dt to compensate so high time scales still work
-    const stepsNeeded=Math.floor(60*ts*compensation);
-    const dtMul=stepsNeeded>500?stepsNeeded/500:1;
-    const effDt=dt*dtMul;
-    storePrevPositions();
-    for(let i=0;i<steps;i++)step(effDt);
-    // Save state every ~4 frames for rewind
-    if(stateHistory.length===0||(Date.now()%67<17))saveState();
+    const plan=stepPlan();
+    // At most two frames' worth per frame: a machine that cannot keep up
+    // slows the simulation down instead of stalling the page.
+    const steps=Math.min(stepBudget.take(dt,plan.perFrame*60),plan.perFrame*2);
+    for(let i=0;i<steps;i++)step(plan.effDt);
+    if(steps>0)refreshStatus();
+    snapshotClock+=dt;
+    if(stateHistory.length===0||snapshotClock>=SNAPSHOT_MS){snapshotClock=0;saveState();}
   }
   // Throttle DOM updates to ~100ms (every ~6 frames at 60fps)
-  const now=performance.now();if(now-lastDomUpdate>100){lastDomUpdate=now;updateData();updateAftermathButton();}
-  requestAnimationFrame(animate);
+  if(timestamp-lastDomUpdate>100){lastDomUpdate=timestamp;updateData();updateAftermathButton();}
 }
 
 // === BUILDER ===
@@ -1126,7 +1184,7 @@ document.getElementById('btn-stepb').addEventListener('click',function(){running
 document.getElementById('btn-stepf').addEventListener('click',function(){
   running=false;isRewinding=false;
   const sc=getSystemScale();const dtScale=Math.min(1,sc.minOrb/.5);const dt=dt_base*dtScale;
-  storePrevPositions();for(let i=0;i<60;i++)step(dt);saveState();
+  for(let i=0;i<60;i++)step(dt);refreshStatus();saveState();
   updateTransportUI();
 });
 document.getElementById('z-in').addEventListener('click',()=>{targetCam.zoom=Math.min(5000,targetCam.zoom*1.6);});
@@ -1170,7 +1228,7 @@ addEventListener('keydown',e=>{
 
 // === INIT ===
 if(!loadFromURL()){initBodies();}else{initBodies();}
-updateSliders();updateTypeBtns();updateCamBtns();requestAnimationFrame(animate);
+updateSliders();updateTypeBtns();updateCamBtns();SFSim.loop(animate).start();
 
 // ─── PostMessage bridge for StellarForge save/load ───
 window.addEventListener('message', function(event) {

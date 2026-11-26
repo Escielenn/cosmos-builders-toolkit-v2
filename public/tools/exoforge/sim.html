@@ -54,7 +54,7 @@
   --status-orange: #FFA500;
   /* Surfaces */
   --bg-void: #09090B;
-  --bg-panel: rgba(15, 15, 16, 0.92);
+  --bg-panel: #0F0F10;
   --border-subtle: #50555E; /* sf-line: solid, never alpha */
   --border-active: #8C909A; /* sf-line-emphasis */
   /* Text */
@@ -85,8 +85,6 @@ body {
   position: fixed;
   background: var(--bg-panel);
   border: 1px solid var(--border-subtle);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border-radius: 0;
   padding: 14px 18px;
   z-index: 10;
@@ -584,7 +582,7 @@ button.active, button.primary {
 /* Between the 640px mobile floor and a full desktop, the two side panels
    have no room to coexist with the planet they control - same problem
    Tidelock solves with a toggle-behind-a-button pattern, replicated here. */
-#mobile-toggle-controls,#mobile-toggle-data{display:none;position:fixed;z-index:15;width:36px;height:36px;border-radius:0;font-size:16px;line-height:36px;text-align:center;padding:0;background:var(--bg-panel);border:1px solid var(--border-subtle);color:rgba(255,255,255,0.5);cursor:pointer;backdrop-filter:blur(16px)}
+#mobile-toggle-controls,#mobile-toggle-data{display:none;position:fixed;z-index:15;width:36px;height:36px;border-radius:0;font-size:16px;line-height:36px;text-align:center;padding:0;background:var(--bg-panel);border:1px solid var(--border-subtle);color:rgba(255,255,255,0.5);cursor:pointer}
 #mobile-toggle-controls{bottom:18px;left:18px}
 #mobile-toggle-data{bottom:18px;left:62px}
 @media(max-width:1024px){
@@ -600,6 +598,8 @@ button.active, button.primary {
 </style>
   <link rel="stylesheet" href="../_shared/sim-mobile.css">
   <link rel="stylesheet" href="../_shared/sim-title.css">
+  <link rel="stylesheet" href="../_shared/sim-perf.css">
+  <script src="../_shared/sim-loop.js"></script>
 </head>
 <body>
 
@@ -889,7 +889,9 @@ camera.position.set(0, 0.5, 4);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, preserveDrawingBuffer: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+// (1.7) Dynamic resolution: starts at min(devicePixelRatio, 2) and steps
+// down, never up, when this device cannot hold the frame rate.
+const pixelGovernor = SFSim.adaptivePixelRatio(renderer, { max: 2, onChange: () => { needsRender = true; } });
 renderer.setClearColor(0x09090B);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.2;
@@ -1704,12 +1706,12 @@ let lastTime = performance.now();
 // Camera convergence threshold — below this, camera is "settled"
 const CAM_EPSILON = 0.0001;
 
-function animate(time) {
-  requestAnimationFrame(animate);
-  // Clamped like every other sim's loop: an unthrottled dt after the tab is
-  // backgrounded snaps the planet's rotation and camera by however long it
-  // was away, instead of resuming smoothly.
-  const dt = Math.min((time - lastTime) / 1000, 0.1);
+// (1.7) Driven by SFSim.loop: dtMs arrives clamped, is 0 on the first frame
+// back from a hidden tab, and the loop parks while the simulator is hidden
+// or scrolled off screen.
+let renderedLastFrame = false;
+function animate(time, dtMs) {
+  const dt = dtMs / 1000;
   lastTime = time;
 
   // --- Process dirty flags (batched — at most once per frame) ---
@@ -1782,20 +1784,31 @@ function animate(time) {
   if (needsRender) {
     renderer.render(scene, camera);
     needsRender = false;
+    // Only back-to-back rendered frames say anything about the GPU.
+    if (renderedLastFrame) pixelGovernor.sample(dtMs);
+    renderedLastFrame = true;
+  } else {
+    renderedLastFrame = false;
+    pixelGovernor.idle();
   }
 }
 
+// Debounced: every resize event reallocates the WebGL backing store.
+let _resizeTimer = 0;
 window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  needsRender = true;
+  clearTimeout(_resizeTimer);
+  _resizeTimer = setTimeout(() => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    needsRender = true;
+  }, 80);
 });
 
 // Init temp slider to Earth
 document.getElementById('temp').value = tempToSlider(288);
 updateVisuals();
-animate(performance.now());
+SFSim.loop(animate).start();
 
 // Keyboard shortcuts
 window.addEventListener('keydown', function(e) {

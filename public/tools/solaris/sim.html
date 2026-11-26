@@ -40,7 +40,7 @@ body.math-open{overflow:hidden}
 #math-overlay{pointer-events:all!important}
 canvas{display:block;position:fixed;top:0;left:0;width:100vw;height:100vh}
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(21,193,123,0.14);border-radius:0}
-.panel{position:fixed;background:rgba(13,13,15,0.94);border:1px solid #50555E;backdrop-filter:blur(20px);border-radius:0;padding:14px 18px;z-index:20;max-height:calc(100vh - 80px);overflow-y:auto;overflow-x:hidden}
+.panel{position:fixed;background:#0D0D0F;border:1px solid #50555E;border-radius:0;padding:14px 18px;z-index:20;max-height:calc(100vh - 80px);overflow-y:auto;overflow-x:hidden}
 #title-block{position:fixed;top:18px;left:18px;width:272px;padding:0;background:none;border:none;backdrop-filter:none;z-index:20;pointer-events:none}
 #title-block button{pointer-events:auto}
 .tool-name{font-family:'MD Nichrome Test','Jura',sans-serif;font-weight:300;font-size:22px;letter-spacing:5px;text-transform:uppercase;color:#FAFAFA;line-height:1}
@@ -150,7 +150,7 @@ input[type=text]:focus{border-color:var(--sf-accent)}
 .save-btns button{padding:3px 7px;font-size:12px;letter-spacing:1px}
 .save-btns .del-btn:hover{background:rgba(231,76,60,0.1);border-color:rgb(231,76,60);color:#E74C3C}
 /* TRANSPORT */
-#transport{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:6px;align-items:center;z-index:20;background:rgba(13,13,15,0.94);border:1px solid #50555E;backdrop-filter:blur(16px);border-radius:0;padding:8px 14px}
+#transport{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:6px;align-items:center;z-index:20;background:#0D0D0F;border:1px solid #50555E;border-radius:0;padding:8px 14px}
 .tbtn{padding:6px 10px;font-size:12px;letter-spacing:0;min-width:32px;text-align:center}
 .tbtn.playing{background:rgba(21,193,123,0.08);border-color:#8C909A;color:var(--sf-accent)}
 #spd-disp{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,0.4);padding:0 8px;min-width:38px;text-align:center}
@@ -158,7 +158,7 @@ input[type=text]:focus{border-color:var(--sf-accent)}
 #zoom-ind{position:fixed;bottom:16px;right:16px;text-align:right;z-index:20;pointer-events:none}
 #z-val{font-family:'DM Sans',sans-serif;font-weight:300;font-size:15px;color:rgba(21,193,123,0.5);line-height:1}
 #z-lbl{font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.18)}
-#hz-leg{position:fixed;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:14px;align-items:center;z-index:20;background:rgba(13,13,15,0.9);border:1px solid #41454D;backdrop-filter:blur(12px);border-radius:0;padding:6px 16px;opacity:0;transition:opacity 0.5s;pointer-events:none}
+#hz-leg{position:fixed;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:14px;align-items:center;z-index:20;background:#0D0D0F;border:1px solid #41454D;border-radius:0;padding:6px 16px;opacity:0;transition:opacity 0.5s;pointer-events:none}
 #hz-leg.vis{opacity:1}
 .leg-i{display:flex;align-items:center;gap:5px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.35)}
 .leg-d{width:6px;height:6px;border-radius:50%;flex-shrink:0}
@@ -175,6 +175,8 @@ input[type=text]:focus{border-color:var(--sf-accent)}
 </style>
   <link rel="stylesheet" href="../_shared/sim-mobile.css">
   <link rel="stylesheet" href="../_shared/sim-title.css">
+  <link rel="stylesheet" href="../_shared/sim-perf.css">
+  <script src="../_shared/sim-loop.js"></script>
 </head>
 <body>
 <canvas id="canvas"></canvas>
@@ -420,7 +422,8 @@ let W,H;
 // ── STATE ──
 let cam={x:0,y:0,zoom:1},tcam={x:0,y:0,zoom:1},camMode='free';
 let drag=false,dragSt={x:0,y:0},camSt={x:0,y:0};
-let playing=true,spdIdx=3,lastT=0;
+let playing=true,spdIdx=3,trailClock=0;
+const $id=(()=>{const m={};return id=>m[id]||(m[id]=document.getElementById(id));})();
 const SPEEDS=[0.1,0.25,0.5,1,2,5,10];
 let system=null,selPlanet=null,selMoon=null,selMoonParent=null;
 let starModeVal='single',archVal=''; // architecture variant
@@ -558,7 +561,8 @@ function rnd(a,b){return Math.random()*(b-a)+a}
 function pick(a){return a[Math.floor(Math.random()*a.length)]}
 function rndInt(a,b){return Math.floor(rnd(a,b+1))}
 function toRoman(n){const v=[1000,900,500,400,100,90,50,40,10,9,5,4,1],s=['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I'];let r='';for(let i=0;i<v.length;i++)while(n>=v[i]){r+=s[i];n-=v[i]}return r}
-function h2a(hex,a){if(!hex||hex[0]!=='#')return`rgba(128,128,128,${a})`;return`rgba(${parseInt(hex.slice(1,3),16)},${parseInt(hex.slice(3,5),16)},${parseInt(hex.slice(5,7),16)},${a})`}
+const _h2aCache=new Map();
+function h2a(hex,a){if(!hex||hex[0]!=='#')return`rgba(128,128,128,${a})`;const k=hex+'|'+a;let v=_h2aCache.get(k);if(v===undefined){if(_h2aCache.size>4000)_h2aCache.clear();v=`rgba(${parseInt(hex.slice(1,3),16)},${parseInt(hex.slice(3,5),16)},${parseInt(hex.slice(5,7),16)},${a})`;_h2aCache.set(k,v);}return v}
 function lighten(hex,amt){if(!hex||hex[0]!=='#')return'#808080';return`rgb(${Math.min(255,parseInt(hex.slice(1,3),16)+amt)},${Math.min(255,parseInt(hex.slice(3,5),16)+amt)},${Math.min(255,parseInt(hex.slice(5,7),16)+amt)})`}
 
 // ── TABS ──
@@ -1308,9 +1312,10 @@ function exportTXT(){
 // ═══════════════════════════════════════════════════════════════════════
 // RENDER LOOP
 // ═══════════════════════════════════════════════════════════════════════
-function loop(ts){
-  requestAnimationFrame(loop);
-  const dt=Math.min(ts-lastT,100);lastT=ts;
+// (1.7) Driven by SFSim.loop: dt arrives clamped (and is 0 on the first
+// frame after the tab or the iframe comes back), and the loop parks while
+// the simulator is hidden or scrolled off screen.
+function loop(ts,dt){
   const sm=1-Math.pow(0.0001,dt/1000);
   if(camMode==='star'){tcam.x=0;tcam.y=0}
   cam.x+=(tcam.x-cam.x)*sm;cam.y+=(tcam.y-cam.y)*sm;cam.zoom+=(tcam.zoom-cam.zoom)*sm;
@@ -1360,14 +1365,14 @@ function loop(ts){
   ctx.translate(W/2+cam.x*cam.zoom,H/2+cam.y*cam.zoom);
   ctx.scale(cam.zoom,cam.zoom);
 
-  const showHz=document.getElementById('chk-hz').checked;
-  const showOrb=document.getElementById('chk-orb').checked;
-  const showLbl=document.getElementById('chk-lbl').checked;
-  const showGrav=document.getElementById('chk-grav').checked;
-  const showTrails=document.getElementById('chk-trails').checked;
-  const showRot=document.getElementById('chk-rot').checked;
-  const showStarName=document.getElementById('chk-starname').checked;
-  const brightness=parseInt(document.getElementById('starbrightness').value)/10;
+  const showHz=$id('chk-hz').checked;
+  const showOrb=$id('chk-orb').checked;
+  const showLbl=$id('chk-lbl').checked;
+  const showGrav=$id('chk-grav').checked;
+  const showTrails=$id('chk-trails').checked;
+  const showRot=$id('chk-rot').checked;
+  const showStarName=$id('chk-starname').checked;
+  const brightness=parseInt($id('starbrightness').value)/10;
 
   if(showHz)drawHz();
   if(showOrb){system.planets.forEach(p=>drawOrbit(p));if(system.asteroidBelt)drawAstOrbit()}
@@ -1406,6 +1411,9 @@ function loop(ts){
       }));
 
       // Acceleration helper — closed over starSnap
+      // (1.7) writes into accX/accY instead of returning a fresh {ax, ay}
+      // object per call: this runs once per substep per planet.
+      let accX = 0, accY = 0;
       const accel = (px, py) => {
         let ax = 0, ay = 0;
         for (let i = 0; i < starSnap.length; i++) {
@@ -1417,7 +1425,7 @@ function loop(ts){
           ax += inv * dx;
           ay += inv * dy;
         }
-        return {ax, ay};
+        accX = ax; accY = ay;
       };
 
       // Substep size capped so no planet moves more than ~2% of its orbit per substep.
@@ -1453,14 +1461,16 @@ function loop(ts){
 
         // ── Velocity Verlet substep loop ──
         let px = p.px, py = p.py, vx = p.vx, vy = p.vy;
-        let {ax: ax0, ay: ay0} = accel(px, py);
+        accel(px, py);
+        let ax0 = accX, ay0 = accY;
 
         for (let s = 0; s < nSteps; s++) {
           // Full position step
           px += vx * subDt + 0.5 * ax0 * subDt * subDt;
           py += vy * subDt + 0.5 * ay0 * subDt * subDt;
           // Acceleration at new position
-          const {ax: ax1, ay: ay1} = accel(px, py);
+          accel(px, py);
+          const ax1 = accX, ay1 = accY;
           // Velocity step using average acceleration
           vx += 0.5 * (ax0 + ax1) * subDt;
           vy += 0.5 * (ay0 + ay1) * subDt;
@@ -1502,15 +1512,33 @@ function loop(ts){
   }
 
   // Trails
+  // (1.7) One sample per 60 Hz frame of elapsed time, not per rendered
+  // frame, so a trail is the same length in time at any frame rate. Drawn
+  // as 12 fading bands (12 strokes per planet) instead of one stroke and
+  // one colour string per segment (119 per planet).
   if(showTrails){
+    trailClock+=dt;
+    let samples=0;
+    while(trailClock>=SFSim.FRAME_MS&&samples<2){trailClock-=SFSim.FRAME_MS;samples++;}
+    if(trailClock>=SFSim.FRAME_MS)trailClock=0;
+    ctx.lineWidth=1.2;
     system.planets.forEach(p=>{
       if(!trailData.has(p))trailData.set(p,[]);
       const trail=trailData.get(p);
-      trail.push({x:Math.cos(p.angle)*p.orbitPx,y:Math.sin(p.angle)*p.orbitPx});
-      if(trail.length>120)trail.shift();
-      for(let t=1;t<trail.length;t++){
-        ctx.beginPath();ctx.moveTo(trail[t-1].x,trail[t-1].y);ctx.lineTo(trail[t].x,trail[t].y);
-        ctx.strokeStyle=h2a(p.color,t/trail.length*0.25);ctx.lineWidth=1.2;ctx.stroke();
+      const tx=Math.cos(p.angle)*p.orbitPx,ty=Math.sin(p.angle)*p.orbitPx;
+      for(let k=0;k<samples;k++){
+        // Reuse the point that falls off the tail instead of allocating.
+        const pt=trail.length>=120?trail.shift():{x:0,y:0};
+        pt.x=tx;pt.y=ty;trail.push(pt);
+      }
+      const n=trail.length;
+      if(n<2)return;
+      const band=Math.max(1,Math.ceil(n/12));
+      for(let i0=0;i0<n-1;i0+=band){
+        const i1=Math.min(n-1,i0+band);
+        ctx.beginPath();ctx.moveTo(trail[i0].x,trail[i0].y);
+        for(let t=i0+1;t<=i1;t++)ctx.lineTo(trail[t].x,trail[t].y);
+        ctx.strokeStyle=h2a(p.color,Math.round(((i0+i1)/2/n)*25)/100);ctx.stroke();
       }
     });
   }else trailData.clear();
@@ -1518,17 +1546,36 @@ function loop(ts){
   system.planets.forEach(p=>drawPlanet(p,showLbl,showGrav,showRot,ts));
   system.stars.forEach(s=>drawStar(s,brightness,showStarName,ts));
   ctx.restore();
-  document.getElementById('z-val').textContent=cam.zoom.toFixed(2)+'×';
+  SFSim.text($id('z-val'),cam.zoom.toFixed(2)+'×');
 }
 
 // ── BG STARS ──
+// (1.7) 700 twinkling stars used to be 700 paths, 700 fills and 700 fresh
+// rgba() strings a frame. Same positions and the same twinkle, grouped by
+// alpha rounded to 0.01 (below what the eye separates at these sizes): at
+// most 34 fills a frame and no strings.
+const BG_ALPHA=(()=>{const a=[];for(let i=0;i<=40;i++)a.push(`rgba(255,255,255,${(i/100).toFixed(2)})`);return a;})();
+const _bgBuckets=BG_ALPHA.map(()=>[]);
 function drawBg(ts){
-  bgStars.forEach(s=>{
-    const px=((s.x+cam.x*0.04+W)%W+W)%W;
-    const py=((s.y+cam.y*0.04+H)%H+H)%H;
-    ctx.beginPath();ctx.arc(px,py,s.r,0,Math.PI*2);
-    ctx.fillStyle=`rgba(255,255,255,${s.a+Math.sin(ts*0.0005+s.tw)*0.05})`;ctx.fill();
-  });
+  const offX=cam.x*0.04+W,offY=cam.y*0.04+H,tt=ts*0.0005;
+  for(let i=0;i<bgStars.length;i++){
+    const s=bgStars[i];
+    let q=Math.round((s.a+Math.sin(tt+s.tw)*0.05)*100);
+    if(q<=0)continue;if(q>40)q=40;
+    _bgBuckets[q].push(s);
+  }
+  for(let q=1;q<=40;q++){
+    const bucket=_bgBuckets[q];
+    if(!bucket.length)continue;
+    ctx.beginPath();
+    for(let i=0;i<bucket.length;i++){
+      const s=bucket[i];
+      const px=((s.x+offX)%W+W)%W,py=((s.y+offY)%H+H)%H;
+      ctx.moveTo(px+s.r,py);ctx.arc(px,py,s.r,0,Math.PI*2);
+    }
+    ctx.fillStyle=BG_ALPHA[q];ctx.fill();
+    bucket.length=0;
+  }
 }
 
 // ── HZ ──
@@ -1873,7 +1920,9 @@ canvas.addEventListener('mousemove',e=>{
   if(drag&&!planetDragActive&&!starDragActive){
     tcam.x=camSt.x+(e.clientX-dragSt.x)/cam.zoom;
     tcam.y=camSt.y+(e.clientY-dragSt.y)/cam.zoom;
-    setCam('free',document.getElementById('cam-free'));
+    // (1.7) only on the change: this ran a document-wide selector scan and a
+    // class rewrite on every mousemove of a pan.
+    if(camMode!=='free')setCam('free',document.getElementById('cam-free'));
   }
   if(planetDragActive&&planetDragTarget){
     const dist=Math.hypot(wx,wy);
@@ -1963,7 +2012,7 @@ function init(){
   for(let i=0;i<700;i++)bgStars.push({x:rnd(0,W),y:rnd(0,H),r:rnd(0.4,1.1),a:rnd(0.04,0.28),tw:rnd(0,Math.PI*2)});
   buildPalette();
   loadSavedSystems();
-  requestAnimationFrame(loop);
+  SFSim.loop(loop).start();
 }
 init();
 
@@ -2448,7 +2497,7 @@ function publishSelectedPlanet(){
   <!-- Header -->
   <div style="
     position:sticky;top:0;z-index:10;
-    background:rgba(9,9,11,0.96);backdrop-filter:blur(20px);
+    background:rgba(9,9,11,0.96);
     border-bottom:1px solid #41454D;
     padding:14px 24px 0;
   ">
