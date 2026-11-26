@@ -128,6 +128,13 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  // The writing assistant's checker (harper.js) runs in a module worker and
+  // loads its WebAssembly with `new URL(..., import.meta.url)`. ES workers
+  // keep that URL resolvable in the build; excluding the package from dep
+  // pre-bundling keeps it resolvable in dev (esbuild would move the JS away
+  // from the .wasm beside it).
+  worker: { format: "es" },
+  optimizeDeps: { exclude: ["harper.js", "harper.js/slimBinary"] },
   build: {
     // "hidden" emits .map files for the Sentry plugin to consume and upload,
     // but omits the trailing `//# sourceMappingURL=` comment from the bundle
