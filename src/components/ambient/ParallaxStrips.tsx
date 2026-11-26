@@ -1,114 +1,17 @@
 /**
- * ParallaxStrips, ambient telemetry text drifting at different speeds
- * against page scroll. April 2026 handoff.
+ * ParallaxStrips, retired (1.6 "Quiet Instrument", finding 8).
  *
- * Four layers of mono readouts at varying opacity/tracking. Drop into hero
- * sections, long-form pages, or the background of empty states. Non-essential,
- * non-blocking.
- *
- * Port of design/design_handoff/reference-components/ParallaxStrips.tsx.
+ * Four rows of drifting mono telemetry used to sit behind the landing and
+ * Pricing heroes, directly under the H1 and the call to action. Floating
+ * telemetry no longer renders behind or over content, so this renders
+ * nothing. The signature stays so the hero call sites compile; remove them
+ * when those heroes are next touched.
  */
-import { useEffect, useRef } from "react";
-
-type Strip = {
-  text: string;
-  top: number;
-  speed: number;
-  color: string;
-  size: number;
-  tracking: number;
-};
-
-const DEFAULT_STRIPS: Strip[] = [
-  {
-    top: 24,
-    speed: 0.3,
-    size: 10,
-    tracking: 3,
-    color: "color-mix(in srgb, var(--t4) 55%, transparent)",
-    text: "39.87°N · 104.97°W  ·  ALT 5280 ft  ·  PRESSURE 1013.25 hPa  ·  T -18.4°C  ·  SOL 19,327  ·  JD 2461158.5  ·  LUNAR PHASE 0.74  ·  SUNSET 16:41:02  ·  MAG -26.74  ·  AU 1.00000",
-  },
-  {
-    top: 72,
-    speed: 0.6,
-    size: 11,
-    tracking: 2.5,
-    color: "color-mix(in srgb, var(--sf-primary) 45%, transparent)",
-    text: "WORLDS: 00347  ·  SPECIES: 02,184  ·  SAVES: 19,402,718  ·  UPTIME 99.987%  ·  P95 LATENCY 42ms  ·  REGION US-WEST-2  ·  BUILD 2026.05.28-rc4",
-  },
-  {
-    top: 120,
-    speed: 1.0,
-    size: 12,
-    tracking: 2,
-    color: "color-mix(in srgb, var(--t4) 40%, transparent)",
-    text: '// [NOTE] biome/tundra parameters stable across 1e4 iterations  ·  checksum 7F2A-91B0-44CE  ·  seed 0xDEADB10C  ·  author: batt,j  ·  rev 142  ·  last_commit "fix: gravity tensor drift in low-g"',
-  },
-  {
-    top: 164,
-    speed: 1.6,
-    size: 10.5,
-    tracking: 3,
-    color: "color-mix(in srgb, var(--sf-amber) 38%, transparent)",
-    text: "TRAJECTORY BOUND ··· ECLIPTIC +07.42° ··· TARGET: WOLF 359 ··· 7.86 ly ··· Δv 4.22e7 m/s",
-  },
-];
-
-export function ParallaxStrips({
-  strips = DEFAULT_STRIPS,
-  height = 220,
-  className,
-}: {
-  strips?: Strip[];
+export function ParallaxStrips(_props: {
+  strips?: unknown[];
   height?: number;
   className?: string;
-}) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const stripRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  useEffect(() => {
-    const onScroll = () => {
-      const rect = containerRef.current?.getBoundingClientRect();
-      const progress = rect ? -rect.top * 0.5 : window.scrollY * 0.5;
-      stripRefs.current.forEach((el, i) => {
-        if (!el) return;
-        el.style.transform = `translate3d(${-progress * strips[i].speed}px, 0, 0)`;
-      });
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [strips]);
-
-  return (
-    <div
-      ref={containerRef}
-      className={`relative overflow-hidden ${className ?? ""}`}
-      style={{
-        height,
-        // Theme planes, not a hardcoded night: light bases get a light strip.
-        background: "linear-gradient(180deg, var(--sf-void), var(--sf-surface))",
-        opacity: "var(--sf-ambient)",
-      }}
-      aria-hidden
-    >
-      <div className="sf-strips-text absolute inset-0">
-      {strips.map((s, i) => (
-        <div
-          key={i}
-          ref={(el) => (stripRefs.current[i] = el)}
-          className="absolute left-0 whitespace-nowrap font-mono will-change-transform"
-          style={{
-            top: s.top,
-            color: s.color,
-            fontSize: s.size,
-            letterSpacing: s.tracking,
-          }}
-        >
-          {s.text}&nbsp;&nbsp;·&nbsp;&nbsp;{s.text}
-        </div>
-      ))}
-      </div>
-    </div>
-  );
+}): null {
+  void _props;
+  return null;
 }

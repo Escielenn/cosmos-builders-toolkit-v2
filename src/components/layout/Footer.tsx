@@ -1,12 +1,15 @@
 import { Link } from "react-router-dom";
 import { Mail, Linkedin, Instagram } from "lucide-react";
-import CubeLogo from "@/components/icons/CubeLogo";
 import { Wordmark } from "@/components/brand/Wordmark";
 import SubstackIcon from "@/components/icons/SubstackIcon";
-import { APP_VERSION } from "@/config/version";
 import { BuildSigil } from "@/components/ambient/BuildSigil";
 import { CommitTicker } from "@/components/ambient/CommitTicker";
 /* CosmicVelocityTicker removed, velocity data now in StatusBar */
+
+// Footer column headings: the one header/footer heading style (Jura eyebrow,
+// t4), shared with the header's menu section labels (DisplayMenu
+// MENU_LABEL_CLASS). 1.6, finding 10 for the shell.
+const FOOTER_HEADING = "font-heading text-sf-eyebrow uppercase text-t4";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -67,16 +70,8 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <div className="flex items-start gap-4 mb-4">
-              <Link to="/" className="flex items-center gap-3">
-                <CubeLogo size={36} className="rounded-none" />
-                <div className="flex flex-col">
-                  <Wordmark size="md" uppercase />
-                  <span className="font-mono text-[12px] text-t4 tracking-wide">
-                    39.87°N · 104.97°W
-                  </span>
-                </div>
-              </Link>
+            <div className="mb-4">
+              <Wordmark size="md" to="/" />
             </div>
             <p className="text-sm text-t2 max-w-xs mb-6">
               Science-first worldbuilding tools for writers, game designers, and
@@ -100,9 +95,9 @@ const Footer = () => {
 
             {/* Privacy Statement */}
             <div className="mt-6 pt-4 border-t border-dashed border-sf-line-hairline">
-              <h4 className="font-heading text-[12px] font-medium uppercase tracking-wide text-t1 mb-2">
-                YOUR WORLDS ARE YOURS ALONE
-              </h4>
+              <h3 className={`${FOOTER_HEADING} mb-2`}>
+                Your worlds are yours alone
+              </h3>
               <p className="text-xs text-t3 leading-relaxed">
                 All creative content is encrypted, user-isolated, and never accessed by StellarForge systems.
                 No AI training. No data mining. No third-party sharing.
@@ -112,7 +107,7 @@ const Footer = () => {
 
           {/* Product */}
           <div>
-            <h3 className="font-heading text-[12px] font-medium uppercase tracking-wide text-t3 mb-4">
+            <h3 className={`${FOOTER_HEADING} mb-4`}>
               Product
             </h3>
             <ul className="space-y-3">
@@ -131,7 +126,7 @@ const Footer = () => {
 
           {/* Resources */}
           <div>
-            <h3 className="font-heading text-[12px] font-medium uppercase tracking-wide text-t3 mb-4">
+            <h3 className={`${FOOTER_HEADING} mb-4`}>
               Resources
             </h3>
             <ul className="space-y-3">
@@ -150,7 +145,7 @@ const Footer = () => {
 
           {/* Legal */}
           <div>
-            <h3 className="font-heading text-[12px] font-medium uppercase tracking-wide text-t3 mb-4">
+            <h3 className={`${FOOTER_HEADING} mb-4`}>
               Legal
             </h3>
             <ul className="space-y-3">

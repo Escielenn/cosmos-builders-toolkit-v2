@@ -14,7 +14,7 @@ import { FileText } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-chrome";
 import { useWorld } from "@/hooks/use-world";
 import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
-import { getToolAccent } from "@/lib/tool-accents";
+import { CASCADE_LAYER_LABEL, getToolAccent } from "@/lib/tool-accents";
 import CascadeSuggestionToast from "@/components/tools/CascadeSuggestionToast";
 import UpstreamCallout from "@/components/tools/UpstreamCallout";
 import PageShell from "@/components/layout/PageShell";
@@ -239,7 +239,7 @@ export default function ToolPageLayout({
         {/* ── Header (15-PAGE-CHROME): breadcrumbs in a world, back to Tools outside ── */}
         <PageHeader
           accent={accent}
-          eyebrow={`${accent.toUpperCase()} · ${cfg.brandName.toUpperCase()}`}
+          eyebrow={`${CASCADE_LAYER_LABEL[accent].toUpperCase()} · ${cfg.brandName.toUpperCase()}`}
           titleLead={`${cfg.brandName}:`}
           title={cfg.fullName}
           icon={ToolIcon ? <ToolIcon className="h-10 w-10 rounded-none" /> : undefined}

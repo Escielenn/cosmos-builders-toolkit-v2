@@ -883,6 +883,18 @@ html {
     font-size: 12px;
     letter-spacing: 0.5px;
     color: rgb(var(--t2-rgb) / 0.3);
+    opacity: var(--sf-ambient, 1);
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  /* Phones never get the bar (1.6 ambient budget, finding 19). */
+  @media (max-width: 767px) {
+    .sf-status-bar { display: none; }
+  }
+  /* While the bar renders it reserves its own height at the foot of the
+     page, so nothing in flow (the footer's last line) sits under it. */
+  @media (min-width: 768px) {
+    html[data-status-bar="on"] body { padding-bottom: 24px; }
   }
 
   /* Writing surface — warm cream for RTF editor (the captain's log) */

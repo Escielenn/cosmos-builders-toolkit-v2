@@ -55,6 +55,27 @@ export const TOOL_ACCENTS: Record<string, ToolAccent> = {
   "timeline": "teal",
 };
 
+/**
+ * The cascade layer each accent stands for (CLAUDE.md: colour is a cascade
+ * layer). User-facing labels use these, never the colour token name, so a
+ * tool eyebrow reads "PHYSICS · ORRERY", not "AMBER · ORRERY" (1.6, finding 13).
+ */
+export const CASCADE_LAYER_LABEL: Record<ToolAccent, string> = {
+  amber: "Physics",
+  azure: "Environment",
+  emerald: "Biology",
+  magenta: "Psychology",
+  stellar: "Mythology",
+  violet: "Culture",
+  teal: "Integration",
+  crimson: "Integration",
+};
+
+/** The cascade layer name for a tool (e.g. "Physics" for Orrery). */
+export function getToolLayerLabel(toolType: string): string {
+  return CASCADE_LAYER_LABEL[getToolAccent(toolType)];
+}
+
 /** Fallback: teal for any unmapped tool. */
 export function getToolAccent(toolType: string): ToolAccent {
   return TOOL_ACCENTS[toolType] ?? "teal";

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { LogIn, Rocket, ChevronDown, Layers, Share2, FileDown, KeyRound, Mail } from "lucide-react";
-import CubeLogo from "@/components/icons/CubeLogo";
+import { Wordmark } from "@/components/brand/Wordmark";
 import { Loader } from "@/components/ui/loader";
 import { useToast } from "@/hooks/use-toast";
 import { PageBursts } from "@/components/ui/data-burst";
@@ -194,10 +194,10 @@ const Auth = () => {
 
           {/* Header: the shared PageHeader (spec 15), logo above it. */}
           <div className="space-y-7">
-            <CubeLogo size={80} className="rounded-none" />
+            <Wordmark size="lg" to="/" />
             <PageHeader
               eyebrow="OPEN EARLY ACCESS"
-              title="StellarForge"
+              title="Build worlds that hold together"
               className="mb-0"
               lede={
                 <>
@@ -208,7 +208,6 @@ const Auth = () => {
                     Design planets, species, civilizations, and spacecraft with scientific rigor.
                     Every parameter cascades logically: environment shapes biology, biology shapes
                     psychology, psychology shapes mythology, mythology shapes culture.
-                    Build worlds that hold together.
                   </p>
                 </>
               }

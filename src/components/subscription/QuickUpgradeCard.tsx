@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Zap, Unlock } from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
-import { PRO_TOOL_IDS, PRICING } from "@/lib/tools-config";
+import { PRO_TOOL_COUNT, PRICING } from "@/lib/tools-config";
 
 const QuickUpgradeCard = () => {
   return (
@@ -12,7 +12,7 @@ const QuickUpgradeCard = () => {
       </div>
 
       <h3 className="font-heading font-medium text-lg mb-2 text-center">
-        Unlock {PRO_TOOL_IDS.length} More Tools
+        Unlock {PRO_TOOL_COUNT} More Tools
       </h3>
 
       <p className="text-sm text-t2 text-center mb-4">

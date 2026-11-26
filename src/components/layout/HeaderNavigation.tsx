@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Plus, Globe, Wrench, BookOpen, Compass, Map, Star, Leaf, Users, Sparkles, ScrollText, Layers, Rocket, Mail, BookMarked, Info, PenLine } from "lucide-react";
+import { Plus, Globe, Wrench, BookOpen, Compass, Star, Leaf, Users, Sparkles, ScrollText, Layers, Rocket, BookMarked, Tag } from "lucide-react";
 import { getToolIcon } from "@/components/icons/tool-icons";
 import {
   NavigationMenu,
@@ -69,36 +69,54 @@ function shortName(toolId: string): string {
 
 // ─── Nav link style ───────────────────────────────────────────────────
 
+// Header nav labels: Jura eyebrow, the one header/footer heading style.
 const navLinkClass =
-  "sf-nav-link text-xs font-medium uppercase tracking-wide text-t3 hover:text-sf-primary-text transition-colors duration-base leading-none h-10 flex items-center";
+  "sf-nav-link font-heading text-sf-eyebrow uppercase text-t3 hover:text-sf-primary-text transition-colors duration-base leading-none h-10 flex items-center";
+
+// On an inner span: twMerge reads text-sf-eyebrow as a colour and would drop
+// it against the trigger primitive's text-sm.
+const navLabelClass = "font-heading text-sf-eyebrow uppercase";
 
 const triggerClass =
-  "sf-nav-link text-xs font-medium uppercase tracking-wide text-t3 hover:text-sf-primary-text transition-colors duration-base bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent data-[active]:bg-transparent h-auto p-0 gap-1 rounded-none leading-none";
+  "sf-nav-link font-heading text-sf-eyebrow uppercase text-t3 hover:text-sf-primary-text transition-colors duration-base bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent data-[active]:bg-transparent h-auto p-0 gap-1 rounded-none leading-none";
+
+// Menu section label: the same Jura eyebrow the footer columns use.
+const menuLabelClass =
+  "font-heading text-sf-eyebrow uppercase text-t4 px-2 mb-2 pb-1.5 border-b border-sf-line-hairline";
+
+const menuItemClass =
+  "flex items-start gap-2 px-2 py-2 min-h-hit text-sm text-t2 hover:text-t1 hover:bg-sf-surface-elevated rounded-none transition-colors";
 
 // ─── Component ────────────────────────────────────────────────────────
 
 interface HeaderNavigationProps {
-  isSubscribed: boolean;
+  /**
+   * "marketing": signed out. Product (Features, Tools, Pricing), Learn,
+   * Community. "app": signed in. Worlds, Studio, Tools; marketing links live
+   * in the profile menu and the footer (1.6, finding 9).
+   */
+  mode: "marketing" | "app";
 }
 
-const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
+const HeaderNavigation = ({ mode }: HeaderNavigationProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { worlds } = useWorlds();
 
-  return (
-    <NavigationMenu className="hidden xl:flex items-center">
-      <NavigationMenuList className="gap-5 items-center space-x-0">
+  if (mode === "app") {
+    return (
+      <NavigationMenu className="hidden lg:flex items-center" aria-label="Primary">
+        <NavigationMenuList className="gap-6 items-center space-x-0">
         {/* ── Worlds dropdown ─────────────────────────────── */}
         <NavigationMenuItem>
           <NavigationMenuTrigger className={triggerClass}>
-            Worlds
+            <span className={navLabelClass}>Worlds</span>
           </NavigationMenuTrigger>
           <NavigationMenuContent className="">
             <div className="w-[280px] p-3">
               {user && worlds.length > 0 ? (
                 <>
-                  <p className="text-[12px] font-medium uppercase tracking-wide text-t3 px-2 mb-2">
+                  <p className={menuLabelClass}>
                     Your Worlds
                   </p>
                   <div className="max-h-[200px] overflow-y-auto sf-sb space-y-0.5">
@@ -175,49 +193,18 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
           </NavigationMenuContent>
         </NavigationMenuItem>
 
-        {/* ── Write dropdown ──────────────────────────────── */}
         <NavigationMenuItem>
-          <NavigationMenuTrigger className={triggerClass}>
-            Studio
-          </NavigationMenuTrigger>
-          <NavigationMenuContent className="">
-            <div className="w-[240px] p-3 space-y-0.5">
-              <NavigationMenuLink asChild>
-                <button
-                  onClick={() => navigate("/studio")}
-                  className="flex items-start gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-sf-surface-elevated rounded-none transition-colors w-full text-left"
-                >
-                  <PenLine className="w-3.5 h-3.5 text-sf-primary-text mt-0.5" />
-                  <div>
-                    <span>Studio</span>
-                    <span className="block text-[12px] text-t4 font-normal normal-case tracking-normal">
-                      Your writing desk &middot; every world's manuscript
-                    </span>
-                  </div>
-                </button>
-              </NavigationMenuLink>
-              <NavigationMenuLink asChild>
-                <Link
-                  to="/prompts"
-                  className="flex items-start gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-sf-surface-elevated rounded-none transition-colors"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-sf-primary-text mt-0.5" />
-                  <div>
-                    <span>Writing Prompts</span>
-                    <span className="block text-[12px] text-t4 font-normal normal-case tracking-normal">
-                      This week's prompts. Each opens a new Studio document
-                    </span>
-                  </div>
-                </Link>
-              </NavigationMenuLink>
-            </div>
-          </NavigationMenuContent>
+          <NavigationMenuLink asChild>
+            <Link to="/studio" className={navLinkClass}>
+              Studio
+            </Link>
+          </NavigationMenuLink>
         </NavigationMenuItem>
 
         {/* ── Tools dropdown ──────────────────────────────── */}
         <NavigationMenuItem>
           <NavigationMenuTrigger className={triggerClass}>
-            Tools
+            <span className={navLabelClass}>Tools</span>
           </NavigationMenuTrigger>
           <NavigationMenuContent className="">
             <div className="w-[640px] p-5">
@@ -228,7 +215,7 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
                   const CatIcon = cat.icon;
                   return (
                     <div key={cat.id}>
-                      <p className={cn("text-[12px] font-heading font-light uppercase tracking-wide px-1 mb-2 flex items-center gap-1.5 pb-1.5 border-b border-sf-line-hairline", cat.color)}>
+                      <p className={cn("font-heading text-sf-eyebrow uppercase px-1 mb-2 flex items-center gap-1.5 pb-1.5 border-b border-sf-line-hairline", cat.color)}>
                         <CatIcon className="w-3 h-3" />
                         {cat.label}
                       </p>
@@ -282,13 +269,61 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
           </NavigationMenuContent>
         </NavigationMenuItem>
 
+        </NavigationMenuList>
+      </NavigationMenu>
+    );
+  }
+
+  return (
+    <NavigationMenu className="hidden lg:flex items-center" aria-label="Primary">
+      <NavigationMenuList className="gap-6 items-center space-x-0">
+        {/* ── Product dropdown ────────────────────────────── */}
+        <NavigationMenuItem>
+          <NavigationMenuTrigger className={triggerClass}>
+            <span className={navLabelClass}>Product</span>
+          </NavigationMenuTrigger>
+          <NavigationMenuContent className="">
+            <div className="w-[300px] p-3 space-y-0.5">
+              <p className={menuLabelClass}>Product</p>
+              <NavigationMenuLink asChild>
+                <Link to="/features" className={menuItemClass}>
+                  <Sparkles className="w-3.5 h-3.5 text-sf-primary-text mt-1 shrink-0" />
+                  <span>
+                    Features
+                    <span className="block text-[12px] text-t3">The Studio, the Codex and the instruments</span>
+                  </span>
+                </Link>
+              </NavigationMenuLink>
+              <NavigationMenuLink asChild>
+                <Link to="/tools" className={menuItemClass}>
+                  <Wrench className="w-3.5 h-3.5 text-sf-primary-text mt-1 shrink-0" />
+                  <span>
+                    Tools
+                    <span className="block text-[12px] text-t3">Every instrument, by cascade layer</span>
+                  </span>
+                </Link>
+              </NavigationMenuLink>
+              <NavigationMenuLink asChild>
+                <Link to="/pricing" className={menuItemClass}>
+                  <Tag className="w-3.5 h-3.5 text-sf-primary-text mt-1 shrink-0" />
+                  <span>
+                    Pricing
+                    <span className="block text-[12px] text-t3">Free, Pro and Vanguard</span>
+                  </span>
+                </Link>
+              </NavigationMenuLink>
+            </div>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+
         {/* ── Learn dropdown ──────────────────────────────── */}
         <NavigationMenuItem>
           <NavigationMenuTrigger className={triggerClass}>
-            Learn
+            <span className={navLabelClass}>Learn</span>
           </NavigationMenuTrigger>
           <NavigationMenuContent className="">
-            <div className="w-[240px] p-3 space-y-0.5">
+            <div className="w-[260px] p-3 space-y-0.5">
+              <p className={menuLabelClass}>Learn</p>
               <NavigationMenuLink asChild>
                 <Link
                   to="/learn"
@@ -338,44 +373,6 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
           </NavigationMenuContent>
         </NavigationMenuItem>
 
-        {/* ── About dropdown ──────────────────────────────── */}
-        <NavigationMenuItem>
-          <NavigationMenuTrigger className={triggerClass}>
-            About
-          </NavigationMenuTrigger>
-          <NavigationMenuContent className="">
-            <div className="w-[220px] p-3 space-y-0.5">
-              <NavigationMenuLink asChild>
-                <Link
-                  to="/about"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-sf-surface-elevated rounded-none transition-colors"
-                >
-                  <Info className="w-3.5 h-3.5 text-sf-primary-text" />
-                  About StellarForge
-                </Link>
-              </NavigationMenuLink>
-              <NavigationMenuLink asChild>
-                <Link
-                  to="/roadmap"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-sf-surface-elevated rounded-none transition-colors"
-                >
-                  <Map className="w-3.5 h-3.5 text-sf-primary-text" />
-                  Roadmap
-                </Link>
-              </NavigationMenuLink>
-              <NavigationMenuLink asChild>
-                <Link
-                  to="/contact"
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm text-t2 hover:text-t1 hover:bg-sf-surface-elevated rounded-none transition-colors"
-                >
-                  <Mail className="w-3.5 h-3.5 text-sf-primary-text" />
-                  Contact
-                </Link>
-              </NavigationMenuLink>
-            </div>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
             <Link to="/community" className={navLinkClass}>
@@ -383,17 +380,6 @@ const HeaderNavigation = ({ isSubscribed }: HeaderNavigationProps) => {
             </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
-
-        {!isSubscribed && (
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <Link to="/pricing" className={navLinkClass}>
-                Pricing
-              </Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        )}
-
       </NavigationMenuList>
     </NavigationMenu>
   );

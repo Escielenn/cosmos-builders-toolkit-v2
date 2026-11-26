@@ -60,13 +60,30 @@ export const SIMULATOR_TOOL_IDS = [
   'solaris',
 ];
 
-// Catalog counts. Every user-facing count ("3 free, 25 with Pro", "all 28
-// tools") must read from these so marketing copy can never drift from the
-// catalog arrays above.
+// What counts as an instrument. The Workshop ('writing-workshop') sits in
+// PRO_TOOL_IDS for gating and routing, but it is the prompt browser at
+// /prompts, not an instrument: it persists nothing and is not in the /tools
+// catalog. Every user-facing count excludes it.
+export const NON_INSTRUMENT_TOOL_IDS: readonly string[] = ['writing-workshop'];
+
+const isInstrument = (id: string): boolean => !NON_INSTRUMENT_TOOL_IDS.includes(id);
+
+/** The instrument catalog: free + Pro tools, simulators and cartographers. */
+export const INSTRUMENT_IDS: readonly string[] = [...FREE_TOOL_IDS, ...PRO_TOOL_IDS].filter(isInstrument);
+/** Pro instruments, simulators included. */
+export const PRO_INSTRUMENT_IDS: readonly string[] = PRO_TOOL_IDS.filter(isInstrument);
+
+// Catalog counts. Every user-facing count ("3 free, 27 with Pro", "all 30
+// instruments", "5 simulators") must read from these so copy can never drift
+// from the catalog arrays above. Never write the numeral into copy.
 export const FREE_TOOL_COUNT = FREE_TOOL_IDS.length;
-export const PRO_TOOL_COUNT = PRO_TOOL_IDS.length;
-export const TOTAL_TOOL_COUNT = FREE_TOOL_COUNT + PRO_TOOL_COUNT;
+/** Pro instruments, simulators included (the Workshop excluded). */
+export const PRO_TOOL_COUNT = PRO_INSTRUMENT_IDS.length;
+/** Every instrument: FREE_TOOL_COUNT + PRO_TOOL_COUNT. */
+export const TOTAL_TOOL_COUNT = INSTRUMENT_IDS.length;
 export const SIMULATOR_COUNT = SIMULATOR_TOOL_IDS.length;
+/** Pro instruments that are not simulators (worksheets, calculators, cartographers). */
+export const PRO_NON_SIMULATOR_COUNT = PRO_TOOL_COUNT - SIMULATOR_COUNT;
 
 export const isProTool = (toolId: string): boolean => {
   return PRO_TOOL_IDS.includes(toolId);

@@ -4,6 +4,13 @@ export interface HintDef {
   id: string;
   copy: string;
   variant: "default" | "warning" | "compact";
+  /**
+   * Show on the first surface that renders it, then never again, whether or
+   * not the writer pressed dismiss. For hints that sit in persistent chrome
+   * (the world index rides along on every world page), where "until
+   * dismissed" meant "on every page" (1.6, finding 11).
+   */
+  once?: boolean;
 }
 
 export const HINTS: Record<string, HintDef> = {
@@ -21,12 +28,12 @@ export const HINTS: Record<string, HintDef> = {
     id: "codex",
     copy: "WORLD INDEX: Every worksheet and Codex entry in this world, grouped by cascade layer. Choose one to open it. The toggle below switches between the Codex page and the tool.",
     variant: "compact",
+    once: true,
   },
-  chronicle: {
-    id: "chronicle",
-    copy: "CHRONICLE: Log events, eras and sub-events on your world's timeline. Gaps between events are flagged automatically.",
-    variant: "default",
-  },
+  // "chronicle" retired (1.6, finding 11): on the Chronicle page it stacked a
+  // second explainer under the world index notice. The Chronicle's own empty
+  // state and PageHeader lede already say what it is. FirstTimeHint renders
+  // nothing for an unknown id, so the call site needs no change.
   tags: {
     id: "tags",
     copy: "CLASSIFICATION SYSTEM: Tags are shared across all worlds. Type to search existing tags or create new ones.",
