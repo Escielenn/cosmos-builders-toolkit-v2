@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import { Calendar } from "lucide-react";
 import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useMetaTags } from "@/hooks/use-meta-tags";
@@ -7,12 +6,10 @@ import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
-import { Badge } from "@/components/ui/badge";
 import { useArticle } from "@/hooks/use-sanity-articles";
 import { PortableTextRenderer } from "@/components/sanity/PortableTextRenderer";
-import { urlFor } from "@/lib/sanity/client";
-import { PageBursts } from "@/components/ui/data-burst";
-import { LEARN_ARTICLE_BURSTS } from "@/lib/data-bursts";
+import { CoverArt } from "@/components/learn/CoverArt";
+import { CATEGORY_LABELS, formatArticleDate } from "@/components/learn/article-meta";
 // Fallback MDX content for when Sanity is empty
 import DrakeEquationContent from "@/content/learn/drake-equation/index.mdx";
 
@@ -35,20 +32,6 @@ const fallbackMeta: Record<
     publishedDate: "2026-01-22",
     content: DrakeEquationContent,
   },
-};
-
-const categoryLabels: Record<string, string> = {
-  basics: "Worldbuilding Basics",
-  science: "Science Concepts",
-  craft: "Writing Craft",
-  "case-studies": "Case Studies",
-};
-
-const categoryColors: Record<string, string> = {
-  basics: "bg-sf-azure/[0.06] border border-sf-azure text-sf-azure-text",
-  science: "bg-sf-emerald/[0.06] border border-sf-emerald text-sf-emerald-text",
-  craft: "bg-sf-violet/[0.06] border border-sf-violet text-sf-violet-text",
-  "case-studies": "bg-sf-amber/[0.06] border border-sf-amber text-sf-amber-text",
 };
 
 const LearnArticle = () => {
@@ -94,14 +77,14 @@ const LearnArticle = () => {
           <PageContainer variant="standalone">
             <PageHeader
               size="page"
-              back={{ label: "Back to SF University", to: "/learn" }}
-              eyebrow="SF University"
+              back={{ label: "Back to Learn", to: "/learn" }}
+              eyebrow="Learn"
               title="Article not on file"
               lede="This article doesn't exist or hasn't been published yet."
             />
             <EmptyState
               title="ARTICLE NOT ON FILE."
-              actionLabel="OPEN THE ARCHIVE"
+              actionLabel="OPEN SF UNIVERSITY"
               actionTo="/learn"
             />
           </PageContainer>
@@ -119,44 +102,27 @@ const LearnArticle = () => {
 
       <main className="relative">
         <PageContainer variant="standalone">
-        <PageBursts bursts={LEARN_ARTICLE_BURSTS} />
-
         {/* Child page: one back link to its real parent. */}
         <PageHeader
           size="page"
-          back={{ label: "Back to SF University", to: "/learn" }}
-          eyebrow={categoryLabels[article.category] ?? "SF University"}
+          back={{ label: "Back to Learn", to: "/learn" }}
+          eyebrow={CATEGORY_LABELS[article.category] ?? "Learn"}
           title={article.title}
           lede={article.description}
         >
-          <div className="flex flex-wrap items-center gap-4 text-sm text-t3">
-            <Badge className={categoryColors[article.category]}>
-              {categoryLabels[article.category]}
-            </Badge>
-            <span className="flex items-center gap-1">
-              <Calendar className="w-4 h-4" aria-hidden />
-              {new Date(article.publishedDate).toLocaleDateString("en-US", {
-                month: "long",
-                day: "numeric",
-                year: "numeric",
-              })}
-            </span>
-          </div>
+          <p className="font-mono text-sf-mono uppercase text-t4">
+            SF University · {formatArticleDate(article.publishedDate, "long")}
+          </p>
         </PageHeader>
 
         {/* Reading column, left-aligned on the shared edge. */}
         <div className="max-w-4xl">
 
-        {/* Featured Image */}
-        {useSanityContent && sanityArticle.featuredImage?.asset && (
-          <div className="mb-8 rounded-none overflow-hidden">
-            <img
-              src={urlFor(sanityArticle.featuredImage).width(1200).height(630).url()}
-              alt={article.title}
-              className="w-full h-auto"
-            />
-          </div>
-        )}
+        {/* Generated cover (finding 6): original art seeded by slug, never
+            the CMS image. */}
+        <div className="mb-8 aspect-[1200/500] w-full overflow-hidden border border-sf-line">
+          <CoverArt seed={slug ?? article.title} category={article.category} />
+        </div>
 
         {/* Article Content */}
         <GlassPanel className="p-6 md:p-10">

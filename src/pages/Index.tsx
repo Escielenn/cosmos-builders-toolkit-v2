@@ -17,15 +17,15 @@ import SharedWorldsSection from "@/components/dashboard/SharedWorldsSection";
 import ContinueWriting from "@/components/home/ContinueWriting";
 import RecentActivityFeed from "@/components/home/RecentActivityFeed";
 import WelcomeHero from "@/components/landing/WelcomeHero";
-import ToolShowcase from "@/components/landing/ToolShowcase";
-import ValueProposition from "@/components/landing/ValueProposition";
+import HowItWorks from "@/components/landing/HowItWorks";
+import StudioSection from "@/components/landing/StudioSection";
+import InstrumentConstellation from "@/components/landing/InstrumentConstellation";
 import VideoShowcase from "@/components/landing/VideoShowcase";
 import RecentArticles from "@/components/landing/RecentArticles";
+import { FinalCTA, LandingFAQ, PricingTeaser } from "@/components/landing/LandingClosing";
 import SubscriptionBanner from "@/components/subscription/SubscriptionBanner";
 import WelcomeDialog from "@/components/onboarding/WelcomeDialog";
 import { PromptOfTheDay } from "@/components/writing/PromptOfTheDay";
-import { HomepageQuote } from "@/components/quotes/HomepageQuote";
-import { CosmicTelemetry } from "@/components/layout/CosmicVelocityTicker";
 import SFDivider from "@/components/ui/sf-divider";
 import { PageBursts } from "@/components/ui/data-burst";
 import { Button } from "@/components/ui/button";
@@ -34,7 +34,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useRecentWork } from "@/hooks/use-recent-work";
 import { useMetaTags } from "@/hooks/use-meta-tags";
-import { COORDINATE_DATA } from "@/lib/cosmic-telemetry";
 import { ALL_DASHBOARD_BURSTS } from "@/lib/data-bursts";
 import { continueTargets, mergeActivity } from "@/lib/recent-work";
 import { dismissWelcome, isWelcomeDismissed, shouldShowWelcome } from "@/lib/onboarding/welcome-gate";
@@ -146,17 +145,22 @@ function SignedInHome() {
   );
 }
 
+// Signed-out landing (1.6 "Quiet Instrument"): one narrative, one focal
+// moment per section. Hero → how it works → the Studio → the instruments →
+// video → pricing → questions → begin. The catalog lives at /tools and
+// "coming soon" lives at /roadmap.
 function SignedOutLanding() {
   return (
     <>
       <WelcomeHero />
-      <SFDivider label="·· · SECTOR: WORLDBUILDING · ··" className="hidden md:block" />
+      <HowItWorks />
+      <StudioSection />
+      <InstrumentConstellation />
       <VideoShowcase />
-      <CosmicTelemetry data={COORDINATE_DATA} variant="horizontal" align="center" className="my-8" />
-      <HomepageQuote />
-      <ToolShowcase />
-      <SFDivider />
-      <ValueProposition />
+      <PricingTeaser />
+      <LandingFAQ />
+      <RecentArticles />
+      <FinalCTA />
     </>
   );
 }
@@ -185,12 +189,8 @@ const Index = () => {
         </main>
       ) : (
         // Signed out: the marketing landing keeps its own hero and frame.
-        <main className="container mx-auto px-4 pt-8 pb-16 relative z-10">
-          <PageBursts bursts={ALL_DASHBOARD_BURSTS} />
+        <main className="relative z-10 mx-auto w-full max-w-[1200px] overflow-x-clip px-4 pb-8 sm:px-6">
           <SignedOutLanding />
-          <SFDivider label=",  ··, COMMS: LEARN, ·· , " className="hidden md:block" />
-          {/* Latest from Learn - shown to all users */}
-          <RecentArticles />
         </main>
       )}
 
