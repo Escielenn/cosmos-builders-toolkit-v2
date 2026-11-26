@@ -260,7 +260,8 @@ export function WritingRoomSettings({
             </h3>
             <div className="grid grid-cols-3 gap-2">{papers.map(paperTile)}</div>
             <p className="mt-2 font-sans text-[12px] text-t3">{getPaper(room.paper).description}</p>
-            <div className="mt-3 grid grid-cols-3 gap-2">{signals.map(paperTile)}</div>
+            <p className="mb-2 mt-4 font-sans text-[12px] font-medium uppercase text-t4">Signal papers</p>
+            <div className="grid grid-cols-3 gap-2">{signals.map(paperTile)}</div>
           </section>
 
           {/* Type */}

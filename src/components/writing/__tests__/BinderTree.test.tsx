@@ -84,9 +84,10 @@ describe("BinderTree", () => {
     expect(screen.queryByText("Scene A")).toBeNull();
   });
 
-  it("shows status initial, and the label in the row hint", () => {
+  it("shows the status glyph and the label, by name, and both in the row hint", () => {
     mount();
-    expect(screen.getByLabelText("Status Draft")).toHaveTextContent("D");
+    expect(screen.getByLabelText("Status Draft")).toBeTruthy();
+    expect(screen.getByLabelText("Label Flashback")).toBeTruthy();
     const sceneA = screen.getByText("Scene A").closest("button")!;
     expect(sceneA.getAttribute("title")).toContain("Flashback");
     expect(sceneA.getAttribute("title")).toContain("3 words");
@@ -127,6 +128,40 @@ describe("BinderTree", () => {
       parentId: "Chapter 1",
       orderedIds: ["Scene B", "Scene A"],
     });
+  });
+});
+
+describe("BinderTree comforts (1.7)", () => {
+  it("shows the writer's marker and a folder's document count", () => {
+    const withMarker = entries.map((e) => (e.id === "Prologue" ? { ...e, metadata: { marker: "🌒" } } : e));
+    mount({ entries: withMarker, tree: buildBinderTree(withMarker) });
+    expect(screen.getByText("🌒")).toBeTruthy();
+    // Part One holds Chapter 1's two scenes.
+    expect(screen.getAllByLabelText("2 documents")).toHaveLength(2);
+  });
+
+  it("collapses and expands every folder, and jumps back to the open document", () => {
+    const worldId = "w-tools";
+    mount({ worldId, compact: false, onCompactChange: vi.fn() });
+    fireEvent.click(screen.getByRole("button", { name: "Collapse all folders" }));
+    expect(screen.queryByText("Scene B")).toBeNull();
+    expect(screen.queryByText("Chapter 1")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Jump to the open document" }));
+    expect(screen.getByText("Scene B")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Collapse all folders" }));
+    fireEvent.click(screen.getByRole("button", { name: "Expand all folders" }));
+    expect(screen.getByText("Scene A")).toBeTruthy();
+    expect(localStorage.getItem(`sf-binder-collapsed:${worldId}`)).toBe("[]");
+  });
+
+  it("reports the compact toggle and hides the tools row without a handler", () => {
+    const onCompactChange = vi.fn();
+    mount({ compact: false, onCompactChange });
+    fireEvent.click(screen.getByLabelText("Compact rows"));
+    expect(onCompactChange).toHaveBeenCalledWith(true);
+    cleanup();
+    mount();
+    expect(screen.queryByLabelText("Compact rows")).toBeNull();
   });
 });
 

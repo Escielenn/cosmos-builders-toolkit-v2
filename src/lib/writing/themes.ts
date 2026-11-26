@@ -105,10 +105,13 @@ export function getWritingThemeById(id: string): WritingTheme {
 // or `--t*`: those names belong to tokens.css).
 //
 // The world's marks in the prose (links, cited facts, mentions, comments,
-// contradiction marks) take the theme's own hues. On a light sheet a bright
-// hue would vanish, so each paper says how much ink to fold into them:
-// `graphicMix` for lines and dots (3:1), `textMix` for coloured words
-// (4.5:1). themes.test.ts measures every pair below.
+// contradiction marks) take the theme's own hues. The instrument has 60
+// themes, bright hues on the dark ones and deep hues on the light ones, and
+// a fixed sheet has to carry either: a bright hue vanishes on parchment, a
+// deep one on black. So each paper says how much of its strongest ink to
+// fold into a hue: `graphicMix` for lines and dots (3:1), `textMix` for
+// coloured words (4.5:1). themes.test.ts measures every paper against
+// every theme.
 // ---------------------------------------------------------------------------
 
 export type PaperId = "void" | "charcoal" | "black" | "parchment" | "cream" | "grey" | "terminal" | "signal";
@@ -173,8 +176,8 @@ export const PAPERS: Paper[] = [
       selection: "#3D5A4C",
       wash: "#342D1B",
     },
-    graphicMix: 0,
-    textMix: 0,
+    graphicMix: 0.2,
+    textMix: 0.5,
   },
   {
     id: "black",
@@ -192,8 +195,8 @@ export const PAPERS: Paper[] = [
       selection: "#2F4A3D",
       wash: "#2E2812",
     },
-    graphicMix: 0,
-    textMix: 0,
+    graphicMix: 0.15,
+    textMix: 0.45,
   },
   {
     id: "parchment",
@@ -266,10 +269,10 @@ export const PAPERS: Paper[] = [
       inkFaint: "#1FA81F",
       rule: "#1E3A16",
       selection: "#1F4A1A",
-      wash: "#2A3310",
+      wash: "#141E0C",
     },
-    graphicMix: 0,
-    textMix: 0,
+    graphicMix: 0.2,
+    textMix: 0.6,
   },
   {
     id: "signal",
@@ -285,10 +288,10 @@ export const PAPERS: Paper[] = [
       inkFaint: "#5490DD",
       rule: "#1D3353",
       selection: "#1F3F6B",
-      wash: "#2C2F2A",
+      wash: "#0F1F38",
     },
-    graphicMix: 0,
-    textMix: 0,
+    graphicMix: 0.2,
+    textMix: 0.6,
   },
 ];
 

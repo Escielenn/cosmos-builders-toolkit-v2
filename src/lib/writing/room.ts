@@ -19,7 +19,10 @@ import {
   paperForLegacyTheme,
   paperOpacityFloor,
   parseColor,
+  parseHex,
+  luminance,
   toHex,
+  type Paper,
   type PaperColors,
   type PaperId,
 } from "@/lib/writing/themes";
@@ -357,8 +360,18 @@ export const VOID_FALLBACK: PaperColors = {
 export function effectivePaperOpacity(room: RoomSettings, voidColors: PaperColors = VOID_FALLBACK): number {
   if (room.scene === "none") return 100;
   const paper = getPaper(room.paper);
-  const floor = paperOpacityFloor(paper.colors ?? voidColors, paper.tone, room.sceneVisibility);
+  const colors = paper.colors ?? voidColors;
+  const floor = paperOpacityFloor(colors, paperTone(paper, colors), room.sceneVisibility);
   return Math.max(room.paperOpacity, floor);
+}
+
+/**
+ * Light or dark. A fixed paper says; "Void" follows the instrument theme,
+ * and 24 of the 60 themes are light, so its tone is read off its colour.
+ */
+export function paperTone(paper: Paper, colors: PaperColors): Paper["tone"] {
+  if (paper.colors) return paper.tone;
+  return luminance(parseHex(colors.paper)) > 0.18 ? "light" : "dark";
 }
 
 export type RoomStyle = Record<`--${string}`, string>;
@@ -373,6 +386,15 @@ export function roomStyle(room: RoomSettings, voidColors: PaperColors = VOID_FAL
   const c = paper.colors;
   const measure = Math.max(240, room.pageWidth - room.sideMargin * 2);
   const pct = (n: number) => `${Math.round(n * 100)}%`;
+  // A theme hue as drawn on this sheet. On "Void" the theme's own stops are
+  // already solved for its planes. On a fixed sheet the hue's base stop is
+  // folded toward the sheet's strongest ink: enough for a line or a dot
+  // (graphic, 3:1) or for coloured words (text, 4.5:1), whichever of the 60
+  // themes is active (themes.test.ts measures them all).
+  const graphic = (base: string) =>
+    c ? `color-mix(in srgb, var(${base}), ${c.inkStrong} ${pct(paper.graphicMix)})` : `var(${base})`;
+  const text = (base: string) =>
+    c ? `color-mix(in srgb, var(${base}), ${c.inkStrong} ${pct(paper.textMix)})` : `var(${base}-text)`;
   return {
     "--room-paper": c ? c.paper : "var(--sf-void)",
     "--room-ink": c ? c.ink : "var(--t2)",
@@ -380,11 +402,17 @@ export function roomStyle(room: RoomSettings, voidColors: PaperColors = VOID_FAL
     "--room-ink-soft": c ? c.inkSoft : "var(--t3)",
     "--room-ink-faint": c ? c.inkFaint : "var(--t4)",
     "--room-rule": c ? c.rule : "var(--sf-line-hairline)",
-    "--room-selection": c ? c.selection : "var(--sf-surface-elevated)",
-    "--room-wash": c ? c.wash : "var(--sf-surface)",
-    // How much ink is folded into the theme's hues on this sheet.
-    "--room-graphic-ink": pct(paper.graphicMix),
-    "--room-text-ink": pct(paper.textMix),
+    "--room-selection": c ? c.selection : "var(--sf-selection-bg)",
+    "--room-wash": c ? c.wash : "rgb(var(--sf-amber-rgb) / 0.1)",
+    "--room-accent": graphic("--sf-primary"),
+    "--room-accent-text": text("--sf-primary"),
+    "--room-link": text("--sf-stellar"),
+    "--room-warn": graphic("--sf-amber"),
+    "--room-warn-text": text("--sf-amber"),
+    "--room-stop-text": text("--sf-crimson"),
+    // The share of ink folded into any other hue drawn on the sheet (a cited
+    // fact's cascade colour, an entity's own colour).
+    "--room-graphic-ink": c ? pct(paper.graphicMix) : "0%",
     "--sf-writing-font": ROOM_FONT_STACK[room.font],
     "--sf-writing-size": `${room.fontSize}px`,
     "--sf-writing-leading": String(room.lineSpacing),

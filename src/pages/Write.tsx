@@ -8,14 +8,24 @@
  * world's latest document here). SF-II: one writing model, no parallel tables.
  */
 import { Suspense, lazy, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import "@/components/writing/room.css";
 import { Link, Navigate, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { manuscriptPath } from "@/lib/manuscript-path";
 import { Breadcrumbs } from "@/components/layout/page-chrome";
 import { useWorldLayoutContext } from "@/contexts/WorldLayoutContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
-import { writingSurfaceStyle } from "@/lib/writing-surface-style";
-import { TypographyMenu } from "@/components/writing/TypographyMenu";
+import { useRoomSettings } from "@/components/writing/useRoomSettings";
+import { WritingRoomSettings } from "@/components/writing/WritingRoomSettings";
+import { PageTitleBlock } from "@/components/writing/PageTitleBlock";
+import { RoomCredit, RoomScenery } from "@/components/writing/RoomAtmosphere";
+import { DocMarker, StatusMark } from "@/components/writing/DocMarks";
+import { useAppFullscreen } from "@/components/writing/useAppFullscreen";
+import { resolveScene } from "@/lib/writing/atmosphere";
+import { countCharacters, folderPath, readTimeLabel } from "@/lib/writing/doc-identity";
+import { parseTagQuery, tagToken } from "@/lib/writing/tag-query";
+import { targetProgress } from "@/lib/document-meta";
+import { useWorld } from "@/hooks/use-world";
 import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
 import { WritingEntityPanel } from "@/components/writing/WritingEntityPanel";
 import { WorldInfluencePanel } from "@/components/writing/WorldInfluencePanel";
@@ -82,7 +92,7 @@ import {
 } from "@/hooks/use-writing-documents";
 import { useDocumentVersions, type DocumentSnapshot } from "@/hooks/use-document-versions";
 import { useWritingLabels } from "@/hooks/use-writing-labels";
-import { Trash2, RotateCcw, X, ArrowLeft, Columns2, Check, AlertTriangle, WifiOff, LifeBuoy, Download, Maximize2, Minimize2, MoreHorizontal, PanelLeft, PanelRight } from "lucide-react";
+import { Trash2, RotateCcw, X, ArrowLeft, Columns2, Check, AlertTriangle, WifiOff, LifeBuoy, Download, Maximize2, Minimize2, MoreHorizontal, PanelLeft, PanelRight, Palette, Search, FileText, LayoutGrid, List, Expand, Shrink, Plus, FolderPlus, Upload } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useWriteDoc, useLatestDoc, rollWordSession, countWords } from "@/hooks/use-write-doc";
 import { useSessionTarget } from "@/hooks/use-session-target";
@@ -197,11 +207,14 @@ function BarButton({
   );
 }
 
-const VIEW_LABELS: Record<Exclude<WriteView, "scrivenings">, { label: string; hint: string }> = {
-  editor: { label: "Editor", hint: "One document at a time" },
-  board: { label: "Board", hint: "Index cards for every scene, to see the shape of the manuscript" },
-  outline: { label: "Outline", hint: "The binder as a table: synopsis, label, status, words, targets" },
+const VIEW_LABELS: Record<Exclude<WriteView, "scrivenings">, { label: string; hint: string; icon: typeof FileText }> = {
+  editor: { label: "Document", hint: "One document at a time", icon: FileText },
+  board: { label: "Corkboard", hint: "Index cards for every scene, to see the shape of the manuscript", icon: LayoutGrid },
+  outline: { label: "Outline", hint: "The binder as a table: synopsis, label, status, words, targets", icon: List },
 };
+
+/** Stable empty style: the room's custom properties are on the Manuscript root. */
+const NO_STYLE: CSSProperties = {};
 
 interface SplitState {
   open: boolean;
@@ -551,14 +564,23 @@ export default function Write(): JSX.Element {
 
   const { preferences, updatePreferences } = useWritingPreferences();
 
-  // Spacing, font and column width, as CSS custom properties. They are read
-  // by `.sf-writing-serif .ProseMirror` rather than inherited: a declaration
-  // on .ProseMirror beats a value inherited from a wrapper, which is why the
-  // previous `style={{ lineHeight, fontFamily }}` here never took effect.
-  const editorStyle = useMemo(
-    () => writingSurfaceStyle(preferences) as CSSProperties,
-    [preferences],
+  // THE WRITING ROOM (1.7) ---------------------------------------------------
+  // Paper, type, page geometry and atmosphere, per device. The room's custom
+  // properties sit on the Manuscript root, so every editor inside it (main,
+  // split, Scrivenings) reads the same page and nothing outside it changes.
+  const roomCtl = useRoomSettings(preferences);
+  const room = roomCtl.room;
+  const [roomOpen, setRoomOpen] = useState(false);
+  const editorStyle = NO_STYLE;
+  const { data: worldRow } = useWorld(worldId);
+  const worldCover = worldRow?.theme?.cover_image_url || worldRow?.header_image_url || null;
+  const scene = useMemo(
+    () => resolveScene(room.scene, worldCover, worldRow?.name ?? ""),
+    [room.scene, worldCover, worldRow?.name],
   );
+  const fullscreen = useAppFullscreen();
+  // Phones keep one bar; the formatting strip is a choice in the menu.
+  const [phoneToolbar, setPhoneToolbar] = useState(false);
 
   // Whole-manuscript words for the project target: every document's stored
   // count, with the open one's live count in its place.
@@ -649,7 +671,7 @@ export default function Write(): JSX.Element {
       }),
     [worldId, docMeta, worldIndex],
   );
-  const scene = useMemo(
+  const sceneCtx = useMemo(
     () =>
       buildSceneContext({
         html: deferredSceneHtml,
@@ -663,7 +685,12 @@ export default function Write(): JSX.Element {
       }),
     [deferredSceneHtml, sceneWorld, docMeta.setInPlaceId, docMeta.subjectEntityId, worldIndex.connections],
   );
-  const studioWorld = useMemo<StudioWorld>(() => ({ ...worldIndex, scene, focus }), [worldIndex, scene, focus]);
+  const studioWorld = useMemo<StudioWorld>(() => ({ ...worldIndex, scene: sceneCtx, focus }), [worldIndex, sceneCtx, focus]);
+  // Status bar: characters as the writer counts them, off the same deferred
+  // text the rail ranks (never on the typing path).
+  const characters = useMemo(() => countCharacters(deferredSceneHtml), [deferredSceneHtml]);
+  // Where the open document sits, for the page's eyebrow.
+  const docPath = useMemo(() => folderPath(docId, binderEntries), [docId, binderEntries]);
 
   // CANON CAPTURE + CONTRADICTION LEDGER (charter 2.2, 2.3) ------------------
   // Claims in the prose, read on idle 1200ms after the last edit; never on
@@ -1474,6 +1501,25 @@ export default function Write(): JSX.Element {
   const binderContent = (
     <div className="flex h-full min-h-0 w-full min-w-0 flex-col border-r border-sf-line-hairline">
       {worldId && (
+        // The binder's head: its name and the three ways to add to it.
+        <div className="flex shrink-0 items-center gap-1 pl-4 pr-2 pt-1">
+          <h2 className="min-w-0 flex-1 truncate font-heading text-sf-eyebrow uppercase text-t3">Binder</h2>
+          {!readOnly && (
+            <>
+              <BarButton label="Import a manuscript: Scrivener, Word, Markdown, text" onClick={() => setImportOpen(true)}>
+                <Upload className="h-4 w-4" aria-hidden="true" />
+              </BarButton>
+              <BarButton label="New folder" onClick={() => createFolder.mutate("New folder")}>
+                <FolderPlus className="h-4 w-4" aria-hidden="true" />
+              </BarButton>
+              <BarButton label="New document" onClick={newDocument}>
+                <Plus className="h-4 w-4" aria-hidden="true" />
+              </BarButton>
+            </>
+          )}
+        </div>
+      )}
+      {worldId && (
         <BinderSearchInput
           query={searchQuery}
           onQuery={setSearchQuery}
@@ -1528,7 +1574,8 @@ export default function Write(): JSX.Element {
             onJump={jumpTo}
             onSave={() => setCollectPrompt({ kind: "search" })}
             onScrivenings={(ids) => openScrivenings(ids, `Search: ${searchQuery}`)}
-            onReplace={() => setReplaceOpen(true)}
+            // A `#tag` query filters by tag; replace works on literal text.
+            onReplace={parseTagQuery(searchQuery).tags.length > 0 && !searchOpts.regex ? undefined : () => setReplaceOpen(true)}
           />
         ) : (
         <>
@@ -1569,6 +1616,8 @@ export default function Write(): JSX.Element {
             tree={shownTree}
             canonCounts={canon.counts}
             expandAll={canonFilter}
+            compact={room.binderCompact}
+            onCompactChange={(binderCompact) => roomCtl.update({ binderCompact })}
             entries={binderEntries}
             activeDocId={docId}
             labels={labels}
@@ -1598,7 +1647,17 @@ export default function Write(): JSX.Element {
           />
         )}
         {(entries?.length ?? 0) === 0 && (
-          <p className="px-3 py-4 font-sans text-[13px] text-t3">No documents yet.</p>
+          <p className="px-3 py-4 font-sans text-[14px] text-t3">No documents yet.</p>
+        )}
+        {worldId && !readOnly && (
+          <button
+            type="button"
+            onClick={newDocument}
+            className="flex min-h-hit w-full items-center gap-2 pl-3 pr-3 text-left font-sans text-[14px] text-t3 transition-colors duration-fast hover:bg-sf-surface-elevated hover:text-t1"
+          >
+            <Plus className="h-4 w-4 shrink-0" aria-hidden="true" />
+            Add a document
+          </button>
         )}
         {worldId && (entries?.length ?? 0) <= 1 && !(entries ?? []).some((e) => (e.word_count ?? 0) > 0) && (
           <div className="mx-3 mt-3 border-t border-sf-line-hairline pt-3">
@@ -1652,17 +1711,40 @@ export default function Write(): JSX.Element {
         )}
       </div>
       {worldId && (
-        <div className="flex flex-wrap gap-2 border-t border-sf-line-hairline p-3">
-          <button onClick={newDocument} className="min-h-hit flex-auto whitespace-nowrap border border-sf-line px-3 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">+ Document</button>
-          <button onClick={() => createFolder.mutate("New folder")} className="min-h-hit flex-auto whitespace-nowrap border border-sf-line px-3 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-primary hover:text-t1">+ Folder</button>
-          <button
-            type="button"
-            onClick={() => setImportOpen(true)}
-            title="Import a manuscript: Scrivener, Word, Markdown, text"
-            className="min-h-hit flex-auto whitespace-nowrap border border-sf-line px-3 py-1.5 text-[12px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
-          >
-            Import
-          </button>
+        // The binder's foot: the manuscript against its target, then the two
+        // structural actions. The target itself is set in the status bar's
+        // targets panel; this line only reads it.
+        <div className="shrink-0 border-t border-sf-line-hairline px-4 pb-3 pt-3">
+          <div className="flex items-baseline justify-between gap-2">
+            <span className="font-heading text-sf-eyebrow uppercase text-t4">
+              {project.value.words > 0 ? "Manuscript target" : "Manuscript"}
+            </span>
+            {project.value.words > 0 && (
+              <span className="font-mono text-[12px] text-t3">
+                {Math.round(targetProgress(manuscriptWords, project.value.words) * 100)}%
+              </span>
+            )}
+          </div>
+          {project.value.words > 0 && (
+            <div
+              className="mt-2 h-[3px] w-full bg-sf-surface-elevated"
+              role="progressbar"
+              aria-label="Manuscript target progress"
+              aria-valuemin={0}
+              aria-valuemax={project.value.words}
+              aria-valuenow={Math.min(manuscriptWords, project.value.words)}
+            >
+              <div
+                className="h-full bg-sf-primary transition-[width] duration-slow ease-sf-out"
+                style={{ width: `${Math.round(targetProgress(manuscriptWords, project.value.words) * 100)}%` }}
+              />
+            </div>
+          )}
+          <p className="mt-2 font-mono text-[12px] text-t2">
+            {manuscriptWords.toLocaleString()}
+            {project.value.words > 0 ? <span className="text-t4"> / {project.value.words.toLocaleString()}</span> : null}
+            <span className="text-t4"> WORDS</span>
+          </p>
         </div>
       )}
     </div>
@@ -1715,6 +1797,13 @@ export default function Write(): JSX.Element {
             povOptions={povOptions}
             placeOptions={placeOptions}
             branchOptions={worldIndex.branches}
+            title={title || doc.title || ""}
+            onFilterTag={(tag) => {
+              setCanonFilter(false);
+              setSearchOpts((o) => ({ ...o, regex: false }));
+              setSearchQuery(tagToken(tag));
+              if (window.matchMedia("(max-width: 1023px)").matches) setMobilePanel("binder");
+            }}
             comments={
               worldId ? (
                 <DocumentComments
@@ -1810,7 +1899,13 @@ export default function Write(): JSX.Element {
   const viewKeys = Object.keys(VIEW_LABELS) as Exclude<WriteView, "scrivenings">[];
   const viewLabel = effectiveView === "scrivenings" ? "Scrivenings" : VIEW_LABELS[effectiveView].label;
   const docTitle = title || doc?.title || "Untitled";
-  const showToolbarRow = (effectiveView === "editor" && !!doc && !readOnly) || effectiveView === "scrivenings";
+  // Scrivenings stacks bare editors (shortcuts only), so the row is the
+  // single document's.
+  const showToolbarRow = !focus && room.showToolbar && effectiveView === "editor" && !!doc && !readOnly;
+  // The paper fills the stage for the two prose views; the corkboard and the
+  // outline are instrument surfaces and stay on the void.
+  const paperStage = effectiveView === "editor" || effectiveView === "scrivenings";
+  const saveAlert = saveState === "offline" || saveState === "retrying";
   const exportItems = (
     <>
       <DropdownMenuItem onClick={() => exportDoc("docx")}>Word (.docx)</DropdownMenuItem>
@@ -1830,23 +1925,27 @@ export default function Write(): JSX.Element {
 
   return (
     <StudioWorldProvider value={studioWorld}>
-    <div className={`relative z-10 flex ${worldChrome ? "h-full" : "h-screen"} flex-col bg-[hsl(var(--sf-void-hsl))]`}>
+    <div
+      className={`sf-room relative z-10 flex ${worldChrome ? "h-full" : "h-screen"} flex-col bg-[hsl(var(--sf-void-hsl))]`}
+      style={roomCtl.style}
+      data-room-paper={room.paper}
+      data-room-focus={focus ? "on" : undefined}
+    >
       {/* Row 1 (1.6 finding 16): where you are, how you are looking at it,
           and the three page actions. One slim bar; the formatting toolbar
           is row 2. Word count lives in the status bar only. */}
-      <header className="flex h-11 shrink-0 items-center gap-1 border-b border-sf-line-hairline px-2 sm:gap-2 sm:px-4">
-        {!focus && (
-          <BarButton label="Open the binder" onClick={() => setMobilePanel("binder")} className="lg:hidden">
-            <PanelLeft className="h-4 w-4" aria-hidden="true" />
-          </BarButton>
-        )}
+      {!focus && (
+      <header className="sf-room-chrome flex h-12 shrink-0 items-center gap-1 border-b border-sf-line-hairline px-2 sm:gap-2 sm:px-4">
+        <BarButton label="Open the binder" onClick={() => setMobilePanel("binder")} className="lg:hidden">
+          <PanelLeft className="h-4 w-4" aria-hidden="true" />
+        </BarButton>
         {/* w-0 + flex-1: a long title truncates instead of widening the bar. */}
         <div className="flex w-0 min-w-0 flex-1 items-center gap-2">
           {worldChrome ? (
             // Inside a world the site header and the world nav are already on
             // screen (15-PAGE-CHROME §1), so the bar names where you are
             // instead of repeating a logo and a back link.
-            <div className="hidden shrink-0 items-center gap-2 md:flex">
+            <div className="hidden shrink-0 items-center gap-2 xl:flex">
               <Breadcrumbs
                 items={[
                   { label: worldChrome.worldName, to: `/worlds/${worldChrome.worldId}` },
@@ -1869,35 +1968,49 @@ export default function Write(): JSX.Element {
           <span className="truncate font-sans text-[14px] text-t1" title={docTitle}>{docTitle}</span>
         </div>
 
-        {/* View switcher: one segmented control (sm and up). */}
-        <div className="hidden shrink-0 items-center border border-sf-line sm:flex" role="group" aria-label="View">
-          {viewKeys.map((v) => (
-            <button
-              key={v}
-              type="button"
-              onClick={() => switchView(v)}
-              aria-pressed={effectiveView === v}
-              title={VIEW_LABELS[v].hint}
-              className={`sf-hit h-8 px-3 font-sans text-[13px] font-medium transition-colors duration-fast ${
-                effectiveView === v ? "bg-sf-surface-elevated text-sf-primary-text" : "text-t3 hover:text-t1"
-              }`}
-            >
-              {VIEW_LABELS[v].label}
-            </button>
-          ))}
+        {/* View switcher: one soft, labelled segmented control (sm and up). */}
+        <div className="hidden shrink-0 items-center gap-0.5 bg-sf-surface p-0.5 sm:flex" role="group" aria-label="View">
+          {viewKeys.map((v) => {
+            const Icon = VIEW_LABELS[v].icon;
+            const on = effectiveView === v;
+            return (
+              <button
+                key={v}
+                type="button"
+                onClick={() => switchView(v)}
+                aria-pressed={on}
+                title={VIEW_LABELS[v].hint}
+                className={`sf-hit flex h-8 items-center gap-2 px-3 font-sans text-[13px] font-medium transition-colors duration-fast ${
+                  on ? "bg-sf-surface-elevated text-t1" : "text-t3 hover:text-t1"
+                }`}
+              >
+                <Icon className={`h-3.5 w-3.5 ${on ? "text-sf-primary" : ""}`} aria-hidden="true" />
+                <span className="hidden md:inline">{VIEW_LABELS[v].label}</span>
+                <span className="sr-only md:hidden">{VIEW_LABELS[v].label}</span>
+              </button>
+            );
+          })}
           {effectiveView === "scrivenings" && (
-            <span className="flex h-8 items-center border-l border-sf-line bg-sf-surface-elevated px-3 font-sans text-[13px] font-medium text-sf-primary-text">
+            <span className="flex h-8 items-center bg-sf-surface-elevated px-3 font-sans text-[13px] font-medium text-t1">
               Scrivenings
             </span>
           )}
         </div>
 
-        {/* Page actions: icon group with tooltips (sm and up). */}
+        {/* One calm row of icon tools (sm and up). */}
         <div className="hidden shrink-0 items-center sm:flex" role="group" aria-label="Page actions">
-          {!focus && (
-            <RoomTools worldId={worldId ?? null} documentId={docId ?? null} getEditor={getRoomEditor} />
+          <RoomTools worldId={worldId ?? null} documentId={docId ?? null} getEditor={getRoomEditor} />
+          {effectiveView === "editor" && (
+            <BarButton
+              label="Find and replace in this document"
+              pressed={findOpen}
+              className="hidden lg:flex"
+              onClick={() => setFindOpen((o) => !o)}
+            >
+              <Search className="h-4 w-4" aria-hidden="true" />
+            </BarButton>
           )}
-          {!focus && worldId && (
+          {worldId && (
             <BarButton
               label={split.open ? "Close the split editor" : "Split: a second document, Codex entry or worksheet beside this one"}
               pressed={split.open}
@@ -1910,13 +2023,22 @@ export default function Write(): JSX.Element {
               <Columns2 className="h-4 w-4" aria-hidden="true" />
             </BarButton>
           )}
-          <BarButton
-            label={focus ? "Leave focus mode (Esc)" : "Focus mode: hide the binder and inspector"}
-            pressed={focus}
-            onClick={() => setFocus(!focus)}
-          >
-            {focus ? <Minimize2 className="h-4 w-4" aria-hidden="true" /> : <Maximize2 className="h-4 w-4" aria-hidden="true" />}
+          <BarButton label="Writing room: paper, type, page and atmosphere" pressed={roomOpen} onClick={() => setRoomOpen((o) => !o)}>
+            <Palette className="h-4 w-4" aria-hidden="true" />
           </BarButton>
+          <BarButton label="Focus mode: only the page (Esc to return)" onClick={() => setFocus(true)}>
+            <Maximize2 className="h-4 w-4" aria-hidden="true" />
+          </BarButton>
+          {fullscreen.supported && (
+            <BarButton
+              label={fullscreen.active ? "Leave app fullscreen" : "App fullscreen"}
+              pressed={fullscreen.active}
+              className="hidden lg:flex"
+              onClick={fullscreen.toggle}
+            >
+              {fullscreen.active ? <Shrink className="h-4 w-4" aria-hidden="true" /> : <Expand className="h-4 w-4" aria-hidden="true" />}
+            </BarButton>
+          )}
           <DropdownMenu>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -1934,7 +2056,7 @@ export default function Write(): JSX.Element {
           </DropdownMenu>
         </div>
 
-        {/* Phones: views, focus and export in one menu, so the bar stays one line. */}
+        {/* Phones: everything in one menu, so the room keeps one bar. */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
@@ -1945,7 +2067,7 @@ export default function Write(): JSX.Element {
               <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuContent align="end" className="sf-sb max-h-[80vh] w-60 overflow-y-auto">
             <DropdownMenuLabel>View</DropdownMenuLabel>
             {viewKeys.map((v) => (
               <DropdownMenuItem key={v} onClick={() => switchView(v)}>
@@ -1954,9 +2076,22 @@ export default function Write(): JSX.Element {
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => setFocus(!focus)}>
-              {focus ? "Leave focus mode" : "Focus mode"}
-            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setRoomOpen(true)}>Writing room</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setFocus(true)}>Focus mode</DropdownMenuItem>
+            {effectiveView === "editor" && (
+              <DropdownMenuItem onClick={() => setFindOpen(true)}>Find and replace</DropdownMenuItem>
+            )}
+            {room.showToolbar && (
+              <DropdownMenuItem onClick={() => setPhoneToolbar((o) => !o)}>
+                Formatting bar
+                {phoneToolbar && <span className="ml-auto font-mono text-[12px] text-t4">ON</span>}
+              </DropdownMenuItem>
+            )}
+            {fullscreen.supported && (
+              <DropdownMenuItem onClick={fullscreen.toggle}>
+                {fullscreen.active ? "Leave app fullscreen" : "App fullscreen"}
+              </DropdownMenuItem>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuLabel>Export</DropdownMenuLabel>
             {exportItems}
@@ -1965,7 +2100,7 @@ export default function Write(): JSX.Element {
         </DropdownMenu>
 
         {/* Inspector toggle, far right: a column on desktop, a drawer below lg. */}
-        {!focus && worldId && (
+        {worldId && (
           <>
             <BarButton
               label={inspectorOpen ? "Hide the inspector" : "Show the inspector"}
@@ -1981,26 +2116,30 @@ export default function Write(): JSX.Element {
           </>
         )}
       </header>
+      )}
 
-      {/* Row 2: the formatting toolbar, docked here by the editor (portal),
-          and the typography menu at its end. A scroll strip on phones. */}
+      {/* Row 2: the formatting toolbar, docked here by the editor (portal).
+          On phones it is a scroll strip the writer turns on from the menu,
+          so the room keeps one bar. Off entirely from the Writing room. */}
       {showToolbarRow && (
-        <div className="flex h-10 shrink-0 items-center gap-1 border-b border-sf-line-hairline px-2 sm:px-4">
+        <div
+          className={`sf-room-chrome h-10 shrink-0 items-center gap-1 border-b border-sf-line-hairline px-2 sm:flex sm:px-4 ${
+            phoneToolbar ? "flex" : "hidden"
+          }`}
+        >
           <div ref={setToolbarHost} className="flex h-full w-0 min-w-0 flex-1 items-center" />
-          <div aria-hidden="true" className="mx-1 h-5 w-px shrink-0 bg-sf-line-hairline" />
-          <TypographyMenu preferences={preferences} onChange={updatePreferences} />
         </div>
       )}
 
       {/* mobile slide-over: binder */}
       <Sheet open={mobilePanel === "binder"} onOpenChange={(o) => !o && setMobilePanel(null)}>
-        <SheetContent side="left" className="w-[280px] border-sf-line bg-sf-surface/95 p-0">
+        <SheetContent side="left" className="w-[300px] max-w-[88vw] border-sf-line bg-sf-surface p-0">
           <div className="flex h-full flex-col pt-8">{binderContent}</div>
         </SheetContent>
       </Sheet>
       {/* mobile slide-over: inspector */}
       <Sheet open={mobilePanel === "inspector"} onOpenChange={(o) => !o && setMobilePanel(null)}>
-        <SheetContent side="right" className="w-[320px] border-sf-line bg-sf-surface/95 p-0">
+        <SheetContent side="right" className="w-[340px] max-w-[92vw] border-sf-line bg-sf-surface p-0">
           <div className="flex h-full flex-col pt-8">{inspectorContent}</div>
         </SheetContent>
       </Sheet>
@@ -2011,13 +2150,13 @@ export default function Write(): JSX.Element {
           focus
             ? "grid-cols-1"
             : inspectorOpen || !worldId
-              ? "grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)_320px]"
-              : "grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)]"
+              ? "grid-cols-1 lg:grid-cols-[var(--room-binder-width,264px)_minmax(0,1fr)_320px]"
+              : "grid-cols-1 lg:grid-cols-[var(--room-binder-width,264px)_minmax(0,1fr)]"
         }`}
       >
         {/* binder (desktop column) */}
         {!focus && (
-          <aside className="hidden min-h-0 min-w-0 lg:flex">{binderContent}</aside>
+          <aside className="sf-room-chrome hidden min-h-0 min-w-0 lg:flex" aria-label="Binder">{binderContent}</aside>
         )}
 
         {/* editor, and the split pane beside or below it */}
@@ -2025,12 +2164,40 @@ export default function Write(): JSX.Element {
           ref={splitBoxRef}
           className={`flex min-h-0 min-w-0 ${showSplit && split.orientation === "stacked" ? "flex-col" : "flex-row"}`}
         >
+        <div
+          className={`${paperStage ? "sf-room-stage sf-room-paper" : "relative flex min-h-0 min-w-0 bg-sf-void"}${fadeClass}${focus ? " sf-write-focus" : ""}`}
+          style={showSplit ? { flex: `0 0 calc(${split.ratio * 100}% - 6px)` } : { flex: "1 1 auto" }}
+        >
+        {paperStage && <RoomScenery scene={scene} />}
+        {focus && (
+          <>
+            {/* Focus leaves only the page. One quiet way back, besides Esc. */}
+            <button
+              type="button"
+              onClick={() => setFocus(false)}
+              aria-label="Leave focus mode (Esc)"
+              title="Leave focus mode (Esc)"
+              className="sf-room-focus-exit"
+            >
+              <Minimize2 className="h-4 w-4" aria-hidden="true" />
+            </button>
+            {saveAlert && (
+              // The status bar is hidden in focus; a save in trouble is not.
+              <p
+                role="status"
+                className="absolute bottom-3 left-4 z-[2] flex items-center gap-2 border border-sf-line bg-sf-surface px-3 py-2 font-mono text-[12px] uppercase text-sf-amber-text"
+              >
+                <AlertTriangle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                {saveState === "offline" ? "OFFLINE · HELD ON THIS DEVICE" : "UNSAVED, RETRYING"}
+              </p>
+            )}
+          </>
+        )}
         <main
           id="main"
           tabIndex={-1}
           ref={mainRef}
-          className={`sf-sb min-h-0 min-w-0 overflow-y-auto${fadeClass}${focus ? " sf-write-focus" : ""}`}
-          style={showSplit ? { flex: `0 0 calc(${split.ratio * 100}% - 6px)` } : { flex: "1 1 auto" }}
+          className={`sf-sb min-h-0 min-w-0 overflow-y-auto ${paperStage ? "sf-room-scroll" : "flex-1"}`}
         >
           {findOpen && effectiveView === "editor" && (
             <FindReplaceBar
@@ -2044,6 +2211,8 @@ export default function Write(): JSX.Element {
               folders={folders}
               unfiled={unfiled}
               activeDocId={docId}
+              labels={labels}
+              onCreateDoc={readOnly ? undefined : newDocument}
               onOpen={(id) => { switchView("editor"); openDoc(id); }}
               onReorder={(ids) => reorderDocs.mutate(ids)}
             />
@@ -2070,22 +2239,24 @@ export default function Write(): JSX.Element {
               readOnly={readOnly}
             />
           ) : (
-          <div
-            className="mx-auto px-6 pb-16 pt-10 sm:pt-16"
-            style={{ maxWidth: "var(--sf-writing-measure, 68ch)", ...editorStyle }}
-          >
-            <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              onBlur={saveTitle}
-              readOnly={readOnly}
-              placeholder="Document title"
-              className="w-full border-0 border-b border-sf-line-interactive bg-transparent font-serif text-[30px] italic text-t1 transition-colors duration-base placeholder:text-t4 hover:border-sf-line-emphasis"
-              aria-label="Document title"
-            />
-            {/* The index-card fields (synopsis, label, status, POV...) moved
-                to the inspector's Doc tab, out of the writer's eyeline. */}
-            <div className="my-6 text-center text-t4" aria-hidden="true">· · ·</div>
+          <>
+          <div className="sf-room-sheet">
+            {doc && (
+              <PageTitleBlock
+                title={title}
+                onTitleChange={setTitle}
+                onTitleCommit={saveTitle}
+                onEnter={() => editorInstance?.commands.focus("start")}
+                readOnly={readOnly}
+                path={docPath}
+                pov={docMeta.pov}
+                status={docMeta.status}
+                marker={docMeta.marker}
+                onMarkerChange={(marker) => updateMeta.mutate({ docId: doc.id, patch: { marker } })}
+              />
+            )}
+            {/* The index-card fields (synopsis, label, status, POV...) live in
+                the inspector's Doc tab, out of the writer's eyeline. */}
             {readOnly && doc && <ReadOnlyNotice />}
             {conflict && doc && conflict.docId === doc.id && (
               <SaveConflictNotice
@@ -2156,20 +2327,26 @@ export default function Write(): JSX.Element {
                 preset="full"
                 placeholder="Begin writing. Use @ to mention entities, [[ to link wiki pages…"
                 page
+                spellCheck={room.spellcheck}
                 toolbarTarget={toolbarHost}
                 className={`sf-writing-serif${preferences.dropCap ? " sf-writing-dropcap" : ""}`}
-                minHeight="55vh"
+                minHeight="50vh"
               />
               </div>
             )}
             {!doc && !docLoading && (
-              <p className="font-sans text-[15px] text-t3">Select or create a document.</p>
+              <p className="sf-on-paper-soft font-sans text-[15px]">Select or create a document.</p>
             )}
+            {/* Typewriter scrolling needs room under the last line. */}
+            {typewriterMain && <div aria-hidden="true" style={{ height: "50vh" }} />}
           </div>
+          <RoomCredit scene={scene} />
+          </>
           )}
-          {/* Typewriter scrolling needs room under the last line. */}
-          {typewriterMain && <div aria-hidden="true" style={{ height: "50vh" }} />}
+          {/* Scrivenings keeps its own tail for typewriter scrolling. */}
+          {typewriterMain && effectiveView === "scrivenings" && <div aria-hidden="true" style={{ height: "50vh" }} />}
         </main>
+        </div>
         {showSplit && worldId && (
           <>
             <SplitDivider
@@ -2202,7 +2379,7 @@ export default function Write(): JSX.Element {
 
         {/* inspector — the full entity/reference tool (desktop column) */}
         {!focus && worldId && inspectorOpen && (
-          <aside className="hidden min-h-0 lg:block" aria-label="Inspector">{inspectorContent}</aside>
+          <aside className="sf-room-chrome hidden min-h-0 lg:block" aria-label="Inspector">{inspectorContent}</aside>
         )}
       </div>
 
@@ -2211,9 +2388,11 @@ export default function Write(): JSX.Element {
           area. The help button (FABStack) is not rendered on the Manuscript,
           so the bar needs no right reserve; --sf-bottom-chrome still tells
           any other bottom-anchored chrome how tall this bar is. */}
-      <footer className="flex min-h-8 shrink-0 items-center justify-between gap-3 border-t border-sf-line-hairline pb-[env(safe-area-inset-bottom)] px-4">
+      {!focus && (
+      <footer className="sf-room-chrome flex min-h-8 shrink-0 items-center justify-between gap-3 border-t border-sf-line-hairline pb-[env(safe-area-inset-bottom)] px-4">
         {/* Save state: icon and words, never colour alone. A failed save
             used to read "Saved" here. */}
+        <div className="flex min-w-0 items-center gap-4">
         <div className="flex min-w-0 items-center gap-2 whitespace-nowrap" role="status" aria-live="polite">
           {saveState === "offline" ? (
             <WifiOff className="h-3.5 w-3.5 shrink-0 text-sf-amber" aria-hidden="true" />
@@ -2243,6 +2422,24 @@ export default function Write(): JSX.Element {
                     ? `SAVED · ${savedAgo.toUpperCase()}`
                     : "READY"}
           </span>
+        </div>
+        {/* The open document's status, with its marker (the writer's own). */}
+        {doc && paperStage && effectiveView === "editor" && (docMeta.status || docMeta.marker) && (
+          <button
+            type="button"
+            onClick={() => {
+              setInspector("doc");
+              setDocPane("card");
+              if (window.matchMedia("(max-width: 1023px)").matches) setMobilePanel("inspector");
+              else setInspectorOpen(true);
+            }}
+            title="Open this document's card"
+            className="hidden min-h-hit min-w-0 items-center gap-2 px-1 font-mono text-[12px] uppercase text-t3 transition-colors duration-fast hover:text-t1 sm:flex"
+          >
+            {docMeta.marker && <DocMarker marker={docMeta.marker} className="text-[13px]" />}
+            <StatusMark status={docMeta.status} />
+          </button>
+        )}
         </div>
         {/* World-level canon line: documents citing what the world has since
             revised. Click filters the binder to them. */}
@@ -2280,12 +2477,18 @@ export default function Write(): JSX.Element {
             <span className="truncate">{contradictionSummaryLine(capture.worldContradictions)}</span>
           </button>
         )}
-        {/* Progress toward today's goal, not an astronomical date. The editor
-            already wrote session words to writing_sessions and never read them
-            back, so the writer's own number was invisible while writing. */}
+        {/* Words, characters and read time for the open document, then the
+            targets (session, document, project: TargetsStatus). RoomStatus is
+            the tools' own readout (1.7 seam). */}
         <div className="flex min-w-0 items-center gap-2 whitespace-nowrap font-mono text-[12px] tracking-wide text-t4 sm:gap-3">
           <RoomStatus worldId={worldId ?? null} documentId={docId ?? null} />
-          <span>{words.toLocaleString()} WORDS</span>
+          <span className="text-t3">{words.toLocaleString()} WORDS</span>
+          <span className="hidden items-center gap-2 lg:flex sm:gap-3">
+            <span aria-hidden="true">·</span>
+            <span>{characters.toLocaleString()} CHARACTERS</span>
+            <span aria-hidden="true">·</span>
+            <span>{readTimeLabel(words)}</span>
+          </span>
           <span aria-hidden="true">·</span>
           {/* Session (the daily goal, now with a per-session reset), document
               and project targets. Absorbs the old GoalSetting popover. */}
@@ -2300,6 +2503,18 @@ export default function Write(): JSX.Element {
           />
         </div>
       </footer>
+      )}
+
+      <WritingRoomSettings
+        open={roomOpen}
+        onOpenChange={setRoomOpen}
+        controller={roomCtl}
+        comforts={{ typewriter: preferences.typewriter, fadeOthers: preferences.fadeOthers, dropCap: preferences.dropCap }}
+        onComfortsChange={(patch) => updatePreferences(patch)}
+        worldCover={worldCover}
+        worldName={worldRow?.name}
+      />
+
 
       {worldId && (
         <ProjectReplaceDialog

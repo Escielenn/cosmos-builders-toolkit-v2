@@ -52,43 +52,56 @@ export function BinderSearchInput({
   onOpts: (o: SearchOptions) => void;
   inputRef: RefObject<HTMLInputElement>;
 }): JSX.Element {
+  // At rest the binder shows one quiet field. The match options appear once
+  // there is something to match (or one of them is already on).
+  const showOptions = !!query || opts.caseSensitive || !!opts.wholeWord || opts.regex;
   return (
-    <div className="flex items-center gap-2 border-b border-sf-line-hairline px-3 py-2">
-      <Search className="h-3.5 w-3.5 shrink-0 text-t4" aria-hidden="true" />
-      <input
-        ref={inputRef}
-        type="search"
-        size={1}
-        value={query}
-        onChange={(e) => onQuery(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Escape" && query) {
-            e.preventDefault();
-            e.stopPropagation();
-            onQuery("");
-          }
-        }}
-        placeholder="Search binder"
-        aria-label="Search every document in this world"
-        className="min-h-hit min-w-0 flex-1 bg-transparent px-1 text-[16px] text-t1 placeholder:text-t3"
-      />
-      <ToggleChip
-        on={opts.caseSensitive}
-        onClick={() => onOpts({ ...opts, caseSensitive: !opts.caseSensitive })}
-        label="Match case"
-      >
-        Aa
-      </ToggleChip>
-      <ToggleChip
-        on={!!opts.wholeWord}
-        onClick={() => onOpts({ ...opts, wholeWord: !opts.wholeWord })}
-        label="Whole word"
-      >
-        W
-      </ToggleChip>
-      <ToggleChip on={opts.regex} onClick={() => onOpts({ ...opts, regex: !opts.regex })} label="Regular expression">
-        .*
-      </ToggleChip>
+    <div className="flex items-center gap-1 px-3 pb-1 pt-2">
+      <div className="relative min-w-0 flex-1">
+        <Search
+          className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-t4"
+          aria-hidden="true"
+        />
+        <input
+          ref={inputRef}
+          type="search"
+          size={1}
+          value={query}
+          onChange={(e) => onQuery(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Escape" && query) {
+              e.preventDefault();
+              e.stopPropagation();
+              onQuery("");
+            }
+          }}
+          placeholder="Find in manuscript"
+          title="Search every document. #tag narrows to documents carrying that tag."
+          aria-label="Search every document in this world"
+          className="min-h-hit w-full min-w-0 pl-9 pr-2 font-sans text-[16px] text-t1 placeholder:text-t3"
+        />
+      </div>
+      {showOptions && (
+        <>
+          <ToggleChip
+            on={opts.caseSensitive}
+            onClick={() => onOpts({ ...opts, caseSensitive: !opts.caseSensitive })}
+            label="Match case"
+          >
+            Aa
+          </ToggleChip>
+          <ToggleChip
+            on={!!opts.wholeWord}
+            onClick={() => onOpts({ ...opts, wholeWord: !opts.wholeWord })}
+            label="Whole word"
+          >
+            W
+          </ToggleChip>
+          <ToggleChip on={opts.regex} onClick={() => onOpts({ ...opts, regex: !opts.regex })} label="Regular expression">
+            .*
+          </ToggleChip>
+        </>
+      )}
     </div>
   );
 }
@@ -111,7 +124,7 @@ function ToggleChip({
       aria-label={label}
       title={label}
       onClick={onClick}
-      className={`flex min-h-hit w-9 shrink-0 items-center justify-center border font-mono text-[12px] transition-colors duration-fast ${
+      className={`flex min-h-hit w-7 shrink-0 items-center justify-center border font-mono text-[12px] transition-colors duration-fast ${
         on ? "border-sf-primary text-sf-primary-text" : "border-transparent text-t4 hover:border-sf-line-emphasis hover:text-t1"
       }`}
     >

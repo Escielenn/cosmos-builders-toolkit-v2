@@ -20,7 +20,7 @@
 // ---------------------------------------------------------------------------
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ChevronDown, ChevronRight, Columns3, FileText, Folder } from "lucide-react";
+import { ChevronDown, ChevronRight, Columns3, Folder } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -46,10 +46,11 @@ import {
 import {
   DOC_STATUSES,
   STATUS_LABELS,
-  STATUS_TONE,
   targetProgress,
   type DocumentMeta,
 } from "@/lib/document-meta";
+import { readTimeLabel } from "@/lib/writing/doc-identity";
+import { DocMarker, StatusGlyph, statusTone } from "@/components/writing/DocMarks";
 import { findLabel, LABEL_SWATCH, type WritingLabel } from "@/lib/writing-labels";
 import type { BinderRowLike } from "@/lib/writing/doc-scale";
 
@@ -178,17 +179,21 @@ export function Outliner({
   };
 
   return (
-    <div className="px-4 py-6 lg:px-6">
-      <div className="mb-3 flex items-center gap-3">
-        <span className="font-heading text-sf-eyebrow uppercase text-t4">Outliner</span>
-        <span className="font-mono text-[12px] text-t4">
-          {totals.docs.toLocaleString()} {totals.docs === 1 ? "DOCUMENT" : "DOCUMENTS"}
-        </span>
+    <div className="mx-auto max-w-[1240px] px-5 py-8 sm:px-8 sm:py-10">
+      <div className="mb-6 flex flex-wrap items-end gap-x-6 gap-y-3">
+        <div className="min-w-0">
+          <p className="font-mono text-sf-mono uppercase text-sf-primary-text">{"// THE BIG PICTURE"}</p>
+          <h2 className="mt-2 font-heading text-sf-h2 text-t1">Outline</h2>
+          <p className="mt-2 font-mono text-[12px] uppercase text-t3">
+            {totals.docs.toLocaleString()} {totals.docs === 1 ? "DOCUMENT" : "DOCUMENTS"} ·{" "}
+            {totals.words.toLocaleString()} WORDS · {readTimeLabel(totals.words)}
+          </p>
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
               type="button"
-              className="ml-auto flex min-h-hit items-center gap-1.5 border border-sf-line px-3 text-[12px] text-t3 transition-colors duration-base hover:border-sf-line-emphasis hover:text-t1"
+              className="ml-auto flex min-h-hit items-center gap-1.5 border border-sf-line px-3 font-sans text-[13px] font-medium text-t2 transition-colors duration-base hover:border-sf-line-emphasis hover:text-t1"
               aria-label="Choose outliner columns"
             >
               <Columns3 className="h-3.5 w-3.5" aria-hidden="true" />
@@ -217,8 +222,8 @@ export function Outliner({
         <div className="sf-sb overflow-x-auto border border-sf-line">
           <table className="w-full min-w-[640px] border-collapse text-left" aria-label="Manuscript outline">
             <thead>
-              <tr className="border-b border-sf-line-hairline bg-sf-surface">
-                <Th className="min-w-[200px]">Title</Th>
+              <tr className="border-b border-sf-line bg-sf-surface">
+                <Th className="min-w-[220px]">Document</Th>
                 {show("synopsis") && <Th className="min-w-[220px]">Synopsis</Th>}
                 {show("label") && <Th>Label</Th>}
                 {show("status") && <Th>Status</Th>}
@@ -253,7 +258,7 @@ export function Outliner({
             </tbody>
             <tfoot>
               <tr className="border-t border-sf-line-hairline bg-sf-surface">
-                <td className="px-3 py-2.5 font-heading text-sf-eyebrow uppercase text-t3">
+                <td className="px-4 py-3 font-heading text-sf-eyebrow uppercase text-t3">
                   Total · {totals.docs.toLocaleString()} {totals.docs === 1 ? "document" : "documents"}
                 </td>
                 {show("synopsis") && <td />}
@@ -262,12 +267,12 @@ export function Outliner({
                 {show("pov") && <td />}
                 {show("keywords") && <td />}
                 {show("words") && (
-                  <td className="px-3 py-2.5 text-right font-mono text-[13px] text-t1">
+                  <td className="px-4 py-3 text-right font-mono text-[13px] text-t1">
                     {totals.words.toLocaleString()}
                   </td>
                 )}
                 {show("target") && (
-                  <td className="px-3 py-2.5">
+                  <td className="px-4 py-3">
                     <TargetCell words={totals.words} target={totals.target} />
                   </td>
                 )}
@@ -287,7 +292,7 @@ export function Outliner({
 
 function Th({ children, className = "" }: { children: React.ReactNode; className?: string }): JSX.Element {
   return (
-    <th scope="col" className={`px-3 py-2 font-heading text-sf-eyebrow uppercase text-t4 ${className}`}>
+    <th scope="col" className={`px-4 py-3 font-heading text-sf-eyebrow uppercase text-t4 ${className}`}>
       {children}
     </th>
   );
@@ -356,7 +361,7 @@ function OutlinerRowView({
       }`}
     >
       {/* Title */}
-      <td className="px-3 py-1.5">
+      <td className="px-4 py-1.5">
         <div className="flex min-h-hit items-center gap-1.5" style={{ paddingLeft: depth * INDENT }}>
           {isFolder ? (
             <button
@@ -377,7 +382,7 @@ function OutlinerRowView({
             </button>
           ) : (
             <span className="flex w-6 shrink-0 justify-center" aria-hidden="true">
-              {label ? <span className={`h-2.5 w-2.5 ${LABEL_SWATCH[label.hue]}`} /> : <FileText className="h-3.5 w-3.5 text-t4" />}
+              <DocMarker marker={meta?.marker} className="text-[15px]" />
             </span>
           )}
           {isFolder ? (
@@ -392,7 +397,7 @@ function OutlinerRowView({
       </td>
 
       {show("synopsis") && (
-        <td className="px-3 py-1.5" onClick={meta ? stop : undefined}>
+        <td className="px-4 py-1.5" onClick={meta ? stop : undefined}>
           {meta ? (
             <SynopsisCell value={meta.synopsis} title={title} onCommit={(synopsis) => onChangeMeta({ synopsis })} />
           ) : null}
@@ -400,7 +405,7 @@ function OutlinerRowView({
       )}
 
       {show("label") && (
-        <td className="px-3 py-1.5" onClick={meta ? stop : undefined}>
+        <td className="px-4 py-1.5" onClick={meta ? stop : undefined}>
           {meta && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -436,18 +441,19 @@ function OutlinerRowView({
       )}
 
       {show("status") && (
-        <td className="px-3 py-1.5" onClick={meta ? stop : undefined}>
+        <td className="px-4 py-1.5" onClick={meta ? stop : undefined}>
           {meta && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
                   type="button"
                   aria-label={`Status for ${title}: ${meta.status ? STATUS_LABELS[meta.status] : "none"}`}
-                  className={`flex min-h-hit items-center px-1 font-mono text-[12px] uppercase ${
-                    meta.status ? STATUS_TONE[meta.status] : "text-t4"
-                  } hover:text-t1`}
+                  className={`flex min-h-hit items-center gap-1.5 px-1 font-mono text-[12px] uppercase ${statusTone(
+                    meta.status,
+                  )} hover:text-t1`}
                 >
-                  {meta.status ? STATUS_LABELS[meta.status] : "—"}
+                  <StatusGlyph status={meta.status} />
+                  {meta.status ? STATUS_LABELS[meta.status] : ""}
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-44">
@@ -455,6 +461,9 @@ function OutlinerRowView({
                 <DropdownMenuSeparator />
                 {DOC_STATUSES.map((s) => (
                   <DropdownMenuItem key={s} onClick={() => onChangeMeta({ status: s })}>
+                    <span className={`mr-2 inline-flex ${statusTone(s)}`}>
+                      <StatusGlyph status={s} />
+                    </span>
                     {STATUS_LABELS[s]}
                     {s === meta.status && <span className="ml-auto font-mono text-[12px] text-t4">ON</span>}
                   </DropdownMenuItem>
@@ -466,13 +475,13 @@ function OutlinerRowView({
       )}
 
       {show("pov") && (
-        <td className="px-3 py-1.5">
+        <td className="px-4 py-1.5">
           <span className="flex min-h-hit items-center font-sans text-[14px] text-t2">{meta?.pov || ""}</span>
         </td>
       )}
 
       {show("keywords") && (
-        <td className="px-3 py-1.5">
+        <td className="px-4 py-1.5">
           <div className="flex min-h-hit flex-wrap items-center gap-1.5">
             {(meta?.keywords ?? []).slice(0, 4).map((k) => (
               <span key={k} className="border border-sf-line px-2 font-mono text-[12px] text-t3">
@@ -487,13 +496,13 @@ function OutlinerRowView({
       )}
 
       {show("words") && (
-        <td className={`px-3 py-1.5 text-right font-mono text-[13px] ${isFolder ? "text-t3" : "text-t1"}`}>
+        <td className={`px-4 py-1.5 text-right font-mono text-[13px] ${isFolder ? "text-t3" : "text-t1"}`}>
           <span className="flex min-h-hit items-center justify-end">{row.words.toLocaleString()}</span>
         </td>
       )}
 
       {show("target") && (
-        <td className="px-3 py-1.5">
+        <td className="px-4 py-1.5">
           <div className="flex min-h-hit items-center">
             <TargetCell words={row.words} target={row.target} />
           </div>
@@ -501,7 +510,7 @@ function OutlinerRowView({
       )}
 
       {show("modified") && (
-        <td className="px-3 py-1.5 text-right font-mono text-[12px] text-t4">
+        <td className="px-4 py-1.5 text-right font-mono text-[12px] text-t4">
           <span className="flex min-h-hit items-center justify-end whitespace-nowrap">
             {isFolder ? "" : formatModified(entry.updated_at)}
           </span>
