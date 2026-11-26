@@ -708,7 +708,7 @@ const SettingsDialog = ({
                 <div>
                   <h4 className="font-medium mb-1">Upgrade to Pro</h4>
                   <p className="text-sm text-t2">
-                    Unlock all worldbuilding tools and advanced features.
+                    Pro opens every worldbuilding tool and the full-world exports.
                   </p>
                 </div>
                 <Button

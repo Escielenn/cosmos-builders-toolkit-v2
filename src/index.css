@@ -281,6 +281,14 @@
     box-shadow: var(--shadow-glass);
   }
 
+  /* World art on cards (1.7, components/world/WorldCardArt.tsx). The art is
+     the writer's content, but it sits behind text: it goes away entirely for
+     readers who asked for less transparency or more contrast. */
+  @media (prefers-reduced-transparency: reduce) {
+    .sf-world-art { display: none; }
+  }
+  [data-contrast="high"] .sf-world-art { display: none; }
+
   .glass-panel-glow {
     @apply glass-panel relative;
   }

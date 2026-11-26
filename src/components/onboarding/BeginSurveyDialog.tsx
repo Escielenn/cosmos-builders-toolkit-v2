@@ -1,20 +1,19 @@
 // ---------------------------------------------------------------------------
-// BeginSurveyDialog, the "Begin survey" wizard (13-THE-LIFT §2, 1.5 item 14).
+// BeginSurveyDialog: the "Create a world" dialog (13-THE-LIFT §2, 1.5 item
+// 14; relabelled in 1.7 because "Begin survey" did not say it made a world).
 //
-// DESIGNATION → STAR → WORLD → LIFE. Each of the last three has presets, a
-// SURPRISE ME, and a SKIP. Filing the survey creates the world, files the
-// star, planet and species in the Codex with their derived values, connects
-// them, opens an empty "Chapter One" set on the planet, and lands the writer
-// in it. The wizard never writes prose: the only sentence it stores is the
-// species line, and that is the writer's own.
+// Name → Star → Planet → Life. Each of the last three has presets, "Surprise
+// me", and "Skip this step". "Create world" on the last step creates the
+// world, files the star, planet and species in the Codex with their derived
+// values, connects them, adds an empty "Chapter One" set on the planet, and
+// opens the world's Bridge. The dialog never writes prose: the only sentence
+// it stores is the species line, and that is the writer's own.
 //
-// The designation step also keeps the old quick path (INITIALIZE EMPTY) so
-// nothing that used to work stops working.
+// The first step also offers "Skip setup and create": a blank world, now.
 // ---------------------------------------------------------------------------
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-import { manuscriptPath } from "@/lib/manuscript-path";
 import { AlertTriangle, Check, ChevronLeft, ChevronRight, Shuffle, SkipForward } from "lucide-react";
 import {
   Dialog,
@@ -52,14 +51,29 @@ import {
 // Types
 // ---------------------------------------------------------------------------
 
-const STEPS = ["designation", "star", "world", "life"] as const;
+const STEPS = ["name", "star", "planet", "life"] as const;
 type Step = (typeof STEPS)[number];
 
 const STEP_LABELS: Record<Step, string> = {
-  designation: "DESIGNATION",
-  star: "STAR",
-  world: "WORLD",
-  life: "LIFE",
+  name: "Name",
+  star: "Star",
+  planet: "Planet",
+  life: "Life",
+};
+
+/** The primary button on each step says where it goes next. */
+const NEXT_LABEL: Record<Step, string> = {
+  name: "Next: choose a star",
+  star: "Next: shape the planet",
+  planet: "Next: add life",
+  life: "Create world",
+};
+
+const STEP_LEDE: Record<Step, string> = {
+  name: "Name your world. The next three steps set up its star, its planet, and its first form of life. You can skip any of them and fill them in later.",
+  star: "Pick the star your world orbits. Its brightness sets where liquid water can last.",
+  planet: "Pick the kind of planet. Gravity, orbit, and surface temperature are worked out from your star.",
+  life: "Add one species. The line you write is saved exactly as you wrote it.",
 };
 
 export interface EmptyWorldInput {
@@ -71,7 +85,7 @@ export interface EmptyWorldInput {
 interface BeginSurveyDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** The old one-step create. Omit to hide INITIALIZE EMPTY. */
+  /** Creates a blank world from the first step. Omit to hide "Skip setup and create". */
   onInitializeEmpty?: (input: EmptyWorldInput) => Promise<void> | void;
   initializingEmpty?: boolean;
 }
@@ -89,7 +103,7 @@ export default function BeginSurveyDialog({
   const navigate = useNavigate();
   const survey = useBeginSurvey();
 
-  const [step, setStep] = useState<Step>("designation");
+  const [step, setStep] = useState<Step>("name");
   const [worldName, setWorldName] = useState("");
   const [worldIcon, setWorldIcon] = useState("globe");
   const [worldDescription, setWorldDescription] = useState("");
@@ -110,7 +124,7 @@ export default function BeginSurveyDialog({
   useEffect(() => {
     if (!open) return;
     resetSurvey.current();
-    setStep("designation");
+    setStep("name");
     setWorldName("");
     setWorldIcon("globe");
     setWorldDescription("");
@@ -125,7 +139,7 @@ export default function BeginSurveyDialog({
 
   // Move focus to the step heading so screen readers announce the step.
   useEffect(() => {
-    if (open && step !== "designation") headingRef.current?.focus();
+    if (open && step !== "name") headingRef.current?.focus();
   }, [step, open]);
 
   const star = useMemo(() => (starId ? deriveStar(starId) : null), [starId]);
@@ -133,7 +147,7 @@ export default function BeginSurveyDialog({
 
   const index = STEPS.indexOf(step);
   const busy = survey.isPending || initializingEmpty;
-  // Seeding failed after the world was created. The run is kept: RETRY
+  // Setup failed after the world was created. The run is kept: Retry
   // resumes it from the failed step, never a second world.
   const partialWorldId = survey.partialWorldId;
   const stalled = !!partialWorldId && !survey.isPending;
@@ -153,8 +167,8 @@ export default function BeginSurveyDialog({
       // Cancelled after a partial failure: the world stays, and says so.
       const worldId = partialWorldId;
       toast({
-        title: "WORLD CREATED. SEEDING INCOMPLETE.",
-        description: "The world is on file. Some survey entries were not written.",
+        title: "WORLD CREATED. SETUP INCOMPLETE.",
+        description: "The world is saved. Some of its star, planet, or life details are not.",
         action: (
           <ToastAction altText="Open world" onClick={() => navigate(`/worlds/${worldId}`)}>
             Open world
@@ -186,9 +200,10 @@ export default function BeginSurveyDialog({
       survey.mutate(
         { choices, icon: worldIcon, description: worldDescription },
         {
-          onSuccess: ({ worldId, documentId }) => {
+          onSuccess: ({ worldId }) => {
             onOpenChange(false);
-            navigate(manuscriptPath(worldId, documentId));
+            // The new world's Bridge: Chapter One is one click away there.
+            navigate(`/worlds/${worldId}`);
           },
         },
       );
@@ -198,7 +213,7 @@ export default function BeginSurveyDialog({
 
   const skip = () => {
     if (step === "star") setStarId(null);
-    if (step === "world") setPlanetId(null);
+    if (step === "planet") setPlanetId(null);
     if (step === "life") {
       fileSurvey({ skipLife: true });
       return;
@@ -209,7 +224,7 @@ export default function BeginSurveyDialog({
   const surprise = () => {
     const rng = Math.random;
     if (step === "star") setStarId(surpriseStar(rng));
-    if (step === "world") setPlanetId(surprisePlanet(rng, starId));
+    if (step === "planet") setPlanetId(surprisePlanet(rng, starId));
     if (step === "life") {
       setSpeciesName(surpriseSpeciesName(rng));
       setBodyPlanId(surpriseBodyPlan(rng));
@@ -217,9 +232,9 @@ export default function BeginSurveyDialog({
   };
 
   const canAdvance =
-    step === "designation" ? nameOk :
+    step === "name" ? nameOk :
     step === "star" ? !!starId :
-    step === "world" ? !!planetId :
+    step === "planet" ? !!planetId :
     true;
 
   const primary = () => {
@@ -232,37 +247,28 @@ export default function BeginSurveyDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-2xl bg-sf-surface-elevated gap-5 p-4 sm:p-6">
         <DialogHeader className="text-left space-y-2 pr-10">
-          <p className="font-heading text-sf-eyebrow uppercase text-t4" aria-hidden="true">
-            SURVEY <span className="font-mono">{String(index + 1).padStart(2, "0")} / {String(STEPS.length).padStart(2, "0")}</span>
+          <p className="font-sans text-sm text-t3">
+            Step {index + 1} of {STEPS.length}: {STEP_LABELS[step]}
           </p>
           <DialogTitle asChild>
-            <h2
-              ref={headingRef}
-              tabIndex={-1}
-              className="font-heading text-sf-h3 text-t1 uppercase outline-none"
-            >
-              {step === "designation" ? "BEGIN SURVEY" : STEP_LABELS[step]}
+            <h2 ref={headingRef} tabIndex={-1} className="outline-none">
+              Create a world
             </h2>
           </DialogTitle>
-          <DialogDescription className="text-t2">
-            {step === "designation" && "Name the world. Three short steps follow: a star, a world, one form of life. Each can be skipped."}
-            {step === "star" && "Choose the primary. Luminosity sets where water can stay liquid."}
-            {step === "world" && "Choose the body. Gravity and orbit are derived, not guessed."}
-            {step === "life" && "Seed one species. The line is yours; it is stored as written."}
-          </DialogDescription>
+          <DialogDescription className="text-t2">{STEP_LEDE[step]}</DialogDescription>
           <StepTrack index={index} />
         </DialogHeader>
 
-        {/* ── SEEDING INCOMPLETE ──────────────────────────────────── */}
+        {/* ── Setup incomplete ───────────────────────────────────── */}
         {stalled && partialWorldId && (
           <div className="space-y-4">
             {/* Notice tone="danger" carries role="alert". */}
             <Notice
               tone="danger"
               icon={<AlertTriangle className="w-4 h-4" />}
-              label="WORLD CREATED. SEEDING INCOMPLETE."
+              label="WORLD CREATED. SETUP INCOMPLETE."
             >
-              The world is on file. Retry resumes from the failed entry; nothing already written is written twice.
+              The world is saved, but some of its star, planet, or life details are not. Retry finishes them without making a second world.
             </Notice>
             <div className="flex flex-col-reverse sm:flex-row gap-2">
               <Button type="button" variant="sf-ghost" size="sf-md" className="sm:mr-auto" onClick={() => openWorld(partialWorldId)}>
@@ -275,8 +281,8 @@ export default function BeginSurveyDialog({
           </div>
         )}
 
-        {/* ── DESIGNATION ─────────────────────────────────────────── */}
-        {!stalled && step === "designation" && (
+        {/* ── Name ───────────────────────────────────────────────── */}
+        {!stalled && step === "name" && (
           <form
             className="space-y-4"
             onSubmit={(e) => { e.preventDefault(); primary(); }}
@@ -302,7 +308,7 @@ export default function BeginSurveyDialog({
               <Label htmlFor="survey-world-description">Description (optional)</Label>
               <Textarea
                 id="survey-world-description"
-                placeholder="World survey notes..."
+                placeholder="A sentence or two about this world."
                 value={worldDescription}
                 onChange={(e) => setWorldDescription(e.target.value)}
                 rows={2}
@@ -321,14 +327,21 @@ export default function BeginSurveyDialog({
                   }
                 >
                   {initializingEmpty ? <Loader variant="inline" size="sm" /> : null}
-                  Initialize empty
+                  Skip setup and create
                 </Button>
               )}
               <Button type="submit" variant="sf-primary" size="sf-md" disabled={!nameOk || busy}>
-                Begin survey
+                {NEXT_LABEL.name}
                 <ChevronRight aria-hidden="true" />
               </Button>
             </div>
+            <p className="text-sm text-t3">
+              {nameOk
+                ? onInitializeEmpty
+                  ? "Nothing is saved until you create the world. Skip setup to create it blank now."
+                  : "Nothing is saved until you create the world on the last step."
+                : "Give the world a name to continue."}
+            </p>
           </form>
         )}
 
@@ -354,7 +367,7 @@ export default function BeginSurveyDialog({
                 onChange={(e) => setStarName(e.target.value)}
               />
             </div>
-            <Readout title="STELLAR READOUT">
+            <Readout title="Star readout">
               {star ? (
                 <>
                   <ReadoutRow label="Class" value={star.designation} />
@@ -368,14 +381,14 @@ export default function BeginSurveyDialog({
                   />
                 </>
               ) : (
-                <p className="text-sm text-t2">NO STAR SELECTED.</p>
+                <p className="text-sm text-t2">No star chosen.</p>
               )}
             </Readout>
           </div>
         )}
 
-        {/* ── WORLD ───────────────────────────────────────────────── */}
-        {!stalled && step === "world" && (
+        {/* ── Planet ─────────────────────────────────────────────── */}
+        {!stalled && step === "planet" && (
           <div className="space-y-4">
             <ChoiceGroup
               label="Planet type"
@@ -392,7 +405,7 @@ export default function BeginSurveyDialog({
                 onChange={(e) => setPlanetName(e.target.value)}
               />
             </div>
-            <Readout title="PLANETARY READOUT">
+            <Readout title="Planet readout">
               {planet ? (
                 <>
                   <ReadoutRow label="Mass" value={`${sig(planet.mass)}`} unit="M⊕" />
@@ -413,17 +426,17 @@ export default function BeginSurveyDialog({
                       />
                     </>
                   ) : (
-                    <p className="text-sm text-t2 pt-1">NO STAR ON FILE. ORBIT LEFT UNSET.</p>
+                    <p className="text-sm text-t2 pt-1">No star chosen, so the orbit is left unset.</p>
                   )}
                   {planet.starMismatch && (
                     <p className="flex items-start gap-2 text-sm text-sf-amber-text pt-1">
                       <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0 text-sf-amber" aria-hidden="true" />
-                      {"// PRESET ASSUMES AN M-CLASS STAR. TIDAL LOCK IS UNLIKELY AT THIS ORBIT."}
+                      {"// This preset assumes a red dwarf (M-class) star. Around this star the planet is unlikely to be tidally locked."}
                     </p>
                   )}
                 </>
               ) : (
-                <p className="text-sm text-t2">NO WORLD SELECTED.</p>
+                <p className="text-sm text-t2">No planet chosen.</p>
               )}
             </Readout>
           </div>
@@ -448,7 +461,7 @@ export default function BeginSurveyDialog({
               options={BODY_PLAN_PRESETS.map((b) => ({ id: b.id, title: b.label, tag: b.description }))}
             />
             <div className="space-y-2">
-              <Label htmlFor="survey-species-line">One line (optional)</Label>
+              <Label htmlFor="survey-species-line">One line about them (optional)</Label>
               <Input
                 id="survey-species-line"
                 placeholder="What a reader should know first."
@@ -461,7 +474,7 @@ export default function BeginSurveyDialog({
         )}
 
         {/* ── Transport ───────────────────────────────────────────── */}
-        {!stalled && step !== "designation" && (
+        {!stalled && step !== "name" && (
           <div className="grid grid-cols-2 sm:flex sm:flex-row gap-2 border-t border-sf-line-hairline pt-4">
             <Button type="button" variant="sf-ghost" size="sf-md" onClick={() => go(-1)} disabled={busy}>
               <ChevronLeft aria-hidden="true" />
@@ -473,17 +486,22 @@ export default function BeginSurveyDialog({
             </Button>
             <Button type="button" variant="sf-ghost" size="sf-md" className="sm:ml-auto" onClick={skip} disabled={busy}>
               <SkipForward aria-hidden="true" />
-              Skip
+              {step === "life" ? "Skip and create" : "Skip this step"}
             </Button>
             <Button type="button" variant="sf-primary" size="sf-md" onClick={primary} disabled={!canAdvance || busy}>
               {survey.isPending ? <Loader variant="inline" size="sm" /> : null}
-              {step === "life" ? (survey.isPending ? "Filing" : "File survey") : "Next"}
+              {step === "life" && survey.isPending ? "Creating world" : NEXT_LABEL[step]}
               {step !== "life" && <ChevronRight aria-hidden="true" />}
             </Button>
           </div>
         )}
+        {!stalled && step === "life" && (
+          <p className="text-sm text-t3">
+            Creating the world saves it with everything you chose and opens its Bridge.
+          </p>
+        )}
         {survey.isPending && (
-          <p role="status" className="sr-only">FILING SURVEY.</p>
+          <p role="status" className="sr-only">Creating world.</p>
         )}
       </DialogContent>
     </Dialog>
@@ -496,7 +514,7 @@ export default function BeginSurveyDialog({
 
 function StepTrack({ index }: { index: number }) {
   return (
-    <ol className="flex gap-1 pt-1" aria-label="Survey progress">
+    <ol className="flex gap-1 pt-1" aria-label="Steps">
       {STEPS.map((s, i) => (
         <li key={s} className="flex-1 min-w-0">
           <span
@@ -506,7 +524,7 @@ function StepTrack({ index }: { index: number }) {
             )}
             aria-hidden="true"
           />
-          <span className={cn("block pt-1 font-mono text-sf-mono uppercase truncate", i === index ? "text-t1" : "text-t4")}>
+          <span className={cn("block pt-1 font-sans text-[13px] truncate", i === index ? "text-t1" : "text-t3")}>
             <span className="sr-only">{i < index ? "Done: " : i === index ? "Current: " : ""}</span>
             {STEP_LABELS[s]}
           </span>

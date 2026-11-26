@@ -157,26 +157,26 @@ const GlobalSearch = ({ open, onOpenChange }: GlobalSearchProps) => {
         <CommandSeparator />
 
         {/* Quick Actions */}
-        <CommandGroup heading="Quick Actions">
+        <CommandGroup heading="Actions">
           <CommandItem
-            value="action begin survey create new world"
+            value="action new world create world"
             onSelect={() => {
-              // Same deep link HeaderNavigation's "Create New World" uses —
-              // CreateWorldButton (rendered on /worlds) opens BEGIN SURVEY
-              // when it sees this param.
+              // Same deep link HeaderNavigation's "New world" uses:
+              // CreateWorldButton (rendered on /worlds) opens the create
+              // dialog when it sees this param.
               go("/worlds?create=true");
             }}
           >
             <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
-            <span>Begin Survey</span>
+            <span>New world</span>
           </CommandItem>
           <CommandItem value="action all tools catalog" onSelect={() => go("/tools")}>
             <Wrench className="mr-2 h-4 w-4" aria-hidden="true" />
-            <span>All Tools</span>
+            <span>All tools</span>
           </CommandItem>
           <CommandItem value="action open profile" onSelect={() => go("/profile")}>
             <User className="mr-2 h-4 w-4" aria-hidden="true" />
-            <span>Open Profile</span>
+            <span>Profile</span>
           </CommandItem>
         </CommandGroup>
       </CommandList>

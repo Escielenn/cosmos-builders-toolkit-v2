@@ -3,7 +3,7 @@
 // paths redirect (see App.tsx).
 
 export const ACCOUNT_TABS = [
-  { id: "file", label: "Personnel file" },
+  { id: "file", label: "Profile" },
   { id: "collection", label: "Collection" },
   { id: "archive", label: "Archive" },
 ] as const;

@@ -291,7 +291,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
           title="Entry unavailable"
         />
         <Notice tone="danger" label="NOT ON FILE">
-          This entry could not be read. It may have been deleted, or your clearance does not reach it.
+          This entry could not be read. It may have been deleted, or you may not have access to it.
         </Notice>
       </PageContainer>
     );

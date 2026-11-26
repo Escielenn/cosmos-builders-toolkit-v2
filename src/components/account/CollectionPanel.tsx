@@ -138,11 +138,11 @@ export default function CollectionPanel() {
         <EmptyState
           warm
           eyebrow="Worksheet index"
-          title={searchQuery || selectedToolType ? "No matching records" : "No worksheets yet"}
+          title={searchQuery || selectedToolType ? "No matching worksheets" : "No worksheets yet"}
           description={
             searchQuery || selectedToolType
-              ? "ADJUST FILTERS OR SEARCH PARAMETERS."
-              : "BEGIN A SURVEY IN ANY WORLD TO POPULATE THIS INDEX."
+              ? "Change the search or the tool filter."
+              : "Open a tool inside any world and save it. Your worksheets collect here."
           }
         />
       ) : (

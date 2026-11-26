@@ -422,9 +422,8 @@ const Tools = () => {
         <section className="mb-16">
           <PageHeader
             size="page"
-            eyebrow="Instrument catalog"
             title="All tools"
-            lede="Inside a world, every instrument opens on a subject from its Codex. Open a world's Instruments to start from an entity; open one here to start standalone."
+            lede="Open a tool here to use it on its own, or open it from a world's Instruments to work on something in that world."
             actions={
               <>
                 <Button asChild variant="sf-ghost" size="sf-md">

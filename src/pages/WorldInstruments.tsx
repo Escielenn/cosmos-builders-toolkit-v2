@@ -94,10 +94,9 @@ export default function WorldInstruments() {
       <PageHeader
         size="space"
         breadcrumbs={worldCrumbs({ id: worldId ?? "", name: worldChrome?.worldName }, "Instruments")}
-        eyebrow="INSTRUMENTS"
         accent="primary"
         title="Instruments"
-        lede="Grouped by cascade layer. Pick a subject first and every instrument opens on it."
+        lede="Pick what you are working on, then open an instrument. It opens on that subject."
       />
 
       {/* Pick the subject FIRST. That is the F4 order, and it is why the
@@ -105,14 +104,14 @@ export default function WorldInstruments() {
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-y border-sf-line-hairline py-2">
         <span className="flex items-center gap-1.5 font-heading text-sf-eyebrow uppercase text-t3">
           <Crosshair className="h-3 w-3" aria-hidden />
-          Survey
+          Subject
         </span>
         {isLoading ? (
           <Loader size="sm" />
         ) : subjects.length === 0 ? (
-          <Notice compact label="NO SUBJECTS ON FILE">
-            Instruments will open blank until this world has something to
-            survey.{" "}
+          <Notice compact label="NO SUBJECTS YET">
+            Instruments open blank until this world has a planet, species or
+            other entry to work on.{" "}
             <Link
               to={`/worlds/${worldId}/codex`}
               className="text-sf-primary-text underline-offset-4 hover:underline"

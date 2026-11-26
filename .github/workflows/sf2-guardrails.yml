@@ -83,6 +83,13 @@ jobs:
       - name: Page chrome guard (blocking)
         run: npm run check:chrome
 
+      # CLAUDE.md Ship's Voice, decision 2026-11-26 (Clarity first): no
+      # faux-system jargon naming an action or label ("begin survey",
+      # "personnel file") and no AI filler ("seamlessly", "unlock") in
+      # user-facing strings. Allow-list: scripts/copy-allowlist.json.
+      - name: Copy guard (blocking)
+        run: npm run check:copy
+
       - name: Unit tests
         run: npm run test
 

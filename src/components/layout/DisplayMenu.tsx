@@ -1,21 +1,30 @@
 // ---------------------------------------------------------------------------
-// Display controls (1.6 "Quiet Instrument", finding 9).
+// Display controls (1.6 "Quiet Instrument", finding 9; 1.7 in-place sections).
 //
 // The header used to carry three loose icon toggles (music, background eye,
 // and the background picker) beside search. They are one menu now:
 //
 //   - signed out: a single "Display" icon button in the header (<DisplayMenu>)
-//   - signed in:  a "Display" submenu inside the profile menu
-//                 (<DisplayMenuItems> rendered in a DropdownMenuSubContent)
+//   - signed in:  a "Display" section inside the profile menu
+//                 (<DisplayMenuItems> inside a <MenuSection>)
 //
 // Both render the same items so the two surfaces can never drift.
+//
+// 1.7: the profile menu's Display, Help and StellarForge entries used to be
+// Radix flyout submenus. Those open on hover; on a phone a tap did nothing
+// visible (the flyout opened off the left edge of the screen) and keyboard
+// users had to know to press the right arrow. <MenuSection> expands in place
+// instead: tap, click, Enter, Space and the right arrow all open it, on
+// every viewport, and the left arrow closes it.
 // ---------------------------------------------------------------------------
 
-import { Music, SlidersHorizontal } from "lucide-react";
+import type { KeyboardEvent, ReactNode } from "react";
+import { ChevronDown, Music, SlidersHorizontal } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuRadioGroup,
@@ -25,6 +34,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { OPEN_AUDIO_SELECTOR_EVENT } from "@/components/audio/audio-events";
 import { useBackground } from "@/hooks/use-background";
+import { cn } from "@/lib/utils";
 import {
   setDisplayPref,
   useDisplayPref,
@@ -37,6 +47,66 @@ import {
 export const MENU_LABEL_CLASS = "font-heading text-sf-eyebrow uppercase text-t4 px-2 py-1.5";
 const MENU_LABEL_TEXT = "font-heading text-sf-eyebrow uppercase text-t4";
 
+interface MenuSectionProps {
+  /** Stable id; also names the revealed group for aria-controls. */
+  id: string;
+  label: string;
+  icon: ReactNode;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  children: ReactNode;
+}
+
+/**
+ * A menu entry that expands its items in place, under itself, instead of a
+ * hover flyout. The revealed items are ordinary menu items, so the arrow
+ * keys walk straight into them.
+ */
+export function MenuSection({ id, label, icon, open, onOpenChange, children }: MenuSectionProps) {
+  const groupId = `menu-section-${id}`;
+  const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "ArrowRight" && !open) {
+      e.preventDefault();
+      onOpenChange(true);
+    } else if (e.key === "ArrowLeft" && open) {
+      e.preventDefault();
+      onOpenChange(false);
+    }
+  };
+  return (
+    <>
+      <DropdownMenuItem
+        aria-expanded={open}
+        aria-controls={open ? groupId : undefined}
+        data-menu-section={id}
+        onSelect={(e) => {
+          // Keep the menu open: this entry toggles, it does not navigate.
+          e.preventDefault();
+          onOpenChange(!open);
+        }}
+        onKeyDown={onKeyDown}
+        className={cn(open && "text-t1")}
+      >
+        {icon}
+        {label}
+        <ChevronDown
+          className={cn("ml-auto h-4 w-4 transition-transform duration-fast ease-sf-out", open && "rotate-180")}
+          aria-hidden="true"
+        />
+      </DropdownMenuItem>
+      {open && (
+        <DropdownMenuGroup
+          id={groupId}
+          aria-label={label}
+          className="ml-4 border-l border-sf-line pl-1"
+        >
+          {children}
+        </DropdownMenuGroup>
+      )}
+    </>
+  );
+}
+
 interface DisplayMenuItemsProps {
   /** Show the Background picker entry (opens Settings > Background). */
   onOpenBackgroundPicker?: () => void;
@@ -46,6 +116,7 @@ export function DisplayMenuItems({ onOpenBackgroundPicker }: DisplayMenuItemsPro
   const { backgroundVisible, toggleBackgroundVisible } = useBackground();
   const telemetry = useDisplayPref("telemetry");
   const ambient = useDisplayPref("ambient");
+  const worldArt = useDisplayPref("worldArt");
 
   return (
     <>
@@ -75,6 +146,13 @@ export function DisplayMenuItems({ onOpenBackgroundPicker }: DisplayMenuItemsPro
         onSelect={(e) => e.preventDefault()}
       >
         Ambient effects
+      </DropdownMenuCheckboxItem>
+      <DropdownMenuCheckboxItem
+        checked={worldArt === "on"}
+        onCheckedChange={(on) => setDisplayPref("worldArt", on ? "on" : "off")}
+        onSelect={(e) => e.preventDefault()}
+      >
+        World art on cards
       </DropdownMenuCheckboxItem>
       <DropdownMenuSeparator />
       <DropdownMenuLabel className="px-2 py-1.5">
@@ -111,7 +189,11 @@ export function DisplayMenu() {
           <SlidersHorizontal className="relative z-[1] h-4 w-4" aria-hidden="true" />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56 rounded-none border-sf-line">
+      <DropdownMenuContent
+        align="end"
+        collisionPadding={8}
+        className="w-60 max-w-[calc(100vw-16px)] max-h-[var(--radix-dropdown-menu-content-available-height)] overflow-y-auto sf-sb rounded-none border-sf-line"
+      >
         <DropdownMenuLabel className="px-2 py-1.5">
           <span className={MENU_LABEL_TEXT}>Display</span>
         </DropdownMenuLabel>

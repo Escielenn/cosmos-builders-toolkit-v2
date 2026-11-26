@@ -287,7 +287,7 @@ export const SHARED_WORLD_BURSTS: DataBurstConfig[] = [
     parallax: -0.06,
   },
   {
-    content: "WORLD SURVEY: READ-ONLY",
+    content: "WORLD: READ-ONLY",
     position: { top: "56%", right: "2%" },
     variant: "coordinates",
     parallax: -0.08,

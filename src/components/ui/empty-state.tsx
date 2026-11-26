@@ -8,25 +8,24 @@ import { VelocityDial } from "@/components/ambient/VelocityDial";
  * EmptyState, centered composition for zero-data states. April 2026 handoff.
  *
  * Uses the VelocityDial as the centerpiece (ambient telemetry while nothing
- * is loaded). Mono eyebrow, display-font title, Ship's Voice subtitle, single
- * primary CTA. Never "Oops! Nothing here yet!", always a mission-control
- * style index announcement.
+ * is loaded). Optional mono eyebrow, a title, one plain sentence of help,
+ * single primary CTA. 1.7 (Clarity first): the title and help are written in
+ * sentence case and rendered as written; say what is missing and what to do.
  *
  * Usage:
  *   <EmptyState
- *     eyebrow="// WORLD INDEX"
- *     title="INDEX: EMPTY"
- *     description="NO WORLDS ON FILE. BEGIN SURVEY WHEN READY."
- *     actionLabel="BEGIN SURVEY"
- *     actionTo="/worlds/new"
+ *     title="No worlds yet"
+ *     description="Create a world to start building and writing."
+ *     actionLabel="New world"
+ *     actionTo="/worlds?create=true"
  *   />
  */
 interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Mono eyebrow, e.g. "// WORLD INDEX" */
   eyebrow?: string;
-  /** Display-font H1, e.g. "INDEX: EMPTY" */
+  /** Display-font heading, sentence case, e.g. "No worlds yet" */
   title: string;
-  /** Mono uppercase subtitle, e.g. "BEGIN SURVEY WHEN READY." */
+  /** One plain sentence: what to do next. */
   description?: string;
   /** Primary action button label */
   actionLabel?: string;
@@ -89,14 +88,14 @@ export function EmptyState({
       <h2
         className={cn(
           "text-3xl md:text-4xl font-light text-t1",
-          warm ? "font-serif italic" : "font-display tracking-title uppercase",
+          warm ? "font-serif italic" : "font-display tracking-title",
         )}
       >
         {title}
       </h2>
 
       {description && (
-        <p className="font-mono text-[12px] tracking-wide uppercase text-t3 max-w-md">
+        <p className="font-sans text-sf-body text-t2 max-w-md">
           {description}
         </p>
       )}

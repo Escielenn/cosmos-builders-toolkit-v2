@@ -83,8 +83,7 @@ const Join = () => {
       });
     } else {
       toast({
-        title: "PERSONNEL FILE CREATED.",
-        description: "All instruments on standby.",
+        title: "ACCOUNT CREATED.",
       });
       navigate("/");
     }

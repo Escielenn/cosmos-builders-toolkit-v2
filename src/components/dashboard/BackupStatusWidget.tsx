@@ -87,7 +87,7 @@ const BackupStatusWidget = ({ worlds }: BackupStatusWidgetProps) => {
         <>
           <div className="space-y-0.5 mb-3">
             <div className="sf-backup-widget-stat">
-              <span className="sf-backup-widget-stat-label">Worlds on file:</span>
+              <span className="sf-backup-widget-stat-label">Worlds:</span>
               <span className="sf-backup-widget-stat-value">{worlds.length}</span>
             </div>
             <div className="sf-backup-widget-stat">

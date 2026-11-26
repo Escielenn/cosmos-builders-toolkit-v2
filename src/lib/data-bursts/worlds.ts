@@ -38,7 +38,7 @@ export const WORLDS_BURSTS: DataBurstConfig[] = [
 
 export const WORLD_DASHBOARD_BURSTS: DataBurstConfig[] = [
   {
-    content: "WORLD SURVEY: ACTIVE",
+    content: "WORLDS: INDEXED",
     position: { top: "4%", right: "3%" },
     variant: "status",
     animation: "flicker",

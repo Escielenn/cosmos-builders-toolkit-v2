@@ -87,17 +87,17 @@ function ClearancePanel({ brand, lapsed, signedIn, signInTo, backTo, backLabel }
   const navigate = useNavigate();
   return (
     <GlassPanel layer="elevated" bracket className="p-5" aria-labelledby="sf-clearance-title">
-      <p className="mb-3 font-mono text-sf-mono uppercase text-sf-primary-text">// Pro clearance</p>
+      <p className="mb-3 font-mono text-sf-mono uppercase text-sf-primary-text">// Pro tool</p>
       <h2 id="sf-clearance-title" className="font-heading text-sf-h3 text-t1">
-        {lapsed ? "Clearance expired" : "Read-only preview"}
+        {lapsed ? "Your Pro plan has ended" : "Read-only preview"}
       </h2>
       <p className="mt-2 text-sm text-t2">
         {lapsed
           ? "Your Pro access has ended. Your worlds and worksheets are exactly where you left them."
-          : `${brand} is one of ${PRO_TOOL_COUNT} Pro instruments. Clearance unlocks every control.`}
+          : `${brand} is one of ${PRO_TOOL_COUNT} Pro instruments. You can read it here; Pro lets you use it.`}
       </p>
 
-      <p className="mt-4 mb-1.5 font-heading text-sf-eyebrow uppercase text-t4">Pro unlocks</p>
+      <p className="mt-4 mb-1.5 font-heading text-sf-eyebrow uppercase text-t4">Pro includes</p>
       <ul className="space-y-1 text-sm text-t2">
         {PRO_UNLOCK_SUMMARY.map((item) => (
           <li key={item} className="flex gap-2">
@@ -109,7 +109,7 @@ function ClearancePanel({ brand, lapsed, signedIn, signInTo, backTo, backLabel }
 
       <div className="mt-5 flex flex-col gap-2">
         <Button variant="sf-primary" className="w-full" onClick={() => navigate("/pricing")}>
-          {lapsed ? "Resubscribe" : "View Pro clearance"}
+          {lapsed ? "Resubscribe" : "See Pro plans"}
         </Button>
         <Button variant="sf-ghost" className="w-full" asChild>
           <Link to={backTo}>{backLabel}</Link>
@@ -195,8 +195,8 @@ function StaticPreview({
         <div className="min-w-0">
           {intro && <ToolIntroSection data={intro} />}
           {rows.length > 0 && (
-            <GlassPanel className="relative overflow-clip p-5 sf-scrim" aria-label="Instrument manifest">
-              <p className="relative mb-3 font-heading text-sf-eyebrow uppercase text-t4">Instrument manifest</p>
+            <GlassPanel className="relative overflow-clip p-5 sf-scrim" aria-label="About this tool">
+              <p className="relative mb-3 font-heading text-sf-eyebrow uppercase text-t4">About this tool</p>
               <dl className="relative space-y-2">
                 {rows.map((r) => (
                   <div key={r.label} className="flex flex-wrap justify-between gap-x-4 gap-y-0.5 border-b border-sf-line-hairline pb-2">

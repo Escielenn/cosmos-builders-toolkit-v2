@@ -692,7 +692,7 @@ const WorldDashboard = () => {
           back={{ label: "Back to worlds", to: "/worlds" }}
         />
         <Notice tone="danger" label="RECORD UNAVAILABLE">
-          This world does not exist, or your clearance does not reach it.
+          This world does not exist, or you do not have access to it.
         </Notice>
       </>
     );
@@ -720,7 +720,6 @@ const WorldDashboard = () => {
         <PageHeader
           size="space"
           breadcrumbs={worldCrumbs({ id: worldId!, name: world.name }, "Bridge")}
-          eyebrow="BRIDGE"
           accent="primary"
           title={world.name}
           icon={
@@ -796,7 +795,7 @@ const WorldDashboard = () => {
                 {isOwner && (
                   <DropdownMenuItem className="sm:hidden" onClick={() => setEditDialogOpen(true)}>
                     <Edit className="w-4 h-4 mr-2" />
-                    Edit World
+                    Edit world
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuItem className="sm:hidden" onClick={() => setExportDialogOpen(true)}>
@@ -832,7 +831,7 @@ const WorldDashboard = () => {
                 {isOwner && (
                 <DropdownMenuItem className="hidden sm:flex" onClick={() => setEditDialogOpen(true)}>
                   <Edit className="w-4 h-4 mr-2" />
-                  Edit World
+                  Edit world
                 </DropdownMenuItem>
                 )}
                 {isOwner && (
@@ -844,13 +843,13 @@ const WorldDashboard = () => {
                 {canEdit && (
                 <DropdownMenuItem onClick={() => setTagsDialogOpen(true)}>
                   <Tag className="w-4 h-4 mr-2" />
-                  Edit Tags
+                  Edit tags
                 </DropdownMenuItem>
                 )}
                 {isOwner && (
                 <DropdownMenuItem onClick={handleArchiveWorld}>
                   <Archive className="w-4 h-4 mr-2" />
-                  Archive World
+                  Archive world
                 </DropdownMenuItem>
                 )}
                 {isOwner && (
@@ -859,7 +858,7 @@ const WorldDashboard = () => {
                   onClick={() => setDeleteDialogOpen(true)}
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
-                  Delete World
+                  Delete world
                 </DropdownMenuItem>
                 )}
               </DropdownMenuContent>
@@ -1124,9 +1123,9 @@ const WorldDashboard = () => {
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>Edit World</DialogTitle>
+            <DialogTitle>Edit world</DialogTitle>
             <DialogDescription>
-              Update the details for your world.
+              Name, icon, cover and description.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
@@ -1144,7 +1143,7 @@ const WorldDashboard = () => {
               {editHeaderImageUrl && (
                 <div className="space-y-1 pt-1">
                   <div className="flex items-center justify-between">
-                    <Label className="text-xs text-t3">Vertical Position</Label>
+                    <Label className="text-xs text-t3">Vertical position</Label>
                     <span className="text-xs text-t3 tabular-nums">{editHeaderImageFocusY}%</span>
                   </div>
                   <Slider
@@ -1168,7 +1167,7 @@ const WorldDashboard = () => {
             <div className="space-y-2">
               <div className="flex gap-4">
                 <Label className="w-12 shrink-0 text-center">Icon</Label>
-                <Label htmlFor="edit-name">World Name</Label>
+                <Label htmlFor="edit-name">World name</Label>
               </div>
               <div className="flex items-end gap-4">
                 <IconPicker value={editIcon} onChange={setEditIcon} />
@@ -1189,7 +1188,7 @@ const WorldDashboard = () => {
                 id="edit-description"
                 value={editDescription}
                 onChange={(e) => setEditDescription(e.target.value)}
-                placeholder="Describe your world..."
+                placeholder="A sentence or two about this world."
                 rows={3}
               />
             </div>
@@ -1208,7 +1207,7 @@ const WorldDashboard = () => {
                   Saving...
                 </>
               ) : (
-                "Save Changes"
+                "Save changes"
               )}
             </Button>
           </DialogFooter>

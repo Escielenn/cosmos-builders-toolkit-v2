@@ -84,6 +84,12 @@ const hull = (x: number, y: number, len: number, h: number): El => (
   <path d={`M${x} ${y - h / 2}H${x + len - h}L${x + len} ${y}L${x + len - h} ${y + h / 2}H${x}Z`} />
 );
 
+/**
+ * The shared vocabulary, for sibling glyph families drawn on the same grid
+ * (world icons: src/components/icons/world-glyphs.tsx).
+ */
+export const glyphVocabulary = { dot, disc, orbit, star, wave, lattice, head, eye, hull };
+
 // ---------------------------------------------------------------------------
 // Glyphs (24x24)
 // ---------------------------------------------------------------------------

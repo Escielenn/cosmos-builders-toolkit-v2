@@ -2121,7 +2121,7 @@ const EvolutionaryBiology = () => {
                 <div className="space-y-2">
                   <Label>Human Assumptions Avoided</Label>
                   <p className="text-xs text-t4 mb-3">
-                    Check the human assumptions this species genuinely differs from.
+                    Check the human assumptions this species breaks.
                   </p>
                   <CheckboxGroup
                     options={HUMAN_ASSUMPTIONS_TO_AVOID}

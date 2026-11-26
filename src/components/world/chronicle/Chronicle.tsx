@@ -255,7 +255,7 @@ export function Chronicle({ worldId }: ChronicleProps) {
       {/* Empty state: one line, one action (1.6). */}
       {view === "list" && isEmpty && (
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-y border-sf-line-hairline py-3">
-          <p className="font-sans text-sf-body text-t2">No events on file.</p>
+          <p className="font-sans text-sf-body text-t2">No events yet.</p>
           <Button variant="sf-ghost" size="sf-sm" onClick={handleAddEvent}>
             <Plus className="w-4 h-4 mr-2" aria-hidden />
             Log first event

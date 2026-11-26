@@ -179,9 +179,9 @@ export function FieldManualContent({ scale = "sheet" }: { scale?: ManualScale } 
 
       <ManualSection title="Collaborator Access (Pro)">
         <p>
-          Invite editors or viewers by email. Three access tiers enforce
-          permissions: Owner (full control), Editor (create and modify),
-          Viewer (read-only). Invites expire. Resend or cancel from the
+          Invite editors or viewers by email. There are three roles: Owner
+          (full control), Editor (create and change), and Viewer (read
+          only). Invites expire. Resend or cancel from the
           share panel.
         </p>
       </ManualSection>

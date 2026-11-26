@@ -576,7 +576,7 @@ export const SECTION_GUIDANCE: Record<string, string> = {
   vestigial:
     "Vestigial traits tell evolutionary history. What did ancestors look like? What old adaptations became obsolete? This adds depth and realism.",
   "viewpoint-test":
-    "The hardest part: escaping human assumptions. How does this species' biology create a genuinely alien perspective on existence?",
+    "The hardest part: escaping human assumptions. How does this species' biology give it an alien view of existence?",
   integration:
     "Check consistency. Do all traits work together? Are there contradictions? Does the overall design feel like a coherent product of evolution?",
 };

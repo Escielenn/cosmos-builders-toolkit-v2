@@ -7,6 +7,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import WorldCard from "@/components/dashboard/WorldCard";
+import { worldCoverUrl } from "@/lib/world-art";
 import CreateWorldButton from "@/components/dashboard/CreateWorldButton";
 import { TagFilter } from "@/components/dashboard/TagFilter";
 import { ArchiveToggle } from "@/components/dashboard/ArchiveToggle";
@@ -97,12 +98,10 @@ const Worlds = () => {
         {/* Top-level page: no back link (the logo goes home). */}
         <PageHeader
           size="page"
-          eyebrow="World index"
           title="Your worlds"
-          lede="Each world is its own cascade: physics shapes environment, environment shapes biology, biology shapes culture. Pick one to continue, or begin a new survey."
           actions={
             <>
-              {/* One primary (1.6): BEGIN SURVEY lives in the header, not as
+              {/* One primary (1.6): "New world" lives in the header, not as
                   a dashed card in the grid. It owns ?create=true. */}
               <CreateWorldButton variant="button" />
               <Button variant="sf-ghost" size="sf-md" className="hidden sm:inline-flex" onClick={() => setImportDialogOpen(true)}>
@@ -178,15 +177,14 @@ const Worlds = () => {
           {!isLoading && filteredWorlds.length === 0 && (
             <div className="col-span-full">
               <EmptyState
-                eyebrow="// WORLD INDEX"
-                title={selectedTags.length > 0 ? "INDEX: NO MATCH" : "INDEX: EMPTY"}
+                title={selectedTags.length > 0 ? "No worlds with these tags" : "No worlds yet"}
                 description={
                   selectedTags.length > 0
-                    ? "NO WORLDS MATCH FILTER CRITERIA. ADJUST TAG SELECTION."
-                    : "NO WORLDS ON FILE. BEGIN SURVEY WHEN READY."
+                    ? "Remove a tag to see more worlds."
+                    : "Create a world to start building and writing."
                 }
                 {...(selectedTags.length === 0
-                  ? { actionLabel: "BEGIN SURVEY", actionTo: "/worlds?create=true" }
+                  ? { actionLabel: "New world", actionTo: "/worlds?create=true" }
                   : {})}
               />
             </div>
@@ -200,6 +198,7 @@ const Worlds = () => {
               description={world.description}
               headerImageUrl={world.header_image_url}
               headerImageFocusY={world.header_image_focus_y}
+              coverUrl={worldCoverUrl(world)}
               icon={world.icon}
               tags={world.tags}
               archivedAt={world.archived_at}

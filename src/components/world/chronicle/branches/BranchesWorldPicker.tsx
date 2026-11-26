@@ -26,7 +26,7 @@ export function BranchesWorldPicker({ worlds }: BranchesWorldPickerProps) {
         Branches live in a world&apos;s Chronicle. Choose the world to open its timelines.
       </p>
       {worlds.length === 0 ? (
-        <p className="mt-3 font-mono text-[12px] text-t3">NO WORLDS ON FILE. BEGIN SURVEY BELOW.</p>
+        <p className="mt-3 text-[14px] text-t2">No worlds yet. Create one with New world.</p>
       ) : (
         <ul className="mt-3 flex flex-wrap gap-2">
           {worlds.map((w) => (

@@ -38,6 +38,10 @@ export interface WorldLite {
   name: string;
   icon?: string | null;
   updated_at: string;
+  /** Cover fields, for the faded card art (optional: older callers omit them). */
+  header_image_url?: string | null;
+  header_image_focus_y?: number | null;
+  theme?: { cover_image_url?: string | null } | null;
 }
 
 export const UNTITLED_DOC = "Untitled";

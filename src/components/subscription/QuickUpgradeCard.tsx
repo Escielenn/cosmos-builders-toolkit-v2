@@ -12,7 +12,7 @@ const QuickUpgradeCard = () => {
       </div>
 
       <h3 className="font-heading font-medium text-lg mb-2 text-center">
-        Unlock {PRO_TOOL_COUNT} More Tools
+        {PRO_TOOL_COUNT} more tools with Pro
       </h3>
 
       <p className="text-sm text-t2 text-center mb-4">
