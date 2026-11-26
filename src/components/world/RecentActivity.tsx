@@ -127,7 +127,7 @@ export default function RecentActivity({ worldId, variant = "section", limit = 1
           <Skeleton className="h-16 w-full" />
         ) : rows.length === 0 ? (
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <p className="font-sans text-[14px] text-t3">No activity on file.</p>
+            <p className="font-sans text-[14px] text-t3">No activity yet.</p>
             <Link
               to={`/worlds/${worldId}/tools`}
               className="inline-flex min-h-hit items-center font-sans text-[14px] text-sf-primary-text transition-colors duration-base hover:text-t1"

@@ -406,7 +406,7 @@ export default function WikiBrowse() {
           <FileText className="w-8 h-8 text-t4 mb-3" />
           <p className="text-t2 text-sm mb-1">
             {allEntries.length === 0
-              ? "Nothing on file yet"
+              ? "Nothing here yet"
               : "No entries match your filters"}
           </p>
           <p className="text-t4 text-xs mb-4">

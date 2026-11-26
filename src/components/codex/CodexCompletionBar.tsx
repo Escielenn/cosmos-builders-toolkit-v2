@@ -7,7 +7,7 @@ const CodexCompletionBar = ({ percent }: CodexCompletionBarProps) => {
     <div className="px-3 py-2">
       <div className="flex items-center justify-between mb-1">
         <span className="font-mono text-[12px] tracking-wider text-t3 uppercase">
-          Survey: {percent}%
+          Filled in: {percent}%
         </span>
       </div>
       <div className="sf-progress">

@@ -138,7 +138,7 @@ function ManuscriptPanel({ worldId }: { worldId: string }): JSX.Element {
         </div>
       ) : (
         <EmptyLine
-          text="No scenes on file."
+          text="No scenes yet."
           action={
             <Link to={manuscriptPath(worldId)} className={panelLink}>
               Start the first scene <ArrowRight className="h-3.5 w-3.5" aria-hidden />
@@ -165,7 +165,7 @@ function CanonPanel({ worldId }: { worldId: string }): JSX.Element {
   }, [rows.data, facts.data]);
 
   const items: { label: string; n: number; to: string; tone?: "danger" }[] = [
-    { label: "Facts on file", n: stats.canon, to: `/worlds/${worldId}/codex` },
+    { label: "Facts", n: stats.canon, to: `/worlds/${worldId}/codex` },
     { label: "Proposed", n: stats.proposed, to: manuscriptPath(worldId) },
     {
       label: "Contradictions",
@@ -295,7 +295,7 @@ function ChroniclePanel({ worldId }: { worldId: string }): JSX.Element {
         <p className="font-mono text-sf-mono uppercase text-t3">Chronicle unavailable.</p>
       ) : latest.length === 0 ? (
         <EmptyLine
-          text="No events on file."
+          text="No events yet."
           action={
             <Link to={`/worlds/${worldId}/chronicle?log=1`} className={panelLink}>
               <Plus className="h-3.5 w-3.5" aria-hidden /> Log first event

@@ -270,10 +270,9 @@ export default function WorldCompile() {
         <PageHeader
           size="space"
           breadcrumbs={worldCrumbs({ id: worldId, name: currentWorld?.name ?? worldChrome?.worldName }, "Manuscript", "Compile")}
-          eyebrow="COMPILE"
           accent="primary"
           title="Compile manuscript"
-          lede="Choose what goes in and in what order, dress it for where it is going, and download. Reordering here reorders the binder: one order everywhere."
+          lede="Choose what goes in, set the order and the format, and download. Reordering here also reorders the binder."
         />
         {stored.isLocal && (
           <Notice compact tone="caution" label="SETTINGS HELD LOCALLY" className="mb-6">
