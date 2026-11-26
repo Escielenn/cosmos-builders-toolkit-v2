@@ -11,6 +11,7 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import type { ElementRef, RefObject } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { perFrameToDt } from "@/lib/sim/frame-loop";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { tokens } from "@/styles/tokens";
@@ -130,7 +131,7 @@ function DragProjector({
 /** Eases OrbitControls' target toward the active camera-mode body. */
 function CameraRig({ cameraMode, sim, controlsRef }: { cameraMode: CameraMode; sim: SolarisSim; controlsRef: ControlsRef }) {
   const target = useRef(new THREE.Vector3());
-  useFrame(() => {
+  useFrame((_, delta) => {
     const controls = controlsRef.current;
     if (!controls || cameraMode === "free") return;
     let tx = 0;
@@ -144,7 +145,8 @@ function CameraRig({ cameraMode, sim, controlsRef }: { cameraMode: CameraMode; s
       }
     }
     target.current.set(tx, 0, tz);
-    controls.target.lerp(target.current, 0.08);
+    // 0.08 per 60 Hz frame, made frame-rate independent (1.7).
+    controls.target.lerp(target.current, perFrameToDt(0.08, Math.min(delta, 0.1) * 1000));
     controls.update();
   });
   return null;
@@ -345,7 +347,7 @@ export default function SolarisScene(props: SolarisSceneProps) {
   const camPos: [number, number, number] = [0, extent * 0.75, extent * 1.35];
 
   return (
-    <Canvas camera={{ position: camPos, fov: 45, near: 0.1, far: 50000 }} gl={{ antialias: true }} style={{ background: tokens.surface.simCanvas }}>
+    <Canvas camera={{ position: camPos, fov: 45, near: 0.1, far: 50000 }} gl={{ antialias: true, powerPreference: "high-performance" }} dpr={[1, 2]} style={{ background: tokens.surface.simCanvas }}>
       <OrbitControls
         ref={controlsRef}
         makeDefault

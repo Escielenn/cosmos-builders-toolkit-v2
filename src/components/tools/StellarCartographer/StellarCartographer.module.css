@@ -40,8 +40,8 @@
   position: absolute;
   background: rgba(15, 15, 16, 0.92);
   border: 1px solid var(--sf-line);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  /* (1.7) No backdrop blur: the map repaints every frame and a blurred
+     panel above it is re-blurred on each one. The fill is already 92%. */
   border-radius: 0;
   padding: 14px 18px;
 }

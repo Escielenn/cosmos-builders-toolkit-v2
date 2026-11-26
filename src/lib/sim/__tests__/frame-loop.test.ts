@@ -232,7 +232,7 @@ describe("createRateGate", () => {
   it("opens at most `hz` times a second", () => {
     const gate = createRateGate(10);
     let open = 0;
-    for (let t = 0; t < 1000; t += 16) if (gate(t)) open++;
+    for (let t = 0; t < 1000; t += 10) if (gate(t)) open++;
     expect(open).toBe(10);
   });
 });

@@ -82,6 +82,12 @@ import { tokens } from '@/styles/tokens';
 
 const MINIMAP_SIZE = 120;
 
+/** A star plus its screen position, reused across frames; `src` is the star itself. */
+type PooledStar = ScreenStar & { src: Star };
+
+/** Integer key for a spatial-grid cell (no string per star per frame). */
+const cellKey = (cx: number, cy: number) => (cx + 4096) * 8192 + (cy + 4096);
+
 const StellarCartographer: React.FC = () => {
   // Refs
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -94,7 +100,7 @@ const StellarCartographer: React.FC = () => {
   const dragButtonRef = useRef(0);
   const hasDraggedRef = useRef(false);
   const viewStartRef = useRef({ rotation: 0, tilt: 0 });
-  const spatialGridRef = useRef<Map<string, ScreenStar[]>>(new Map());
+  const spatialGridRef = useRef<Map<number, PooledStar[]>>(new Map());
   const inertiaRef = useRef({ vx: 0, vy: 0, active: false });
   const lastDragPosRef = useRef({ x: 0, y: 0, time: 0 });
   const bgCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -126,6 +132,8 @@ const StellarCartographer: React.FC = () => {
   const targetCameraRef = useRef<CameraState>(DEFAULT_CAMERA);
   /** Set whenever something the canvas shows has changed outside the loop. */
   const needsDrawRef = useRef(true);
+  const starBatchesRef = useRef(new Map<string, number[][]>());
+  const starPoolRef = useRef<{ source: Star[] | null; list: PooledStar[] }>({ source: null, list: [] });
   const rotationLabelRef = useRef<HTMLSpanElement>(null);
   const rotationSliderRef = useRef<HTMLInputElement>(null);
   const tiltLabelRef = useRef<HTMLSpanElement>(null);
@@ -243,8 +251,7 @@ const StellarCartographer: React.FC = () => {
 
     for (let dx = -1; dx <= 1; dx++) {
       for (let dy = -1; dy <= 1; dy++) {
-        const key = `${cellX + dx},${cellY + dy}`;
-        const cell = grid.get(key);
+        const cell = grid.get(cellKey(cellX + dx, cellY + dy));
         if (!cell) continue;
         for (const star of cell) {
           const ddx = screenX - star.screenX;
@@ -252,7 +259,7 @@ const StellarCartographer: React.FC = () => {
           const dist = Math.sqrt(ddx * ddx + ddy * ddy);
           if (dist < minDist) {
             minDist = dist;
-            found = star;
+            found = star.src;
           }
         }
       }
@@ -989,27 +996,70 @@ const StellarCartographer: React.FC = () => {
     }
 
     // Stars - sorted by depth
-    const sortedStars: ScreenStar[] = stars.map(star => {
-      const projected = worldToScreen(star.x, star.y, star.z);
-      return { ...star, screenX: projected.screenX, screenY: projected.screenY, screenZ: projected.z, scale: projected.scale };
-    }).sort((a, b) => a.screenZ - b.screenZ);
+    // (1.7) Projected in place into a pool built once per galaxy, with the
+    // view solved once per frame. This used to allocate three objects per
+    // star per frame (two from worldToScreen, one spread copy of the whole
+    // star), 24,000 objects a frame at the default 8,000 stars, and key the
+    // hover grid with a fresh string per star.
+    if (starPoolRef.current.source !== stars) {
+      starPoolRef.current = {
+        source: stars,
+        list: stars.map(star => ({ ...star, src: star, screenX: 0, screenY: 0, screenZ: 0, scale: 1 })),
+      };
+    }
+    const sortedStars = starPoolRef.current.list;
+    {
+      const v = viewRef.current;
+      const rotRad = v.rotation * Math.PI / 180;
+      const tiltRad = v.tilt * Math.PI / 180;
+      const cr = Math.cos(rotRad), sr = Math.sin(rotRad), ct = Math.cos(tiltRad), st = Math.sin(tiltRad);
+      const hw = w / 2, hh = h / 2;
+      for (let i = 0; i < sortedStars.length; i++) {
+        const star = sortedStars[i];
+        const rx = star.x * cr - star.y * sr;
+        const ry = star.x * sr + star.y * cr;
+        const ty = ry * ct - star.z * st;
+        const tz = ry * st + star.z * ct;
+        const persp = PERSPECTIVE_DISTANCE / (PERSPECTIVE_DISTANCE + (tz + Z_OFFSET) * DEPTH_SCALE_FACTOR);
+        star.screenX = (rx * persp - camera.x) * zoom + hw;
+        star.screenY = (ty * persp - camera.y) * zoom + hh;
+        star.screenZ = tz;
+        star.scale = Math.max(0.1, persp);
+      }
+      // In place; the order barely changes between frames, so this is close
+      // to a linear pass.
+      sortedStars.sort((a, b) => a.screenZ - b.screenZ);
+    }
 
     // Build spatial grid for O(1) hover/click detection
-    const grid = new Map<string, ScreenStar[]>();
+    const grid = spatialGridRef.current;
+    for (const cell of grid.values()) cell.length = 0;
     for (const star of sortedStars) {
       if (star.screenX < -30 || star.screenX > w + 30 || star.screenY < -30 || star.screenY > h + 30) continue;
-      const cellX = Math.floor(star.screenX / GRID_CELL_SIZE);
-      const cellY = Math.floor(star.screenY / GRID_CELL_SIZE);
-      const key = `${cellX},${cellY}`;
+      const key = cellKey(Math.floor(star.screenX / GRID_CELL_SIZE), Math.floor(star.screenY / GRID_CELL_SIZE));
       let cell = grid.get(key);
       if (!cell) { cell = []; grid.set(key, cell); }
       cell.push(star);
     }
-    spatialGridRef.current = grid;
+    if (grid.size > 4000) {
+      for (const [key, cell] of grid) if (cell.length === 0) grid.delete(key);
+    }
 
     // LOD levels: 0=minimal (dots only), 1=basic (body+core), 2=full (all glows)
     const starCount = sortedStars.length;
     const lod = zoom < 0.5 && starCount > 5000 ? 0 : zoom < 1.0 && starCount > 10000 ? 1 : 2;
+
+    const starBatches = starBatchesRef.current;
+    const batchArc = (color: string, alpha: number, x: number, y: number, r: number) => {
+      const q = Math.min(50, Math.round(alpha * 50));
+      if (q <= 0) return;
+      let byAlpha = starBatches.get(color);
+      if (!byAlpha) { byAlpha = []; starBatches.set(color, byAlpha); }
+      let pts = byAlpha[q];
+      if (!pts) { pts = []; byAlpha[q] = pts; }
+      pts.push(x, y, r);
+    };
+    const ringStars: (PooledStar | number)[] = [];
 
     for (const star of sortedStars) {
       if (star.screenX < -30 || star.screenX > w + 30 || star.screenY < -30 || star.screenY > h + 30) continue;
@@ -1052,19 +1102,44 @@ const StellarCartographer: React.FC = () => {
         ctx.fill();
       }
 
-      // Star body
-      ctx.fillStyle = hexToRgba(star.color, totalBrightness);
-      ctx.beginPath();
-      ctx.arc(star.screenX, star.screenY, size, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Bright core
+      // Star body and bright core, collected into colour/alpha batches and
+      // filled after the loop (1.7). One fillStyle and one fill per batch
+      // instead of a fresh rgba() string and a fill per star: a few dozen
+      // fills a frame instead of up to 16,000. Alpha is rounded to 1/50,
+      // well below what a 1-3 px dot can show.
+      batchArc(star.color, totalBrightness, star.screenX, star.screenY, size);
       if (star.luminosity > 0.6 && size > 1) {
-        ctx.fillStyle = hexToRgba('#FFFFFF', totalBrightness * 0.4 * star.luminosity);
-        ctx.beginPath();
-        ctx.arc(star.screenX, star.screenY, size * 0.4, 0, Math.PI * 2);
-        ctx.fill();
+        batchArc('#FFFFFF', totalBrightness * 0.4 * star.luminosity, star.screenX, star.screenY, size * 0.4);
       }
+
+      if ((star.hasHabitable && zoom > 1.2 && display.showHabitableIndicators)
+        || (selectedStar && star.id === selectedStar.id)
+        || (routeDrawing.stars.length > 0 && routeDrawing.stars.some(s => s.id === star.id))) {
+        ringStars.push(star, size, depthFade);
+      }
+    }
+
+    // Bodies, then cores, in the order the batches were first met.
+    for (const [color, byAlpha] of starBatches) {
+      for (let q = 1; q < byAlpha.length; q++) {
+        const pts = byAlpha[q];
+        if (!pts || pts.length === 0) continue;
+        ctx.fillStyle = hexToRgba(color, q / 50);
+        ctx.beginPath();
+        for (let k = 0; k < pts.length; k += 3) {
+          ctx.moveTo(pts[k] + pts[k + 2], pts[k + 1]);
+          ctx.arc(pts[k], pts[k + 1], pts[k + 2], 0, Math.PI * 2);
+        }
+        ctx.fill();
+        pts.length = 0;
+      }
+    }
+
+    // Indicator rings, on top of the bodies.
+    for (let k = 0; k < ringStars.length; k += 3) {
+      const star = ringStars[k] as PooledStar;
+      const size = ringStars[k + 1] as number;
+      const depthFade = ringStars[k + 2] as number;
 
       // Habitable indicator
       if (star.hasHabitable && zoom > 1.2 && display.showHabitableIndicators) {
