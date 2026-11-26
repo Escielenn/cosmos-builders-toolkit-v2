@@ -1,30 +1,18 @@
-import { getWorldIcon } from "@/lib/world-icons";
-import { cn } from "@/lib/utils";
+import { WorldGlyph } from "@/components/icons/world-glyphs";
+import { resolveWorldIconId } from "@/lib/world-icons";
 
 interface WorldIconRendererProps {
-  iconId: string;
+  iconId: string | null | undefined;
   className?: string;
 }
 
 /**
- * Unified renderer for world icons: supports both Lucide icon IDs (e.g. "globe")
- * and world-pic SVG paths (e.g. "/world-pics/007-astronaut.svg").
+ * The one renderer for a world's icon. Whatever is stored (a glyph id, an
+ * old lucide id, a retired "/world-pics/…" illustration path, nothing)
+ * draws as one glyph of the world line family, in currentColor.
  */
-const WorldIconRenderer = ({ iconId, className }: WorldIconRendererProps) => {
-  if (iconId.startsWith("/world-pics/")) {
-    return (
-      <img
-        src={iconId}
-        alt=""
-        className={cn("object-contain", className)}
-        draggable={false}
-      />
-    );
-  }
-
-  const worldIcon = getWorldIcon(iconId);
-  const IconComponent = worldIcon.icon;
-  return <IconComponent className={className} />;
-};
+const WorldIconRenderer = ({ iconId, className }: WorldIconRendererProps) => (
+  <WorldGlyph id={resolveWorldIconId(iconId)} className={className} />
+);
 
 export default WorldIconRenderer;
