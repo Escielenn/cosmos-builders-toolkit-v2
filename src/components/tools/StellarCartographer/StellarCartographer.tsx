@@ -9,6 +9,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import PublishToWorldDialog from '@/components/simulators/PublishToWorldDialog';
 import { useWorldLayoutContext } from '@/contexts/WorldLayoutContext';
 import type { SimulatorPayload } from '@/hooks/use-simulation-save';
+import { FRAME_MS, createFrameLoop, decayFor, perFrameToDt } from '@/lib/sim/frame-loop';
 import {
   Star,
   ScreenStar,
@@ -102,10 +103,48 @@ const StellarCartographer: React.FC = () => {
   // State
   const [galaxyName, setGalaxyName] = useState('Unnamed Galaxy');
   const [config, setConfig] = useState<GalaxyConfig>(DEFAULT_CONFIG);
-  const [view, setView] = useState<ViewConfig>(DEFAULT_VIEW);
+  const [view, setViewState] = useState<ViewConfig>(DEFAULT_VIEW);
   const [display, setDisplay] = useState<DisplayConfig>(DEFAULT_DISPLAY);
-  const [camera, setCamera] = useState<CameraState>(DEFAULT_CAMERA);
-  const [targetCamera, setTargetCamera] = useState<CameraState>(DEFAULT_CAMERA);
+  /**
+   * (1.7) Camera and view live in refs, not React state.
+   *
+   * The draw loop eases the camera every frame. As state, that was a
+   * setState per frame: the whole tool re-rendered at 60 Hz, `render` got a
+   * new identity each time, and the loop effect tore itself down and set up
+   * again every frame, including a canvas resize that reallocated the
+   * backing store. That was the jitter (46 ms of script per frame measured).
+   *
+   * Now the loop reads and writes these refs and nothing re-renders while
+   * the map moves. `view` state is only a mirror for the Rotation / Tilt /
+   * Auto Rotate controls: discrete changes (a slider, a key, a button)
+   * update it at once, continuous ones (drag, inertia, auto-rotate) write
+   * the control values straight to the DOM and the mirror catches up when
+   * the motion stops.
+   */
+  const viewRef = useRef<ViewConfig>(DEFAULT_VIEW);
+  const cameraRef = useRef<CameraState>(DEFAULT_CAMERA);
+  const targetCameraRef = useRef<CameraState>(DEFAULT_CAMERA);
+  /** Set whenever something the canvas shows has changed outside the loop. */
+  const needsDrawRef = useRef(true);
+  const rotationLabelRef = useRef<HTMLSpanElement>(null);
+  const rotationSliderRef = useRef<HTMLInputElement>(null);
+  const tiltLabelRef = useRef<HTMLSpanElement>(null);
+  const tiltSliderRef = useRef<HTMLInputElement>(null);
+  const zoomValueRef = useRef<HTMLDivElement>(null);
+
+  const setTargetCamera = useCallback((next: React.SetStateAction<CameraState>) => {
+    targetCameraRef.current = typeof next === 'function' ? next(targetCameraRef.current) : next;
+    needsDrawRef.current = true;
+  }, []);
+
+  /** `live` marks a continuous change (drag, inertia): no re-render per event. */
+  const setView = useCallback((next: React.SetStateAction<ViewConfig>, live = false) => {
+    const prev = viewRef.current;
+    const value = typeof next === 'function' ? next(prev) : next;
+    viewRef.current = value;
+    needsDrawRef.current = true;
+    if (!live || value.autoRotate !== prev.autoRotate) setViewState(value);
+  }, []);
   const [stars, setStars] = useState<Star[]>([]);
   const [backgroundStars, setBackgroundStars] = useState<BackgroundStar[]>([]);
   const [empires, setEmpires] = useState<Empire[]>(DEFAULT_EMPIRES);
@@ -225,6 +264,7 @@ const StellarCartographer: React.FC = () => {
   // 3D PROJECTION
   // ═══════════════════════════════════════════════════════════════════════════
   const project3D = useCallback((x: number, y: number, z: number): ProjectedPoint => {
+    const view = viewRef.current;
     const rotRad = view.rotation * Math.PI / 180;
     const tiltRad = view.tilt * Math.PI / 180;
 
@@ -242,19 +282,20 @@ const StellarCartographer: React.FC = () => {
     const scale = PERSPECTIVE_DISTANCE / (PERSPECTIVE_DISTANCE + zOffset * DEPTH_SCALE_FACTOR);
 
     return { x: rx * scale, y: ty * scale, z: tz, scale: Math.max(0.1, scale) };
-  }, [view.rotation, view.tilt]);
+  }, []);
 
   const worldToScreen = useCallback((wx: number, wy: number, wz: number = 0): ProjectedPoint & { screenX: number; screenY: number } => {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0, z: 0, scale: 1, screenX: 0, screenY: 0 };
 
+    const camera = cameraRef.current;
     const projected = project3D(wx, wy, wz);
     return {
       ...projected,
       screenX: (projected.x - camera.x) * camera.zoom + canvas.width / 2,
       screenY: (projected.y - camera.y) * camera.zoom + canvas.height / 2
     };
-  }, [project3D, camera]);
+  }, [project3D]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // GALAXY GENERATION
@@ -575,6 +616,7 @@ const StellarCartographer: React.FC = () => {
 
     const w = canvas.width;
     const h = canvas.height;
+    const camera = cameraRef.current;
     const zoom = camera.zoom;
 
     // Deep space background
@@ -1090,7 +1132,7 @@ const StellarCartographer: React.FC = () => {
       }
     }
   }, [
-    camera, display, empires, stars, backgroundStars, tradeRoutes, wormholes,
+    display, empires, stars, backgroundStars, tradeRoutes, wormholes,
     routeDrawing, wormholeDrawing, selectedStar, worldToScreen, blackHole
   ]);
 
@@ -1110,6 +1152,18 @@ const StellarCartographer: React.FC = () => {
 
   const minimapScale = useMemo(() => MINIMAP_SIZE / (GALAXY_RADIUS * 2.2), []);
 
+  /**
+   * (1.7) The minimap's stars, territories and black hole only change when
+   * the galaxy does, so they are painted once to an offscreen canvas. Each
+   * frame is then one blit plus the viewport rectangle, instead of up to
+   * 800 fills and 800 colour strings.
+   */
+  const minimapBaseRef = useRef<HTMLCanvasElement | null>(null);
+  useEffect(() => {
+    minimapBaseRef.current = null;
+    needsDrawRef.current = true;
+  }, [empires, stars, minimapScale, blackHole]);
+
   const renderMinimap = useCallback(() => {
     const el = minimapRef.current;
     if (!el) return;
@@ -1119,43 +1173,54 @@ const StellarCartographer: React.FC = () => {
     const cx = MINIMAP_SIZE / 2;
     const cy = MINIMAP_SIZE / 2;
 
-    mctx.fillStyle = 'rgba(5, 5, 8, 0.85)';
-    mctx.fillRect(0, 0, MINIMAP_SIZE, MINIMAP_SIZE);
+    if (!minimapBaseRef.current) {
+      const base = document.createElement('canvas');
+      base.width = MINIMAP_SIZE;
+      base.height = MINIMAP_SIZE;
+      const bctx = base.getContext('2d');
+      if (bctx) {
+        bctx.fillStyle = 'rgba(5, 5, 8, 0.85)';
+        bctx.fillRect(0, 0, MINIMAP_SIZE, MINIMAP_SIZE);
 
-    // Empire territories (subtle)
-    for (const empire of empires) {
-      mctx.fillStyle = hexToRgba(empire.color, 0.08);
-      mctx.beginPath();
-      mctx.arc(cx + empire.centerX * s, cy + empire.centerY * s, empire.radius * s, 0, Math.PI * 2);
-      mctx.fill();
-    }
+        // Empire territories (subtle)
+        for (const empire of empires) {
+          bctx.fillStyle = hexToRgba(empire.color, 0.08);
+          bctx.beginPath();
+          bctx.arc(cx + empire.centerX * s, cy + empire.centerY * s, empire.radius * s, 0, Math.PI * 2);
+          bctx.fill();
+        }
 
-    // SMBH dot
-    if (blackHole) {
-      const bhX = cx + blackHole.x * s;
-      const bhY = cy + blackHole.y * s;
-      const actCfg = SMBH_ACTIVITY_CONFIG[blackHole.activity];
-      mctx.fillStyle = hexToRgba(actCfg.color, 0.3);
-      mctx.beginPath();
-      mctx.arc(bhX, bhY, 4, 0, Math.PI * 2);
-      mctx.fill();
-      mctx.fillStyle = '#000000';
-      mctx.beginPath();
-      mctx.arc(bhX, bhY, 1.5, 0, Math.PI * 2);
-      mctx.fill();
-    }
+        // SMBH dot
+        if (blackHole) {
+          const bhX = cx + blackHole.x * s;
+          const bhY = cy + blackHole.y * s;
+          const actCfg = SMBH_ACTIVITY_CONFIG[blackHole.activity];
+          bctx.fillStyle = hexToRgba(actCfg.color, 0.3);
+          bctx.beginPath();
+          bctx.arc(bhX, bhY, 4, 0, Math.PI * 2);
+          bctx.fill();
+          bctx.fillStyle = '#000000';
+          bctx.beginPath();
+          bctx.arc(bhX, bhY, 1.5, 0, Math.PI * 2);
+          bctx.fill();
+        }
 
-    // Stars (sampled for performance)
-    const step = Math.max(1, Math.floor(stars.length / 800));
-    for (let i = 0; i < stars.length; i += step) {
-      const star = stars[i];
-      mctx.fillStyle = hexToRgba(star.color, 0.5);
-      mctx.fillRect(cx + star.x * s, cy + star.y * s, 1, 1);
+        // Stars (sampled for performance)
+        const step = Math.max(1, Math.floor(stars.length / 800));
+        for (let i = 0; i < stars.length; i += step) {
+          const star = stars[i];
+          bctx.fillStyle = hexToRgba(star.color, 0.5);
+          bctx.fillRect(cx + star.x * s, cy + star.y * s, 1, 1);
+        }
+      }
+      minimapBaseRef.current = base;
     }
+    mctx.drawImage(minimapBaseRef.current, 0, 0);
 
     // Viewport rectangle
     const mainCanvas = canvasRef.current;
     if (mainCanvas) {
+      const camera = cameraRef.current;
       const vpW = (mainCanvas.width / camera.zoom) * s;
       const vpH = (mainCanvas.height / camera.zoom) * s;
       const vpX = cx + camera.x * s - vpW / 2;
@@ -1169,74 +1234,165 @@ const StellarCartographer: React.FC = () => {
     mctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
     mctx.lineWidth = 1;
     mctx.strokeRect(0, 0, MINIMAP_SIZE, MINIMAP_SIZE);
-  }, [empires, stars, camera, minimapScale, blackHole]);
+  }, [empires, stars, minimapScale, blackHole]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // ANIMATION LOOP
   // ═══════════════════════════════════════════════════════════════════════════
+  // Anything on the map that moves by itself: the black hole's accretion
+  // arcs and wormhole portals pulse on the clock. With none of them (and the
+  // camera at rest) the canvas is a still image and is not redrawn at all.
+  const hasAmbientMotion = !!blackHole || wormholes.length > 0 || wormholeDrawing.active;
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    const container = canvas.parentElement;
 
+    // Resize only when the container's size really changed. Assigning
+    // canvas.width, even to the same value, clears and reallocates it.
     const resizeCanvas = () => {
-      const container = canvas.parentElement;
-      if (container) {
-        canvas.width = container.clientWidth;
-        canvas.height = container.clientHeight;
+      if (!container) return;
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      if (w === 0 || h === 0) return;
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+        needsDrawRef.current = true;
       }
     };
-
     resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    let resizeRaf = 0;
+    const scheduleResize = () => {
+      if (resizeRaf) return;
+      resizeRaf = requestAnimationFrame(() => {
+        resizeRaf = 0;
+        resizeCanvas();
+      });
+    };
+    const observer = typeof ResizeObserver !== 'undefined' && container ? new ResizeObserver(scheduleResize) : null;
+    observer?.observe(container!);
+    window.addEventListener('resize', scheduleResize);
 
-    const animate = () => {
-      // Smooth camera
-      setCamera(prev => ({
-        x: prev.x + (targetCamera.x - prev.x) * CAMERA_SMOOTHING,
-        y: prev.y + (targetCamera.y - prev.y) * CAMERA_SMOOTHING,
-        zoom: prev.zoom + (targetCamera.zoom - prev.zoom) * CAMERA_SMOOTHING
-      }));
-
-      // Auto-rotate
-      if (view.autoRotate) {
-        setView(prev => ({
-          ...prev,
-          rotation: prev.rotation + AUTO_ROTATE_SPEED > 360 ? prev.rotation + AUTO_ROTATE_SPEED - 720 : prev.rotation + AUTO_ROTATE_SPEED
-        }));
+    // What the controls last showed, so the DOM is only written on a change.
+    let shownRotation = '';
+    let shownTilt = '';
+    let shownZoom = '';
+    const syncReadouts = () => {
+      const v = viewRef.current;
+      const rot = String(Math.round(v.rotation));
+      if (rot !== shownRotation) {
+        shownRotation = rot;
+        if (rotationLabelRef.current) rotationLabelRef.current.textContent = `${rot}°`;
       }
-
-      // Orbit inertia, apply decaying velocity after drag release
-      if (inertiaRef.current.active) {
-        const { vx, vy } = inertiaRef.current;
-        const speed = Math.sqrt(vx * vx + vy * vy);
-        if (speed < 0.001) {
-          inertiaRef.current.active = false;
-        } else {
-          const sensitivity = 0.3;
-          const dt = 16; // ~60fps frame time
-          setView(prev => ({
-            ...prev,
-            rotation: prev.rotation + vx * dt * sensitivity,
-            tilt: Math.max(-85, Math.min(85, prev.tilt - vy * dt * sensitivity)),
-          }));
-          // Friction deceleration
-          inertiaRef.current.vx *= 0.95;
-          inertiaRef.current.vy *= 0.95;
-        }
+      if (rotationSliderRef.current && Number(rotationSliderRef.current.value) !== Math.round(v.rotation)) {
+        rotationSliderRef.current.value = String(v.rotation);
       }
-
-      render();
-      renderMinimap();
-      animationRef.current = requestAnimationFrame(animate);
+      const tilt = String(Math.round(v.tilt));
+      if (tilt !== shownTilt) {
+        shownTilt = tilt;
+        if (tiltLabelRef.current) tiltLabelRef.current.textContent = `${tilt}°`;
+      }
+      if (tiltSliderRef.current && Number(tiltSliderRef.current.value) !== Math.round(v.tilt)) {
+        tiltSliderRef.current.value = String(v.tilt);
+      }
+      const zoom = cameraRef.current.zoom.toFixed(2);
+      if (zoom !== shownZoom) {
+        shownZoom = zoom;
+        if (zoomValueRef.current) zoomValueRef.current.textContent = `${zoom}×`;
+      }
     };
 
-    animate();
+    let mirroredView = viewRef.current;
+    let lastViewSeen = viewRef.current;
+    let lastViewChange = 0;
+    needsDrawRef.current = true;
+
+    const loop = createFrameLoop({
+      target: canvas,
+      render: ({ dt, time }) => {
+        let moving = false;
+
+        // Smooth camera. CAMERA_SMOOTHING is "per 60 Hz frame"; perFrameToDt
+        // keeps that feel at any frame rate.
+        const cam = cameraRef.current;
+        const target = targetCameraRef.current;
+        if (cam !== target) {
+          const dx = target.x - cam.x;
+          const dy = target.y - cam.y;
+          const dz = target.zoom - cam.zoom;
+          const settled =
+            Math.abs(dx) * cam.zoom < 0.05 && Math.abs(dy) * cam.zoom < 0.05 && Math.abs(dz) < cam.zoom * 0.0005;
+          if (settled) {
+            cameraRef.current = target;
+          } else {
+            const k = perFrameToDt(CAMERA_SMOOTHING, dt);
+            cameraRef.current = { x: cam.x + dx * k, y: cam.y + dy * k, zoom: cam.zoom + dz * k };
+          }
+          moving = true;
+        }
+
+        // Auto-rotate (AUTO_ROTATE_SPEED is degrees per 60 Hz frame)
+        if (viewRef.current.autoRotate) {
+          const v = viewRef.current;
+          const rotation = v.rotation + AUTO_ROTATE_SPEED * (dt / FRAME_MS);
+          viewRef.current = { ...v, rotation: rotation > 360 ? rotation - 720 : rotation };
+          moving = true;
+        }
+
+        // Orbit inertia, apply decaying velocity after drag release
+        if (inertiaRef.current.active) {
+          const { vx, vy } = inertiaRef.current;
+          const speed = Math.sqrt(vx * vx + vy * vy);
+          if (speed < 0.001) {
+            inertiaRef.current.active = false;
+          } else {
+            const sensitivity = 0.3;
+            // The original stepped a fixed 16 ms per frame; 0.96 keeps that
+            // rate while following the real clock.
+            const step = dt * 0.96;
+            const v = viewRef.current;
+            viewRef.current = {
+              ...v,
+              rotation: v.rotation + vx * step * sensitivity,
+              tilt: Math.max(-85, Math.min(85, v.tilt - vy * step * sensitivity)),
+            };
+            // Friction deceleration (0.95 per 60 Hz frame)
+            const friction = decayFor(0.95, dt);
+            inertiaRef.current.vx *= friction;
+            inertiaRef.current.vy *= friction;
+          }
+          moving = true;
+        }
+
+        // Hand the settled view back to React (slider and button state)
+        // once it has been still for a moment, never mid-motion.
+        if (viewRef.current !== lastViewSeen) {
+          lastViewSeen = viewRef.current;
+          lastViewChange = time;
+        } else if (mirroredView !== viewRef.current && time - lastViewChange > 200 && !isDraggingRef.current) {
+          mirroredView = viewRef.current;
+          setViewState(viewRef.current);
+        }
+
+        if (!moving && !hasAmbientMotion && !needsDrawRef.current && !bgDirtyRef.current) return;
+        needsDrawRef.current = false;
+
+        render();
+        renderMinimap();
+        syncReadouts();
+      },
+    });
+    loop.start();
 
     return () => {
-      window.removeEventListener('resize', resizeCanvas);
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      loop.stop();
+      observer?.disconnect();
+      window.removeEventListener('resize', scheduleResize);
+      if (resizeRaf) cancelAnimationFrame(resizeRaf);
     };
-  }, [render, renderMinimap, targetCamera, view.autoRotate]);
+  }, [render, renderMinimap, hasAmbientMotion]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // INPUT HANDLERS
@@ -1253,10 +1409,10 @@ const StellarCartographer: React.FC = () => {
 
     if (e.button !== 0 || e.shiftKey) {
       // Right-click, middle-click, or shift+click = pan
-      camStartRef.current = { x: targetCamera.x, y: targetCamera.y };
+      camStartRef.current = { x: targetCameraRef.current.x, y: targetCameraRef.current.y };
     } else {
       // Left-click = orbit (rotate + tilt)
-      viewStartRef.current = { rotation: view.rotation, tilt: view.tilt };
+      viewStartRef.current = { rotation: viewRef.current.rotation, tilt: viewRef.current.tilt };
     }
   };
 
@@ -1284,8 +1440,8 @@ const StellarCartographer: React.FC = () => {
 
         if (dragButtonRef.current !== 0 || e.shiftKey) {
           // Pan
-          const panDx = dx / camera.zoom;
-          const panDy = dy / camera.zoom;
+          const panDx = dx / cameraRef.current.zoom;
+          const panDy = dy / cameraRef.current.zoom;
           setTargetCamera(prev => ({ ...prev, x: camStartRef.current.x - panDx, y: camStartRef.current.y - panDy }));
         } else {
           // Orbit (rotate + tilt)
@@ -1294,7 +1450,7 @@ const StellarCartographer: React.FC = () => {
             rotation: viewStartRef.current.rotation + dx * 0.3,
             tilt: Math.max(-85, Math.min(85, viewStartRef.current.tilt - dy * 0.3)),
             autoRotate: false
-          }));
+          }), true);
         }
       }
       return;
@@ -1357,11 +1513,12 @@ const StellarCartographer: React.FC = () => {
     if (clicked) {
       // Zoom into the star
       setSelectedStar(clicked);
-      setTargetCamera({ x: clicked.x, y: clicked.y, zoom: Math.max(camera.zoom, 4) });
+      setTargetCamera({ x: clicked.x, y: clicked.y, zoom: Math.max(cameraRef.current.zoom, 4) });
     } else {
       // Double-click on empty space: zoom in at that point
       const canvas = canvasRef.current;
       if (!canvas) return;
+      const camera = cameraRef.current;
       const worldX = (coords.x - canvas.width / 2) / camera.zoom + camera.x;
       const worldY = (coords.y - canvas.height / 2) / camera.zoom + camera.y;
       setTargetCamera(prev => ({ x: worldX, y: worldY, zoom: Math.min(MAX_ZOOM, prev.zoom * 2) }));
@@ -1459,7 +1616,7 @@ const StellarCartographer: React.FC = () => {
           rotation: prev.rotation + dx * 0.3,
           tilt: Math.max(-85, Math.min(85, prev.tilt - dy * 0.3)),
           autoRotate: false,
-        }));
+        }), true);
 
         lastTouchDist = newDist;
         lastTouches = [center];
@@ -1672,10 +1829,10 @@ const StellarCartographer: React.FC = () => {
 
   const focusStar = useCallback((star: Star) => {
     setSelectedStar(star);
-    setTargetCamera({ x: star.x, y: star.y, zoom: Math.max(camera.zoom, 3) });
+    setTargetCamera({ x: star.x, y: star.y, zoom: Math.max(cameraRef.current.zoom, 3) });
     setSearchOpen(false);
     setSearchQuery('');
-  }, [camera.zoom]);
+  }, [setTargetCamera]);
 
   // Badge style class based on status
   const badgeClass = routeDrawing.active ? styles.warning
@@ -1809,7 +1966,7 @@ const StellarCartographer: React.FC = () => {
         <div className={styles.controlRow}>
           <div className={styles.controlLabel}>
             <span>Rotation</span>
-            <span className={styles.valueDisplay}>{Math.round(view.rotation)}°</span>
+            <span ref={rotationLabelRef} className={styles.valueDisplay}>{`${Math.round(view.rotation)}°`}</span>
           </div>
           <input
             type="range"
@@ -1817,6 +1974,7 @@ const StellarCartographer: React.FC = () => {
             min={-360}
             max={360}
             step={1}
+            ref={rotationSliderRef}
             value={view.rotation}
             onChange={e => setView(prev => ({ ...prev, rotation: Number(e.target.value) }))}
           />
@@ -1824,7 +1982,7 @@ const StellarCartographer: React.FC = () => {
         <div className={styles.controlRow}>
           <div className={styles.controlLabel}>
             <span>Tilt (3D)</span>
-            <span className={styles.valueDisplay}>{Math.round(view.tilt)}°</span>
+            <span ref={tiltLabelRef} className={styles.valueDisplay}>{`${Math.round(view.tilt)}°`}</span>
           </div>
           <input
             type="range"
@@ -1832,6 +1990,7 @@ const StellarCartographer: React.FC = () => {
             min={-85}
             max={85}
             step={1}
+            ref={tiltSliderRef}
             value={view.tilt}
             onChange={e => setView(prev => ({ ...prev, tilt: Number(e.target.value) }))}
           />
@@ -2080,7 +2239,7 @@ const StellarCartographer: React.FC = () => {
               tradeRoutes,
               wormholes,
               blackHole,
-              camera,
+              camera: cameraRef.current,
               display,
               worldToScreen
             });
@@ -2210,7 +2369,7 @@ const StellarCartographer: React.FC = () => {
 
       {/* ═══════════════════ ZOOM PANEL ═══════════════════ */}
       <div className={styles.zoomPanel}>
-        <div className={styles.zoomValue}>{camera.zoom.toFixed(2)}×</div>
+        <div ref={zoomValueRef} className={styles.zoomValue}>{`${cameraRef.current.zoom.toFixed(2)}×`}</div>
         <div className={styles.zoomLabel}>Zoom</div>
         <div className={styles.controlsHint}>Drag: orbit · Shift+drag: pan · Scroll: zoom · F: search · R: auto-rotate · Home: reset</div>
       </div>

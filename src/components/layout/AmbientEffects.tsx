@@ -1,10 +1,9 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { applyAmbient, useDisplayPref } from "@/lib/display-prefs";
+import { isSimulatorPath } from "@/lib/simulator-routes";
 import "./texture-overlay.css";
 
-// Simulator routes use canvas/WebGL; both effects cause artifacts there.
-const SIMULATOR_ROUTES = ["/rogue", "/tools/tidelock", "/tools/exosky", "/tools/stellar-cartographer"];
 
 /** Sets --scroll-y on <html> for CSS-driven parallax. Runs once globally. */
 function useScrollYProperty() {
@@ -55,9 +54,9 @@ const AmbientEffects = () => {
     applyAmbient(ambient);
   }, [ambient]);
 
-  const isSimulator = SIMULATOR_ROUTES.some(
-    (route) => pathname === route || pathname.startsWith(route + "/")
-  );
+  // Simulator routes repaint a full-screen canvas every frame; an animated
+  // full-viewport texture above it is re-blended on each of those frames.
+  const isSimulator = isSimulatorPath(pathname);
 
   if (isSimulator) return null;
 

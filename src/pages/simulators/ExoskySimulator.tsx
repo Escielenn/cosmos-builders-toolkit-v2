@@ -142,7 +142,7 @@ const ExoskySimulator = () => {
           </Suspense>
           {/* Save/Load controls */}
           {(
-            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 border border-sf-line bg-sf-surface/90 px-3 py-2 backdrop-blur-sf-panel">
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 border border-sf-line bg-sf-surface px-3 py-2">
               <Button
                 variant="outline"
                 size="sm"

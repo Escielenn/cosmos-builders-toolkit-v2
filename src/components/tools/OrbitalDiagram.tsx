@@ -50,15 +50,22 @@ export default function OrbitalDiagram({
     const container = containerRef.current;
     if (!canvas || !container) return;
 
-    const dpr = window.devicePixelRatio || 1;
+    // Capped at 2: a 3x phone screen would otherwise allocate 9x the pixels.
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const rect = container.getBoundingClientRect();
     const w = rect.width;
     const h = rect.height;
 
-    canvas.width = w * dpr;
-    canvas.height = h * dpr;
-    canvas.style.width = `${w}px`;
-    canvas.style.height = `${h}px`;
+    // Only on a real size change: assigning canvas.width reallocates the
+    // backing store even when the value is the same.
+    const pw = Math.round(w * dpr);
+    const ph = Math.round(h * dpr);
+    if (canvas.width !== pw || canvas.height !== ph) {
+      canvas.width = pw;
+      canvas.height = ph;
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+    }
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -283,25 +290,41 @@ export default function OrbitalDiagram({
     snowline, planetDistance, planetName, knownPlanets, highlightAllPlanets,
   ]);
 
+  // (1.7) One draw per frame at most. A slider drag or a wheel gesture used
+  // to queue a separate requestAnimationFrame(draw) per event, several per
+  // frame, each one resizing and repainting the whole canvas.
+  const drawRef = useRef(draw);
+  drawRef.current = draw;
+  const pendingRef = useRef(0);
+  const scheduleDraw = useCallback(() => {
+    if (pendingRef.current) return;
+    pendingRef.current = requestAnimationFrame(() => {
+      pendingRef.current = 0;
+      drawRef.current();
+    });
+  }, []);
+  useEffect(() => () => {
+    if (pendingRef.current) cancelAnimationFrame(pendingRef.current);
+    pendingRef.current = 0;
+  }, []);
+
   // Redraw on resize
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const observer = new ResizeObserver(() => {
-      requestAnimationFrame(draw);
-    });
+    const observer = new ResizeObserver(scheduleDraw);
     observer.observe(container);
     // Initial draw after fonts load
-    document.fonts.ready.then(() => draw());
+    document.fonts.ready.then(scheduleDraw);
 
     return () => observer.disconnect();
-  }, [draw]);
+  }, [scheduleDraw]);
 
   // Redraw on prop changes
   useEffect(() => {
-    requestAnimationFrame(draw);
-  }, [draw]);
+    scheduleDraw();
+  }, [draw, scheduleDraw]);
 
   // Zoom handler
   useEffect(() => {
@@ -312,12 +335,12 @@ export default function OrbitalDiagram({
       e.preventDefault();
       const delta = e.deltaY > 0 ? 0.9 : 1.1;
       zoomRef.current = Math.max(0.3, Math.min(5, zoomRef.current * delta));
-      requestAnimationFrame(draw);
+      scheduleDraw();
     };
 
     canvas.addEventListener("wheel", handleWheel, { passive: false });
     return () => canvas.removeEventListener("wheel", handleWheel);
-  }, [draw]);
+  }, [scheduleDraw]);
 
   return (
     <div
