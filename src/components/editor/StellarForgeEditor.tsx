@@ -37,7 +37,16 @@ import {
   Maximize2,
   Minimize2,
   AtSign,
+  MoreHorizontal,
+  Palette,
 } from "lucide-react";
+import { createPortal } from "react-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { BracketPanel } from "@/components/ui/bracket-panel";
 import { WikiLink } from "@/components/editor/WikiLinkExtension";
@@ -117,6 +126,12 @@ export interface StellarForgeEditorProps {
    * they exist (the footer, the close-tab guard, the device journal).
    */
   onDirty?: () => void;
+  /**
+   * With `page`: render the toolbar into this element (the host's docked
+   * bar) instead of above the prose. `null` means docked but the host has
+   * not mounted yet (nothing renders); leave it undefined for inline.
+   */
+  toolbarTarget?: HTMLElement | null;
 }
 
 /** The frame-less shell for `bare` editors. */
@@ -205,6 +220,7 @@ export function StellarForgeEditor({
   bare = false,
   page = false,
   onDirty,
+  toolbarTarget,
 }: StellarForgeEditorProps) {
   const config = PRESET_CONFIG[preset];
   const resolvedMinHeight = minHeight || config.defaultMinHeight;
@@ -458,6 +474,254 @@ export function StellarForgeEditor({
 
   const Shell = bare || page ? BareShell : BracketPanel;
 
+  // Docked: the Manuscript hosts the toolbar as its second bar, under the
+  // view switcher, instead of inside the page (1.6 finding 16). Focus mode
+  // and the word count are the host's there, so they are not repeated.
+  const docked = page && toolbarTarget !== undefined;
+  // A plain element (not a component defined in render), so React keeps
+  // the toolbar's buttons mounted across editor transactions.
+  const sep = (
+    <div
+      aria-hidden="true"
+      className={docked ? "mx-1.5 h-5 w-px shrink-0 bg-sf-line-hairline" : "w-px h-5 bg-border mx-1"}
+    />
+  );
+
+  // Lists, quote, code, rule and link: the group that folds into the
+  // overflow menu on narrow docked bars.
+  const secondary = (
+    <>
+      {config.showLists && (
+        <>
+          {sep}
+          <ToolbarBtn docked={docked} onClick={() => editor.chain().focus().toggleBulletList().run()} active={editor.isActive("bulletList")} title="Bullet List">
+            <List className="w-4 h-4" />
+          </ToolbarBtn>
+          <ToolbarBtn docked={docked} onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive("orderedList")} title="Numbered List">
+            <ListOrdered className="w-4 h-4" />
+          </ToolbarBtn>
+        </>
+      )}
+      {config.showQuote && (
+        <ToolbarBtn docked={docked} onClick={() => editor.chain().focus().toggleBlockquote().run()} active={editor.isActive("blockquote")} title="Quote">
+          <Quote className="w-4 h-4" />
+        </ToolbarBtn>
+      )}
+      {config.showCode && (
+        <ToolbarBtn docked={docked} onClick={() => editor.chain().focus().toggleCodeBlock().run()} active={editor.isActive("codeBlock")} title="Code Block">
+          <Code className="w-4 h-4" />
+        </ToolbarBtn>
+      )}
+      {config.showHr && (
+        <ToolbarBtn docked={docked} onClick={() => editor.chain().focus().setHorizontalRule().run()} title="Horizontal Rule">
+          <Minus className="w-4 h-4" />
+        </ToolbarBtn>
+      )}
+      {config.showLink && (
+        <>
+          {sep}
+          <ToolbarBtn docked={docked} onClick={handleInsertLink} title="Insert Link">
+            <LinkIcon className="w-4 h-4" />
+          </ToolbarBtn>
+        </>
+      )}
+    </>
+  );
+
+  const toolbar = (
+    <div
+      role="toolbar"
+      aria-label="Formatting"
+      className={cn(
+        // The docked bar draws its own hairline; .sf-writing-toolbar would
+        // add a second rule under the buttons.
+        docked ? "flex items-center" : "sf-writing-toolbar flex items-center",
+        docked
+          ? // Phones: one horizontal scroll strip. Wider: everything inline,
+            // with the secondary group in an overflow menu between sm and md.
+            "sf-sb sf-sb--slim min-w-0 flex-1 flex-nowrap gap-0.5 overflow-x-auto"
+          : page
+            ? "flex-wrap gap-1 py-1.5 border-b !border-solid !border-sf-line-hairline"
+            : "flex-wrap gap-0.5 p-1.5 border-b border-sf-line bg-muted/30",
+      )}
+    >
+      {/* Bold + Italic (always shown) */}
+      <ToolbarBtn docked={docked} onClick={() => editor.chain().focus().toggleBold().run()} active={editor.isActive("bold")} title="Bold">
+        <Bold className="w-4 h-4" />
+      </ToolbarBtn>
+      <ToolbarBtn docked={docked} onClick={() => editor.chain().focus().toggleItalic().run()} active={editor.isActive("italic")} title="Italic">
+        <Italic className="w-4 h-4" />
+      </ToolbarBtn>
+      {config.showUnderline && (
+        <ToolbarBtn docked={docked} onClick={() => editor.chain().focus().toggleUnderline().run()} active={editor.isActive("underline")} title="Underline">
+          <UnderlineIcon className="w-4 h-4" />
+        </ToolbarBtn>
+      )}
+      {config.showStrikethrough && (
+        <ToolbarBtn docked={docked} onClick={() => editor.chain().focus().toggleStrike().run()} active={editor.isActive("strike")} title="Strikethrough">
+          <Strikethrough className="w-4 h-4" />
+        </ToolbarBtn>
+      )}
+
+      {config.showHeadings && (
+        <>
+          {sep}
+          <ToolbarBtn docked={docked} onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} active={editor.isActive("heading", { level: 1 })} title="Heading 1">
+            <Heading1 className="w-4 h-4" />
+          </ToolbarBtn>
+          <ToolbarBtn docked={docked} onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} active={editor.isActive("heading", { level: 2 })} title="Heading 2">
+            <Heading2 className="w-4 h-4" />
+          </ToolbarBtn>
+          <ToolbarBtn docked={docked} onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} active={editor.isActive("heading", { level: 3 })} title="Heading 3">
+            <Heading3 className="w-4 h-4" />
+          </ToolbarBtn>
+        </>
+      )}
+
+      {docked ? (
+        <>
+          <div className="flex shrink-0 items-center gap-0.5 sm:hidden md:flex">{secondary}</div>
+          <div className="hidden shrink-0 items-center sm:flex md:hidden">
+            {sep}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button type="button" title="More formatting" aria-label="More formatting" className={DOCKED_BTN}>
+                  <MoreHorizontal className="w-4 h-4" aria-hidden="true" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-48">
+                {config.showLists && (
+                  <>
+                    <DropdownMenuItem onClick={() => editor.chain().focus().toggleBulletList().run()}>
+                      <List className="mr-2 h-4 w-4" aria-hidden="true" /> Bullet list
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => editor.chain().focus().toggleOrderedList().run()}>
+                      <ListOrdered className="mr-2 h-4 w-4" aria-hidden="true" /> Numbered list
+                    </DropdownMenuItem>
+                  </>
+                )}
+                {config.showQuote && (
+                  <DropdownMenuItem onClick={() => editor.chain().focus().toggleBlockquote().run()}>
+                    <Quote className="mr-2 h-4 w-4" aria-hidden="true" /> Quote
+                  </DropdownMenuItem>
+                )}
+                {config.showCode && (
+                  <DropdownMenuItem onClick={() => editor.chain().focus().toggleCodeBlock().run()}>
+                    <Code className="mr-2 h-4 w-4" aria-hidden="true" /> Code block
+                  </DropdownMenuItem>
+                )}
+                {config.showHr && (
+                  <DropdownMenuItem onClick={() => editor.chain().focus().setHorizontalRule().run()}>
+                    <Minus className="mr-2 h-4 w-4" aria-hidden="true" /> Horizontal rule
+                  </DropdownMenuItem>
+                )}
+                {config.showLink && (
+                  <DropdownMenuItem onClick={handleInsertLink}>
+                    <LinkIcon className="mr-2 h-4 w-4" aria-hidden="true" /> Insert link
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </>
+      ) : (
+        secondary
+      )}
+
+      {/* Wiki Link + Entity Mention triggers */}
+      {worldId && (
+        <>
+          {sep}
+          <ToolbarBtn docked={docked} onClick={handleInsertWikiLink} title="Insert Wiki Link [[">
+            <span className="text-sf-stellar-text font-mono text-xs font-medium">[[</span>
+          </ToolbarBtn>
+          <ToolbarBtn docked={docked} onClick={handleInsertAtTrigger} title="Mention Entity @">
+            <AtSign className="w-4 h-4 text-sf-emerald-text" />
+          </ToolbarBtn>
+        </>
+      )}
+
+      {config.showUndoRedo && (
+        <>
+          {sep}
+          <ToolbarBtn docked={docked} onClick={() => editor.chain().focus().undo().run()} title="Undo">
+            <Undo className="w-4 h-4" />
+          </ToolbarBtn>
+          <ToolbarBtn docked={docked} onClick={() => editor.chain().focus().redo().run()} title="Redo">
+            <Redo className="w-4 h-4" />
+          </ToolbarBtn>
+        </>
+      )}
+
+      {/* Focus Mode Toggle (full preset only; the host owns focus when docked) */}
+      {config.showFocusMode && !docked && (
+        <>
+          {sep}
+          <ToolbarBtn docked={docked} onClick={() => setFocusMode((f) => !f)} active={focusMode} title={focusMode ? "Exit Focus Mode" : "Focus Mode"}>
+            {focusMode ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+          </ToolbarBtn>
+        </>
+      )}
+
+      {/* Theme Picker: swatches inline, or one menu when docked */}
+      {config.showThemePicker && docked && (
+        <>
+          {sep}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button type="button" title="Page theme" aria-label="Page theme" className={DOCKED_BTN}>
+                <Palette className="w-4 h-4" aria-hidden="true" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              {WRITING_THEMES.map((theme) => (
+                <DropdownMenuItem key={theme.id} onClick={() => updatePreferences({ themeId: theme.id })}>
+                  <span
+                    aria-hidden="true"
+                    className="mr-2 h-3.5 w-3.5 shrink-0 border border-sf-line"
+                    style={{ backgroundColor: theme.swatch[0] }}
+                  />
+                  {theme.name}
+                  {preferences.themeId === theme.id && <span className="ml-auto font-mono text-[12px] text-t4">ON</span>}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </>
+      )}
+      {config.showThemePicker && !docked && (
+        <>
+          {sep}
+          <div className="flex items-center gap-[30px] px-[15px]">
+            {WRITING_THEMES.map((theme) => (
+              <Tooltip key={theme.id}>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={() => updatePreferences({ themeId: theme.id })}
+                    className={cn(
+                      // 14px swatch, 44px hit (.sf-hit); the 30px gap keeps hit boxes apart
+                      "sf-hit w-3.5 h-3.5 rounded-full border transition-all",
+                      preferences.themeId === theme.id
+                        ? "ring-2 ring-sf-stellar ring-offset-1 ring-offset-background border-sf-stellar"
+                        : "border-sf-line hover:border-sf-line-emphasis"
+                    )}
+                    style={{ backgroundColor: theme.swatch[0] }}
+                    aria-label={theme.name}
+                  />
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="text-xs">
+                  {theme.name}
+                </TooltipContent>
+              </Tooltip>
+            ))}
+          </div>
+        </>
+      )}
+
+    </div>
+  );
+
   return (
     <Shell color="stellar">
       <div
@@ -467,248 +731,8 @@ export function StellarForgeEditor({
           className
         )}
       >
-        {/* Toolbar */}
-        {!readOnly && !bare && (
-          <div
-            className={cn(
-              "sf-writing-toolbar flex flex-wrap items-center",
-              page
-                ? "gap-1 py-1.5 border-b !border-solid !border-sf-line-hairline"
-                : "gap-0.5 p-1.5 border-b border-sf-line bg-muted/30",
-            )}
-          >
-            {/* Bold + Italic (always shown) */}
-            <ToolbarBtn
-              onClick={() => editor.chain().focus().toggleBold().run()}
-              active={editor.isActive("bold")}
-              title="Bold"
-            >
-              <Bold className="w-4 h-4" />
-            </ToolbarBtn>
-            <ToolbarBtn
-              onClick={() => editor.chain().focus().toggleItalic().run()}
-              active={editor.isActive("italic")}
-              title="Italic"
-            >
-              <Italic className="w-4 h-4" />
-            </ToolbarBtn>
-
-            {/* Underline */}
-            {config.showUnderline && (
-              <ToolbarBtn
-                onClick={() => editor.chain().focus().toggleUnderline().run()}
-                active={editor.isActive("underline")}
-                title="Underline"
-              >
-                <UnderlineIcon className="w-4 h-4" />
-              </ToolbarBtn>
-            )}
-
-            {/* Strikethrough */}
-            {config.showStrikethrough && (
-              <ToolbarBtn
-                onClick={() => editor.chain().focus().toggleStrike().run()}
-                active={editor.isActive("strike")}
-                title="Strikethrough"
-              >
-                <Strikethrough className="w-4 h-4" />
-              </ToolbarBtn>
-            )}
-
-            {/* Headings */}
-            {config.showHeadings && (
-              <>
-                <div className="w-px h-5 bg-border mx-1" />
-                <ToolbarBtn
-                  onClick={() =>
-                    editor.chain().focus().toggleHeading({ level: 1 }).run()
-                  }
-                  active={editor.isActive("heading", { level: 1 })}
-                  title="Heading 1"
-                >
-                  <Heading1 className="w-4 h-4" />
-                </ToolbarBtn>
-                <ToolbarBtn
-                  onClick={() =>
-                    editor.chain().focus().toggleHeading({ level: 2 }).run()
-                  }
-                  active={editor.isActive("heading", { level: 2 })}
-                  title="Heading 2"
-                >
-                  <Heading2 className="w-4 h-4" />
-                </ToolbarBtn>
-                <ToolbarBtn
-                  onClick={() =>
-                    editor.chain().focus().toggleHeading({ level: 3 }).run()
-                  }
-                  active={editor.isActive("heading", { level: 3 })}
-                  title="Heading 3"
-                >
-                  <Heading3 className="w-4 h-4" />
-                </ToolbarBtn>
-              </>
-            )}
-
-            {/* Lists, Quote, Code, HR */}
-            {config.showLists && (
-              <>
-                <div className="w-px h-5 bg-border mx-1" />
-                <ToolbarBtn
-                  onClick={() => editor.chain().focus().toggleBulletList().run()}
-                  active={editor.isActive("bulletList")}
-                  title="Bullet List"
-                >
-                  <List className="w-4 h-4" />
-                </ToolbarBtn>
-                <ToolbarBtn
-                  onClick={() =>
-                    editor.chain().focus().toggleOrderedList().run()
-                  }
-                  active={editor.isActive("orderedList")}
-                  title="Numbered List"
-                >
-                  <ListOrdered className="w-4 h-4" />
-                </ToolbarBtn>
-              </>
-            )}
-
-            {config.showQuote && (
-              <ToolbarBtn
-                onClick={() =>
-                  editor.chain().focus().toggleBlockquote().run()
-                }
-                active={editor.isActive("blockquote")}
-                title="Quote"
-              >
-                <Quote className="w-4 h-4" />
-              </ToolbarBtn>
-            )}
-
-            {config.showCode && (
-              <ToolbarBtn
-                onClick={() =>
-                  editor.chain().focus().toggleCodeBlock().run()
-                }
-                active={editor.isActive("codeBlock")}
-                title="Code Block"
-              >
-                <Code className="w-4 h-4" />
-              </ToolbarBtn>
-            )}
-
-            {config.showHr && (
-              <ToolbarBtn
-                onClick={() =>
-                  editor.chain().focus().setHorizontalRule().run()
-                }
-                title="Horizontal Rule"
-              >
-                <Minus className="w-4 h-4" />
-              </ToolbarBtn>
-            )}
-
-            {/* Link */}
-            {config.showLink && (
-              <>
-                <div className="w-px h-5 bg-border mx-1" />
-                <ToolbarBtn onClick={handleInsertLink} title="Insert Link">
-                  <LinkIcon className="w-4 h-4" />
-                </ToolbarBtn>
-              </>
-            )}
-
-            {/* Wiki Link + Entity Mention triggers */}
-            {worldId && (
-              <>
-                <div className="w-px h-5 bg-border mx-1" />
-                <ToolbarBtn
-                  onClick={handleInsertWikiLink}
-                  title="Insert Wiki Link [["
-                >
-                  <span className="text-sf-stellar-text font-mono text-xs font-medium">
-                    [[
-                  </span>
-                </ToolbarBtn>
-                <ToolbarBtn
-                  onClick={handleInsertAtTrigger}
-                  title="Mention Entity @"
-                >
-                  <AtSign className="w-4 h-4 text-sf-emerald-text" />
-                </ToolbarBtn>
-              </>
-            )}
-
-            {/* Undo / Redo */}
-            {config.showUndoRedo && (
-              <>
-                <div className="w-px h-5 bg-border mx-1" />
-                <ToolbarBtn
-                  onClick={() => editor.chain().focus().undo().run()}
-                  title="Undo"
-                >
-                  <Undo className="w-4 h-4" />
-                </ToolbarBtn>
-                <ToolbarBtn
-                  onClick={() => editor.chain().focus().redo().run()}
-                  title="Redo"
-                >
-                  <Redo className="w-4 h-4" />
-                </ToolbarBtn>
-              </>
-            )}
-
-            {/* Focus Mode Toggle (full preset only) */}
-            {config.showFocusMode && (
-              <>
-                <div className="w-px h-5 bg-border mx-1" />
-                <ToolbarBtn
-                  onClick={() => setFocusMode((f) => !f)}
-                  active={focusMode}
-                  title={focusMode ? "Exit Focus Mode" : "Focus Mode"}
-                >
-                  {focusMode ? (
-                    <Minimize2 className="w-4 h-4" />
-                  ) : (
-                    <Maximize2 className="w-4 h-4" />
-                  )}
-                </ToolbarBtn>
-              </>
-            )}
-
-            {/* Theme Picker */}
-            {config.showThemePicker && (
-              <>
-                <div className="w-px h-5 bg-border mx-1" />
-                <div className="flex items-center gap-[30px] px-[15px]">
-                  {WRITING_THEMES.map((theme) => (
-                    <Tooltip key={theme.id}>
-                      <TooltipTrigger asChild>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            updatePreferences({ themeId: theme.id })
-                          }
-                          className={cn(
-                            // 14px swatch, 44px hit (.sf-hit); the 30px gap keeps hit boxes apart
-                            "sf-hit w-3.5 h-3.5 rounded-full border transition-all",
-                            preferences.themeId === theme.id
-                              ? "ring-2 ring-sf-stellar ring-offset-1 ring-offset-background border-sf-stellar"
-                              : "border-sf-line hover:border-sf-line-emphasis"
-                          )}
-                          style={{ backgroundColor: theme.swatch[0] }}
-                          aria-label={theme.name}
-                        />
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom" className="text-xs">
-                        {theme.name}
-                      </TooltipContent>
-                    </Tooltip>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-        )}
+        {/* Toolbar: inline above the prose, or docked into the host's bar */}
+        {!readOnly && !bare && (docked ? (toolbarTarget ? createPortal(toolbar, toolbarTarget) : null) : toolbar)}
 
         {/* Editor Content */}
         <EditorContent
@@ -730,7 +754,7 @@ export function StellarForgeEditor({
         />
 
         {/* Word Count Footer (full preset only) */}
-        {config.showWordCount && !readOnly && !bare && (
+        {config.showWordCount && !readOnly && !bare && !docked && (
           <div className={cn("flex items-center justify-end py-1.5 border-t border-sf-line-hairline", page ? "px-0" : "px-3 bg-muted/20")}>
             <span className="font-mono text-[12px] tracking-wide uppercase text-t4">
               {wordCount.toLocaleString()} {wordCount === 1 ? "word" : "words"}
@@ -773,16 +797,22 @@ export function StellarForgeEditor({
 // ToolbarBtn, small toolbar button matching existing pattern
 // ---------------------------------------------------------------------------
 
+/** One docked toolbar button: 36px visible, 44px hit (.sf-hit). */
+const DOCKED_BTN =
+  "sf-hit flex h-9 w-9 shrink-0 items-center justify-center rounded-none text-t3 transition-colors duration-fast hover:bg-sf-surface hover:text-t1";
+
 function ToolbarBtn({
   onClick,
   active,
   children,
   title,
+  docked = false,
 }: {
   onClick: () => void;
   active?: boolean;
   children: React.ReactNode;
   title: string;
+  docked?: boolean;
 }) {
   return (
     <button
@@ -790,14 +820,17 @@ function ToolbarBtn({
       onClick={onClick}
       title={title}
       aria-label={title}
+      aria-pressed={active === undefined ? undefined : active}
       className={cn(
-        "p-1.5 rounded-none border border-transparent hover:bg-accent/80 transition-colors",
-        active && "bg-accent text-accent-foreground"
+        docked
+          ? cn(DOCKED_BTN, active && "bg-sf-surface-elevated text-sf-primary-text hover:bg-sf-surface-elevated")
+          : cn(
+              "p-1.5 rounded-none border border-transparent hover:bg-accent/80 transition-colors",
+              active && "bg-accent text-accent-foreground",
+            ),
       )}
     >
       {children}
     </button>
   );
 }
-
-export default StellarForgeEditor;

@@ -126,7 +126,7 @@ export function LabelManagerDialog({
             </li>
           ))}
           {draft.length === 0 && (
-            <li className="font-serif text-[14px] italic text-t3">
+            <li className="font-sans text-[14px] text-t3">
               No labels yet. Scrivener writers often start with Scene, Chapter, Idea and Notes.
             </li>
           )}

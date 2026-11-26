@@ -94,7 +94,7 @@ export function WorldRefsPanel({ pins, onUnpin, onPinSource, onCite, onInsertPla
       <div className="px-4 py-6">
         <PinnedGroup pins={pins} onUnpin={onUnpin} />
         <p className="mb-2 mt-3 font-heading text-sf-eyebrow uppercase text-t3">No tool data yet</p>
-        <p className="mb-4 font-serif text-[14px] leading-relaxed text-t2">
+        <p className="mb-4 font-sans text-[14px] leading-relaxed text-t2">
           Fill in a worldbuilding tool, lock in a simulation, or log an event in the Chronicle, and the values show up
           here ready to cite in your prose.
         </p>
@@ -142,7 +142,7 @@ export function WorldRefsPanel({ pins, onUnpin, onPinSource, onCite, onInsertPla
           <section aria-label="For this scene" className="pt-2">
             <h3 className="px-3 pb-1 font-heading text-sf-eyebrow uppercase text-t4">// For this scene</h3>
             {scene.length === 0 ? (
-              <p className="px-3 pb-2 font-serif text-[14px] italic leading-relaxed text-t3">
+              <p className="px-3 pb-2 font-sans text-[14px] leading-relaxed text-t3">
                 Mention an entity, or set the POV and SET IN on the Card, and the values that touch this scene rise here.
               </p>
             ) : (

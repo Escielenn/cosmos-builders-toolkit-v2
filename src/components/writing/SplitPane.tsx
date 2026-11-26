@@ -130,7 +130,7 @@ export function SplitPane({
           <DropdownMenuTrigger asChild>
             <button
               type="button"
-              className="flex min-h-hit min-w-0 flex-1 items-center gap-2 px-2 text-left font-serif text-[14px] italic text-t2 transition-colors duration-base hover:text-t1"
+              className="flex min-h-hit min-w-0 flex-1 items-center gap-2 px-2 text-left font-sans text-[14px] text-t2 transition-colors duration-base hover:text-t1"
               aria-label={`Second pane: ${heading}. Choose what to show.`}
             >
               <span className="truncate">{heading}</span>
@@ -142,7 +142,7 @@ export function SplitPane({
               <DropdownMenuSubTrigger>Document</DropdownMenuSubTrigger>
               <DropdownMenuSubContent className="sf-sb sf-sb--slim max-h-80 w-64 overflow-y-auto">
                 {pickable.length === 0 ? (
-                  <p className="px-2 py-1.5 font-serif text-[13px] italic text-t3">No other documents.</p>
+                  <p className="px-2 py-1.5 font-sans text-[13px] text-t3">No other documents.</p>
                 ) : (
                   pickable.map((d) => (
                     <DropdownMenuItem key={d.id} onClick={() => onSourceChange({ kind: "doc", id: d.id })}>
@@ -156,7 +156,7 @@ export function SplitPane({
               <DropdownMenuSubTrigger>Codex entity</DropdownMenuSubTrigger>
               <DropdownMenuSubContent className="sf-sb sf-sb--slim max-h-80 w-64 overflow-y-auto">
                 {(entities ?? []).length === 0 ? (
-                  <p className="px-2 py-1.5 font-serif text-[13px] italic text-t3">The Codex is empty.</p>
+                  <p className="px-2 py-1.5 font-sans text-[13px] text-t3">The Codex is empty.</p>
                 ) : (
                   [...(entities ?? [])]
                     .sort((a, b) => a.name.localeCompare(b.name))
@@ -175,7 +175,7 @@ export function SplitPane({
               <DropdownMenuSubTrigger>Worksheet</DropdownMenuSubTrigger>
               <DropdownMenuSubContent className="sf-sb sf-sb--slim max-h-80 w-64 overflow-y-auto">
                 {worksheets.length === 0 ? (
-                  <p className="px-2 py-1.5 font-serif text-[13px] italic text-t3">No worksheets yet.</p>
+                  <p className="px-2 py-1.5 font-sans text-[13px] text-t3">No worksheets yet.</p>
                 ) : (
                   worksheets.map((w) => (
                     <DropdownMenuItem key={w.id} onClick={() => onSourceChange({ kind: "worksheet", id: w.id })}>
@@ -234,7 +234,7 @@ export function SplitPane({
         ) : (
           <div className="px-6 py-10">
             <FileText className="mb-3 h-5 w-5 text-t4" aria-hidden="true" />
-            <p className="max-w-[40ch] font-serif text-[15px] italic text-t3">
+            <p className="max-w-[40ch] font-sans text-[15px] text-t3">
               Open another document to write in beside this one, or a Codex entry or worksheet to keep
               in view while you write. Use the menu above.
             </p>
@@ -349,7 +349,7 @@ function EntityBody({ worldId, entity }: { worldId: string; entity: Entity }): J
         </div>
       )}
       {!entity.summary && !entity.description && !entity.notes && (
-        <p className="mt-3 font-serif text-[15px] italic text-t3">Nothing written about this entry yet.</p>
+        <p className="mt-3 font-sans text-[15px] text-t3">Nothing written about this entry yet.</p>
       )}
       {facts.length > 0 && (
         <>
@@ -391,9 +391,9 @@ function WorksheetBody({
       <p className="font-heading text-sf-eyebrow uppercase text-t4">
         {getToolDisplayName(sheet.tool_type)} · Worksheet · read only
       </p>
-      <h2 className="mt-1 font-serif text-[24px] italic text-t1">{sheet.title || getToolDisplayName(sheet.tool_type)}</h2>
+      <h2 className="mt-1 font-sans text-[24px] text-t1">{sheet.title || getToolDisplayName(sheet.tool_type)}</h2>
       {facts.length === 0 ? (
-        <p className="mt-3 font-serif text-[15px] italic text-t3">No values on file in this worksheet yet.</p>
+        <p className="mt-3 font-sans text-[15px] text-t3">No values on file in this worksheet yet.</p>
       ) : (
         <dl className="mt-4 border-t border-sf-line-hairline">
           {facts.map((f) => (

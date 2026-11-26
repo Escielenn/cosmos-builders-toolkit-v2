@@ -367,7 +367,7 @@ function PreviewBody({
         {shown.map(({ node, depth }, i) => (
           <li
             key={i}
-            className="flex min-w-0 items-center gap-2 py-1 pr-3 font-serif text-[14px] text-t2"
+            className="flex min-w-0 items-center gap-2 py-1 pr-3 font-sans text-[14px] text-t2"
             style={{ paddingLeft: 12 + depth * 16 }}
           >
             {node.kind === "folder" ? (
