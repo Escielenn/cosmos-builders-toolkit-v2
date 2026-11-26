@@ -91,6 +91,18 @@ export interface DocumentMeta {
    * key, so two quick resolutions never drop each other.
    */
   captureResolutions?: Record<string, CaptureResolutionMeta>;
+  /**
+   * The writer's own marker for this document: one emoji (or any single
+   * character), shown beside its title in the binder, on the page, on cards
+   * and in the outline (1.7). User content, never system copy. Absent = none.
+   */
+  marker?: string;
+  /**
+   * The writer's colour for this document, a named hue (see LABEL_HUES in
+   * writing-labels.ts). Wins over the label's and the status's colour on a
+   * card's top edge. Absent = follow the label, then the status.
+   */
+  color?: string;
 }
 
 export interface CaptureResolutionMeta {
@@ -187,7 +199,31 @@ export function readDocMeta(metadata: unknown): DocumentMeta {
     keywords: keywordList(m.keywords),
     target: wordTarget(m.target),
     ...(hasResolutions(m.captureResolutions) ? { captureResolutions: resolutionMap(m.captureResolutions) } : {}),
+    // Only present when set, so documents without them read unchanged.
+    ...(markerOf(m.marker) ? { marker: markerOf(m.marker) } : {}),
+    ...(colorOf(m.color) ? { color: colorOf(m.color) } : {}),
   };
+}
+
+/** One visible character (an emoji with its joiners counts as one). */
+export function markerOf(v: unknown): string {
+  if (typeof v !== "string") return "";
+  const t = v.trim();
+  if (!t) return "";
+  try {
+    const Seg = (Intl as unknown as { Segmenter?: new (l?: string, o?: { granularity: string }) => { segment(s: string): Iterable<{ segment: string }> } }).Segmenter;
+    if (Seg) {
+      for (const part of new Seg(undefined, { granularity: "grapheme" }).segment(t)) return part.segment.slice(0, 32);
+    }
+  } catch {
+    /* fall through to code points */
+  }
+  return Array.from(t).slice(0, 2).join("");
+}
+
+const DOC_COLOR_RE = /^[a-z]{3,12}$/;
+function colorOf(v: unknown): string {
+  return typeof v === "string" && DOC_COLOR_RE.test(v) ? v : "";
 }
 
 function resolutionMap(v: unknown): Record<string, CaptureResolutionMeta> {
@@ -242,6 +278,8 @@ export function writeDocMeta(
     let v: unknown = raw;
     if (k === "keywords") v = keywordList(raw);
     if (k === "target") v = wordTarget(raw);
+    if (k === "marker") v = markerOf(raw);
+    if (k === "color") v = colorOf(raw);
     const empty =
       v === "" || v === undefined || v === null || v === 0 ||
       (Array.isArray(v) && v.length === 0);
