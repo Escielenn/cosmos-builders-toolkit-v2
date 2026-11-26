@@ -1,3 +1,4 @@
+import { TAG_COLOURS } from "@/lib/palettes/tags";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -152,26 +153,8 @@ export function useTags() {
   };
 }
 
-// Tag colors for visual distinction
-const TAG_COLORS = [
-  "#6366f1", // Indigo
-  "#8b5cf6", // Violet
-  "#a855f7", // Purple
-  "#d946ef", // Fuchsia
-  "#ec4899", // Pink
-  "#f43f5e", // Rose
-  "#ef4444", // Red
-  "#f97316", // Orange
-  "#f59e0b", // Amber
-  "#eab308", // Yellow
-  "#84cc16", // Lime
-  "#22c55e", // Green
-  "#10b981", // Emerald
-  "#14b8a6", // Teal
-  "#06b6d4", // Cyan
-  "#0ea5e9", // Sky
-  "#3b82f6", // Blue
-];
+// Tag colours live in src/lib/palettes/tags.ts (a data palette).
+const TAG_COLORS = TAG_COLOURS;
 
 export function getRandomTagColor(): string {
   return TAG_COLORS[Math.floor(Math.random() * TAG_COLORS.length)];

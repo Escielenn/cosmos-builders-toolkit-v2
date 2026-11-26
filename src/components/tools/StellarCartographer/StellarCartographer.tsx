@@ -78,6 +78,8 @@ import {
 // Styles following SIMULATOR_AESTHETIC.md
 import styles from './StellarCartographer.module.css';
 import { tokens } from '@/styles/tokens';
+import { EMPIRE_COLOURS, GALAXY_MARK } from '@/lib/palettes/galaxy-map';
+import { GALAXY_MAP_SPECTRAL_COLOURS } from '@/lib/palettes/spectral';
 
 const MINIMAP_SIZE = 120;
 
@@ -733,7 +735,7 @@ const StellarCartographer: React.FC = () => {
       ctx.stroke();
 
       // Event horizon (pure black)
-      ctx.fillStyle = '#000000';
+      ctx.fillStyle = GALAXY_MARK.eventHorizon;
       ctx.beginPath();
       ctx.arc(sx, sy, visualRadius, 0, Math.PI * 2);
       ctx.fill();
@@ -799,7 +801,7 @@ const StellarCartographer: React.FC = () => {
 
       // Current route drawing
       if (routeDrawing.active && routeDrawing.stars.length > 0) {
-        ctx.strokeStyle = '#FFA500';
+        ctx.strokeStyle = GALAXY_MARK.routeDraft;
         ctx.lineWidth = 2;
         ctx.setLineDash([4, 4]);
         ctx.beginPath();
@@ -905,7 +907,7 @@ const StellarCartographer: React.FC = () => {
 
           // Center core
           const coreGrad = ctx.createRadialGradient(s.screenX, s.screenY, 0, s.screenX, s.screenY, portalSize * 0.4);
-          coreGrad.addColorStop(0, hexToRgba('#FFFFFF', 0.9));
+          coreGrad.addColorStop(0, hexToRgba(GALAXY_MARK.core, 0.9));
           coreGrad.addColorStop(0.3, hexToRgba(wh.color, 0.7));
           coreGrad.addColorStop(1, hexToRgba(wh.color, 0));
           ctx.fillStyle = coreGrad;
@@ -922,9 +924,9 @@ const StellarCartographer: React.FC = () => {
         const pulse = 1 + Math.sin(time * 3) * 0.2;
 
         const outerGlow = ctx.createRadialGradient(s.screenX, s.screenY, portalSize * 0.5, s.screenX, s.screenY, portalSize * 3 * pulse);
-        outerGlow.addColorStop(0, hexToRgba('#9B59B6', 0.4));
-        outerGlow.addColorStop(0.5, hexToRgba('#9B59B6', 0.15));
-        outerGlow.addColorStop(1, hexToRgba('#9B59B6', 0));
+        outerGlow.addColorStop(0, hexToRgba(GALAXY_MARK.wormhole, 0.4));
+        outerGlow.addColorStop(0.5, hexToRgba(GALAXY_MARK.wormhole, 0.15));
+        outerGlow.addColorStop(1, hexToRgba(GALAXY_MARK.wormhole, 0));
         ctx.fillStyle = outerGlow;
         ctx.beginPath();
         ctx.arc(s.screenX, s.screenY, portalSize * 3 * pulse, 0, Math.PI * 2);
@@ -932,14 +934,14 @@ const StellarCartographer: React.FC = () => {
 
         for (let ring = 3; ring >= 1; ring--) {
           const ringRadius = portalSize * (ring / 3) * pulse;
-          ctx.strokeStyle = hexToRgba('#9B59B6', 0.3 + (3 - ring) * 0.2);
+          ctx.strokeStyle = hexToRgba(GALAXY_MARK.wormhole, 0.3 + (3 - ring) * 0.2);
           ctx.lineWidth = 1.5;
           ctx.beginPath();
           ctx.arc(s.screenX, s.screenY, ringRadius, time * 2, time * 2 + Math.PI * 1.5);
           ctx.stroke();
         }
 
-        ctx.fillStyle = '#9B59B6';
+        ctx.fillStyle = GALAXY_MARK.wormhole;
         ctx.beginPath();
         ctx.arc(s.screenX, s.screenY, 3, 0, Math.PI * 2);
         ctx.fill();
@@ -1018,7 +1020,7 @@ const StellarCartographer: React.FC = () => {
 
       // Bright core
       if (star.luminosity > 0.6 && size > 1) {
-        ctx.fillStyle = hexToRgba('#FFFFFF', totalBrightness * 0.4 * star.luminosity);
+        ctx.fillStyle = hexToRgba(GALAXY_MARK.core, totalBrightness * 0.4 * star.luminosity);
         ctx.beginPath();
         ctx.arc(star.screenX, star.screenY, size * 0.4, 0, Math.PI * 2);
         ctx.fill();
@@ -1026,7 +1028,7 @@ const StellarCartographer: React.FC = () => {
 
       // Habitable indicator
       if (star.hasHabitable && zoom > 1.2 && display.showHabitableIndicators) {
-        ctx.strokeStyle = hexToRgba('#2ECC71', 0.5 * depthFade);
+        ctx.strokeStyle = hexToRgba(GALAXY_MARK.habitable, 0.5 * depthFade);
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.arc(star.screenX, star.screenY, size + 3, 0, Math.PI * 2);
@@ -1035,7 +1037,7 @@ const StellarCartographer: React.FC = () => {
 
       // Selection indicator
       if (selectedStar && star.id === selectedStar.id) {
-        ctx.strokeStyle = '#15C17B';
+        ctx.strokeStyle = GALAXY_MARK.selection;
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.arc(star.screenX, star.screenY, size + 5, 0, Math.PI * 2);
@@ -1044,7 +1046,7 @@ const StellarCartographer: React.FC = () => {
 
       // Route node indicator
       if (routeDrawing.stars.find(s => s.id === star.id)) {
-        ctx.strokeStyle = '#FFA500';
+        ctx.strokeStyle = GALAXY_MARK.routeDraft;
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.arc(star.screenX, star.screenY, size + 6, 0, Math.PI * 2);
@@ -1104,7 +1106,7 @@ const StellarCartographer: React.FC = () => {
     ctx.fillText(star.name, star.screenX + 1, star.screenY + star.size + 12 + 1);
 
     // Text
-    ctx.fillStyle = isSelected ? '#FFFFFF' : (star.empire ? star.empire.color : 'rgba(255,255,255,0.5)');
+    ctx.fillStyle = isSelected ? GALAXY_MARK.core : (star.empire ? star.empire.color : 'rgba(255,255,255,0.5)');
     ctx.fillText(star.name, star.screenX, star.screenY + star.size + 12);
   };
 
@@ -1139,7 +1141,7 @@ const StellarCartographer: React.FC = () => {
       mctx.beginPath();
       mctx.arc(bhX, bhY, 4, 0, Math.PI * 2);
       mctx.fill();
-      mctx.fillStyle = '#000000';
+      mctx.fillStyle = GALAXY_MARK.eventHorizon;
       mctx.beginPath();
       mctx.arc(bhX, bhY, 1.5, 0, Math.PI * 2);
       mctx.fill();
@@ -1618,7 +1620,7 @@ const StellarCartographer: React.FC = () => {
     setSelectedStar(prev => prev ? { ...prev, name: newName.trim() } : null);
   };
 
-  const EMPIRE_COLORS = ['#FFD43B', '#FF6B6B', '#9B59B6', '#1ABC9C', '#F39C12', '#3498DB', '#E67E22', '#00CEC9'];
+  const EMPIRE_COLORS = EMPIRE_COLOURS;
   const NAMING_STYLES: NamingStyle[] = ['terran', 'harsh', 'flowing', 'poetic'];
 
   const addEmpire = () => {
@@ -2099,7 +2101,7 @@ const StellarCartographer: React.FC = () => {
               className={`${styles.btn} ${styles.publish}`}
               onClick={() => setPublishDialogOpen(true)}
             >
-              &#9671; {selectedStar ? `Publish "${selectedStar.name}"` : 'Publish Galaxy'}
+              ◇ {selectedStar ? `Publish "${selectedStar.name}"` : 'Publish Galaxy'}
             </button>
             {selectedStar && (
               <div style={{ fontSize: 12, color: 'var(--t4)', marginTop: 4, letterSpacing: '0.5px' }}>
@@ -2181,28 +2183,28 @@ const StellarCartographer: React.FC = () => {
         </div>
         <div className={styles.dataRow}>
           <span className={styles.dataLabel}>Wormholes</span>
-          <span className={styles.dataValue} style={{ color: '#E056FD' }}>{wormholes.length}</span>
+          <span className={styles.dataValue} style={{ color: GALAXY_MARK.wormholeReadout }}>{wormholes.length}</span>
         </div>
 
         <div className={styles.sectionHeader} style={{ marginTop: 16 }}>Spectral Classes</div>
         <div className={styles.spectralLegend}>
-          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: '#9BB0FF' }} />O</div>
-          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: '#AABFFF' }} />B</div>
-          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: '#CAD7FF' }} />A</div>
-          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: '#F8F7FF' }} />F</div>
-          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: '#FFF4EA' }} />G</div>
-          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: '#FFD2A1' }} />K</div>
-          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: '#FFAA6F' }} />M</div>
+          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: GALAXY_MAP_SPECTRAL_COLOURS.O }} />O</div>
+          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: GALAXY_MAP_SPECTRAL_COLOURS.B }} />B</div>
+          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: GALAXY_MAP_SPECTRAL_COLOURS.A }} />A</div>
+          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: GALAXY_MAP_SPECTRAL_COLOURS.F }} />F</div>
+          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: GALAXY_MAP_SPECTRAL_COLOURS.G }} />G</div>
+          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: GALAXY_MAP_SPECTRAL_COLOURS.K }} />K</div>
+          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: GALAXY_MAP_SPECTRAL_COLOURS.M }} />M</div>
         </div>
 
         <div className={styles.sectionHeader} style={{ marginTop: 16 }}>Indicators</div>
         <div className={styles.spectralLegend}>
           <div className={styles.spectralItem}>
-            <span className={styles.spectralDot} style={{ background: 'transparent', border: '1.5px solid #2ECC71' }} />
+            <span className={styles.spectralDot} style={{ background: 'transparent', border: `1.5px solid ${GALAXY_MARK.habitable}` }} />
             Habitable
           </div>
           <div className={styles.spectralItem}>
-            <span className={styles.spectralDot} style={{ background: 'transparent', border: '1.5px solid #15C17B' }} />
+            <span className={styles.spectralDot} style={{ background: 'transparent', border: `1.5px solid ${GALAXY_MARK.selection}` }} />
             Selected
           </div>
         </div>
@@ -2223,7 +2225,7 @@ const StellarCartographer: React.FC = () => {
             className={`${styles.tooltip} ${styles.visible}`}
             style={{ left: pos.screenX + 15, top: pos.screenY - 10 }}
           >
-            <div className={styles.tooltipName} style={{ color: hoveredStar.empire?.color || '#FAFAFA' }}>
+            <div className={styles.tooltipName} style={{ color: hoveredStar.empire?.color || GALAXY_MARK.unclaimedLabel }}>
               {hoveredStar.name}
             </div>
             <div className={styles.tooltipClass}>Class {hoveredStar.type} · {STAR_TYPES[hoveredStar.type].temp}</div>

@@ -8,6 +8,7 @@
 // This is the A3b surface of the unified-elements plan.
 // ---------------------------------------------------------------------------
 
+import { HEX_EXAMPLE } from "@/lib/palettes/entity-swatches";
 import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
@@ -237,7 +238,7 @@ function TemplateDetailEditor({
 
   const [labelDraft, setLabelDraft] = useState(template.label);
   const [descDraft, setDescDraft] = useState(template.description ?? "");
-  const [colorDraft, setColorDraft] = useState(template.color ?? "#15C17B");
+  const [colorDraft, setColorDraft] = useState(template.color ?? HEX_EXAMPLE);
   // Label and description commit on blur; until then they are unsaved.
   useUnsavedChangesGuard(
     (labelDraft.trim() !== "" && labelDraft.trim() !== template.label) ||
@@ -355,7 +356,7 @@ function TemplateDetailEditor({
                 onChange={(e) => setColorDraft(e.target.value)}
                 onBlur={handleBlurColor}
                 className="h-9 font-mono text-xs"
-                placeholder="#15C17B"
+                placeholder={HEX_EXAMPLE}
               />
             </div>
           </div>

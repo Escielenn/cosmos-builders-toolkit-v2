@@ -1,3 +1,4 @@
+import { printInk } from "../palette";
 import { Document, Page, View, Text } from "@react-pdf/renderer";
 import { styles, colors, spacing, typography } from "../styles";
 import {
@@ -137,7 +138,7 @@ const DrakeFullReportTemplate = ({
         />
 
         {/* Equation Display */}
-        <View style={{ marginBottom: spacing.xl, padding: spacing.md, backgroundColor: "#f5f5f5" }}>
+        <View style={{ marginBottom: spacing.xl, padding: spacing.md, backgroundColor: printInk.panel }}>
           <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted, marginBottom: spacing.xs }}>
             THE EQUATION
           </Text>
@@ -223,7 +224,7 @@ const DrakeFullReportTemplate = ({
                     <Text style={styles.notesText}>{note}</Text>
                   </View>
                 ) : (
-                  <View style={[styles.notesBox, { backgroundColor: "#fafafa" }]}>
+                  <View style={[styles.notesBox, { backgroundColor: printInk.panelSoft }]}>
                     <Text style={[styles.notesText, { fontStyle: "italic", color: colors.text.muted }]}>
                       No notes provided
                     </Text>

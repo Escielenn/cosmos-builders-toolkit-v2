@@ -1,3 +1,4 @@
+import { printInk } from "../palette";
 import { Document, Page, View, Text } from "@react-pdf/renderer";
 import { styles, colors, spacing, typography } from "../styles";
 import {
@@ -208,7 +209,7 @@ const ECRFullReportTemplate = ({
                   : parameter?.specificValues?.[param];
 
               return (
-                <View key={param} style={{ marginBottom: spacing.md, padding: spacing.sm, backgroundColor: "#f5f5f5" }} wrap={false}>
+                <View key={param} style={{ marginBottom: spacing.md, padding: spacing.sm, backgroundColor: printInk.panel }} wrap={false}>
                   <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted }}>{info.category}</Text>
                   <Text style={{ fontSize: typography.sizes.md, fontWeight: 600, color: colors.primary, marginTop: 2 }}>
                     {info.option}
@@ -255,7 +256,7 @@ const ECRFullReportTemplate = ({
                   alignItems: "center",
                   marginRight: spacing.sm,
                 }}>
-                  <Text style={{ fontSize: typography.sizes.md, fontWeight: 700, color: "#ffffff" }}>
+                  <Text style={{ fontSize: typography.sizes.md, fontWeight: 700, color: printInk.onFill }}>
                     {level.number}
                   </Text>
                 </View>
@@ -414,7 +415,7 @@ const ECRFullReportTemplate = ({
         </PDFSection>
 
         {/* Final Quote */}
-        <View style={{ marginTop: spacing.xl, padding: spacing.md, backgroundColor: "#f5f5f5" }}>
+        <View style={{ marginTop: spacing.xl, padding: spacing.md, backgroundColor: printInk.panel }}>
           <Text style={{ fontSize: typography.sizes.sm, color: colors.text.secondary, fontStyle: "italic", textAlign: "center", lineHeight: 1.5 }}>
             "The most believable worlds aren't the most complex, they're the most internally consistent.
             Every element should cascade logically from your core environmental choice."

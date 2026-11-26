@@ -1,3 +1,4 @@
+import { tagColourForName } from "@/lib/palettes/tags";
 import { useState } from "react";
 import { Plus, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,14 +26,7 @@ export function WorksheetTagsBar({
   const getColorForTag = (tagName: string): string => {
     const existingTag = allTags.find((t) => t.name === tagName);
     if (existingTag) return existingTag.color;
-    const hash = tagName.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    const TAG_COLORS = [
-      "#6366f1", "#8b5cf6", "#a855f7", "#d946ef", "#ec4899",
-      "#f43f5e", "#ef4444", "#f97316", "#f59e0b", "#eab308",
-      "#84cc16", "#22c55e", "#10b981", "#14b8a6", "#06b6d4",
-      "#0ea5e9", "#3b82f6",
-    ];
-    return TAG_COLORS[hash % TAG_COLORS.length];
+    return tagColourForName(tagName);
   };
 
   return (

@@ -1,6 +1,7 @@
 // Export Utilities for Stellar Cartographer
 // PNG, SVG, JSON, and Markdown export functions
 
+import { GALAXY_MARK, SMBH_COLOURS } from '@/lib/palettes/galaxy-map';
 import {
   Star,
   Empire,
@@ -105,7 +106,7 @@ export function exportSVG(options: SVGExportOptions): void {
   </defs>
   
   <!-- Background -->
-  <rect width="100%" height="100%" fill="#050508"/>
+  <rect width="100%" height="100%" fill="${GALAXY_MARK.exportBackdrop}"/>
   
 `;
 
@@ -158,9 +159,9 @@ export function exportSVG(options: SVGExportOptions): void {
   if (blackHole) {
     const bhScreen = worldToScreen(blackHole.x, blackHole.y, 0);
     const activityCfg = {
-      quiescent: { glowMul: 4, color: '#FFB800', arcs: 2, arcOp: 0.2 },
-      active: { glowMul: 8, color: '#FF6B35', arcs: 3, arcOp: 0.35 },
-      quasar: { glowMul: 12, color: '#15C17B', arcs: 4, arcOp: 0.5 },
+      quiescent: { glowMul: 4, color: SMBH_COLOURS.quiescent, arcs: 2, arcOp: 0.2 },
+      active: { glowMul: 8, color: SMBH_COLOURS.active, arcs: 3, arcOp: 0.35 },
+      quasar: { glowMul: 12, color: SMBH_COLOURS.quasar, arcs: 4, arcOp: 0.5 },
     }[blackHole.activity];
     const massScale = Math.log10(Math.max(1, blackHole.mass)) / Math.log10(10000);
     const baseR = 6 + massScale * 14;
@@ -172,7 +173,7 @@ export function exportSVG(options: SVGExportOptions): void {
     // Photon ring
     svg += `  <circle cx="${bhScreen.screenX.toFixed(1)}" cy="${bhScreen.screenY.toFixed(1)}" r="${(baseR * 1.5).toFixed(1)}" fill="none" stroke="${activityCfg.color}" stroke-width="0.8" opacity="0.5"/>\n`;
     // Event horizon
-    svg += `  <circle cx="${bhScreen.screenX.toFixed(1)}" cy="${bhScreen.screenY.toFixed(1)}" r="${baseR.toFixed(1)}" fill="#000000"/>\n`;
+    svg += `  <circle cx="${bhScreen.screenX.toFixed(1)}" cy="${bhScreen.screenY.toFixed(1)}" r="${baseR.toFixed(1)}" fill="${GALAXY_MARK.eventHorizon}"/>\n`;
     svg += '\n';
   }
 
@@ -250,7 +251,7 @@ export function exportSVG(options: SVGExportOptions): void {
     svg += `    <circle cx="${star.screenX.toFixed(1)}" cy="${star.screenY.toFixed(1)}" r="${size.toFixed(2)}" fill="${star.color}" opacity="${totalBrightness.toFixed(2)}"/>\n`;
 
     if (star.hasHabitable && zoom > 1.2 && display.showHabitableIndicators) {
-      svg += `    <circle cx="${star.screenX.toFixed(1)}" cy="${star.screenY.toFixed(1)}" r="${(size + 3).toFixed(1)}" fill="none" stroke="#2ECC71" stroke-width="1" opacity="${(0.5 * depthFade).toFixed(2)}"/>\n`;
+      svg += `    <circle cx="${star.screenX.toFixed(1)}" cy="${star.screenY.toFixed(1)}" r="${(size + 3).toFixed(1)}" fill="none" stroke="${GALAXY_MARK.habitable}" stroke-width="1" opacity="${(0.5 * depthFade).toFixed(2)}"/>\n`;
     }
   }
   svg += '  </g>\n\n';

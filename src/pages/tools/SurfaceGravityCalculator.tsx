@@ -1,3 +1,4 @@
+import { DEFAULT_COMPOSITION_COLOUR } from "@/lib/palettes/planets";
 import { useState, useEffect, useMemo, useRef, useCallback, lazy, Suspense } from "react";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
@@ -811,7 +812,7 @@ const SurfaceGravityCalculator = () => {
                     planetRadiusEarth={formState.primary.radius}
                     planetGravity={result.gravity}
                     planetName={PLANET_PRESETS.find((p) => p.id === formState.primary.planetPreset)?.label || "Your Planet"}
-                    compositionColor={compositionPreset?.color || "#15C17B"}
+                    compositionColor={compositionPreset?.color || DEFAULT_COMPOSITION_COLOUR}
                   />
                   <GravityScaleBar gravityRatio={result.gravity} />
                 </div>

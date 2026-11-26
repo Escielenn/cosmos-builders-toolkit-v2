@@ -1,3 +1,4 @@
+import { printInk } from "../palette";
 import { Document, Page, View, Text } from "@react-pdf/renderer";
 import { styles, colors, spacing, typography } from "../styles";
 import { PDFHeader, PDFFooter, PDFSection, PDFKeyValuePair, PDFResultBox } from "../components";
@@ -83,7 +84,7 @@ const SurfaceGravitySummaryTemplate = ({ formState: rawFormState, worldName, dat
                 >
                   <Text style={{
                     fontSize: typography.sizes.xs,
-                    color: gas.status === "retained" ? "#2ECC71" : gas.status === "marginal" ? "#FFA500" : "#E74C3C",
+                    color: gas.status === "retained" ? printInk.retained : gas.status === "marginal" ? printInk.warn : printInk.danger,
                     fontWeight: 600,
                   }}>
                     {gas.status === "retained" ? "✓" : gas.status === "marginal" ? "⚠" : "✗"}

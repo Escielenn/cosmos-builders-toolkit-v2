@@ -1,3 +1,4 @@
+import { hueTextVar } from "@/styles/hue";
 import { cn } from "@/lib/utils";
 import { Check, AlertTriangle, X } from "lucide-react";
 import type { GasRetention } from "@/lib/surface-gravity/calculations";
@@ -43,7 +44,7 @@ const AtmosphericRetentionChart = ({ retentionData, className }: AtmosphericRete
                 <span className="text-t3 text-xs">{gas.name}</span>
               </div>
               <div className="flex items-center gap-2 text-xs">
-                <span className="font-mono" style={{ color: gas.statusColor }}>
+                <span className="font-mono" style={{ color: hueTextVar(gas.statusHue) }}>
                   {STATUS_LABELS[gas.status]}
                 </span>
                 <span className="text-t3 font-mono">

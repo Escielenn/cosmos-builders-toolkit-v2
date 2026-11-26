@@ -1,3 +1,4 @@
+import { DEFAULT_SWATCH } from "@/lib/palettes/swatches";
 import { lazy, Suspense, useMemo } from "react";
 import {
   Sheet,
@@ -87,7 +88,7 @@ const EventDetailPanel = ({
 
   const track = tracks.find((t) => t.id === event.trackId);
   const eventConfig = EVENT_TYPE_MAP[event.eventType];
-  const color = event.color || eventConfig?.defaultColor || track?.color || "#6366f1";
+  const color = event.color || eventConfig?.defaultColor || track?.color || DEFAULT_SWATCH;
 
   const selectedCalendar = calendars.find((c) => c.id === event.calendarId);
   const isCustomCalendar = !!selectedCalendar;

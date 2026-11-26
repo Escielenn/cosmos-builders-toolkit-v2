@@ -1,3 +1,4 @@
+import { STAR_CORE_WHITE } from "@/lib/palettes/spectral";
 import { useRef, useEffect, useCallback } from "react";
 import { SPECTRAL_COLORS } from "@/lib/habitable-zone/data";
 import { tokens } from "@/styles/tokens";
@@ -241,7 +242,7 @@ export default function OrbitalDiagram({
 
     // Star body
     const starGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, starRadius);
-    starGrad.addColorStop(0, "#FFFFFF");
+    starGrad.addColorStop(0, STAR_CORE_WHITE);
     starGrad.addColorStop(0.4, colors.fill);
     starGrad.addColorStop(1, colors.glow);
     ctx.fillStyle = starGrad;

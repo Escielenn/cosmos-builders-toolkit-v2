@@ -1,3 +1,4 @@
+import { EARTH_REFERENCE_COLOUR } from "@/lib/palettes/planets";
 import { useRef, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { tokens } from "@/styles/tokens";
@@ -59,7 +60,7 @@ const PlanetSizeComparison = ({
     const centerY = h * 0.45;
 
     // Draw Earth
-    drawPlanet(ctx, earthX, centerY, earthR, "#3B82F6", "Earth", "1.00g", 1);
+    drawPlanet(ctx, earthX, centerY, earthR, EARTH_REFERENCE_COLOUR, "Earth", "1.00g", 1);
 
     // Draw user's planet
     drawPlanet(ctx, planetX, centerY, planetR, compositionColor, planetName, `${planetGravity.toFixed(2)}g`, planetGravity);
@@ -70,7 +71,7 @@ const PlanetSizeComparison = ({
     const planetArrowLen = Math.min(30 * planetGravity, h - arrowBaseY - 20);
 
     if (planetArrowLen > 0 && earthArrowLen > 0) {
-      drawGravityArrow(ctx, earthX, arrowBaseY, earthArrowLen, "#3B82F6");
+      drawGravityArrow(ctx, earthX, arrowBaseY, earthArrowLen, EARTH_REFERENCE_COLOUR);
       drawGravityArrow(ctx, planetX, arrowBaseY, Math.max(planetArrowLen, 5), compositionColor);
     }
 

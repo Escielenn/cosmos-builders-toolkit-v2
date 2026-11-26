@@ -1,3 +1,4 @@
+import { hueTextVar, hueVar } from "@/styles/hue";
 import type { MoodboardImage } from "@/hooks/use-moodboard";
 // Space Expansion Modeler - Data Constants
 // Section navigation, force categories, modifier types, templates, SF examples
@@ -154,7 +155,8 @@ export interface ForceCategoryDef {
   name: string;
   description: string;
   tailwindColor: string;
-  hex: string;
+  /** Fill for the small identifying mark, as a live token value. */
+  swatch: string;
   thinkLike: string;
 }
 
@@ -164,7 +166,7 @@ export const FORCE_CATEGORIES: ForceCategoryDef[] = [
     name: "Industrial",
     description: "Mining, manufacturing, resource extraction, supply chains, infrastructure, automation, labor",
     tailwindColor: "text-sf-amber-text",
-    hex: "#F59E0B",
+    swatch: hueVar("amber"),
     thinkLike: "Think like a logistics engineer or factory owner",
   },
   {
@@ -172,7 +174,7 @@ export const FORCE_CATEGORIES: ForceCategoryDef[] = [
     name: "Governmental",
     description: "National/international policy, military priorities, regulation, treaties, sovereignty, colonial admin",
     tailwindColor: "text-sf-crimson-text",
-    hex: "#DC2626",
+    swatch: hueVar("crimson"),
     thinkLike: "Think like a senator, admiral, or colonial governor",
   },
   {
@@ -180,7 +182,7 @@ export const FORCE_CATEGORIES: ForceCategoryDef[] = [
     name: "Religious / Ideological",
     description: "Theological justifications, cosmic significance, prohibitions, utopian visions, existential meaning",
     tailwindColor: "text-sf-magenta-text",
-    hex: "#D946EF",
+    swatch: hueVar("magenta"),
     thinkLike: "Think like a prophet, cult leader, or ideological revolutionary",
   },
   {
@@ -188,7 +190,7 @@ export const FORCE_CATEGORIES: ForceCategoryDef[] = [
     name: "Economic",
     description: "Funding mechanisms, ROI timelines, market creation, wealth distribution, cost curves, speculation",
     tailwindColor: "text-sf-emerald-text",
-    hex: "#10B981",
+    swatch: hueVar("emerald"),
     thinkLike: "Think like a venture capitalist or central banker",
   },
   {
@@ -196,15 +198,15 @@ export const FORCE_CATEGORIES: ForceCategoryDef[] = [
     name: "Social",
     description: "Population pressure, cultural attitudes toward risk, migration, frontier mythology, demographics",
     tailwindColor: "text-sf-azure-text",
-    hex: "#06B6D4",
+    swatch: hueVar("azure"),
     thinkLike: "Think like a sociologist or migration historian",
   },
   {
     id: "scientific",
     name: "Scientific / Technological",
     description: "Capability enabling, breakthrough dependencies, research priorities, innovation ecosystems",
-    tailwindColor: "text-neutral-200",
-    hex: "#E5E5E5",
+    tailwindColor: "text-t2",
+    swatch: "var(--t2)",
     thinkLike: "Think like a research director or chief engineer",
   },
 ];
@@ -219,7 +221,8 @@ export interface ModifierTypeDef {
   name: string;
   description: string;
   color: string;
-  hex: string;
+  /** Fill for the small identifying mark, as a live token value. */
+  swatch: string;
 }
 
 export const MODIFIER_TYPES: ModifierTypeDef[] = [
@@ -228,42 +231,42 @@ export const MODIFIER_TYPES: ModifierTypeDef[] = [
     name: "Wall",
     description: "Hard physical, technological, or biological limit that cannot be overcome without fundamental breakthroughs",
     color: "text-sf-crimson-text",
-    hex: "#DC2626",
+    swatch: hueVar("crimson"),
   },
   {
     id: "gap",
     name: "Gap",
     description: "Missing capability, infrastructure, or knowledge that must be developed but is achievable",
     color: "text-sf-amber-text",
-    hex: "#FACC15",
+    swatch: hueVar("amber"),
   },
   {
     id: "barrier",
     name: "Barrier",
     description: "Political, economic, social, or ideological obstacle that is surmountable but requires significant effort",
     color: "text-sf-magenta-text",
-    hex: "#FB923C",
+    swatch: "var(--sf-amber-warm)",
   },
   {
     id: "catalyst",
     name: "Catalyst",
     description: "Event, discovery, or circumstance that suddenly accelerates expansion",
     color: "text-sf-emerald-text",
-    hex: "#10B981",
+    swatch: hueVar("emerald"),
   },
   {
     id: "driver",
     name: "Driver",
     description: "Ongoing motivation that sustains expansion momentum over time",
     color: "text-sf-azure-text",
-    hex: "#06B6D4",
+    swatch: hueVar("azure"),
   },
   {
     id: "pursuit",
     name: "Pursuit",
     description: "Specific goal that shapes the direction and character of expansion",
     color: "text-sf-magenta-text",
-    hex: "#D946EF",
+    swatch: hueVar("magenta"),
   },
 ];
 
@@ -297,11 +300,19 @@ export const FORCE_DIRECTIONS: { value: ForceDirection; label: string; descripti
 
 // ─── Interaction Types ──────────────────────────────────────────────
 
-export const INTERACTION_TYPES: { value: InteractionResult; label: string; description: string; hex: string }[] = [
-  { value: "synergy", label: "Synergy", description: "Forces amplify each other", hex: "#10B981" },
-  { value: "tension", label: "Tension", description: "Forces pull in different directions", hex: "#F59E0B" },
-  { value: "conflict", label: "Conflict", description: "Forces actively oppose each other", hex: "#DC2626" },
-  { value: "neutral", label: "Neutral", description: "No significant interaction", hex: "#6B7280" },
+export const INTERACTION_TYPES: {
+  value: InteractionResult;
+  label: string;
+  description: string;
+  /** Fill / border stop, as a live token value. */
+  swatch: string;
+  /** Text stop for the label. */
+  text: string;
+}[] = [
+  { value: "synergy", label: "Synergy", description: "Forces amplify each other", swatch: hueVar("emerald"), text: hueTextVar("emerald") },
+  { value: "tension", label: "Tension", description: "Forces pull in different directions", swatch: hueVar("amber"), text: hueTextVar("amber") },
+  { value: "conflict", label: "Conflict", description: "Forces actively oppose each other", swatch: hueVar("crimson"), text: hueTextVar("crimson") },
+  { value: "neutral", label: "Neutral", description: "No significant interaction", swatch: "var(--sf-line-emphasis)", text: "var(--t3)" },
 ];
 
 export const getInteractionDef = (value: InteractionResult) =>

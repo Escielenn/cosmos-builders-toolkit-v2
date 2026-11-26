@@ -21,6 +21,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import themes from "@/styles/themes.json";
+import { tokens } from "@/styles/tokens";
 
 export type ThemeBase = string & keyof typeof themes.bases;
 export type ThemePrimary = (typeof themes.primaries)[number];
@@ -44,7 +45,7 @@ export function primaryHex(base: ThemeBase, primary: ThemePrimary): string {
   const t = (themes.themes as Record<string, { primary: { base: string } }>)[
     `${base}-${primary}`
   ];
-  return t?.primary.base ?? "#15C17B";
+  return t?.primary.base ?? tokens.accent.base;
 }
 
 /**

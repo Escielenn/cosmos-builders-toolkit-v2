@@ -2,6 +2,8 @@
 // Source of truth for the /guide/tools reference and /getting-started pathways
 // Tool IDs and display names come from tools-config.ts
 
+import { CASCADE_HUE, hueTextVar } from "@/styles/hue";
+
 export type ToolCategory =
   | 'stars-systems'
   | 'worlds'
@@ -54,32 +56,32 @@ export const CATEGORY_META: Record<
 > = {
   'stars-systems': {
     label: 'Stars & Systems',
-    color: '#FFB800',
+    color: hueTextVar("amber"),
     description: 'The cosmic context, what your world orbits and who its neighbors are.',
   },
   worlds: {
     label: 'Worlds',
-    color: '#4D9FFF',
+    color: hueTextVar("azure"),
     description: 'Planetary parameters, the physics that constrains everything else.',
   },
   life: {
     label: 'Life',
-    color: '#00FF88',
+    color: hueTextVar("emerald"),
     description: 'Biology, from basic biochemistry to complex organisms.',
   },
   civilizations: {
     label: 'Civilizations',
-    color: '#9B5DE5',
+    color: hueTextVar("violet"),
     description: 'Societies, how intelligent life organizes itself.',
   },
   mythology: {
     label: 'Mythology',
-    color: '#5B8DEF',
+    color: hueTextVar("stellar"),
     description: 'The stories civilizations tell themselves.',
   },
   integration: {
     label: 'Integration',
-    color: '#15C17B',
+    color: hueTextVar("teal"),
     description: 'Bringing it all together, cross-tool connections and timelines.',
   },
 };
@@ -109,13 +111,13 @@ export const CASCADE_META: Record<
   CascadePosition,
   { label: string; order: number; color: string }
 > = {
-  physics: { label: 'Physics', order: 1, color: '#FFB800' },
-  environment: { label: 'Environment', order: 2, color: '#4D9FFF' },
-  biology: { label: 'Biology', order: 3, color: '#00FF88' },
-  psychology: { label: 'Psychology', order: 4, color: '#9B5DE5' },
-  mythology: { label: 'Mythology', order: 5, color: '#5B8DEF' },
-  culture: { label: 'Culture', order: 6, color: '#FF9800' },
-  meta: { label: 'Integration', order: 7, color: '#15C17B' },
+  physics: { label: 'Physics', order: 1, color: hueTextVar(CASCADE_HUE.physics) },
+  environment: { label: 'Environment', order: 2, color: hueTextVar(CASCADE_HUE.environment) },
+  biology: { label: 'Biology', order: 3, color: hueTextVar(CASCADE_HUE.biology) },
+  psychology: { label: 'Psychology', order: 4, color: hueTextVar(CASCADE_HUE.psychology) },
+  mythology: { label: 'Mythology', order: 5, color: hueTextVar(CASCADE_HUE.mythology) },
+  culture: { label: 'Culture', order: 6, color: hueTextVar(CASCADE_HUE.culture) },
+  meta: { label: 'Integration', order: 7, color: hueTextVar(CASCADE_HUE.integration) },
 };
 
 export const TYPE_META: Record<ToolType, { label: string }> = {

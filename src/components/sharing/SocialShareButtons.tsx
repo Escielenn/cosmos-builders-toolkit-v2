@@ -2,6 +2,7 @@
 // SocialShareButtons, Share to Twitter/X, Reddit, Discord copy, etc.
 // ---------------------------------------------------------------------------
 
+import { SOCIAL_MARK } from "@/lib/palettes/brand-marks";
 import { useState } from "react";
 import { Check, Copy, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,22 +31,22 @@ export function SocialShareButtons({
     {
       name: "Twitter / X",
       url: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,
-      color: "#1DA1F2",
+      color: SOCIAL_MARK.twitter,
     },
     {
       name: "Reddit",
       url: `https://reddit.com/submit?url=${encodedUrl}&title=${encodedTitle}`,
-      color: "#FF5700",
+      color: SOCIAL_MARK.reddit,
     },
     {
       name: "LinkedIn",
       url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
-      color: "#0A66C2",
+      color: SOCIAL_MARK.linkedin,
     },
     {
       name: "Facebook",
       url: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
-      color: "#1877F2",
+      color: SOCIAL_MARK.facebook,
     },
   ];
 

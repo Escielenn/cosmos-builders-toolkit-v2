@@ -1,3 +1,4 @@
+import { printInk } from "../palette";
 import { Document, Page, View, Text } from "@react-pdf/renderer";
 import { styles, colors, spacing, typography } from "../styles";
 import { PDFHeader, PDFFooter, PDFSection, PDFKeyValuePair } from "../components";
@@ -128,7 +129,7 @@ const SensoriumFullReportTemplate = ({ formState: rawFormState, worldName, date 
               <Text style={{
                 fontSize: typography.sizes.xl,
                 fontWeight: 700,
-                color: budget.overBudget ? "#E74C3C" : budget.totalCost > budget.warningThreshold ? "#FFA500" : colors.primary,
+                color: budget.overBudget ? printInk.danger : budget.totalCost > budget.warningThreshold ? printInk.warn : colors.primary,
               }}>
                 {(budget.totalCost * 100).toFixed(0)}%
               </Text>
@@ -240,7 +241,7 @@ const SensoriumFullReportTemplate = ({ formState: rawFormState, worldName, date 
                 )}
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: typography.sizes.xs, fontWeight: 600, color: "#E74C3C", marginBottom: spacing.xs }}>
+                <Text style={{ fontSize: typography.sizes.xs, fontWeight: 600, color: printInk.danger, marginBottom: spacing.xs }}>
                   Species Blind (Humans Have)
                 </Text>
                 {gaps.speciesBlind.length > 0 ? gaps.speciesBlind.map((name) => (
@@ -254,7 +255,7 @@ const SensoriumFullReportTemplate = ({ formState: rawFormState, worldName, date 
             </View>
             {gaps.conflictPotential.length > 0 && (
               <View style={{ marginTop: spacing.sm }}>
-                <Text style={{ fontSize: typography.sizes.xs, fontWeight: 600, color: "#FFA500", marginBottom: spacing.xs }}>
+                <Text style={{ fontSize: typography.sizes.xs, fontWeight: 600, color: printInk.warn, marginBottom: spacing.xs }}>
                   Conflict Potential
                 </Text>
                 {gaps.conflictPotential.map((hook, i) => (

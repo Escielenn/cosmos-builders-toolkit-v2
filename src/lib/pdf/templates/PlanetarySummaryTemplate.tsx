@@ -1,3 +1,4 @@
+import { printInk } from "../palette";
 import { Document, Page, View, Text } from "@react-pdf/renderer";
 import { styles, colors, spacing, typography } from "../styles";
 import {
@@ -260,7 +261,7 @@ const PlanetarySummaryTemplate = ({
         </PDFSection>
 
         {/* Consistency Score */}
-        <View style={{ marginTop: spacing.md, padding: spacing.sm, backgroundColor: "#f5f5f5" }}>
+        <View style={{ marginTop: spacing.md, padding: spacing.sm, backgroundColor: printInk.panel }}>
           <Text style={{ fontSize: typography.sizes.sm, textAlign: "center", color: colors.text.secondary }}>
             Consistency Score: {consistencyScore}/5 checks passed
           </Text>

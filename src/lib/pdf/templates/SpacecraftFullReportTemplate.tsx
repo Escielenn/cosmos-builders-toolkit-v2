@@ -1,3 +1,4 @@
+import { printInk } from "../palette";
 import { Document, Page, View, Text } from "@react-pdf/renderer";
 import { styles, colors, spacing, typography } from "../styles";
 import {
@@ -409,7 +410,7 @@ const SpacecraftFullReportTemplate = ({
               <Text style={{ fontSize: typography.sizes.md, fontWeight: 600, color: colors.primary, marginBottom: spacing.sm }}>
                 Sensory Signature
               </Text>
-              <View style={{ padding: spacing.md, backgroundColor: "#f5f5f5" }}>
+              <View style={{ padding: spacing.md, backgroundColor: printInk.panel }}>
                 <Text style={{ fontSize: typography.sizes.sm, color: colors.text.secondary, lineHeight: 1.6, fontStyle: "italic" }}>
                   {synthesis?.sensorySignature}
                 </Text>
@@ -419,7 +420,7 @@ const SpacecraftFullReportTemplate = ({
         </PDFSection>
 
         {/* Final Quote */}
-        <View style={{ marginTop: spacing.lg, padding: spacing.md, backgroundColor: "#f5f5f5" }}>
+        <View style={{ marginTop: spacing.lg, padding: spacing.md, backgroundColor: printInk.panel }}>
           <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, fontStyle: "italic", textAlign: "center", lineHeight: 1.5 }}>
             "Function → Culture → Personalization → History → Character"
           </Text>

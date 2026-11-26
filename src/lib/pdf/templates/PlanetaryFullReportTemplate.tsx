@@ -1,3 +1,4 @@
+import { printInk } from "../palette";
 import { Document, Page, View, Text } from "@react-pdf/renderer";
 import { styles, colors, spacing, typography } from "../styles";
 import {
@@ -359,7 +360,7 @@ const PlanetaryFullReportTemplate = ({
         </PDFSection>
 
         <PDFSection title="6. Habitability Assessment">
-          <View style={{ padding: spacing.sm, backgroundColor: "#f5f5f5", marginBottom: spacing.md }}>
+          <View style={{ padding: spacing.sm, backgroundColor: printInk.panel, marginBottom: spacing.md }}>
             <Text style={{ fontSize: typography.sizes.md, fontWeight: 600, color: colors.primary, textAlign: "center" }}>
               Tier {habitability?.habitabilityTier || "?"}: {tierInfo?.name || "Unclassified"}
             </Text>
@@ -414,7 +415,7 @@ const PlanetaryFullReportTemplate = ({
 
         <PDFSection title="8. The Three Pressures">
           {/* Survival Pressure */}
-          <View style={{ marginBottom: spacing.lg, padding: spacing.md, backgroundColor: "#fafafa" }} wrap={false}>
+          <View style={{ marginBottom: spacing.lg, padding: spacing.md, backgroundColor: printInk.panelSoft }} wrap={false}>
             <Text style={{ fontSize: typography.sizes.md, fontWeight: 600, color: colors.primary, marginBottom: spacing.sm }}>
               1. Survival Pressure
             </Text>
@@ -440,7 +441,7 @@ const PlanetaryFullReportTemplate = ({
           </View>
 
           {/* Social Pressure */}
-          <View style={{ marginBottom: spacing.lg, padding: spacing.md, backgroundColor: "#fafafa" }} wrap={false}>
+          <View style={{ marginBottom: spacing.lg, padding: spacing.md, backgroundColor: printInk.panelSoft }} wrap={false}>
             <Text style={{ fontSize: typography.sizes.md, fontWeight: 600, color: colors.primary, marginBottom: spacing.sm }}>
               2. Social Pressure
             </Text>
@@ -466,7 +467,7 @@ const PlanetaryFullReportTemplate = ({
           </View>
 
           {/* Psychological Pressure */}
-          <View style={{ marginBottom: spacing.lg, padding: spacing.md, backgroundColor: "#fafafa" }} wrap={false}>
+          <View style={{ marginBottom: spacing.lg, padding: spacing.md, backgroundColor: printInk.panelSoft }} wrap={false}>
             <Text style={{ fontSize: typography.sizes.md, fontWeight: 600, color: colors.primary, marginBottom: spacing.sm }}>
               3. Psychological Pressure
             </Text>
@@ -523,25 +524,25 @@ const PlanetaryFullReportTemplate = ({
 
         {/* Consistency Check */}
         <PDFSection title="10. Consistency Check">
-          <View style={{ padding: spacing.sm, backgroundColor: "#f5f5f5", marginBottom: spacing.md }}>
-            <Text style={{ fontSize: typography.sizes.sm, fontWeight: 600, textAlign: "center", color: consistencyScore === 5 ? "#22c55e" : colors.text.secondary }}>
+          <View style={{ padding: spacing.sm, backgroundColor: printInk.panel, marginBottom: spacing.md }}>
+            <Text style={{ fontSize: typography.sizes.sm, fontWeight: 600, textAlign: "center", color: consistencyScore === 5 ? printInk.ok : colors.text.secondary }}>
               Consistency Score: {consistencyScore}/5
             </Text>
           </View>
           <View style={{ marginBottom: spacing.sm }}>
-            <Text style={{ fontSize: typography.sizes.xs, color: consistency?.starGravityConsistent ? "#22c55e" : colors.text.muted }}>
+            <Text style={{ fontSize: typography.sizes.xs, color: consistency?.starGravityConsistent ? printInk.ok : colors.text.muted }}>
               {consistency?.starGravityConsistent ? "✓" : "○"} Star Type ↔ Gravity Consistent
             </Text>
-            <Text style={{ fontSize: typography.sizes.xs, color: consistency?.atmosphereTempConsistent ? "#22c55e" : colors.text.muted }}>
+            <Text style={{ fontSize: typography.sizes.xs, color: consistency?.atmosphereTempConsistent ? printInk.ok : colors.text.muted }}>
               {consistency?.atmosphereTempConsistent ? "✓" : "○"} Atmosphere ↔ Temperature Consistent
             </Text>
-            <Text style={{ fontSize: typography.sizes.xs, color: consistency?.waterTempConsistent ? "#22c55e" : colors.text.muted }}>
+            <Text style={{ fontSize: typography.sizes.xs, color: consistency?.waterTempConsistent ? printInk.ok : colors.text.muted }}>
               {consistency?.waterTempConsistent ? "✓" : "○"} Water State ↔ Temperature Consistent
             </Text>
-            <Text style={{ fontSize: typography.sizes.xs, color: consistency?.gravityBiologyConsistent ? "#22c55e" : colors.text.muted }}>
+            <Text style={{ fontSize: typography.sizes.xs, color: consistency?.gravityBiologyConsistent ? printInk.ok : colors.text.muted }}>
               {consistency?.gravityBiologyConsistent ? "✓" : "○"} Gravity ↔ Biology Consistent
             </Text>
-            <Text style={{ fontSize: typography.sizes.xs, color: consistency?.pressuresEnvironmentConsistent ? "#22c55e" : colors.text.muted }}>
+            <Text style={{ fontSize: typography.sizes.xs, color: consistency?.pressuresEnvironmentConsistent ? printInk.ok : colors.text.muted }}>
               {consistency?.pressuresEnvironmentConsistent ? "✓" : "○"} Three Pressures ↔ Environment Consistent
             </Text>
           </View>

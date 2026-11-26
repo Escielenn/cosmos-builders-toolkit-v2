@@ -1,13 +1,14 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useArticles } from "@/hooks/use-sanity-articles";
-import { CoverArt } from "@/components/learn/CoverArt";
+import { ArticlePhoto, PhotoCredits } from "@/components/learn/ArticlePhoto";
 import { CATEGORY_LABELS, formatArticleDate } from "@/components/learn/article-meta";
 import { MarketingSection, SectionHeading } from "./marketing-ui";
 
 /**
- * "Latest from SF University": three articles with generated cover art
- * (finding 6: no CMS cover images). Shown on the landing and on Home.
+ * "Latest from SF University": three articles, each with its credited
+ * Unsplash photograph (the generated cover is the fallback; finding 6: no
+ * CMS cover images). Shown on the landing and on Home.
  */
 const RecentArticles = () => {
   const { data: articles, isLoading } = useArticles();
@@ -36,7 +37,7 @@ const RecentArticles = () => {
           <li key={article._id}>
             <Link to={`/learn/${article.slug}`} className="group block h-full border border-sf-line bg-sf-surface sf-card-hover">
               <div className="aspect-video w-full overflow-hidden border-b border-sf-line-hairline">
-                <CoverArt seed={article.slug} category={article.category} />
+                <ArticlePhoto slug={article.slug} category={article.category} variant="card" />
               </div>
               <div className="p-5">
                 <p className="mb-2 font-mono text-sf-mono uppercase text-t4">
@@ -50,6 +51,7 @@ const RecentArticles = () => {
           </li>
         ))}
       </ul>
+      <PhotoCredits articles={recent} className="mt-3" />
     </MarketingSection>
   );
 };

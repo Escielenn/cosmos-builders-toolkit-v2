@@ -51,6 +51,31 @@ export const tokens = {
     onAccent: "#0B0F18",
   },
 
+  /**
+   * The eight named hues (cascade and status meanings) plus the two warm /
+   * bright stops, default theme. For data that must be a concrete hex
+   * (persisted colours, canvas, `${hex}40` alpha suffixes). DOM chrome reads
+   * the live variable instead: see src/styles/hue.ts.
+   */
+  hue: {
+    teal: "#15C17B",
+    tealBright: "#3DFFCD",
+    amber: "#FFB800",
+    amberWarm: "#FFB347",
+    stellar: "#5B8DEF",
+    emerald: "#00FF88",
+    violet: "#9B5DE5",
+    crimson: "#FF3366",
+    azure: "#4D9FFF",
+    magenta: "#FF00AA",
+  },
+
+  /** Neutral endpoints for canvas and SVG export (not theme colours). */
+  neutral: {
+    white: "#FFFFFF",
+    black: "#000000",
+  },
+
   category: {
     stars: "#FFB800",
     worlds: "#4D9FFF",

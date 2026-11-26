@@ -1,3 +1,4 @@
+import { DEFAULT_WORLD_ACCENT, DEFAULT_WORLD_ACCENT_RGB } from "@/lib/palettes/world-accents";
 import { createContext, useContext, useMemo } from "react";
 import type { WorldTheme } from "@/hooks/use-world";
 
@@ -9,8 +10,8 @@ interface WorldThemeValues {
   isPro: boolean;
 }
 
-const DEFAULT_ACCENT = "#3DFFCD";
-const DEFAULT_RGB = "61, 255, 205";
+const DEFAULT_ACCENT = DEFAULT_WORLD_ACCENT;
+const DEFAULT_RGB = DEFAULT_WORLD_ACCENT_RGB;
 
 const defaultTheme: WorldThemeValues = {
   accentColor: DEFAULT_ACCENT,

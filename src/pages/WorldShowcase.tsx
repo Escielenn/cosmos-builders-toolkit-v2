@@ -6,6 +6,7 @@
 // world stats, cascade coverage bar, and inline entity detail expansion.
 // ---------------------------------------------------------------------------
 
+import { hueTextVar, hueTint, hueVar, type HueName } from "@/styles/hue";
 import { useParams, Link } from "react-router-dom";
 import { useState, useMemo } from "react";
 import { useMetaTags } from "@/hooks/use-meta-tags";
@@ -362,11 +363,11 @@ const VISIBILITY_CONFIG: {
   value: WorldVisibility;
   label: string;
   icon: typeof Globe;
-  color: string;
+  hue: HueName;
 }[] = [
-  { value: "private", label: "Private", icon: Lock, color: "#FFB800" },
-  { value: "community", label: "Community", icon: Users, color: "#15C17B" },
-  { value: "public", label: "Public", icon: Globe, color: "#4D9FFF" },
+  { value: "private", label: "Private", icon: Lock, hue: "amber" },
+  { value: "community", label: "Community", icon: Users, hue: "teal" },
+  { value: "public", label: "Public", icon: Globe, hue: "azure" },
 ];
 
 function VisibilitySelector({
@@ -390,9 +391,9 @@ function VisibilitySelector({
             disabled={disabled}
             className="flex items-center gap-1.5 px-3 py-1.5 font-sans text-[12px] font-medium uppercase tracking-wider transition-all duration-base"
             style={{
-              backgroundColor: isActive ? `${opt.color}0F` : "transparent",
-              border: `1px solid ${isActive ? hueEdge(opt.color, "active") : "var(--sf-line)"}`,
-              color: isActive ? opt.color : "var(--t4)",
+              backgroundColor: isActive ? hueTint(opt.hue, 0.06) : "transparent",
+              border: `1px solid ${isActive ? hueEdge(hueVar(opt.hue), "active") : "var(--sf-line)"}`,
+              color: isActive ? hueTextVar(opt.hue) : "var(--t4)",
             }}
           >
             <Icon className="w-3 h-3" />

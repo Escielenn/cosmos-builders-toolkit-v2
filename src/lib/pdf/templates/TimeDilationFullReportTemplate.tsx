@@ -1,3 +1,4 @@
+import { printInk } from "../palette";
 import { Document, Page, View, Text } from "@react-pdf/renderer";
 import { styles, colors, spacing, typography } from "../styles";
 import { PDFHeader, PDFFooter, PDFSection, PDFKeyValuePair, PDFResultBox } from "../components";
@@ -139,7 +140,7 @@ const TimeDilationFullReportTemplate = ({ formState: rawFormState, worldName, da
                 <PDFKeyValuePair label="Deceleration Phase" value={formatDuration(result.decelerationPhaseSeconds!)} />
                 {result.peakVelocityCapped && (
                   <View style={{ marginTop: spacing.xs }}>
-                    <Text style={{ fontSize: typography.sizes.xs, color: "#F59E0B", fontStyle: "italic" }}>
+                    <Text style={{ fontSize: typography.sizes.xs, color: printInk.caution, fontStyle: "italic" }}>
                       Peak velocity was capped at propulsion maximum.
                     </Text>
                   </View>

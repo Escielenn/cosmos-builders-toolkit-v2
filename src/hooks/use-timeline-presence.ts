@@ -1,5 +1,6 @@
 // Supabase Realtime Presence for Timeline collaborative viewing (Pro feature)
 
+import { PRESENCE_COLOURS } from "@/lib/palettes/presence";
 import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { RealtimeChannel } from "@supabase/supabase-js";
@@ -12,16 +13,7 @@ export interface UserPresence {
   onlineAt: string;
 }
 
-const PRESENCE_COLORS = [
-  "#3b82f6", // blue
-  "#8b5cf6", // violet
-  "#ec4899", // pink
-  "#f59e0b", // amber
-  "#22c55e", // green
-  "#ef4444", // red
-  "#06b6d4", // cyan
-  "#f97316", // orange
-];
+const PRESENCE_COLORS = PRESENCE_COLOURS;
 
 function pickColor(userId: string): string {
   let hash = 0;

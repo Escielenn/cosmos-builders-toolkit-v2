@@ -5,7 +5,7 @@
  * Ambient, never interactive, never load-bearing.
  *
  * What changed from v1 and why:
- *   • hardcoded #2E3548 ticks (1.4:1) → sf-line tokens, so the dial is
+ *   • hardcoded ticks (1.4:1) → sf-line tokens, so the dial is
  *     actually visible on the plane it sits on.
  *   • the "REF-FRAME" label used t5 (1.51:1). t5 is retired.
  *   • 9px mono at 2px tracking → 12px at 0.10em. Tracking under 12px
@@ -26,9 +26,10 @@ const FRAMES: Frame[] = [
   { name: 'GALACTIC ORBIT', v: '230',   u: 'km/s', pct: 0.88 },
 ];
 
-const TICK_MINOR = '#50555E';   // sf-line-hairline
-const TICK_MAJOR = '#676B75';       // sf-line
-const TRACK      = '#676B75';
+// Live tokens: an SVG stroke accepts var(), so the dial follows the theme.
+const TICK_MINOR = 'var(--sf-line-hairline)';
+const TICK_MAJOR = 'var(--sf-line)';
+const TRACK      = 'var(--sf-line)';
 
 export function VelocityDial({ className }: { className?: string }) {
   const [idx, setIdx] = useState(0);
