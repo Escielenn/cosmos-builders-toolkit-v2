@@ -1,5 +1,37 @@
 # StellarForge Changelog
 
+## 1.7000 · Writing Room
+The Manuscript becomes a writing room, the simulators run smooth, and the
+words on screen say plainly what they do.
+- Writing room: a calmer Manuscript built on the feel of Scribbles. Papers
+  (Void, Charcoal, Black, Parchment, Cream, Soft grey, Terminal, Signal) per
+  device, with world marks that stay legible on every paper and theme.
+  Document markers and colours, and `#tag` search in the binder.
+- Writing assistant: grammar and spelling checked on your device (nothing
+  leaves it), loaded only when you turn it on. It learns the world's names
+  from the Codex, Chronicle and canon, offers "Did you mean Kellis?", links a
+  written name to its entry, and lists new names to add or create.
+- Targets and focus: manuscript, daily, session and document targets, a
+  deadline with writing days, minute goals and a focus timer that shows in
+  the status bar, even in focus mode.
+- Music: the player, plus a pasted Spotify or YouTube playlist, from the room.
+- Simulators: one shared frame loop, motion tied to the clock instead of the
+  frame rate, and no React re-renders per frame. Smoother on every sim.
+- Colour: every hardcoded hex moved into tokens or named data palettes; a CI
+  ratchet keeps it from coming back. Learn articles carry Unsplash photography
+  with credits.
+- Home and Worlds: a world's cover art fades behind its card (switch it off in
+  Display), with Set cover on Worlds cards. World icons are one line-glyph
+  family; the old cartoon set is gone.
+- Display menu: Display, Help and StellarForge now open in place on every
+  screen size, by tap, click or keyboard.
+- Creating a world: "+ New world" everywhere, a four-step "Create a world"
+  dialog that says when anything is saved, and a landing on the new world's
+  Bridge.
+- Plain language: 165 strings rewritten to say what they do; faux jargon and
+  filler removed; buttons in sentence case. A new copy check in CI blocks the
+  worst phrases, and the 404 page now just says the page does not exist.
+
 ## 1.6000 · Quiet Instrument
 A full facelift. Same ship, less noise: the world and the prose are the
 brightest things on screen.

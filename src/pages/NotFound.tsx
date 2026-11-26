@@ -141,9 +141,9 @@ const NotFound = () => {
         <motion.div variants={heroReveal}>
           <PageHeader
             align="center"
-            eyebrow="SIGNAL LOST, ERROR 404"
-            title="Coordinates do not match"
-            lede="The coordinates entered do not correspond to any charted record. Vessel has drifted beyond known space."
+            eyebrow="404 · PAGE NOT FOUND"
+            title="This page does not exist"
+            lede="The link may be out of date, or the address may have a typo."
             className="mb-2"
           />
         </motion.div>
@@ -156,7 +156,7 @@ const NotFound = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <span className="text-sf-crimson-text">UNREACHABLE</span>
+            <span className="text-sf-crimson-text">NOT FOUND</span>
             {"  "}
             <span className="text-t4">{location.pathname}</span>
           </motion.div>
@@ -167,16 +167,16 @@ const NotFound = () => {
           className="flex flex-col sm:flex-row gap-3 justify-center mt-8"
           variants={fadeUpItem}
         >
-          <Button variant="sf-primary" size="sf-lg" className="gap-2" asChild>
+          <Button variant="sf-primary" size="sf-lg" className="gap-2 shrink-0" asChild>
             <Link to="/">
               <Compass className="w-4 h-4" />
-              RETURN TO KNOWN SPACE
+              Go home
             </Link>
           </Button>
           <Button variant="sf-ghost" size="sf-lg" className="gap-2" asChild>
             <Link to="/contact">
               <Radio className="w-4 h-4" />
-              SEND DISTRESS SIGNAL
+              Report a broken link
             </Link>
           </Button>
         </motion.div>
