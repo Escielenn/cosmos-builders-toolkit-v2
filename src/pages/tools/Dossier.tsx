@@ -43,8 +43,8 @@ import { ClipboardCopy, ContactRound, Plus, Trash2, Users } from "lucide-react";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import ToolSidebar from "@/components/tools/ToolSidebar";
-import SectionNavigation, { MobileSectionNav } from "@/components/tools/SectionNavigation";
-import KeyChoicesSidebar, { MobileKeyChoices, type KeyChoicesSection } from "@/components/tools/KeyChoicesSidebar";
+import SectionNavigation from "@/components/tools/SectionNavigation";
+import KeyChoicesSidebar, { type KeyChoicesSection } from "@/components/tools/KeyChoicesSidebar";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
@@ -1032,10 +1032,6 @@ const Dossier = (): JSX.Element => {
         <SectionNavigation sections={SECTIONS} mode="inline" />
         <KeyChoicesSidebar sections={keyChoices} title="Dossier Summary" mode="inline" />
       </ToolSidebar>
-      <div className="no-print fixed bottom-4 right-4 z-40 flex flex-col gap-2 xl:hidden">
-        <MobileSectionNav sections={SECTIONS} />
-        <MobileKeyChoices sections={keyChoices} title="Dossier Summary" />
-      </div>
 
       {/* Dialogs */}
       {worldId && (

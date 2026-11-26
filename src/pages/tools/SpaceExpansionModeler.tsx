@@ -44,13 +44,11 @@ import { useToast } from "@/hooks/use-toast";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, {
-  MobileSectionNav,
-} from "@/components/tools/SectionNavigation";
+  } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, {
   KeyChoicesSection,
-  MobileKeyChoices,
 } from "@/components/tools/KeyChoicesSidebar";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
@@ -1174,11 +1172,6 @@ const SpaceExpansionModeler = () => {
           </ToolSidebar>
         </div>
 
-        {/* Mobile nav */}
-        <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
-          <MobileSectionNav sections={SPACE_EXPANSION_SECTIONS} />
-          <MobileKeyChoices sections={keyChoicesSections} title="Summary" />
-        </div>
       {/* ── Sheets & Dialogs ── */}
       <WorksheetNotesSheet
         open={notesSheetOpen}
