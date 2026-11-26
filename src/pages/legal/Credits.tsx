@@ -72,6 +72,12 @@ Ambient and cinematic audio tracks from [Envato Elements](https://elements.envat
 
 ---
 
+## Open Source
+
+- **[Harper](https://writewithharper.com)** (harper.js 2.13) by Elijah Potter and Automattic checks grammar and spelling in the Manuscript's writing assistant, on your device. Apache License 2.0: [license and notice](/licenses/harper-LICENSE.txt)
+
+---
+
 ## A Note on Creative Assets
 
 All art, music, video, and icons used throughout StellarForge are created by living artists, not generative AI. We are committed to supporting and crediting human creators.

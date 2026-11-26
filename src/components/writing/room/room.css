@@ -1,0 +1,33 @@
+/* ---------------------------------------------------------------------------
+   Writing room: the assistant's underlines.
+
+   The classes are set by a ProseMirror decoration (proofread-plugin.ts); the
+   document itself is never touched. Two signals per kind, never colour
+   alone: spelling is a wavy line, everything else a dashed one.
+
+   The line colour is mixed with the prose colour (currentColor), so it holds
+   on every paper the writer can choose, cream or void, without a per-theme
+   table. The plain token on the line above is the fallback where color-mix
+   is not supported.
+   --------------------------------------------------------------------------- */
+
+.ProseMirror .sf-proof {
+  text-decoration-line: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  text-decoration-skip-ink: none;
+  cursor: text;
+}
+
+.ProseMirror .sf-proof-spelling {
+  text-decoration-style: wavy;
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: var(--sf-crimson);
+  text-decoration-color: color-mix(in srgb, var(--sf-crimson) 82%, currentColor);
+}
+
+.ProseMirror .sf-proof-grammar {
+  text-decoration-style: dashed;
+  text-decoration-color: var(--sf-amber);
+  text-decoration-color: color-mix(in srgb, var(--sf-amber) 62%, currentColor);
+}
