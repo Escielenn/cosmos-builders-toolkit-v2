@@ -128,12 +128,12 @@ export function CaptureGutter({
             title={contradiction ? "CONTRADICTION. REVIEW." : "CLAIM DETECTED. NOT ON FILE. ADOPT?"}
             style={{ top: m.top }}
             className={`pointer-events-auto absolute right-0 flex h-11 w-6 flex-col items-center justify-start pt-1 font-mono text-[14px] leading-none transition-colors duration-fast hover:text-t1 ${
-              contradiction ? "text-sf-amber" : "text-sf-teal"
+              contradiction ? "sf-capture-contradiction text-sf-amber" : "sf-capture-claim text-sf-teal"
             }`}
           >
             <span aria-hidden="true">{contradiction ? "≠" : "⟡"}</span>
             {m.items.length > 1 && (
-              <span aria-hidden="true" className="mt-0.5 text-[12px] text-t4">
+              <span aria-hidden="true" className="sf-capture-count mt-0.5 text-[12px] text-t4">
                 {m.items.length}
               </span>
             )}

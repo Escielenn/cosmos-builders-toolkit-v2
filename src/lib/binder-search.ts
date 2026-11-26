@@ -15,6 +15,7 @@
 // ---------------------------------------------------------------------------
 
 import { readDocMeta } from "@/lib/document-meta";
+import { hasAllTags, parseTagQuery } from "@/lib/writing/tag-query";
 
 export interface SearchOptions {
   regex: boolean;
@@ -188,6 +189,24 @@ export function searchBinder(
   maxHitsPerDoc = 6,
 ): SearchOutcome {
   if (!query.trim()) return { results: [], totalHits: 0, error: null };
+  // `#tag` narrows to documents carrying that keyword (lib/writing/tag-query).
+  // A regular expression is taken literally: `#` means nothing special there.
+  const tagged = opts.regex ? null : parseTagQuery(query);
+  if (tagged && tagged.tags.length > 0) {
+    docs = docs.filter((d) => hasAllTags(readDocMeta(d.metadata).keywords, tagged.tags));
+    if (!tagged.text) {
+      // Tags only: every document carrying them, one hit each (its tags).
+      const match = tagged.tags.map((t) => `#${t}`).join(" ");
+      const results = docs.map((d) => ({
+        docId: d.id,
+        title: d.title || "Untitled",
+        hits: maxHitsPerDoc > 0 ? [{ field: "keywords" as const, occurrence: 0, before: "", match, after: "" }] : [],
+        total: 1,
+      }));
+      return { results, totalHits: results.length, error: null };
+    }
+    query = tagged.text;
+  }
   const built = buildMatcher(query, opts);
   if (!built.re) return { results: [], totalHits: 0, error: built.error };
 

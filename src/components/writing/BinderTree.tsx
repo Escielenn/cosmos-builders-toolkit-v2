@@ -32,6 +32,9 @@ import {
 import {
   ChevronDown,
   ChevronRight,
+  ChevronsDownUp,
+  ChevronsUpDown,
+  CornerDownRight,
   FileText,
   Folder,
   FolderOpen,
@@ -61,7 +64,8 @@ import {
   type DropPosition,
   type MovePlan,
 } from "@/lib/binder-tree";
-import { readDocMeta, STATUS_LABELS, STATUS_TONE } from "@/lib/document-meta";
+import { readDocMeta, STATUS_LABELS } from "@/lib/document-meta";
+import { DocMarker, StatusGlyph, statusTone } from "@/components/writing/DocMarks";
 import { findLabel, LABEL_SWATCH, type WritingLabel } from "@/lib/writing-labels";
 import { rowWords, type BinderRowLike } from "@/lib/writing/doc-scale";
 import { canonCountLine, canonTotal, type CanonCount } from "@/lib/writing/canon-changes";
@@ -99,6 +103,13 @@ export interface BinderTreeProps {
   canonCounts?: ReadonlyMap<string, CanonCount>;
   /** Show every folder open regardless of collapse memory (filtered views). */
   expandAll?: boolean;
+  /**
+   * Compact rows (1.7): 36px rows on pointer devices; touch keeps 44px.
+   * With `onCompactChange` the binder shows its tools row: the compact
+   * toggle, collapse all, expand all and jump to the open document.
+   */
+  compact?: boolean;
+  onCompactChange?: (compact: boolean) => void;
 }
 
 interface DropState {
@@ -109,7 +120,26 @@ interface DropState {
 
 const INDENT = 14;
 const NO_SELECTION: string[] = [];
-const STATUS_INITIAL = { outline: "O", draft: "D", revised: "R", final: "F" } as const;
+
+/** Row height: 44px, or 36px on pointer devices when compact. */
+const ROW_TALL = "min-h-hit";
+const ROW_COMPACT = "min-h-hit [@media(pointer:fine)]:min-h-9";
+const TOOL_BTN =
+  "sf-hit flex h-9 w-9 shrink-0 items-center justify-center text-t3 transition-colors duration-fast hover:bg-sf-surface-elevated hover:text-t1";
+
+/** Documents under each folder, at any depth. */
+function countDocs(tree: BinderNode<BinderRowLike>[]): Map<string, number> {
+  const out = new Map<string, number>();
+  const walk = (n: BinderNode<BinderRowLike>): number => {
+    if (!n.isFolder) return 1;
+    let total = 0;
+    for (const c of n.children) total += walk(c);
+    out.set(n.entry.id, total);
+    return total;
+  };
+  tree.forEach(walk);
+  return out;
+}
 
 // ---------------------------------------------------------------------------
 // Collapse memory (per world, per browser)
@@ -170,6 +200,8 @@ export function BinderTree({
   onScrivenings,
   canonCounts,
   expandAll = false,
+  compact = false,
+  onCompactChange,
 }: BinderTreeProps): JSX.Element {
   const [storedCollapsed, setCollapsed] = useCollapsed(worldId);
   const collapsed = useMemo(() => (expandAll ? new Set<string>() : storedCollapsed), [expandAll, storedCollapsed]);
@@ -181,6 +213,36 @@ export function BinderTree({
   const expandTimer = useRef<ReturnType<typeof setTimeout>>();
   const anchor = useRef<string | null>(null);
   const selected = useMemo(() => new Set(selection), [selection]);
+  const docCounts = useMemo(() => countDocs(tree), [tree]);
+  const listRef = useRef<HTMLUListElement>(null);
+  const rowH = compact ? ROW_COMPACT : ROW_TALL;
+
+  const folderIds = useMemo(() => entries.filter((e) => e.entry_type === "folder").map((e) => e.id), [entries]);
+  const collapseAll = () => setCollapsed(() => new Set(folderIds));
+  const expandEvery = () => setCollapsed(() => new Set());
+  /** Open the folders above the open document and bring its row into view. */
+  const jumpToCurrent = () => {
+    if (!activeDocId) return;
+    const parent = effectiveParents(entries);
+    const ancestors: string[] = [];
+    let cur = parent.get(activeDocId) ?? null;
+    while (cur) {
+      ancestors.push(cur);
+      cur = parent.get(cur) ?? null;
+    }
+    if (ancestors.length) {
+      setCollapsed((prev) => {
+        const next = new Set(prev);
+        ancestors.forEach((a) => next.delete(a));
+        return next;
+      });
+    }
+    requestAnimationFrame(() => {
+      const el = listRef.current?.querySelector<HTMLElement>('[aria-current="page"]');
+      el?.scrollIntoView?.({ block: "center" });
+      el?.focus?.({ preventScroll: true });
+    });
+  };
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
@@ -325,7 +387,36 @@ export function BinderTree({
       onDragEnd={onDragEnd}
       onDragCancel={endDrag}
     >
-      <ul role="tree" aria-label="Binder" className="flex flex-col">
+      {onCompactChange && (
+        <div className="flex items-center gap-1 px-2 pb-1" role="group" aria-label="Binder view">
+          <label className="flex min-h-hit min-w-0 flex-1 cursor-pointer items-center gap-2 px-1 font-sans text-[13px] text-t3 transition-colors duration-fast hover:text-t1">
+            <input
+              type="checkbox"
+              checked={compact}
+              onChange={(e) => onCompactChange(e.target.checked)}
+              className="h-4 w-4 shrink-0 accent-[var(--sf-primary)]"
+            />
+            <span className="truncate">Compact rows</span>
+          </label>
+          <button type="button" onClick={collapseAll} aria-label="Collapse all folders" title="Collapse all folders" className={TOOL_BTN}>
+            <ChevronsDownUp className="h-4 w-4" aria-hidden="true" />
+          </button>
+          <button type="button" onClick={expandEvery} aria-label="Expand all folders" title="Expand all folders" className={TOOL_BTN}>
+            <ChevronsUpDown className="h-4 w-4" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            onClick={jumpToCurrent}
+            disabled={!activeDocId}
+            aria-label="Jump to the open document"
+            title="Jump to the open document"
+            className={`${TOOL_BTN} disabled:text-sf-disabled-text`}
+          >
+            <CornerDownRight className="h-4 w-4" aria-hidden="true" />
+          </button>
+        </div>
+      )}
+      <ul ref={listRef} role="tree" aria-label="Binder" className="flex flex-col">
         {rows.map(({ node, depth }) => (
           <BinderRow
             key={node.entry.id}
@@ -338,6 +429,8 @@ export function BinderTree({
             drop={drop?.overId === node.entry.id ? drop : null}
             dragging={dragId === node.entry.id}
             words={wordCounts.get(node.entry.id) ?? 0}
+            docCount={docCounts.get(node.entry.id) ?? 0}
+            rowH={rowH}
             canon={canonCounts?.get(node.entry.id)}
             labels={labels}
             renaming={renamingId === node.entry.id}
@@ -398,6 +491,10 @@ interface BinderRowProps {
   drop: DropState | null;
   dragging: boolean;
   words: number;
+  /** Folders: documents inside, at any depth. */
+  docCount: number;
+  /** Row height classes (tall, or compact on pointer devices). */
+  rowH: string;
   canon?: CanonCount;
   labels: WritingLabel[];
   renaming: boolean;
@@ -426,6 +523,8 @@ function BinderRow({
   drop,
   dragging,
   words,
+  docCount,
+  rowH,
   canon,
   labels,
   renaming,
@@ -493,7 +592,7 @@ function BinderRow({
   const canonLine = canon && canonCount > 0 ? canonCountLine(canon) : "";
 
   const hint = [
-    isFolder ? "Folder" : `${words.toLocaleString()} words`,
+    isFolder ? `Folder, ${docCount.toLocaleString()} ${docCount === 1 ? "document" : "documents"}` : `${words.toLocaleString()} words`,
     status ? STATUS_LABELS[status] : "",
     label ? label.name : "",
     canonLine,
@@ -508,7 +607,7 @@ function BinderRow({
       aria-level={depth + 1}
       aria-expanded={isFolder ? expanded : undefined}
       aria-selected={active || selected}
-      className={`group relative flex min-h-hit items-center border-l-2 pr-1 transition-colors duration-fast ${
+      className={`group relative flex ${rowH} items-center border-l-2 pr-1 transition-colors duration-fast ${
         active
           ? "border-sf-primary bg-sf-primary/[0.06]"
           : selected
@@ -531,17 +630,14 @@ function BinderRow({
           type="button"
           onClick={() => onToggle()}
           aria-label={`${expanded ? "Collapse" : "Expand"} ${title}`}
-          className="flex min-h-hit w-7 shrink-0 items-center justify-center text-t4 transition-colors duration-fast hover:text-t1"
+          className={`flex ${rowH} w-7 shrink-0 items-center justify-center text-t4 transition-colors duration-fast hover:text-t1`}
         >
           {expanded ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
         </button>
       ) : (
+        // The document's marker: the writer's emoji, else a plain page.
         <span className="flex w-7 shrink-0 items-center justify-center" aria-hidden="true">
-          {label ? (
-            <span className={`h-2.5 w-2.5 ${LABEL_SWATCH[label.hue]}`} />
-          ) : (
-            <FileText className="h-3.5 w-3.5 text-t4" />
-          )}
+          <DocMarker marker={meta?.marker} className="text-[15px]" />
         </span>
       )}
 
@@ -571,7 +667,7 @@ function BinderRow({
           onKeyDown={onKeyDown}
           title={`${hint}. Double-click or F2 to rename. Alt+Arrow to move.${isFolder ? "" : " Cmd/Ctrl-click or Shift-click to select several."}`}
           aria-current={active ? "page" : undefined}
-          className={`flex min-h-hit min-w-0 flex-1 touch-none items-center gap-2 pr-1 text-left ${
+          className={`flex ${rowH} min-w-0 flex-1 touch-none items-center gap-2 pr-1 text-left ${
             isFolder
               ? "font-heading text-[12px] uppercase tracking-wide text-t3 hover:text-t1"
               : `font-sans text-[14px] ${active ? "text-t1" : "text-t2 hover:text-t1"}`
@@ -597,19 +693,27 @@ function BinderRow({
               <span className="sr-only">{canonLine}</span>
             </span>
           )}
-          {status && (
-            <span
-              className={`shrink-0 font-mono text-[12px] ${STATUS_TONE[status]}`}
-              aria-label={`Status ${STATUS_LABELS[status]}`}
-            >
-              {STATUS_INITIAL[status]}
-            </span>
-          )}
           {!isFolder && (
             <span
               className={`shrink-0 font-mono text-[12px] text-t4 ${active ? "inline" : "hidden group-hover:inline group-focus-within:inline"}`}
             >
               {words.toLocaleString()}
+            </span>
+          )}
+          {isFolder && (
+            <span className="shrink-0 font-mono text-[12px] tracking-normal text-t4" aria-label={`${docCount} ${docCount === 1 ? "document" : "documents"}`}>
+              {docCount}
+            </span>
+          )}
+          {label && (
+            // The label's colour, with its name for anyone not seeing colour.
+            <span className={`h-2 w-2 shrink-0 ${LABEL_SWATCH[label.hue]}`} role="img" aria-label={`Label ${label.name}`} />
+          )}
+          {!isFolder && (
+            // Status at the row's right edge: a ring that fills as the
+            // draft matures. Shape first, tone second.
+            <span className={`flex w-3 shrink-0 justify-center ${statusTone(status)}`}>
+              <StatusGlyph status={status} title={status ? `Status ${STATUS_LABELS[status]}` : undefined} />
             </span>
           )}
         </button>
@@ -620,7 +724,7 @@ function BinderRow({
           <button
             type="button"
             aria-label={`Options for ${title}`}
-            className="flex min-h-hit w-8 shrink-0 items-center justify-center text-t4 transition-colors duration-fast hover:text-sf-primary-text"
+            className={`flex ${rowH} w-8 shrink-0 items-center justify-center text-t4 transition-colors duration-fast hover:text-sf-primary-text`}
           >
             <MoreVertical className="h-3.5 w-3.5" />
           </button>

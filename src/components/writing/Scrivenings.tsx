@@ -161,13 +161,15 @@ export function Scrivenings({
   return (
     <div
       ref={rootRef}
-      className="mx-auto px-6 py-8"
-      style={{ maxWidth: "var(--sf-writing-measure, 68ch)", ...editorStyle }}
+      // The same sheet as a single document (room.css); every ink below
+      // takes the paper's colour through the sf-on-paper classes.
+      className="sf-room-sheet"
+      style={editorStyle}
     >
-      <div className="mb-8 flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-sf-line-hairline pb-3">
-        <span className="font-heading text-sf-eyebrow uppercase text-t4">Scrivenings</span>
-        <span className="min-w-[10rem] flex-1 truncate font-serif text-[18px] italic text-t1">{title}</span>
-        <span className="hidden shrink-0 font-mono text-[12px] text-t4 sm:inline">
+      <div className="sf-on-paper-edge mb-8 flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-sf-line-hairline pb-3">
+        <span className="sf-on-paper-soft font-heading text-sf-eyebrow uppercase text-t4">Scrivenings</span>
+        <span className="sf-on-paper-strong min-w-[10rem] flex-1 truncate font-serif text-[20px] text-t1">{title}</span>
+        <span className="sf-on-paper-faint hidden shrink-0 font-mono text-[12px] text-t4 sm:inline">
           {docs.length} {docs.length === 1 ? "DOC" : "DOCS"} · {total.toLocaleString()} W ·{" "}
           {!ready ? "LOADING" : autosave.saving ? "SAVING…" : autosave.savedAt ? "SAVED" : "READY"}
         </span>
@@ -176,7 +178,7 @@ export function Scrivenings({
           onClick={onClose}
           aria-label="Leave Scrivenings"
           title="Back to the single-document editor"
-          className="flex min-h-hit w-10 shrink-0 items-center justify-center border border-transparent text-t3 transition-colors duration-base hover:border-sf-line-emphasis hover:text-t1"
+          className="sf-on-paper-soft sf-on-paper-link flex min-h-hit w-10 shrink-0 items-center justify-center text-t3 transition-colors duration-base"
         >
           <X className="h-4 w-4" />
         </button>
@@ -184,13 +186,13 @@ export function Scrivenings({
 
       {locked && <ReadOnlyNotice />}
       {contents.isError && (
-        <p className="mb-6 font-mono text-[12px] uppercase text-sf-crimson-text" role="alert">
+        <p className="sf-on-paper-stop mb-6 font-mono text-[12px] uppercase text-sf-crimson-text" role="alert">
           {"// SECTIONS COULD NOT BE LOADED. NOTHING WAS CHANGED."}
         </p>
       )}
 
       {docs.length === 0 ? (
-        <p className="font-sans text-[15px] text-t3">Nothing here to read yet. This folder holds no documents.</p>
+        <p className="sf-on-paper-soft font-sans text-[15px] text-t3">Nothing here to read yet. This folder holds no documents.</p>
       ) : (
         docs.map((d, i) => {
           const reload = autosave.reloaded[d.id];
@@ -205,7 +207,7 @@ export function Scrivenings({
               className={i > 0 ? "mt-10" : ""}
             >
               <div className="mb-3 flex items-center gap-3">
-                <span className="h-px flex-1 bg-sf-line-hairline" aria-hidden="true" />
+                <span className="sf-on-paper-rule h-px flex-1 bg-sf-line-hairline" aria-hidden="true" />
                 <button
                   type="button"
                   onClick={() => {
@@ -213,12 +215,12 @@ export function Scrivenings({
                     onOpenDoc(d.id);
                   }}
                   title="Open this document on its own"
-                  className="flex min-h-hit max-w-[70%] items-center gap-1.5 px-1 font-sans text-[14px] text-t3 transition-colors duration-base hover:text-sf-primary-text"
+                  className="sf-on-paper-soft sf-on-paper-link flex min-h-hit max-w-[70%] items-center gap-1.5 px-1 font-sans text-[14px] text-t3 transition-colors duration-base"
                 >
                   <span className="truncate">{d.title || "Untitled"}</span>
                   <ArrowUpRight className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                 </button>
-                <span className="h-px flex-1 bg-sf-line-hairline" aria-hidden="true" />
+                <span className="sf-on-paper-rule h-px flex-1 bg-sf-line-hairline" aria-hidden="true" />
               </div>
               {conflict && (
                 <SaveConflictNotice
@@ -244,7 +246,7 @@ export function Scrivenings({
                   aria-hidden="true"
                   data-testid="scrivenings-placeholder"
                   style={{ height: estimateSectionHeight(d.word_count ?? 0, heights.current.get(d.id)) }}
-                  className="border-l border-sf-line-hairline"
+                  className="sf-on-paper-edge border-l border-sf-line-hairline"
                 />
               )}
             </section>

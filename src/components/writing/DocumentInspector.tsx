@@ -2,8 +2,10 @@
 // DocumentInspector, Scrivener's Inspector for the open document.
 //
 // Collapsible sections in the right rail's "Doc" tab, one open at a time:
-//   CARD       synopsis, label, status, POV (a character on file, or free
-//              text), SET IN (a place), WHEN + TIMELINE, keywords, target.
+//   CARD       opens on the synopsis index card (title + synopsis on a card
+//              surface, 1.7), then the document's details: status, marker
+//              and colour, label, tags, POV (a character on file, or free
+//              text), SET IN (a place), WHEN + TIMELINE, target.
 //              POV and SET IN drive the rail ranking and the World tab.
 //   NOTES      per-document notes, distinct from the synopsis
 //   COMMENTS   inline comments anchored to words (DocumentComments), when
@@ -20,6 +22,10 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Camera, ChevronDown, MapPin, Tag as TagIcon, Trash2, UserRound } from "lucide-react";
+import { ACCENT_BG, HUE_NAMES, docAccent, isDocColor } from "@/lib/writing/doc-identity";
+import { LABEL_HUES } from "@/lib/writing-labels";
+import { DocMarker, StatusGlyph } from "@/components/writing/DocMarks";
+import { MarkerPicker } from "@/components/writing/MarkerPicker";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,6 +50,7 @@ import {
   type DocumentSnapshot,
 } from "@/hooks/use-document-versions";
 import { isNamedSnapshot } from "@/lib/snapshot-cap";
+import { tagToken } from "@/lib/writing/tag-query";
 
 
 export type InspectorPane = "card" | "notes" | "comments" | "snapshots";
@@ -93,6 +100,10 @@ interface DocumentInspectorProps {
   branchOptions?: BranchOption[];
   /** The COMMENTS pane (DocumentComments). Absent: no Comments tab. */
   comments?: React.ReactNode;
+  /** The document's title, shown on the synopsis card (edited on the page). */
+  title?: string;
+  /** A tag was clicked: filter the binder to documents carrying it. */
+  onFilterTag?: (tag: string) => void;
 }
 
 const FIELD_LABEL = "font-sans text-[12px] font-medium uppercase tracking-wide text-t3";
@@ -175,6 +186,8 @@ function CardPane({
   povOptions = [],
   placeOptions = [],
   branchOptions = [],
+  title,
+  onFilterTag,
 }: DocumentInspectorProps): JSX.Element {
   const [synopsis, setSynopsis] = useState(meta.synopsis);
   const [pov, setPov] = useState(meta.pov);
@@ -193,6 +206,8 @@ function CardPane({
   };
 
   const label = findLabel(labels, meta.labelId);
+  const accent = docAccent(meta, labels);
+  const ownColor = isDocColor(meta.color);
   const povLinked = !!(meta.povEntityId || meta.povDossierId);
   const place = meta.setInPlaceId ? placeOptions.find((p) => p.id === meta.setInPlaceId) ?? null : null;
   const branch = meta.branchId ? branchOptions.find((b) => b.id === meta.branchId) ?? null : null;
@@ -209,17 +224,102 @@ function CardPane({
 
   return (
     <div className="flex flex-col gap-5 p-4">
-      <label className="flex flex-col gap-2">
-        <span className={FIELD_LABEL}>Synopsis</span>
-        <textarea
-          value={synopsis}
-          onChange={(e) => setSynopsis(e.target.value)}
-          onBlur={() => commit("synopsis", synopsis)}
-          rows={3}
-          placeholder="What happens in this scene?"
-          className="sf-sb sf-sb--slim w-full resize-y px-3 py-2 font-sans text-[16px] leading-relaxed text-t2"
-        />
-      </label>
+      {/* The synopsis index card: what this document is, at a glance. The
+          top edge takes the document's colour (its own, its label's, or its
+          status's), the same edge its card wears on the corkboard. */}
+      <div className="border border-sf-line bg-sf-surface-elevated">
+        <div className={`h-[3px] ${ACCENT_BG[accent]}`} aria-hidden="true" />
+        <div className="flex flex-col gap-2 px-4 pb-3 pt-3">
+          <div className="flex items-center gap-2">
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center" aria-hidden="true">
+              <DocMarker marker={meta.marker} className="text-[15px]" />
+            </span>
+            <span className="min-w-0 flex-1 truncate font-serif text-[17px] text-t1">{title?.trim() || "Untitled"}</span>
+          </div>
+          <label className="flex flex-col gap-1.5">
+            <span className={FIELD_LABEL}>Synopsis</span>
+            <textarea
+              value={synopsis}
+              onChange={(e) => setSynopsis(e.target.value)}
+              onBlur={() => commit("synopsis", synopsis)}
+              rows={4}
+              placeholder="What happens in this scene?"
+              className="sf-sb sf-sb--slim w-full resize-y border-0 bg-transparent px-0 py-0 font-sans text-[16px] leading-relaxed text-t2"
+            />
+          </label>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <span className={FIELD_LABEL}>Status</span>
+        <div className="grid grid-cols-2 gap-2">
+          {DOC_STATUSES.map((s) => (
+            <button
+              key={s}
+              type="button"
+              onClick={() => onChange({ status: meta.status === s ? "" : s })}
+              aria-pressed={meta.status === s}
+              className={`flex min-h-hit items-center gap-2 border px-3 font-mono text-[12px] uppercase transition-colors duration-fast ${
+                meta.status === s
+                  ? `border-sf-primary bg-sf-primary/[0.06] ${STATUS_TONE[s]}`
+                  : "border-sf-line text-t3 hover:border-sf-line-emphasis hover:text-t1"
+              }`}
+            >
+              <StatusGlyph status={s} />
+              {STATUS_LABELS[s]}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-1.5">
+        <span className={FIELD_LABEL} id="sf-doc-marker-label">
+          Marker
+        </span>
+        <span className={FIELD_LABEL} id="sf-doc-color-label">
+          Colour
+        </span>
+        <MarkerPicker value={meta.marker ?? ""} onChange={(marker) => onChange({ marker })}>
+          <button
+            type="button"
+            aria-labelledby="sf-doc-marker-label"
+            title={meta.marker ? "Change this document's marker" : "Give this document a marker"}
+            className="sf-field flex h-11 w-11 items-center justify-center text-[20px]"
+          >
+            <DocMarker marker={meta.marker} iconClassName="h-4 w-4 text-t4" />
+          </button>
+        </MarkerPicker>
+        <div role="group" aria-labelledby="sf-doc-color-label" className="flex flex-wrap items-center gap-x-1 gap-y-0">
+          <button
+            type="button"
+            onClick={() => onChange({ color: "" })}
+            aria-pressed={!ownColor}
+            title="Follow the label, then the status"
+            className={`min-h-hit px-2 font-mono text-[12px] uppercase transition-colors duration-fast ${
+              ownColor ? "text-t3 hover:text-t1" : "text-sf-primary-text"
+            }`}
+          >
+            Auto
+          </button>
+          {LABEL_HUES.map((h) => (
+            <button
+              key={h}
+              type="button"
+              onClick={() => onChange({ color: meta.color === h ? "" : h })}
+              aria-pressed={meta.color === h}
+              aria-label={HUE_NAMES[h]}
+              title={HUE_NAMES[h]}
+              className="sf-hit flex h-7 w-7 items-center justify-center"
+            >
+              <span
+                className={`block h-4 w-4 ${ACCENT_BG[h]} ${
+                  meta.color === h ? "outline outline-2 outline-offset-2 outline-sf-line-emphasis" : ""
+                }`}
+              />
+            </button>
+          ))}
+        </div>
+      </div>
 
       <div className="flex flex-col gap-1.5">
         <span className={FIELD_LABEL}>Label</span>
@@ -258,24 +358,31 @@ function CardPane({
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <span className={FIELD_LABEL}>Status</span>
-        <div className="grid grid-cols-2 gap-2">
-          {DOC_STATUSES.map((s) => (
-            <button
-              key={s}
-              type="button"
-              onClick={() => onChange({ status: meta.status === s ? "" : s })}
-              aria-pressed={meta.status === s}
-              className={`min-h-hit border px-3 font-mono text-[12px] uppercase transition-colors duration-fast ${
-                meta.status === s
-                  ? `border-sf-primary bg-sf-primary/[0.06] ${STATUS_TONE[s]}`
-                  : "border-sf-line text-t3 hover:border-sf-line-emphasis hover:text-t1"
-              }`}
-            >
-              {STATUS_LABELS[s]}
-            </button>
-          ))}
-        </div>
+        <span className={FIELD_LABEL}>Tags</span>
+        <TagInput
+          value={meta.keywords}
+          onChange={(keywords) => commit("keywords", keywords)}
+          suggestions={keywordSuggestions}
+          placeholder="Add a tag, then Enter"
+          maxTags={20}
+          maxLength={40}
+        />
+        {onFilterTag && meta.keywords.length > 0 && (
+          <div className="flex flex-wrap items-center gap-x-1">
+            <span className="font-sans text-[12px] text-t3">Find in binder:</span>
+            {meta.keywords.map((k) => (
+              <button
+                key={k}
+                type="button"
+                onClick={() => onFilterTag(k)}
+                title={`Show every document tagged ${k}`}
+                className="min-h-hit px-1 font-mono text-[12px] text-t3 underline-offset-4 transition-colors duration-fast hover:text-sf-primary-text hover:underline"
+              >
+                {tagToken(k)}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col gap-1.5">
@@ -429,18 +536,6 @@ function CardPane({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-      </div>
-
-      <div className="flex flex-col gap-1.5">
-        <span className={FIELD_LABEL}>Keywords</span>
-        <TagInput
-          value={meta.keywords}
-          onChange={(keywords) => commit("keywords", keywords)}
-          suggestions={keywordSuggestions}
-          placeholder="Add a keyword, then Enter"
-          maxTags={20}
-          maxLength={40}
-        />
       </div>
 
       <div className="flex flex-col gap-1.5">
