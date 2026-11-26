@@ -28,7 +28,7 @@ interface KeyChoicesSidebarProps {
   mode?: "floating" | "inline";
 }
 
-export const NO_READOUT_LINE = "// NO DATA ON FILE. FILL A SECTION TO SEE READOUTS.";
+export const NO_READOUT_LINE = "// NOTHING YET. FILL A SECTION TO SEE READOUTS.";
 
 function filled(choice: KeyChoice): boolean {
   if (!choice.value) return false;

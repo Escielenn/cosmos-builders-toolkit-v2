@@ -597,7 +597,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
     buildsOn: [
       { toolId: 'empire-designer', strength: 'recommended', note: 'Political structure informs energy governance' },
       { toolId: 'technology-consequences', strength: 'recommended', note: 'Technology level shapes energy capacity' },
-      { toolId: 'one-big-lie', strength: 'optional', note: 'Exotic physics may unlock higher energy tiers' },
+      { toolId: 'one-big-lie', strength: 'optional', note: 'Exotic physics may allow higher energy tiers' },
     ],
     feedsInto: [
       { toolId: 'space-expansion-modeler', strength: 'recommended', note: 'Energy level constrains expansion capability' },

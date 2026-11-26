@@ -134,7 +134,7 @@ export function FinalCTA(): JSX.Element {
   return (
     <section aria-labelledby="final-cta-title" className="py-14 text-center md:py-20 [section+&]:pt-0">
       <h2 id="final-cta-title" className="mx-auto mb-6 max-w-[18ch] font-display text-sf-h1 font-light text-t1">
-        Your first world is one decision away
+        Start with one world
       </h2>
       <p className="mx-auto mb-10 font-serif text-xl italic text-t2">
         These worlds exist in you. Waiting to be found.

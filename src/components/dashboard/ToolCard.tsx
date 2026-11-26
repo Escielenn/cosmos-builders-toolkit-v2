@@ -70,7 +70,7 @@ const ToolCard = ({
           {isPro && isSubscribed && (
             <Badge variant="secondary" className="gap-1 rounded-none text-xs uppercase bg-sf-emerald/[0.06] border border-sf-emerald text-sf-emerald-text cursor-default">
               <Unlock className="w-3 h-3" aria-hidden="true" />
-              <span className="whitespace-nowrap">Unlocked</span>
+              <span className="whitespace-nowrap">Pro</span>
             </Badge>
           )}
           {isPro && !isSubscribed && <ProBadge />}
@@ -122,7 +122,7 @@ const ToolCard = ({
       {isAvailable && isLocked && (
         <Badge variant="outline" className="w-fit text-xs">
           <Lock className="w-3 h-3 mr-1" />
-          Upgrade to Unlock
+          Upgrade to Pro
         </Badge>
       )}
     </GlassPanel>

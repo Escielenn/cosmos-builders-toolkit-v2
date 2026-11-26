@@ -13,6 +13,7 @@
     "check:chrome": "node scripts/check-page-chrome.mjs",
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:canon": "node scripts/check-canon-imports.mjs",
+    "check:copy": "node scripts/check-copy.mjs",
     "build:e2e": "vite build --mode e2e",
     "test:e2e": "playwright test",
     "check:bundle": "node scripts/check-bundle-budget.mjs",

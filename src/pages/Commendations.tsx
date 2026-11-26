@@ -76,10 +76,10 @@ export default function Commendations() {
       <Header />
       <main className="flex-1">
         <PageContainer variant="standalone">
-          {/* Child of the personnel file: one back link to its real parent. */}
+          {/* Child of the profile: one back link to its real parent. */}
           <PageHeader
             size="page"
-            back={{ label: "Back to Personnel file", to: "/profile" }}
+            back={{ label: "Back to profile", to: "/profile" }}
             eyebrow="Marks of progress"
             title="Commendations"
             lede="Each commendation is earned through use: worlds built, words written, systems explored. The cascade rewards the doer, not the visitor."

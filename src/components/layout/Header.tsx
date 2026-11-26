@@ -54,16 +54,16 @@ const APP_NAV: NavGroup[] = [
   {
     heading: "Write",
     items: [
-      { label: "My Worlds", to: "/worlds", icon: Globe },
+      { label: "My worlds", to: "/worlds", icon: Globe },
       { label: "Studio", to: "/studio", icon: PenTool },
       { label: "Tools", to: "/tools", icon: Wrench },
-      { label: "Writing Prompts", to: "/prompts", icon: Sparkles },
+      { label: "Writing prompts", to: "/prompts", icon: Sparkles },
     ],
   },
   {
     heading: "Library",
     items: [
-      { label: "My Collection", to: "/profile?tab=collection", icon: Library },
+      { label: "My collection", to: "/profile?tab=collection", icon: Library },
       { label: "Archive", to: "/profile?tab=archive", icon: Archive },
       { label: "Commendations", to: "/commendations", icon: Award },
     ],
@@ -84,7 +84,7 @@ const MARKETING_NAV: NavGroup[] = [
     items: [
       { label: "SF University", to: "/learn", icon: BookOpen },
       { label: "Field Manual", to: "/guide", icon: Compass },
-      { label: "Getting Started", to: "/getting-started", icon: Sparkles },
+      { label: "Getting started", to: "/getting-started", icon: Sparkles },
       { label: "Bookshelf", to: "/bookshelf", icon: Library },
     ],
   },
@@ -111,7 +111,7 @@ const fire = (name: string) => window.dispatchEvent(new Event(name));
  * size on phones, never "SF". No build number (it lives in the footer).
  *
  * Signed out (marketing): Product, Learn, Community · search · Display · sign in.
- * Signed in (app): Worlds, Studio, Tools · search · Unlock Pro (free tier only,
+ * Signed in (app): Worlds, Studio, Tools · search · Go Pro (free tier only,
  *   quiet ghost) · profile menu. The profile menu carries Display, Help and
  *   the marketing links that used to crowd the bar.
  * Phone: lockup, search, menu, profile (or sign in). Nothing else.
@@ -200,7 +200,7 @@ const Header = () => {
               className="sf-nav-link hidden md:inline-flex items-center gap-1.5 h-11 min-h-hit px-2 text-t3 hover:text-sf-primary-text transition-colors"
             >
               <Zap className="w-3.5 h-3.5 text-sf-primary-text relative z-[1]" aria-hidden="true" />
-              <span className="font-heading text-sf-eyebrow uppercase relative z-[1]">Unlock Pro</span>
+              <span className="font-heading text-sf-eyebrow uppercase relative z-[1]">Go Pro</span>
             </Link>
           )}
 
@@ -251,7 +251,7 @@ const Header = () => {
                     }}
                   >
                     <MessageCircle className="w-5 h-5 shrink-0" aria-hidden="true" />
-                    Open channel
+                    Contact us
                   </button>
                   {!user && (
                     <button
@@ -278,7 +278,7 @@ const Header = () => {
                     }}
                   >
                     <LogIn className="w-4 h-4" />
-                    Sign Up / Log In
+                    Sign up or sign in
                   </Button>
                 </div>
               )}
@@ -315,7 +315,7 @@ const Header = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/profile?tab=collection")}>
                   <Library className="w-4 h-4 mr-2" />
-                  My Collection
+                  My collection
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/profile?tab=archive")}>
                   <Archive className="w-4 h-4 mr-2" />
@@ -339,7 +339,7 @@ const Header = () => {
                 </MenuSection>
                 <DropdownMenuItem onClick={() => openSettings("export")}>
                   <Download className="w-4 h-4 mr-2" />
-                  Export Settings
+                  Export settings
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/pricing")}>
                   <Zap className="w-4 h-4 mr-2" />
@@ -361,7 +361,7 @@ const Header = () => {
                     </DropdownMenuItem>
                     <DropdownMenuItem onSelect={() => fire(OPEN_CONTACT_EVENT)}>
                       <MessageCircle className="w-4 h-4 mr-2" />
-                      Open channel
+                      Contact us
                     </DropdownMenuItem>
                 </MenuSection>
                 <MenuSection
@@ -393,7 +393,7 @@ const Header = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut className="w-4 h-4 mr-2" />
-                  Sign Out
+                  Sign out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -408,7 +408,7 @@ const Header = () => {
             >
               <Link to="/auth#create-account" aria-label="Sign up or log in">
                 <LogIn className="w-4 h-4" aria-hidden="true" />
-                <span className="hidden sm:inline">Sign Up / Log In</span>
+                <span className="hidden sm:inline">Sign up or sign in</span>
               </Link>
             </Button>
           )}

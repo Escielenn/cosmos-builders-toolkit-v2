@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// survey-seed, the BEGIN SURVEY wizard's data model and seed builder.
+// survey-seed: the "Create a world" dialog's data model and seed builder.
 //
 // "Blank page syndrome" is the promise StellarForge makes first: a writer
 // names a world, picks a star, a planet and one species, and lands in the

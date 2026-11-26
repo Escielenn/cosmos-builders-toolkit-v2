@@ -28,4 +28,4 @@ export function useToolReadOnly(): boolean {
 }
 
 /** Ship's Voice line shown when a write is attempted in preview. */
-export const PREVIEW_WRITE_BLOCKED = "PREVIEW ONLY. PRO CLEARANCE REQUIRED TO FILE WORK.";
+export const PREVIEW_WRITE_BLOCKED = "PREVIEW ONLY. SAVING THIS TOOL NEEDS PRO.";

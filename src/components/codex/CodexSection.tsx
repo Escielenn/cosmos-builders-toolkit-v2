@@ -74,8 +74,8 @@ const CodexSection = ({
       {expanded && (
         <div>
           {sortedElements.length === 0 ? (
-            <p className="px-3 py-1.5 font-mono text-sf-mono uppercase text-t4">
-              NO DATA ON FILE. RUN A TOOL TO GENERATE ENTRIES.
+            <p className="px-3 py-1.5 text-sm text-t3">
+              Nothing here yet. Run a tool to add entries.
             </p>
           ) : (
             sortedElements.map((el, idx) => (

@@ -692,7 +692,7 @@ const WorldDashboard = () => {
           back={{ label: "Back to worlds", to: "/worlds" }}
         />
         <Notice tone="danger" label="RECORD UNAVAILABLE">
-          This world does not exist, or your clearance does not reach it.
+          This world does not exist, or you do not have access to it.
         </Notice>
       </>
     );

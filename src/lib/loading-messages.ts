@@ -4,7 +4,7 @@ const loadingMessages: Record<string, string[]> = {
   dashboard: [
     "COMPILING SURVEY DATA...",
     "RETRIEVING WORLD INDEX...",
-    "LOADING INSTRUMENT MANIFEST...",
+    "LOADING INSTRUMENTS...",
   ],
   tools: [
     "CALIBRATING INSTRUMENTS...",
@@ -30,7 +30,7 @@ const loadingMessages: Record<string, string[]> = {
     "RESOLVING SURFACE CONDITIONS...",
   ],
   "tools/dossier": [
-    "RETRIEVING PERSONNEL FILE...",
+    "LOADING YOUR PROFILE...",
     "RESOLVING LINEAGE AGAINST CANON...",
   ],
   "tools/kardashev-scale": [
@@ -155,7 +155,7 @@ const loadingMessages: Record<string, string[]> = {
     "LOADING TRANSMISSION...",
   ],
   profile: [
-    "LOADING PERSONNEL FILE...",
+    "LOADING YOUR PROFILE...",
     "RETRIEVING CREDENTIALS...",
   ],
   worlds: [
