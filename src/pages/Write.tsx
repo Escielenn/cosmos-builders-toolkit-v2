@@ -2192,9 +2192,10 @@ export default function Write(): JSX.Element {
 
       {/* status bar */}
       {/* Status bar: save state, words, target. 32px plus the device's safe
-          area. The right reserve keeps the help button (FABStack, positioned
-          from --sf-bottom-chrome) off the readouts. */}
-      <footer className="flex min-h-8 shrink-0 items-center justify-between gap-3 border-t border-sf-line-hairline pb-[env(safe-area-inset-bottom)] pl-4 pr-16">
+          area. The help button (FABStack) is not rendered on the Manuscript,
+          so the bar needs no right reserve; --sf-bottom-chrome still tells
+          any other bottom-anchored chrome how tall this bar is. */}
+      <footer className="flex min-h-8 shrink-0 items-center justify-between gap-3 border-t border-sf-line-hairline pb-[env(safe-area-inset-bottom)] px-4">
         {/* Save state: icon and words, never colour alone. A failed save
             used to read "Saved" here. */}
         <div className="flex min-w-0 items-center gap-2 whitespace-nowrap" role="status" aria-live="polite">

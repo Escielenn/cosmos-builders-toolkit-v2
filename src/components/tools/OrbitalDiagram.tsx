@@ -18,7 +18,7 @@ interface OrbitalDiagramProps {
   className?: string;
 }
 
-const VOID_COLOR = "#0D0D0F";
+const VOID_COLOR = tokens.surface.simCanvas;
 const CYAN = tokens.accent.base; // brand teal (single-sourced)
 const HZ_GREEN = "rgba(46, 204, 113,";
 const SNOWLINE_BLUE = "rgba(173, 216, 230, 0.35)";

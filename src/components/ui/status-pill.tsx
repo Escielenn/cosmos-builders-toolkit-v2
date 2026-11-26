@@ -44,7 +44,7 @@ const statusPillVariants = cva(
   }
 );
 
-const dotVariants = cva("inline-block h-1.5 w-1.5 rounded-full", {
+const dotVariants = cva("inline-block h-1.5 w-1.5 rounded-none", {
   variants: {
     variant: {
       teal: "bg-sf-primary",

@@ -2253,7 +2253,7 @@ const XenomythologyFrameworkBuilder = () => {
               background: "rgba(15, 15, 16, 0.92)",
               border: "1px solid var(--sf-line)",
               backdropFilter: "blur(16px)",
-              borderRadius: 8,
+              borderRadius: 0,
             }}
           >
             <h4 className="font-heading text-[12px] font-light tracking-[0.12em] uppercase text-sf-primary-text mb-3">

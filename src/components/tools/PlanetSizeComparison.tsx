@@ -40,7 +40,7 @@ const PlanetSizeComparison = ({
     ctx.scale(dpr, dpr);
 
     // Clear
-    ctx.fillStyle = "#0D0D0F";
+    ctx.fillStyle = tokens.surface.simCanvas;
     ctx.fillRect(0, 0, w, h);
 
     // Layout: two planets side by side

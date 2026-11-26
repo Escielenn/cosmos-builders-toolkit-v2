@@ -254,7 +254,7 @@ const BackgroundSelector = () => {
                     <div
                       data-video-fallback
                       className="absolute inset-0 items-center justify-center"
-                      style={{ display: "none", background: "linear-gradient(135deg, #0d1117 0%, #1a1f2e 50%, #0d1117 100%)" }}
+                      style={{ display: "none", background: "linear-gradient(135deg, var(--sf-void) 0%, var(--sf-surface) 50%, var(--sf-void) 100%)" }}
                     >
                       <span className="text-[12px] font-mono text-t3 uppercase tracking-wider">{option.name}</span>
                     </div>

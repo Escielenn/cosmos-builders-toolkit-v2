@@ -154,7 +154,7 @@ const FilterBar = () => {
                     onCheckedChange={() => toggleTrackFilter(track.id)}
                   />
                   <span
-                    className="w-2.5 h-2.5 rounded-full shrink-0"
+                    className="w-2.5 h-2.5 rounded-none shrink-0"
                     style={{ backgroundColor: track.color }}
                   />
                   <span className="text-xs truncate">{track.name}</span>

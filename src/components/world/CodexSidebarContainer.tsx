@@ -1,7 +1,6 @@
 import { useEffect, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
 import { PanelLeftOpen } from "lucide-react";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { cn } from "@/lib/utils";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 // ---------------------------------------------------------------------------
 // The Codex sidebar's container. At md and up it is the inline, resizable
@@ -86,8 +85,6 @@ interface CodexSidebarContainerProps {
   sheetMode: boolean;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** Bottom offset for the open button, so it clears the audio player bar. */
-  triggerBottomClassName?: string;
   /** The sidebar itself (the `<aside>`). */
   children: ReactNode;
 }
@@ -96,25 +93,12 @@ export function CodexSidebarContainer({
   sheetMode,
   open,
   onOpenChange,
-  triggerBottomClassName = "bottom-10",
   children,
 }: CodexSidebarContainerProps): JSX.Element {
   if (!sheetMode) return <>{children}</>;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetTrigger asChild>
-        <button
-          type="button"
-          aria-label="Open world index"
-          className={cn(
-            "fixed left-4 z-40 inline-flex min-h-hit min-w-hit items-center justify-center rounded-none border border-sf-line bg-sf-surface text-t2 backdrop-blur-sf-panel transition-colors duration-base ease-sf-out hover:border-sf-line-emphasis hover:text-t1 no-print",
-            triggerBottomClassName,
-          )}
-        >
-          <PanelLeftOpen className="h-5 w-5" aria-hidden="true" />
-        </button>
-      </SheetTrigger>
       <SheetContent
         side="left"
         aria-describedby={undefined}
@@ -130,6 +114,32 @@ export function CodexSidebarContainer({
         <div className="flex min-h-0 flex-1 flex-col">{children}</div>
       </SheetContent>
     </Sheet>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Phone trigger: an icon button in the world nav row (1.6). It used to float
+// bottom-left over content at 390px.
+// ---------------------------------------------------------------------------
+
+interface CodexSheetTriggerProps {
+  open: boolean;
+  onOpen: () => void;
+  controls?: string;
+}
+
+export function CodexSheetTrigger({ open, onOpen, controls }: CodexSheetTriggerProps): JSX.Element {
+  return (
+    <button
+      type="button"
+      aria-label="Open world index"
+      aria-expanded={open}
+      aria-controls={controls}
+      onClick={onOpen}
+      className="inline-flex min-h-hit min-w-hit shrink-0 items-center justify-center border-r border-sf-line-hairline text-t3 transition-colors duration-base ease-sf-out hover:text-t1 no-print"
+    >
+      <PanelLeftOpen className="h-4 w-4" aria-hidden="true" />
+    </button>
   );
 }
 

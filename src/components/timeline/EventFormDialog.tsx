@@ -220,7 +220,7 @@ const EventFormDialog = ({
                   <SelectItem key={t.id} value={t.id}>
                     <span className="flex items-center gap-2">
                       <span
-                        className="w-2.5 h-2.5 rounded-full inline-block"
+                        className="w-2.5 h-2.5 rounded-none inline-block"
                         style={{ backgroundColor: t.color }}
                       />
                       {t.name}
@@ -257,7 +257,7 @@ const EventFormDialog = ({
                         )}
                       >
                         <span
-                          className="w-2 h-2 rounded-full"
+                          className="w-2 h-2 rounded-none"
                           style={{ backgroundColor: t.color }}
                         />
                         {t.name}

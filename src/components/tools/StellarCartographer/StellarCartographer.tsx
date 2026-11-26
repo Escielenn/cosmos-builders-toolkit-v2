@@ -77,6 +77,7 @@ import {
 
 // Styles following SIMULATOR_AESTHETIC.md
 import styles from './StellarCartographer.module.css';
+import { tokens } from '@/styles/tokens';
 
 const MINIMAP_SIZE = 120;
 
@@ -577,7 +578,7 @@ const StellarCartographer: React.FC = () => {
     const zoom = camera.zoom;
 
     // Deep space background
-    ctx.fillStyle = '#050508';
+    ctx.fillStyle = tokens.surface.simCanvas;
     ctx.fillRect(0, 0, w, h);
 
     // Background stars, cached to offscreen canvas, composited with parallax offset

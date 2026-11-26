@@ -3,6 +3,7 @@ import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import { useState } from "react";
 import {
   CodexSidebarContainer,
+  CodexSheetTrigger,
   CodexResizeHandle,
   nextCodexWidth,
   CODEX_MIN_WIDTH,
@@ -43,12 +44,17 @@ describe("nextCodexWidth", () => {
 
 function SheetHarness({ sheetMode }: { sheetMode: boolean }) {
   const [open, setOpen] = useState(false);
+  // The trigger lives in the world nav row (WorldLayout renders it only
+  // in sheet mode), so the harness mirrors that.
   return (
-    <CodexSidebarContainer sheetMode={sheetMode} open={open} onOpenChange={setOpen}>
-      <aside aria-label="World index">
-        <p>Codex contents</p>
-      </aside>
-    </CodexSidebarContainer>
+    <>
+      {sheetMode && <CodexSheetTrigger open={open} onOpen={() => setOpen(true)} />}
+      <CodexSidebarContainer sheetMode={sheetMode} open={open} onOpenChange={setOpen}>
+        <aside aria-label="World index">
+          <p>Codex contents</p>
+        </aside>
+      </CodexSidebarContainer>
+    </>
   );
 }
 

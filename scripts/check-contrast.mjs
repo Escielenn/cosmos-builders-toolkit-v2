@@ -40,13 +40,26 @@ export const GENERATED = new Set(["src/styles/tokens.css", "src/styles/themes.cs
 // shadcn primitives not yet migrated to zero radius. They may keep the
 // preserved radius scale (rounded-xs/sm/md/lg, see tailwind.config.ts);
 // anything else on them (rounded-full, rounded-xl, ...) still counts.
+// 1.6: every shadcn primitive is now square, so the list is empty. Add a
+// name back only if a component genuinely needs the preserved scale.
 export const SHADCN_RADIUS_ALLOW = [
-  "accordion", "alert-dialog", "alert", "avatar", "badge", "button", "calendar", "card",
-  "checkbox", "command", "context-menu", "dialog", "dropdown-menu", "form", "input",
-  "navigation-menu", "pagination", "popover", "progress", "radio-group", "scroll-area",
-  "select", "separator", "sheet", "sidebar", "skeleton", "slider", "switch", "table",
-  "tabs", "textarea", "toast", "toggle-group", "toggle", "tooltip",
 ].map((n) => `src/components/ui/${n}.tsx`);
+
+// Lora (font-serif) is the writer voice: writing surfaces and marketing
+// accents only (CLAUDE.md, 1.6 #12). Anywhere else it is a ratchet hit.
+export const SERIF_ALLOW = [
+  /^src\/components\/writing\//,
+  /^src\/components\/editor\//,
+  /^src\/pages\/Write\.tsx$/,
+  /^src\/pages\/Studio\.tsx$/,            // quoted prose and doc excerpts
+  /^src\/pages\/WorldCompile\.tsx$/,      // the compiled manuscript preview
+  /^src\/components\/landing\//,           // hero accent line, tagline, prose samples
+  /^src\/components\/showcase\/ShowcaseHero\.tsx$/,
+  /^src\/pages\/Pricing\.tsx$/,           // hero accent line only
+  /^src\/pages\/learn\//,                  // article body
+  /^src\/components\/learn\//,
+  /^src\/lib\/writing-surface-style\.ts$/,
+];
 
 // ---------------------------------------------------------------- helpers
 
@@ -170,6 +183,7 @@ const RE = {
   cssRadius: /border(?:-(?:top|bottom|start|end)-(?:left|right|start|end))?-radius\s*:\s*([^;}]+)/g,
   jsRadius: /\bborder\w*Radius\s*:\s*([^,}\n]+)/g,
   bannedFont: /["'`]Inter["'`]|\bfont-inter\b|family=Inter\b|font-family\s*:[^;]*\bInter\b|Space[ +]Grotesk|space-grotesk/gi,
+  serif: /(?<![\w-])(?:[\w\-\[\]&=:]+:)*font-serif(?![\w-])|fontFamily\s*:\s*["'`]{1,2}[^"`]*?\bLora\b/g,
   twFocusNone: /(?<![\w-])focus:outline-none(?![\w-])/,
 };
 
@@ -395,6 +409,23 @@ export const RULES = [
           }
         }
       }
+      return hits;
+    },
+  },
+  {
+    id: "serif-in-chrome",
+    title: "LORA OUTSIDE WRITING SURFACES",
+    check: "type",
+    mode: "ratchet",
+    files: (rel) => rel.startsWith("src/") && isCode(rel) && !SERIF_ALLOW.some((re) => re.test(rel)) && !/__tests__|\.test\./.test(rel),
+    scan(rel, text) {
+      const hits = [];
+      const masked = maskedLines(text);
+      text.split("\n").forEach((line, i) => {
+        if (isComment(line)) return;
+        for (const m of masked[i].matchAll(RE.serif)) hits.push({ line: i + 1, match: m[0] });
+        if (!/font-serif/.test(masked[i])) for (const m of line.matchAll(RE.serif)) if (/Lora/.test(m[0])) hits.push({ line: i + 1, match: m[0] });
+      });
       return hits;
     },
   },

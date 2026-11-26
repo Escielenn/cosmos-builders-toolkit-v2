@@ -158,7 +158,6 @@ const PlanetViewTemplate = ({
             backgroundColor: colors.primaryLight,
             borderWidth: 2,
             borderColor: colors.primary,
-            borderRadius: 8,
             padding: spacing.lg,
             marginBottom: spacing.xl,
             alignItems: "center",

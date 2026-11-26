@@ -46,7 +46,6 @@ const TimelineFullReportTemplate = ({
             backgroundColor: colors.primaryLight,
             borderWidth: 2,
             borderColor: colors.primary,
-            borderRadius: 8,
             padding: spacing.lg,
             marginBottom: spacing.xl,
             alignItems: "center",
@@ -112,7 +111,7 @@ const TimelineFullReportTemplate = ({
                   borderBottomColor: colors.borderLight,
                 }}
               >
-                <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: track.color }} />
+                <View style={{ width: 8, height: 8, backgroundColor: track.color }} />
                 <Text style={{ fontSize: typography.sizes.sm, fontWeight: 600, flex: 1 }}>
                   {track.name}
                 </Text>
@@ -163,7 +162,7 @@ const TimelineFullReportTemplate = ({
                 marginBottom: spacing.lg,
               }}
             >
-              <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: track.color }} />
+              <View style={{ width: 12, height: 12, backgroundColor: track.color }} />
               <Text style={{ fontSize: typography.sizes.lg, fontWeight: 700, color: colors.text.primary }}>
                 {track.name}
               </Text>

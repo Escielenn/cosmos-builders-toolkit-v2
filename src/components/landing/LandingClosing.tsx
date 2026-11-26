@@ -132,7 +132,7 @@ export function LandingFAQ(): JSX.Element {
 
 export function FinalCTA(): JSX.Element {
   return (
-    <section aria-labelledby="final-cta-title" className="py-20 text-center md:py-28">
+    <section aria-labelledby="final-cta-title" className="py-14 text-center md:py-20 [section+&]:pt-0">
       <h2 id="final-cta-title" className="mx-auto mb-6 max-w-[18ch] font-display text-sf-h1 font-light text-t1">
         Your first world is one decision away
       </h2>

@@ -318,7 +318,7 @@ export function WritingEntityPanel({
                         className="w-full flex items-center gap-2 px-2 py-1.5 text-left rounded-none hover:bg-sf-surface-elevated transition-colors group"
                       >
                         <span
-                          className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                          className="w-1.5 h-1.5 rounded-none flex-shrink-0"
                           style={{
                             backgroundColor:
                               otherEntity.color ||
@@ -426,7 +426,7 @@ export function WritingEntityPanel({
                       title={`View ${entity.name}`}
                     >
                       <span
-                        className="w-2 h-2 rounded-full flex-shrink-0"
+                        className="w-2 h-2 rounded-none flex-shrink-0"
                         style={{ backgroundColor: entity.color || ENTITY_TYPE_COLORS[entity.entity_type] || ENTITY_TYPE_COLORS.custom }}
                       />
                       <span className="text-xs text-t2 truncate group-hover:text-t1 transition-colors flex-1">{entity.name}</span>
@@ -443,7 +443,7 @@ export function WritingEntityPanel({
                   <div key={stage} className="mb-3">
                     <div className="px-2 py-1 flex items-center gap-1.5">
                       <span
-                        className="w-1.5 h-1.5 rounded-full"
+                        className="w-1.5 h-1.5 rounded-none"
                         style={{
                           backgroundColor: CASCADE_STAGE_COLORS[stage],
                         }}
@@ -466,7 +466,7 @@ export function WritingEntityPanel({
                         title={`View ${entity.name}`}
                       >
                         <span
-                          className="w-2 h-2 rounded-full flex-shrink-0"
+                          className="w-2 h-2 rounded-none flex-shrink-0"
                           style={{
                             backgroundColor:
                               entity.color ||

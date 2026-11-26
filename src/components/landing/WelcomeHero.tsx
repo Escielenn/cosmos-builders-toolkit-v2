@@ -11,7 +11,7 @@ import { StudioGlimpse } from "./StudioGlimpse";
  */
 const WelcomeHero = () => {
   return (
-    <section aria-labelledby="hero-title" className="pt-8 pb-16 md:pt-20 md:pb-24">
+    <section aria-labelledby="hero-title" className="pt-8 pb-14 md:pt-20 md:pb-20">
       <div className="grid gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:items-center lg:gap-16">
         <div>
           <Eyebrow className="mb-6">SF writing studio</Eyebrow>

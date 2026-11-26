@@ -30,13 +30,17 @@ import { mapError } from "@/lib/ship-voice";
 interface VersionHistoryProps {
   worldId: string;
   worldName: string;
+  /** Open on mount (the Bridge's History drawer is already a choice to look). */
+  defaultExpanded?: boolean;
+  /** When given, the empty state offers this as its one action. */
+  onTakeSnapshot?: () => void;
 }
 
-const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
+const VersionHistory = ({ worldId, worldName, defaultExpanded = false, onTakeSnapshot }: VersionHistoryProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(defaultExpanded);
   const [restoreTarget, setRestoreTarget] = useState<WorldVersionSummary | null>(null);
   const [isRestoring, setIsRestoring] = useState(false);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
@@ -144,11 +148,13 @@ const VersionHistory = ({ worldId, worldName }: VersionHistoryProps) => {
                 <Loader />
               </div>
             ) : versions.length === 0 ? (
-              <div className="p-4 text-center space-y-1">
-                <p className="font-mono text-sf-mono uppercase text-t3">NO SNAPSHOTS ON FILE.</p>
-                <p className="text-sm text-t2">
-                  Versions are created automatically as you work, or manually via the Snapshot button.
-                </p>
+              <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+                <p className="font-mono text-sf-mono uppercase text-t3">NO SNAPSHOTS ON FILE. VERSIONS ARE TAKEN AS YOU WORK.</p>
+                {onTakeSnapshot && (
+                  <Button variant="sf-ghost" size="sf-sm" onClick={onTakeSnapshot}>
+                    Take snapshot
+                  </Button>
+                )}
               </div>
             ) : (
               <div className="divide-y divide-sf-line-hairline max-h-80 overflow-y-auto sf-sb">

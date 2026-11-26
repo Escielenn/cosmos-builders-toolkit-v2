@@ -232,7 +232,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
         <CollapsibleTrigger asChild>
           <Button
             variant="ghost"
-            className="w-full flex items-center justify-between p-4 h-auto rounded-none hover:bg-accent/50"
+            className="w-full flex items-center justify-between p-4 h-auto rounded-none hover:bg-sf-surface-elevated"
           >
             <div className="flex items-center gap-3">
               <FileText className="w-5 h-5 text-sf-primary-text" />

@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Plus, Globe, Wrench, BookOpen, Compass, Star, Leaf, Users, Sparkles, ScrollText, Layers, Rocket, BookMarked, Tag } from "lucide-react";
-import { getToolIcon } from "@/components/icons/tool-icons";
+import { getToolIcon, ToolGlyph } from "@/components/icons/tool-icons";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -215,23 +215,23 @@ const HeaderNavigation = ({ mode }: HeaderNavigationProps) => {
                   const CatIcon = cat.icon;
                   return (
                     <div key={cat.id}>
-                      <p className={cn("font-heading text-sf-eyebrow uppercase px-1 mb-2 flex items-center gap-1.5 pb-1.5 border-b border-sf-line-hairline", cat.color)}>
-                        <CatIcon className="w-3 h-3" />
+                      <p className="font-heading text-sf-eyebrow uppercase text-t4 px-1 mb-2 flex items-center gap-1.5 pb-1.5 border-b border-sf-line-hairline">
+                        <CatIcon className={cn("w-3 h-3", cat.color)} aria-hidden />
                         {cat.label}
                       </p>
                       <div className="space-y-0.5">
                         {tools.map((tool) => {
                           const route = TOOL_ROUTES[tool.id];
                           if (!route) return null;
-                          const ToolIcon = getToolIcon(tool.id);
+                          const hasGlyph = getToolIcon(tool.id) !== null;
                           return (
                             <NavigationMenuLink key={tool.id} asChild>
                               <Link
                                 to={route}
                                 className="flex items-center gap-2 px-1.5 py-1.5 text-[13px] text-t2 hover:text-t1 hover:bg-sf-primary/[0.06] rounded-none transition-colors"
                               >
-                                {ToolIcon ? (
-                                  <ToolIcon className="w-4 h-4 shrink-0" />
+                                {hasGlyph ? (
+                                  <ToolGlyph toolId={tool.id} className="w-4 h-4 text-t3" />
                                 ) : (
                                   <CatIcon className="w-4 h-4 shrink-0 text-t4" />
                                 )}

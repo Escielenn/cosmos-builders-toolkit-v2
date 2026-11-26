@@ -154,7 +154,7 @@ const PropulsionSummaryTemplate = ({
         {/* Propulsion Thesis */}
         {synthesis?.propulsionThesis && (
           <PDFSection title="Propulsion Thesis">
-            <View style={{ padding: spacing.sm, backgroundColor: "#f5f5f5", borderRadius: 4 }}>
+            <View style={{ padding: spacing.sm, backgroundColor: "#f5f5f5" }}>
               <Text style={{ fontSize: typography.sizes.sm, color: colors.text.secondary, lineHeight: 1.5, fontStyle: "italic" }}>
                 {synthesis?.propulsionThesis}
               </Text>
@@ -193,7 +193,7 @@ const PropulsionSummaryTemplate = ({
         )}
 
         {/* Final Quote */}
-        <View style={{ marginTop: spacing.lg, padding: spacing.md, backgroundColor: "#f5f5f5", borderRadius: 4 }}>
+        <View style={{ marginTop: spacing.lg, padding: spacing.md, backgroundColor: "#f5f5f5" }}>
           <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, fontStyle: "italic", textAlign: "center", lineHeight: 1.5 }}>
             "Travel speed → Economics → Politics → Social structures → Psychology → Culture"
           </Text>

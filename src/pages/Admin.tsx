@@ -237,7 +237,7 @@ const TaskItem = ({
       </button>
 
       {dotColor && (
-        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotColor}`} />
+        <span className={`w-1.5 h-1.5 rounded-none shrink-0 ${dotColor}`} />
       )}
 
       <span className={`text-xs truncate flex-1 ${isDone ? "line-through text-t4" : "text-t2"}`}>

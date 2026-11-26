@@ -107,7 +107,7 @@ export default function WorksheetLauncherGrid({
               disabled={!canEdit && !linked}
               className="text-left"
             >
-              <GlassPanel className="p-3 hover:bg-accent/50 transition-colors cursor-pointer group h-full">
+              <GlassPanel className="p-3 hover:bg-sf-surface-elevated transition-colors cursor-pointer group h-full">
                 <div className="flex items-start gap-3">
                   {SvgIcon ? (
                     <SvgIcon className="w-8 h-8 rounded-none shrink-0" />

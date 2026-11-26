@@ -117,7 +117,7 @@ const EventDetailPanel = ({
         <SheetHeader>
           <div className="flex items-center gap-2">
             <span
-              className="w-3 h-3 rounded-full shrink-0"
+              className="w-3 h-3 rounded-none shrink-0"
               style={{ backgroundColor: color }}
             />
             <SheetTitle>{event.name}</SheetTitle>
@@ -147,7 +147,7 @@ const EventDetailPanel = ({
                   <SelectItem key={t.id} value={t.id}>
                     <span className="flex items-center gap-2">
                       <span
-                        className="w-2 h-2 rounded-full"
+                        className="w-2 h-2 rounded-none"
                         style={{ backgroundColor: t.color }}
                       />
                       {t.name}
@@ -409,7 +409,7 @@ const EventDetailPanel = ({
                         )}
                       >
                         <span
-                          className="w-1.5 h-1.5 rounded-full"
+                          className="w-1.5 h-1.5 rounded-none"
                           style={{ backgroundColor: t.color }}
                         />
                         {t.name}

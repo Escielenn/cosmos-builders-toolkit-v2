@@ -19,7 +19,7 @@ const RecentArticles = () => {
   const recent = articles.slice(0, 3);
 
   return (
-    <MarketingSection id="latest" labelledBy="latest-title" className="md:py-16">
+    <MarketingSection id="latest" labelledBy="latest-title">
       <div className="flex flex-wrap items-end justify-between gap-x-6">
         <SectionHeading id="latest-title" label="SF University" title="Latest from the archive" />
         <Link

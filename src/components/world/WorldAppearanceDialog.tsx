@@ -235,14 +235,14 @@ export default function WorldAppearanceDialog({
                 <div className="space-y-1 pl-3">
                   <div className="flex items-center gap-2">
                     <span
-                      className="w-[5px] h-[5px] rounded-full"
+                      className="w-[5px] h-[5px] rounded-none"
                       style={{ backgroundColor: accentColor, opacity: 0.7 }}
                     />
                     <span className="text-xs text-t2">Kepler-442b</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span
-                      className="w-[5px] h-[5px] rounded-full border"
+                      className="w-[5px] h-[5px] rounded-none border"
                       style={{ borderColor: accentColor, opacity: 0.5 }}
                     />
                     <span className="text-xs text-t3">Draft Entry</span>

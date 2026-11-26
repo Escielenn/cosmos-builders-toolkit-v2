@@ -292,7 +292,7 @@ const SortableToolCard = ({ tool, worldId }: { tool: typeof TOOLS[number]; world
         <GripVertical className="w-4 h-4" />
       </button>
       <Link to={`${tool.path}?worldId=${worldId}`}>
-        <GlassPanel className="p-5 h-full hover:bg-accent/50 transition-colors cursor-pointer">
+        <GlassPanel className="p-5 h-full hover:bg-sf-surface-elevated transition-colors cursor-pointer">
           <div className="flex items-start gap-3">
             {SvgIcon ? (
               <SvgIcon className="w-10 h-10 rounded-none shrink-0" />
@@ -962,7 +962,7 @@ const WorldDashboard = () => {
         {/* Version History, owner only */}
         {isOwner && worldId && openDrawer === "history" && (
           <section className="mb-8">
-            <VersionHistory worldId={worldId} worldName={world.name} />
+            <VersionHistory worldId={worldId} worldName={world.name} defaultExpanded onTakeSnapshot={() => setSnapshotDialogOpen(true)} />
           </section>
         )}
 

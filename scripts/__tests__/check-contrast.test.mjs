@@ -87,11 +87,11 @@ describe("check-contrast rules", () => {
     expect(rules("src/styles/tokens.css", ":root { --t1: #fff; --sf-cyan: #15C17B; }")).toEqual({});
   });
 
-  it("radius: only none and sf-tag; shadcn keeps the preserved scale", () => {
+  it("radius: only none and sf-tag; no shadcn primitive keeps the preserved scale (1.6)", () => {
     expect(rules("src/a.tsx", '<i className="rounded-full" />').radius).toBe(1);
     expect(rules("src/a.tsx", '<i className="rounded-none md:rounded-sf-tag" />').radius).toBeUndefined();
     expect(rules("src/a.tsx", "const rounded = Math.round(x);").radius).toBeUndefined();
-    expect(rules("src/components/ui/button.tsx", '"rounded-md"').radius).toBeUndefined();
+    expect(rules("src/components/ui/button.tsx", '"rounded-md"').radius).toBe(1);
     expect(rules("src/components/ui/button.tsx", '"rounded-full"').radius).toBe(1);
     expect(rules("src/a.css", ".x { border-radius: 0; } .y { border-radius: 50%; }").radius).toBe(1);
   });
@@ -100,6 +100,13 @@ describe("check-contrast rules", () => {
     expect(rules("src/a.css", ".x { font-family: Inter, sans-serif; }")["banned-font"]).toBe(1);
     expect(rules("index.html", '<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk">')["banned-font"]).toBe(1);
     expect(rules("src/a.ts", "const interval = 1; // Inter is banned")["banned-font"]).toBeUndefined();
+  });
+
+  it("Lora outside writing surfaces", () => {
+    expect(rules("src/components/tools/X.tsx", '<p className="font-serif italic" />')["serif-in-chrome"]).toBe(1);
+    expect(rules("src/components/tools/X.tsx", "const s = { fontFamily: \"'Lora', serif\" };")["serif-in-chrome"]).toBe(1);
+    expect(rules("src/components/writing/X.tsx", '<p className="font-serif" />')["serif-in-chrome"]).toBeUndefined();
+    expect(rules("src/components/landing/X.tsx", '<em className="font-serif" />')["serif-in-chrome"]).toBeUndefined();
   });
 
   it("focus suppression without a replacement", () => {

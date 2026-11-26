@@ -135,7 +135,7 @@ const LinkEditorDialog = ({
                   <div key={group.trackName}>
                     <div className="flex items-center gap-1.5 px-2 py-1">
                       <span
-                        className="w-2 h-2 rounded-full"
+                        className="w-2 h-2 rounded-none"
                         style={{ backgroundColor: group.trackColor }}
                       />
                       <span className="text-[12px] font-medium text-t3 uppercase">
@@ -197,7 +197,7 @@ const LinkEditorDialog = ({
                   <div key={group.trackName}>
                     <div className="flex items-center gap-1.5 px-2 py-1">
                       <span
-                        className="w-2 h-2 rounded-full"
+                        className="w-2 h-2 rounded-none"
                         style={{ backgroundColor: group.trackColor }}
                       />
                       <span className="text-[12px] font-medium text-t3 uppercase">

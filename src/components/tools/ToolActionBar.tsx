@@ -196,7 +196,7 @@ const ToolActionBar = ({
                   <Share2 className="w-4 h-4 mr-2" />
                   Share
                   {isShared && (
-                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-sf-primary" />
+                    <span className="ml-auto w-1.5 h-1.5 rounded-none bg-sf-primary" />
                   )}
                 </DropdownMenuItem>
               )}

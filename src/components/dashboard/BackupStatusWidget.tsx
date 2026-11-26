@@ -21,8 +21,8 @@ function getBackupFreshness(snapshotAt: string | null): {
   const oneHour = 60 * 60 * 1000;
   const oneDay = 24 * oneHour;
 
-  if (age < oneHour) return { dot: "\u25CF", color: "#3DFFCD" }; // ● teal
-  if (age < oneDay) return { dot: "\u25CF", color: "#FFB347" }; // ● amber
+  if (age < oneHour) return { dot: "\u25CF", color: "var(--sf-teal)" }; // ● teal
+  if (age < oneDay) return { dot: "\u25CF", color: "var(--sf-amber)" }; // ● amber
   return { dot: "\u25D0", color: "var(--t4)" }; // ◐ stale
 }
 

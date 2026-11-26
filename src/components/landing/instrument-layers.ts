@@ -7,8 +7,7 @@
 // ---------------------------------------------------------------------------
 
 import {
-  FREE_TOOL_IDS,
-  PRO_TOOL_IDS,
+  INSTRUMENT_IDS,
   TOOL_DISPLAY_NAMES,
   getToolRoute,
   isFreeTool,
@@ -89,7 +88,8 @@ export interface InstrumentGroup {
 
 /** Every catalog tool, once, grouped in cascade order. Empty layers are dropped. */
 export function groupInstrumentsByLayer(): InstrumentGroup[] {
-  const ids = [...FREE_TOOL_IDS, ...PRO_TOOL_IDS];
+  // Instruments only: the Workshop (prompt browser) is not one (tools-config).
+  const ids = [...INSTRUMENT_IDS];
   return CASCADE_LAYERS.map((layer) => ({
     layer,
     tools: ids

@@ -59,7 +59,7 @@ const ToolbarButton = ({
     onClick={onClick}
     title={title}
     className={cn(
-      "p-1.5 rounded hover:bg-accent/80 transition-colors",
+      "p-1.5 rounded-none hover:bg-sf-surface-elevated transition-colors",
       isActive && "bg-accent text-accent-foreground"
     )}
   >
@@ -104,7 +104,7 @@ const RichTextEditor = ({
           "prose-ul:my-1.5 prose-ol:my-1.5",
           "prose-li:my-0.5",
           "prose-blockquote:border-l-primary prose-blockquote:text-t3",
-          "prose-code:text-xs prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded",
+          "prose-code:text-xs prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-none",
           "prose-pre:bg-sf-void prose-pre:p-3 prose-pre:rounded-none",
           "[&_.is-editor-empty:first-child::before]:text-t3/50 [&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.is-editor-empty:first-child::before]:float-left [&_.is-editor-empty:first-child::before]:pointer-events-none [&_.is-editor-empty:first-child::before]:h-0"
         ),
@@ -262,7 +262,7 @@ const RichTextEditor = ({
                     onClick={() => updatePreferences({ themeId: theme.id })}
                     className={cn(
                       // 14px swatch, 44px hit (.sf-hit); the 30px gap keeps hit boxes apart
-                      "sf-hit w-3.5 h-3.5 rounded-full border transition-all",
+                      "sf-hit w-3.5 h-3.5 rounded-none border transition-all",
                       preferences.themeId === theme.id
                         ? "ring-2 ring-sf-stellar ring-offset-1 ring-offset-background border-sf-stellar"
                         : "border-sf-line hover:border-sf-line-emphasis"

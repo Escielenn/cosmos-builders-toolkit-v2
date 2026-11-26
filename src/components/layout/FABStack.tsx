@@ -92,13 +92,21 @@ const FABStack = () => {
   // below xl it sat on content on every page. Help stays one click away in
   // the header (profile menu, phone menu), which opens these same panels.
   const inWorld = /^\/worlds\/[^/]+/.test(pathname);
+  // Tool pages and simulators carry their own fixed right rail (sections,
+  // readouts, the Pro clearance card) and the button landed on it.
+  const onToolPage = pathname.startsWith("/tools/") || pathname.startsWith("/rogue");
   const showButton =
-    pathname !== "/auth" && !inWorld && !isManuscriptPath(pathname);
+    pathname !== "/auth" && !inWorld && !onToolPage && !isManuscriptPath(pathname);
 
-  // Position: simulators → bottom-right past narrative bridge tab; otherwise → bottom-right
+  // Position: simulators → bottom-right past narrative bridge tab; with the
+  // audio player → above its bar; otherwise 16px above whatever bottom
+  // chrome the page declares in --sf-bottom-chrome (the telemetry bar sets
+  // it to 24px while it shows; the Manuscript sets its status bar height).
   const positionClass = isSimulator
     ? "bottom-4 right-12"
-    : `${audioOffset || "bottom-10"} right-4`;
+    : `${audioOffset} right-4`;
+  const positionStyle =
+    !isSimulator && !audioOffset ? { bottom: "calc(var(--sf-bottom-chrome, 0px) + 16px)" } : undefined;
 
   return (
     <>
@@ -106,6 +114,7 @@ const FABStack = () => {
       <div
         ref={menuRef}
         className={`fixed z-40 no-print hidden xl:block ${positionClass}`}
+        style={positionStyle}
       >
         {/* Expanded menu items */}
         <div

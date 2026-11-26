@@ -145,12 +145,12 @@ const TagInput = ({
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => addTag(suggestion.name)}
                 className={cn(
-                  "w-full px-3 py-2 text-left text-sm flex items-center gap-2 hover:bg-accent/50 transition-colors",
+                  "w-full px-3 py-2 text-left text-sm flex items-center gap-2 hover:bg-sf-surface-elevated transition-colors",
                   index === selectedSuggestion && "bg-accent/50"
                 )}
               >
                 <span
-                  className="w-2 h-2 rounded-full"
+                  className="w-2 h-2 rounded-none"
                   style={{ backgroundColor: suggestion.color }}
                 />
                 <span>{suggestion.name}</span>
@@ -169,7 +169,7 @@ const TagInput = ({
               type="button"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => addTag(inputValue)}
-              className="w-full px-3 py-2 text-sm text-left text-t3 hover:bg-accent/50 transition-colors"
+              className="w-full px-3 py-2 text-sm text-left text-t3 hover:bg-sf-surface-elevated transition-colors"
             >
               Press Enter to create "<span className="text-t1">{inputValue}</span>"
             </button>

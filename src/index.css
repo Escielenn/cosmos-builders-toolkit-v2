@@ -158,7 +158,6 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     position: relative;
     min-height: 100vh;
-    padding-bottom: 24px; /* v2.2 status bar clearance */
   }
 
   #root {
@@ -680,7 +679,7 @@ html {
   background-color: rgba(14, 19, 32, 0.95);
   color: hsl(var(--sf-text-primary));
   border: 1px solid var(--sf-line-interactive);
-  border-radius: 2px;
+  border-radius: 0;
   padding: 8px 32px 8px 12px;
   font-size: 13px;
   letter-spacing: 0.8px;
@@ -895,6 +894,7 @@ html {
      page, so nothing in flow (the footer's last line) sits under it. */
   @media (min-width: 768px) {
     html[data-status-bar="on"] body { padding-bottom: 24px; }
+    html[data-status-bar="on"] { --sf-bottom-chrome: 24px; }
   }
 
   /* Writing surface — warm cream for RTF editor (the captain's log) */
@@ -921,7 +921,7 @@ html {
   }
 
   .sf-writing-surface .ProseMirror blockquote {
-    border-left-color: rgba(91, 141, 239, 0.3);
+    border-left-color: color-mix(in srgb, #5B8DEF 30%, #F5F3EF);
     color: #3A3A5C;
   }
 
@@ -980,7 +980,7 @@ html {
   .sf-writing-surface[data-writing-theme="deep-space"] .ProseMirror h2,
   .sf-writing-surface[data-writing-theme="deep-space"] .ProseMirror h3 { color: #E0E4E8; }
   .sf-writing-surface[data-writing-theme="deep-space"] .ProseMirror blockquote {
-    border-left-color: rgb(var(--sf-primary-bright-rgb) / 0.3); color: #B0B8C4;
+    border-left-color: color-mix(in srgb, var(--sf-primary-bright) 30%, #0A0E17); color: #B0B8C4;
   }
   .sf-writing-surface[data-writing-theme="deep-space"] .ProseMirror code {
     background: rgb(var(--sf-primary-bright-rgb) / 0.08); color: #E0E4E8;
@@ -998,7 +998,7 @@ html {
   .sf-writing-surface[data-writing-theme="crt-terminal"] .ProseMirror h2,
   .sf-writing-surface[data-writing-theme="crt-terminal"] .ProseMirror h3 { color: #33FF33; }
   .sf-writing-surface[data-writing-theme="crt-terminal"] .ProseMirror blockquote {
-    border-left-color: rgba(51, 255, 51, 0.3); color: #22CC22;
+    border-left-color: color-mix(in srgb, #33FF33 30%, #0D1208); color: #22CC22;
   }
   .sf-writing-surface[data-writing-theme="crt-terminal"] .ProseMirror code {
     background: rgba(51, 255, 51, 0.08); color: #33FF33;
@@ -1017,7 +1017,7 @@ html {
   .sf-writing-surface[data-writing-theme="comm-channel"] .ProseMirror h2,
   .sf-writing-surface[data-writing-theme="comm-channel"] .ProseMirror h3 { color: #4D9FFF; }
   .sf-writing-surface[data-writing-theme="comm-channel"] .ProseMirror blockquote {
-    border-left-color: rgba(77, 159, 255, 0.3); color: #5B8DEF;
+    border-left-color: color-mix(in srgb, #4D9FFF 30%, #0A1628); color: #5B8DEF;
   }
   .sf-writing-surface[data-writing-theme="comm-channel"] .ProseMirror code {
     background: rgba(77, 159, 255, 0.08); color: #4D9FFF;
@@ -1514,37 +1514,39 @@ html {
     background: rgba(255, 179, 71, 0.6);
   }
 
-  /* Button hover: white fill-sweep for solid-background buttons (primary, destructive) */
+  /* Button hover for solid-fill buttons (primary). 1.6: the old sweep
+     painted a near-white block over the label and forced the text dark,
+     which read as a broken white button (Pricing, finding 7). The sweep is
+     now a low-intensity primary-bright glow on ::before (CLAUDE.md: *-bright
+     is glow only, on pseudo-elements) and the label keeps its colour. */
   .sf-btn-lift {
     position: relative;
     overflow: hidden;
-    z-index: 0; /* creates stacking context so ::before z-index:-1 stays above bg but below content */
-    transition: color 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: 0; /* stacking context so ::before z-index:-1 sits above bg, below content */
+    transition: box-shadow 180ms cubic-bezier(0.2, 0, 0, 1), transform 120ms cubic-bezier(0.2, 0, 0, 1);
   }
 
   .sf-btn-lift::before {
     content: "";
     position: absolute;
     inset: 0;
-    background: rgb(var(--t1-rgb) / 0.92);
+    background: rgb(var(--sf-primary-bright-rgb) / 0.22);
     transform: scaleX(0);
     transform-origin: left center;
-    transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
-    z-index: -1; /* below all content (text nodes + child elements) but above parent bg */
+    transition: transform 280ms cubic-bezier(0.2, 0, 0, 1);
+    z-index: -1;
   }
 
   .sf-btn-lift:hover::before {
     transform: scaleX(1);
   }
 
-  .sf-btn-lift:hover,
-  .sf-btn-lift:hover * {
-    color: #0A0E17 !important;
+  .sf-btn-lift:hover {
+    box-shadow: 0 0 24px rgb(var(--sf-primary-bright-rgb) / 0.30);
   }
 
   .sf-btn-lift:active {
     transform: scale(0.98);
-    transition-duration: var(--duration-instant);
   }
 
   /* Switch toggle snap easing */
@@ -1716,7 +1718,7 @@ html {
 .sf-fab-help-trigger {
   width: 44px;
   height: 44px;
-  border-radius: 50%;
+  border-radius: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1762,7 +1764,7 @@ html {
   cursor: pointer;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-radius: 4px;
+  border-radius: 0;
   text-decoration: none;
   margin-left: auto;
   transition: border-color 0.2s, color 0.2s, background 0.2s;
@@ -2297,7 +2299,7 @@ html {
   gap: 4px;
   background: color-mix(in srgb, var(--mention-color, var(--sf-emerald)) 6%, transparent);
   border: 1px solid color-mix(in srgb, var(--mention-color, var(--sf-emerald)) 15%, transparent);
-  border-radius: 3px;
+  border-radius: 2px;
   padding: 1px 6px;
   cursor: pointer;
   vertical-align: baseline;
@@ -2314,7 +2316,7 @@ html {
   display: inline-block;
   width: 6px;
   height: 6px;
-  border-radius: 50%;
+  border-radius: 0;
   flex-shrink: 0;
 }
 
@@ -2449,7 +2451,7 @@ html {
   display: inline-block;
   width: 8px;
   height: 8px;
-  border-radius: 50%;
+  border-radius: 0;
   flex-shrink: 0;
 }
 
@@ -2639,7 +2641,7 @@ html {
   color: var(--t3);
 }
 .sf-wiki-title--editable:focus {
-  border-bottom-color: rgba(var(--sf-world-accent-rgb, 61, 255, 205), 0.3);
+  border-bottom-color: var(--sf-line-emphasis);
 }
 
 .sf-wiki-meta {

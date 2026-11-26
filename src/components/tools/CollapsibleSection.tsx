@@ -65,7 +65,7 @@ const CollapsibleSection = ({
 
   const hoverClass = hoverColor === "primary"
     ? "hover:bg-sf-primary/5"
-    : "hover:bg-accent/20";
+    : "hover:bg-sf-surface-elevated";
 
   const content = (
     <Collapsible open={isOpen} onOpenChange={handleOpenChange}>

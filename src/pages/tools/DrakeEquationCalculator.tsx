@@ -666,7 +666,7 @@ const DrakeEquationCalculator = () => {
             {PRESETS.map((preset) => (
               <GlassPanel
                 key={preset.id}
-                className="p-4 cursor-pointer hover:bg-accent/30 transition-colors"
+                className="p-4 cursor-pointer hover:bg-sf-surface-elevated transition-colors"
                 onClick={() => applyPreset(preset)}
               >
                 <h4 className="font-medium mb-1">{preset.name}</h4>

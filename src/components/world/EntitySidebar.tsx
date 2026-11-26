@@ -129,7 +129,7 @@ function ColorDotPicker({
       <PopoverTrigger asChild>
         <button
           type="button"
-          className="shrink-0 w-3 h-3 rounded-full border border-sf-line-interactive hover:border-sf-line-emphasis transition-colors"
+          className="shrink-0 w-3 h-3 rounded-none border border-sf-line-interactive hover:border-sf-line-emphasis transition-colors"
           style={{ backgroundColor: color }}
           onClick={(e) => e.stopPropagation()}
           aria-label="Change entity color"
@@ -153,7 +153,7 @@ function ColorDotPicker({
               type="button"
               onClick={() => handleColorSelect(swatch)}
               className={cn(
-                "w-5 h-5 rounded-full border transition-all hover:scale-110",
+                "w-5 h-5 rounded-none border transition-all hover:scale-110",
                 color === swatch
                   ? "border-sf-line ring-2 ring-sf-line-emphasis"
                   : "border-sf-line hover:border-sf-line"
@@ -171,7 +171,7 @@ function ColorDotPicker({
           className="w-full flex items-center gap-2 px-2 py-1 text-[12px] text-t4 hover:text-t2 transition-colors mb-2"
         >
           <span
-            className="w-3 h-3 rounded-full border border-sf-line"
+            className="w-3 h-3 rounded-none border border-sf-line"
             style={{ backgroundColor: ENTITY_TYPE_COLORS[entityType] }}
           />
           Reset to type default
@@ -400,7 +400,7 @@ function DragPreviewRow({ entity }: { entity: Entity }) {
     <div className="flex items-center gap-2 px-3 py-[5px] bg-sf-surface-elevated border border-primary shadow-lg shadow-primary/5">
       <GripVertical className="w-3 h-3 text-sf-primary-text shrink-0" />
       <span
-        className="w-3 h-3 rounded-full shrink-0"
+        className="w-3 h-3 rounded-none shrink-0"
         style={{ backgroundColor: entityColor }}
       />
       <span className="text-[13px] font-sans text-t1 truncate">

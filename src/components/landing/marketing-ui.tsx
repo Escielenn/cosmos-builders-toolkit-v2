@@ -76,7 +76,7 @@ export function MarketingSection({
   children: React.ReactNode;
 }): JSX.Element {
   return (
-    <section id={id} aria-labelledby={labelledBy} className={cn("scroll-mt-24 py-16 md:py-24", className)}>
+    <section id={id} aria-labelledby={labelledBy} className={cn("scroll-mt-24 py-14 md:py-20 [section+&]:pt-0", className)}>
       {children}
     </section>
   );

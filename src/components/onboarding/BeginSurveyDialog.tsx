@@ -239,7 +239,7 @@ export default function BeginSurveyDialog({
             <h2
               ref={headingRef}
               tabIndex={-1}
-              className="font-heading text-sf-h3 text-t1 uppercase focus:outline-none"
+              className="font-heading text-sf-h3 text-t1 uppercase outline-none"
             >
               {step === "designation" ? "BEGIN SURVEY" : STEP_LABELS[step]}
             </h2>

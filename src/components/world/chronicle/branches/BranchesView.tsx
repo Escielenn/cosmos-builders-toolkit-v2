@@ -293,7 +293,7 @@ export function BranchesView({ worldId, data, onOpenEvent, onLogEvent }: Branche
 
       {isEmpty && (
         <div className="flex flex-col gap-3 border border-sf-line bg-sf-surface p-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="sf-measure font-serif text-[16px] italic text-t2">
+          <p className="sf-measure font-sans text-[16px] text-t2">
             A branch is the world as it would be if one thing had gone differently. Fork it from any
             event, then log the travellers who cross between timelines.
           </p>

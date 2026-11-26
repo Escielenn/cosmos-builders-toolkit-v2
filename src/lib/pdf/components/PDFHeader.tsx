@@ -34,7 +34,7 @@ const CubeLogoSvg = ({ size = 24 }: { size?: number }) => (
 
 // Text-only fallback logo for templates that auto-break across pages
 const TextLogo = () => (
-  <View style={{ width: 24, height: 24, backgroundColor: printPalette.primary, borderRadius: 4, justifyContent: "center", alignItems: "center" }}>
+  <View style={{ width: 24, height: 24, backgroundColor: printPalette.primary, justifyContent: "center", alignItems: "center" }}>
     <Text style={{ fontSize: 12, fontWeight: 700, color: "#ffffff" }}>SF</Text>
   </View>
 );

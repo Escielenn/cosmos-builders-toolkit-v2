@@ -160,7 +160,7 @@ const HierarchicalExportDialog = ({
                     className={`p-4 ${
                       isSelected
                         ? "ring-2 ring-primary bg-primary/5"
-                        : "hover:bg-accent/50"
+                        : "hover:bg-sf-surface-elevated"
                     }`}
                   >
                     <div className="flex items-start gap-3">

@@ -478,7 +478,7 @@ const SurfaceGravityCalculator = () => {
                       {COMPOSITION_PRESETS.map((p) => (
                         <SelectItem key={p.id} value={p.id}>
                           <span className="flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
+                            <span className="w-2 h-2 rounded-none" style={{ backgroundColor: p.color }} />
                             {p.label}
                           </span>
                         </SelectItem>

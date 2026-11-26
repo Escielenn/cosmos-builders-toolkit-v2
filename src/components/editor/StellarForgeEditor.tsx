@@ -701,7 +701,7 @@ export function StellarForgeEditor({
                     onClick={() => updatePreferences({ themeId: theme.id })}
                     className={cn(
                       // 14px swatch, 44px hit (.sf-hit); the 30px gap keeps hit boxes apart
-                      "sf-hit w-3.5 h-3.5 rounded-full border transition-all",
+                      "sf-hit w-3.5 h-3.5 rounded-none border transition-all",
                       preferences.themeId === theme.id
                         ? "ring-2 ring-sf-stellar ring-offset-1 ring-offset-background border-sf-stellar"
                         : "border-sf-line hover:border-sf-line-emphasis"
@@ -825,7 +825,7 @@ function ToolbarBtn({
         docked
           ? cn(DOCKED_BTN, active && "bg-sf-surface-elevated text-sf-primary-text hover:bg-sf-surface-elevated")
           : cn(
-              "p-1.5 rounded-none border border-transparent hover:bg-accent/80 transition-colors",
+              "p-1.5 rounded-none border border-transparent hover:bg-sf-surface-elevated transition-colors",
               active && "bg-accent text-accent-foreground",
             ),
       )}
