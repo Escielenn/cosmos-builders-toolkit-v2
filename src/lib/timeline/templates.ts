@@ -1,6 +1,7 @@
 // Timeline Tool, Pre-built Template Data (Phase 4)
 
 import type { TrackType, EventType, ImportanceLevel } from "./types";
+import { SWATCH } from "@/lib/palettes/swatches";
 
 export type TemplateCategory = "civilization" | "character" | "conflict" | "exploration";
 
@@ -36,9 +37,9 @@ export const TIMELINE_TEMPLATES: TimelineTemplate[] = [
     category: "civilization",
     icon: "TrendingDown",
     tracks: [
-      { name: "The Hegemony", type: "civilization", color: "#3b82f6" },
-      { name: "Leadership", type: "character", color: "#8b5cf6" },
-      { name: "Homeworld", type: "planet", color: "#22c55e" },
+      { name: "The Hegemony", type: "civilization", color: SWATCH.blue },
+      { name: "Leadership", type: "character", color: SWATCH.violet },
+      { name: "Homeworld", type: "planet", color: SWATCH.green },
     ],
     events: [
       {
@@ -136,9 +137,9 @@ export const TIMELINE_TEMPLATES: TimelineTemplate[] = [
     category: "exploration",
     icon: "Eye",
     tracks: [
-      { name: "Species Alpha", type: "civilization", color: "#3b82f6" },
-      { name: "Species Beta", type: "civilization", color: "#d946ef" },
-      { name: "Neutral Zone", type: "system", color: "#eab308" },
+      { name: "Species Alpha", type: "civilization", color: SWATCH.blue },
+      { name: "Species Beta", type: "civilization", color: SWATCH.fuchsia },
+      { name: "Neutral Zone", type: "system", color: SWATCH.yellow },
     ],
     events: [
       {
@@ -224,9 +225,9 @@ export const TIMELINE_TEMPLATES: TimelineTemplate[] = [
     category: "exploration",
     icon: "Rocket",
     tracks: [
-      { name: "The Ark", type: "ship", color: "#ef4444" },
-      { name: "Crew & Society", type: "organization", color: "#8b5cf6" },
-      { name: "Destination", type: "planet", color: "#22c55e" },
+      { name: "The Ark", type: "ship", color: SWATCH.red },
+      { name: "Crew & Society", type: "organization", color: SWATCH.violet },
+      { name: "Destination", type: "planet", color: SWATCH.green },
     ],
     events: [
       {
@@ -321,9 +322,9 @@ export const TIMELINE_TEMPLATES: TimelineTemplate[] = [
     category: "conflict",
     icon: "Swords",
     tracks: [
-      { name: "Terran Federation", type: "civilization", color: "#3b82f6" },
-      { name: "Outer Rim Alliance", type: "civilization", color: "#ef4444" },
-      { name: "Diplomacy & Neutral Parties", type: "organization", color: "#eab308" },
+      { name: "Terran Federation", type: "civilization", color: SWATCH.blue },
+      { name: "Outer Rim Alliance", type: "civilization", color: SWATCH.red },
+      { name: "Diplomacy & Neutral Parties", type: "organization", color: SWATCH.yellow },
     ],
     events: [
       {
@@ -421,8 +422,8 @@ export const TIMELINE_TEMPLATES: TimelineTemplate[] = [
     category: "exploration",
     icon: "TreePine",
     tracks: [
-      { name: "Planet Kepler-442b", type: "planet", color: "#22c55e" },
-      { name: "Colony Operations", type: "organization", color: "#f59e0b" },
+      { name: "Planet Kepler-442b", type: "planet", color: SWATCH.green },
+      { name: "Colony Operations", type: "organization", color: SWATCH.amber },
     ],
     events: [
       {

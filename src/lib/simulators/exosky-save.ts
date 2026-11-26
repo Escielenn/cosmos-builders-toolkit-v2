@@ -18,6 +18,7 @@
 // Pure by design: no React, no network, safe to call while rendering.
 // ---------------------------------------------------------------------------
 
+import { DEFAULT_CONSTELLATION_COLOUR } from "@/lib/palettes/constellations";
 import type { WorksheetFact } from "@/lib/worksheet-facts";
 
 // ---------------------------------------------------------------------------
@@ -184,7 +185,7 @@ function normaliseConstellation(
 
   return {
     name,
-    color: str(c.color) || "#FFA500",
+    color: str(c.color) || DEFAULT_CONSTELLATION_COLOUR,
     stars,
     centRa: round(centRa),
     centDec: round(centDec),

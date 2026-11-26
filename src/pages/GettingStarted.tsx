@@ -93,7 +93,7 @@ const ENTRY_POINTS = [
     label: "I'm starting from scratch",
     description:
       "No specific idea yet. Want to explore what's possible and let a world emerge from the tools.",
-    tone: "Build from the ground up. Begin a survey: a star, a planet, a first species. Open an instrument on the planet, then write the first scene against what it decided.",
+    tone: "Start with New world: name it, pick a star, a planet, and a first species. Open an instrument on the planet, then write the first scene against what it decided.",
     action: "pathway",
   },
   {
@@ -102,7 +102,7 @@ const ENTRY_POINTS = [
     label: "I have a story concept",
     description:
       "Has plot or themes but needs a world that serves them. Knows what should happen but not where.",
-    tone: "Your story's needs will constrain your world, which actually makes building easier. Start with the tools that match your narrative requirements.",
+    tone: "Your story's needs will constrain your world, which makes building easier. Start with the tools that match what the plot requires.",
     action: "tools",
     suggestedTools: [
       "one-big-lie",
@@ -349,8 +349,8 @@ const GettingStarted = () => {
             Your first hour
           </h2>
           <p className="sf-measure text-t2 text-sm mb-8">
-            Three steps, all free: file a world, open an instrument on something in it, and
-            write the first scene. Progress below is read from your own records.
+            Three steps, all free: create a world, open an instrument on something in it, and
+            write the first scene. The checkmarks come from your own work.
           </p>
 
           {/* World picker, only when there is a choice to make. */}
@@ -375,13 +375,13 @@ const GettingStarted = () => {
           <ol className="ml-3">
             <StepShell number={1} title="Create a world" done={progress.world}>
               <p className="sf-measure text-t2 text-sm leading-relaxed">
-                BEGIN SURVEY names the world, picks a star, a planet and a first species,
-                files all three in the Codex with their derived values, and opens an empty
-                Chapter One on the planet.
+                New world asks for a name, then a star, a planet, and a first species. It
+                saves all three in the Codex with their worked-out values and adds an empty
+                Chapter One set on the planet.
               </p>
               {world ? (
                 <p className="font-mono text-sf-mono uppercase text-t3">
-                  WORLD ON FILE: <span className="text-t1">{world.name}</span>
+                  YOUR WORLD: <span className="text-t1">{world.name}</span>
                 </p>
               ) : null}
               <CreateWorldButton variant="button" />
@@ -411,8 +411,8 @@ const GettingStarted = () => {
                   ))}
                 </ul>
               ) : (
-                <Notice compact label="World required">
-                  {user ? "File a world first." : "Sign in and file a world first."}
+                <Notice compact label="No world yet">
+                  {user ? "Create a world first." : "Sign in and create a world first."}
                 </Notice>
               )}
             </StepShell>
@@ -432,7 +432,7 @@ const GettingStarted = () => {
                   </Link>
                 </Button>
               ) : (
-                <Notice compact label="World required">File a world first.</Notice>
+                <Notice compact label="No world yet">File a world first.</Notice>
               )}
             </StepShell>
           </ol>

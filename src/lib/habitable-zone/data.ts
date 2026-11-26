@@ -1,6 +1,12 @@
 // Habitable Zone Calculator, Data Constants
 // Star presets, spectral types, section navigation, zone implications
 
+import type { HueName } from "@/styles/hue";
+import {
+  SPECTRAL_CLASS_COLOURS,
+  SPECTRAL_CLASS_GLOWS,
+  SPECTRAL_LETTERS,
+} from "@/lib/palettes/spectral";
 import type { Section } from "@/components/tools/SectionNavigation";
 
 // ─── Star Presets ────────────────────────────────────────────────────
@@ -121,15 +127,13 @@ export function getSpectralDefaults(spectralType: string): SpectralTypeData | un
 
 // ─── Spectral Colors (for Canvas rendering) ─────────────────────────
 
-export const SPECTRAL_COLORS: Record<string, { fill: string; glow: string }> = {
-  O: { fill: "#9BB0FF", glow: "rgba(155, 176, 255, 0.6)" },
-  B: { fill: "#AABFFF", glow: "rgba(170, 191, 255, 0.5)" },
-  A: { fill: "#CAD7FF", glow: "rgba(202, 215, 255, 0.4)" },
-  F: { fill: "#F8F7FF", glow: "rgba(248, 247, 255, 0.35)" },
-  G: { fill: "#FFF4EA", glow: "rgba(255, 244, 234, 0.35)" },
-  K: { fill: "#FFD2A1", glow: "rgba(255, 210, 161, 0.3)" },
-  M: { fill: "#FFCC6F", glow: "rgba(255, 100, 50, 0.3)" },
-};
+export const SPECTRAL_COLORS: Record<string, { fill: string; glow: string }> =
+  Object.fromEntries(
+    SPECTRAL_LETTERS.map((letter) => [
+      letter,
+      { fill: SPECTRAL_CLASS_COLOURS[letter], glow: SPECTRAL_CLASS_GLOWS[letter] },
+    ]),
+  );
 
 // ─── Planet Zone Types ──────────────────────────────────────────────
 
@@ -160,16 +164,24 @@ export const ZONE_NAMES: Record<PlanetZone, string> = {
   "near-snowline": "Near Snowline",
 };
 
-export const ZONE_COLORS: Record<PlanetZone, string> = {
-  "scorched": "#E74C3C",
-  "hot-optimistic": "#FFA500",
-  "inner-habitable": "#2ECC71",
-  "sweet-spot": "#2ECC71",
-  "outer-habitable": "#2ECC71",
-  "cold-optimistic": "#4D9FFF",
-  "frozen": "#4D9FFF",
-  "near-snowline": "#ADD8E6",
+/**
+ * What a zone means, as a named hue: too hot is crimson (stop), marginal heat
+ * is amber, habitable is emerald, cold is azure. Read it through
+ * src/styles/hue.ts so it follows the theme.
+ */
+export const ZONE_HUES: Record<PlanetZone, HueName> = {
+  "scorched": "crimson",
+  "hot-optimistic": "amber",
+  "inner-habitable": "emerald",
+  "sweet-spot": "emerald",
+  "outer-habitable": "emerald",
+  "cold-optimistic": "azure",
+  "frozen": "azure",
+  "near-snowline": "azure",
 };
+
+/** Shown before a valid result exists. */
+export const DEFAULT_ZONE_HUE: HueName = "emerald";
 
 // ─── Zone Worldbuilding Descriptions ────────────────────────────────
 

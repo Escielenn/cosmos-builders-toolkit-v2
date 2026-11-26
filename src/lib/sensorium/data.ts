@@ -1,6 +1,7 @@
 // SENSORIUM, Static data: modality database, presets, section definitions
 // No React dependencies. Safe to import from calculations and PDF templates.
 
+import { MODALITY_COLOURS } from "@/lib/palettes/sensorium";
 import type {
   SensoryModality,
   SpectralPreset,
@@ -76,18 +77,18 @@ export const MODALITY_CATEGORIES: {
   {
     id: "electromagnetic",
     label: "Electromagnetic",
-    color: "#FFD700",
+    color: MODALITY_COLOURS.electromagnetic,
     icon: "Sun",
   },
-  { id: "mechanical", label: "Mechanical", color: "#00BFFF", icon: "Waves" },
-  { id: "chemical", label: "Chemical", color: "#32CD32", icon: "FlaskConical" },
+  { id: "mechanical", label: "Mechanical", color: MODALITY_COLOURS.mechanical, icon: "Waves" },
+  { id: "chemical", label: "Chemical", color: MODALITY_COLOURS.chemical, icon: "FlaskConical" },
   {
     id: "magnetic-thermal",
     label: "Magnetic & Thermal",
-    color: "#FF6347",
+    color: MODALITY_COLOURS["magnetic-thermal"],
     icon: "Magnet",
   },
-  { id: "other", label: "Other", color: "#9370DB", icon: "Sparkles" },
+  { id: "other", label: "Other", color: MODALITY_COLOURS.other, icon: "Sparkles" },
 ];
 
 // ─── Metabolic Cost Weights ──────────────────────────────────────

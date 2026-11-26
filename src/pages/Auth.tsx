@@ -1,3 +1,4 @@
+import { GoogleMark } from "@/components/ui/google-mark";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -201,13 +202,10 @@ const Auth = () => {
               className="mb-0"
               lede={
                 <>
-                  <p className="mb-3 font-heading text-sf-eyebrow uppercase text-t3">
-                    Science Fiction Worldbuilding Tools
-                  </p>
                   <p>
-                    Design planets, species, civilizations, and spacecraft with scientific rigor.
-                    Every parameter cascades logically: environment shapes biology, biology shapes
-                    psychology, psychology shapes mythology, mythology shapes culture.
+                    Decide your planet's gravity, a species' senses, a culture's gods, then
+                    write the book in the same place. When a decision changes, the scenes that
+                    depend on it tell you.
                   </p>
                 </>
               }
@@ -221,11 +219,11 @@ const Auth = () => {
                 <Layers className="w-5 h-5 text-sf-primary-text" />
               </div>
               <h3 className="font-heading text-[12px] font-medium uppercase tracking-wide text-sf-primary-text mb-2">
-                Systematic Worldbuilding
+                {TOTAL_TOOL_COUNT} instruments
               </h3>
               <p className="text-sm text-t2">
-                {TOTAL_TOOL_COUNT} interconnected tools. Environment shapes biology, biology shapes
-                psychology, psychology shapes mythology, mythology shapes culture.
+                From star systems to languages. Each one starts from what the layer
+                above it decided.
               </p>
             </GlassPanel>
             <GlassPanel className="p-6 text-center md:text-left">
@@ -233,11 +231,11 @@ const Auth = () => {
                 <Share2 className="w-5 h-5 text-sf-stellar" />
               </div>
               <h3 className="font-heading text-[12px] font-medium uppercase tracking-wide text-sf-primary-text mb-2">
-                Cross-Tool Integration
+                One canon
               </h3>
               <p className="text-sm text-t2">
-                Data flows between tools. Your spacecraft references your planet's
-                atmosphere automatically.
+                The tools share one record of your world. Your ship design already
+                knows the atmosphere of the planet it lands on.
               </p>
             </GlassPanel>
             <GlassPanel className="p-6 text-center md:text-left">
@@ -245,11 +243,11 @@ const Auth = () => {
                 <FileDown className="w-5 h-5 text-sf-primary-text" />
               </div>
               <h3 className="font-heading text-[12px] font-medium uppercase tracking-wide text-sf-primary-text mb-2">
-                Export Everything
+                Take it with you
               </h3>
               <p className="text-sm text-t2">
-                PDF reports, DOCX documents, shared links, and full World Bible exports.
-                Your data is always yours.
+                Export to PDF, Word, or a full World Bible, or share a link. Your Worlds
+                Are Yours Alone.
               </p>
             </GlassPanel>
           </div>
@@ -263,11 +261,11 @@ const Auth = () => {
               (e.g., the logo-adjacent Sign Up / Log In button in Header). */}
           <GlassPanel id="create-account" className="p-8 max-w-lg mx-auto scroll-mt-24" glow>
             <div className="text-center mb-6">
-              <h2 className="font-heading text-xl font-light tracking-[0.1em] mb-2">
-                CREATE ACCOUNT
+              <h2 className="font-heading text-xl font-light mb-2">
+                Create account
               </h2>
               <p className="text-sm text-t2">
-                Open early access. Still under construction. Your feedback shapes what we ship.
+                StellarForge is in open early access. It is still being built, and what you report changes what gets built next.
               </p>
             </div>
 
@@ -276,8 +274,8 @@ const Auth = () => {
                 <div className="w-12 h-12 rounded-none bg-primary/[0.06] border border-primary flex items-center justify-center mx-auto">
                   <Rocket className="w-5 h-5 text-sf-primary-text" />
                 </div>
-                <h3 className="font-heading text-sm font-light tracking-wide uppercase">
-                  ACCOUNT CREATED
+                <h3 className="font-heading text-sm font-light">
+                  Account created
                 </h3>
                 <p className="text-sm text-t2">
                   Check your email to confirm. You can sign in once verified.
@@ -294,13 +292,8 @@ const Auth = () => {
                   onClick={() => handleOAuthSignIn('google')}
                   disabled={isLoading || isSigningUp}
                 >
-                  <svg className="w-4 h-4" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                  </svg>
-                  CONTINUE WITH GOOGLE
+                  <GoogleMark />
+                  Continue with Google
                 </Button>
 
                 <div className="relative my-4">
@@ -365,7 +358,7 @@ const Auth = () => {
                     ) : (
                       <Rocket className="w-4 h-4" />
                     )}
-                    CREATE ACCOUNT
+                    Create account
                   </Button>
                 </form>
               </>
@@ -399,13 +392,8 @@ const Auth = () => {
                   onClick={() => handleOAuthSignIn('google')}
                   disabled={isLoading}
                 >
-                  <svg className="w-4 h-4" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                  </svg>
-                  AUTHENTICATE VIA GOOGLE
+                  <GoogleMark />
+                  Sign in with Google
                 </Button>
 
                 <div className="relative my-4">
@@ -462,7 +450,7 @@ const Auth = () => {
                         </div>
                         <Button type="submit" className="w-full gap-2" size="lg" disabled={isRequestingReset}>
                           {isRequestingReset ? <Loader variant="inline" size="sm" /> : <Mail className="w-4 h-4" />}
-                          SEND RESET LINK
+                          Send reset link
                         </Button>
                       </form>
                     )}
@@ -521,7 +509,7 @@ const Auth = () => {
                     ) : (
                       <LogIn className="w-4 h-4" />
                     )}
-                    AUTHENTICATE
+                    Sign in
                   </Button>
                 </form>
                 )}

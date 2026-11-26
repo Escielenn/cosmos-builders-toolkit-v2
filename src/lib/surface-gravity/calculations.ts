@@ -1,6 +1,7 @@
 // Surface Gravity Calculator, Pure calculation functions
 // No React dependencies, importable from PDF templates
 
+import { hueVar, type HueName } from "@/styles/hue";
 import { GAS_DATA, DELTA_V_VERDICTS, COMPOSITION_PRESETS, getGravityRegimeInfo } from "./data";
 import type { GravityRegime, DeltaVVerdict } from "./data";
 
@@ -41,6 +42,9 @@ export interface GasRetention {
   escapeParameter: number; // v_esc / v_thermal
   status: "retained" | "marginal" | "escapes";
   color: string;
+  /** What the status means, as a named hue (src/styles/hue.ts). */
+  statusHue: HueName;
+  /** `statusHue` as a live CSS value, for fills and icons. */
   statusColor: string;
 }
 
@@ -173,17 +177,17 @@ export function calcAtmosphericRetention(
     const param = escapeMs / thermalV;
 
     let status: "retained" | "marginal" | "escapes";
-    let statusColor: string;
+    let statusHue: HueName;
 
     if (param >= 6) {
       status = "retained";
-      statusColor = "#2ECC71";
+      statusHue = "emerald";
     } else if (param >= 4) {
       status = "marginal";
-      statusColor = "#FFA500";
+      statusHue = "amber";
     } else {
       status = "escapes";
-      statusColor = "#E74C3C";
+      statusHue = "crimson";
     }
 
     return {
@@ -195,7 +199,8 @@ export function calcAtmosphericRetention(
       escapeParameter: param,
       status,
       color: gas.color,
-      statusColor,
+      statusHue,
+      statusColor: hueVar(statusHue),
     };
   });
 }

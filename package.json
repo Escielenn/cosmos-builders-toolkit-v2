@@ -1,7 +1,7 @@
 {
   "name": "stellarforge",
   "private": true,
-  "version": "1.6.0",
+  "version": "1.7.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,6 +13,8 @@
     "check:chrome": "node scripts/check-page-chrome.mjs",
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:canon": "node scripts/check-canon-imports.mjs",
+    "check:hex": "node scripts/check-raw-hex.mjs",
+    "check:copy": "node scripts/check-copy.mjs",
     "build:e2e": "vite build --mode e2e",
     "test:e2e": "playwright test",
     "check:bundle": "node scripts/check-bundle-budget.mjs",
@@ -79,6 +81,7 @@
     "dompurify": "^3.4.11",
     "file-saver": "^2.0.5",
     "framer-motion": "^12.34.0",
+    "harper.js": "^2.13.0",
     "html2canvas": "^1.4.1",
     "i18next": "^25.8.11",
     "i18next-browser-languagedetector": "^8.2.1",

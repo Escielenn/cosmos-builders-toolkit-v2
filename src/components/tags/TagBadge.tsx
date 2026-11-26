@@ -1,3 +1,4 @@
+import { DEFAULT_TAG_COLOUR } from "@/lib/palettes/tags";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { hueEdge } from "@/lib/hue-edge";
@@ -12,7 +13,7 @@ interface TagBadgeProps {
 
 const TagBadge = ({
   name,
-  color = "#6366f1",
+  color = DEFAULT_TAG_COLOUR,
   onRemove,
   size = "md",
   className,

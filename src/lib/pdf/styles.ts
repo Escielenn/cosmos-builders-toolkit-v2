@@ -1,6 +1,6 @@
 import { StyleSheet, Font } from "@react-pdf/renderer";
 import { getThemeById, type ExportThemeColors } from "@/lib/export/themes";
-import { printPalette } from "./palette";
+import { printInk, printPalette } from "./palette";
 
 // Disable word hyphenation to prevent rendering issues
 Font.registerHyphenationCallback((word) => [word]);
@@ -238,7 +238,7 @@ export const styles = StyleSheet.create({
 
   // Notes box
   notesBox: {
-    backgroundColor: "#f9f9f9",
+    backgroundColor: printInk.zebra,
     borderWidth: 1,
     borderColor: colors.borderLight,
     padding: spacing.md,
@@ -456,7 +456,7 @@ export function createThemedStyles(themeColors: ExportThemeColors) {
       color: themeColors.text.primary,
     },
     notesBox: {
-      backgroundColor: themeColors.background === "#ffffff" ? "#f9f9f9" : themeColors.primaryLight,
+      backgroundColor: themeColors.background === printPalette.background ? printInk.zebra : themeColors.primaryLight,
       borderWidth: 1,
       borderColor: themeColors.borderLight,
       padding: spacing.md,

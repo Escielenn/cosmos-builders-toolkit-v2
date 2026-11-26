@@ -1,11 +1,12 @@
 // Star Type Definitions
 // Spectral classification data for realistic star generation
 
+import { GALAXY_MAP_SPECTRAL_COLOURS } from '@/lib/palettes/spectral';
 import { SpectralClass, StarTypeData } from '../types';
 
 export const STAR_TYPES: Record<SpectralClass, StarTypeData> = {
   O: {
-    color: '#9BB0FF',
+    color: GALAXY_MAP_SPECTRAL_COLOURS.O,
     temp: '30,000K+',
     mass: '16-150 M☉',
     rarity: 0.00003,
@@ -14,7 +15,7 @@ export const STAR_TYPES: Record<SpectralClass, StarTypeData> = {
     luminosity: [0.9, 1.0]
   },
   B: {
-    color: '#AABFFF',
+    color: GALAXY_MAP_SPECTRAL_COLOURS.B,
     temp: '10,000-30,000K',
     mass: '2.1-16 M☉',
     rarity: 0.0013,
@@ -23,7 +24,7 @@ export const STAR_TYPES: Record<SpectralClass, StarTypeData> = {
     luminosity: [0.85, 1.0]
   },
   A: {
-    color: '#CAD7FF',
+    color: GALAXY_MAP_SPECTRAL_COLOURS.A,
     temp: '7,500-10,000K',
     mass: '1.4-2.1 M☉',
     rarity: 0.006,
@@ -32,7 +33,7 @@ export const STAR_TYPES: Record<SpectralClass, StarTypeData> = {
     luminosity: [0.75, 0.95]
   },
   F: {
-    color: '#F8F7FF',
+    color: GALAXY_MAP_SPECTRAL_COLOURS.F,
     temp: '6,000-7,500K',
     mass: '1.04-1.4 M☉',
     rarity: 0.03,
@@ -41,7 +42,7 @@ export const STAR_TYPES: Record<SpectralClass, StarTypeData> = {
     luminosity: [0.65, 0.9]
   },
   G: {
-    color: '#FFF4EA',
+    color: GALAXY_MAP_SPECTRAL_COLOURS.G,
     temp: '5,200-6,000K',
     mass: '0.8-1.04 M☉',
     rarity: 0.076,
@@ -50,7 +51,7 @@ export const STAR_TYPES: Record<SpectralClass, StarTypeData> = {
     luminosity: [0.5, 0.85]
   },
   K: {
-    color: '#FFD2A1',
+    color: GALAXY_MAP_SPECTRAL_COLOURS.K,
     temp: '3,700-5,200K',
     mass: '0.45-0.8 M☉',
     rarity: 0.121,
@@ -59,7 +60,7 @@ export const STAR_TYPES: Record<SpectralClass, StarTypeData> = {
     luminosity: [0.35, 0.7]
   },
   M: {
-    color: '#FFAA6F',
+    color: GALAXY_MAP_SPECTRAL_COLOURS.M,
     temp: '2,400-3,700K',
     mass: '0.08-0.45 M☉',
     rarity: 0.765,

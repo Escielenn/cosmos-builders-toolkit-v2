@@ -177,7 +177,6 @@ export default function Studio(): JSX.Element {
               The greeting is the lede (DM Sans), not the title. */}
           <PageHeader
             size="page"
-            eyebrow="Writing desk"
             title="Studio"
             lede={
               <>
@@ -229,7 +228,7 @@ export default function Studio(): JSX.Element {
             <div className="flex gap-5 sm:gap-10">
               {[
                 { n: data?.wordsToday ?? 0, label: "Words today" },
-                { n: data?.totalWords ?? 0, label: "Words on file" },
+                { n: data?.totalWords ?? 0, label: "Words written" },
                 { n: data?.entriesThisMonth ?? 0, label: "Pieces this month" },
               ].map((s) => (
                 <div key={s.label}>
@@ -346,7 +345,7 @@ export default function Studio(): JSX.Element {
                 to="/worlds"
                 className="flex aspect-[3/4] items-center justify-center border border-dashed border-sf-line-emphasis font-sans text-[14px] text-t3 transition-colors duration-base hover:border-sf-primary hover:text-t1"
               >
-                + Begin a new world
+                + New world
               </Link>
             </div>
           </section>

@@ -1,3 +1,4 @@
+import { DEFAULT_WORLD_ACCENT, WORLD_ACCENT_PRESETS } from "@/lib/palettes/world-accents";
 import { useState, useEffect } from "react";
 import {
   Dialog,
@@ -20,18 +21,8 @@ import type { WorldTheme } from "@/hooks/use-world";
 import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
 import { hueEdge } from "@/lib/hue-edge";
 
-const DEFAULT_ACCENT = "#3DFFCD";
-
-const PRESET_COLORS = [
-  { name: "Cyan", hex: DEFAULT_ACCENT },
-  { name: "Magenta", hex: "#FF3D8E" },
-  { name: "Amber", hex: "#FFB347" },
-  { name: "Green", hex: "#4ADE80" },
-  { name: "Blue", hex: "#5B8DEF" },
-  { name: "White", hex: "#E0E4E8" },
-  { name: "Coral", hex: "#FF6B6B" },
-  { name: "Violet", hex: "#A78BFA" },
-];
+const DEFAULT_ACCENT = DEFAULT_WORLD_ACCENT;
+const PRESET_COLORS = WORLD_ACCENT_PRESETS;
 
 interface WorldAppearanceDialogProps {
   open: boolean;

@@ -1,11 +1,11 @@
 // ---------------------------------------------------------------------------
-// useBeginSurvey, creates a world and seeds it from the BEGIN SURVEY wizard.
+// useBeginSurvey: creates a world and seeds it from the "Create a world" dialog.
 //
 // One mutation: world row, then the seed (star, planet, species, their
 // edges, and an empty "Chapter One"), then the caches the Studio reads are
 // invalidated and the world palette's entity index is prefetched, so the
 // first "/" in Chapter One already finds the star, the planet and the
-// species. The caller navigates to /worlds/:worldId/write/:documentId on success.
+// species. The caller navigates to the world (/worlds/:worldId) on success.
 //
 // Retry-safe: the run (payload, world id, what is already written) is kept
 // across a failure, and the next mutate() resumes it from the failed step
@@ -91,7 +91,7 @@ export function useBeginSurvey() {
           queryFn: () => fetchEntityConnections(worldId),
         }),
       ]);
-      toast({ title: "SURVEY FILED. WORLD ON RECORD." });
+      toast({ title: "WORLD CREATED." });
     },
     onError: (error) => {
       const worldId = runRef.current?.worldId ?? null;
@@ -105,7 +105,7 @@ export function useBeginSurvey() {
       }
       setPartialWorldId(worldId);
       toast({
-        title: worldId ? "SEEDING INTERRUPTED. RETRY RESUMES." : "SURVEY FAILED.",
+        title: worldId ? "WORLD CREATED. SETUP INTERRUPTED." : "WORLD NOT CREATED.",
         description: mapError(error),
         variant: "destructive",
       });

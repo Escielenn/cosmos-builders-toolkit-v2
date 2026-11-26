@@ -70,11 +70,21 @@ export function shiftHue(hex: string, degrees: number): string {
 /**
  * Convert hex color to rgba string
  */
+const rgbPrefixCache = new Map<string, string>();
+
 export function hexToRgba(hex: string, alpha: number): string {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  // The draw loop calls this several times per star per frame; the channel
+  // parse is cached per colour (a galaxy uses a few dozen).
+  let prefix = rgbPrefixCache.get(hex);
+  if (prefix === undefined) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    prefix = `rgba(${r}, ${g}, ${b}, `;
+    if (rgbPrefixCache.size > 2048) rgbPrefixCache.clear();
+    rgbPrefixCache.set(hex, prefix);
+  }
+  return `${prefix}${alpha})`;
 }
 
 /**

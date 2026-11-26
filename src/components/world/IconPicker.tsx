@@ -7,23 +7,9 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { WORLD_ICONS, ICON_CATEGORIES } from "@/lib/world-icons";
-import { ChevronRight } from "lucide-react";
+import { WORLD_ICONS, ICON_CATEGORIES, resolveWorldIconId } from "@/lib/world-icons";
+import { WorldGlyph } from "@/components/icons/world-glyphs";
 import WorldIconRenderer from "./WorldIconRenderer";
-import WorldPicPickerDialog from "./WorldPicPickerDialog";
-import { ALL_WORLD_PICS } from "@/lib/world-pics-config";
-
-// A curated set of visually distinctive preview illustrations
-const PREVIEW_PICS = [
-  "007-astronaut.svg",
-  "048-dragon.svg",
-  "005-planet.svg",
-  "013-robot.svg",
-  "038-genie.svg",
-  "018-rocket.svg",
-  "039-mermaid.svg",
-  "035-black hole.svg",
-];
 
 interface IconPickerProps {
   value: string;
@@ -31,112 +17,71 @@ interface IconPickerProps {
   disabled?: boolean;
 }
 
+/**
+ * World icon picker: one family of line glyphs (1.7). A world that still
+ * stores a retired illustration path shows, and highlights, the glyph it
+ * resolves to; picking any glyph stores that glyph's id.
+ */
 const IconPicker = ({ value, onChange, disabled }: IconPickerProps) => {
   const [open, setOpen] = useState(false);
-  const [showPicPicker, setShowPicPicker] = useState(false);
+  const current = resolveWorldIconId(value);
 
   const handleSelect = (iconId: string) => {
     onChange(iconId);
     setOpen(false);
   };
 
-  const handlePicSelect = (path: string) => {
-    onChange(path);
-    setOpen(false);
-  };
-
   return (
     <>
       <Button
+        type="button"
         variant="outline"
         size="icon"
         disabled={disabled}
         onClick={() => setOpen(true)}
-        className="w-12 h-12 rounded-none overflow-hidden shrink-0"
+        className="w-12 h-12 rounded-none shrink-0 text-sf-primary-text"
         aria-label="Choose world icon"
       >
-        <WorldIconRenderer iconId={value} className="w-8 h-8" />
+        <WorldIconRenderer iconId={value} className="w-6 h-6" />
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-xl p-5">
           <DialogHeader>
-            <DialogTitle className="text-base">Choose an icon</DialogTitle>
+            <DialogTitle>Choose an icon</DialogTitle>
           </DialogHeader>
           <div className="space-y-3 max-h-[65vh] overflow-y-auto sf-sb pr-1">
             {ICON_CATEGORIES.map((category) => (
-              <div key={category}>
-                <p className="text-xs text-t3 mb-2">{category}</p>
-                <div className="grid grid-cols-10 gap-1">
-                  {WORLD_ICONS.filter((icon) => icon.category === category).map(
-                    (icon) => {
-                      const Icon = icon.icon;
-                      return (
-                        <button
-                          key={icon.id}
-                          onClick={() => handleSelect(icon.id)}
-                          className={cn(
-                            "w-10 h-10 flex items-center justify-center rounded-none transition-colors",
-                            "hover:bg-sf-surface-elevated hover:text-t1",
-                            value === icon.id &&
-                              "bg-primary text-primary-foreground"
-                          )}
-                          title={icon.label}
-                        >
-                          <Icon className="w-5 h-5" />
-                        </button>
-                      );
-                    }
-                  )}
+              <div key={category} role="group" aria-label={category}>
+                <p className="font-heading text-sf-eyebrow uppercase text-t4 mb-1">{category}</p>
+                <div className="grid grid-cols-6 sm:grid-cols-10 gap-1">
+                  {WORLD_ICONS.filter((icon) => icon.category === category).map((icon) => {
+                    const selected = current === icon.id;
+                    return (
+                      <button
+                        key={icon.id}
+                        type="button"
+                        onClick={() => handleSelect(icon.id)}
+                        aria-label={icon.label}
+                        aria-pressed={selected}
+                        title={icon.label}
+                        className={cn(
+                          "flex h-11 w-full min-w-hit items-center justify-center rounded-none border transition-colors duration-fast",
+                          selected
+                            ? "border-sf-primary bg-sf-primary/[0.06] text-sf-primary-text"
+                            : "border-transparent text-t2 hover:border-sf-line hover:bg-sf-surface-elevated hover:text-t1",
+                        )}
+                      >
+                        <WorldGlyph id={icon.id} className="h-6 w-6" />
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             ))}
-
-            {/* Illustration previews */}
-            <div className="pt-2 border-t border-sf-line-hairline">
-              <p className="text-xs text-t3 mb-2">Illustrations</p>
-              <div className="grid grid-cols-10 gap-1">
-                {PREVIEW_PICS.map((filename) => (
-                  <button
-                    key={filename}
-                    type="button"
-                    title={filename.replace(/^\d+-/, "").replace(/\.svg$/, "")}
-                    onClick={() => handleSelect(`/world-pics/${filename}`)}
-                    className={cn(
-                      "w-10 h-10 rounded-none p-1 transition-colors overflow-hidden",
-                      "hover:bg-sf-surface-elevated",
-                      value === `/world-pics/${filename}` && "ring-2 ring-primary"
-                    )}
-                  >
-                    <img
-                      src={`/world-pics/${filename}`}
-                      alt=""
-                      className="w-full h-full object-contain"
-                      draggable={false}
-                    />
-                  </button>
-                ))}
-              </div>
-              <button
-                className="w-full mt-2 flex items-center justify-center gap-1.5 text-xs text-sf-primary-text hover:text-sf-primary-text transition-colors py-1.5 rounded-none hover:bg-primary/5"
-                onClick={() => {
-                  setOpen(false);
-                  setShowPicPicker(true);
-                }}
-              >
-                View all {ALL_WORLD_PICS.length} illustrations
-                <ChevronRight className="w-3 h-3" />
-              </button>
-            </div>
           </div>
         </DialogContent>
       </Dialog>
-
-      <WorldPicPickerDialog
-        open={showPicPicker}
-        onOpenChange={setShowPicPicker}
-        onSelect={handlePicSelect}
-      />
     </>
   );
 };

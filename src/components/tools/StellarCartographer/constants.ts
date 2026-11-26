@@ -1,6 +1,12 @@
 // Stellar Cartographer Constants
 // Configuration values and defaults
 
+import {
+  DEFAULT_EMPIRE_COLOURS,
+  ROUTE_COLOURS,
+  SMBH_COLOURS,
+  WORMHOLE_COLOURS,
+} from '@/lib/palettes/galaxy-map';
 import { GalaxyConfig, ViewConfig, DisplayConfig, CameraState, Empire } from './types';
 
 // Galaxy generation
@@ -26,7 +32,7 @@ export const BACKGROUND_STAR_COUNT = 600;
 export const PARALLAX_FACTOR = 0.03;
 
 // Trade routes
-export const ROUTE_COLORS = ['#FFA500', '#FFD43B', '#15C17B', '#2ECC71', '#E056FD', '#FF6B6B'];
+export const ROUTE_COLORS = ROUTE_COLOURS;
 export const AUTO_ROUTE_COUNT = 5;
 export const AUTO_ROUTE_MAX_HOPS = 8;
 export const AUTO_ROUTE_MIN_HOPS = 4;
@@ -34,7 +40,7 @@ export const AUTO_ROUTE_MAX_REACH = 500;
 export const AUTO_ROUTE_MIN_DISTANCE = 50;
 
 // Wormholes
-export const WORMHOLE_COLORS = ['#9B59B6', '#8E44AD', '#E056FD'];
+export const WORMHOLE_COLORS = WORMHOLE_COLOURS;
 export const AUTO_WORMHOLE_COUNT = 2;
 export const AUTO_WORMHOLE_MIN_DISTANCE = 280;
 export const WORMHOLE_STABLE_CHANCE = 0.7;
@@ -72,7 +78,7 @@ export const DEFAULT_EMPIRES: Empire[] = [
   {
     id: 1,
     name: 'Terran Federation',
-    color: '#15C17B',
+    color: DEFAULT_EMPIRE_COLOURS[0],
     namingStyle: 'terran',
     centerX: -180,
     centerY: 0,
@@ -81,7 +87,7 @@ export const DEFAULT_EMPIRES: Empire[] = [
   {
     id: 2,
     name: 'Krath Dominion',
-    color: '#E74C3C',
+    color: DEFAULT_EMPIRE_COLOURS[1],
     namingStyle: 'harsh',
     centerX: 220,
     centerY: -120,
@@ -90,7 +96,7 @@ export const DEFAULT_EMPIRES: Empire[] = [
   {
     id: 3,
     name: 'Aelarian Collective',
-    color: '#E056FD',
+    color: DEFAULT_EMPIRE_COLOURS[2],
     namingStyle: 'flowing',
     centerX: 80,
     centerY: 220,
@@ -99,7 +105,7 @@ export const DEFAULT_EMPIRES: Empire[] = [
   {
     id: 4,
     name: 'Storm Reach Alliance',
-    color: '#2ECC71',
+    color: DEFAULT_EMPIRE_COLOURS[3],
     namingStyle: 'poetic',
     centerX: -280,
     centerY: -220,
@@ -109,9 +115,9 @@ export const DEFAULT_EMPIRES: Empire[] = [
 
 // Supermassive Black Hole
 export const SMBH_ACTIVITY_CONFIG = {
-  quiescent: { glowMultiplier: 4, color: '#FFB800', diskArcs: 2, arcOpacity: 0.2 },
-  active: { glowMultiplier: 8, color: '#FF6B35', diskArcs: 3, arcOpacity: 0.35 },
-  quasar: { glowMultiplier: 12, color: '#15C17B', diskArcs: 4, arcOpacity: 0.5 },
+  quiescent: { glowMultiplier: 4, color: SMBH_COLOURS.quiescent, diskArcs: 2, arcOpacity: 0.2 },
+  active: { glowMultiplier: 8, color: SMBH_COLOURS.active, diskArcs: 3, arcOpacity: 0.35 },
+  quasar: { glowMultiplier: 12, color: SMBH_COLOURS.quasar, diskArcs: 4, arcOpacity: 0.5 },
 } as const;
 
 export const DEFAULT_SMBH_MASS = 4; // millions of solar masses (Sgr A* ≈ 4M)

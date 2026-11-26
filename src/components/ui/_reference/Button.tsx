@@ -12,7 +12,7 @@
  *   • hit target    every size now clears 44px. `sm` was ~30px.
  *   • focus         explicit :focus-visible ring. v1 had hover states and no
  *                   focus state at all, which made the app unusable by keyboard.
- *   • label colour  hardcoded #08110C → sf-on-primary (solved, 8.16:1 in default).
+ *   • label colour  hardcoded near-black → sf-on-primary (solved, 8.16:1 in default).
  *   • role vs meaning  primary uses sf-primary, the USER-CHOSEN accent, not
  *                   sf-teal. Teal is what Integration means; primary is what
  *                   "the action" means. 60 themes swap the former; the latter

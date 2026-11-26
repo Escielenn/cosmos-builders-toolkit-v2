@@ -1,5 +1,7 @@
 // Timeline Visual PNG Export
 
+import { tokens } from "@/styles/tokens";
+
 export async function captureTimelineAsPNG(
   element: HTMLElement,
   scale = 2
@@ -12,7 +14,7 @@ export async function captureTimelineAsPNG(
 
   const canvas = await html2canvas(element, {
     scale,
-    backgroundColor: bgColor ? `hsl(${bgColor})` : "#09090b",
+    backgroundColor: bgColor ? `hsl(${bgColor})` : tokens.surface.simCanvas,
     logging: false,
     useCORS: true,
   });
@@ -35,3 +37,4 @@ export function downloadBlob(blob: Blob, filename: string) {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+

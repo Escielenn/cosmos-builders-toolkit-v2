@@ -1090,8 +1090,28 @@ Run `/sf-contrast` before any visual merge.
 
 ### Ship's Voice
 
-All system strings: uppercase, no emoji, no exclamation points, no second-
+System status strings (confirmations, errors, readouts): uppercase, no emoji, no exclamation points, no second-
 person excitement. Past tense for confirmations, imperative for actions.
+
+**Clarity first (decision 2026-11-26).** Actions, navigation, titles, labels
+and help text use plain sentence-case words a writer would use. Ship's Voice
+(caps, terse system phrasing) is reserved for brief status confirmations and
+readouts, and never names an action. No AI-flavoured filler. Flavour may
+decorate; it may never be the only way to understand what a control does.
+Enforced by `npm run check:copy` (`scripts/check-copy.mjs`, allow-list in
+`scripts/copy-allowlist.json`).
+
+| Before | After |
+|---|---|
+| `BEGIN SURVEY` (button that creates a world) | `New world` |
+| `INITIALIZE EMPTY` | `Skip setup and create` |
+| `Personnel file` (page title) | `Profile` |
+| `NO WORLDS ON FILE. BEGIN SURVEY WHEN READY.` | `No worlds yet` / `Create a world to start building and writing.` |
+| `Pick up the scene you left, see what changed across your worlds, and take today's prompt.` | (deleted: the page already shows it) |
+| `View Pro clearance` | `See Pro plans` |
+
+Status confirmations keep the voice: `WORLD CREATED.`, `WORLD FILE SECURED.`
+
 
   WORLD FILE SECURED.
   PARAMETERS OUTSIDE OPERATIONAL RANGE.

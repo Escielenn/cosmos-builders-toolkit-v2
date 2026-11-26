@@ -1,6 +1,7 @@
 // Timeline Tool, Constants & Configuration
 
 import type { EventType, TrackType, ImportanceLevel, LinkType, TimelineState } from "./types";
+import { SWATCH } from "@/lib/palettes/swatches";
 
 // ─── Event Type Configuration ──────────────────────────────────────
 
@@ -14,36 +15,36 @@ export interface EventTypeConfig {
 
 export const EVENT_TYPES: EventTypeConfig[] = [
   // Character events
-  { id: "birth", label: "Birth", icon: "Sprout", defaultColor: "#22c55e", category: "character" },
-  { id: "death", label: "Death", icon: "Skull", defaultColor: "#6b7280", category: "character" },
-  { id: "coming_of_age", label: "Coming of Age", icon: "Sunrise", defaultColor: "#f59e0b", category: "character" },
-  { id: "transformation", label: "Transformation", icon: "Sparkles", defaultColor: "#a855f7", category: "character" },
+  { id: "birth", label: "Birth", icon: "Sprout", defaultColor: SWATCH.green, category: "character" },
+  { id: "death", label: "Death", icon: "Skull", defaultColor: SWATCH.grey, category: "character" },
+  { id: "coming_of_age", label: "Coming of Age", icon: "Sunrise", defaultColor: SWATCH.amber, category: "character" },
+  { id: "transformation", label: "Transformation", icon: "Sparkles", defaultColor: SWATCH.purple, category: "character" },
   // Civilization events
-  { id: "founding", label: "Founding", icon: "Landmark", defaultColor: "#3b82f6", category: "civilization" },
-  { id: "collapse", label: "Collapse", icon: "TrendingDown", defaultColor: "#ef4444", category: "civilization" },
-  { id: "schism", label: "Schism", icon: "Split", defaultColor: "#f97316", category: "civilization" },
-  { id: "unification", label: "Unification", icon: "Handshake", defaultColor: "#06b6d4", category: "civilization" },
+  { id: "founding", label: "Founding", icon: "Landmark", defaultColor: SWATCH.blue, category: "civilization" },
+  { id: "collapse", label: "Collapse", icon: "TrendingDown", defaultColor: SWATCH.red, category: "civilization" },
+  { id: "schism", label: "Schism", icon: "Split", defaultColor: SWATCH.orange, category: "civilization" },
+  { id: "unification", label: "Unification", icon: "Handshake", defaultColor: SWATCH.aqua, category: "civilization" },
   // Conflict events
-  { id: "war", label: "War", icon: "Swords", defaultColor: "#dc2626", category: "conflict" },
-  { id: "battle", label: "Battle", icon: "Target", defaultColor: "#ef4444", category: "conflict" },
-  { id: "treaty", label: "Treaty", icon: "ScrollText", defaultColor: "#eab308", category: "conflict" },
-  { id: "rebellion", label: "Rebellion", icon: "Flame", defaultColor: "#f97316", category: "conflict" },
+  { id: "war", label: "War", icon: "Swords", defaultColor: SWATCH.redDeep, category: "conflict" },
+  { id: "battle", label: "Battle", icon: "Target", defaultColor: SWATCH.red, category: "conflict" },
+  { id: "treaty", label: "Treaty", icon: "ScrollText", defaultColor: SWATCH.yellow, category: "conflict" },
+  { id: "rebellion", label: "Rebellion", icon: "Flame", defaultColor: SWATCH.orange, category: "conflict" },
   // Discovery events
-  { id: "discovery", label: "Discovery", icon: "Lightbulb", defaultColor: "#06b6d4", category: "discovery" },
-  { id: "invention", label: "Invention", icon: "Cog", defaultColor: "#8b5cf6", category: "discovery" },
-  { id: "first_contact", label: "First Contact", icon: "Eye", defaultColor: "#d946ef", category: "discovery" },
+  { id: "discovery", label: "Discovery", icon: "Lightbulb", defaultColor: SWATCH.aqua, category: "discovery" },
+  { id: "invention", label: "Invention", icon: "Cog", defaultColor: SWATCH.violet, category: "discovery" },
+  { id: "first_contact", label: "First Contact", icon: "Eye", defaultColor: SWATCH.fuchsia, category: "discovery" },
   // Settlement events
-  { id: "settlement", label: "Settlement", icon: "Home", defaultColor: "#f59e0b", category: "settlement" },
-  { id: "terraforming_start", label: "Terraforming Start", icon: "TreePine", defaultColor: "#84cc16", category: "settlement" },
-  { id: "terraforming_complete", label: "Terraforming Complete", icon: "Trees", defaultColor: "#22c55e", category: "settlement" },
-  { id: "abandonment", label: "Abandonment", icon: "CircleOff", defaultColor: "#9ca3af", category: "settlement" },
+  { id: "settlement", label: "Settlement", icon: "Home", defaultColor: SWATCH.amber, category: "settlement" },
+  { id: "terraforming_start", label: "Terraforming Start", icon: "TreePine", defaultColor: SWATCH.lime, category: "settlement" },
+  { id: "terraforming_complete", label: "Terraforming Complete", icon: "Trees", defaultColor: SWATCH.green, category: "settlement" },
+  { id: "abandonment", label: "Abandonment", icon: "CircleOff", defaultColor: SWATCH.greyLight, category: "settlement" },
   // Journey events
-  { id: "departure", label: "Departure", icon: "Rocket", defaultColor: "#3b82f6", category: "journey" },
-  { id: "arrival", label: "Arrival", icon: "MapPin", defaultColor: "#22c55e", category: "journey" },
-  { id: "voyage", label: "Voyage", icon: "Ship", defaultColor: "#0ea5e9", category: "journey" },
+  { id: "departure", label: "Departure", icon: "Rocket", defaultColor: SWATCH.blue, category: "journey" },
+  { id: "arrival", label: "Arrival", icon: "MapPin", defaultColor: SWATCH.green, category: "journey" },
+  { id: "voyage", label: "Voyage", icon: "Ship", defaultColor: SWATCH.sky, category: "journey" },
   // Other
-  { id: "catastrophe", label: "Catastrophe", icon: "Zap", defaultColor: "#ef4444", category: "custom" },
-  { id: "custom", label: "Custom", icon: "Circle", defaultColor: "#6366f1", category: "custom" },
+  { id: "catastrophe", label: "Catastrophe", icon: "Zap", defaultColor: SWATCH.red, category: "custom" },
+  { id: "custom", label: "Custom", icon: "Circle", defaultColor: SWATCH.stellar, category: "custom" },
 ];
 
 export const EVENT_TYPE_MAP: Record<EventType, EventTypeConfig> = Object.fromEntries(
@@ -60,18 +61,18 @@ export interface TrackTypeConfig {
 }
 
 export const TRACK_TYPES: TrackTypeConfig[] = [
-  { id: "character", label: "Character", icon: "User", defaultColor: "#8b5cf6" },
-  { id: "civilization", label: "Civilization", icon: "Globe", defaultColor: "#3b82f6" },
-  { id: "organization", label: "Organization", icon: "Building2", defaultColor: "#f59e0b" },
-  { id: "planet", label: "Planet", icon: "Globe2", defaultColor: "#22c55e" },
-  { id: "ship", label: "Ship", icon: "Rocket", defaultColor: "#ef4444" },
-  { id: "system", label: "Star System", icon: "Sun", defaultColor: "#eab308" },
-  { id: "artifact", label: "Artifact", icon: "Gem", defaultColor: "#d946ef" },
-  { id: "technology", label: "Technology", icon: "Cpu", defaultColor: "#06b6d4" },
-  { id: "biology", label: "Biology", icon: "Dna", defaultColor: "#84cc16" },
-  { id: "culture", label: "Culture", icon: "Palette", defaultColor: "#ec4899" },
-  { id: "conflict", label: "Conflict", icon: "Swords", defaultColor: "#dc2626" },
-  { id: "religion", label: "Religion", icon: "BookOpen", defaultColor: "#a855f7" },
+  { id: "character", label: "Character", icon: "User", defaultColor: SWATCH.violet },
+  { id: "civilization", label: "Civilization", icon: "Globe", defaultColor: SWATCH.blue },
+  { id: "organization", label: "Organization", icon: "Building2", defaultColor: SWATCH.amber },
+  { id: "planet", label: "Planet", icon: "Globe2", defaultColor: SWATCH.green },
+  { id: "ship", label: "Ship", icon: "Rocket", defaultColor: SWATCH.red },
+  { id: "system", label: "Star System", icon: "Sun", defaultColor: SWATCH.yellow },
+  { id: "artifact", label: "Artifact", icon: "Gem", defaultColor: SWATCH.fuchsia },
+  { id: "technology", label: "Technology", icon: "Cpu", defaultColor: SWATCH.aqua },
+  { id: "biology", label: "Biology", icon: "Dna", defaultColor: SWATCH.lime },
+  { id: "culture", label: "Culture", icon: "Palette", defaultColor: SWATCH.pink },
+  { id: "conflict", label: "Conflict", icon: "Swords", defaultColor: SWATCH.redDeep },
+  { id: "religion", label: "Religion", icon: "BookOpen", defaultColor: SWATCH.purple },
 ];
 
 export const TRACK_TYPE_MAP: Record<TrackType, TrackTypeConfig> = Object.fromEntries(
@@ -132,19 +133,19 @@ export const ZOOM_SPEED = 0.002;
 
 // ─── Color Palette ─────────────────────────────────────────────────
 
-export const TRACK_COLOR_PALETTE = [
-  "#8b5cf6", // violet
-  "#3b82f6", // blue
-  "#06b6d4", // cyan
-  "#22c55e", // green
-  "#eab308", // yellow
-  "#f59e0b", // amber
-  "#ef4444", // red
-  "#d946ef", // fuchsia
-  "#f97316", // orange
-  "#14b8a6", // teal
-  "#ec4899", // pink
-  "#6366f1", // indigo
+export const TRACK_COLOR_PALETTE: string[] = [
+  SWATCH.violet,
+  SWATCH.blue,
+  SWATCH.aqua,
+  SWATCH.green,
+  SWATCH.yellow,
+  SWATCH.amber,
+  SWATCH.red,
+  SWATCH.fuchsia,
+  SWATCH.orange,
+  SWATCH.teal,
+  SWATCH.pink,
+  SWATCH.stellar,
 ];
 
 // ─── Month Names ───────────────────────────────────────────────────
@@ -168,10 +169,10 @@ export interface LinkTypeConfig {
 }
 
 export const LINK_TYPE_CONFIG: Record<LinkType, LinkTypeConfig> = {
-  caused:     { label: "Caused",     color: "#ef4444" },
-  enabled:    { label: "Enabled",    color: "#3b82f6" },
-  prevented:  { label: "Prevented",  color: "#6b7280", dashArray: "4 3" },
-  influenced: { label: "Influenced", color: "#a855f7", dashArray: "8 4" },
+  caused:     { label: "Caused",     color: SWATCH.red },
+  enabled:    { label: "Enabled",    color: SWATCH.blue },
+  prevented:  { label: "Prevented",  color: SWATCH.grey, dashArray: "4 3" },
+  influenced: { label: "Influenced", color: SWATCH.purple, dashArray: "8 4" },
 };
 
 export const LINK_TYPES: { id: LinkType; label: string }[] = [

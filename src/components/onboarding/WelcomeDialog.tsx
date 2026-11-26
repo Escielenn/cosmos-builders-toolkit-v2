@@ -36,33 +36,33 @@ interface VariantConfig {
 const VARIANTS: Record<WelcomeVariant, VariantConfig> = {
   signup: {
     icon: Sparkles,
-    title: "WELCOME TO STELLARFORGE",
+    title: "Welcome to StellarForge",
     subtitle: "These worlds exist in you. Waiting to be found.",
     accentColor: "teal",
     showPwaPrompt: true,
-    // BEGIN SURVEY: name a world, pick a star, a planet, one species, and
-    // land in Chapter One. /worlds?create=true opens it; Index passes
-    // onPrimaryAction to open it in place.
-    primaryAction: { label: "Begin Survey", href: "/worlds?create=true" },
-    secondaryAction: { label: "Getting Started", href: "/getting-started" },
+    // "New world" opens the create dialog: name, star, planet, life.
+    // /worlds?create=true opens it; Index passes onPrimaryAction to open it
+    // in place.
+    primaryAction: { label: "Create your first world", href: "/worlds?create=true" },
+    secondaryAction: { label: "Getting started", href: "/getting-started" },
   },
   pro: {
     icon: Zap,
-    title: "PRO ACCESS ACTIVATED",
-    subtitle: "ALL INSTRUMENTS UNLOCKED.",
+    title: "You're on Pro",
+    subtitle: "Every instrument is open to you now.",
     // Only what Pro actually adds (src/lib/plan-features.ts). Writing,
     // Compile and worksheet exports are free, so they are not promised here.
     features: PRO_PLAN_ITEMS,
     accentColor: "teal",
     showPwaPrompt: false,
-    primaryAction: { label: "Create a World", href: "/worlds" },
-    secondaryAction: { label: "Explore Tools", scrollTo: "tools" },
-    upsell: "Unlock voting & early access with Vanguard",
+    primaryAction: { label: "Go to your worlds", href: "/worlds" },
+    secondaryAction: { label: "See the tools", href: "/tools" },
+    upsell: "Vanguard adds roadmap votes and early access",
   },
   vanguard: {
     icon: Sparkles,
-    title: "VANGUARD ACCESS ACTIVATED",
-    subtitle: "ROADMAP VOTES ACTIVE. EARLY ACCESS GRANTED.",
+    title: "You're in the Vanguard",
+    subtitle: "You can vote on the roadmap and try new tools first.",
     features: [
       "10 roadmap votes every month",
       "Early access to new tools",
@@ -70,8 +70,8 @@ const VARIANTS: Record<WelcomeVariant, VariantConfig> = {
     ],
     accentColor: "violet",
     showPwaPrompt: false,
-    primaryAction: { label: "Visit Roadmap", href: "/roadmap" },
-    secondaryAction: { label: "Explore Tools", scrollTo: "tools" },
+    primaryAction: { label: "Open the roadmap", href: "/roadmap" },
+    secondaryAction: { label: "See the tools", href: "/tools" },
   },
 };
 
@@ -149,7 +149,7 @@ export default function WelcomeDialog({ open, onOpenChange, variant, onPrimaryAc
 
           {/* Title & subtitle */}
           <div className="space-y-2">
-            <h2 className="font-display text-2xl tracking-title text-t1 uppercase">
+            <h2 className="font-display text-2xl tracking-title text-t1">
               {config.title}
             </h2>
             <p className="text-sm text-t2 leading-relaxed">
@@ -173,7 +173,7 @@ export default function WelcomeDialog({ open, onOpenChange, variant, onPrimaryAc
           {config.showPwaPrompt && !isStandalone && (
             <div className="border-t border-sf-line-hairline pt-4 space-y-2">
               <p className="text-[12px] font-medium uppercase tracking-wide text-t3">
-                Quick Access
+                Install
               </p>
               {canPrompt ? (
                 <Button

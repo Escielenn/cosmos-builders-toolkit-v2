@@ -50,7 +50,7 @@ const Pricing = () => {
         if (success) {
           toast({
             title: "ACCESS ACTIVATED.",
-            description: "ALL INSTRUMENTS UNLOCKED.",
+            description: "EVERY INSTRUMENT IS OPEN.",
           });
 
           // Show tier-specific welcome dialog
@@ -87,7 +87,7 @@ const Pricing = () => {
       handledRef.current = true;
       toast({
         title: "CHECKOUT CANCELED.",
-        description: "CLEARANCE AVAILABLE WHEN READY.",
+        description: "Nothing was charged. You can upgrade any time.",
       });
       window.history.replaceState({}, '', '/pricing');
     }
@@ -177,7 +177,7 @@ const Pricing = () => {
           <Eyebrow className="mb-6">Access</Eyebrow>
           <h1 id="pricing-title" className="font-display text-[clamp(40px,6vw,72px)] font-light leading-[1.04] text-t1">
             Write the book free.
-            <em className="block font-serif font-normal italic text-sf-primary-text">Unlock every instrument.</em>
+            <em className="block font-serif font-normal italic text-sf-primary-text">Pay for the instruments.</em>
           </h1>
           <p className="mt-6 max-w-[60ch] font-sans text-[17px] leading-[1.6] text-t2 md:text-[19px]">
             {`The Studio, Codex, Chronicle, Canon and Compile come with every account. Pro opens all ${TOTAL_TOOL_COUNT} instruments and full-world exports. Vanguard shapes what comes next.`}
@@ -191,7 +191,7 @@ const Pricing = () => {
             price="$0"
             per="forever"
             note="No credit card."
-            intro="The whole writing side of the ship:"
+            intro="Everything you need to write the book"
             features={FREE_PLAN_SUMMARY}
           >
             {user && !isSubscribed ? (
@@ -338,7 +338,7 @@ const PRICING_FAQ = [
     q: "Is the writing Studio free?",
     a: "Yes. The Studio (binder, corkboard, outliner, snapshots), the Codex, the Chronicle, Canon capture and Compile come with every free account. Pro adds instruments and world-level exports; it never locks your manuscript.",
   },
-  { q: "Can I cancel anytime?", a: "Yes. Cancel from your billing portal. You keep access until the end of your billing period." },
+  { q: "Can I cancel any time?", a: "Yes. Cancel from your billing portal. You keep access until the end of your billing period." },
   { q: "What payment methods do you accept?", a: "All major credit and debit cards, and many local payment methods, through Stripe." },
   {
     q: "Will I lose my data if I cancel?",

@@ -4,6 +4,8 @@
 
 // ─── Types ────────────────────────────────────────────────────────────
 
+import { KARDASHEV_BAND_COLOURS } from "@/lib/palettes/kardashev";
+
 export type KardashevLevel =
   | "sub-I"
   | "I"
@@ -83,7 +85,7 @@ export const KARDASHEV_BANDS: KardashevBand[] = [
     label: "Sub-Type I",
     minPower: 0,
     maxPower: 16,
-    color: "#6B7280",
+    color: KARDASHEV_BAND_COLOURS[0],
     description: "Pre-planetary civilization. Cannot harness the full energy output of its home planet.",
     characteristics: [
       "Dependent on fossil fuels or early nuclear",
@@ -98,7 +100,7 @@ export const KARDASHEV_BANDS: KardashevBand[] = [
     label: "Type I, Planetary",
     minPower: 16,
     maxPower: 17,
-    color: "#3B82F6",
+    color: KARDASHEV_BAND_COLOURS[1],
     description: "Planetary civilization. Commands the total energy resources of its home planet.",
     characteristics: [
       "Controls planetary weather and climate",
@@ -113,7 +115,7 @@ export const KARDASHEV_BANDS: KardashevBand[] = [
     label: "Type I-II, Interplanetary",
     minPower: 17,
     maxPower: 24,
-    color: "#8B5CF6",
+    color: KARDASHEV_BAND_COLOURS[2],
     description: "Transitional civilization. Expanding beyond home planet but not yet commanding stellar output.",
     characteristics: [
       "Multi-planet colonization",
@@ -128,7 +130,7 @@ export const KARDASHEV_BANDS: KardashevBand[] = [
     label: "Type II, Stellar",
     minPower: 24,
     maxPower: 26,
-    color: "#F59E0B",
+    color: KARDASHEV_BAND_COLOURS[3],
     description: "Stellar civilization. Commands the total energy output of its home star.",
     characteristics: [
       "Dyson swarm or equivalent stellar collector",
@@ -143,7 +145,7 @@ export const KARDASHEV_BANDS: KardashevBand[] = [
     label: "Type II-III, Interstellar",
     minPower: 26,
     maxPower: 36,
-    color: "#EF4444",
+    color: KARDASHEV_BAND_COLOURS[4],
     description: "Transitional civilization. Expanding across multiple star systems.",
     characteristics: [
       "Multi-star colonization",
@@ -158,7 +160,7 @@ export const KARDASHEV_BANDS: KardashevBand[] = [
     label: "Type III, Galactic",
     minPower: 36,
     maxPower: 37,
-    color: "#EC4899",
+    color: KARDASHEV_BAND_COLOURS[5],
     description: "Galactic civilization. Commands the total energy output of its home galaxy.",
     characteristics: [
       "Controls hundreds of billions of stars",
@@ -173,7 +175,7 @@ export const KARDASHEV_BANDS: KardashevBand[] = [
     label: "Type III+, Intergalactic",
     minPower: 37,
     maxPower: 45,
-    color: "#14B8A6",
+    color: KARDASHEV_BAND_COLOURS[6],
     description: "Intergalactic civilization. Energy command spanning multiple galaxies or the cosmic web.",
     characteristics: [
       "Multi-galaxy presence",
@@ -188,7 +190,7 @@ export const KARDASHEV_BANDS: KardashevBand[] = [
     label: "Type Omega",
     minPower: 45,
     maxPower: 50,
-    color: "#FAFAFA",
+    color: KARDASHEV_BAND_COLOURS[7],
     description: "Hypothetical. Commands energy on the scale of the observable universe or beyond.",
     characteristics: [
       "Universe-scale manipulation",

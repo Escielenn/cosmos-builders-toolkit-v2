@@ -38,7 +38,6 @@ import {
   Minimize2,
   AtSign,
   MoreHorizontal,
-  Palette,
 } from "lucide-react";
 import { createPortal } from "react-dom";
 import {
@@ -132,6 +131,11 @@ export interface StellarForgeEditorProps {
    * not mounted yet (nothing renders); leave it undefined for inline.
    */
   toolbarTarget?: HTMLElement | null;
+  /**
+   * Browser spellcheck on the prose. Undefined leaves the browser default
+   * (the Manuscript's Writing room sets it per device).
+   */
+  spellCheck?: boolean;
 }
 
 /** The frame-less shell for `bare` editors. */
@@ -221,6 +225,7 @@ export function StellarForgeEditor({
   page = false,
   onDirty,
   toolbarTarget,
+  spellCheck,
 }: StellarForgeEditorProps) {
   const config = PRESET_CONFIG[preset];
   const resolvedMinHeight = minHeight || config.defaultMinHeight;
@@ -371,6 +376,12 @@ export function StellarForgeEditor({
   useEffect(() => {
     if (editor) editor.setEditable(!readOnly);
   }, [readOnly, editor]);
+
+  // Spellcheck is an attribute on the editable element, not document content.
+  useEffect(() => {
+    if (!editor || editor.isDestroyed || spellCheck === undefined) return;
+    editor.view.dom.setAttribute("spellcheck", spellCheck ? "true" : "false");
+  }, [editor, spellCheck]);
 
   // Flush on unmount
   const editorRef = useRef(editor);
@@ -663,32 +674,8 @@ export function StellarForgeEditor({
         </>
       )}
 
-      {/* Theme Picker: swatches inline, or one menu when docked */}
-      {config.showThemePicker && docked && (
-        <>
-          {sep}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button type="button" title="Page theme" aria-label="Page theme" className={DOCKED_BTN}>
-                <Palette className="w-4 h-4" aria-hidden="true" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              {WRITING_THEMES.map((theme) => (
-                <DropdownMenuItem key={theme.id} onClick={() => updatePreferences({ themeId: theme.id })}>
-                  <span
-                    aria-hidden="true"
-                    className="mr-2 h-3.5 w-3.5 shrink-0 border border-sf-line"
-                    style={{ backgroundColor: theme.swatch[0] }}
-                  />
-                  {theme.name}
-                  {preferences.themeId === theme.id && <span className="ml-auto font-mono text-[12px] text-t4">ON</span>}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </>
-      )}
+      {/* Theme picker: swatches inline. Docked (the Manuscript), the page's
+          paper is chosen in the Writing room, so there is no menu here. */}
       {config.showThemePicker && !docked && (
         <>
           {sep}
@@ -738,16 +725,17 @@ export function StellarForgeEditor({
         <EditorContent
           editor={editor}
           className={cn(
-            page ? "px-0 pb-2 pt-6" : "px-3 py-2",
+            page ? "px-0 pb-2 pt-0" : "px-3 py-2",
             "[&_.tiptap]:outline-none [&_.tiptap:focus-visible]:ring-2 [&_.tiptap:focus-visible]:ring-sf-focus [&_.tiptap]:min-h-[var(--editor-min-h)]",
             !readOnly && "sf-writing-surface",
             readOnly && "bg-muted/30",
-            config.maxWidth && "mx-auto"
+            config.maxWidth && !page && "mx-auto"
           )}
           style={
             {
               "--editor-min-h": resolvedMinHeight,
-              ...(config.maxWidth ? { maxWidth: config.maxWidth } : {}),
+              // A page fills its sheet; the host sets the measure.
+              ...(config.maxWidth && !page ? { maxWidth: config.maxWidth } : {}),
             } as React.CSSProperties
           }
           data-writing-theme={!readOnly ? preferences.themeId : undefined}

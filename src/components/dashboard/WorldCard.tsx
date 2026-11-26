@@ -1,4 +1,4 @@
-import { MoreHorizontal, Trash2, Download, Share2, Archive, ArchiveRestore, GitFork } from "lucide-react";
+import { MoreHorizontal, Trash2, Download, Share2, Archive, ArchiveRestore, GitFork, ImageIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import WorldIconRenderer from "@/components/world/WorldIconRenderer";
+import WorldCardArt from "@/components/world/WorldCardArt";
+import WorldCoverDialog from "@/components/world/WorldCoverDialog";
 import { useToast } from "@/hooks/use-toast";
 import WorldExportDialog from "@/components/world/WorldExportDialog";
 import { DeleteConfirmDialog } from "@/components/dialogs/DeleteConfirmDialog";
@@ -24,6 +26,8 @@ interface WorldCardProps {
   description: string | null;
   headerImageUrl: string | null;
   headerImageFocusY?: number;
+  /** Art behind the card; defaults to headerImageUrl (see worldCoverUrl). */
+  coverUrl?: string | null;
   icon: string;
   tags?: string[];
   archivedAt?: string | null;
@@ -42,6 +46,7 @@ const WorldCard = ({
   description,
   headerImageUrl,
   headerImageFocusY,
+  coverUrl,
   icon,
   tags = [],
   archivedAt,
@@ -57,10 +62,12 @@ const WorldCard = ({
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showExportDialog, setShowExportDialog] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
+  const [showCoverDialog, setShowCoverDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
 
   const isArchived = !!archivedAt;
+  const art = coverUrl ?? headerImageUrl;
 
   const handleShare = async () => {
     const worldUrl = `${window.location.origin}/worlds/${id}`;
@@ -69,7 +76,7 @@ const WorldCard = ({
       try {
         await navigator.share({
           title: name,
-          text: description || `Check out my world "${name}" on StellarForge`,
+          text: description || `${name}, a world on StellarForge`,
           url: worldUrl,
         });
       } catch (error) {
@@ -88,7 +95,7 @@ const WorldCard = ({
       await navigator.clipboard.writeText(text);
       toast({
         title: "LINK COPIED.",
-        description: "World link copied to clipboard.",
+        description: "World link copied to the clipboard.",
       });
     } catch {
       toast({
@@ -107,33 +114,35 @@ const WorldCard = ({
 
   return (
     <>
-      <GlassPanel hover className={cn("flex flex-col min-h-[200px]", isArchived && "border-dashed")}>
-        {/* Header Image */}
+      <GlassPanel hover className={cn("flex flex-col min-h-[200px] overflow-hidden", isArchived && "border-dashed")}>
+        {/* The world's cover, faded behind the whole card (1.7). Nothing
+            renders without a cover or with "World art on cards" off. */}
+        <WorldCardArt url={art} focusY={headerImageUrl ? headerImageFocusY : 50} />
+
+        {/* Header band */}
         <div className="relative">
-          {headerImageUrl ? (
-            <div className="w-full h-24 overflow-hidden rounded-t-none">
-              <img
-                src={headerImageUrl}
-                alt=""
-                className="w-full h-full object-cover"
-                style={{ objectPosition: `center ${headerImageFocusY ?? 50}%` }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
-            </div>
+          {art ? (
+            // The art already fills the card; the band is just room for the icon.
+            <div className="w-full h-16" />
           ) : (
             <div className="w-full h-16 bg-gradient-to-br from-primary/10 to-accent/10">
               <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent" />
             </div>
           )}
           {/* Icon overlay - positioned outside overflow-hidden container */}
-          <div className="absolute -bottom-5 left-4 w-10 h-10 rounded-none bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-background flex items-center justify-center shadow-lg z-10 overflow-hidden">
-            <WorldIconRenderer iconId={icon} className="w-7 h-7 text-sf-primary-text" />
+          <div
+            className={cn(
+              "absolute -bottom-5 left-4 w-10 h-10 rounded-none border-2 border-background flex items-center justify-center shadow-lg z-10 overflow-hidden",
+              art ? "bg-sf-surface" : "bg-gradient-to-br from-primary/20 to-accent/20",
+            )}
+          >
+            <WorldIconRenderer iconId={icon} className="w-6 h-6 text-sf-primary-text" />
           </div>
           {/* Status badges (Fork / Archived), stacked top-right */}
           <div className="absolute top-2 right-2 flex flex-col items-end gap-1">
             {isFork && (
               <span
-                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-none bg-sf-stellar/[0.06] border border-sf-stellar text-sf-stellar-text font-mono text-[12px] tracking-wide uppercase"
+                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-none bg-sf-surface border border-sf-stellar text-sf-stellar-text font-mono text-[12px] tracking-wide uppercase"
                 title={source ? `Forked from ${source.name}` : "Forked from another world"}
               >
                 <GitFork className="w-3 h-3" />
@@ -150,7 +159,7 @@ const WorldCard = ({
         </div>
 
         {/* Content */}
-        <div className="p-5 pt-8 flex flex-col flex-1">
+        <div className="relative p-5 pt-8 flex flex-col flex-1">
           <div className="flex items-start justify-between mb-2">
             <Link to={`/worlds/${id}`} className="flex-1">
               <h3 className="font-heading font-medium text-lg hover:text-sf-primary-text transition-colors">
@@ -165,7 +174,11 @@ const WorldCard = ({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem asChild>
-                  <Link to={`/worlds/${id}`}>Edit World</Link>
+                  <Link to={`/worlds/${id}`}>Open world</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setShowCoverDialog(true)}>
+                  <ImageIcon className="w-4 h-4 mr-2" />
+                  {headerImageUrl ? "Change cover" : "Set cover"}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setShowShareDialog(true)}>
                   <Share2 className="w-4 h-4 mr-2" />
@@ -179,7 +192,7 @@ const WorldCard = ({
                 {isArchived ? (
                   <DropdownMenuItem onClick={() => onUnarchive?.(id)}>
                     <ArchiveRestore className="w-4 h-4 mr-2" />
-                    Restore from Archive
+                    Restore from archive
                   </DropdownMenuItem>
                 ) : (
                   <DropdownMenuItem onClick={() => onArchive?.(id)}>
@@ -226,7 +239,7 @@ const WorldCard = ({
 
           <div className="pt-2 border-t border-sf-line-hairline mt-auto flex items-center justify-between">
             <p className="text-xs text-t3">
-              Last updated: {formattedDate}
+              Updated {formattedDate}
             </p>
             {snapshotAt && (
               <span
@@ -264,6 +277,15 @@ const WorldCard = ({
         onOpenChange={setShowExportDialog}
         worldName={name}
         worldId={id}
+      />
+
+      <WorldCoverDialog
+        open={showCoverDialog}
+        onOpenChange={setShowCoverDialog}
+        worldId={id}
+        worldName={name}
+        currentUrl={headerImageUrl}
+        currentFocusY={headerImageFocusY}
       />
 
       <ShareDialog

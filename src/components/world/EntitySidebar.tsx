@@ -1,3 +1,4 @@
+import { ENTITY_COLOUR_SWATCHES, HEX_EXAMPLE } from "@/lib/palettes/entity-swatches";
 import { useState, useCallback, useMemo } from "react";
 import {
   DndContext,
@@ -74,20 +75,7 @@ type ViewMode = "tool" | "wiki";
 // Color swatches for the color picker
 // ---------------------------------------------------------------------------
 
-const COLOR_SWATCHES = [
-  "#FFB800",
-  "#4D9FFF",
-  "#9B5DE5",
-  "#FF00AA",
-  "#00FF88",
-  "#15C17B",
-  "#FF3366",
-  "#5B8DEF",
-  "#15C17B",
-  "#E74C3C",
-  "#FFA500",
-  "#FFD43B",
-];
+const COLOR_SWATCHES = ENTITY_COLOUR_SWATCHES;
 
 // ---------------------------------------------------------------------------
 // Color Dot Popover
@@ -184,7 +172,7 @@ function ColorDotPicker({
             value={customHex}
             onChange={(e) => setCustomHex(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleCustomSubmit()}
-            placeholder="#FF00AA"
+            placeholder={HEX_EXAMPLE}
             className="flex-1 px-3 py-1 text-[12px] font-mono text-t2 placeholder:text-t4"
           />
           <button

@@ -96,3 +96,64 @@ export const printPalette = {
 } as const;
 
 export type PrintPalette = typeof printPalette;
+
+// ── fixed print inks (not derived, not theme) ───────────────────────
+
+/**
+ * Inks and fills the report templates use on top of the palette above:
+ * shaded boxes, pass / caution / fail marks, and the wordmark cube. They are
+ * print colours chosen for paper and do not follow the on-screen theme.
+ */
+export const printInk = {
+  /** Shaded box behind a block of body text. */
+  panel: "#f5f5f5",
+  /** Lighter shaded box (notes, nested blocks). */
+  panelSoft: "#fafafa",
+  /** Alternating table row. */
+  zebra: "#f9f9f9",
+  /** Text on a filled dark or accent block. */
+  onFill: "#ffffff",
+  /** Pass / consistent. */
+  ok: "#22c55e",
+  /** Gas retained (atmosphere tables). */
+  retained: "#2ECC71",
+  /** Marginal, over a warning threshold. */
+  warn: "#FFA500",
+  /** Soft caution note. */
+  caution: "#F59E0B",
+  /** Fail, over budget, gas escapes. */
+  danger: "#E74C3C",
+  /** The three visible faces of the header cube mark. */
+  cube: { top: "#1a1a1a", left: "#0d0d0d", right: "#141414" },
+} as const;
+
+/** Colour sets for the non-default export themes (see src/lib/export/themes.ts). */
+export const exportThemeInks = {
+  darkNebula: {
+    primary: "#2dd4bf",
+    primaryLight: "#1e293b",
+    text: { primary: "#f1f5f9", secondary: "#94a3b8", muted: "#64748b" },
+    border: "#334155",
+    borderLight: "#1e293b",
+    background: "#0f172a",
+    accent: "#5eead4",
+  },
+  solarFlare: {
+    primary: "#b45309",
+    primaryLight: "#fffbeb",
+    text: { primary: "#1c1917", secondary: "#44403c", muted: "#78716c" },
+    border: "#d6d3d1",
+    borderLight: "#e7e5e4",
+    background: "#ffffff",
+    accent: "#f59e0b",
+  },
+  cosmicViolet: {
+    primary: "#7c3aed",
+    primaryLight: "#f5f3ff",
+    text: { primary: "#1e1b4b", secondary: "#4c1d95", muted: "#6d28d9" },
+    border: "#c4b5fd",
+    borderLight: "#ede9fe",
+    background: "#ffffff",
+    accent: "#a78bfa",
+  },
+} as const;

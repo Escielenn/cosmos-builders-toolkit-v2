@@ -1,3 +1,4 @@
+import { printInk } from "../palette";
 import { Document, Page, View, Text } from "@react-pdf/renderer";
 import { styles, colors, spacing, typography } from "../styles";
 import {
@@ -317,7 +318,7 @@ const PropulsionFullReportTemplate = ({
 
         <PDFSection title="7. Final Synthesis">
           {synthesis?.propulsionThesis && (
-            <View style={{ marginBottom: spacing.lg, padding: spacing.md, backgroundColor: "#f5f5f5" }} wrap={false}>
+            <View style={{ marginBottom: spacing.lg, padding: spacing.md, backgroundColor: printInk.panel }} wrap={false}>
               <Text style={{ fontSize: typography.sizes.md, fontWeight: 600, color: colors.primary, marginBottom: spacing.sm }}>
                 Propulsion Thesis
               </Text>
@@ -338,7 +339,7 @@ const PropulsionFullReportTemplate = ({
         </PDFSection>
 
         {/* Final Quote */}
-        <View style={{ marginTop: spacing.lg, padding: spacing.md, backgroundColor: "#f5f5f5" }}>
+        <View style={{ marginTop: spacing.lg, padding: spacing.md, backgroundColor: printInk.panel }}>
           <Text style={{ fontSize: typography.sizes.xs, color: colors.text.secondary, fontStyle: "italic", textAlign: "center", lineHeight: 1.5 }}>
             "Fast travel creates empires; slow travel creates autonomous colonies. Cheap travel democratizes; expensive travel stratifies."
           </Text>

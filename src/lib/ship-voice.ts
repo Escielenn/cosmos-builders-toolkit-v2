@@ -37,16 +37,16 @@ export const VOICE = {
   // Empty state helpers
   emptyIndex: (what: string) => `${what.toUpperCase()} INDEX: EMPTY.`,
   noResourceOnFile: (what: string) =>
-    `NO ${what.toUpperCase()} ON FILE. BEGIN SURVEY WHEN READY.`,
+    `NO ${what.toUpperCase()} YET.`,
 
   // Errors / status
   genericError: "OPERATION FAILED. RETRY WHEN READY.",
   outsideRange: "PARAMETERS OUTSIDE OPERATIONAL RANGE.",
   requiredField: "FIELD REQUIRED BEFORE TRANSMISSION.",
-  accessDenied: "ACCESS DENIED. CLEARANCE INSUFFICIENT.",
+  accessDenied: "ACCESS DENIED. YOU DO NOT HAVE PERMISSION.",
   recordConflict: "RECORD CONFLICT. ENTRY ALREADY ON FILE.",
   notFound: "COORDINATES DO NOT MATCH ANY KNOWN RECORD.",
-  paywall: "THIS INSTRUMENT REQUIRES PRO CLEARANCE.",
+  paywall: "THIS INSTRUMENT IS PART OF PRO.",
   offline: "CONNECTION LOST. OPERATING IN LOCAL MODE.",
 
   // Auth / session

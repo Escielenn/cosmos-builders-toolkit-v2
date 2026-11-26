@@ -20,6 +20,7 @@ import { gridStep, type Camera, type RogueDisplay } from "./rogueView";
 import type { TrailSet } from "@/lib/simulators/trail-buffer";
 import type { RogueBody } from "@/lib/simulators/rogue-systems";
 import { tokens } from "@/styles/tokens";
+import { cappedDpr, createFrameLoop, perFrameToDt } from "@/lib/sim/frame-loop";
 
 interface RogueCanvasProps {
   bodies: RogueBody[];
@@ -90,8 +91,15 @@ export default function RogueCanvas({
   // Refs so the draw loop reads current values without re-subscribing each frame.
   const bodiesRef = useRef(bodies);
   bodiesRef.current = bodies;
+  // Only when the parent hands down a NEW camera. Copying it on every
+  // render threw away the eased follow position each time the parent
+  // re-rendered, which with a running simulation was every frame.
   const camRef = useRef(camera);
-  camRef.current = camera;
+  const lastCameraProp = useRef(camera);
+  if (lastCameraProp.current !== camera) {
+    lastCameraProp.current = camera;
+    camRef.current = camera;
+  }
   const displayRef = useRef(display);
   displayRef.current = display;
   const ejectedRef = useRef(ejected);
@@ -110,17 +118,67 @@ export default function RogueCanvas({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let raf = 0;
     const point = { x: 0, y: 0 };
 
-    const frame = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
-      if (canvas.width !== w * dpr || canvas.height !== h * dpr) {
-        canvas.width = w * dpr;
-        canvas.height = h * dpr;
+    // Canvas size comes from a ResizeObserver, not from reading layout in
+    // the draw loop, and the backing store is only reallocated on a change.
+    let w = 0;
+    let h = 0;
+    let dpr = 1;
+    let starTile: HTMLCanvasElement | null = null;
+    const measure = () => {
+      const nextDpr = cappedDpr(2);
+      const nw = canvas.clientWidth;
+      const nh = canvas.clientHeight;
+      if (nw === w && nh === h && nextDpr === dpr) return;
+      w = nw;
+      h = nh;
+      dpr = nextDpr;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      starTile = null;
+    };
+    measure();
+    const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(measure) : null;
+    observer?.observe(canvas);
+
+    /**
+     * The starfield wraps every star modulo the canvas, so the whole field is
+     * one w x h tile shifted by the parallax offset. Painted once per size,
+     * then blitted: 500 arcs and 500 colour strings a frame became four
+     * drawImage calls.
+     */
+    const buildStarTile = () => {
+      const tile = document.createElement("canvas");
+      tile.width = Math.max(1, Math.round(w * dpr));
+      tile.height = Math.max(1, Math.round(h * dpr));
+      const t = tile.getContext("2d");
+      if (!t) return tile;
+      t.setTransform(dpr, 0, 0, dpr, 0, 0);
+      t.fillStyle = tokens.surface.simCanvas;
+      t.fillRect(0, 0, w, h);
+      for (const s of starField) {
+        const px = (((w / 2 + s.x) % w) + w) % w;
+        const py = (((h / 2 + s.y) % h) + h) % h;
+        t.fillStyle = `rgba(255,255,255,${s.brightness})`;
+        // Copies across the seam so a star on the tile edge is never cut.
+        for (let ox = -1; ox <= 1; ox++) {
+          const x = px + ox * w;
+          if (x < -2 || x > w + 2) continue;
+          for (let oy = -1; oy <= 1; oy++) {
+            const y = py + oy * h;
+            if (y < -2 || y > h + 2) continue;
+            t.beginPath();
+            t.arc(x, y, s.size, 0, Math.PI * 2);
+            t.fill();
+          }
+        }
       }
+      return tile;
+    };
+
+    const frame = (dt: number) => {
+      if (w === 0 || h === 0) return;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       const cam = camRef.current;
@@ -136,15 +194,14 @@ export default function RogueCanvas({
       ctx.fillStyle = tokens.surface.simCanvas;
       ctx.fillRect(0, 0, w, h);
 
-      // ── Starfield, parallax at 0.04x ──
-      for (const s of starField) {
-        const px = (((w / 2 + s.x - cam.x * 0.04 * cam.zoom) % w) + w) % w;
-        const py = (((h / 2 + s.y + cam.y * 0.04 * cam.zoom) % h) + h) % h;
-        ctx.fillStyle = `rgba(255,255,255,${s.brightness})`;
-        ctx.beginPath();
-        ctx.arc(px, py, s.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
+      // ── Starfield, parallax at 0.04x (cached tile) ──
+      if (!starTile) starTile = buildStarTile();
+      const ox = (((-cam.x * 0.04 * cam.zoom) % w) + w) % w;
+      const oy = (((cam.y * 0.04 * cam.zoom) % h) + h) % h;
+      ctx.drawImage(starTile, ox, oy, w, h);
+      if (ox > 0) ctx.drawImage(starTile, ox - w, oy, w, h);
+      if (oy > 0) ctx.drawImage(starTile, ox, oy - h, w, h);
+      if (ox > 0 && oy > 0) ctx.drawImage(starTile, ox - w, oy - h, w, h);
 
       // ── Grid, one line per AU while that is legible ──
       if (d.grid) {
@@ -295,20 +352,25 @@ export default function RogueCanvas({
       if (follow) {
         const target = list.find((b) => b.name === follow);
         if (target && (target.x !== cam.x || target.y !== cam.y)) {
-          // Eased, so a fast body does not jerk the whole view.
+          // Eased, so a fast body does not jerk the whole view. 0.12 was
+          // "per 60 Hz frame"; perFrameToDt keeps that feel at any rate.
+          const k = perFrameToDt(0.12, dt);
           camRef.current = {
             ...cam,
-            x: cam.x + (target.x - cam.x) * 0.12,
-            y: cam.y + (target.y - cam.y) * 0.12,
+            x: cam.x + (target.x - cam.x) * k,
+            y: cam.y + (target.y - cam.y) * k,
           };
         }
       }
-
-      raf = requestAnimationFrame(frame);
     };
 
-    raf = requestAnimationFrame(frame);
-    return () => cancelAnimationFrame(raf);
+    // One loop, parked while the tab is hidden or the canvas is off screen.
+    const loop = createFrameLoop({ target: canvas, render: ({ dt }) => frame(dt) });
+    loop.start();
+    return () => {
+      loop.stop();
+      observer?.disconnect();
+    };
   }, [starField, trails]);
 
   // ── Pan, zoom, select ───────────────────────────────────────────

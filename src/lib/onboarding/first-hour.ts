@@ -3,7 +3,7 @@
 //
 // The old pathway linked all four steps to Pro standalone tools, so a free
 // writer's first click hit the paywall. The rebuilt order is the product's
-// own: create a world (BEGIN SURVEY) → open a FREE instrument on an entity
+// own: create a world (New world) → open a FREE instrument on an entity
 // inside that world → write the first scene in the Studio. Pro instruments
 // follow as an optional "next", marked PRO.
 // ---------------------------------------------------------------------------

@@ -121,7 +121,7 @@ const ExoforgeSimulator = () => {
               the strip sits in this same floating chrome. */}
           {loaded && (
             <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex flex-col items-stretch gap-2">
-              <div className="flex items-center gap-2 border border-sf-line bg-sf-surface/90 px-3 py-2 backdrop-blur-sf-panel">
+              <div className="flex items-center gap-2 border border-sf-line bg-sf-surface px-3 py-2">
                 <Button
                   variant="outline"
                   size="sm"
@@ -175,7 +175,7 @@ const ExoforgeSimulator = () => {
                 )}
               </div>
               {simFlags.length > 0 && (
-                <div className="max-w-sm border border-sf-line bg-sf-surface/90 px-3 py-2 backdrop-blur-sf-panel">
+                <div className="max-w-sm border border-sf-line bg-sf-surface px-3 py-2">
                   <SimFlagStrip flags={simFlags} dismissedIds={dismissedIds} onDismiss={dismissFlag} />
                 </div>
               )}

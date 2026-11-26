@@ -9,6 +9,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import PublishToWorldDialog from '@/components/simulators/PublishToWorldDialog';
 import { useWorldLayoutContext } from '@/contexts/WorldLayoutContext';
 import type { SimulatorPayload } from '@/hooks/use-simulation-save';
+import { FRAME_MS, createFrameLoop, decayFor, perFrameToDt } from '@/lib/sim/frame-loop';
 import {
   Star,
   ScreenStar,
@@ -78,8 +79,16 @@ import {
 // Styles following SIMULATOR_AESTHETIC.md
 import styles from './StellarCartographer.module.css';
 import { tokens } from '@/styles/tokens';
+import { EMPIRE_COLOURS, GALAXY_MARK } from '@/lib/palettes/galaxy-map';
+import { GALAXY_MAP_SPECTRAL_COLOURS } from '@/lib/palettes/spectral';
 
 const MINIMAP_SIZE = 120;
+
+/** A star plus its screen position, reused across frames; `src` is the star itself. */
+type PooledStar = ScreenStar & { src: Star };
+
+/** Integer key for a spatial-grid cell (no string per star per frame). */
+const cellKey = (cx: number, cy: number) => (cx + 4096) * 8192 + (cy + 4096);
 
 const StellarCartographer: React.FC = () => {
   // Refs
@@ -93,7 +102,7 @@ const StellarCartographer: React.FC = () => {
   const dragButtonRef = useRef(0);
   const hasDraggedRef = useRef(false);
   const viewStartRef = useRef({ rotation: 0, tilt: 0 });
-  const spatialGridRef = useRef<Map<string, ScreenStar[]>>(new Map());
+  const spatialGridRef = useRef<Map<number, PooledStar[]>>(new Map());
   const inertiaRef = useRef({ vx: 0, vy: 0, active: false });
   const lastDragPosRef = useRef({ x: 0, y: 0, time: 0 });
   const bgCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -102,10 +111,50 @@ const StellarCartographer: React.FC = () => {
   // State
   const [galaxyName, setGalaxyName] = useState('Unnamed Galaxy');
   const [config, setConfig] = useState<GalaxyConfig>(DEFAULT_CONFIG);
-  const [view, setView] = useState<ViewConfig>(DEFAULT_VIEW);
+  const [view, setViewState] = useState<ViewConfig>(DEFAULT_VIEW);
   const [display, setDisplay] = useState<DisplayConfig>(DEFAULT_DISPLAY);
-  const [camera, setCamera] = useState<CameraState>(DEFAULT_CAMERA);
-  const [targetCamera, setTargetCamera] = useState<CameraState>(DEFAULT_CAMERA);
+  /**
+   * (1.7) Camera and view live in refs, not React state.
+   *
+   * The draw loop eases the camera every frame. As state, that was a
+   * setState per frame: the whole tool re-rendered at 60 Hz, `render` got a
+   * new identity each time, and the loop effect tore itself down and set up
+   * again every frame, including a canvas resize that reallocated the
+   * backing store. That was the jitter (46 ms of script per frame measured).
+   *
+   * Now the loop reads and writes these refs and nothing re-renders while
+   * the map moves. `view` state is only a mirror for the Rotation / Tilt /
+   * Auto Rotate controls: discrete changes (a slider, a key, a button)
+   * update it at once, continuous ones (drag, inertia, auto-rotate) write
+   * the control values straight to the DOM and the mirror catches up when
+   * the motion stops.
+   */
+  const viewRef = useRef<ViewConfig>(DEFAULT_VIEW);
+  const cameraRef = useRef<CameraState>(DEFAULT_CAMERA);
+  const targetCameraRef = useRef<CameraState>(DEFAULT_CAMERA);
+  /** Set whenever something the canvas shows has changed outside the loop. */
+  const needsDrawRef = useRef(true);
+  const starBatchesRef = useRef(new Map<string, number[][]>());
+  const starPoolRef = useRef<{ source: Star[] | null; list: PooledStar[] }>({ source: null, list: [] });
+  const rotationLabelRef = useRef<HTMLSpanElement>(null);
+  const rotationSliderRef = useRef<HTMLInputElement>(null);
+  const tiltLabelRef = useRef<HTMLSpanElement>(null);
+  const tiltSliderRef = useRef<HTMLInputElement>(null);
+  const zoomValueRef = useRef<HTMLDivElement>(null);
+
+  const setTargetCamera = useCallback((next: React.SetStateAction<CameraState>) => {
+    targetCameraRef.current = typeof next === 'function' ? next(targetCameraRef.current) : next;
+    needsDrawRef.current = true;
+  }, []);
+
+  /** `live` marks a continuous change (drag, inertia): no re-render per event. */
+  const setView = useCallback((next: React.SetStateAction<ViewConfig>, live = false) => {
+    const prev = viewRef.current;
+    const value = typeof next === 'function' ? next(prev) : next;
+    viewRef.current = value;
+    needsDrawRef.current = true;
+    if (!live || value.autoRotate !== prev.autoRotate) setViewState(value);
+  }, []);
   const [stars, setStars] = useState<Star[]>([]);
   const [backgroundStars, setBackgroundStars] = useState<BackgroundStar[]>([]);
   const [empires, setEmpires] = useState<Empire[]>(DEFAULT_EMPIRES);
@@ -204,8 +253,7 @@ const StellarCartographer: React.FC = () => {
 
     for (let dx = -1; dx <= 1; dx++) {
       for (let dy = -1; dy <= 1; dy++) {
-        const key = `${cellX + dx},${cellY + dy}`;
-        const cell = grid.get(key);
+        const cell = grid.get(cellKey(cellX + dx, cellY + dy));
         if (!cell) continue;
         for (const star of cell) {
           const ddx = screenX - star.screenX;
@@ -213,7 +261,7 @@ const StellarCartographer: React.FC = () => {
           const dist = Math.sqrt(ddx * ddx + ddy * ddy);
           if (dist < minDist) {
             minDist = dist;
-            found = star;
+            found = star.src;
           }
         }
       }
@@ -225,6 +273,7 @@ const StellarCartographer: React.FC = () => {
   // 3D PROJECTION
   // ═══════════════════════════════════════════════════════════════════════════
   const project3D = useCallback((x: number, y: number, z: number): ProjectedPoint => {
+    const view = viewRef.current;
     const rotRad = view.rotation * Math.PI / 180;
     const tiltRad = view.tilt * Math.PI / 180;
 
@@ -242,19 +291,20 @@ const StellarCartographer: React.FC = () => {
     const scale = PERSPECTIVE_DISTANCE / (PERSPECTIVE_DISTANCE + zOffset * DEPTH_SCALE_FACTOR);
 
     return { x: rx * scale, y: ty * scale, z: tz, scale: Math.max(0.1, scale) };
-  }, [view.rotation, view.tilt]);
+  }, []);
 
   const worldToScreen = useCallback((wx: number, wy: number, wz: number = 0): ProjectedPoint & { screenX: number; screenY: number } => {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0, z: 0, scale: 1, screenX: 0, screenY: 0 };
 
+    const camera = cameraRef.current;
     const projected = project3D(wx, wy, wz);
     return {
       ...projected,
       screenX: (projected.x - camera.x) * camera.zoom + canvas.width / 2,
       screenY: (projected.y - camera.y) * camera.zoom + canvas.height / 2
     };
-  }, [project3D, camera]);
+  }, [project3D]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // GALAXY GENERATION
@@ -575,6 +625,7 @@ const StellarCartographer: React.FC = () => {
 
     const w = canvas.width;
     const h = canvas.height;
+    const camera = cameraRef.current;
     const zoom = camera.zoom;
 
     // Deep space background
@@ -733,7 +784,7 @@ const StellarCartographer: React.FC = () => {
       ctx.stroke();
 
       // Event horizon (pure black)
-      ctx.fillStyle = '#000000';
+      ctx.fillStyle = GALAXY_MARK.eventHorizon;
       ctx.beginPath();
       ctx.arc(sx, sy, visualRadius, 0, Math.PI * 2);
       ctx.fill();
@@ -799,7 +850,7 @@ const StellarCartographer: React.FC = () => {
 
       // Current route drawing
       if (routeDrawing.active && routeDrawing.stars.length > 0) {
-        ctx.strokeStyle = '#FFA500';
+        ctx.strokeStyle = GALAXY_MARK.routeDraft;
         ctx.lineWidth = 2;
         ctx.setLineDash([4, 4]);
         ctx.beginPath();
@@ -905,7 +956,7 @@ const StellarCartographer: React.FC = () => {
 
           // Center core
           const coreGrad = ctx.createRadialGradient(s.screenX, s.screenY, 0, s.screenX, s.screenY, portalSize * 0.4);
-          coreGrad.addColorStop(0, hexToRgba('#FFFFFF', 0.9));
+          coreGrad.addColorStop(0, hexToRgba(GALAXY_MARK.core, 0.9));
           coreGrad.addColorStop(0.3, hexToRgba(wh.color, 0.7));
           coreGrad.addColorStop(1, hexToRgba(wh.color, 0));
           ctx.fillStyle = coreGrad;
@@ -922,9 +973,9 @@ const StellarCartographer: React.FC = () => {
         const pulse = 1 + Math.sin(time * 3) * 0.2;
 
         const outerGlow = ctx.createRadialGradient(s.screenX, s.screenY, portalSize * 0.5, s.screenX, s.screenY, portalSize * 3 * pulse);
-        outerGlow.addColorStop(0, hexToRgba('#9B59B6', 0.4));
-        outerGlow.addColorStop(0.5, hexToRgba('#9B59B6', 0.15));
-        outerGlow.addColorStop(1, hexToRgba('#9B59B6', 0));
+        outerGlow.addColorStop(0, hexToRgba(GALAXY_MARK.wormhole, 0.4));
+        outerGlow.addColorStop(0.5, hexToRgba(GALAXY_MARK.wormhole, 0.15));
+        outerGlow.addColorStop(1, hexToRgba(GALAXY_MARK.wormhole, 0));
         ctx.fillStyle = outerGlow;
         ctx.beginPath();
         ctx.arc(s.screenX, s.screenY, portalSize * 3 * pulse, 0, Math.PI * 2);
@@ -932,14 +983,14 @@ const StellarCartographer: React.FC = () => {
 
         for (let ring = 3; ring >= 1; ring--) {
           const ringRadius = portalSize * (ring / 3) * pulse;
-          ctx.strokeStyle = hexToRgba('#9B59B6', 0.3 + (3 - ring) * 0.2);
+          ctx.strokeStyle = hexToRgba(GALAXY_MARK.wormhole, 0.3 + (3 - ring) * 0.2);
           ctx.lineWidth = 1.5;
           ctx.beginPath();
           ctx.arc(s.screenX, s.screenY, ringRadius, time * 2, time * 2 + Math.PI * 1.5);
           ctx.stroke();
         }
 
-        ctx.fillStyle = '#9B59B6';
+        ctx.fillStyle = GALAXY_MARK.wormhole;
         ctx.beginPath();
         ctx.arc(s.screenX, s.screenY, 3, 0, Math.PI * 2);
         ctx.fill();
@@ -947,27 +998,70 @@ const StellarCartographer: React.FC = () => {
     }
 
     // Stars - sorted by depth
-    const sortedStars: ScreenStar[] = stars.map(star => {
-      const projected = worldToScreen(star.x, star.y, star.z);
-      return { ...star, screenX: projected.screenX, screenY: projected.screenY, screenZ: projected.z, scale: projected.scale };
-    }).sort((a, b) => a.screenZ - b.screenZ);
+    // (1.7) Projected in place into a pool built once per galaxy, with the
+    // view solved once per frame. This used to allocate three objects per
+    // star per frame (two from worldToScreen, one spread copy of the whole
+    // star), 24,000 objects a frame at the default 8,000 stars, and key the
+    // hover grid with a fresh string per star.
+    if (starPoolRef.current.source !== stars) {
+      starPoolRef.current = {
+        source: stars,
+        list: stars.map(star => ({ ...star, src: star, screenX: 0, screenY: 0, screenZ: 0, scale: 1 })),
+      };
+    }
+    const sortedStars = starPoolRef.current.list;
+    {
+      const v = viewRef.current;
+      const rotRad = v.rotation * Math.PI / 180;
+      const tiltRad = v.tilt * Math.PI / 180;
+      const cr = Math.cos(rotRad), sr = Math.sin(rotRad), ct = Math.cos(tiltRad), st = Math.sin(tiltRad);
+      const hw = w / 2, hh = h / 2;
+      for (let i = 0; i < sortedStars.length; i++) {
+        const star = sortedStars[i];
+        const rx = star.x * cr - star.y * sr;
+        const ry = star.x * sr + star.y * cr;
+        const ty = ry * ct - star.z * st;
+        const tz = ry * st + star.z * ct;
+        const persp = PERSPECTIVE_DISTANCE / (PERSPECTIVE_DISTANCE + (tz + Z_OFFSET) * DEPTH_SCALE_FACTOR);
+        star.screenX = (rx * persp - camera.x) * zoom + hw;
+        star.screenY = (ty * persp - camera.y) * zoom + hh;
+        star.screenZ = tz;
+        star.scale = Math.max(0.1, persp);
+      }
+      // In place; the order barely changes between frames, so this is close
+      // to a linear pass.
+      sortedStars.sort((a, b) => a.screenZ - b.screenZ);
+    }
 
     // Build spatial grid for O(1) hover/click detection
-    const grid = new Map<string, ScreenStar[]>();
+    const grid = spatialGridRef.current;
+    for (const cell of grid.values()) cell.length = 0;
     for (const star of sortedStars) {
       if (star.screenX < -30 || star.screenX > w + 30 || star.screenY < -30 || star.screenY > h + 30) continue;
-      const cellX = Math.floor(star.screenX / GRID_CELL_SIZE);
-      const cellY = Math.floor(star.screenY / GRID_CELL_SIZE);
-      const key = `${cellX},${cellY}`;
+      const key = cellKey(Math.floor(star.screenX / GRID_CELL_SIZE), Math.floor(star.screenY / GRID_CELL_SIZE));
       let cell = grid.get(key);
       if (!cell) { cell = []; grid.set(key, cell); }
       cell.push(star);
     }
-    spatialGridRef.current = grid;
+    if (grid.size > 4000) {
+      for (const [key, cell] of grid) if (cell.length === 0) grid.delete(key);
+    }
 
     // LOD levels: 0=minimal (dots only), 1=basic (body+core), 2=full (all glows)
     const starCount = sortedStars.length;
     const lod = zoom < 0.5 && starCount > 5000 ? 0 : zoom < 1.0 && starCount > 10000 ? 1 : 2;
+
+    const starBatches = starBatchesRef.current;
+    const batchArc = (color: string, alpha: number, x: number, y: number, r: number) => {
+      const q = Math.min(50, Math.round(alpha * 50));
+      if (q <= 0) return;
+      let byAlpha = starBatches.get(color);
+      if (!byAlpha) { byAlpha = []; starBatches.set(color, byAlpha); }
+      let pts = byAlpha[q];
+      if (!pts) { pts = []; byAlpha[q] = pts; }
+      pts.push(x, y, r);
+    };
+    const ringStars: (PooledStar | number)[] = [];
 
     for (const star of sortedStars) {
       if (star.screenX < -30 || star.screenX > w + 30 || star.screenY < -30 || star.screenY > h + 30) continue;
@@ -1010,23 +1104,48 @@ const StellarCartographer: React.FC = () => {
         ctx.fill();
       }
 
-      // Star body
-      ctx.fillStyle = hexToRgba(star.color, totalBrightness);
-      ctx.beginPath();
-      ctx.arc(star.screenX, star.screenY, size, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Bright core
+      // Star body and bright core, collected into colour/alpha batches and
+      // filled after the loop (1.7). One fillStyle and one fill per batch
+      // instead of a fresh rgba() string and a fill per star: a few dozen
+      // fills a frame instead of up to 16,000. Alpha is rounded to 1/50,
+      // well below what a 1-3 px dot can show.
+      batchArc(star.color, totalBrightness, star.screenX, star.screenY, size);
       if (star.luminosity > 0.6 && size > 1) {
-        ctx.fillStyle = hexToRgba('#FFFFFF', totalBrightness * 0.4 * star.luminosity);
-        ctx.beginPath();
-        ctx.arc(star.screenX, star.screenY, size * 0.4, 0, Math.PI * 2);
-        ctx.fill();
+        batchArc(GALAXY_MARK.core, totalBrightness * 0.4 * star.luminosity, star.screenX, star.screenY, size * 0.4);
       }
+
+      if ((star.hasHabitable && zoom > 1.2 && display.showHabitableIndicators)
+        || (selectedStar && star.id === selectedStar.id)
+        || (routeDrawing.stars.length > 0 && routeDrawing.stars.some(s => s.id === star.id))) {
+        ringStars.push(star, size, depthFade);
+      }
+    }
+
+    // Bodies, then cores, in the order the batches were first met.
+    for (const [color, byAlpha] of starBatches) {
+      for (let q = 1; q < byAlpha.length; q++) {
+        const pts = byAlpha[q];
+        if (!pts || pts.length === 0) continue;
+        ctx.fillStyle = hexToRgba(color, q / 50);
+        ctx.beginPath();
+        for (let k = 0; k < pts.length; k += 3) {
+          ctx.moveTo(pts[k] + pts[k + 2], pts[k + 1]);
+          ctx.arc(pts[k], pts[k + 1], pts[k + 2], 0, Math.PI * 2);
+        }
+        ctx.fill();
+        pts.length = 0;
+      }
+    }
+
+    // Indicator rings, on top of the bodies.
+    for (let k = 0; k < ringStars.length; k += 3) {
+      const star = ringStars[k] as PooledStar;
+      const size = ringStars[k + 1] as number;
+      const depthFade = ringStars[k + 2] as number;
 
       // Habitable indicator
       if (star.hasHabitable && zoom > 1.2 && display.showHabitableIndicators) {
-        ctx.strokeStyle = hexToRgba('#2ECC71', 0.5 * depthFade);
+        ctx.strokeStyle = hexToRgba(GALAXY_MARK.habitable, 0.5 * depthFade);
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.arc(star.screenX, star.screenY, size + 3, 0, Math.PI * 2);
@@ -1035,7 +1154,7 @@ const StellarCartographer: React.FC = () => {
 
       // Selection indicator
       if (selectedStar && star.id === selectedStar.id) {
-        ctx.strokeStyle = '#15C17B';
+        ctx.strokeStyle = GALAXY_MARK.selection;
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.arc(star.screenX, star.screenY, size + 5, 0, Math.PI * 2);
@@ -1044,7 +1163,7 @@ const StellarCartographer: React.FC = () => {
 
       // Route node indicator
       if (routeDrawing.stars.find(s => s.id === star.id)) {
-        ctx.strokeStyle = '#FFA500';
+        ctx.strokeStyle = GALAXY_MARK.routeDraft;
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.arc(star.screenX, star.screenY, size + 6, 0, Math.PI * 2);
@@ -1090,7 +1209,7 @@ const StellarCartographer: React.FC = () => {
       }
     }
   }, [
-    camera, display, empires, stars, backgroundStars, tradeRoutes, wormholes,
+    display, empires, stars, backgroundStars, tradeRoutes, wormholes,
     routeDrawing, wormholeDrawing, selectedStar, worldToScreen, blackHole
   ]);
 
@@ -1104,11 +1223,23 @@ const StellarCartographer: React.FC = () => {
     ctx.fillText(star.name, star.screenX + 1, star.screenY + star.size + 12 + 1);
 
     // Text
-    ctx.fillStyle = isSelected ? '#FFFFFF' : (star.empire ? star.empire.color : 'rgba(255,255,255,0.5)');
+    ctx.fillStyle = isSelected ? GALAXY_MARK.core : (star.empire ? star.empire.color : 'rgba(255,255,255,0.5)');
     ctx.fillText(star.name, star.screenX, star.screenY + star.size + 12);
   };
 
   const minimapScale = useMemo(() => MINIMAP_SIZE / (GALAXY_RADIUS * 2.2), []);
+
+  /**
+   * (1.7) The minimap's stars, territories and black hole only change when
+   * the galaxy does, so they are painted once to an offscreen canvas. Each
+   * frame is then one blit plus the viewport rectangle, instead of up to
+   * 800 fills and 800 colour strings.
+   */
+  const minimapBaseRef = useRef<HTMLCanvasElement | null>(null);
+  useEffect(() => {
+    minimapBaseRef.current = null;
+    needsDrawRef.current = true;
+  }, [empires, stars, minimapScale, blackHole]);
 
   const renderMinimap = useCallback(() => {
     const el = minimapRef.current;
@@ -1119,43 +1250,54 @@ const StellarCartographer: React.FC = () => {
     const cx = MINIMAP_SIZE / 2;
     const cy = MINIMAP_SIZE / 2;
 
-    mctx.fillStyle = 'rgba(5, 5, 8, 0.85)';
-    mctx.fillRect(0, 0, MINIMAP_SIZE, MINIMAP_SIZE);
+    if (!minimapBaseRef.current) {
+      const base = document.createElement('canvas');
+      base.width = MINIMAP_SIZE;
+      base.height = MINIMAP_SIZE;
+      const bctx = base.getContext('2d');
+      if (bctx) {
+        bctx.fillStyle = 'rgba(5, 5, 8, 0.85)';
+        bctx.fillRect(0, 0, MINIMAP_SIZE, MINIMAP_SIZE);
 
-    // Empire territories (subtle)
-    for (const empire of empires) {
-      mctx.fillStyle = hexToRgba(empire.color, 0.08);
-      mctx.beginPath();
-      mctx.arc(cx + empire.centerX * s, cy + empire.centerY * s, empire.radius * s, 0, Math.PI * 2);
-      mctx.fill();
-    }
+        // Empire territories (subtle)
+        for (const empire of empires) {
+          bctx.fillStyle = hexToRgba(empire.color, 0.08);
+          bctx.beginPath();
+          bctx.arc(cx + empire.centerX * s, cy + empire.centerY * s, empire.radius * s, 0, Math.PI * 2);
+          bctx.fill();
+        }
 
-    // SMBH dot
-    if (blackHole) {
-      const bhX = cx + blackHole.x * s;
-      const bhY = cy + blackHole.y * s;
-      const actCfg = SMBH_ACTIVITY_CONFIG[blackHole.activity];
-      mctx.fillStyle = hexToRgba(actCfg.color, 0.3);
-      mctx.beginPath();
-      mctx.arc(bhX, bhY, 4, 0, Math.PI * 2);
-      mctx.fill();
-      mctx.fillStyle = '#000000';
-      mctx.beginPath();
-      mctx.arc(bhX, bhY, 1.5, 0, Math.PI * 2);
-      mctx.fill();
-    }
+        // SMBH dot
+        if (blackHole) {
+          const bhX = cx + blackHole.x * s;
+          const bhY = cy + blackHole.y * s;
+          const actCfg = SMBH_ACTIVITY_CONFIG[blackHole.activity];
+          bctx.fillStyle = hexToRgba(actCfg.color, 0.3);
+          bctx.beginPath();
+          bctx.arc(bhX, bhY, 4, 0, Math.PI * 2);
+          bctx.fill();
+          bctx.fillStyle = GALAXY_MARK.eventHorizon;
+          bctx.beginPath();
+          bctx.arc(bhX, bhY, 1.5, 0, Math.PI * 2);
+          bctx.fill();
+        }
 
-    // Stars (sampled for performance)
-    const step = Math.max(1, Math.floor(stars.length / 800));
-    for (let i = 0; i < stars.length; i += step) {
-      const star = stars[i];
-      mctx.fillStyle = hexToRgba(star.color, 0.5);
-      mctx.fillRect(cx + star.x * s, cy + star.y * s, 1, 1);
+        // Stars (sampled for performance)
+        const step = Math.max(1, Math.floor(stars.length / 800));
+        for (let i = 0; i < stars.length; i += step) {
+          const star = stars[i];
+          bctx.fillStyle = hexToRgba(star.color, 0.5);
+          bctx.fillRect(cx + star.x * s, cy + star.y * s, 1, 1);
+        }
+      }
+      minimapBaseRef.current = base;
     }
+    mctx.drawImage(minimapBaseRef.current, 0, 0);
 
     // Viewport rectangle
     const mainCanvas = canvasRef.current;
     if (mainCanvas) {
+      const camera = cameraRef.current;
       const vpW = (mainCanvas.width / camera.zoom) * s;
       const vpH = (mainCanvas.height / camera.zoom) * s;
       const vpX = cx + camera.x * s - vpW / 2;
@@ -1169,74 +1311,165 @@ const StellarCartographer: React.FC = () => {
     mctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
     mctx.lineWidth = 1;
     mctx.strokeRect(0, 0, MINIMAP_SIZE, MINIMAP_SIZE);
-  }, [empires, stars, camera, minimapScale, blackHole]);
+  }, [empires, stars, minimapScale, blackHole]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // ANIMATION LOOP
   // ═══════════════════════════════════════════════════════════════════════════
+  // Anything on the map that moves by itself: the black hole's accretion
+  // arcs and wormhole portals pulse on the clock. With none of them (and the
+  // camera at rest) the canvas is a still image and is not redrawn at all.
+  const hasAmbientMotion = !!blackHole || wormholes.length > 0 || wormholeDrawing.active;
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    const container = canvas.parentElement;
 
+    // Resize only when the container's size really changed. Assigning
+    // canvas.width, even to the same value, clears and reallocates it.
     const resizeCanvas = () => {
-      const container = canvas.parentElement;
-      if (container) {
-        canvas.width = container.clientWidth;
-        canvas.height = container.clientHeight;
+      if (!container) return;
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      if (w === 0 || h === 0) return;
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+        needsDrawRef.current = true;
       }
     };
-
     resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    let resizeRaf = 0;
+    const scheduleResize = () => {
+      if (resizeRaf) return;
+      resizeRaf = requestAnimationFrame(() => {
+        resizeRaf = 0;
+        resizeCanvas();
+      });
+    };
+    const observer = typeof ResizeObserver !== 'undefined' && container ? new ResizeObserver(scheduleResize) : null;
+    observer?.observe(container!);
+    window.addEventListener('resize', scheduleResize);
 
-    const animate = () => {
-      // Smooth camera
-      setCamera(prev => ({
-        x: prev.x + (targetCamera.x - prev.x) * CAMERA_SMOOTHING,
-        y: prev.y + (targetCamera.y - prev.y) * CAMERA_SMOOTHING,
-        zoom: prev.zoom + (targetCamera.zoom - prev.zoom) * CAMERA_SMOOTHING
-      }));
-
-      // Auto-rotate
-      if (view.autoRotate) {
-        setView(prev => ({
-          ...prev,
-          rotation: prev.rotation + AUTO_ROTATE_SPEED > 360 ? prev.rotation + AUTO_ROTATE_SPEED - 720 : prev.rotation + AUTO_ROTATE_SPEED
-        }));
+    // What the controls last showed, so the DOM is only written on a change.
+    let shownRotation = '';
+    let shownTilt = '';
+    let shownZoom = '';
+    const syncReadouts = () => {
+      const v = viewRef.current;
+      const rot = String(Math.round(v.rotation));
+      if (rot !== shownRotation) {
+        shownRotation = rot;
+        if (rotationLabelRef.current) rotationLabelRef.current.textContent = `${rot}°`;
       }
-
-      // Orbit inertia, apply decaying velocity after drag release
-      if (inertiaRef.current.active) {
-        const { vx, vy } = inertiaRef.current;
-        const speed = Math.sqrt(vx * vx + vy * vy);
-        if (speed < 0.001) {
-          inertiaRef.current.active = false;
-        } else {
-          const sensitivity = 0.3;
-          const dt = 16; // ~60fps frame time
-          setView(prev => ({
-            ...prev,
-            rotation: prev.rotation + vx * dt * sensitivity,
-            tilt: Math.max(-85, Math.min(85, prev.tilt - vy * dt * sensitivity)),
-          }));
-          // Friction deceleration
-          inertiaRef.current.vx *= 0.95;
-          inertiaRef.current.vy *= 0.95;
-        }
+      if (rotationSliderRef.current && Number(rotationSliderRef.current.value) !== Math.round(v.rotation)) {
+        rotationSliderRef.current.value = String(v.rotation);
       }
-
-      render();
-      renderMinimap();
-      animationRef.current = requestAnimationFrame(animate);
+      const tilt = String(Math.round(v.tilt));
+      if (tilt !== shownTilt) {
+        shownTilt = tilt;
+        if (tiltLabelRef.current) tiltLabelRef.current.textContent = `${tilt}°`;
+      }
+      if (tiltSliderRef.current && Number(tiltSliderRef.current.value) !== Math.round(v.tilt)) {
+        tiltSliderRef.current.value = String(v.tilt);
+      }
+      const zoom = cameraRef.current.zoom.toFixed(2);
+      if (zoom !== shownZoom) {
+        shownZoom = zoom;
+        if (zoomValueRef.current) zoomValueRef.current.textContent = `${zoom}×`;
+      }
     };
 
-    animate();
+    let mirroredView = viewRef.current;
+    let lastViewSeen = viewRef.current;
+    let lastViewChange = 0;
+    needsDrawRef.current = true;
+
+    const loop = createFrameLoop({
+      target: canvas,
+      render: ({ dt, time }) => {
+        let moving = false;
+
+        // Smooth camera. CAMERA_SMOOTHING is "per 60 Hz frame"; perFrameToDt
+        // keeps that feel at any frame rate.
+        const cam = cameraRef.current;
+        const target = targetCameraRef.current;
+        if (cam !== target) {
+          const dx = target.x - cam.x;
+          const dy = target.y - cam.y;
+          const dz = target.zoom - cam.zoom;
+          const settled =
+            Math.abs(dx) * cam.zoom < 0.05 && Math.abs(dy) * cam.zoom < 0.05 && Math.abs(dz) < cam.zoom * 0.0005;
+          if (settled) {
+            cameraRef.current = target;
+          } else {
+            const k = perFrameToDt(CAMERA_SMOOTHING, dt);
+            cameraRef.current = { x: cam.x + dx * k, y: cam.y + dy * k, zoom: cam.zoom + dz * k };
+          }
+          moving = true;
+        }
+
+        // Auto-rotate (AUTO_ROTATE_SPEED is degrees per 60 Hz frame)
+        if (viewRef.current.autoRotate) {
+          const v = viewRef.current;
+          const rotation = v.rotation + AUTO_ROTATE_SPEED * (dt / FRAME_MS);
+          viewRef.current = { ...v, rotation: rotation > 360 ? rotation - 720 : rotation };
+          moving = true;
+        }
+
+        // Orbit inertia, apply decaying velocity after drag release
+        if (inertiaRef.current.active) {
+          const { vx, vy } = inertiaRef.current;
+          const speed = Math.sqrt(vx * vx + vy * vy);
+          if (speed < 0.001) {
+            inertiaRef.current.active = false;
+          } else {
+            const sensitivity = 0.3;
+            // The original stepped a fixed 16 ms per frame; 0.96 keeps that
+            // rate while following the real clock.
+            const step = dt * 0.96;
+            const v = viewRef.current;
+            viewRef.current = {
+              ...v,
+              rotation: v.rotation + vx * step * sensitivity,
+              tilt: Math.max(-85, Math.min(85, v.tilt - vy * step * sensitivity)),
+            };
+            // Friction deceleration (0.95 per 60 Hz frame)
+            const friction = decayFor(0.95, dt);
+            inertiaRef.current.vx *= friction;
+            inertiaRef.current.vy *= friction;
+          }
+          moving = true;
+        }
+
+        // Hand the settled view back to React (slider and button state)
+        // once it has been still for a moment, never mid-motion.
+        if (viewRef.current !== lastViewSeen) {
+          lastViewSeen = viewRef.current;
+          lastViewChange = time;
+        } else if (mirroredView !== viewRef.current && time - lastViewChange > 200 && !isDraggingRef.current) {
+          mirroredView = viewRef.current;
+          setViewState(viewRef.current);
+        }
+
+        if (!moving && !hasAmbientMotion && !needsDrawRef.current && !bgDirtyRef.current) return;
+        needsDrawRef.current = false;
+
+        render();
+        renderMinimap();
+        syncReadouts();
+      },
+    });
+    loop.start();
 
     return () => {
-      window.removeEventListener('resize', resizeCanvas);
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      loop.stop();
+      observer?.disconnect();
+      window.removeEventListener('resize', scheduleResize);
+      if (resizeRaf) cancelAnimationFrame(resizeRaf);
     };
-  }, [render, renderMinimap, targetCamera, view.autoRotate]);
+  }, [render, renderMinimap, hasAmbientMotion]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // INPUT HANDLERS
@@ -1253,10 +1486,10 @@ const StellarCartographer: React.FC = () => {
 
     if (e.button !== 0 || e.shiftKey) {
       // Right-click, middle-click, or shift+click = pan
-      camStartRef.current = { x: targetCamera.x, y: targetCamera.y };
+      camStartRef.current = { x: targetCameraRef.current.x, y: targetCameraRef.current.y };
     } else {
       // Left-click = orbit (rotate + tilt)
-      viewStartRef.current = { rotation: view.rotation, tilt: view.tilt };
+      viewStartRef.current = { rotation: viewRef.current.rotation, tilt: viewRef.current.tilt };
     }
   };
 
@@ -1284,8 +1517,8 @@ const StellarCartographer: React.FC = () => {
 
         if (dragButtonRef.current !== 0 || e.shiftKey) {
           // Pan
-          const panDx = dx / camera.zoom;
-          const panDy = dy / camera.zoom;
+          const panDx = dx / cameraRef.current.zoom;
+          const panDy = dy / cameraRef.current.zoom;
           setTargetCamera(prev => ({ ...prev, x: camStartRef.current.x - panDx, y: camStartRef.current.y - panDy }));
         } else {
           // Orbit (rotate + tilt)
@@ -1294,7 +1527,7 @@ const StellarCartographer: React.FC = () => {
             rotation: viewStartRef.current.rotation + dx * 0.3,
             tilt: Math.max(-85, Math.min(85, viewStartRef.current.tilt - dy * 0.3)),
             autoRotate: false
-          }));
+          }), true);
         }
       }
       return;
@@ -1357,11 +1590,12 @@ const StellarCartographer: React.FC = () => {
     if (clicked) {
       // Zoom into the star
       setSelectedStar(clicked);
-      setTargetCamera({ x: clicked.x, y: clicked.y, zoom: Math.max(camera.zoom, 4) });
+      setTargetCamera({ x: clicked.x, y: clicked.y, zoom: Math.max(cameraRef.current.zoom, 4) });
     } else {
       // Double-click on empty space: zoom in at that point
       const canvas = canvasRef.current;
       if (!canvas) return;
+      const camera = cameraRef.current;
       const worldX = (coords.x - canvas.width / 2) / camera.zoom + camera.x;
       const worldY = (coords.y - canvas.height / 2) / camera.zoom + camera.y;
       setTargetCamera(prev => ({ x: worldX, y: worldY, zoom: Math.min(MAX_ZOOM, prev.zoom * 2) }));
@@ -1459,7 +1693,7 @@ const StellarCartographer: React.FC = () => {
           rotation: prev.rotation + dx * 0.3,
           tilt: Math.max(-85, Math.min(85, prev.tilt - dy * 0.3)),
           autoRotate: false,
-        }));
+        }), true);
 
         lastTouchDist = newDist;
         lastTouches = [center];
@@ -1618,7 +1852,7 @@ const StellarCartographer: React.FC = () => {
     setSelectedStar(prev => prev ? { ...prev, name: newName.trim() } : null);
   };
 
-  const EMPIRE_COLORS = ['#FFD43B', '#FF6B6B', '#9B59B6', '#1ABC9C', '#F39C12', '#3498DB', '#E67E22', '#00CEC9'];
+  const EMPIRE_COLORS = EMPIRE_COLOURS;
   const NAMING_STYLES: NamingStyle[] = ['terran', 'harsh', 'flowing', 'poetic'];
 
   const addEmpire = () => {
@@ -1672,10 +1906,10 @@ const StellarCartographer: React.FC = () => {
 
   const focusStar = useCallback((star: Star) => {
     setSelectedStar(star);
-    setTargetCamera({ x: star.x, y: star.y, zoom: Math.max(camera.zoom, 3) });
+    setTargetCamera({ x: star.x, y: star.y, zoom: Math.max(cameraRef.current.zoom, 3) });
     setSearchOpen(false);
     setSearchQuery('');
-  }, [camera.zoom]);
+  }, [setTargetCamera]);
 
   // Badge style class based on status
   const badgeClass = routeDrawing.active ? styles.warning
@@ -1809,7 +2043,7 @@ const StellarCartographer: React.FC = () => {
         <div className={styles.controlRow}>
           <div className={styles.controlLabel}>
             <span>Rotation</span>
-            <span className={styles.valueDisplay}>{Math.round(view.rotation)}°</span>
+            <span ref={rotationLabelRef} className={styles.valueDisplay}>{`${Math.round(view.rotation)}°`}</span>
           </div>
           <input
             type="range"
@@ -1817,6 +2051,7 @@ const StellarCartographer: React.FC = () => {
             min={-360}
             max={360}
             step={1}
+            ref={rotationSliderRef}
             value={view.rotation}
             onChange={e => setView(prev => ({ ...prev, rotation: Number(e.target.value) }))}
           />
@@ -1824,7 +2059,7 @@ const StellarCartographer: React.FC = () => {
         <div className={styles.controlRow}>
           <div className={styles.controlLabel}>
             <span>Tilt (3D)</span>
-            <span className={styles.valueDisplay}>{Math.round(view.tilt)}°</span>
+            <span ref={tiltLabelRef} className={styles.valueDisplay}>{`${Math.round(view.tilt)}°`}</span>
           </div>
           <input
             type="range"
@@ -1832,6 +2067,7 @@ const StellarCartographer: React.FC = () => {
             min={-85}
             max={85}
             step={1}
+            ref={tiltSliderRef}
             value={view.tilt}
             onChange={e => setView(prev => ({ ...prev, tilt: Number(e.target.value) }))}
           />
@@ -2080,7 +2316,7 @@ const StellarCartographer: React.FC = () => {
               tradeRoutes,
               wormholes,
               blackHole,
-              camera,
+              camera: cameraRef.current,
               display,
               worldToScreen
             });
@@ -2099,7 +2335,7 @@ const StellarCartographer: React.FC = () => {
               className={`${styles.btn} ${styles.publish}`}
               onClick={() => setPublishDialogOpen(true)}
             >
-              &#9671; {selectedStar ? `Publish "${selectedStar.name}"` : 'Publish Galaxy'}
+              ◇ {selectedStar ? `Publish "${selectedStar.name}"` : 'Publish Galaxy'}
             </button>
             {selectedStar && (
               <div style={{ fontSize: 12, color: 'var(--t4)', marginTop: 4, letterSpacing: '0.5px' }}>
@@ -2181,28 +2417,28 @@ const StellarCartographer: React.FC = () => {
         </div>
         <div className={styles.dataRow}>
           <span className={styles.dataLabel}>Wormholes</span>
-          <span className={styles.dataValue} style={{ color: '#E056FD' }}>{wormholes.length}</span>
+          <span className={styles.dataValue} style={{ color: GALAXY_MARK.wormholeReadout }}>{wormholes.length}</span>
         </div>
 
         <div className={styles.sectionHeader} style={{ marginTop: 16 }}>Spectral Classes</div>
         <div className={styles.spectralLegend}>
-          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: '#9BB0FF' }} />O</div>
-          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: '#AABFFF' }} />B</div>
-          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: '#CAD7FF' }} />A</div>
-          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: '#F8F7FF' }} />F</div>
-          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: '#FFF4EA' }} />G</div>
-          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: '#FFD2A1' }} />K</div>
-          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: '#FFAA6F' }} />M</div>
+          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: GALAXY_MAP_SPECTRAL_COLOURS.O }} />O</div>
+          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: GALAXY_MAP_SPECTRAL_COLOURS.B }} />B</div>
+          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: GALAXY_MAP_SPECTRAL_COLOURS.A }} />A</div>
+          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: GALAXY_MAP_SPECTRAL_COLOURS.F }} />F</div>
+          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: GALAXY_MAP_SPECTRAL_COLOURS.G }} />G</div>
+          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: GALAXY_MAP_SPECTRAL_COLOURS.K }} />K</div>
+          <div className={styles.spectralItem}><span className={styles.spectralDot} style={{ background: GALAXY_MAP_SPECTRAL_COLOURS.M }} />M</div>
         </div>
 
         <div className={styles.sectionHeader} style={{ marginTop: 16 }}>Indicators</div>
         <div className={styles.spectralLegend}>
           <div className={styles.spectralItem}>
-            <span className={styles.spectralDot} style={{ background: 'transparent', border: '1.5px solid #2ECC71' }} />
+            <span className={styles.spectralDot} style={{ background: 'transparent', border: `1.5px solid ${GALAXY_MARK.habitable}` }} />
             Habitable
           </div>
           <div className={styles.spectralItem}>
-            <span className={styles.spectralDot} style={{ background: 'transparent', border: '1.5px solid #15C17B' }} />
+            <span className={styles.spectralDot} style={{ background: 'transparent', border: `1.5px solid ${GALAXY_MARK.selection}` }} />
             Selected
           </div>
         </div>
@@ -2210,7 +2446,7 @@ const StellarCartographer: React.FC = () => {
 
       {/* ═══════════════════ ZOOM PANEL ═══════════════════ */}
       <div className={styles.zoomPanel}>
-        <div className={styles.zoomValue}>{camera.zoom.toFixed(2)}×</div>
+        <div ref={zoomValueRef} className={styles.zoomValue}>{`${cameraRef.current.zoom.toFixed(2)}×`}</div>
         <div className={styles.zoomLabel}>Zoom</div>
         <div className={styles.controlsHint}>Drag: orbit · Shift+drag: pan · Scroll: zoom · F: search · R: auto-rotate · Home: reset</div>
       </div>
@@ -2223,7 +2459,7 @@ const StellarCartographer: React.FC = () => {
             className={`${styles.tooltip} ${styles.visible}`}
             style={{ left: pos.screenX + 15, top: pos.screenY - 10 }}
           >
-            <div className={styles.tooltipName} style={{ color: hoveredStar.empire?.color || '#FAFAFA' }}>
+            <div className={styles.tooltipName} style={{ color: hoveredStar.empire?.color || GALAXY_MARK.unclaimedLabel }}>
               {hoveredStar.name}
             </div>
             <div className={styles.tooltipClass}>Class {hoveredStar.type} · {STAR_TYPES[hoveredStar.type].temp}</div>

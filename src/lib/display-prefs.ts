@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // Display preferences: the shell's ambient budget (1.6 "Quiet Instrument").
 //
-// Two device-local settings, set from the header's Display menu:
+// Device-local settings, set from the header's Display menu:
 //
 //   telemetry  where the fixed bottom telemetry bar may render.
 //              "marketing" (default): signed-out marketing pages only, never
@@ -10,6 +10,8 @@
 //   ambient    "on" (default) or "off". Off sets data-ambient="off" on <html>,
 //              which zeroes --sf-ambient, so every decorative layer that
 //              multiplies it (grain, scanlines, starfield, bloom) goes dark.
+//   worldArt   "on" (default) or "off". On, a world's cover image shows,
+//              faded, behind its card (Home, Worlds, shared worlds).
 //
 // Stored in localStorage; a module-level subscriber set keeps every mounted
 // reader in step without a context provider.
@@ -19,22 +21,26 @@ import { useSyncExternalStore } from "react";
 
 export type TelemetryPref = "marketing" | "everywhere" | "off";
 export type AmbientPref = "on" | "off";
+export type WorldArtPref = "on" | "off";
 
 interface DisplayPrefs {
   telemetry: TelemetryPref;
   ambient: AmbientPref;
+  worldArt: WorldArtPref;
 }
 
 const KEYS: Record<keyof DisplayPrefs, string> = {
   telemetry: "sf-display-telemetry",
   ambient: "sf-display-ambient",
+  worldArt: "sf-display-world-art",
 };
 
-const DEFAULTS: DisplayPrefs = { telemetry: "marketing", ambient: "on" };
+const DEFAULTS: DisplayPrefs = { telemetry: "marketing", ambient: "on", worldArt: "on" };
 
 const VALID: { [K in keyof DisplayPrefs]: readonly DisplayPrefs[K][] } = {
   telemetry: ["marketing", "everywhere", "off"],
   ambient: ["on", "off"],
+  worldArt: ["on", "off"],
 };
 
 const listeners = new Set<() => void>();

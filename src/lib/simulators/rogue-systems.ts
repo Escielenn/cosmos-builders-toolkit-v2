@@ -13,6 +13,11 @@
 // Pure by design: no canvas, no DOM, no React.
 // ---------------------------------------------------------------------------
 
+import {
+  ROGUE_INTRUDER_COLOURS,
+  ROGUE_PLANET_COLOURS,
+  ROGUE_STAR_COLOURS,
+} from "@/lib/palettes/rogue";
 import { G, M_JUPITER, M_EARTH, AU_PER_YEAR_TO_KM_S, type Body } from "./nbody";
 
 // ---------------------------------------------------------------------------
@@ -21,15 +26,7 @@ import { G, M_JUPITER, M_EARTH, AU_PER_YEAR_TO_KM_S, type Body } from "./nbody";
 
 export type StarType = "O" | "B" | "A" | "F" | "G" | "K" | "M";
 
-export const STAR_COLORS: Record<StarType, string> = {
-  O: "#aaccff",
-  B: "#caddff",
-  A: "#f0f0ff",
-  F: "#fff8e0",
-  G: "#ffd43b",
-  K: "#ffaa44",
-  M: "#ff6633",
-};
+export const STAR_COLORS: Record<StarType, string> = ROGUE_STAR_COLOURS;
 
 /** Spectral class from mass, by the main-sequence boundaries the original used. */
 export function starTypeFromMass(m: number): StarType {
@@ -82,14 +79,14 @@ export const SYSTEMS: Record<string, SystemDef> = {
     starType: "G",
     binary: null,
     planets: [
-      { name: "Mercury", a: 0.387, mass: 1.66e-7, type: "rocky", color: "#a0a0a0", size: 0.3, sym: "☿" },
-      { name: "Venus", a: 0.723, mass: 2.45e-6, type: "rocky", color: "#e8cda0", size: 0.5, sym: "♀" },
-      { name: "Earth", a: 1.0, mass: M_EARTH, type: "rocky", color: "#4a9eff", size: 0.5, sym: "⊕" },
-      { name: "Mars", a: 1.524, mass: 3.23e-7, type: "rocky", color: "#c1440e", size: 0.35, sym: "♂" },
-      { name: "Jupiter", a: 5.203, mass: 9.55e-4, type: "gas", color: "#c88b3a", size: 1.4, sym: "♃" },
-      { name: "Saturn", a: 9.537, mass: 2.86e-4, type: "gas", color: "#e8d08a", size: 1.2, sym: "♄" },
-      { name: "Uranus", a: 19.19, mass: 4.37e-5, type: "ice", color: "#7ec8c8", size: 0.8, sym: "⛢" },
-      { name: "Neptune", a: 30.07, mass: 5.15e-5, type: "ice", color: "#4466ff", size: 0.8, sym: "♆" },
+      { name: "Mercury", a: 0.387, mass: 1.66e-7, type: "rocky", color: ROGUE_PLANET_COLOURS["Mercury"], size: 0.3, sym: "☿" },
+      { name: "Venus", a: 0.723, mass: 2.45e-6, type: "rocky", color: ROGUE_PLANET_COLOURS["Venus"], size: 0.5, sym: "♀" },
+      { name: "Earth", a: 1.0, mass: M_EARTH, type: "rocky", color: ROGUE_PLANET_COLOURS["Earth"], size: 0.5, sym: "⊕" },
+      { name: "Mars", a: 1.524, mass: 3.23e-7, type: "rocky", color: ROGUE_PLANET_COLOURS["Mars"], size: 0.35, sym: "♂" },
+      { name: "Jupiter", a: 5.203, mass: 9.55e-4, type: "gas", color: ROGUE_PLANET_COLOURS["Jupiter"], size: 1.4, sym: "♃" },
+      { name: "Saturn", a: 9.537, mass: 2.86e-4, type: "gas", color: ROGUE_PLANET_COLOURS["Saturn"], size: 1.2, sym: "♄" },
+      { name: "Uranus", a: 19.19, mass: 4.37e-5, type: "ice", color: ROGUE_PLANET_COLOURS["Uranus"], size: 0.8, sym: "⛢" },
+      { name: "Neptune", a: 30.07, mass: 5.15e-5, type: "ice", color: ROGUE_PLANET_COLOURS["Neptune"], size: 0.8, sym: "♆" },
     ],
     habZone: [0.95, 1.37],
     defaultZoom: 55,
@@ -101,13 +98,13 @@ export const SYSTEMS: Record<string, SystemDef> = {
     starType: "M",
     binary: null,
     planets: [
-      { name: "T-1b", a: 0.01154, mass: 1.374 * M_EARTH, type: "rocky", color: "#cc6644", size: 0.45, sym: "b" },
-      { name: "T-1c", a: 0.0158, mass: 1.308 * M_EARTH, type: "rocky", color: "#cc8855", size: 0.45, sym: "c" },
-      { name: "T-1d", a: 0.02227, mass: 0.388 * M_EARTH, type: "rocky", color: "#aa7744", size: 0.35, sym: "d" },
-      { name: "T-1e", a: 0.02925, mass: 0.692 * M_EARTH, type: "rocky", color: "#5588cc", size: 0.4, sym: "e" },
-      { name: "T-1f", a: 0.03849, mass: 1.039 * M_EARTH, type: "rocky", color: "#4a9eff", size: 0.45, sym: "f" },
-      { name: "T-1g", a: 0.04683, mass: 1.321 * M_EARTH, type: "rocky", color: "#6699bb", size: 0.48, sym: "g" },
-      { name: "T-1h", a: 0.06189, mass: 0.326 * M_EARTH, type: "rocky", color: "#8899aa", size: 0.3, sym: "h" },
+      { name: "T-1b", a: 0.01154, mass: 1.374 * M_EARTH, type: "rocky", color: ROGUE_PLANET_COLOURS["T-1b"], size: 0.45, sym: "b" },
+      { name: "T-1c", a: 0.0158, mass: 1.308 * M_EARTH, type: "rocky", color: ROGUE_PLANET_COLOURS["T-1c"], size: 0.45, sym: "c" },
+      { name: "T-1d", a: 0.02227, mass: 0.388 * M_EARTH, type: "rocky", color: ROGUE_PLANET_COLOURS["T-1d"], size: 0.35, sym: "d" },
+      { name: "T-1e", a: 0.02925, mass: 0.692 * M_EARTH, type: "rocky", color: ROGUE_PLANET_COLOURS["T-1e"], size: 0.4, sym: "e" },
+      { name: "T-1f", a: 0.03849, mass: 1.039 * M_EARTH, type: "rocky", color: ROGUE_PLANET_COLOURS["T-1f"], size: 0.45, sym: "f" },
+      { name: "T-1g", a: 0.04683, mass: 1.321 * M_EARTH, type: "rocky", color: ROGUE_PLANET_COLOURS["T-1g"], size: 0.48, sym: "g" },
+      { name: "T-1h", a: 0.06189, mass: 0.326 * M_EARTH, type: "rocky", color: ROGUE_PLANET_COLOURS["T-1h"], size: 0.3, sym: "h" },
     ],
     habZone: [0.029, 0.046],
     defaultZoom: 3500,
@@ -119,14 +116,14 @@ export const SYSTEMS: Record<string, SystemDef> = {
     starType: "G",
     binary: null,
     planets: [
-      { name: "K90b", a: 0.074, mass: 2.0 * M_EARTH, type: "rocky", color: "#aa8866", size: 0.35, sym: "b" },
-      { name: "K90c", a: 0.089, mass: 3.0 * M_EARTH, type: "rocky", color: "#bb9977", size: 0.4, sym: "c" },
-      { name: "K90i", a: 0.1234, mass: 2.5 * M_EARTH, type: "rocky", color: "#cc8855", size: 0.35, sym: "i" },
-      { name: "K90d", a: 0.32, mass: 8.0 * M_EARTH, type: "ice", color: "#7799bb", size: 0.55, sym: "d" },
-      { name: "K90e", a: 0.42, mass: 10.0 * M_EARTH, type: "ice", color: "#6688aa", size: 0.6, sym: "e" },
-      { name: "K90f", a: 0.48, mass: 12.0 * M_EARTH, type: "ice", color: "#88aacc", size: 0.65, sym: "f" },
-      { name: "K90g", a: 0.71, mass: 200 * M_EARTH, type: "gas", color: "#c88b3a", size: 1.3, sym: "g" },
-      { name: "K90h", a: 1.01, mass: 200 * M_EARTH, type: "gas", color: "#d4956a", size: 1.3, sym: "h" },
+      { name: "K90b", a: 0.074, mass: 2.0 * M_EARTH, type: "rocky", color: ROGUE_PLANET_COLOURS["K90b"], size: 0.35, sym: "b" },
+      { name: "K90c", a: 0.089, mass: 3.0 * M_EARTH, type: "rocky", color: ROGUE_PLANET_COLOURS["K90c"], size: 0.4, sym: "c" },
+      { name: "K90i", a: 0.1234, mass: 2.5 * M_EARTH, type: "rocky", color: ROGUE_PLANET_COLOURS["K90i"], size: 0.35, sym: "i" },
+      { name: "K90d", a: 0.32, mass: 8.0 * M_EARTH, type: "ice", color: ROGUE_PLANET_COLOURS["K90d"], size: 0.55, sym: "d" },
+      { name: "K90e", a: 0.42, mass: 10.0 * M_EARTH, type: "ice", color: ROGUE_PLANET_COLOURS["K90e"], size: 0.6, sym: "e" },
+      { name: "K90f", a: 0.48, mass: 12.0 * M_EARTH, type: "ice", color: ROGUE_PLANET_COLOURS["K90f"], size: 0.65, sym: "f" },
+      { name: "K90g", a: 0.71, mass: 200 * M_EARTH, type: "gas", color: ROGUE_PLANET_COLOURS["K90g"], size: 1.3, sym: "g" },
+      { name: "K90h", a: 1.01, mass: 200 * M_EARTH, type: "gas", color: ROGUE_PLANET_COLOURS["K90h"], size: 1.3, sym: "h" },
     ],
     habZone: [1.0, 1.5],
     defaultZoom: 180,
@@ -138,9 +135,9 @@ export const SYSTEMS: Record<string, SystemDef> = {
     starType: "M",
     binary: null,
     planets: [
-      { name: "Prox d", a: 0.02885, mass: 0.26 * M_EARTH, type: "rocky", color: "#aa8877", size: 0.25, sym: "d" },
-      { name: "Prox b", a: 0.0485, mass: 1.07 * M_EARTH, type: "rocky", color: "#5588cc", size: 0.45, sym: "b" },
-      { name: "Prox c", a: 1.489, mass: 7.0 * M_EARTH, type: "ice", color: "#7799bb", size: 0.65, sym: "c" },
+      { name: "Prox d", a: 0.02885, mass: 0.26 * M_EARTH, type: "rocky", color: ROGUE_PLANET_COLOURS["Prox d"], size: 0.25, sym: "d" },
+      { name: "Prox b", a: 0.0485, mass: 1.07 * M_EARTH, type: "rocky", color: ROGUE_PLANET_COLOURS["Prox b"], size: 0.45, sym: "b" },
+      { name: "Prox c", a: 1.489, mass: 7.0 * M_EARTH, type: "ice", color: ROGUE_PLANET_COLOURS["Prox c"], size: 0.65, sym: "c" },
     ],
     habZone: [0.038, 0.082],
     defaultZoom: 2500,
@@ -152,8 +149,8 @@ export const SYSTEMS: Record<string, SystemDef> = {
     starType: "G",
     binary: { mass: 0.907, type: "K", separation: 23 },
     planets: [
-      { name: "α Cen Ab*", a: 1.1, mass: 1.5 * M_EARTH, type: "rocky", color: "#5588cc", size: 0.45, sym: "b" },
-      { name: "α Cen Ac*", a: 2.0, mass: 5 * M_EARTH, type: "rocky", color: "#88aacc", size: 0.5, sym: "c" },
+      { name: "α Cen Ab*", a: 1.1, mass: 1.5 * M_EARTH, type: "rocky", color: ROGUE_PLANET_COLOURS["α Cen Ab*"], size: 0.45, sym: "b" },
+      { name: "α Cen Ac*", a: 2.0, mass: 5 * M_EARTH, type: "rocky", color: ROGUE_PLANET_COLOURS["α Cen Ac*"], size: 0.5, sym: "c" },
     ],
     habZone: [1.0, 1.6],
     defaultZoom: 10,
@@ -179,9 +176,9 @@ export interface IntruderType {
 }
 
 export const INTRUDER_TYPES: Record<IntruderKind, IntruderType> = {
-  bh: { name: "Black Hole", unit: "M☉", min: 3, max: 100, color: "#e74c3c", massScale: 1 },
-  bd: { name: "Brown Dwarf", unit: "Mⱼ", min: 13, max: 80, color: "#c8553d", massScale: M_JUPITER },
-  rp: { name: "Rogue Planet", unit: "Mⱼ", min: 0.5, max: 13, color: "#8b6914", massScale: M_JUPITER },
+  bh: { name: "Black Hole", unit: "M☉", min: 3, max: 100, color: ROGUE_INTRUDER_COLOURS.bh, massScale: 1 },
+  bd: { name: "Brown Dwarf", unit: "Mⱼ", min: 13, max: 80, color: ROGUE_INTRUDER_COLOURS.bd, massScale: M_JUPITER },
+  rp: { name: "Rogue Planet", unit: "Mⱼ", min: 0.5, max: 13, color: ROGUE_INTRUDER_COLOURS.rp, massScale: M_JUPITER },
 };
 
 export interface IntruderConfig {

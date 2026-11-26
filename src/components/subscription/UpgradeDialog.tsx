@@ -61,12 +61,12 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Zap className="w-5 h-5 text-sf-amber-text" />
-            Upgrade clearance
+            Upgrade to Pro
           </DialogTitle>
           <DialogDescription>
             {toolName
-              ? `"${toolName}" requires Pro clearance. Upgrade to access the full instrument manifest.`
-              : "Upgrade to Pro clearance for full instrument access."
+              ? `${toolName} is a Pro tool. Pro opens it and every other instrument.`
+              : "Pro opens every instrument."
             }
           </DialogDescription>
         </DialogHeader>
@@ -91,7 +91,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
                 )}
               </Button>
             </div>
-            <p className="text-xs text-t3">Billed monthly, cancel anytime</p>
+            <p className="text-xs text-t3">Billed monthly. Cancel any time.</p>
           </div>
 
           {/* Yearly Plan */}
@@ -123,7 +123,7 @@ const UpgradeDialog = ({ open, onOpenChange, toolName }: UpgradeDialogProps) => 
         </div>
 
         <div className="space-y-2 text-sm">
-          <p className="font-medium">Pro clearance includes:</p>
+          <p className="font-medium">Pro includes</p>
           <ul className="space-y-1">
             {PRO_PLAN_ITEMS.map((feature) => (
               <li key={feature} className="flex items-center gap-2 text-t3">

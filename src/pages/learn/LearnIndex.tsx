@@ -14,6 +14,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { GuideNav } from "@/components/layout/GuideNav";
 import { getToolIcon } from "@/components/icons/tool-icons";
 import { CoverArt } from "@/components/learn/CoverArt";
+import { ArticlePhoto, PhotoCredit, PhotoCredits } from "@/components/learn/ArticlePhoto";
 import { CATEGORY_LABELS, formatArticleDate } from "@/components/learn/article-meta";
 import { PRICING } from "@/lib/tools-config";
 import type { ArticleListItem, CourseListItem } from "@/lib/sanity/types";
@@ -60,25 +61,27 @@ function ArticleMeta({ article }: { article: ArticleListItem }) {
 }
 
 function FeaturedArticle({ article }: { article: ArticleListItem }) {
+  // The card is one link (stretched over it from the title); the photo credit
+  // sits above that layer so its own links still work.
   return (
-    <Link
-      to={`/learn/${article.slug}`}
-      className="group grid overflow-hidden border border-sf-line bg-sf-surface sf-card-hover md:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]"
-    >
+    <article className="group relative grid overflow-hidden border border-sf-line bg-sf-surface sf-card-hover md:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
       <div className="aspect-video w-full overflow-hidden md:aspect-auto md:min-h-[300px]">
-        <CoverArt seed={article.slug} category={article.category} />
+        <ArticlePhoto slug={article.slug} category={article.category} variant="featured" eager />
       </div>
       <div className="flex flex-col justify-center p-6 md:p-8">
         <ArticleMeta article={article} />
         <h3 className="mb-3 font-heading text-sf-h2 font-normal text-t1 transition-colors duration-base group-hover:text-sf-primary-text">
-          {article.title}
+          <Link to={`/learn/${article.slug}`} className="after:absolute after:inset-0">
+            {article.title}
+          </Link>
         </h3>
-        <p className="mb-6 text-sf-body text-t2">{article.description}</p>
+        <p className="mb-4 text-sf-body text-t2">{article.description}</p>
         <span className="inline-flex items-center gap-2 text-sm font-medium text-sf-primary-text">
           Read the article <ArrowRight className="h-4 w-4" aria-hidden />
         </span>
+        <PhotoCredit slug={article.slug} category={article.category} className="relative z-[1] mt-4" />
       </div>
-    </Link>
+    </article>
   );
 }
 
@@ -86,7 +89,7 @@ function ArticleCard({ article }: { article: ArticleListItem }) {
   return (
     <Link to={`/learn/${article.slug}`} className="group flex h-full flex-col border border-sf-line bg-sf-surface sf-card-hover">
       <div className="aspect-video w-full overflow-hidden border-b border-sf-line-hairline">
-        <CoverArt seed={article.slug} category={article.category} />
+        <ArticlePhoto slug={article.slug} category={article.category} variant="card" />
       </div>
       <div className="flex-1 p-5">
         <ArticleMeta article={article} />
@@ -230,6 +233,7 @@ const LearnIndex = () => {
                       </li>
                     ))}
                   </ul>
+                  <PhotoCredits articles={searchResults} className="mt-3" />
                 </>
               )}
               {!isSearching && searchResults && searchResults.length === 0 && (
@@ -265,6 +269,7 @@ const LearnIndex = () => {
                   </li>
                 ))}
               </ul>
+              <PhotoCredits articles={otherArticles} className="mt-3" />
             </section>
           )}
 

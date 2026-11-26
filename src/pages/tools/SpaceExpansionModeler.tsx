@@ -730,7 +730,7 @@ const SpaceExpansionModeler = () => {
                   return (
                     <GlassPanel key={forceDef.id} className="p-4">
                       <div className="flex items-center gap-3 mb-3">
-                        <div className="w-3 h-3 rounded-none" style={{ backgroundColor: forceDef.hex }} />
+                        <div className="w-3 h-3 rounded-none" style={{ backgroundColor: forceDef.swatch }} />
                         <h4 className={`font-heading font-medium text-sm ${forceDef.tailwindColor}`}>
                           {forceDef.name}
                         </h4>
@@ -1012,7 +1012,7 @@ const SpaceExpansionModeler = () => {
                             <Badge
                               variant="outline"
                               className="ml-auto text-[12px]"
-                              style={{ borderColor: interDef.hex, color: interDef.hex }}
+                              style={{ borderColor: interDef.swatch, color: interDef.text }}
                             >
                               {interDef.label}
                             </Badge>
@@ -1038,7 +1038,7 @@ const SpaceExpansionModeler = () => {
                               {INTERACTION_TYPES.map((t) => (
                                 <SelectItem key={t.value} value={t.value}>
                                   <span className="flex items-center gap-2">
-                                    <span className="w-2 h-2 rounded-none" style={{ backgroundColor: t.hex }} />
+                                    <span className="w-2 h-2 rounded-none" style={{ backgroundColor: t.swatch }} />
                                     {t.label}
                                   </span>
                                 </SelectItem>
@@ -1096,7 +1096,7 @@ const SpaceExpansionModeler = () => {
                         {FORCE_CATEGORIES.map((f) => (
                           <SelectItem key={f.id} value={f.id}>
                             <span className="flex items-center gap-2">
-                              <span className="w-2 h-2 rounded-none" style={{ backgroundColor: f.hex }} />
+                              <span className="w-2 h-2 rounded-none" style={{ backgroundColor: f.swatch }} />
                               {f.name}
                             </span>
                           </SelectItem>

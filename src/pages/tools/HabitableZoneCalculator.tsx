@@ -1,3 +1,4 @@
+import { hueTextVar, hueTint, hueVar, type HueName } from "@/styles/hue";
 import { useState, useMemo, lazy, Suspense } from "react";
 import { logToSlider, sliderToLog } from "@/lib/sliders";
 
@@ -52,7 +53,8 @@ import {
   STAR_PRESETS,
   SPECTRAL_COLORS,
   SECTION_HELPERS,
-  ZONE_COLORS,
+  ZONE_HUES,
+  DEFAULT_ZONE_HUE,
   getSpectralDefaults,
 } from "@/lib/habitable-zone/data";
 import {
@@ -90,12 +92,15 @@ const SECTIONS: Section[] = [
 
 // ─── Zone Color Helper ──────────────────────────────────────────────
 
-const ZONE_BADGE_STYLES: Record<string, string> = {
-  "#E74C3C": "bg-sf-crimson/[0.06] text-sf-crimson-text border-sf-crimson",
-  "#FFA500": "bg-sf-amber/[0.06] text-sf-amber-text border-sf-amber",
-  "#2ECC71": "bg-sf-emerald/[0.06] text-sf-emerald-text border-sf-emerald",
-  "#4D9FFF": "bg-sf-azure/[0.06] text-sf-azure-text border-sf-azure",
-  "#ADD8E6": "bg-sf-azure/[0.06] text-sf-azure-text border-sf-azure",
+const ZONE_BADGE_STYLES: Record<HueName, string> = {
+  crimson: "bg-sf-crimson/[0.06] text-sf-crimson-text border-sf-crimson",
+  amber: "bg-sf-amber/[0.06] text-sf-amber-text border-sf-amber",
+  emerald: "bg-sf-emerald/[0.06] text-sf-emerald-text border-sf-emerald",
+  azure: "bg-sf-azure/[0.06] text-sf-azure-text border-sf-azure",
+  teal: "bg-sf-teal/[0.06] text-sf-teal-text border-sf-teal",
+  stellar: "bg-sf-stellar/[0.06] text-sf-stellar-text border-sf-stellar",
+  violet: "bg-sf-violet/[0.06] text-sf-violet-text border-sf-violet",
+  magenta: "bg-sf-magenta/[0.06] text-sf-magenta-text border-sf-magenta",
 };
 
 const SPECTRAL_LABELS = ["O", "B", "A", "F", "G", "K", "M"];
@@ -268,8 +273,10 @@ const HabitableZoneCalculator = () => {
   };
 
   const worldNameForExport = worldId ? worldName : undefined;
-  const zoneColor = result.valid ? ZONE_COLORS[result.planetZone] : "#2ECC71";
-  const zoneBadgeStyle = ZONE_BADGE_STYLES[zoneColor] || "bg-sf-emerald/[0.06] text-sf-emerald-text border-sf-emerald";
+  const zoneHue = result.valid ? ZONE_HUES[result.planetZone] : DEFAULT_ZONE_HUE;
+  const zoneColor = hueVar(zoneHue);
+  const zoneTextColor = hueTextVar(zoneHue);
+  const zoneBadgeStyle = ZONE_BADGE_STYLES[zoneHue];
 
   // Get known planets for the current preset + user-added planets
   const currentPreset = STAR_PRESETS.find((p) => p.id === formState.star.presetId);
@@ -600,11 +607,11 @@ const HabitableZoneCalculator = () => {
 
                 {/* Live temperature readout, connected to distance slider */}
                 {result.valid && (
-                  <div className="mt-4 rounded-none border p-3" style={{ borderColor: hueEdge(zoneColor), backgroundColor: `${zoneColor}08` }}>
+                  <div className="mt-4 rounded-none border p-3" style={{ borderColor: hueEdge(zoneColor), backgroundColor: hueTint(zoneHue, 0.03) }}>
                     <div className="flex items-center justify-between gap-4 flex-wrap">
                       <div className="space-y-0.5">
                         <div className="text-[12px] font-mono uppercase tracking-wider text-t4">Equilibrium</div>
-                        <div className="text-lg font-mono font-light" style={{ color: zoneColor }}>
+                        <div className="text-lg font-mono font-light" style={{ color: zoneTextColor }}>
                           {result.equilibriumTempFormatted}
                         </div>
                       </div>
@@ -779,7 +786,7 @@ const HabitableZoneCalculator = () => {
                         <div className="text-[12px] font-mono uppercase tracking-wider text-t4 mb-1">
                           Equilibrium Temperature
                         </div>
-                        <div className="text-3xl font-mono font-light" style={{ color: zoneColor }}>
+                        <div className="text-3xl font-mono font-light" style={{ color: zoneTextColor }}>
                           {Math.round(result.equilibriumTemp)} K
                         </div>
                         <div className="text-sm text-t3 mt-1">

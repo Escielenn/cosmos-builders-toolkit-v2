@@ -129,8 +129,7 @@ export const useWorlds = (includeArchived: boolean = false) => {
       queryClient.invalidateQueries({ queryKey: ["worlds"] });
       queryClient.invalidateQueries({ queryKey: ["worldTags", user?.id] });
       toast({
-        title: "NEW WORLD INITIALIZED.",
-        description: "Your new world is ready for building.",
+        title: "WORLD CREATED.",
       });
     },
     onError: (error) => {

@@ -88,19 +88,17 @@ function SignedInHome() {
     dismissWelcome(user?.id);
     setWelcomeDismissed(true);
   };
-  // BEGIN SURVEY opens through CreateWorldButton's ?create=true listener.
-  const openBeginSurvey = () => setSearchParams({ create: "true" });
+  // "New world" opens through CreateWorldButton's ?create=true listener.
+  const openCreateWorld = () => setSearchParams({ create: "true" });
 
   return (
     <>
       <PageHeader
         size="page"
-        eyebrow="Overview"
         title="Home"
-        lede="Pick up the scene you left, see what changed across your worlds, and take today's prompt."
         actions={
           <>
-            {/* The one CreateWorldButton on this page: it owns BEGIN SURVEY
+            {/* The one CreateWorldButton on this page: it owns "New world"
                 and the ?create=true deep link. */}
             <CreateWorldButton variant="button" />
             {/* sm+: two ghost links. Phones: one overflow (1.6 #19), so the
@@ -139,7 +137,7 @@ function SignedInHome() {
         <ContinueWriting
           targets={targets}
           isLoading={isLoading || (worldIds.length > 0 && recentLoading)}
-          onBeginSurvey={openBeginSurvey}
+          onCreateWorld={openCreateWorld}
         />
       </section>
 
@@ -165,7 +163,7 @@ function SignedInHome() {
         open={showSignupWelcome}
         onOpenChange={closeSignupWelcome}
         variant="signup"
-        onPrimaryAction={openBeginSurvey}
+        onPrimaryAction={openCreateWorld}
       />
     </>
   );
@@ -209,7 +207,7 @@ const Index = () => {
           <PageContainer variant="standalone" className="pt-8">
             <PageBursts bursts={ALL_DASHBOARD_BURSTS} />
             <SignedInHome />
-            <SFDivider label=",  ··, COMMS: LEARN, ·· , " className="hidden md:block" />
+            <SFDivider label="LEARN" className="hidden md:block" />
             <RecentArticles />
           </PageContainer>
         </main>

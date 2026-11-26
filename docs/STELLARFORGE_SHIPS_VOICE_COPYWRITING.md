@@ -5,6 +5,12 @@
 
 ---
 
+> **Superseded in part (2026-11-26, Clarity first).** Ship's Voice now covers
+> status confirmations, errors and readouts only. Buttons, menu items, titles,
+> labels and help text use plain sentence-case words a writer would use, and the
+> ship never names an action ("New world", not "BEGIN SURVEY"). See CLAUDE.md,
+> Ship's Voice. Where this guide disagrees, CLAUDE.md wins.
+
 ## THE VOICE
 
 StellarForge is a ship. Not metaphorically — the UI is the ship's operating system. The user is aboard. Every piece of text the system generates comes from this perspective.

@@ -280,10 +280,12 @@ function DocBody({
   const conflict = autosave.conflicts.get(doc.id);
   const locked = readOnly || autosave.denied;
   return (
-    <div className="mx-auto px-6 py-6" style={{ maxWidth: "var(--sf-writing-measure, 68ch)", ...editorStyle }}>
+    // A second document sits on the same paper as the page (room.css).
+    <div className="sf-room-paper min-h-full">
+    <div className="mx-auto px-6 py-6" style={{ maxWidth: "calc(var(--sf-writing-measure, 68ch) + 48px)", ...editorStyle }}>
       <div className="mb-4 flex items-baseline gap-3">
-        <span className="min-w-0 flex-1 truncate font-serif text-[22px] italic text-t1">{doc.title || "Untitled"}</span>
-        <span className="shrink-0 font-mono text-[12px] text-t4">
+        <span className="sf-on-paper-strong min-w-0 flex-1 truncate font-serif text-[24px] text-t1">{doc.title || "Untitled"}</span>
+        <span className="sf-on-paper-faint shrink-0 font-mono text-[12px] text-t4">
           {initial.current === null ? "LOADING" : autosave.saving ? "SAVING…" : autosave.savedAt ? "SAVED" : ""}
         </span>
       </div>
@@ -298,7 +300,7 @@ function DocBody({
         />
       )}
       {isError && initial.current === null && (
-        <p className="font-mono text-[12px] uppercase text-sf-crimson-text" role="alert">
+        <p className="sf-on-paper-stop font-mono text-[12px] uppercase text-sf-crimson-text" role="alert">
           {"// DOCUMENT COULD NOT BE LOADED. NOTHING WAS CHANGED."}
         </p>
       )}
@@ -316,6 +318,7 @@ function DocBody({
           minHeight="40vh"
         />
       )}
+    </div>
     </div>
   );
 }

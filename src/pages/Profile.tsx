@@ -56,7 +56,7 @@ const Profile = () => {
   };
 
   useMetaTags({
-    title: tab === "collection" ? "Collection" : tab === "archive" ? "Archive" : "Personnel File",
+    title: tab === "collection" ? "Collection" : tab === "archive" ? "Archive" : "Profile",
   });
 
   // Dirty = any editable field differs from the profile as loaded.
@@ -134,7 +134,7 @@ const Profile = () => {
     } else {
       toast({
         title: "CONFIGURATION SAVED.",
-        description: "Personnel file updated.",
+        description: "Profile updated.",
       });
     }
   };
@@ -162,9 +162,7 @@ const Profile = () => {
         {/* Top-level page: no back link (the logo goes home). */}
         <PageHeader
           size="page"
-          eyebrow="Account"
-          title="Personnel file"
-          lede="Your profile, appearance, writing surface, exports and subscription."
+          title="Profile"
         />
 
         {/* Narrower reading column, left-aligned so the edge stays shared. */}
@@ -404,13 +402,13 @@ const Profile = () => {
                 ) : (
                   <CreditCard className="w-4 h-4" />
                 )}
-                Manage Billing
+                Manage billing
               </Button>
             </div>
           ) : (
             <div className="space-y-4">
               <p className="text-t2">
-                Standard clearance. Upgrade for full tool access.
+                You're on the free plan. Pro opens every tool.
               </p>
               <Button
                 className="w-full gap-2"

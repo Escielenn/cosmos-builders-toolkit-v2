@@ -16,12 +16,12 @@ test.describe("signed out", () => {
 
     await start.click();
     await expect(page).toHaveURL(/\/auth/);
-    await expect(page.getByRole("heading", { name: "CREATE ACCOUNT" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Create account" })).toBeVisible();
     await expect(page.getByLabel("Email").first()).toBeVisible();
 
     // The sign-in form sits behind the "Already have an account?" toggle.
     await page.getByRole("button", { name: /already have an account/i }).click();
-    await expect(page.getByRole("button", { name: "AUTHENTICATE", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Sign in", exact: true })).toBeVisible();
   });
 });
 
@@ -44,7 +44,7 @@ test.describe("signed in", () => {
     await dialog.getByLabel("World name").fill("Tau Ceti Drift");
 
     const insert = page.waitForResponse((r) => r.request().method() === "POST" && new URL(r.url()).pathname === "/rest/v1/worlds");
-    await dialog.getByRole("button", { name: /initialize empty/i }).click();
+    await dialog.getByRole("button", { name: /skip setup and create/i }).click();
     const request = (await insert).request();
 
     expect(request.postDataJSON()).toMatchObject({ name: "Tau Ceti Drift" });

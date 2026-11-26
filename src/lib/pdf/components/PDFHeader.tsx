@@ -1,3 +1,4 @@
+import { printInk } from "../palette";
 import { View, Text, Svg, Path } from "@react-pdf/renderer";
 import { styles } from "../styles";
 import { printPalette } from "../palette";
@@ -16,11 +17,11 @@ const CubeLogoSvg = ({ size = 24 }: { size?: number }) => (
   <Svg viewBox="0 0 64 64" style={{ width: size, height: size }}>
     {/* 3D Cube - dark faces */}
     {/* Top face */}
-    <Path d="M 32 8 L 56 20 L 32 32 L 8 20 Z" fill="#1a1a1a" />
+    <Path d="M 32 8 L 56 20 L 32 32 L 8 20 Z" fill={printInk.cube.top} />
     {/* Left face */}
-    <Path d="M 8 20 L 32 32 L 32 56 L 8 44 Z" fill="#0d0d0d" />
+    <Path d="M 8 20 L 32 32 L 32 56 L 8 44 Z" fill={printInk.cube.left} />
     {/* Right face */}
-    <Path d="M 32 32 L 56 20 L 56 44 L 32 56 Z" fill="#141414" />
+    <Path d="M 32 32 L 56 20 L 56 44 L 32 56 Z" fill={printInk.cube.right} />
     {/* Teal light-arc swoosh (brand accent) */}
     <Path
       d="M 50 16 Q 32 22, 18 36 Q 14 44, 16 50"
@@ -35,7 +36,7 @@ const CubeLogoSvg = ({ size = 24 }: { size?: number }) => (
 // Text-only fallback logo for templates that auto-break across pages
 const TextLogo = () => (
   <View style={{ width: 24, height: 24, backgroundColor: printPalette.primary, justifyContent: "center", alignItems: "center" }}>
-    <Text style={{ fontSize: 12, fontWeight: 700, color: "#ffffff" }}>SF</Text>
+    <Text style={{ fontSize: 12, fontWeight: 700, color: printInk.onFill }}>SF</Text>
   </View>
 );
 

@@ -1,3 +1,4 @@
+import { DEFAULT_SWATCH } from "@/lib/palettes/swatches";
 import { memo } from "react";
 import {
   Tooltip,
@@ -33,7 +34,7 @@ const ReferenceBadge = memo(
       event.startDay
     );
     const x = mapper.yearToX(startDecimal);
-    const color = primaryTrack?.color || "#6366f1";
+    const color = primaryTrack?.color || DEFAULT_SWATCH;
 
     return (
       <Tooltip>

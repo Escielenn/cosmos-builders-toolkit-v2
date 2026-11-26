@@ -8,7 +8,7 @@ const FEATURES = [
   },
   {
     label: "Claim capture",
-    body: "Write a new fact into a scene and the Studio offers to put it on file. One click adopts it; nothing is adopted for you.",
+    body: "Write a new fact into a scene and the Studio offers to add it to your canon. One click adopts it; nothing is adopted for you.",
   },
   {
     label: "Canon-changed badge",

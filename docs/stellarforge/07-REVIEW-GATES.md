@@ -103,9 +103,10 @@ Plus the interconnection twin: **if the writer can't feel the world pushing back
 
 ### Voice
 
-- [ ] All system strings in Ship's Voice — uppercase, no emoji, no exclamation points
+- [ ] Status confirmations, errors and readouts in Ship's Voice: uppercase, no emoji, no exclamation points
+- [ ] Clarity first (2026-11-26): buttons, menu items, titles, labels and help text in plain sentence case; Ship's Voice never names an action; no AI filler (`npm run check:copy`)
 - [ ] Past tense for confirmations, imperative for actions
-- [ ] Empty states use the VelocityDial pattern, never "Nothing here yet!"
+- [ ] Empty states say what is missing and what to do, in a plain sentence ("No worlds yet"), never "Nothing here yet!"
 - [ ] Errors are `SYSTEM FAULT` + crimson bracket + mono detail
 - [ ] Supabase/PostgREST errors mapped before display
 

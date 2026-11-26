@@ -1,6 +1,7 @@
 // Surface Gravity Calculator, Data, Constants, Presets, and Cascade Content
 // No React dependencies, importable from PDF templates
 
+import { COMPOSITION_COLOURS, GAS_COLOURS } from "@/lib/palettes/planets";
 import type { Section } from "@/components/tools/SectionNavigation";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -107,7 +108,7 @@ export const COMPOSITION_PRESETS: CompositionPreset[] = [
     id: "custom",
     label: "Custom",
     description: "Both sliders independent, physically implausible combinations allowed",
-    color: "#15C17B",
+    color: COMPOSITION_COLOURS.custom,
     massToRadius: (m) => m, // unused when custom
     radiusToMass: (r) => r, // unused when custom
   },
@@ -115,42 +116,42 @@ export const COMPOSITION_PRESETS: CompositionPreset[] = [
     id: "iron-rich",
     label: "Iron-rich (Mercury-like)",
     description: "High density, small radius for mass. Dense metallic core.",
-    color: "#8B8682",
+    color: COMPOSITION_COLOURS["iron-rich"],
     ...massRadiusPowerLaw(0.80, 0.267),
   },
   {
     id: "rocky",
     label: "Rocky (Earth-like)",
     description: "Baseline density ~5.5 g/cm³. Iron core + silicate mantle.",
-    color: "#C4956A",
+    color: COMPOSITION_COLOURS.rocky,
     ...massRadiusPowerLaw(1.0, 0.267),
   },
   {
     id: "ocean",
     label: "Ocean World",
     description: "Lower density ~3.5–4.0 g/cm³. Deep global ocean over rocky core.",
-    color: "#1E6091",
+    color: COMPOSITION_COLOURS.ocean,
     ...massRadiusPowerLaw(1.39, 0.267),
   },
   {
     id: "ice",
     label: "Ice World",
     description: "Low density ~2.0–3.0 g/cm³. Thick ice/volatile layers.",
-    color: "#A8D8EA",
+    color: COMPOSITION_COLOURS.ice,
     ...massRadiusPowerLaw(1.52, 0.267),
   },
   {
     id: "super-earth",
     label: "Super-Earth (Rocky)",
     description: "Scaled Earth composition. Higher mass, proportionally larger.",
-    color: "#D4A574",
+    color: COMPOSITION_COLOURS["super-earth"],
     ...massRadiusPowerLaw(1.0, 0.267),
   },
   {
     id: "mini-neptune",
     label: "Mini-Neptune",
     description: "Gas envelope over rocky core. Very low surface gravity relative to mass.",
-    color: "#5B7FBF",
+    color: COMPOSITION_COLOURS["mini-neptune"],
     ...massRadiusPowerLaw(2.0, 0.30),
   },
 ];
@@ -252,12 +253,12 @@ export const ATMOSPHERIC_PRESETS: AtmosphericPreset[] = [
 // ─── Gas Data for Atmospheric Retention ──────────────────────────────────────
 
 export const GAS_DATA: GasData[] = [
-  { id: "h2", name: "Hydrogen", formula: "H₂", molecularWeight: 2.016, color: "#60A5FA" },
-  { id: "he", name: "Helium", formula: "He", molecularWeight: 4.003, color: "#A78BFA" },
-  { id: "h2o", name: "Water", formula: "H₂O", molecularWeight: 18.015, color: "#22D3EE" },
-  { id: "n2", name: "Nitrogen", formula: "N₂", molecularWeight: 28.014, color: "#34D399" },
-  { id: "o2", name: "Oxygen", formula: "O₂", molecularWeight: 31.998, color: "#2ECC71" },
-  { id: "co2", name: "Carbon Dioxide", formula: "CO₂", molecularWeight: 44.009, color: "#F59E0B" },
+  { id: "h2", name: "Hydrogen", formula: "H₂", molecularWeight: 2.016, color: GAS_COLOURS.h2 },
+  { id: "he", name: "Helium", formula: "He", molecularWeight: 4.003, color: GAS_COLOURS.he },
+  { id: "h2o", name: "Water", formula: "H₂O", molecularWeight: 18.015, color: GAS_COLOURS.h2o },
+  { id: "n2", name: "Nitrogen", formula: "N₂", molecularWeight: 28.014, color: GAS_COLOURS.n2 },
+  { id: "o2", name: "Oxygen", formula: "O₂", molecularWeight: 31.998, color: GAS_COLOURS.o2 },
+  { id: "co2", name: "Carbon Dioxide", formula: "CO₂", molecularWeight: 44.009, color: GAS_COLOURS.co2 },
 ];
 
 // ─── Reference Worlds for Gravity Scale Bar ──────────────────────────────────

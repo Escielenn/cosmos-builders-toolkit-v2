@@ -8,7 +8,7 @@ import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { useArticle } from "@/hooks/use-sanity-articles";
 import { PortableTextRenderer } from "@/components/sanity/PortableTextRenderer";
-import { CoverArt } from "@/components/learn/CoverArt";
+import { ArticlePhoto, PhotoCredit } from "@/components/learn/ArticlePhoto";
 import { CATEGORY_LABELS, formatArticleDate } from "@/components/learn/article-meta";
 // Fallback MDX content for when Sanity is empty
 import DrakeEquationContent from "@/content/learn/drake-equation/index.mdx";
@@ -118,11 +118,17 @@ const LearnArticle = () => {
         {/* Reading column, left-aligned on the shared edge. */}
         <div className="max-w-4xl">
 
-        {/* Generated cover (finding 6): original art seeded by slug, never
-            the CMS image. */}
-        <div className="mb-8 aspect-[1200/500] w-full overflow-hidden border border-sf-line">
-          <CoverArt seed={slug ?? article.title} category={article.category} />
-        </div>
+        {/* Hero photograph (Unsplash, credited), toned with tokens. The
+            generated cover (finding 6) shows while it loads and stays if it
+            fails. Never the CMS image. */}
+        <figure className="mb-8">
+          <div className="aspect-[1200/500] w-full overflow-hidden border border-sf-line">
+            <ArticlePhoto slug={slug ?? article.title} category={article.category} variant="hero" eager />
+          </div>
+          <figcaption>
+            <PhotoCredit slug={slug ?? article.title} category={article.category} />
+          </figcaption>
+        </figure>
 
         {/* Article Content */}
         <GlassPanel className="p-6 md:p-10">

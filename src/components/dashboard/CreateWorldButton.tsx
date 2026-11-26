@@ -12,7 +12,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 const SOVEREIGNTY_SHOWN_KEY = "sf-sovereignty-shown";
 
 interface CreateWorldButtonProps {
-  /** "card" is the dashed grid tile; "button" is a BEGIN SURVEY action. */
+  /** "card" is the dashed grid tile; "button" is the "New world" action. */
   variant?: "card" | "button";
   className?: string;
 }
@@ -35,7 +35,7 @@ const CreateWorldButton = ({ variant = "card", className }: CreateWorldButtonPro
     }
   };
 
-  // Every "Create New World" entry point outside this component (header nav,
+  // Every "New world" entry point outside this component (header nav,
   // ⌘K search) has nowhere else to open a dialog it doesn't own, so they all
   // just deep-link here with ?create=true instead. Without this effect that
   // param did nothing — the writer landed on /worlds and had to find and
@@ -65,7 +65,8 @@ const CreateWorldButton = ({ variant = "card", className }: CreateWorldButtonPro
 
     setShowCreateDialog(false);
 
-    // Show sovereignty welcome on first world creation
+    // Show sovereignty welcome on first world creation; it opens the world
+    // when dismissed. Otherwise go straight to the new world's Bridge.
     try {
       if (!localStorage.getItem(SOVEREIGNTY_SHOWN_KEY)) {
         localStorage.setItem(SOVEREIGNTY_SHOWN_KEY, "true");
@@ -76,6 +77,7 @@ const CreateWorldButton = ({ variant = "card", className }: CreateWorldButtonPro
     } catch {
       // localStorage unavailable
     }
+    navigate(`/worlds/${world.id}`);
   };
 
   const handleWelcomeDismiss = () => {
@@ -91,7 +93,7 @@ const CreateWorldButton = ({ variant = "card", className }: CreateWorldButtonPro
       {variant === "button" ? (
         <Button variant="sf-primary" size="sf-md" className={`gap-2 ${className ?? ""}`} onClick={handleClick}>
           <Plus className="w-4 h-4" aria-hidden="true" />
-          Begin survey
+          New world
         </Button>
       ) : (
       <button type="button" onClick={handleClick} className={`w-full text-left ${className ?? ""}`}>
@@ -103,9 +105,9 @@ const CreateWorldButton = ({ variant = "card", className }: CreateWorldButtonPro
             <Plus className="w-7 h-7 text-sf-stellar-text" />
           </div>
           <div className="text-center">
-            <h3 className="font-heading font-medium text-lg">INITIALIZE NEW WORLD</h3>
+            <h3 className="font-heading font-medium text-lg">New world</h3>
             <p className="text-sm text-t2 mt-1">
-              Begin survey.
+              Name it, then set up its star, planet, and life.
             </p>
           </div>
         </GlassPanel>
@@ -115,8 +117,8 @@ const CreateWorldButton = ({ variant = "card", className }: CreateWorldButtonPro
       {/* Auth Dialog for unauthenticated users */}
       <AuthRequiredDialog open={showAuthDialog} onOpenChange={setShowAuthDialog} />
 
-      {/* BEGIN SURVEY: designation, star, world, life. Keeps the old
-          one-step create as INITIALIZE EMPTY on its first screen. */}
+      {/* Create a world: name, star, planet, life. "Skip setup and create"
+          on the first step makes a blank world. */}
       <BeginSurveyDialog
         open={showCreateDialog}
         onOpenChange={setShowCreateDialog}
@@ -128,8 +130,8 @@ const CreateWorldButton = ({ variant = "card", className }: CreateWorldButtonPro
       <Dialog open={showWelcome} onOpenChange={(open) => { if (!open) handleWelcomeDismiss(); }}>
         <DialogContent className="sm:max-w-sm">
           <div className="py-6 text-center space-y-4">
-            <h2 className="font-heading text-lg tracking-wide uppercase">
-              World Initialized.
+            <h2 className="font-heading text-lg">
+              World created
             </h2>
             <div className="space-y-2">
               <p className="text-sm text-t2 leading-relaxed">
@@ -140,7 +142,7 @@ const CreateWorldButton = ({ variant = "card", className }: CreateWorldButtonPro
               </p>
             </div>
             <Button className="gap-2 mt-2" onClick={handleWelcomeDismiss}>
-              Begin Survey
+              Open world
               <ChevronRight className="w-4 h-4" />
             </Button>
           </div>

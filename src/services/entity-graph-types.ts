@@ -3,6 +3,9 @@
 // Types for the World Graph entity layer and cascade-aware connections.
 // ---------------------------------------------------------------------------
 
+import { tokens } from "@/styles/tokens";
+import { CASCADE_HUE, hueHex } from "@/styles/hue";
+
 // ---------------------------------------------------------------------------
 // Cascade Stages
 // ---------------------------------------------------------------------------
@@ -20,13 +23,18 @@ export type CascadeStage = (typeof CASCADE_STAGES)[number];
 
 export type ConnectionCascadeStage = CascadeStage | "cross_cascade";
 
+/**
+ * Stage colour as a concrete hex (default theme), because call sites append
+ * hex alpha to it (`${colour}40`). The mapping is the canon cascade table in
+ * src/styles/hue.ts; until 1.7 this file carried its own, different one.
+ */
 export const CASCADE_STAGE_COLORS: Record<CascadeStage, string> = {
-  physics: "#4D9FFF",
-  environment: "#15C17B",
-  biology: "#00FF88",
-  psychology: "#9B5DE5",
-  mythology: "#FF00AA",
-  culture: "#FFB800",
+  physics: hueHex(CASCADE_HUE.physics),
+  environment: hueHex(CASCADE_HUE.environment),
+  biology: hueHex(CASCADE_HUE.biology),
+  psychology: hueHex(CASCADE_HUE.psychology),
+  mythology: hueHex(CASCADE_HUE.mythology),
+  culture: hueHex(CASCADE_HUE.culture),
 };
 
 export const CASCADE_STAGE_LABELS: Record<CascadeStage, string> = {
@@ -116,35 +124,31 @@ export const ENTITY_TYPE_CASCADE_DEFAULTS: Record<EntityType, CascadeStage> = {
 };
 
 /**
- * Default color per entity type (used when entity.color is null).
+ * Default colour per entity type (used when entity.color is null).
  *
- * KNOWN DEBT: these are literal hex, and so are CASCADE_STAGE_COLORS above.
- * Eight surfaces concatenate hex alpha onto them (`${color}40`), so
- * converting them to `var(--sf-*)` is a change across those call sites, not
- * a change here — it belongs to a legibility pass, not to F3. Every colour
- * value below is an exact match for an existing token:
- * #FFB800 sf-amber · #4D9FFF sf-azure · #9B5DE5 sf-violet · #FF00AA
- * sf-magenta · #00FF88 sf-emerald · #15C17B sf-teal · #5B8DEF sf-stellar ·
- * #FF3366 sf-crimson.
+ * Each is a named hue from the token mirror, as a concrete default-theme hex:
+ * entity colours are persisted as hex and a dozen surfaces (several in the
+ * Manuscript) append hex alpha to them (`${colour}40`), so this cannot be a
+ * `var(--sf-*)` without changing every one of those call sites.
  */
 export const ENTITY_TYPE_COLORS: Record<EntityType, string> = {
-  star: "#FFB800",
-  star_system: "#FFB800",
-  planet: "#4D9FFF",
-  moon: "#9B5DE5",
-  species: "#FF00AA",
-  character: "#00FF88",
-  faction: "#FFB800",
-  location: "#4D9FFF",
-  technology: "#15C17B",
-  vessel: "#5B8DEF",
-  event: "#FF3366",
-  concept: "#9B5DE5",
-  language: "#00FF88",
-  religion: "#FF00AA",
-  mythology: "#FF00AA",
-  artifact: "#FFB800",
-  custom: "#15C17B",
+  star: tokens.hue.amber,
+  star_system: tokens.hue.amber,
+  planet: tokens.hue.azure,
+  moon: tokens.hue.violet,
+  species: tokens.hue.magenta,
+  character: tokens.hue.emerald,
+  faction: tokens.hue.amber,
+  location: tokens.hue.azure,
+  technology: tokens.hue.teal,
+  vessel: tokens.hue.stellar,
+  event: tokens.hue.crimson,
+  concept: tokens.hue.violet,
+  language: tokens.hue.emerald,
+  religion: tokens.hue.magenta,
+  mythology: tokens.hue.magenta,
+  artifact: tokens.hue.amber,
+  custom: tokens.hue.teal,
 };
 
 // ---------------------------------------------------------------------------

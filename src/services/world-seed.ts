@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// world-seed, writes a BEGIN SURVEY payload into an existing world.
+// world-seed: writes a "Create a world" payload into an existing world.
 //
 // The payload is built by the pure src/lib/onboarding/survey-seed.ts. This
 // file only performs the writes, through the same services every other

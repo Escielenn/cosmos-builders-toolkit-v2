@@ -49,7 +49,7 @@
 :root{
   --sf-accent:#15C17B;
   --accent-green:#00E5A0;
-  --surface-base:rgba(15,15,16,0.92);
+  --surface-base:#0F0F10;
   --surface-elevated:rgba(15,15,16,0.98);
   --border-subtle:#50555E; /* sf-line: solid, never alpha */
   --text-primary:rgba(255,255,255,0.85);
@@ -64,7 +64,7 @@ body{background:#09090B;color:#C8C8C8;font-family:var(--font-body);overflow:hidd
 #renderer-container{position:fixed;top:0;left:0;width:100vw;height:100vh}
 #renderer-container canvas{display:block}
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(0,229,160,0.12);border-radius:0}
-.panel{position:fixed;background:var(--surface-base);border:1px solid var(--border-subtle);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:0;padding:14px 18px;z-index:10;overflow-y:auto;max-height:calc(100vh - 80px)}
+.panel{position:fixed;background:var(--surface-base);border:1px solid var(--border-subtle);border-radius:0;padding:14px 18px;z-index:10;overflow-y:auto;max-height:calc(100vh - 80px)}
 #title-block{position:fixed;top:18px;left:18px;z-index:20;pointer-events:none}
 #title-block h1{font-family:var(--font-display);font-weight:300;font-size:26px;letter-spacing:6px;text-transform:uppercase;color:#FAFAFA;line-height:1.1}
 #title-block .subtitle{font-family:var(--font-body);font-weight:400;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(0,229,160,0.35);margin-top:2px}
@@ -128,7 +128,7 @@ button.active{background:rgba(21,193,123,0.1);border-color:var(--sf-accent);colo
 #drag-hint{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:10;font-family:var(--font-body);font-size:9px;color:rgba(255,255,255,0.15);letter-spacing:0.5px;pointer-events:none;transition:opacity 2s}
 #scale-note{position:fixed;bottom:4px;left:50%;transform:translateX(-50%);z-index:10;font-family:var(--font-body);font-size:9px;color:rgba(255,255,255,0.12);letter-spacing:0.3px;pointer-events:none;white-space:nowrap}
 #tooltip{position:fixed;background:rgba(15,15,16,0.95);border:1px solid #50555E;border-radius:0;padding:8px 12px;font-family:var(--font-mono);font-size:9px;color:rgba(255,255,255,0.7);pointer-events:none;z-index:30;display:none;backdrop-filter:blur(10px);line-height:1.6;max-width:220px}
-#modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(9,9,11,0.94);backdrop-filter:blur(20px);z-index:100;display:none;justify-content:center;align-items:center;padding:20px}
+#modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(9,9,11,0.94);z-index:100;display:none;justify-content:center;align-items:center;padding:20px}
 #modal-overlay.visible{display:flex}
 #modal{max-width:680px;width:100%;max-height:80vh;overflow-y:auto;padding:30px 36px;background:var(--surface-elevated);border:1px solid #50555E;border-radius:0;position:relative}
 #modal h2{font-family:var(--font-display);font-weight:300;font-size:22px;letter-spacing:4px;text-transform:uppercase;color:#FAFAFA;margin-bottom:16px}
@@ -152,14 +152,16 @@ button.active{background:rgba(21,193,123,0.1);border-color:var(--sf-accent);colo
 @media(max-width:768px){#title-block h1{font-size:20px;letter-spacing:4px}}
 #kb-help{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:50;background:rgba(15,15,16,0.95);border:1px solid #50555E;padding:12px 18px;font-family:var(--font-mono);font-size:9px;color:rgba(255,255,255,0.5);letter-spacing:0.5px;display:none;gap:16px;flex-wrap:wrap;backdrop-filter:blur(16px);pointer-events:none}
 #kb-help.visible{display:flex}
-#biome-legend{position:fixed;bottom:40px;left:18px;z-index:10;background:rgba(15,15,16,0.85);border:1px solid #41454D;padding:10px 14px;font-family:var(--font-mono);font-size:9px;backdrop-filter:blur(12px);pointer-events:none;display:flex;flex-direction:column;gap:4px}
-#temp-graph{position:fixed;bottom:40px;right:18px;z-index:10;background:rgba(15,15,16,0.88);border:1px solid #41454D;padding:8px;backdrop-filter:blur(12px);pointer-events:none}
+#biome-legend{position:fixed;bottom:40px;left:18px;z-index:10;background:#0E0E0F;border:1px solid #41454D;padding:10px 14px;font-family:var(--font-mono);font-size:9px;pointer-events:none;display:flex;flex-direction:column;gap:4px}
+#temp-graph{position:fixed;bottom:40px;right:18px;z-index:10;background:#0E0E0F;border:1px solid #41454D;padding:8px;pointer-events:none}
 #temp-graph .tg-title{font-family:var(--font-display);font-weight:300;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(0,229,160,0.55);margin-bottom:6px;text-align:center}
 @media(max-width:1024px){#biome-legend{display:none !important}#kb-help{display:none !important}#temp-graph{display:none !important}}
 </style>
 
   <link rel="stylesheet" href="../_shared/sim-mobile.css">
   <link rel="stylesheet" href="../_shared/sim-title.css">
+  <link rel="stylesheet" href="../_shared/sim-perf.css">
+  <script src="../_shared/sim-loop.js"></script>
 </head>
 <body>
 <div id="renderer-container"></div>
@@ -392,8 +394,11 @@ const throttledTooltip=makeThrottle(()=>{updateTooltipCore(pendingTooltipX,pendi
 // ── Three.js Setup ──
 const container=document.getElementById('renderer-container');
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
-renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
 renderer.setSize(window.innerWidth,window.innerHeight);
+// (1.7) Dynamic resolution. The planet is a full-screen procedural shader,
+// so its cost is the pixel count: start at min(devicePixelRatio, 2) and
+// step down, never up, when this device cannot hold the frame rate.
+const pixelGovernor=SFSim.adaptivePixelRatio(renderer,{max:2,onChange:()=>markDirty()});
 renderer.setClearColor(0x09090B,1);
 container.appendChild(renderer.domElement);
 
@@ -402,25 +407,32 @@ const camera=new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight
 camera.position.set(0,0.4,3.8);
 camera.lookAt(0,0,0);
 
+// Debounced: every resize event reallocates the WebGL backing store.
+let _resizeTimer=0;
 window.addEventListener('resize',()=>{
-  camera.aspect=window.innerWidth/window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth,window.innerHeight);
-  markDirty();
+  clearTimeout(_resizeTimer);
+  _resizeTimer=setTimeout(()=>{
+    camera.aspect=window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth,window.innerHeight);
+    markDirty();
+  },80);
 });
 
 // ── Camera Controls ──
 let camTheta=0, camPhi=0.2, camDist=3.8, targetDist=3.8;
 // Camera target — follows planet in surface view, shifts to system center when zoomed out
+// (1.7) one reused vector: this runs every frame and on every drag event.
+const _camTarget=new THREE.Vector3();
 function getCameraTarget(){
-  if(typeof planetGroup==='undefined') return new THREE.Vector3(curVisDist,0,0);
-  const pp=planetGroup.position;
+  if(typeof planetGroup==='undefined') return _camTarget.set(curVisDist,0,0);
+  _camTarget.copy(planetGroup.position);
   if(camDist>20){
     // Blend toward origin (star) for orbital view
     const blend=Math.min((camDist-20)/15,1);
-    return pp.clone().lerp(new THREE.Vector3(0,0,0),blend);
+    _camTarget.multiplyScalar(1-blend);
   }
-  return pp.clone();
+  return _camTarget;
 }
 function updateCamera(){
   const target=getCameraTarget();
@@ -1553,8 +1565,11 @@ const ORB_SPEED=0.06; // visual orbital speed multiplier
 const _toStar=new THREE.Vector3();
 const _unitX=new THREE.Vector3(1,0,0);
 
-function animate(ts){
-  const dt=Math.min(ts-lastTime,50);
+// (1.7) Driven by SFSim.loop: dt arrives clamped (50 ms here, as before),
+// is 0 on the first frame back from a hidden tab, and the loop parks while
+// the simulator is hidden or scrolled off screen.
+let renderedLastFrame=false;
+function animate(ts,dt){
   lastTime=ts;
 
   // Determine if anything is animating this frame
@@ -1567,7 +1582,7 @@ function animate(ts){
 
   // If truly static, skip the entire frame
   if(!renderDirty&&!isZooming&&!isOrbiting&&!isLerping&&!hasMoons&&!isVisDistLerping&&!hasClouds){
-    requestAnimationFrame(animate);
+    renderedLastFrame=false;pixelGovernor.idle();
     return;
   }
   renderDirty=false;
@@ -1642,7 +1657,9 @@ function animate(ts){
   updateHabRings();
 
   renderer.render(scene,camera);
-  requestAnimationFrame(animate);
+  // Only back-to-back rendered frames say anything about the GPU.
+  if(renderedLastFrame)pixelGovernor.sample(dt);
+  renderedLastFrame=true;
 }
 
 // ── Initialize ──
@@ -1650,7 +1667,7 @@ recalcPhysics();
 syncUniforms();
 updateReadout();
 updateCamera();
-requestAnimationFrame(animate);
+SFSim.loop(animate,{maxDt:50}).start();
 
 // ─── PostMessage bridge for StellarForge save/load ───
 window.addEventListener('message', function(event) {

@@ -2,7 +2,7 @@ import type { DataBurstConfig } from "./types";
 
 export const SETTINGS_BURSTS: DataBurstConfig[] = [
   {
-    content: "PERSONNEL FILE: ACTIVE",
+    content: "PROFILE: ACTIVE",
     position: { top: "6%", right: "3%" },
     variant: "status",
     parallax: -0.05,

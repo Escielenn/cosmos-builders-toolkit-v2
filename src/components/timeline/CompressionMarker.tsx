@@ -77,7 +77,7 @@ const CompressionMarker = memo(
               <div className="w-full h-full flex items-center justify-center relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-sf-primary/5 to-background/80" />
                 <div className="relative flex flex-col items-center gap-0.5">
-                  <span className="text-sf-primary-text text-lg">&#8734;</span>
+                  <span className="text-sf-primary-text text-lg">∞</span>
                   {compression.label && (
                     <span className="text-[12px] text-t3 font-medium px-1 bg-background/60 rounded-none whitespace-nowrap">
                       {compression.label}
