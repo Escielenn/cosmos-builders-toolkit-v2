@@ -228,7 +228,7 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
   if (facts.length === 0 && slugs.length === 0) {
     return (
       <div className="px-4 py-6">
-        <p className="mb-2 font-serif text-[15px] italic text-t2">
+        <p className="mb-2 font-sans text-[15px] text-t2">
           Nothing to check against yet
         </p>
         <p className="text-[13px] leading-relaxed text-t2">
@@ -251,7 +251,7 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
       <div>
         {subjectBar}
         <div className="px-4 py-6">
-          <p className="mb-1 font-serif text-[15px] italic text-sf-primary-text">
+          <p className="mb-1 font-sans text-[15px] text-sf-primary-text">
             Consistent so far
           </p>
           <p className="text-[13px] leading-relaxed text-t2">
@@ -271,13 +271,13 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
   return (
     <div className="py-2">
       {subjectBar}
-      <p className="px-4 pb-2 pt-2 font-serif text-[13px] italic text-t3">
+      <p className="px-4 pb-2 pt-2 font-sans text-[13px] text-t3">
         {notes.length === 1 ? "One thing to look at" : `${notes.length} things to look at`}
       </p>
 
       {notes.map((n) => (
         <div key={n.factKey} className="border-b border-sf-line-hairline px-4 py-3">
-          <p className="mb-1.5 font-serif text-[14px] leading-relaxed text-t1">
+          <p className="mb-1.5 font-sans text-[14px] leading-relaxed text-t1">
             {n.message}
           </p>
 
@@ -297,7 +297,7 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
         </div>
       ))}
 
-      <p className="px-4 py-3 font-serif text-[12px] italic text-t4">
+      <p className="px-4 py-3 font-sans text-[12px] text-t4">
         Breaking your own rules on purpose is allowed. This is a reminder, not a
         correction.
       </p>

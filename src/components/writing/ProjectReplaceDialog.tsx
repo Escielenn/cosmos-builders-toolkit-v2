@@ -310,7 +310,7 @@ export function ProjectReplaceDialog(props: ProjectReplaceDialogProps): JSX.Elem
                         onCheckedChange={(v) => toggleDoc(p, v === true)}
                         aria-label={`Include every match in ${p.title}`}
                       />
-                      <span className="min-w-0 flex-1 truncate font-serif text-[15px] text-t1">{p.title}</span>
+                      <span className="min-w-0 flex-1 truncate font-sans text-[15px] text-t1">{p.title}</span>
                       <span className="shrink-0 font-mono text-[12px] text-t4">
                         {on}/{p.matches.length}
                       </span>

@@ -93,12 +93,12 @@ export function TypographyMenu({ preferences, onChange }: TypographyMenuProps) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          className="flex items-center gap-1.5 border border-sf-line px-3 py-1 text-[12px] text-t3 transition-colors hover:border-sf-line-emphasis hover:text-t1"
+          type="button"
+          className="sf-hit flex h-9 w-9 shrink-0 items-center justify-center text-t3 transition-colors duration-fast hover:bg-sf-surface hover:text-t1"
           title="Spacing, font and column width"
           aria-label="Typography"
         >
-          <Type className="h-3.5 w-3.5" aria-hidden />
-          <span className="hidden sm:inline">Type</span>
+          <Type className="h-4 w-4" aria-hidden />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent

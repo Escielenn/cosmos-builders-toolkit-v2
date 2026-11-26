@@ -146,7 +146,7 @@ function Group({
   return (
     <section className="mb-8">
       <div className="mb-3 flex items-baseline gap-3 border-b border-sf-line-hairline pb-1.5">
-        <h3 className="font-serif text-[17px] italic text-sf-emerald">{title}</h3>
+        <h3 className="font-heading text-sf-eyebrow uppercase text-t1">{title}</h3>
         <span className="font-mono text-[12px] uppercase tracking-wide text-t4">
           {docs.length} {docs.length === 1 ? "scene" : "scenes"} ·{" "}
           {totalWords.toLocaleString()} words
@@ -205,7 +205,7 @@ export function Corkboard({
           title="Nothing on the board yet."
           description="NO SYNOPSES ON FILE."
         />
-        <p className="mx-auto max-w-sm font-serif text-[14px] leading-relaxed text-t2">
+        <p className="mx-auto max-w-sm font-sans text-[14px] leading-relaxed text-t2">
           Create a document and give it a synopsis. The board shows one card per
           scene, so you can see the shape of the whole manuscript at once.
         </p>

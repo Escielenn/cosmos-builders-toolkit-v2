@@ -17,7 +17,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { writingSurfaceStyle } from "@/lib/writing-surface-style";
 import { TypographyMenu } from "@/components/writing/TypographyMenu";
 import { StellarForgeEditor } from "@/components/editor/StellarForgeEditor";
-import { Wordmark } from "@/components/brand/Wordmark";
 import { WritingEntityPanel } from "@/components/writing/WritingEntityPanel";
 import { WorldInfluencePanel } from "@/components/writing/WorldInfluencePanel";
 import { WorldRefsPanel } from "@/components/writing/WorldRefsPanel";
@@ -65,6 +64,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -80,7 +80,8 @@ import {
 } from "@/hooks/use-writing-documents";
 import { useDocumentVersions, type DocumentSnapshot } from "@/hooks/use-document-versions";
 import { useWritingLabels } from "@/hooks/use-writing-labels";
-import { Trash2, RotateCcw, X, ArrowLeft, Columns2, Check, AlertTriangle, WifiOff, LifeBuoy } from "lucide-react";
+import { Trash2, RotateCcw, X, ArrowLeft, Columns2, Check, AlertTriangle, WifiOff, LifeBuoy, Download, Maximize2, Minimize2, MoreHorizontal, PanelLeft, PanelRight } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useWriteDoc, useLatestDoc, rollWordSession, countWords } from "@/hooks/use-write-doc";
 import { useSessionTarget } from "@/hooks/use-session-target";
 import { useWorldSetting } from "@/hooks/use-world-setting";
@@ -156,6 +157,43 @@ interface MainConflict {
 }
 
 type WriteView = "editor" | "board" | "outline" | "scrivenings";
+
+const INSPECTOR_KEY = "sf-write-inspector";
+
+/** Row 1 icon button: 36px visible, 44px hit, tooltip + aria-label. */
+const BAR_BUTTON =
+  "sf-hit flex h-9 w-9 shrink-0 items-center justify-center text-t3 transition-colors duration-fast hover:bg-sf-surface hover:text-t1";
+
+function BarButton({
+  label,
+  onClick,
+  pressed,
+  className = "",
+  children,
+}: {
+  label: string;
+  onClick: () => void;
+  pressed?: boolean;
+  className?: string;
+  children: React.ReactNode;
+}): JSX.Element {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          type="button"
+          onClick={onClick}
+          aria-label={label}
+          aria-pressed={pressed}
+          className={`${BAR_BUTTON} ${pressed ? "bg-sf-surface-elevated text-sf-primary-text hover:bg-sf-surface-elevated hover:text-sf-primary-text" : ""} ${className}`}
+        >
+          {children}
+        </button>
+      </TooltipTrigger>
+      <TooltipContent side="bottom">{label}</TooltipContent>
+    </Tooltip>
+  );
+}
 
 const VIEW_LABELS: Record<Exclude<WriteView, "scrivenings">, { label: string; hint: string }> = {
   editor: { label: "Editor", hint: "One document at a time" },
@@ -291,6 +329,33 @@ export default function Write(): JSX.Element {
   } = useDocumentVersions(doc?.id ?? null, doc?.title ?? "", doc?.content ?? "");
   const [comparing, setComparing] = useState<DocumentSnapshot | null>(null);
   const [docPane, setDocPane] = useState<InspectorPane>("card");
+  // Row 2 hosts the editor's toolbar (portal target, set once mounted).
+  const [toolbarHost, setToolbarHost] = useState<HTMLDivElement | null>(null);
+  // The desktop inspector column can be put away; the choice persists.
+  const [inspectorOpen, setInspectorOpenState] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(INSPECTOR_KEY) !== "closed";
+    } catch {
+      return true;
+    }
+  });
+  const setInspectorOpen = useCallback((open: boolean) => {
+    setInspectorOpenState(open);
+    try {
+      localStorage.setItem(INSPECTOR_KEY, open ? "open" : "closed");
+    } catch {
+      /* private mode: the choice lasts this visit */
+    }
+  }, []);
+  // Bottom-anchored chrome (the help button) reads this to sit above the
+  // status bar instead of on it.
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty("--sf-bottom-chrome", "calc(2rem + env(safe-area-inset-bottom))");
+    return () => {
+      root.style.removeProperty("--sf-bottom-chrome");
+    };
+  }, []);
 
   const [focus, setFocus] = useState(false);
   // Focus mode hides ALL chrome (Studio Charter), the world's space nav too.
@@ -1521,11 +1586,11 @@ export default function Write(): JSX.Element {
           />
         )}
         {(entries?.length ?? 0) === 0 && (
-          <p className="px-3 py-4 font-serif text-[13px] italic text-t4">No documents yet.</p>
+          <p className="px-3 py-4 font-sans text-[13px] text-t3">No documents yet.</p>
         )}
         {worldId && (entries?.length ?? 0) <= 1 && !(entries ?? []).some((e) => (e.word_count ?? 0) > 0) && (
           <div className="mx-3 mt-3 border-t border-sf-line-hairline pt-3">
-            <p className="font-serif text-[14px] italic text-t3">Writing this book somewhere else?</p>
+            <p className="font-sans text-[14px] text-t2">Writing this book somewhere else?</p>
             <button
               type="button"
               onClick={() => setImportOpen(true)}
@@ -1547,10 +1612,10 @@ export default function Write(): JSX.Element {
             </button>
             {trashOpen && (
               <div className="pb-1">
-                <p className="px-3 pb-1 font-serif text-[12px] italic text-t4">Auto-emptied after 90 days.</p>
+                <p className="px-3 pb-1 font-sans text-[12px] text-t4">Auto-emptied after 90 days.</p>
                 {trashed!.map((d) => (
                   <div key={d.id} className="group flex items-center gap-1 pr-1">
-                    <span className="min-w-0 flex-1 truncate py-1.5 pl-3 font-serif text-[13px] text-t4 line-through">{d.title || "Untitled"}</span>
+                    <span className="min-w-0 flex-1 truncate py-1.5 pl-3 font-sans text-[13px] text-t4 line-through">{d.title || "Untitled"}</span>
                     <button onClick={() => restoreDoc.mutate(d.id)} aria-label={`Restore ${d.title || "Untitled"}`} title="Restore"
                       className="transition-colors duration-base shrink-0 p-1.5 text-t4 hover:text-sf-primary-text">
                       <RotateCcw className="h-3.5 w-3.5" />
@@ -1599,7 +1664,7 @@ export default function Write(): JSX.Element {
       <div className="flex shrink-0 border-b border-sf-line-hairline" role="tablist" aria-label="Inspector">
         {(["doc", "entities", "world", "reference", "continuity"] as const).map((t) => (
           <button key={t} role="tab" aria-selected={inspector === t} onClick={() => setInspector(t)}
-            className={`min-h-[44px] flex-1 border-b-2 px-1 py-2.5 text-[13px] capitalize transition-colors ${inspector === t ? "border-sf-primary text-t1" : "border-transparent text-t3 hover:text-t1"}`}>
+            className={`min-h-hit flex-1 border-b-2 px-1 font-sans text-[13px] font-medium transition-colors duration-fast ${inspector === t ? "border-sf-primary text-t1" : "border-transparent text-t3 hover:text-t1"}`}>
             {t === "doc" ? "Doc" : t === "entities" ? "Entities" : t === "world" ? "World" : t === "reference" ? "Refs" : "Check"}
             {t === "continuity" && capture.items.length > 0 && (
               <span className="ml-1 font-mono text-[12px] text-sf-amber-text">
@@ -1730,173 +1795,186 @@ export default function Write(): JSX.Element {
     </div>
   ) : null;
 
+  const viewKeys = Object.keys(VIEW_LABELS) as Exclude<WriteView, "scrivenings">[];
+  const viewLabel = effectiveView === "scrivenings" ? "Scrivenings" : VIEW_LABELS[effectiveView].label;
+  const docTitle = title || doc?.title || "Untitled";
+  const showToolbarRow = (effectiveView === "editor" && !!doc && !readOnly) || effectiveView === "scrivenings";
+  const exportItems = (
+    <>
+      <DropdownMenuItem onClick={() => exportDoc("docx")}>Word (.docx)</DropdownMenuItem>
+      <DropdownMenuItem onClick={() => exportDoc("pdf")}>PDF (.pdf)</DropdownMenuItem>
+      <DropdownMenuItem onClick={() => exportDoc("md")}>Markdown (.md)</DropdownMenuItem>
+      <DropdownMenuItem onClick={() => exportDoc("txt")}>Plain text (.txt)</DropdownMenuItem>
+      {worldId && (
+        <>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => navigate(`/worlds/${worldId}/compile`)}>
+            Compile full manuscript →
+          </DropdownMenuItem>
+        </>
+      )}
+    </>
+  );
+
   return (
     <StudioWorldProvider value={studioWorld}>
-    <div className={`relative z-10 grid ${worldChrome ? "h-full" : "h-screen"} grid-rows-[44px_1fr_44px] bg-[hsl(var(--sf-void-hsl))]`}>
-      {/* topbar */}
-      <header className="flex items-center gap-3 border-b border-sf-line-hairline px-4">
-        {worldChrome ? (
-          // Inside a world the site header and the world nav are already on
-          // screen (15-PAGE-CHROME §1), so the topbar names where you are
-          // instead of repeating a logo and a back link.
-          <div className="hidden min-w-0 items-center gap-2 md:flex">
-            <Breadcrumbs
-              items={[
-                { label: worldChrome.worldName, to: `/worlds/${worldChrome.worldId}` },
-                { label: "Manuscript" },
-              ]}
-            />
-            <span className="text-t4" aria-hidden>/</span>
-            <span className="truncate font-serif italic text-[13px] text-t2">{doc?.title || "Untitled"}</span>
-          </div>
-        ) : (
-          <>
-            {/* explicit way back to the Studio overview */}
-            <Link
-              to="/studio"
-              className="flex min-h-hit items-center gap-1.5 border border-sf-line px-2.5 py-1 font-heading text-sf-eyebrow uppercase text-t3 transition-colors duration-base hover:border-sf-primary hover:text-t1"
-              title="Back to Studio"
-              aria-label="Back to Studio"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" /> Studio
-            </Link>
-            <Wordmark size="sm" suffix="Studio" to="/studio" className="hidden sm:inline-flex" />
-            <div className="hidden min-w-0 items-baseline gap-2 text-[13px] text-t4 md:flex">
-              <span className="text-t4">/</span>
-              {worldId && (
-                <>
-                  <Link to={`/worlds/${worldId}`} className="hover:text-t2">World</Link>
-                  <span className="text-t4">/</span>
-                </>
-              )}
-              <span className="truncate font-serif italic text-t2">{doc?.title || "Untitled"}</span>
-            </div>
-          </>
+    <div className={`relative z-10 flex ${worldChrome ? "h-full" : "h-screen"} flex-col bg-[hsl(var(--sf-void-hsl))]`}>
+      {/* Row 1 (1.6 finding 16): where you are, how you are looking at it,
+          and the three page actions. One slim bar; the formatting toolbar
+          is row 2. Word count lives in the status bar only. */}
+      <header className="flex h-11 shrink-0 items-center gap-1 border-b border-sf-line-hairline px-2 sm:gap-2 sm:px-4">
+        {!focus && (
+          <BarButton label="Open the binder" onClick={() => setMobilePanel("binder")} className="lg:hidden">
+            <PanelLeft className="h-4 w-4" aria-hidden="true" />
+          </BarButton>
         )}
-        <div className="ml-auto flex items-center gap-2">
-          <span className="hidden font-mono text-[12px] tracking-wider text-t4 sm:block">● {words.toLocaleString()} words</span>
-          {/* mobile panel toggles — binder + inspector are sheets below lg */}
-          {!focus && (
-            <>
-              <button onClick={() => setMobilePanel("binder")}
-                className="border border-sf-line px-3 py-1 text-[12px] text-t3 transition-colors hover:border-sf-primary hover:text-t1 lg:hidden">
-                Docs
-              </button>
-              {worldId && (
-                <button onClick={() => setMobilePanel("inspector")}
-                  className="border border-sf-line px-3 py-1 text-[12px] text-t3 transition-colors hover:border-sf-primary hover:text-t1 lg:hidden">
-                  Inspector
-                </button>
-              )}
-            </>
+        {/* w-0 + flex-1: a long title truncates instead of widening the bar. */}
+        <div className="flex w-0 min-w-0 flex-1 items-center gap-2">
+          {worldChrome ? (
+            // Inside a world the site header and the world nav are already on
+            // screen (15-PAGE-CHROME §1), so the bar names where you are
+            // instead of repeating a logo and a back link.
+            <div className="hidden shrink-0 items-center gap-2 md:flex">
+              <Breadcrumbs
+                items={[
+                  { label: worldChrome.worldName, to: `/worlds/${worldChrome.worldId}` },
+                  { label: "Manuscript" },
+                ]}
+              />
+              <span className="font-mono text-sf-mono text-t4" aria-hidden>/</span>
+            </div>
+          ) : (
+            <div className="hidden shrink-0 items-center gap-2 md:flex">
+              <Link
+                to="/studio"
+                className="inline-flex min-h-hit items-center gap-1.5 font-mono text-sf-mono uppercase text-t3 transition-colors duration-fast hover:text-sf-primary-text"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" /> Back to Studio
+              </Link>
+              <span className="font-mono text-sf-mono text-t4" aria-hidden>/</span>
+            </div>
           )}
-          {/* Spacing / font / width. These were a permanent row between the
-              title and the first line of prose; they belong one click away,
-              not in the writer's eyeline. */}
-          <TypographyMenu preferences={preferences} onChange={updatePreferences} />
-          {/* Per-document export. The compile page could export a whole
-              manuscript, but a single document had no export path at all. */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                className="border border-sf-line px-3 py-1 text-[12px] text-t3 transition-colors hover:border-sf-line-emphasis hover:text-t1"
-                title="Export this document"
-              >
-                Export
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52 rounded-none border-sf-line bg-sf-surface/95">
-              <DropdownMenuItem onClick={() => exportDoc("docx")}>
-                Word (.docx)
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => exportDoc("pdf")}>
-                PDF (.pdf)
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => exportDoc("md")}>
-                Markdown (.md)
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => exportDoc("txt")}>
-                Plain text (.txt)
-              </DropdownMenuItem>
-              {worldId && (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate(`/worlds/${worldId}/compile`)}>
-                    Compile full manuscript →
-                  </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-          {/* View switch. Scrivenings opens from the binder (a folder, a
-              selection, a collection) and shows here while it is active. */}
-          {/* Phones: the same choice as one menu, to keep the bar on one line. */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                type="button"
-                className="border border-sf-line px-3 py-1 text-[12px] text-t3 transition-colors hover:border-sf-line-emphasis hover:text-t1 sm:hidden"
-                aria-label={`View: ${effectiveView === "scrivenings" ? "Scrivenings" : VIEW_LABELS[effectiveView].label}. Change view.`}
-              >
-                {effectiveView === "scrivenings" ? "Scrivenings" : VIEW_LABELS[effectiveView].label}
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40">
-              {(Object.keys(VIEW_LABELS) as Exclude<WriteView, "scrivenings">[]).map((v) => (
-                <DropdownMenuItem key={v} onClick={() => switchView(v)}>
-                  {VIEW_LABELS[v].label}
-                  {effectiveView === v && <span className="ml-auto font-mono text-[12px] text-t4">ON</span>}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <div className="hidden items-center sm:flex" role="group" aria-label="View">
-            {(Object.keys(VIEW_LABELS) as Exclude<WriteView, "scrivenings">[]).map((v, i) => (
-              <button
-                key={v}
-                type="button"
-                onClick={() => switchView(v)}
-                aria-pressed={effectiveView === v}
-                title={VIEW_LABELS[v].hint}
-                className={`border px-3 py-1 text-[12px] transition-colors ${i > 0 ? "-ml-px" : ""} ${
-                  effectiveView === v
-                    ? "relative z-[1] border-sf-primary text-sf-primary-text"
-                    : "border-sf-line text-t3 hover:border-sf-line-emphasis hover:text-t1"
-                }`}
-              >
-                {VIEW_LABELS[v].label}
-              </button>
-            ))}
-            {effectiveView === "scrivenings" && (
-              <span className="relative z-[1] -ml-px border border-sf-primary px-3 py-1 text-[12px] text-sf-primary-text">
-                Scrivenings
-              </span>
-            )}
-          </div>
-          {!focus && worldId && (
+          <span className="truncate font-sans text-[14px] text-t1" title={docTitle}>{docTitle}</span>
+        </div>
+
+        {/* View switcher: one segmented control (sm and up). */}
+        <div className="hidden shrink-0 items-center border border-sf-line sm:flex" role="group" aria-label="View">
+          {viewKeys.map((v) => (
             <button
+              key={v}
               type="button"
+              onClick={() => switchView(v)}
+              aria-pressed={effectiveView === v}
+              title={VIEW_LABELS[v].hint}
+              className={`sf-hit h-8 px-3 font-sans text-[13px] font-medium transition-colors duration-fast ${
+                effectiveView === v ? "bg-sf-surface-elevated text-sf-primary-text" : "text-t3 hover:text-t1"
+              }`}
+            >
+              {VIEW_LABELS[v].label}
+            </button>
+          ))}
+          {effectiveView === "scrivenings" && (
+            <span className="flex h-8 items-center border-l border-sf-line bg-sf-surface-elevated px-3 font-sans text-[13px] font-medium text-sf-primary-text">
+              Scrivenings
+            </span>
+          )}
+        </div>
+
+        {/* Page actions: icon group with tooltips (sm and up). */}
+        <div className="hidden shrink-0 items-center sm:flex" role="group" aria-label="Page actions">
+          {!focus && worldId && (
+            <BarButton
+              label={split.open ? "Close the split editor" : "Split: a second document, Codex entry or worksheet beside this one"}
+              pressed={split.open}
+              className="hidden md:flex"
               onClick={() => {
                 if (!split.open && effectiveView === "editor") handOffMain();
                 updateSplit({ open: !split.open });
               }}
-              aria-pressed={split.open}
-              aria-label={split.open ? "Close the split editor" : "Split the editor"}
-              title="Split: a second document, Codex entry or worksheet beside this one"
-              className={`hidden items-center gap-1.5 border px-3 py-1 text-[12px] transition-colors md:flex ${
-                split.open ? "border-sf-primary text-sf-primary-text" : "border-sf-line text-t3 hover:border-sf-line-emphasis hover:text-t1"
-              }`}
             >
-              <Columns2 className="h-3.5 w-3.5" aria-hidden="true" /> Split
-            </button>
+              <Columns2 className="h-4 w-4" aria-hidden="true" />
+            </BarButton>
           )}
-          <button onClick={() => setFocus(!focus)}
-            title={focus ? "Leave focus mode (Esc)" : "Focus mode hides the binder and inspector. Press Esc to come back."}
-            className={`border px-3 py-1 text-[12px] transition-colors ${focus ? "border-sf-primary text-sf-primary-text" : "border-sf-line text-t3 hover:border-sf-line-emphasis hover:text-t1"}`}>
-            Focus
-          </button>
+          <BarButton
+            label={focus ? "Leave focus mode (Esc)" : "Focus mode: hide the binder and inspector"}
+            pressed={focus}
+            onClick={() => setFocus(!focus)}
+          >
+            {focus ? <Minimize2 className="h-4 w-4" aria-hidden="true" /> : <Maximize2 className="h-4 w-4" aria-hidden="true" />}
+          </BarButton>
+          <DropdownMenu>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DropdownMenuTrigger asChild>
+                  <button type="button" aria-label="Export this document" className={BAR_BUTTON}>
+                    <Download className="h-4 w-4" aria-hidden="true" />
+                  </button>
+                </DropdownMenuTrigger>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">Export this document</TooltipContent>
+            </Tooltip>
+            <DropdownMenuContent align="end" className="w-52 rounded-none border-sf-line bg-sf-surface/95">
+              {exportItems}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
+
+        {/* Phones: views, focus and export in one menu, so the bar stays one line. */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              aria-label={`Manuscript menu. View: ${viewLabel}`}
+              className={`${BAR_BUTTON} sm:hidden`}
+            >
+              <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>View</DropdownMenuLabel>
+            {viewKeys.map((v) => (
+              <DropdownMenuItem key={v} onClick={() => switchView(v)}>
+                {VIEW_LABELS[v].label}
+                {effectiveView === v && <span className="ml-auto font-mono text-[12px] text-t4">ON</span>}
+              </DropdownMenuItem>
+            ))}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => setFocus(!focus)}>
+              {focus ? "Leave focus mode" : "Focus mode"}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel>Export</DropdownMenuLabel>
+            {exportItems}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {/* Inspector toggle, far right: a column on desktop, a drawer below lg. */}
+        {!focus && worldId && (
+          <>
+            <BarButton
+              label={inspectorOpen ? "Hide the inspector" : "Show the inspector"}
+              pressed={inspectorOpen}
+              onClick={() => setInspectorOpen(!inspectorOpen)}
+              className="hidden lg:flex"
+            >
+              <PanelRight className="h-4 w-4" aria-hidden="true" />
+            </BarButton>
+            <BarButton label="Open the inspector" onClick={() => setMobilePanel("inspector")} className="lg:hidden">
+              <PanelRight className="h-4 w-4" aria-hidden="true" />
+            </BarButton>
+          </>
+        )}
       </header>
+
+      {/* Row 2: the formatting toolbar, docked here by the editor (portal),
+          and the typography menu at its end. A scroll strip on phones. */}
+      {showToolbarRow && (
+        <div className="flex h-10 shrink-0 items-center gap-1 border-b border-sf-line-hairline px-2 sm:px-4">
+          <div ref={setToolbarHost} className="flex h-full w-0 min-w-0 flex-1 items-center" />
+          <div aria-hidden="true" className="mx-1 h-5 w-px shrink-0 bg-sf-line-hairline" />
+          <TypographyMenu preferences={preferences} onChange={updatePreferences} />
+        </div>
+      )}
 
       {/* mobile slide-over: binder */}
       <Sheet open={mobilePanel === "binder"} onOpenChange={(o) => !o && setMobilePanel(null)}>
@@ -1912,7 +1990,15 @@ export default function Write(): JSX.Element {
       </Sheet>
 
       {/* body */}
-      <div className={`grid min-h-0 ${focus ? "grid-cols-1" : "grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)_320px]"}`}>
+      <div
+        className={`grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)] ${
+          focus
+            ? "grid-cols-1"
+            : inspectorOpen || !worldId
+              ? "grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)_320px]"
+              : "grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)]"
+        }`}
+      >
         {/* binder (desktop column) */}
         {!focus && (
           <aside className="hidden min-h-0 min-w-0 lg:flex">{binderContent}</aside>
@@ -1969,7 +2055,7 @@ export default function Write(): JSX.Element {
             />
           ) : (
           <div
-            className="mx-auto px-6 py-10"
+            className="mx-auto px-6 pb-16 pt-10 sm:pt-16"
             style={{ maxWidth: "var(--sf-writing-measure, 68ch)", ...editorStyle }}
           >
             <input
@@ -2054,13 +2140,14 @@ export default function Write(): JSX.Element {
                 preset="full"
                 placeholder="Begin writing. Use @ to mention entities, [[ to link wiki pages…"
                 page
+                toolbarTarget={toolbarHost}
                 className={`sf-writing-serif${preferences.dropCap ? " sf-writing-dropcap" : ""}`}
                 minHeight="55vh"
               />
               </div>
             )}
             {!doc && !docLoading && (
-              <p className="font-serif text-[15px] italic text-t4">Select or create a document.</p>
+              <p className="font-sans text-[15px] text-t3">Select or create a document.</p>
             )}
           </div>
           )}
@@ -2098,16 +2185,19 @@ export default function Write(): JSX.Element {
         </div>
 
         {/* inspector — the full entity/reference tool (desktop column) */}
-        {!focus && worldId && (
-          <aside className="hidden min-h-0 lg:block">{inspectorContent}</aside>
+        {!focus && worldId && inspectorOpen && (
+          <aside className="hidden min-h-0 lg:block" aria-label="Inspector">{inspectorContent}</aside>
         )}
       </div>
 
       {/* status bar */}
-      <footer className="flex items-center justify-between border-t border-sf-line-hairline pl-4 pr-20">
+      {/* Status bar: save state, words, target. 32px plus the device's safe
+          area. The right reserve keeps the help button (FABStack, positioned
+          from --sf-bottom-chrome) off the readouts. */}
+      <footer className="flex min-h-8 shrink-0 items-center justify-between gap-3 border-t border-sf-line-hairline pb-[env(safe-area-inset-bottom)] pl-4 pr-16">
         {/* Save state: icon and words, never colour alone. A failed save
             used to read "Saved" here. */}
-        <div className="flex items-center gap-2" role="status" aria-live="polite">
+        <div className="flex min-w-0 items-center gap-2 whitespace-nowrap" role="status" aria-live="polite">
           {saveState === "offline" ? (
             <WifiOff className="h-3.5 w-3.5 shrink-0 text-sf-amber" aria-hidden="true" />
           ) : saveState === "retrying" ? (
@@ -2176,7 +2266,7 @@ export default function Write(): JSX.Element {
         {/* Progress toward today's goal, not an astronomical date. The editor
             already wrote session words to writing_sessions and never read them
             back, so the writer's own number was invisible while writing. */}
-        <div className="flex items-center gap-3 font-mono text-[12px] tracking-wide text-t4">
+        <div className="flex min-w-0 items-center gap-2 whitespace-nowrap font-mono text-[12px] tracking-wide text-t4 sm:gap-3">
           <span>{words.toLocaleString()} WORDS</span>
           <span aria-hidden="true">·</span>
           {/* Session (the daily goal, now with a per-session reset), document

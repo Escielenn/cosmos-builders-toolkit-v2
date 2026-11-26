@@ -127,7 +127,7 @@ export function FindReplaceBar({ editor, onClose }: FindReplaceBarProps) {
 
   // Border, focus ring, and placeholder colors come from the global
   // input/select/textarea and :focus-visible rules in tokens.css.
-  const inputClass = "px-3 py-1 font-serif text-[14px] text-t2";
+  const inputClass = "px-3 py-1 font-sans text-[14px] text-t2";
 
   return (
     <div
@@ -181,14 +181,14 @@ export function FindReplaceBar({ editor, onClose }: FindReplaceBarProps) {
       <button
         onClick={replaceCurrent}
         disabled={matches.length === 0}
-        className="sf-hit border border-sf-line px-3 py-1.5 font-serif text-[13px] italic text-t3 transition-colors duration-fast hover:border-sf-line-emphasis hover:text-t1"
+        className="sf-hit border border-sf-line px-3 py-1.5 font-sans text-[13px] text-t3 transition-colors duration-fast hover:border-sf-line-emphasis hover:text-t1"
       >
         Replace
       </button>
       <button
         onClick={replaceEvery}
         disabled={matches.length === 0}
-        className="sf-hit border border-sf-line px-3 py-1.5 font-serif text-[13px] italic text-t3 transition-colors duration-fast hover:border-sf-line-emphasis hover:text-t1"
+        className="sf-hit border border-sf-line px-3 py-1.5 font-sans text-[13px] text-t3 transition-colors duration-fast hover:border-sf-line-emphasis hover:text-t1"
       >
         All
       </button>
@@ -213,7 +213,7 @@ export function FindReplaceBar({ editor, onClose }: FindReplaceBarProps) {
       </label>
 
       {notice && (
-        <span className="font-serif text-[13px] italic text-sf-primary-text">{notice}</span>
+        <span className="font-sans text-[13px] text-sf-primary-text">{notice}</span>
       )}
 
       <button

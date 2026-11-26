@@ -334,7 +334,7 @@ function EntityCard({
       <p className="font-heading text-sf-eyebrow uppercase text-t4">
         {entity ? entityTypeLabel(entity) : detail.kind === "wiki" ? "Wiki link" : "Mention"}
       </p>
-      <p className="font-serif text-[18px] italic text-t1">{entity?.name ?? (fallbackName || "Unknown")}</p>
+      <p className="font-sans text-[18px] text-t1">{entity?.name ?? (fallbackName || "Unknown")}</p>
       {renamed && (
         <p className="flex items-start gap-1.5 font-mono text-[12px] text-sf-amber-text">
           <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
@@ -376,7 +376,7 @@ function EntityCard({
           </button>
         </div>
       )}
-      {line && <p className="font-serif text-[14px] leading-relaxed text-t2">{line}</p>}
+      {line && <p className="font-sans text-[14px] leading-relaxed text-t2">{line}</p>}
       {!entity && id && (
         <p className="font-mono text-[12px] text-t3">// NOT IN THE CODEX. IT MAY BE A DOCUMENT OR A DELETED ENTRY.</p>
       )}

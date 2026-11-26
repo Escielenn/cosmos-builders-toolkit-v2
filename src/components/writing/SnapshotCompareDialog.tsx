@@ -166,7 +166,7 @@ export function SnapshotCompareDialog({
         <DialogFooter className="items-center gap-2">
           {confirming ? (
             <>
-              <p className="mr-auto font-serif text-[14px] italic text-t2">
+              <p className="mr-auto font-sans text-[14px] text-t2">
                 The current text is snapshotted first, so this can be undone.
               </p>
               <Button variant="sf-ghost" size="sf-sm" onClick={() => setConfirming(false)} disabled={busy}>

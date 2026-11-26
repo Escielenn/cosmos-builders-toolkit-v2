@@ -147,7 +147,7 @@ export function ContradictionLedger(props: ContradictionLedgerProps): JSX.Elemen
               <p className="mb-1.5 flex items-center gap-1.5 font-mono text-[12px] uppercase text-sf-amber-text">
                 <AlertTriangle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" /> Continuity
               </p>
-              <p className="mb-1.5 font-serif text-[14px] leading-relaxed text-t1">{n.message}</p>
+              <p className="mb-1.5 font-sans text-[14px] leading-relaxed text-t1">{n.message}</p>
               <p className="mb-2 font-mono text-[12px] uppercase text-t4">
                 World <span className="text-t1">{n.worldValue}</span> · Prose <span className="text-t1">{n.proseValue}</span>
               </p>
@@ -198,7 +198,7 @@ export function ContradictionLedger(props: ContradictionLedgerProps): JSX.Elemen
 
       {total === 0 && proposedHere.length === 0 && !continuity.needsPicker && (
         <div className="px-4 py-6">
-          <p className="mb-1 font-serif text-[15px] italic text-sf-primary-text">Consistent so far</p>
+          <p className="mb-1 font-sans text-[15px] text-sf-primary-text">Consistent so far</p>
           <p className="text-[13px] leading-relaxed text-t2">
             No claim in this document disagrees with the world, and none is waiting to be filed.
           </p>
@@ -253,7 +253,7 @@ export function ContradictionLedger(props: ContradictionLedgerProps): JSX.Elemen
         </section>
       )}
 
-      <p className="px-4 pt-4 font-serif text-[12px] italic text-t4">
+      <p className="px-4 pt-4 font-sans text-[12px] text-t4">
         Breaking your own rules on purpose is allowed. Nothing here changes your prose.
       </p>
     </div>
