@@ -148,7 +148,7 @@ export function PageHeader({
       ) : back ? (
         <Link
           to={back.to}
-          className="mb-4 inline-flex min-h-hit items-center gap-2 font-heading text-sf-eyebrow uppercase text-t3 transition-colors duration-base ease-sf-out hover:text-sf-primary-text"
+          className="mb-4 flex w-fit min-h-hit items-center gap-2 font-heading text-sf-eyebrow uppercase text-t3 transition-colors duration-base ease-sf-out hover:text-sf-primary-text"
         >
           <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden />
           <span>{back.label.replace(/^\s*[←‹<]\s*/, "")}</span>

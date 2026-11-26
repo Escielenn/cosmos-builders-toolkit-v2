@@ -103,3 +103,22 @@ export const PRO_UNLOCK_SUMMARY: string[] = [
   "Collaborator invites",
   "Every future instrument",
 ];
+
+/** One line per area, for the Free plan card (the full list is the comparison table). */
+export const FREE_PLAN_SUMMARY: string[] = [
+  "The Studio: binder, corkboard, outliner, snapshots",
+  "Codex and branching Chronicle",
+  "Canon capture and the contradiction ledger",
+  `Compile to ${list(COMPILE_FORMAT_NAMES)}`,
+  `${FREE_TOOL_COUNT} worldbuilding instruments`,
+  "Cloud sync with an account",
+];
+
+/** What Vanguard adds on top of Pro. */
+export const VANGUARD_PLAN_ITEMS: string[] = [
+  "10 roadmap votes per month",
+  "Early access to new tools",
+  "Bi-weekly Office Hours",
+  "Private Discord channel",
+  "Custom export themes",
+];
