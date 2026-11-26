@@ -1,0 +1,26 @@
+/* ==========================================================================
+   sim-perf.css: compositing rules for the static simulators.
+
+   A simulator canvas repaints every frame. Any element above it that asks
+   for backdrop-filter makes the compositor re-blur the pixels behind it on
+   every one of those frames, for a panel whose fill was already 92 to 94
+   percent opaque: the blur was nearly invisible and it was the single most
+   expensive thing on the page outside the simulation itself.
+
+   So, in every static sim (1.7, "make the simulators run smoothly"):
+     - no backdrop-filter anywhere in the document;
+     - panels are solid. Each sim's inline stylesheet now states the opaque
+       colour its translucent panel used to composite to over the #09090B
+       canvas (rgba(15,15,16,.92) -> #0F0F10, rgba(13,13,15,.94) -> #0D0D0F),
+       so nothing changes colour.
+
+   This file is the guard: a panel added later with a blur still renders,
+   it just does not blur. Linked after each sim's inline styles.
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}

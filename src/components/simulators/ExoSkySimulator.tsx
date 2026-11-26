@@ -6,6 +6,7 @@ import { toExoskyPayload, fromExoskySave } from "@/lib/simulators/exosky-save";
 import { evaluateExoSkyFlags, flagDismissKey } from "@/sims/flags";
 import { useDismissedFlags } from "@/hooks/use-dismissed-flags";
 import { tokens, withAlpha } from "@/styles/tokens";
+import { createFrameLoop, smoothingFor } from "@/lib/sim/frame-loop";
 
 // ═══════════════════════════════════════════════════════════════
 // EXOSKY v2, Alien Night Sky Simulator with Milky Way
@@ -433,6 +434,62 @@ function projectStar(
   return { x: screenX, y: screenY };
 }
 
+/**
+ * (1.7) The same projection as projectStar, for the two per-frame loops that
+ * walk tens of thousands of stars.
+ *
+ * projectStar recomputes ten trig functions of the VIEW and four of the
+ * star on every call and returns a fresh object. Called once per star per
+ * frame that was ~15 trig calls and one allocation for each of ~45,000
+ * stars. Here the view is solved once per frame, each star carries its own
+ * unit vector (computed once, see unitOf), and the result is written to
+ * `x` / `y` on the projector itself. Read them before the next call.
+ */
+interface ViewProjector {
+  x: number;
+  y: number;
+  /** Project a unit vector; false when behind the view or off screen. */
+  unit(sx: number, sy: number, sz: number, margin: number): boolean;
+}
+
+function createViewProjector(viewRa: number, viewDec: number, fov: number, W: number, H: number): ViewProjector {
+  const vRa = viewRa * DEG, vDec = viewDec * DEG;
+  const cosDec = Math.cos(vDec), sinDec = Math.sin(vDec), cosRa = Math.cos(vRa), sinRa = Math.sin(vRa);
+  const vx = cosDec * cosRa, vy = cosDec * sinRa, vz = sinDec;
+  const ux = -sinDec * cosRa, uy = -sinDec * sinRa, uz = cosDec;
+  const rx = -sinRa, ry = cosRa;
+  const scale = W / (2 * Math.tan(fov * DEG / 2));
+  const hw = W / 2, hh = H / 2;
+  const proj: ViewProjector = {
+    x: 0,
+    y: 0,
+    unit(sx, sy, sz, m) {
+      const cosA = sx * vx + sy * vy + sz * vz;
+      if (cosA < -0.05) return false;
+      const dx = sx - vx, dy = sy - vy, dz = sz - vz;
+      const lx = dx * rx + dy * ry;
+      const ly = dx * ux + dy * uy + dz * uz;
+      const screenX = hw + (lx / cosA) * scale;
+      const screenY = hh - (ly / cosA) * scale;
+      if (screenX < -m || screenX > W + m || screenY < -m || screenY > H + m) return false;
+      proj.x = screenX;
+      proj.y = screenY;
+      return true;
+    },
+  };
+  return proj;
+}
+
+/** A star's unit vector for its (ra, dec) in degrees, cached on the star. */
+function unitOf(star: { _u?: [number, number, number, number, number] }, ra: number, dec: number): [number, number, number, number, number] {
+  let u = star._u;
+  if (!u || u[3] !== ra || u[4] !== dec) {
+    const sRa = ra * DEG, sDec = dec * DEG, c = Math.cos(sDec);
+    u = star._u = [c * Math.cos(sRa), c * Math.sin(sRa), Math.sin(sDec), ra, dec];
+  }
+  return u;
+}
+
 // ── BACKGROUND FIELD SPATIAL BUCKET CONSTANTS ─────────────────
 const BG_RA_BINS = 12;   // 30° per bin in RA
 const BG_DEC_BINS = 6;   // 30° per bin in Dec
@@ -568,6 +625,9 @@ export default function ExoSkyV2({
   const viewRaRef = useRef(180);
   const viewDecRef = useRef(10);
   const fovRef = useRef(90);
+  const fovTargetRef = useRef(90);
+  const fovPublishTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const syncedView = useRef({ ra: 180, dec: 10, fov: 90 });
 
   // ── Refs for render toggle states (stabilises render callback) ──
   const showConstellationsRef = useRef(true);
@@ -674,9 +734,21 @@ export default function ExoSkyV2({
   const mwMapRef = useRef(null);
 
   // ── Sync state → refs for render loop access ──────────
-  viewRaRef.current = viewRa;
-  viewDecRef.current = viewDec;
-  fovRef.current = fov;
+  /**
+   * (1.7) View state reaches the refs only when the STATE changed.
+   *
+   * These three used to be copied on every render. But a drag moves the
+   * refs directly and only writes state on pointer-up, and moving the
+   * pointer re-renders the component (hover detection sets state ~10x a
+   * second), so every such re-render threw the dragged view back to where
+   * the drag began. That snap-back was the jitter on ExoSky.
+   *
+   * `fov` state is the zoom TARGET: the loop eases fovRef toward it, so a
+   * wheel notch or FIND OUR SUN glides instead of jumping 5 degrees.
+   */
+  if (syncedView.current.ra !== viewRa) { syncedView.current.ra = viewRa; viewRaRef.current = viewRa; }
+  if (syncedView.current.dec !== viewDec) { syncedView.current.dec = viewDec; viewDecRef.current = viewDec; }
+  if (syncedView.current.fov !== fov) { syncedView.current.fov = fov; fovTargetRef.current = fov; }
   showConstellationsRef.current = showConstellations;
   showAtmosphereRef.current = showAtmosphere;
   showGridRef.current = showGrid;
@@ -864,9 +936,20 @@ export default function ExoSkyV2({
       const raBin = Math.min(BG_RA_BINS - 1, Math.floor((bg.ra / 360) * BG_RA_BINS));
       const decBin = Math.min(BG_DEC_BINS - 1, Math.floor(((bg.dec + 90) / 180) * BG_DEC_BINS));
       buckets[raBin * BG_DEC_BINS + decBin].push(bg);
+      // (1.7) Fixed for the life of the field, so solved here once instead
+      // of per star per frame: the unit vector and the quantised colour.
+      unitOf(bg, bg.ra, bg.dec);
+      const [r, g, b] = bvToRGB(bg.bv);
+      bg._qr = Math.round(r / 16) * 16;
+      bg._qg = Math.round(g / 16) * 16;
+      bg._qb = Math.round(b / 16) * 16;
+      bg._qk = ((bg._qr >> 4) * 17 + (bg._qg >> 4)) * 17 + (bg._qb >> 4);
     }
     return buckets;
   }, [backgroundField]);
+  // Pooled (colour, alpha) batches for the background field: reused every
+  // frame instead of a new Map, new arrays and a key string per star.
+  const bgBatchPool = useRef(new Map<number, { style: string; pts: number[] }>());
 
   const allStars = useMemo(() => [...(starCatalog || []), ...proceduralStars], [starCatalog, proceduralStars]);
 
@@ -1241,7 +1324,9 @@ export default function ExoSkyV2({
        * number of buckets (invisible at 0.7-1.5px) so fillStyle changes a
        * few dozen times a frame instead of up to twelve thousand.
        */
-      const bgBatches = new Map<string, { style: string; pts: number[] }>();
+      const bgBatches = bgBatchPool.current;
+      for (const batch of bgBatches.values()) batch.pts.length = 0;
+      const proj = createViewProjector(_viewRa, _viewDec, _fov, W, H);
 
       // Determine which RA/Dec bins overlap the current view
       const halfFov = _fov * 0.6;
@@ -1307,11 +1392,10 @@ export default function ExoSkyV2({
             if (eMag > 7.5) continue;
 
             tally("bgProjected");
-            const p = projectStar(useRa, useDec, _viewRa, _viewDec, _fov, W, H);
-            if (!p) continue;
+            const u = bg._u;
+            if (!proj.unit(u[0], u[1], u[2], 80)) continue;
 
             const alpha = Math.min(0.8, Math.max(0.04, (7.5 - eMag) / 7.0));
-            const [r, g, b] = bvToRGB(bg.bv);
 
             const tw = ((Math.sin(t * 0.7 + i * 0.37) * 0.5 + 0.5) * 0.3 + 0.7);
             const finalAlpha = alpha * tw;
@@ -1320,23 +1404,21 @@ export default function ExoSkyV2({
 
             const size = eMag < 4.5 ? 1.5 : eMag < 5.5 ? 1.0 : 0.7;
 
-            const qr = Math.round(r / 16) * 16;
-            const qg = Math.round(g / 16) * 16;
-            const qb = Math.round(b / 16) * 16;
-            const qa = Math.round(finalAlpha / 0.04) * 0.04;
-            const key = `${qr},${qg},${qb},${qa}`;
+            const qi = Math.round(finalAlpha / 0.04);
+            const key = bg._qk * 32 + qi;
             let batch = bgBatches.get(key);
             if (!batch) {
-              batch = { style: `rgba(${qr},${qg},${qb},${qa})`, pts: [] };
+              batch = { style: `rgba(${bg._qr},${bg._qg},${bg._qb},${qi * 0.04})`, pts: [] };
               bgBatches.set(key, batch);
             }
-            batch.pts.push(p.x - size * 0.5, p.y - size * 0.5, size);
+            batch.pts.push(proj.x - size * 0.5, proj.y - size * 0.5, size);
             bgCount++;
           }
         }
       }
 
       for (const { style, pts } of bgBatches.values()) {
+        if (pts.length === 0) continue;
         ctx.fillStyle = style;
         for (let k = 0; k < pts.length; k += 3) {
           const s = pts[k + 2];
@@ -1509,14 +1591,21 @@ export default function ExoSkyV2({
 
     stage("constellations");
     // ── STARS ────────────────────────────────────────
-    const positions = [];
+    // (1.7) Hover/click targets as the stars themselves plus their screen
+    // points, in reused arrays. This used to be a spread copy of every
+    // catalogue star every frame, which also gave the hovered star a new
+    // identity each frame and so re-rendered the panel 10x a second.
+    const positions = starPositions.current;
+    positions.length = 0;
     const maxStars = 8000; // Performance cap
     let count = 0;
+    const starProj = createViewProjector(_viewRa, _viewDec, _fov, W, H);
+    const p = starProj;
 
     for (const s of _transformedStars) {
       if (count >= maxStars) break;
-      const p = projectStar(s.newRa, s.newDec, _viewRa, _viewDec, _fov, W, H);
-      if (!p) continue;
+      const su = unitOf(s, s.newRa, s.newDec);
+      if (!starProj.unit(su[0], su[1], su[2], 80)) continue;
 
       let eMag = s.appMag;
       if (_showAtmosphere) eMag += _atmo.extinction * _atmoDensity * 2.5;
@@ -1586,10 +1675,9 @@ export default function ExoSkyV2({
         ctx.fillText(s.name, p.x, p.y + radius + 12);
       }
 
-      if (s.isCatalog || (_drawMode && eMag < 5.5)) positions.push({ ...s, screenX:p.x, screenY:p.y, effectiveMag:eMag });
+      if (s.isCatalog || (_drawMode && eMag < 5.5)) positions.push(s, p.x, p.y);
       count++;
     }
-    starPositions.current = positions;
 
     stage("stars");
     // ── DRAW MODE HOVER INDICATOR ─────────────────
@@ -1728,7 +1816,7 @@ export default function ExoSkyV2({
     ctx.font = '16px "MD Nichrome", "Jura", sans-serif';
     ctx.fillStyle = withAlpha(tokens.sim.accent, 0.3);
     ctx.textAlign = "right";
-    ctx.fillText(`${_fov}°`, W-18, H-30);
+    ctx.fillText(`${Math.round(_fov)}°`, W-18, H-30);
     ctx.font = '11px "DM Sans", sans-serif';
     ctx.fillStyle = "rgba(255,255,255,0.15)";
     ctx.fillText("FIELD OF VIEW", W-18, H-18);
@@ -1745,7 +1833,6 @@ export default function ExoSkyV2({
       ctx.fillText("COMPUTING GALACTIC STRUCTURE...", W/2, H-18);
     }
 
-    animRef.current = requestAnimationFrame(render);
     // `stage` is a useCallback with an empty dep list, so it is stable for the
     // life of the component. Naming it here would re-create this deliberately
     // stable render callback for no benefit, so the rule is silenced instead.
@@ -1756,11 +1843,41 @@ export default function ExoSkyV2({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    // Assigning canvas.width clears and reallocates the canvas even when
+    // the value is unchanged, so only do it when the size really changed,
+    // and at most once per burst of resize events.
+    const resize = () => {
+      const w = window.innerWidth, h = window.innerHeight;
+      if (canvas.width !== w) canvas.width = w;
+      if (canvas.height !== h) canvas.height = h;
+    };
     resize();
-    window.addEventListener("resize", resize);
-    animRef.current = requestAnimationFrame(render);
-    return () => { window.removeEventListener("resize", resize); if (animRef.current) cancelAnimationFrame(animRef.current); };
+    let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+    const onResize = () => {
+      if (resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(resize, 80);
+    };
+    window.addEventListener("resize", onResize);
+    // (1.7) One loop from the shared helper: it parks while the tab is
+    // hidden or the canvas is off screen, and hands back a clamped dt, which
+    // is what the zoom easing below runs on.
+    const loop = createFrameLoop({
+      target: canvas,
+      render: ({ time, dt }) => {
+        const gap = fovTargetRef.current - fovRef.current;
+        if (gap !== 0) {
+          fovRef.current = Math.abs(gap) < 0.02 ? fovTargetRef.current : fovRef.current + gap * smoothingFor(dt);
+        }
+        render(time);
+      },
+    });
+    loop.start();
+    return () => {
+      loop.stop();
+      window.removeEventListener("resize", onResize);
+      if (resizeTimer) clearTimeout(resizeTimer);
+      if (fovPublishTimer.current) clearTimeout(fovPublishTimer.current);
+    };
   }, [render]); // render is now stable ([] deps) so this effect runs once
 
   // ── Keyboard shortcuts ─────────────────────────────
@@ -1811,6 +1928,7 @@ export default function ExoSkyV2({
         const ratio = lastPinchDist.current / dist;
         const newFov = Math.max(12, Math.min(160, fovRef.current * ratio));
         fovRef.current = newFov;
+        fovTargetRef.current = newFov;
         setFov(newFov);
       }
       lastPinchDist.current = dist;
@@ -1822,13 +1940,13 @@ export default function ExoSkyV2({
     if (now - lastHoverCheckRef.current > 100) {
       lastHoverCheckRef.current = now;
       let cl = null, cdSq = 28 * 28; // squared threshold (28px)
-      const positions = starPositions.current;
-      for (let i = 0; i < positions.length; i++) {
-        const s = positions[i];
-        const dxS = s.screenX - mx, dyS = s.screenY - my;
+      const positions = starPositions.current; // [star, x, y, star, x, y, ...]
+      for (let i = 0; i < positions.length; i += 3) {
+        const dxS = positions[i + 1] - mx, dyS = positions[i + 2] - my;
         const dSq = dxS * dxS + dyS * dyS;
-        if (dSq < cdSq) { cl = s; cdSq = dSq; }
+        if (dSq < cdSq) { cl = positions[i]; cdSq = dSq; }
       }
+      // Same star object as last time: React bails out, no re-render.
       setHoveredStar(cl);
     }
 
@@ -1858,11 +1976,12 @@ export default function ExoSkyV2({
     // If in draw mode and this was a click (not a drag), add star to constellation
     if (drawMode && totalDist < 8 && !namingMode) {
       let closest = null, closestDistSq = 45 * 45; // Squared threshold
-      starPositions.current.forEach(s => {
-        const dxS = s.screenX-mx, dyS = s.screenY-my;
+      const positions = starPositions.current;
+      for (let i = 0; i < positions.length; i += 3) {
+        const dxS = positions[i + 1]-mx, dyS = positions[i + 2]-my;
         const dSq = dxS*dxS + dyS*dyS;
-        if(dSq<closestDistSq){closest=s;closestDistSq=dSq;}
-      });
+        if(dSq<closestDistSq){closest=positions[i];closestDistSq=dSq;}
+      }
       if (closest) {
         const last = currentDrawing[currentDrawing.length - 1];
         if (!last || last.newRa !== closest.newRa || last.newDec !== closest.newDec) {
@@ -1879,7 +1998,16 @@ export default function ExoSkyV2({
 
     isDragging.current = false;
   };
-  const onWheel = e => { e.preventDefault(); setFov(p => Math.max(12, Math.min(160, p + (e.deltaY > 0 ? 5 : -5)))); };
+  // (1.7) A wheel notch moves the zoom target; the loop eases to it. React
+  // hears about it once the wheel rests, instead of re-rendering the whole
+  // simulator on every notch.
+  const onWheel = e => {
+    e.preventDefault();
+    const next = Math.max(12, Math.min(160, fovTargetRef.current + (e.deltaY > 0 ? 5 : -5)));
+    fovTargetRef.current = next;
+    if (fovPublishTimer.current) clearTimeout(fovPublishTimer.current);
+    fovPublishTimer.current = setTimeout(() => { fovPublishTimer.current = null; setFov(fovTargetRef.current); }, 140);
+  };
 
   // ── Constellation drawing actions ───────────────────
   const undoLastStar = () => setCurrentDrawing(prev => prev.slice(0, -1));
@@ -1996,7 +2124,7 @@ export default function ExoSkyV2({
         maxHeight: isMobile ? "30vh" : "calc(100% - 174px)",
         overflowY:"auto",
         background: PANEL_BG, border:"1px solid var(--sf-line)",
-        backdropFilter:"blur(16px)",borderRadius:0,padding:panelOpen?"14px 18px":"8px 14px",transition:`padding ${EASE}` }}>
+        borderRadius:0,padding:panelOpen?"14px 18px":"8px 14px",transition:`padding ${EASE}` }}>
         <button type="button" onClick={()=>setPanelOpen(!panelOpen)} aria-expanded={panelOpen} style={COLLAPSE}>
           <span style={SH}>OBSERVATION POINT</span>
           <span aria-hidden style={{color:"var(--t3)",fontSize:12}}>{panelOpen?"▾":"▸"}</span>
@@ -2247,7 +2375,6 @@ export default function ExoSkyV2({
         overflowY:"auto",
         background:PANEL_BG,
         border:"1px solid var(--sf-line)",
-        backdropFilter:"blur(16px)",
         borderRadius:0,
         padding:"16px 20px",
         transition:"right 280ms cubic-bezier(0.2, 0, 0, 1)",
@@ -2315,7 +2442,7 @@ export default function ExoSkyV2({
 
       {/* ── NAMING MODAL ── */}
       {namingMode && (
-        <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,zIndex:100,display:"flex",alignItems:"center",justifyContent:"center",background:"var(--sf-scrim)",backdropFilter:"blur(8px)"}}>
+        <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,zIndex:100,display:"flex",alignItems:"center",justifyContent:"center",background:"var(--sf-scrim)"}}>
           <div role="dialog" aria-modal="true" aria-label="Name your constellation" style={{background:"var(--sf-surface-elevated)",border:"1px solid var(--sf-line)",borderRadius:0,padding:"28px 32px",width:340,maxWidth:"90vw"}}>
             <div style={{...SH,marginBottom:12,fontSize:12,borderBottom:"1px solid var(--sf-line-hairline)",paddingBottom:8}}>NAME YOUR CONSTELLATION</div>
             
@@ -2389,7 +2516,7 @@ export default function ExoSkyV2({
           right: isMobile ? 18 : undefined,
           zIndex:20,
           background:PANEL_BG,border:"1px solid var(--sf-line)",
-          backdropFilter:"blur(16px)",borderRadius:0,padding:"14px 18px",maxHeight:"40vh",overflowY:"auto"}}>
+          borderRadius:0,padding:"14px 18px",maxHeight:"40vh",overflowY:"auto"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
             <span style={SH}>YOUR CONSTELLATIONS</span>
             <button type="button" onClick={() => setConsManagerOpen(false)} aria-label="Close constellation manager" style={{...MINI_BTN,border:"none",color:"var(--t3)"}}>✕</button>
@@ -2449,8 +2576,6 @@ export default function ExoSkyV2({
           overflowY: isMobile ? "auto" : undefined,
           background:PANEL_BG,
           border:"1px solid var(--sf-line)",
-          WebkitBackdropFilter:"blur(16px)",
-          backdropFilter:"blur(16px)",
           borderRadius:0,
           padding:"14px 18px",
           transition:"right 280ms cubic-bezier(0.2, 0, 0, 1)",
@@ -2500,7 +2625,9 @@ const FONT_HEADING = "var(--font-heading)";
 const FONT_SANS = "var(--font-sans)";
 const FONT_MONO = "var(--font-mono)";
 const EASE = "180ms cubic-bezier(0.2, 0, 0, 1)";
-const PANEL_BG = "rgb(var(--sf-surface-rgb) / 0.92)";
+// (1.7) Solid: a translucent, blurred panel over a canvas that repaints
+// every frame is re-blurred by the compositor on every frame.
+const PANEL_BG = "rgb(var(--sf-surface-rgb))";
 const SH = { fontSize:12,fontFamily:FONT_HEADING,fontWeight:500,letterSpacing:"0.12em",textTransform:"uppercase",color:"var(--sf-primary-text)",marginTop:0,marginBottom:2,paddingBottom:3,borderBottom:"1px solid var(--sf-line-hairline)",width:"100%",textAlign:"left" } as const;
 const COLLAPSE = { cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,width:"100%",minHeight:"var(--hit-min)",background:"none",border:"none",padding:0,color:"inherit" } as const;
 const LBL = { fontSize:12,fontFamily:FONT_SANS,fontWeight:400,color:"var(--t3)" };

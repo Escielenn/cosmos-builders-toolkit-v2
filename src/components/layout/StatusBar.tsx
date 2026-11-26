@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { isManuscriptPath } from "@/lib/manuscript-path";
+import { isSimulatorPath } from "@/lib/simulator-routes";
 import { useAuth } from "@/contexts/AuthContext";
 import { isMarketingPath, useDisplayPref } from "@/lib/display-prefs";
 import { JulianDayClock } from "@/components/ambient/JulianDayClock";
@@ -8,8 +9,6 @@ import { SolCounter } from "@/components/ambient/SolCounter";
 import { LunarPhase } from "@/components/ambient/LunarPhase";
 import { TargetStar } from "@/components/ambient/TargetStar";
 
-// Simulator routes, status bar hidden on these (same as TextureOverlay)
-const SIMULATOR_ROUTES = ["/rogue", "/tools/tidelock", "/tools/exosky", "/tools/stellar-cartographer"];
 
 /** Map pathname to a human-readable sector label */
 const getSectorLabel = (pathname: string): string => {
@@ -71,9 +70,8 @@ const StatusBar = () => {
   const pref = useDisplayPref("telemetry");
   const [elapsed, setElapsed] = useState(0);
 
-  const isSimulator = SIMULATOR_ROUTES.some(
-    (route) => pathname === route || pathname.startsWith(route + "/")
-  );
+  // Status bar hidden on simulator routes (same list as the texture overlay).
+  const isSimulator = isSimulatorPath(pathname);
   // The manuscript editor is a focused full-screen surface with its own
   // status footer — the global bar would overlap it.
   const isEditor = isManuscriptPath(pathname);

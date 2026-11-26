@@ -90,9 +90,9 @@ export default function NarrativeBridgePanel({
 
   // Expanded panel
   return (
-    <div className="absolute right-0 top-0 bottom-0 z-30 w-80 max-w-[92vw] bg-sf-void/95 backdrop-blur-sf-side border-l border-sf-line overflow-y-auto sf-sb animate-in slide-in-from-right duration-slow">
+    <div className="absolute right-0 top-0 bottom-0 z-30 w-80 max-w-[92vw] bg-sf-void border-l border-sf-line overflow-y-auto sf-sb animate-in slide-in-from-right duration-slow">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-sf-void/95 backdrop-blur-sf-side px-4 py-3 border-b border-sf-line-hairline">
+      <div className="sticky top-0 z-10 bg-sf-void px-4 py-3 border-b border-sf-line-hairline">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <PenLine className="w-3.5 h-3.5 text-sf-primary-text" />

@@ -39,7 +39,7 @@ export function SimFlagStrip({ flags, dismissedIds, onDismiss }: SimFlagStripPro
         // and a screen-reader label.
         const { Icon } = style;
         return (
-          <div key={f.id} className={`relative ${style.border} bg-sf-surface/90 py-2 pl-3 pr-11 backdrop-blur-sf-panel`}>
+          <div key={f.id} className={`relative ${style.border} bg-sf-surface py-2 pl-3 pr-11`}>
             <p className={`flex items-start gap-1.5 font-mono text-[12px] uppercase tracking-[1.2px] ${style.title}`}>
               <Icon className={`mt-0.5 h-3 w-3 shrink-0 ${style.icon}`} aria-hidden />
               <span className="sr-only">{style.kind}: </span>

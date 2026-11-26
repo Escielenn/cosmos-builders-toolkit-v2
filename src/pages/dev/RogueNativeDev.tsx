@@ -39,6 +39,7 @@ import {
 } from "@/lib/simulators/rogue-systems";
 import { TrailSet } from "@/lib/simulators/trail-buffer";
 import { toRoguePayload, fromRogueSave } from "@/lib/simulators/rogue-save";
+import { StepBudget, createFrameLoop, createRateGate } from "@/lib/sim/frame-loop";
 
 const HEADER_H = 64;
 
@@ -150,56 +151,87 @@ const RogueNativeDev = () => {
   }, [intruder, launched, system]);
 
   // ── The step loop ───────────────────────────────────────────────
+  //
+  // (1.7) Two changes, both about smoothness:
+  //   - The integrator used to run STEPS_PER_FRAME steps per FRAME, so the
+  //     encounter ran at the display's frame rate: half speed on a slow
+  //     frame, double on a 120 Hz panel. StepBudget hands out steps for the
+  //     time that actually passed (90 per 60 Hz frame, as before).
+  //   - Five React state updates used to fire every frame, re-rendering the
+  //     page and both panels at 60 Hz while the canvas was already drawing
+  //     from the ref. Readouts now publish at 10 Hz.
   useEffect(() => {
     if (!running) return;
-    let raf = 0;
     const reach = systemScale(system).extentAU;
+    const budget = new StepBudget(STEPS_PER_FRAME * 2);
+    const publishDue = createRateGate(10);
 
-    const frame = () => {
+    const startBodies = bodiesRef.current;
+
+    const publish = () => {
       const bodies = bodiesRef.current;
-      const dt = DT_BASE * speedScale;
-
-      for (let i = 0; i < STEPS_PER_FRAME; i++) {
-        physicsStep(bodies, dt, launched);
-
-        trailCounter.current++;
-        if (trailCounter.current >= TRAIL_EVERY) {
-          trailCounter.current = 0;
-          for (const b of bodies) {
-            if (b.isIntruder && !b.active) continue;
-            trails.for(b.name).push(b.x, b.y);
-          }
-        }
-
-        stepsSinceSnapshot.current++;
-        if (stepsSinceSnapshot.current >= 20) {
-          stepsSinceSnapshot.current = 0;
-          history.current.push({
-            years: simYearsRef.current,
-            bodies: bodies.map((b) => ({ ...b })),
-          });
-          if (history.current.length > 400) history.current.shift();
-        }
-        simYearsRef.current += dt;
-      }
-
+      publishedYears.current = simYearsRef.current;
       setSimYears(simYearsRef.current);
       const { status: next, ejected: gone } = classifyEncounter(bodies, launched, reach);
       setStatus(next);
       setEjected((prev) => (sameSet(prev, gone) ? prev : gone));
       setCanRewind(history.current.length > 1);
       setBodiesVersion((v) => v + 1);
-
-      raf = requestAnimationFrame(frame);
     };
 
-    raf = requestAnimationFrame(frame);
-    return () => cancelAnimationFrame(raf);
+    const loop = createFrameLoop({
+      render: ({ dt: frameMs, time }) => {
+        const bodies = bodiesRef.current;
+        const dt = DT_BASE * speedScale;
+        const steps = budget.take(frameMs, STEPS_PER_FRAME * 60);
+
+        for (let i = 0; i < steps; i++) {
+          physicsStep(bodies, dt, launched);
+
+          trailCounter.current++;
+          if (trailCounter.current >= TRAIL_EVERY) {
+            trailCounter.current = 0;
+            for (const b of bodies) {
+              if (b.isIntruder && !b.active) continue;
+              trails.for(b.name).push(b.x, b.y);
+            }
+          }
+
+          stepsSinceSnapshot.current++;
+          if (stepsSinceSnapshot.current >= 20) {
+            stepsSinceSnapshot.current = 0;
+            history.current.push({
+              years: simYearsRef.current,
+              bodies: bodies.map((b) => ({ ...b })),
+            });
+            if (history.current.length > 400) history.current.shift();
+          }
+          simYearsRef.current += dt;
+        }
+
+        if (steps > 0 && publishDue(time)) publish();
+      },
+    });
+    loop.start();
+    return () => {
+      loop.stop();
+      // Leave the panels on the final state, not the last 10 Hz sample,
+      // unless the scenario was rebuilt or rewound underneath the loop.
+      if (bodiesRef.current === startBodies) publish();
+    };
   }, [running, launched, speedScale, system, trails]);
 
   const simYearsRef = useRef(0);
+  /** The value the loop last published, so its own echo is not read back. */
+  const publishedYears = useRef(0);
   useEffect(() => {
-    simYearsRef.current = simYears;
+    // Only an outside change (reset, rewind, load) moves the clock. The
+    // loop's own 10 Hz publish must not, or it would rewind the simulation
+    // to a sample that is already a few frames old.
+    if (simYears !== publishedYears.current) {
+      publishedYears.current = simYears;
+      simYearsRef.current = simYears;
+    }
   }, [simYears]);
 
   // ── Actions ─────────────────────────────────────────────────────
