@@ -11,9 +11,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -27,7 +24,7 @@ import AudioSelectorDialog from "@/components/audio/AudioSelectorDialog";
 import { OPEN_AUDIO_SELECTOR_EVENT } from "@/components/audio/audio-events";
 import SettingsDialog from "@/components/settings/SettingsDialog";
 import GlobalSearch from "@/components/search/GlobalSearch";
-import { DisplayMenu, DisplayMenuItems, MENU_LABEL_CLASS } from "./DisplayMenu";
+import { DisplayMenu, DisplayMenuItems, MENU_LABEL_CLASS, MenuSection } from "./DisplayMenu";
 import { OPEN_CONTACT_EVENT, OPEN_FIELD_MANUAL_EVENT } from "./FABStack";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
@@ -127,6 +124,14 @@ const Header = () => {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [settingsTab, setSettingsTab] = useState("account");
   const [searchOpen, setSearchOpen] = useState(false);
+  // Profile menu: which in-place section is expanded (one at a time, so the
+  // menu stays short enough for a phone). Reset whenever the menu closes.
+  const [accountSection, setAccountSection] = useState<"display" | "help" | "about" | null>(null);
+  const sectionProps = (id: "display" | "help" | "about") => ({
+    id,
+    open: accountSection === id,
+    onOpenChange: (open: boolean) => setAccountSection(open ? id : null),
+  });
 
   // Keyboard shortcut for search (Cmd/Ctrl + K)
   useEffect(() => {
@@ -184,11 +189,9 @@ const Header = () => {
             </kbd>
           </button>
 
-          {!loading && !user && (
-            <span className="hidden sm:inline-flex">
-              <DisplayMenu />
-            </span>
-          )}
+          {/* Every width: on phones this is the only way to the display
+              settings when signed out. */}
+          {!loading && !user && <DisplayMenu />}
 
           {/* Quiet: a nav-weight link, not a filled or outlined button. */}
           {signedIn && !isSubscribed && (
@@ -283,7 +286,7 @@ const Header = () => {
           </Sheet>
 
           {signedIn ? (
-            <DropdownMenu modal={false}>
+            <DropdownMenu modal={false} onOpenChange={(open) => { if (!open) setAccountSection(null); }}>
               <DropdownMenuTrigger asChild>
                 <button
                   type="button"
@@ -296,7 +299,11 @@ const Header = () => {
                   </Avatar>
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-60 bg-sf-surface backdrop-blur-sf-side border-sf-line rounded-none">
+              <DropdownMenuContent
+                align="end"
+                collisionPadding={8}
+                className="w-64 max-w-[calc(100vw-16px)] max-h-[var(--radix-dropdown-menu-content-available-height)] overflow-y-auto sf-sb bg-sf-surface backdrop-blur-sf-side border-sf-line rounded-none"
+              >
                 <DropdownMenuLabel className="px-2 py-2 font-normal">
                   <span className="block truncate text-sm text-t1">{displayName}</span>
                   <span className="block font-heading text-sf-eyebrow uppercase text-t4">{tierLabel} account</span>
@@ -323,15 +330,13 @@ const Header = () => {
                   <Settings className="w-4 h-4 mr-2" />
                   Settings
                 </DropdownMenuItem>
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger>
-                    <SlidersHorizontal className="w-4 h-4 mr-2" />
-                    Display
-                  </DropdownMenuSubTrigger>
-                  <DropdownMenuSubContent className="w-56 bg-sf-surface border-sf-line rounded-none">
-                    <DisplayMenuItems onOpenBackgroundPicker={() => openSettings("background")} />
-                  </DropdownMenuSubContent>
-                </DropdownMenuSub>
+                <MenuSection
+                  {...sectionProps("display")}
+                  label="Display"
+                  icon={<SlidersHorizontal className="w-4 h-4 mr-2" aria-hidden="true" />}
+                >
+                  <DisplayMenuItems onOpenBackgroundPicker={() => openSettings("background")} />
+                </MenuSection>
                 <DropdownMenuItem onClick={() => openSettings("export")}>
                   <Download className="w-4 h-4 mr-2" />
                   Export Settings
@@ -341,12 +346,11 @@ const Header = () => {
                   {isSubscribed ? "Manage subscription" : "Upgrade to Pro"}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger>
-                    <HelpCircle className="w-4 h-4 mr-2" />
-                    Help
-                  </DropdownMenuSubTrigger>
-                  <DropdownMenuSubContent className="w-52 bg-sf-surface border-sf-line rounded-none">
+                <MenuSection
+                  {...sectionProps("help")}
+                  label="Help"
+                  icon={<HelpCircle className="w-4 h-4 mr-2" aria-hidden="true" />}
+                >
                     <DropdownMenuItem onClick={() => navigate("/guide")}>
                       <BookOpen className="w-4 h-4 mr-2" />
                       Guide
@@ -359,14 +363,12 @@ const Header = () => {
                       <MessageCircle className="w-4 h-4 mr-2" />
                       Open channel
                     </DropdownMenuItem>
-                  </DropdownMenuSubContent>
-                </DropdownMenuSub>
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger>
-                    <Info className="w-4 h-4 mr-2" />
-                    StellarForge
-                  </DropdownMenuSubTrigger>
-                  <DropdownMenuSubContent className="w-52 bg-sf-surface border-sf-line rounded-none">
+                </MenuSection>
+                <MenuSection
+                  {...sectionProps("about")}
+                  label="StellarForge"
+                  icon={<Info className="w-4 h-4 mr-2" aria-hidden="true" />}
+                >
                     <DropdownMenuItem onClick={() => navigate("/learn")}>
                       <BookOpen className="w-4 h-4 mr-2" />
                       SF University
@@ -387,8 +389,7 @@ const Header = () => {
                       <Info className="w-4 h-4 mr-2" />
                       About
                     </DropdownMenuItem>
-                  </DropdownMenuSubContent>
-                </DropdownMenuSub>
+                </MenuSection>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut className="w-4 h-4 mr-2" />
