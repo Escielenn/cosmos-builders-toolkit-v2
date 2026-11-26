@@ -55,10 +55,10 @@ export function WordHistoryChart(): JSX.Element {
     <figure className="mt-8" aria-labelledby="word-history-title">
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <div>
-          <h2 id="word-history-title" className="font-serif text-[20px] italic text-t1">
+          <h2 id="word-history-title" className="font-heading text-sf-eyebrow uppercase text-t4">
             Words written, by day
           </h2>
-          <p className="mt-1 font-serif text-[14px] italic text-t3">
+          <p className="mt-1 font-sans text-[14px] text-t2">
             {isLoading
               ? "Reading the ledger."
               : `${history.total.toLocaleString()} words across ${history.activeDays} ${
@@ -198,7 +198,7 @@ export function WordHistoryChart(): JSX.Element {
             <span>Today</span>
           </div>
           {!isLoading && history.total === 0 && (
-            <p className="mt-3 font-serif text-[14px] italic text-t3">
+            <p className="mt-3 font-sans text-[14px] text-t3">
               No words recorded in the last {range} days. The ledger fills as you write in the Studio.
             </p>
           )}

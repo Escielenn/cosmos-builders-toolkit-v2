@@ -178,7 +178,9 @@ export function PageHeader({
         <div
           className={cn(
             "flex min-w-0 items-start gap-4",
-            centred ? "flex-col items-center" : "flex-1",
+            // A 16rem basis, not 0: on a phone the actions wrap under the
+            // title instead of squeezing it to one word per line.
+            centred ? "flex-col items-center" : "flex-[1_1_16rem]",
           )}
         >
           {icon && <span className={cn("shrink-0", !centred && "mt-1")}>{icon}</span>}

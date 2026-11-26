@@ -17,7 +17,7 @@ const CodexQuickAccess = ({ worldId }: CodexQuickAccessProps) => {
   return (
     <div className="px-3 pt-2 pb-1">
       <div className="sf-divider mb-2" />
-      <span className="font-serif text-[13px] italic text-t3 block mb-2">
+      <span className="font-heading text-sf-eyebrow uppercase text-t4 block mb-2">
         Quick Access
       </span>
       {links.map((link) => (
