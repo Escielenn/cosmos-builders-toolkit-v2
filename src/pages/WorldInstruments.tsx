@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
 import {
   INSTRUMENT_IDS,
+  PRO_TOOL_IDS,
   SIMULATOR_TOOL_IDS,
   getToolDisplayName,
   getToolRoute,
