@@ -58,6 +58,8 @@ import {
   SelectionBar,
 } from "@/components/writing/BinderSearch";
 import { TargetsStatus } from "@/components/writing/TargetsPopover";
+import { RoomTools } from "@/components/writing/room/RoomTools";
+import { RoomStatus } from "@/components/writing/room/RoomStatus";
 import { PromptDialog } from "@/components/ui/prompt-dialog";
 import type { Editor, JSONContent } from "@tiptap/react";
 import {
@@ -394,6 +396,16 @@ export default function Write(): JSX.Element {
     [],
   );
   const editorInstance = editorState?.editor ?? null;
+  // 1.7 seam (RoomTools): the live editor of the OPEN document, or null while
+  // it loads or after it is destroyed. A stable function reading a ref, so
+  // the tools never re-render because the editor did.
+  const editorStateRef = useRef(editorState);
+  editorStateRef.current = editorState;
+  const getRoomEditor = useCallback((): Editor | null => {
+    const s = editorStateRef.current;
+    if (!s || s.editor.isDestroyed || s.docId !== (docIdRef.current ?? "")) return null;
+    return s.editor;
+  }, []);
 
   // Binder multi-selection, binder search, collections.
   const [selection, setSelection] = useState<string[]>([]);
@@ -1882,6 +1894,9 @@ export default function Write(): JSX.Element {
 
         {/* Page actions: icon group with tooltips (sm and up). */}
         <div className="hidden shrink-0 items-center sm:flex" role="group" aria-label="Page actions">
+          {!focus && (
+            <RoomTools worldId={worldId ?? null} documentId={docId ?? null} getEditor={getRoomEditor} />
+          )}
           {!focus && worldId && (
             <BarButton
               label={split.open ? "Close the split editor" : "Split: a second document, Codex entry or worksheet beside this one"}
@@ -1945,6 +1960,7 @@ export default function Write(): JSX.Element {
             <DropdownMenuSeparator />
             <DropdownMenuLabel>Export</DropdownMenuLabel>
             {exportItems}
+            <RoomTools worldId={worldId ?? null} documentId={docId ?? null} getEditor={getRoomEditor} compact />
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -2268,6 +2284,7 @@ export default function Write(): JSX.Element {
             already wrote session words to writing_sessions and never read them
             back, so the writer's own number was invisible while writing. */}
         <div className="flex min-w-0 items-center gap-2 whitespace-nowrap font-mono text-[12px] tracking-wide text-t4 sm:gap-3">
+          <RoomStatus worldId={worldId ?? null} documentId={docId ?? null} />
           <span>{words.toLocaleString()} WORDS</span>
           <span aria-hidden="true">·</span>
           {/* Session (the daily goal, now with a per-session reset), document
