@@ -36,7 +36,7 @@ import { EARTH_CALENDAR_ID } from "@/lib/timeline/types";
 import { EVENT_TYPES, EVENT_TYPE_MAP, IMPORTANCE_LEVELS, LINK_TYPE_CONFIG } from "@/lib/timeline/constants";
 import { formatDateRange, formatEventDateRange, calendarDateToEarthYear, getEventLinks, getEventElementLinks } from "@/lib/timeline/utils";
 import { getToolDisplayName } from "@/lib/worksheet-links-config";
-import { getToolIcon } from "@/components/icons/tool-icons";
+import { TOOL_GLYPH_IDS, ToolGlyph } from "@/components/icons/tool-icons";
 import { useTimeline } from "@/lib/timeline/context";
 import CalendarDateInput from "./CalendarDateInput";
 import { cn } from "@/lib/utils";
@@ -117,7 +117,7 @@ const EventDetailPanel = ({
         <SheetHeader>
           <div className="flex items-center gap-2">
             <span
-              className="w-3 h-3 rounded-full shrink-0"
+              className="w-3 h-3 rounded-none shrink-0"
               style={{ backgroundColor: color }}
             />
             <SheetTitle>{event.name}</SheetTitle>
@@ -147,7 +147,7 @@ const EventDetailPanel = ({
                   <SelectItem key={t.id} value={t.id}>
                     <span className="flex items-center gap-2">
                       <span
-                        className="w-2 h-2 rounded-full"
+                        className="w-2 h-2 rounded-none"
                         style={{ backgroundColor: t.color }}
                       />
                       {t.name}
@@ -409,7 +409,7 @@ const EventDetailPanel = ({
                         )}
                       >
                         <span
-                          className="w-1.5 h-1.5 rounded-full"
+                          className="w-1.5 h-1.5 rounded-none"
                           style={{ backgroundColor: t.color }}
                         />
                         {t.name}
@@ -514,14 +514,13 @@ const EventDetailPanel = ({
                 {elementLinks.length > 0 ? (
                   <div className="space-y-1">
                     {elementLinks.map((link) => {
-                      const ToolIcon = getToolIcon(link.toolType);
                       return (
                         <div
                           key={link.id}
                           className="flex items-center gap-1.5 px-2 py-1 rounded-none text-[12px] group"
                         >
-                          {ToolIcon ? (
-                            <ToolIcon className="w-3.5 h-3.5 rounded-none shrink-0" />
+                          {TOOL_GLYPH_IDS.includes(link.toolType) ? (
+                            <ToolGlyph toolId={link.toolType} className="w-4 h-4 text-t3" />
                           ) : (
                             <Link2 className="w-3 h-3 shrink-0 text-t3" />
                           )}

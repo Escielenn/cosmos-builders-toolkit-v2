@@ -215,9 +215,9 @@ const Profile = () => {
                 <AvatarImage src={avatarUrl} />
                 <AvatarFallback className="text-xl">{initials}</AvatarFallback>
               </Avatar>
-              <div className="space-y-2">
-                <div className="flex gap-2">
-                  <Label htmlFor="avatar" className="cursor-pointer">
+              <div className="min-w-0 space-y-2">
+                <div className="flex flex-wrap gap-2">
+                  <Label htmlFor="avatar" className="cursor-pointer normal-case tracking-normal text-sm">
                     <Button
                       variant="outline"
                       className="gap-2"
@@ -247,7 +247,7 @@ const Profile = () => {
                     variant="outline"
                     onClick={() => setAvatarPickerOpen(true)}
                   >
-                    Browse Avatars
+                    Browse avatars
                   </Button>
                 </div>
                 <p className="text-xs text-t3">

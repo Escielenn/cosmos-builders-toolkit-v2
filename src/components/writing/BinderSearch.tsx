@@ -213,7 +213,7 @@ export function BinderSearchResults({
           <li key={r.docId} className="border-t border-sf-line-hairline py-1">
             <div className="flex items-baseline gap-2 px-3 pt-1">
               <span
-                className={`min-w-0 flex-1 truncate font-serif text-[14px] ${r.docId === activeDocId ? "text-t1" : "text-t2"}`}
+                className={`min-w-0 flex-1 truncate font-sans text-[14px] ${r.docId === activeDocId ? "text-t1" : "text-t2"}`}
               >
                 {r.title}
               </span>
@@ -228,7 +228,7 @@ export function BinderSearchResults({
                     className="flex min-h-hit w-full flex-col justify-center px-3 py-1 text-left transition-colors duration-fast hover:bg-sf-surface-elevated"
                   >
                     <span className="font-mono text-[12px] uppercase text-t4">{FIELD_LABELS[h.field]}</span>
-                    <span className="line-clamp-2 font-serif text-[13px] text-t3">
+                    <span className="line-clamp-2 font-sans text-[13px] text-t3">
                       {h.before}
                       <mark className="bg-sf-primary/[0.18] text-t1">{h.match}</mark>
                       {h.after}
@@ -411,7 +411,7 @@ function CollectionRow({
       {expanded && members && (
         <ul className="pb-1">
           {members.length === 0 ? (
-            <li className="px-8 py-1 font-serif text-[13px] italic text-t3">
+            <li className="px-8 py-1 font-sans text-[13px] text-t3">
               {c.kind === "search" ? "Nothing matches this search now." : "Every document in it was removed."}
             </li>
           ) : (
@@ -421,7 +421,7 @@ function CollectionRow({
                   type="button"
                   onClick={() => onOpenDoc(m.id)}
                   aria-current={m.id === activeDocId ? "page" : undefined}
-                  className={`flex min-h-hit w-full items-center pl-8 pr-2 text-left font-serif text-[14px] transition-colors duration-fast hover:bg-sf-surface-elevated ${
+                  className={`flex min-h-hit w-full items-center pl-8 pr-2 text-left font-sans text-[14px] transition-colors duration-fast hover:bg-sf-surface-elevated ${
                     m.id === activeDocId ? "text-t1" : "text-t2"
                   }`}
                 >

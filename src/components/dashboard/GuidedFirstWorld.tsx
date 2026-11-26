@@ -17,7 +17,8 @@ import { GlassPanel } from "@/components/ui/glass-panel";
 const CASCADE_PATH = [
   {
     layer: "Stars & Systems",
-    color: "#FFB800",
+    color: "var(--sf-amber)",
+    text: "var(--sf-amber-text)",
     description: "Begin with the physics of your world",
     toolType: "star-system-builder",
     brandName: "Orrery",
@@ -25,35 +26,40 @@ const CASCADE_PATH = [
   },
   {
     layer: "Worlds",
-    color: "#4D9FFF",
+    color: "var(--sf-azure)",
+    text: "var(--sf-azure-text)",
     description: "Then define the planet",
     toolType: "planetary-profile",
     brandName: "Genesis",
   },
   {
     layer: "Life",
-    color: "#00FF88",
+    color: "var(--sf-emerald)",
+    text: "var(--sf-emerald-text)",
     description: "Then explore what lives there",
     toolType: "evolutionary-biology",
     brandName: "Phylo",
   },
   {
     layer: "Civilizations",
-    color: "#9B5DE5",
+    color: "var(--sf-violet)",
+    text: "var(--sf-violet-text)",
     description: "Then build the cultures",
     toolType: "empire-designer",
     brandName: "Dominion",
   },
   {
     layer: "Mythology",
-    color: "#5B8DEF",
+    color: "var(--sf-stellar)",
+    text: "var(--sf-stellar-text)",
     description: "Then discover their stories",
     toolType: "xenomythology-framework-builder",
     brandName: "Mythos",
   },
   {
     layer: "Integration",
-    color: "#15C17B",
+    color: "var(--sf-teal)",
+    text: "var(--sf-teal-text)",
     description: "Then trace the full cascade",
     toolType: "environmental-chain-reaction",
     brandName: "Cascade",
@@ -84,7 +90,7 @@ export default function GuidedFirstWorld({ worldId }: GuidedFirstWorldProps) {
             {/* Vertical connector line + dot */}
             <div className="relative flex flex-col items-center w-4 shrink-0">
               <div
-                className="w-2 h-2 rounded-full border-2 transition-colors"
+                className="w-2 h-2 rounded-none border-2 transition-colors"
                 style={{
                   borderColor: step.color,
                   backgroundColor: step.isStart ? step.color : "transparent",
@@ -100,7 +106,7 @@ export default function GuidedFirstWorld({ worldId }: GuidedFirstWorldProps) {
               <div className="flex items-baseline gap-2">
                 <span
                   className="font-heading text-[12px] uppercase tracking-wide"
-                  style={{ color: step.color }}
+                  style={{ color: step.text }}
                 >
                   {step.layer}
                 </span>

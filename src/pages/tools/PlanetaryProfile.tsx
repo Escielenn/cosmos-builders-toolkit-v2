@@ -38,11 +38,11 @@ import {
 } from "@/components/ui/collapsible";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import QuestionSection from "@/components/tools/QuestionSection";
-import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
+import KeyChoicesSidebar, { KeyChoicesSection } from "@/components/tools/KeyChoicesSidebar";
 import { useToast } from "@/hooks/use-toast";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
-import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
+import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
@@ -1460,11 +1460,6 @@ const PlanetaryProfile = () => {
           <KeyChoicesSidebar sections={keyChoicesSections} title="Planet Summary" mode="inline" />
         </ToolSidebar>
 
-        {/* Mobile Sidebars - Right side floating buttons */}
-        <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
-          <MobileSectionNav sections={SECTIONS} />
-          <MobileKeyChoices sections={keyChoicesSections} title="Planet Summary" />
-        </div>
       <WorksheetNotesSheet
         open={notesSheetOpen}
         onOpenChange={setNotesSheetOpen}

@@ -107,7 +107,7 @@ const SortableRow = ({
       style={style}
       className={cn(
         "group/sortable flex items-center",
-        isFolderDropTarget && "bg-primary/[0.08] outline outline-1 outline-primary/30"
+        isFolderDropTarget && "bg-primary/[0.08] outline outline-1 outline-sf-line-emphasis"
       )}
     >
       {/* Drag handle, only this triggers drag */}

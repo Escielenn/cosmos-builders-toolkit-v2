@@ -359,7 +359,7 @@ const PlanetaryFullReportTemplate = ({
         </PDFSection>
 
         <PDFSection title="6. Habitability Assessment">
-          <View style={{ padding: spacing.sm, backgroundColor: "#f5f5f5", borderRadius: 4, marginBottom: spacing.md }}>
+          <View style={{ padding: spacing.sm, backgroundColor: "#f5f5f5", marginBottom: spacing.md }}>
             <Text style={{ fontSize: typography.sizes.md, fontWeight: 600, color: colors.primary, textAlign: "center" }}>
               Tier {habitability?.habitabilityTier || "?"}: {tierInfo?.name || "Unclassified"}
             </Text>
@@ -414,7 +414,7 @@ const PlanetaryFullReportTemplate = ({
 
         <PDFSection title="8. The Three Pressures">
           {/* Survival Pressure */}
-          <View style={{ marginBottom: spacing.lg, padding: spacing.md, backgroundColor: "#fafafa", borderRadius: 4 }} wrap={false}>
+          <View style={{ marginBottom: spacing.lg, padding: spacing.md, backgroundColor: "#fafafa" }} wrap={false}>
             <Text style={{ fontSize: typography.sizes.md, fontWeight: 600, color: colors.primary, marginBottom: spacing.sm }}>
               1. Survival Pressure
             </Text>
@@ -440,7 +440,7 @@ const PlanetaryFullReportTemplate = ({
           </View>
 
           {/* Social Pressure */}
-          <View style={{ marginBottom: spacing.lg, padding: spacing.md, backgroundColor: "#fafafa", borderRadius: 4 }} wrap={false}>
+          <View style={{ marginBottom: spacing.lg, padding: spacing.md, backgroundColor: "#fafafa" }} wrap={false}>
             <Text style={{ fontSize: typography.sizes.md, fontWeight: 600, color: colors.primary, marginBottom: spacing.sm }}>
               2. Social Pressure
             </Text>
@@ -466,7 +466,7 @@ const PlanetaryFullReportTemplate = ({
           </View>
 
           {/* Psychological Pressure */}
-          <View style={{ marginBottom: spacing.lg, padding: spacing.md, backgroundColor: "#fafafa", borderRadius: 4 }} wrap={false}>
+          <View style={{ marginBottom: spacing.lg, padding: spacing.md, backgroundColor: "#fafafa" }} wrap={false}>
             <Text style={{ fontSize: typography.sizes.md, fontWeight: 600, color: colors.primary, marginBottom: spacing.sm }}>
               3. Psychological Pressure
             </Text>
@@ -523,7 +523,7 @@ const PlanetaryFullReportTemplate = ({
 
         {/* Consistency Check */}
         <PDFSection title="10. Consistency Check">
-          <View style={{ padding: spacing.sm, backgroundColor: "#f5f5f5", borderRadius: 4, marginBottom: spacing.md }}>
+          <View style={{ padding: spacing.sm, backgroundColor: "#f5f5f5", marginBottom: spacing.md }}>
             <Text style={{ fontSize: typography.sizes.sm, fontWeight: 600, textAlign: "center", color: consistencyScore === 5 ? "#22c55e" : colors.text.secondary }}>
               Consistency Score: {consistencyScore}/5
             </Text>

@@ -1,8 +1,7 @@
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
-import { ChevronDown, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye, Camera, Palette, Library, GripVertical, PenLine, Ship, ContactRound } from "lucide-react";
+import { ChevronDown, Edit, Globe, FileText, Rocket, Zap, Trash2, MoreVertical, Calculator, Plus, Sparkles, Pencil, ChevronRight, Dna, Network, Sun, Crown, Cpu, Users, Download, Layers, BookOpen, Atom, Clock, Archive, Tag, Orbit, Languages, Weight, Eye, Camera, Palette, Library, GripVertical, PenLine, Ship, ContactRound, ImageIcon } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { CosmicTelemetry } from "@/components/layout/CosmicVelocityTicker";
-import CascadeProgressBar from "@/components/dashboard/CascadeProgressBar";
 import GuidedFirstWorld from "@/components/dashboard/GuidedFirstWorld";
 import { EPOCH_DATA } from "@/lib/cosmic-telemetry";
 import TagBadge from "@/components/tags/TagBadge";
@@ -82,7 +81,7 @@ import { DeleteConfirmDialog } from "@/components/dialogs/DeleteConfirmDialog";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/hooks/use-toast";
 import { useMetaTags } from "@/hooks/use-meta-tags";
-import RecentActivity from "@/components/world/RecentActivity";
+import BridgeCockpit from "@/components/world/BridgeCockpit";
 import { PageContainer, PageHeader, Notice } from "@/components/layout/page-chrome";
 import WorldIconRenderer from "@/components/world/WorldIconRenderer";
 import { worldCrumbs } from "@/lib/world-crumbs";
@@ -293,7 +292,7 @@ const SortableToolCard = ({ tool, worldId }: { tool: typeof TOOLS[number]; world
         <GripVertical className="w-4 h-4" />
       </button>
       <Link to={`${tool.path}?worldId=${worldId}`}>
-        <GlassPanel className="p-5 h-full hover:bg-accent/50 transition-colors cursor-pointer">
+        <GlassPanel className="p-5 h-full hover:bg-sf-surface-elevated transition-colors cursor-pointer">
           <div className="flex items-start gap-3">
             {SvgIcon ? (
               <SvgIcon className="w-10 h-10 rounded-none shrink-0" />
@@ -709,6 +708,9 @@ const WorldDashboard = () => {
     );
   }
 
+  // One cover: the world's header image, else its appearance theme cover.
+  const coverUrl = world.header_image_url || world.theme?.cover_image_url || null;
+
   const dashboardContent = (
     <>
       <PageBursts bursts={WORLD_DASHBOARD_BURSTS} />
@@ -736,7 +738,7 @@ const WorldDashboard = () => {
               </Link>
             </Button>
             {isOwner && (
-              <Button variant="sf-ghost" size="sf-sm" onClick={() => setEditDialogOpen(true)}>
+              <Button variant="sf-ghost" size="sf-sm" className="hidden sm:inline-flex" onClick={() => setEditDialogOpen(true)}>
                 <Edit className="w-4 h-4 mr-2" aria-hidden />
                 Edit
               </Button>
@@ -746,7 +748,7 @@ const WorldDashboard = () => {
                 unrelated features rather than four ways to get data out. */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="sf-ghost" size="sf-sm">
+                <Button variant="sf-ghost" size="sf-sm" className="hidden sm:inline-flex">
                   <Download className="w-4 h-4 mr-2" aria-hidden />
                   Export
                   <ChevronDown className="w-3.5 h-3.5 ml-1.5" aria-hidden="true" />
@@ -790,6 +792,24 @@ const WorldDashboard = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
+                {/* Phones: Edit and Export fold in here (one primary + overflow). */}
+                {isOwner && (
+                  <DropdownMenuItem className="sm:hidden" onClick={() => setEditDialogOpen(true)}>
+                    <Edit className="w-4 h-4 mr-2" />
+                    Edit World
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem className="sm:hidden" onClick={() => setExportDialogOpen(true)}>
+                  <Download className="w-4 h-4 mr-2" />
+                  Export world…
+                </DropdownMenuItem>
+                {isOwner && (
+                  <DropdownMenuItem onClick={() => setEditDialogOpen(true)}>
+                    <ImageIcon className="w-4 h-4 mr-2" />
+                    {world.header_image_url ? "Change cover" : "Add cover"}
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator className="sm:hidden" />
                 <DropdownMenuItem asChild>
                   <Link to={`/worlds/${worldId}/codex`}>
                     <Library className="w-4 h-4 mr-2" />
@@ -810,7 +830,7 @@ const WorldDashboard = () => {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 {isOwner && (
-                <DropdownMenuItem onClick={() => setEditDialogOpen(true)}>
+                <DropdownMenuItem className="hidden sm:flex" onClick={() => setEditDialogOpen(true)}>
                   <Edit className="w-4 h-4 mr-2" />
                   Edit World
                 </DropdownMenuItem>
@@ -862,43 +882,45 @@ const WorldDashboard = () => {
           </Notice>
         )}
 
-        {/* Theme Cover Image */}
-        {world.theme?.cover_image_url && (
-          <div className="relative w-full h-[200px] mb-6 overflow-hidden">
-            <img
-              src={world.theme.cover_image_url}
-              alt={world.name}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute bottom-0 left-0 right-0 h-[60%] bg-gradient-to-t from-background to-transparent" />
-          </div>
-        )}
-
-        {/* Cover: image, tags, last updated, cascade progress. No second title. */}
-        <div className="mb-8">
-          <WorldHeader
-            name={world.name}
-            headerImageUrl={world.header_image_url}
-            headerImageFocusY={world.header_image_focus_y}
-            tags={world.tags || []}
-            onEditClick={isOwner ? () => setEditDialogOpen(true) : undefined}
-            onAddTag={() => setTagsDialogOpen(true)}
-            canEdit={canEdit}
-            meta={
-              <>
-                <p className="font-mono text-sf-mono uppercase text-t4">
-                  Updated {format(new Date(world.updated_at), "MMM d, yyyy")}
-                </p>
-                {worksheets.length > 0 && (
-                  <CascadeProgressBar worksheetToolTypes={worksheets.map((w) => w.tool_type)} />
-                )}
-              </>
-            }
-          />
+        {/* Meta line: last updated + tags. Replaces the cover card, whose
+            empty state was a full-width dashed "Add header image" box
+            (1.6 finding 17). Adding a cover lives in the header menu. */}
+        <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <p className="font-mono text-sf-mono uppercase text-t4">
+            Updated {format(new Date(world.updated_at), "MMM d, yyyy")}
+          </p>
+          {(world.tags?.length ?? 0) > 0 && (
+            <div className="flex flex-wrap items-center gap-1.5">
+              {(world.tags ?? []).map((tag) => {
+                const hash = tag.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+                return <TagBadge key={tag} name={tag} color={getTagColor(hash)} size="sm" />;
+              })}
+            </div>
+          )}
+          {canEdit && (
+            <button
+              type="button"
+              onClick={() => setTagsDialogOpen(true)}
+              className="inline-flex min-h-hit items-center gap-1 font-sans text-[14px] text-t3 transition-colors duration-base hover:text-t1"
+            >
+              <Plus className="h-3.5 w-3.5" aria-hidden />
+              {(world.tags?.length ?? 0) > 0 ? "Tag" : "Add tags"}
+            </button>
+          )}
         </div>
 
-        {/* Recent Activity */}
-        {worldId && <RecentActivity worldId={worldId} />}
+        {/* Cover: an optional compact band, only when one is set. */}
+        {coverUrl && (
+          <WorldHeader
+            name={world.name}
+            headerImageUrl={coverUrl}
+            headerImageFocusY={world.header_image_url ? world.header_image_focus_y : 50}
+            onEditClick={isOwner ? () => setEditDialogOpen(true) : undefined}
+          />
+        )}
+
+        {/* The cockpit (1.6 finding 17). */}
+        {worldId && <BridgeCockpit worldId={worldId} />}
 
         {/* ── Drawers ────────────────────────────────────────────────
             Opening a world should answer "where was I, and what next?".
@@ -940,7 +962,7 @@ const WorldDashboard = () => {
         {/* Version History, owner only */}
         {isOwner && worldId && openDrawer === "history" && (
           <section className="mb-8">
-            <VersionHistory worldId={worldId} worldName={world.name} />
+            <VersionHistory worldId={worldId} worldName={world.name} defaultExpanded onTakeSnapshot={() => setSnapshotDialogOpen(true)} />
           </section>
         )}
 
@@ -1110,7 +1132,7 @@ const WorldDashboard = () => {
           <div className="space-y-4 py-4">
             {/* Header Image */}
             <div className="space-y-2">
-              <Label>Header Image</Label>
+              <Label>Cover image</Label>
               <HeaderImageUpload
                 currentImageUrl={editHeaderImageUrl}
                 onImageChange={(url) => {

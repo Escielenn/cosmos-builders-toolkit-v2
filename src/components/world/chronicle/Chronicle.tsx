@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
@@ -19,7 +19,6 @@ import { DeleteEventDialog } from "./DeleteEventDialog";
 import { useToast } from "@/hooks/use-toast";
 import FirstTimeHint from "@/components/onboarding/FirstTimeHint";
 import { ScrollText } from "lucide-react";
-import { EmptyState } from "@/components/ui/empty-state";
 import { cn } from "@/lib/utils";
 import { mapError } from "@/lib/ship-voice";
 import { BRANCHES_OFFLINE } from "@/services/chronicle-branches";
@@ -105,6 +104,15 @@ export function Chronicle({ worldId }: ChronicleProps) {
     setDefaultBranchId(null);
     setDialogOpen(true);
   }, []);
+
+  // `?log=1` (the Bridge's "Log first event") opens the dialog on arrival.
+  useEffect(() => {
+    if (searchParams.get("log") !== "1") return;
+    handleAddEvent();
+    const next = new URLSearchParams(searchParams);
+    next.delete("log");
+    setSearchParams(next, { replace: true });
+  }, [searchParams, setSearchParams, handleAddEvent]);
 
   const handleLogOnBranch = useCallback((branchId: string | null) => {
     setEditingEvent(null);
@@ -244,16 +252,15 @@ export function Chronicle({ worldId }: ChronicleProps) {
         />
       )}
 
-      {/* Empty state */}
+      {/* Empty state: one line, one action (1.6). */}
       {view === "list" && isEmpty && (
-        <EmptyState
-          warm
-          hideDial
-          className="py-24"
-          eyebrow="// CHRONICLE"
-          title="No events yet."
-          description="LOG THE FIRST EVENT TO BEGIN THE CHRONICLE."
-        />
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-y border-sf-line-hairline py-3">
+          <p className="font-sans text-sf-body text-t2">No events on file.</p>
+          <Button variant="sf-ghost" size="sf-sm" onClick={handleAddEvent}>
+            <Plus className="w-4 h-4 mr-2" aria-hidden />
+            Log first event
+          </Button>
+        </div>
       )}
 
       {/* Timeline */}

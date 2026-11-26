@@ -231,7 +231,7 @@ const WorldCard = ({
             {snapshotAt && (
               <span
                 className={cn(
-                  "w-2 h-2 rounded-full shrink-0",
+                  "w-2 h-2 rounded-none shrink-0",
                   Date.now() - new Date(snapshotAt).getTime() < 3_600_000
                     ? "bg-sf-emerald"
                     : Date.now() - new Date(snapshotAt).getTime() < 86_400_000

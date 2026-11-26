@@ -27,19 +27,19 @@ const PresenceAvatars = ({ presences }: PresenceAvatarsProps) => {
           <Tooltip key={p.userId}>
             <TooltipTrigger asChild>
               <div
-                className="w-6 h-6 rounded-full shrink-0 ring-2 -ml-1 first:ml-0 transition-transform hover:scale-110"
+                className="w-6 h-6 rounded-none shrink-0 ring-2 -ml-1 first:ml-0 transition-transform hover:scale-110"
                 style={presenceRingStyle(p.color)}
               >
                 {p.avatarUrl ? (
                   <img
                     src={p.avatarUrl}
                     alt=""
-                    className="w-full h-full rounded-full object-cover"
+                    className="w-full h-full rounded-none object-cover"
                     style={{ outline: `2px solid ${p.color}` }}
                   />
                 ) : (
                   <div
-                    className="w-full h-full rounded-full flex items-center justify-center text-[12px] font-medium text-t1"
+                    className="w-full h-full rounded-none flex items-center justify-center text-[12px] font-medium text-t1"
                     style={{ backgroundColor: p.color }}
                   >
                     {(p.displayName || "?").charAt(0).toUpperCase()}
@@ -55,7 +55,7 @@ const PresenceAvatars = ({ presences }: PresenceAvatarsProps) => {
         {overflow > 0 && (
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-[12px] font-medium text-t3 -ml-1 ring-2 ring-border">
+              <div className="w-6 h-6 rounded-none bg-muted flex items-center justify-center text-[12px] font-medium text-t3 -ml-1 ring-2 ring-border">
                 +{overflow}
               </div>
             </TooltipTrigger>

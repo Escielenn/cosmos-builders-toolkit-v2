@@ -35,7 +35,15 @@ const TABS: { id: Tab; label: string; pro?: boolean }[] = [
 
 export { OPEN_AUDIO_SELECTOR_EVENT };
 
-export default function AudioSelectorDialog() {
+interface AudioSelectorDialogProps {
+  /**
+   * Render the header's music button. The 1.6 header opens the dialog from
+   * its Display menu (OPEN_AUDIO_SELECTOR_EVENT) and passes false.
+   */
+  showTrigger?: boolean;
+}
+
+export default function AudioSelectorDialog({ showTrigger = true }: AudioSelectorDialogProps = {}) {
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>("curated");
   const [expandedPlaylist, setExpandedPlaylist] = useState<AudioPlaylist | null>(null);
@@ -49,6 +57,7 @@ export default function AudioSelectorDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
+      {showTrigger && (
       <DialogTrigger asChild>
         <button
           className="sf-nav-link inline-flex items-center justify-center w-11 h-11 min-h-hit min-w-hit text-t3 hover:text-sf-primary-text transition-colors"
@@ -57,6 +66,7 @@ export default function AudioSelectorDialog() {
           <Music className="w-4 h-4 relative z-[1]" />
         </button>
       </DialogTrigger>
+      )}
 
       <DialogContent className="sm:max-w-xl max-h-[80vh] flex flex-col">
         <DialogHeader>

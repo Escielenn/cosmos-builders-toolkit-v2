@@ -5,7 +5,7 @@ import { defineConfig, devices } from "@playwright/test";
 // e2e/fixtures.ts intercepts). In CI the browser comes from
 // `npx playwright install --with-deps chromium`; locally the sandbox ships
 // one at /opt/pw-browsers/chromium (override with PW_CHROMIUM_PATH).
-const PORT = 4317;
+const PORT = Number(process.env.E2E_PORT ?? 4317);
 const CI = !!process.env.CI;
 const executablePath = CI ? undefined : (process.env.PW_CHROMIUM_PATH ?? "/opt/pw-browsers/chromium");
 

@@ -183,7 +183,7 @@ export default function SolarisEditPanel({
                   title={`Add ${p.name}`}
                   className="flex items-center gap-1 px-3 py-0.5 border border-sf-line bg-sf-surface hover:border-sf-primary hover:bg-sf-primary/[0.06] text-[12px] uppercase tracking-wide text-t3 rounded-none"
                 >
-                  <span className="w-2 h-2 rounded-full" style={{ background: p.color }} />
+                  <span className="w-2 h-2 rounded-none" style={{ background: p.color }} />
                   {p.name}
                 </button>
               ))}

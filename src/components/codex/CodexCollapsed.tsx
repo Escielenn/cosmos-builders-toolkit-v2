@@ -38,7 +38,7 @@ const CodexCollapsed = ({ sections, onExpand }: CodexCollapsedProps) => {
         >
           <span
             className={cn(
-              "w-2 h-2 rounded-full",
+              "w-2 h-2 rounded-none",
               section.elements.length > 0
                 ? LAYER_DOT_COLORS[section.key] ?? "bg-muted-foreground/30"
                 : "border border-sf-line"

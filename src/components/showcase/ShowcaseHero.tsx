@@ -1,168 +1,41 @@
-import { Rocket, CreditCard, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { GlassPanel } from "@/components/ui/glass-panel";
-
-const ShowcaseHero = () => {
-  return (
-    <section className="pt-24 pb-16 md:pt-32 md:pb-24">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          {/* Badge */}
-          <Badge className="mb-8 sf-reveal sf-reveal-1" variant="secondary">
-            <Sparkles className="w-3 h-3 mr-1" />
-            SYSTEMS OVERVIEW
-          </Badge>
-
-          {/* Headline */}
-          <h1 className="font-display font-light text-4xl md:text-5xl lg:text-7xl mb-6 leading-tight sf-reveal sf-reveal-2">
-            <span className="uppercase tracking-wide">INSTRUMENT</span>
-            <br />
-            <span className="gradient-text uppercase tracking-wide">MANIFEST</span>
-          </h1>
-
-          {/* Subhead — Lora-italic lead-in for the Studio warmth (meld) */}
-          <p className="text-lg md:text-xl text-t2 max-w-3xl mx-auto mb-10 leading-relaxed sf-reveal sf-reveal-3">
-            <span className="font-serif italic text-t1">Every parameter cascades.</span>{" "}
-            Every choice has consequences. Build worlds where the physics shapes the
-            environment, the environment shapes the biology, and the biology shapes the culture.
-          </p>
-
-          {/* CTAs */}
-          <div className="flex flex-wrap gap-4 justify-center sf-reveal sf-reveal-4">
-            <Button size="lg" className="gap-2 text-base px-8" asChild>
-              <Link to="/auth">
-                <Rocket className="w-5 h-5" />
-                Start Free
-              </Link>
-            </Button>
-            <Button variant="outline" size="lg" className="gap-2 text-base px-8" asChild>
-              <Link to="/pricing">
-                <CreditCard className="w-5 h-5" />
-                View Pricing
-              </Link>
-            </Button>
-          </div>
-        </div>
-
-        {/* Animated Dashboard Preview */}
-        <div className="max-w-5xl mx-auto sf-reveal sf-reveal-5">
-          <GlassPanel lightArc className="p-6 md:p-8">
-            <DashboardMockup />
-          </GlassPanel>
-        </div>
-      </div>
-    </section>
-  );
-};
+import { Eyebrow } from "@/components/landing/marketing-ui";
 
 /**
- * Animated dashboard mockup showing floating tool cards
+ * Features hero (finding 4, 5). Same voice as the landing: mono eyebrow,
+ * MD Nichrome headline with one Lora accent line, a short lede, one primary
+ * and one secondary action. No demo grid, no all-caps manifest.
  */
-const DashboardMockup = () => {
+const ShowcaseHero = () => {
   return (
-    <div className="relative aspect-[16/9] overflow-hidden rounded-none bg-sf-void/50">
-      {/* Grid background */}
-      <div className="absolute inset-0 grid-bg opacity-30" />
-
-      {/* Floating tool cards */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="grid grid-cols-3 gap-4 md:gap-6 p-4 md:p-8">
-          {/* Tool card mockups with staggered animations */}
-          <MockToolCard
-            title="Drake Equation"
-            value="N = 42"
-            delay={0}
-            color="primary"
-          />
-          <MockToolCard
-            title="Planetary Profile"
-            value="Earth-like"
-            delay={0.2}
-            color="amber"
-          />
-          <MockToolCard
-            title="Xenomythology"
-            value="12 Archetypes"
-            delay={0.4}
-            color="violet"
-          />
-          <MockToolCard
-            title="ECR Cascade"
-            value="5 Levels"
-            delay={0.6}
-            color="emerald"
-          />
-          <MockToolCard
-            title="Spacecraft"
-            value="ISV Aurora"
-            delay={0.8}
-            color="azure"
-          />
-          <MockToolCard
-            title="Evolutionary Bio"
-            value="Carbon-based"
-            delay={1.0}
-            color="magenta"
-          />
-        </div>
+    <section aria-labelledby="features-title" className="pt-8 pb-12 md:pt-20 md:pb-16">
+      <Eyebrow className="mb-6">How StellarForge works</Eyebrow>
+      <h1
+        id="features-title"
+        className="mb-6 font-display text-[clamp(40px,6vw,72px)] font-light leading-[1.04] text-t1"
+      >
+        The world decides.
+        <em className="block font-serif font-normal italic text-sf-primary-text">The page remembers.</em>
+      </h1>
+      <p className="mb-8 max-w-[60ch] font-sans text-[17px] leading-[1.6] text-t2 md:text-[19px]">
+        Instruments for the physics, the planet, the life, the minds, the myths
+        and the cultures of your universe, wired into one canon and one writing
+        studio. Here is what that means in practice.
+      </p>
+      <div className="flex flex-wrap gap-3">
+        <Button variant="sf-primary" size="sf-lg" className="gap-2" asChild>
+          <Link to="/auth">
+            Start writing free
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </Link>
+        </Button>
+        <Button variant="sf-ghost" size="sf-lg" asChild>
+          <Link to="/pricing">See pricing</Link>
+        </Button>
       </div>
-
-      {/* Subtle scan line accent */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-sf-primary/20 to-transparent" />
-      </div>
-    </div>
-  );
-};
-
-interface MockToolCardProps {
-  title: string;
-  value: string;
-  delay: number;
-  color: "primary" | "amber" | "violet" | "emerald" | "azure" | "magenta";
-}
-
-const MockToolCard = ({ title, value, delay, color }: MockToolCardProps) => {
-  const colorMap = {
-    primary: "border-sf-primary",
-    amber: "border-sf-amber",
-    violet: "border-sf-violet",
-    emerald: "border-sf-emerald",
-    azure: "border-sf-azure",
-    magenta: "border-sf-magenta",
-  };
-
-  const textColorMap = {
-    primary: "text-sf-primary-text",
-    amber: "text-sf-amber-text",
-    violet: "text-sf-violet-text",
-    emerald: "text-sf-emerald-text",
-    azure: "text-sf-azure-text",
-    magenta: "text-sf-magenta-text",
-  };
-
-  return (
-    <div
-      className={`
-        bg-sf-surface/80 backdrop-blur-sm border rounded-none p-3 md:p-4
-        transform transition-all duration-slow
-        hover:scale-105 hover:z-10
-        ${colorMap[color]}
-      `}
-      style={{
-        animation: `float-card 3s ease-in-out infinite`,
-        animationDelay: `${delay}s`,
-      }}
-    >
-      <div className="text-xs text-t3 uppercase tracking-wider mb-1">
-        {title}
-      </div>
-      <div className={`text-sm md:text-base font-heading font-light ${textColorMap[color]}`}>
-        {value}
-      </div>
-    </div>
+    </section>
   );
 };
 

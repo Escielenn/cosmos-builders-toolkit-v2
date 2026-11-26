@@ -46,7 +46,7 @@ export function TagFilter({
         <Badge
           key={tag}
           variant="outline"
-          className="cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors"
+          className="cursor-pointer hover:bg-sf-surface-elevated hover:text-t1 transition-colors"
           onClick={() => onTagSelect(tag)}
         >
           {tag}

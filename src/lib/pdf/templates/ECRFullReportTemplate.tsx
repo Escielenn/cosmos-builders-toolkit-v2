@@ -208,7 +208,7 @@ const ECRFullReportTemplate = ({
                   : parameter?.specificValues?.[param];
 
               return (
-                <View key={param} style={{ marginBottom: spacing.md, padding: spacing.sm, backgroundColor: "#f5f5f5", borderRadius: 4 }} wrap={false}>
+                <View key={param} style={{ marginBottom: spacing.md, padding: spacing.sm, backgroundColor: "#f5f5f5" }} wrap={false}>
                   <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted }}>{info.category}</Text>
                   <Text style={{ fontSize: typography.sizes.md, fontWeight: 600, color: colors.primary, marginTop: 2 }}>
                     {info.option}
@@ -250,7 +250,6 @@ const ECRFullReportTemplate = ({
                 <View style={{
                   width: 32,
                   height: 32,
-                  borderRadius: 8,
                   backgroundColor: colors.primary,
                   justifyContent: "center",
                   alignItems: "center",
@@ -415,7 +414,7 @@ const ECRFullReportTemplate = ({
         </PDFSection>
 
         {/* Final Quote */}
-        <View style={{ marginTop: spacing.xl, padding: spacing.md, backgroundColor: "#f5f5f5", borderRadius: 4 }}>
+        <View style={{ marginTop: spacing.xl, padding: spacing.md, backgroundColor: "#f5f5f5" }}>
           <Text style={{ fontSize: typography.sizes.sm, color: colors.text.secondary, fontStyle: "italic", textAlign: "center", lineHeight: 1.5 }}>
             "The most believable worlds aren't the most complex, they're the most internally consistent.
             Every element should cascade logically from your core environmental choice."

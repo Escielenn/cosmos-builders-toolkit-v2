@@ -207,7 +207,7 @@ const TemplatePicker = ({
                       {template.tracks.map((t, i) => (
                         <span
                           key={i}
-                          className="w-2 h-2 rounded-full"
+                          className="w-2 h-2 rounded-none"
                           style={{ backgroundColor: t.color }}
                         />
                       ))}

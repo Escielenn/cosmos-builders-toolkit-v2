@@ -52,16 +52,16 @@ export default function ContinueWriting({ targets, isLoading, onBeginSurvey }: C
   }
 
   return (
-    <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {targets.map(({ world, doc, lastTouched }) => (
         <li key={world.id}>
-          <GlassPanel hover className="p-5 h-full flex flex-col gap-4">
+          <GlassPanel hover className="p-4 md:p-5 h-full flex flex-col gap-3">
             <Link
               to={`/worlds/${world.id}`}
               className="flex min-h-hit items-center gap-3 text-t1 hover:text-sf-primary-text transition-colors duration-base"
             >
               <WorldIconRenderer iconId={world.icon ?? "globe"} className="w-6 h-6 shrink-0 text-sf-primary-text" />
-              <span className="font-heading text-sf-h3 truncate">{world.name}</span>
+              <span className="truncate font-sans text-[18px] font-medium">{world.name}</span>
             </Link>
 
             <div className="flex-1 min-w-0">

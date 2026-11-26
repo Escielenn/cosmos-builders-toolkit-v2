@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { ArrowUp, ArrowDown, List } from "lucide-react";
+import { createPortal } from "react-dom";
+import { ArrowUp, ArrowDown } from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useRailSlot, useToolRail } from "@/components/tools/tool-rail";
+import { useToolReadOnly } from "@/contexts/ToolPreviewContext";
 
 export interface Section {
   id: string;
@@ -14,256 +15,149 @@ export interface Section {
 interface SectionNavigationProps {
   sections: Section[];
   /**
-   * 'floating' (default): Fixed position with mobile sheet
-   * 'inline': Returns just the panel for use inside ToolSidebar
+   * Kept for the call sites. Inside a ToolPageLayout both modes render into
+   * the page's one right rail (the "Sections" tab); the prop only matters
+   * outside one, where 'floating' is a fixed panel and 'inline' a plain one.
    */
-  mode?: 'floating' | 'inline';
+  mode?: "floating" | "inline";
 }
 
-const SectionNavigation = ({ sections, mode = 'floating' }: SectionNavigationProps) => {
+function useActiveSection(sections: Section[]): string {
   const [activeSection, setActiveSection] = useState<string>("");
-  const [isOpen, setIsOpen] = useState(false);
-
   useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return;
     const observer = new IntersectionObserver(
       (entries) => {
-        // Find the first visible section
         const visibleEntry = entries.find((entry) => entry.isIntersecting);
-        if (visibleEntry) {
-          setActiveSection(visibleEntry.target.id);
-        }
+        if (visibleEntry) setActiveSection(visibleEntry.target.id);
       },
-      { threshold: 0.2, rootMargin: "-100px 0px -50% 0px" }
+      { threshold: 0.2, rootMargin: "-100px 0px -50% 0px" },
     );
-
-    // Observe each section
     sections.forEach((section) => {
       const element = document.getElementById(section.id);
-      if (element) {
-        observer.observe(element);
-      }
+      if (element) observer.observe(element);
     });
-
     return () => observer.disconnect();
   }, [sections]);
+  return activeSection;
+}
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      const offset = 100; // Account for fixed header
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - offset;
+/**
+ * scrollIntoView rather than window.scrollTo: inside a world the page
+ * scrolls in .sf-world-main, not the window, and every section already
+ * carries scroll-mt-24 for the sticky chrome.
+ */
+function scrollToId(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
 
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth",
-      });
-      setIsOpen(false);
-    }
-  };
+function scrollToEdge(edge: "top" | "bottom") {
+  const main = document.getElementById("main");
+  const target = main && main.scrollHeight > main.clientHeight ? main : null;
+  const top = edge === "top" ? 0 : (target ?? document.documentElement).scrollHeight;
+  (target ?? window).scrollTo({ top, behavior: "smooth" });
+}
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    setIsOpen(false);
-  };
-
-  const scrollToBottom = () => {
-    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "smooth" });
-    setIsOpen(false);
-  };
-
-  const NavigationContent = () => (
-    <>
-      <h4 className="font-heading text-[12px] font-medium tracking-[0.10em] uppercase text-sf-primary-text mb-3 pb-2 border-b border-sf-primary">
-        <span className="font-mono text-sf-primary-text mr-1">//</span> NAVIGATION
-      </h4>
-      <nav className="space-y-0.5">
-        {sections.map((section, idx) => {
-          const num = String(idx + 1).padStart(2, "0");
-          return (
-            <button
-              type="button"
-              key={section.id}
-              onClick={() => scrollToSection(section.id)}
-              data-active={activeSection === section.id}
-              className={cn(
-                "sf-instrument-nav-item block text-left w-full",
-                section.level === 2 && "pl-6 text-[12px]",
-              )}
-            >
-              <span className="sf-instrument-nav-number">{num}</span>
-              {section.title}
-            </button>
-          );
-        })}
-      </nav>
-      <div className="flex flex-col gap-2 mt-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full"
-          onClick={scrollToTop}
-        >
-          <ArrowUp className="w-4 h-4 mr-2" />
-          RETURN TO TOP
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full"
-          onClick={scrollToBottom}
-        >
-          <ArrowDown className="w-4 h-4 mr-2" />
-          GO TO BOTTOM
-        </Button>
-      </div>
-    </>
-  );
-
-  // Inline mode: return just the panel for use inside ToolSidebar
-  if (mode === 'inline') {
+function SectionList({
+  sections,
+  activeSection,
+  onNavigate,
+  readOnly = false,
+}: {
+  sections: Section[];
+  activeSection: string;
+  onNavigate?: () => void;
+  readOnly?: boolean;
+}) {
+  // Preview (ProToolGuard): the section list says what is inside; nothing jumps.
+  if (readOnly) {
     return (
-      <GlassPanel className="p-4 max-h-[40vh] overflow-y-auto w-56 sf-sb">
-        <NavigationContent />
-      </GlassPanel>
+      <ol className="space-y-0.5" aria-label="Sections">
+        {sections.map((section, idx) => (
+          <li key={section.id} className={cn("sf-instrument-nav-item", section.level === 2 && "pl-6")}>
+            <span className="sf-instrument-nav-number">{String(idx + 1).padStart(2, "0")}</span>
+            {section.title}
+          </li>
+        ))}
+      </ol>
     );
   }
 
-  // Floating mode: fixed position with mobile sheet
   return (
     <>
-      {/* Desktop Navigation - Fixed sidebar */}
-      <div className="fixed right-4 top-1/2 -translate-y-1/2 hidden xl:block z-50 no-print">
-        <GlassPanel className="p-4 max-h-[70vh] overflow-y-auto w-52 sf-sb">
-          <NavigationContent />
-        </GlassPanel>
-      </div>
-
-      {/* Mobile/Tablet Navigation - Floating button + Sheet.
-          bottom-24 (not bottom-4): FABStack's help button is fixed in the
-          same right-4 corner at bottom-6, so anchoring this at bottom-4 put
-          the two floating triggers directly on top of each other. Stacked
-          above it instead — KeyChoicesSidebar already owns the left-4
-          corner, so switching sides was not an option. */}
-      <div className="fixed right-4 bottom-24 xl:hidden z-50 no-print">
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger asChild>
-            <Button
-              size="lg"
-              className="rounded-none w-auto h-auto px-3 py-2.5 shadow-lg"
-            >
-              <List className="w-4 h-4 mr-2" />
-              <span className="text-[12px] tracking-[0.12em] uppercase font-heading">NAV</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-72 bg-sf-surface/95 backdrop-blur-sf-side border-sf-line sf-sb">
-            <div className="pt-6">
-              <NavigationContent />
-            </div>
-          </SheetContent>
-        </Sheet>
+      <nav aria-label="Sections" className="space-y-0.5">
+        {sections.map((section, idx) => (
+          <button
+            type="button"
+            key={section.id}
+            onClick={() => {
+              scrollToId(section.id);
+              onNavigate?.();
+            }}
+            data-active={activeSection === section.id}
+            aria-current={activeSection === section.id ? "location" : undefined}
+            className={cn("sf-instrument-nav-item block w-full text-left", section.level === 2 && "pl-6")}
+          >
+            <span className="sf-instrument-nav-number">{String(idx + 1).padStart(2, "0")}</span>
+            {section.title}
+          </button>
+        ))}
+      </nav>
+      <div className="mt-3 flex border-t border-sf-line-hairline pt-2">
+        <button
+          type="button"
+          onClick={() => {
+            scrollToEdge("top");
+            onNavigate?.();
+          }}
+          className="flex min-h-hit flex-1 items-center justify-center gap-1.5 font-sans text-[12px] font-medium uppercase text-t3 transition-colors duration-base hover:text-t1"
+        >
+          <ArrowUp className="h-3.5 w-3.5" aria-hidden />
+          Top
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            scrollToEdge("bottom");
+            onNavigate?.();
+          }}
+          className="flex min-h-hit flex-1 items-center justify-center gap-1.5 font-sans text-[12px] font-medium uppercase text-t3 transition-colors duration-base hover:text-t1"
+        >
+          <ArrowDown className="h-3.5 w-3.5" aria-hidden />
+          Bottom
+        </button>
       </div>
     </>
   );
-};
+}
 
-/**
- * Mobile-only section navigation trigger button with sheet.
- * Use this alongside SectionNavigation mode="inline" for mobile support.
- */
-export const MobileSectionNav = ({ sections }: { sections: Section[] }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState<string>("");
+const SectionNavigation = ({ sections, mode = "floating" }: SectionNavigationProps) => {
+  const activeSection = useActiveSection(sections);
+  const rail = useToolRail();
+  const node = useRailSlot("sections");
+  const readOnly = useToolReadOnly();
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleEntry = entries.find((entry) => entry.isIntersecting);
-        if (visibleEntry) {
-          setActiveSection(visibleEntry.target.id);
-        }
-      },
-      { threshold: 0.2, rootMargin: "-100px 0px -50% 0px" }
-    );
+  // Inside a tool page: the rail's Sections tab.
+  if (rail) {
+    return node
+      ? createPortal(
+          <SectionList sections={sections} activeSection={activeSection} onNavigate={rail.close} readOnly={readOnly} />,
+          node,
+        )
+      : null;
+  }
 
-    sections.forEach((section) => {
-      const element = document.getElementById(section.id);
-      if (element) {
-        observer.observe(element);
-      }
-    });
-
-    return () => observer.disconnect();
-  }, [sections]);
-
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      const offset = 100;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - offset;
-      window.scrollTo({ top: offsetPosition, behavior: "smooth" });
-      setIsOpen(false);
-    }
-  };
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    setIsOpen(false);
-  };
-
-  const scrollToBottom = () => {
-    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "smooth" });
-    setIsOpen(false);
-  };
-
-  return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTrigger asChild>
-        <Button size="lg" className="rounded-none w-auto h-auto px-3 py-2.5 shadow-lg">
-          <List className="w-4 h-4 mr-2" />
-          <span className="text-[12px] tracking-[0.12em] uppercase font-heading">NAV</span>
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="right" className="w-72 bg-background/95 backdrop-blur-lg">
-        <div className="pt-6">
-          <h4 className="font-heading text-[12px] font-light tracking-[0.12em] uppercase text-sf-emerald mb-3 pb-2 border-b border-sf-emerald">
-            // NAVIGATION
-          </h4>
-          <nav className="space-y-0.5">
-            {sections.map((section, idx) => {
-              const num = String(idx + 1).padStart(2, "0");
-              return (
-                <button
-                  type="button"
-                  key={section.id}
-                  onClick={() => scrollToSection(section.id)}
-                  data-active={activeSection === section.id}
-                  className={cn(
-                    "sf-instrument-nav-item block text-left w-full",
-                    section.level === 2 && "pl-6 text-[12px]",
-                  )}
-                >
-                  <span className="sf-instrument-nav-number">{num}</span>
-                  {section.title}
-                </button>
-              );
-            })}
-          </nav>
-          <div className="flex flex-col gap-2 mt-4">
-            <Button variant="ghost" size="sm" className="w-full" onClick={scrollToTop}>
-              <ArrowUp className="w-4 h-4 mr-2" />
-              RETURN TO TOP
-            </Button>
-            <Button variant="ghost" size="sm" className="w-full" onClick={scrollToBottom}>
-              <ArrowDown className="w-4 h-4 mr-2" />
-              GO TO BOTTOM
-            </Button>
-          </div>
-        </div>
-      </SheetContent>
-    </Sheet>
+  const panel = (
+    <GlassPanel className="p-4 max-h-[70vh] overflow-y-auto w-56 sf-sb">
+      <h4 className="font-heading text-sf-eyebrow uppercase text-t4 mb-3 pb-2 border-b border-sf-line-hairline">
+        Sections
+      </h4>
+      <SectionList sections={sections} activeSection={activeSection} readOnly={readOnly} />
+    </GlassPanel>
   );
+
+  if (mode === "inline") return panel;
+  return <div className="fixed right-4 top-1/2 -translate-y-1/2 hidden xl:block z-40 no-print">{panel}</div>;
 };
 
 export default SectionNavigation;

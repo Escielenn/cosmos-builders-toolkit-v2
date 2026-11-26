@@ -212,7 +212,7 @@ export function Outliner({
       </div>
 
       {rows.length === 0 ? (
-        <p className="font-serif text-[15px] italic text-t3">No documents yet. Create one in the binder.</p>
+        <p className="font-sans text-[15px] text-t3">No documents yet. Create one in the binder.</p>
       ) : (
         <div className="sf-sb overflow-x-auto border border-sf-line">
           <table className="w-full min-w-[640px] border-collapse text-left" aria-label="Manuscript outline">
@@ -386,7 +386,7 @@ function OutlinerRowView({
               <span className="ml-2 font-mono normal-case tracking-normal text-t4">{row.docCount}</span>
             </span>
           ) : (
-            <span className={`truncate font-serif text-[15px] ${active ? "text-t1" : "text-t2"}`}>{title}</span>
+            <span className={`truncate font-sans text-[15px] ${active ? "text-t1" : "text-t2"}`}>{title}</span>
           )}
         </div>
       </td>
@@ -467,7 +467,7 @@ function OutlinerRowView({
 
       {show("pov") && (
         <td className="px-3 py-1.5">
-          <span className="flex min-h-hit items-center font-serif text-[14px] text-t2">{meta?.pov || ""}</span>
+          <span className="flex min-h-hit items-center font-sans text-[14px] text-t2">{meta?.pov || ""}</span>
         </td>
       )}
 
@@ -553,7 +553,7 @@ function SynopsisCell({
           }
         }}
         aria-label={`Synopsis for ${title}`}
-        className="sf-sb w-full resize-y px-3 py-1 font-serif text-[16px] italic text-t1"
+        className="sf-sb w-full resize-y px-3 py-1 font-sans text-[16px] text-t1"
       />
     );
   }
@@ -563,7 +563,7 @@ function SynopsisCell({
       onClick={() => setEditing(true)}
       title={value ? `${value}\n\nClick to edit.` : "Add a synopsis"}
       aria-label={value ? `Edit synopsis for ${title}` : `Add a synopsis for ${title}`}
-      className="flex min-h-hit w-full items-center px-1 text-left font-serif text-[14px] italic text-t2 hover:text-t1"
+      className="flex min-h-hit w-full items-center px-1 text-left font-sans text-[14px] text-t2 hover:text-t1"
     >
       {value ? truncateText(value, 90) : <span className="text-t4">—</span>}
     </button>

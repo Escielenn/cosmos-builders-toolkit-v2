@@ -106,7 +106,8 @@ export default function WikiBrowse() {
   );
 
   const [search, setSearch] = useState("");
-  const [activeLayer, setActiveLayer] = useState<string | null>(null);
+  // `?layer=` (the Bridge cascade panel) opens the list filtered to a layer.
+  const [activeLayer, setActiveLayer] = useState<string | null>(() => searchParams.get("layer"));
   const [activeType, setActiveType] = useState<string | null>(null);
   const [activeTags, setActiveTags] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
@@ -285,7 +286,7 @@ export default function WikiBrowse() {
           <Filter className="w-3.5 h-3.5 mr-1.5" />
           Filter
           {hasActiveFilters && (
-            <span className="ml-1.5 w-4 h-4 rounded-full bg-sf-primary/20 text-sf-primary-text text-[12px] flex items-center justify-center font-mono">
+            <span className="ml-1.5 w-4 h-4 rounded-none bg-sf-primary/20 text-sf-primary-text text-[12px] flex items-center justify-center font-mono">
               {(activeLayer ? 1 : 0) +
                 (activeType ? 1 : 0) +
                 activeTags.length}

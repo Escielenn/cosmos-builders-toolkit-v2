@@ -151,7 +151,7 @@ export function CodexTimelineView({ worldId }: CodexTimelineViewProps) {
                     >
                       <span
                         aria-hidden
-                        className="h-2 w-2 shrink-0 rounded-full"
+                        className="h-2 w-2 shrink-0 rounded-none"
                         style={{ background: colour(e.entityType) }}
                       />
                       <span className="truncate text-[13px] text-t2">{e.name}</span>

@@ -365,7 +365,7 @@ export function BinderTree({
       </ul>
       <DragOverlay dropAnimation={null}>
         {dragged ? (
-          <div className="flex min-h-hit items-center gap-2 border border-sf-line-emphasis bg-sf-surface-elevated px-3 font-serif text-[14px] text-t1">
+          <div className="flex min-h-hit items-center gap-2 border border-sf-line-emphasis bg-sf-surface-elevated px-3 font-sans text-[14px] text-t1">
             {dragged.entry_type === "folder" ? (
               <Folder className="h-3.5 w-3.5 text-t3" aria-hidden="true" />
             ) : (
@@ -556,7 +556,7 @@ function BinderRow({
             if (e.key === "Escape") onRenameCancel();
           }}
           aria-label={isFolder ? "Folder name" : "Document title"}
-          className="min-h-[36px] min-w-0 flex-1 bg-transparent px-1 font-serif text-[16px] text-t1"
+          className="min-h-[36px] min-w-0 flex-1 bg-transparent px-1 font-sans text-[16px] text-t1"
         />
       ) : (
         <button
@@ -574,7 +574,7 @@ function BinderRow({
           className={`flex min-h-hit min-w-0 flex-1 touch-none items-center gap-2 pr-1 text-left ${
             isFolder
               ? "font-heading text-[12px] uppercase tracking-wide text-t3 hover:text-t1"
-              : `font-serif text-[14px] ${active ? "text-t1" : "text-t2 hover:text-t1"}`
+              : `font-sans text-[14px] ${active ? "text-t1" : "text-t2 hover:text-t1"}`
           }`}
         >
           {isFolder &&
@@ -679,7 +679,7 @@ function MoveTargets({
 }): JSX.Element {
   const targets = useMemo(() => moveTargets(entries, id), [entries, id]);
   if (targets.length === 0) {
-    return <p className="px-2 py-1.5 font-serif text-[13px] italic text-t3">No folders yet.</p>;
+    return <p className="px-2 py-1.5 font-sans text-[13px] text-t3">No folders yet.</p>;
   }
   return (
     <>

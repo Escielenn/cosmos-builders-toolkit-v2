@@ -103,7 +103,7 @@ const SurfaceGravityFullReportTemplate = ({ formState: rawFormState, worldName, 
                     gap: 8,
                     paddingVertical: 3,
                     borderBottomWidth: 0.5,
-                    borderBottomColor: "rgba(255,255,255,0.05)",
+                    borderBottomColor: colors.borderLight,
                   }}
                 >
                   <Text style={{

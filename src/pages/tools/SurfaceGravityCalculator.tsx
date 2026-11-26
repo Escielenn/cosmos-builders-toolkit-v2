@@ -38,13 +38,11 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
-import { MobileSectionNav } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import SectionNavigation from "@/components/tools/SectionNavigation";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, {
   KeyChoicesSection,
-  MobileKeyChoices,
 } from "@/components/tools/KeyChoicesSidebar";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
@@ -480,7 +478,7 @@ const SurfaceGravityCalculator = () => {
                       {COMPOSITION_PRESETS.map((p) => (
                         <SelectItem key={p.id} value={p.id}>
                           <span className="flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
+                            <span className="w-2 h-2 rounded-none" style={{ backgroundColor: p.color }} />
                             {p.label}
                           </span>
                         </SelectItem>
@@ -926,9 +924,6 @@ const SurfaceGravityCalculator = () => {
           </ToolSidebar>
         </div>
 
-        {/* Mobile navigation */}
-        <MobileSectionNav sections={SURFACE_GRAVITY_SECTIONS} />
-        <MobileKeyChoices sections={keyChoicesSections} />
       {/* Dialogs */}
       <ExportDialog
         open={exportDialogOpen}

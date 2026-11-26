@@ -1,5 +1,4 @@
 export type { DataBurstConfig, DataBurstAnimation } from "./types";
-export { HEADER_BURSTS, EDGE_BURSTS, RIGHT_EDGE_BURSTS, FOOTER_BURSTS } from "./global";
 export {
   HERO_BURSTS,
   WELCOME_BURSTS,

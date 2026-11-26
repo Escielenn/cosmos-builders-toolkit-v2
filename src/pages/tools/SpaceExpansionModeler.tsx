@@ -44,13 +44,11 @@ import { useToast } from "@/hooks/use-toast";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import SectionNavigation, {
-  MobileSectionNav,
-} from "@/components/tools/SectionNavigation";
+  } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, {
   KeyChoicesSection,
-  MobileKeyChoices,
 } from "@/components/tools/KeyChoicesSidebar";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
@@ -732,7 +730,7 @@ const SpaceExpansionModeler = () => {
                   return (
                     <GlassPanel key={forceDef.id} className="p-4">
                       <div className="flex items-center gap-3 mb-3">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: forceDef.hex }} />
+                        <div className="w-3 h-3 rounded-none" style={{ backgroundColor: forceDef.hex }} />
                         <h4 className={`font-heading font-medium text-sm ${forceDef.tailwindColor}`}>
                           {forceDef.name}
                         </h4>
@@ -1040,7 +1038,7 @@ const SpaceExpansionModeler = () => {
                               {INTERACTION_TYPES.map((t) => (
                                 <SelectItem key={t.value} value={t.value}>
                                   <span className="flex items-center gap-2">
-                                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: t.hex }} />
+                                    <span className="w-2 h-2 rounded-none" style={{ backgroundColor: t.hex }} />
                                     {t.label}
                                   </span>
                                 </SelectItem>
@@ -1098,7 +1096,7 @@ const SpaceExpansionModeler = () => {
                         {FORCE_CATEGORIES.map((f) => (
                           <SelectItem key={f.id} value={f.id}>
                             <span className="flex items-center gap-2">
-                              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: f.hex }} />
+                              <span className="w-2 h-2 rounded-none" style={{ backgroundColor: f.hex }} />
                               {f.name}
                             </span>
                           </SelectItem>
@@ -1174,11 +1172,6 @@ const SpaceExpansionModeler = () => {
           </ToolSidebar>
         </div>
 
-        {/* Mobile nav */}
-        <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
-          <MobileSectionNav sections={SPACE_EXPANSION_SECTIONS} />
-          <MobileKeyChoices sections={keyChoicesSections} title="Summary" />
-        </div>
       {/* ── Sheets & Dialogs ── */}
       <WorksheetNotesSheet
         open={notesSheetOpen}

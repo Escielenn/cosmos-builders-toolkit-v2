@@ -2283,7 +2283,7 @@ export default function ExoSkyV2({
           {simFlags.filter(f => !dismissedFlagIds.has(flagDismissKey(f))).map(f => (
             <div key={f.id} style={{borderLeft:"2px solid var(--sf-amber)",background:"rgb(var(--sf-amber-rgb) / 0.06)",padding:"6px 8px",margin:"6px 0",position:"relative"}}>
               <div style={{fontFamily:FONT_MONO,fontSize:12,letterSpacing:"0.10em",textTransform:"uppercase",color:"var(--sf-amber-text)",paddingRight:40}}>{"// "}{f.title}</div>
-              <div style={{fontFamily:"'Lora', Georgia, serif",fontStyle:"italic",fontSize:13,lineHeight:1.5,color:"var(--t2)",marginTop:4,paddingRight:40}}>{f.body}</div>
+              <div style={{fontFamily:FONT_SANS,fontSize:13,lineHeight:1.5,color:"var(--t2)",marginTop:4,paddingRight:40}}>{f.body}</div>
               <button
                 type="button"
                 onClick={() => dismissFlag(flagDismissKey(f))}

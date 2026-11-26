@@ -134,7 +134,7 @@ const TrackLane = memo(
 
           {/* Color dot + name */}
           <span
-            className="w-2.5 h-2.5 rounded-full shrink-0"
+            className="w-2.5 h-2.5 rounded-none shrink-0"
             style={{ backgroundColor: track.color }}
           />
           {/* Tapping the name opens the track editor: the hover-only actions
@@ -161,7 +161,7 @@ const TrackLane = memo(
                   title={`Unfold ${ft.name}`}
                 >
                   <span
-                    className="w-1.5 h-1.5 rounded-full shrink-0"
+                    className="w-1.5 h-1.5 rounded-none shrink-0"
                     style={{ backgroundColor: ft.color }}
                   />
                   <X className="w-2 h-2" />
@@ -197,7 +197,7 @@ const TrackLane = memo(
                       className="flex items-center gap-2 w-full px-1.5 py-1 rounded-none hover:bg-muted/50 text-xs text-left"
                     >
                       <span
-                        className="w-2 h-2 rounded-full shrink-0"
+                        className="w-2 h-2 rounded-none shrink-0"
                         style={{ backgroundColor: target.color }}
                       />
                       <span className="truncate">{target.name}</span>

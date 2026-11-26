@@ -14,12 +14,12 @@ import { WorldLayoutProvider } from "@/contexts/WorldLayoutContext";
 import { WorldThemeProvider } from "@/contexts/WorldThemeContext";
 import {
   CodexSidebarContainer,
+  CodexSheetTrigger,
   CodexResizeHandle,
   useCodexSheetMode,
   CODEX_MIN_WIDTH,
   CODEX_MAX_WIDTH,
 } from "@/components/world/CodexSidebarContainer";
-import { useAudioPlayer } from "@/hooks/use-audio-player";
 import { BookOpen, Network } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { isWorldManuscriptPath } from "@/lib/manuscript-path";
@@ -100,10 +100,6 @@ const WorldLayout = () => {
   useEffect(() => {
     setSheetOpen(false);
   }, [pathname]);
-  const { hasEverLoaded: audioVisible, minimized: audioMinimized } = useAudioPlayer();
-  const sheetTriggerBottom = audioVisible
-    ? audioMinimized ? "bottom-[76px]" : "bottom-[100px]"
-    : "bottom-10";
 
   // Sidebar state, persisted in localStorage. In the Sheet the sidebar is
   // always full width, whatever the desktop preference says.
@@ -214,9 +210,9 @@ const WorldLayout = () => {
   // world nav yet because there is no world to navigate).
   if (isLoading || !worldId) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="h-dvh overflow-hidden bg-background" style={{ paddingTop: HEADER_HEIGHT }}>
         <Header />
-        <div className="flex items-center justify-center" style={{ height: `calc(100dvh - ${HEADER_HEIGHT}px)`, marginTop: HEADER_HEIGHT }}>
+        <div className="flex h-full items-center justify-center">
           <LoadingState message="LOADING WORLD FILE..." />
         </div>
       </div>
@@ -225,9 +221,9 @@ const WorldLayout = () => {
 
   if (error || !world) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="h-dvh overflow-hidden bg-background" style={{ paddingTop: HEADER_HEIGHT }}>
         <Header />
-        <div className="flex items-center justify-center" style={{ height: `calc(100dvh - ${HEADER_HEIGHT}px)`, marginTop: HEADER_HEIGHT }}>
+        <div className="flex h-full items-center justify-center">
           <p className="font-mono text-sf-mono uppercase text-sf-crimson-text">
             // WORLD DATA UNAVAILABLE. RETRY WHEN READY.
           </p>
@@ -253,15 +249,28 @@ const WorldLayout = () => {
   return (
     <WorldLayoutProvider value={layoutValue}>
       <WorldThemeProvider theme={world.theme} isPro={isSubscribed}>
-        <div className="min-h-screen bg-background">
+        {/* Exactly one viewport tall, no window scroll: the header offset is
+            padding on this box (a margin on the frame used to collapse
+            through it and push the page 64px past the fold). */}
+        <div className="h-dvh overflow-hidden bg-background" style={{ paddingTop: frameOffset }}>
           {showChrome && <Header />}
 
           <div
-            className="grid grid-rows-[auto_minmax(0,1fr)]"
+            className="grid h-full grid-rows-[auto_minmax(0,1fr)]"
             data-world-frame={manuscript ? "manuscript" : "space"}
-            style={{ height: `calc(100dvh - ${frameOffset}px)`, marginTop: frameOffset }}
           >
-            {showChrome ? <WorldSpaceNav worldId={worldId} /> : <div />}
+            {showChrome ? (
+              <WorldSpaceNav
+                worldId={worldId}
+                leading={
+                  sheetMode && !manuscript ? (
+                    <CodexSheetTrigger open={sheetOpen} onOpen={() => setSheetOpen(true)} controls={CODEX_ID} />
+                  ) : undefined
+                }
+              />
+            ) : (
+              <div />
+            )}
 
             {manuscript ? (
               // The Manuscript keeps its own full-height grid (topbar, binder,
@@ -278,7 +287,6 @@ const WorldLayout = () => {
                   sheetMode={sheetMode}
                   open={sheetOpen}
                   onOpenChange={setSheetOpen}
-                  triggerBottomClassName={sheetTriggerBottom}
                 >
                 <aside
                   id={CODEX_ID}

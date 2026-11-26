@@ -79,7 +79,7 @@ const BackgroundLayer = () => {
               className="absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(135deg, #0d1117 0%, #1a1f2e 50%, #0d1117 100%)",
+                  "linear-gradient(135deg, var(--sf-void) 0%, var(--sf-surface) 50%, var(--sf-void) 100%)",
               }}
             />
           )}

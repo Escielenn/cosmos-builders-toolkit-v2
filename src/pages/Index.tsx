@@ -17,24 +17,30 @@ import SharedWorldsSection from "@/components/dashboard/SharedWorldsSection";
 import ContinueWriting from "@/components/home/ContinueWriting";
 import RecentActivityFeed from "@/components/home/RecentActivityFeed";
 import WelcomeHero from "@/components/landing/WelcomeHero";
-import ToolShowcase from "@/components/landing/ToolShowcase";
-import ValueProposition from "@/components/landing/ValueProposition";
+import HowItWorks from "@/components/landing/HowItWorks";
+import StudioSection from "@/components/landing/StudioSection";
+import InstrumentConstellation from "@/components/landing/InstrumentConstellation";
 import VideoShowcase from "@/components/landing/VideoShowcase";
 import RecentArticles from "@/components/landing/RecentArticles";
+import { FinalCTA, LandingFAQ, PricingTeaser } from "@/components/landing/LandingClosing";
 import SubscriptionBanner from "@/components/subscription/SubscriptionBanner";
 import WelcomeDialog from "@/components/onboarding/WelcomeDialog";
 import { PromptOfTheDay } from "@/components/writing/PromptOfTheDay";
-import { HomepageQuote } from "@/components/quotes/HomepageQuote";
-import { CosmicTelemetry } from "@/components/layout/CosmicVelocityTicker";
 import SFDivider from "@/components/ui/sf-divider";
 import { PageBursts } from "@/components/ui/data-burst";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal } from "lucide-react";
 import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useRecentWork } from "@/hooks/use-recent-work";
 import { useMetaTags } from "@/hooks/use-meta-tags";
-import { COORDINATE_DATA } from "@/lib/cosmic-telemetry";
 import { ALL_DASHBOARD_BURSTS } from "@/lib/data-bursts";
 import { continueTargets, mergeActivity } from "@/lib/recent-work";
 import { dismissWelcome, isWelcomeDismissed, shouldShowWelcome } from "@/lib/onboarding/welcome-gate";
@@ -42,8 +48,10 @@ import { dismissWelcome, isWelcomeDismissed, shouldShowWelcome } from "@/lib/onb
 const CONTINUE_LIMIT = 6;
 const ACTIVITY_LIMIT = 8;
 
-// Section headings (15-PAGE-CHROME §4): named blocks, display h3.
-const sectionHeading = "font-display text-sf-h3 font-light text-t1 mb-6";
+// Section headings (15-PAGE-CHROME §4): the section-header pattern, Jura
+// eyebrow over a hairline, the same as the Bridge cockpit (1.6).
+const sectionHeading =
+  "mb-4 border-b border-sf-line-hairline pb-2 font-heading text-sf-eyebrow uppercase text-t4";
 
 function SignedInHome() {
   const { user } = useAuth();
@@ -95,19 +103,36 @@ function SignedInHome() {
             {/* The one CreateWorldButton on this page: it owns BEGIN SURVEY
                 and the ?create=true deep link. */}
             <CreateWorldButton variant="button" />
-            <Button asChild variant="sf-ghost" size="sf-md">
+            {/* sm+: two ghost links. Phones: one overflow (1.6 #19), so the
+                header never wraps into three rows. */}
+            <Button asChild variant="sf-ghost" size="sf-md" className="hidden sm:inline-flex">
               <Link to="/worlds">All worlds</Link>
             </Button>
-            <Button asChild variant="sf-ghost" size="sf-md">
+            <Button asChild variant="sf-ghost" size="sf-md" className="hidden sm:inline-flex">
               <Link to="/tools">All tools</Link>
             </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="sf-ghost" size="icon" className="min-h-hit min-w-hit sm:hidden" aria-label="More">
+                  <MoreHorizontal className="h-4 w-4" aria-hidden />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link to="/worlds">All worlds</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/tools">All tools</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </>
         }
       />
 
       <SubscriptionBanner />
 
-      <section aria-labelledby="home-continue" className="mb-16">
+      <section aria-labelledby="home-continue" className="mb-12">
         <h2 id="home-continue" className={sectionHeading}>
           Continue writing
         </h2>
@@ -119,7 +144,7 @@ function SignedInHome() {
       </section>
 
       {worlds.length > 0 && (
-        <section aria-labelledby="home-activity" className="mb-16">
+        <section aria-labelledby="home-activity" className="mb-12">
           <h2 id="home-activity" className={sectionHeading}>
             Recent activity
           </h2>
@@ -129,7 +154,7 @@ function SignedInHome() {
 
       <SharedWorldsSection />
 
-      <section aria-labelledby="home-prompt" className="mb-16">
+      <section aria-labelledby="home-prompt" className="mb-12">
         <h2 id="home-prompt" className={sectionHeading}>
           Today's writing prompt
         </h2>
@@ -146,17 +171,22 @@ function SignedInHome() {
   );
 }
 
+// Signed-out landing (1.6 "Quiet Instrument"): one narrative, one focal
+// moment per section. Hero → how it works → the Studio → the instruments →
+// video → pricing → questions → begin. The catalog lives at /tools and
+// "coming soon" lives at /roadmap.
 function SignedOutLanding() {
   return (
     <>
       <WelcomeHero />
-      <SFDivider label="·· · SECTOR: WORLDBUILDING · ··" className="hidden md:block" />
+      <HowItWorks />
+      <StudioSection />
+      <InstrumentConstellation />
       <VideoShowcase />
-      <CosmicTelemetry data={COORDINATE_DATA} variant="horizontal" align="center" className="my-8" />
-      <HomepageQuote />
-      <ToolShowcase />
-      <SFDivider />
-      <ValueProposition />
+      <PricingTeaser />
+      <LandingFAQ />
+      <RecentArticles />
+      <FinalCTA />
     </>
   );
 }
@@ -169,7 +199,7 @@ const Index = () => {
     <div className="min-h-screen bg-sf-void sf-atmosphere">
       <Header />
       <div className="pt-16">
-        <BetaBanner position="top" />
+        <BetaBanner />
       </div>
 
       {user ? (
@@ -185,16 +215,10 @@ const Index = () => {
         </main>
       ) : (
         // Signed out: the marketing landing keeps its own hero and frame.
-        <main className="container mx-auto px-4 pt-8 pb-16 relative z-10">
-          <PageBursts bursts={ALL_DASHBOARD_BURSTS} />
+        <main className="relative z-10 mx-auto w-full max-w-[1200px] overflow-x-clip px-4 pb-8 sm:px-6">
           <SignedOutLanding />
-          <SFDivider label=",  ··, COMMS: LEARN, ·· , " className="hidden md:block" />
-          {/* Latest from Learn - shown to all users */}
-          <RecentArticles />
         </main>
       )}
-
-      <BetaBanner position="bottom" />
 
       <Footer />
     </div>

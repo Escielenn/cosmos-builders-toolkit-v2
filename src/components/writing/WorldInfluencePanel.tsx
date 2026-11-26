@@ -61,7 +61,7 @@ export function WorldInfluencePanel({
         </ul>
       ) : (
         <div className="mt-3 border border-dashed border-sf-line p-4">
-          <p className="font-serif text-[14px] italic leading-relaxed text-t2">
+          <p className="font-sans text-[14px] leading-relaxed text-t2">
             Set the POV and where the scene is SET IN on the Card, and the facts that touch this scene gather here:
             the gravity underfoot, the light overhead, what the viewpoint body makes of both.
           </p>
@@ -138,7 +138,7 @@ function CascadeParameters({
       </button>
       {show && total === 0 && (
         <div className="border border-dashed border-sf-line p-4">
-          <p className="font-serif text-[13px] italic leading-relaxed text-t3">
+          <p className="font-sans text-[13px] leading-relaxed text-t3">
             This world hasn't set its environmental parameters yet.
           </p>
           <Link

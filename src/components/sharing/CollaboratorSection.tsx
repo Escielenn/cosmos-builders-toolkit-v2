@@ -149,10 +149,10 @@ const CollaboratorSection = ({ worldId, worldName }: CollaboratorSectionProps) =
                 <img
                   src={collab.avatar_url}
                   alt=""
-                  className="w-6 h-6 rounded-full shrink-0"
+                  className="w-6 h-6 rounded-none shrink-0"
                 />
               ) : (
-                <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                <div className="w-6 h-6 rounded-none bg-primary/20 flex items-center justify-center shrink-0">
                   <span className="text-[12px] font-medium text-sf-primary-text">
                     {(collab.display_name || "?").charAt(0).toUpperCase()}
                   </span>

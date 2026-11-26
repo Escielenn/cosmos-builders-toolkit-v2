@@ -370,7 +370,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
                 title={`${pin.name} — open its Codex page`}
               >
                 <span
-                  className="block h-3 w-3 rounded-full ring-2 ring-sf-surface transition-transform group-hover:scale-125"
+                  className="block h-3 w-3 rounded-none ring-2 ring-sf-surface transition-transform group-hover:scale-125"
                   style={{ background: pinColor(pin) }}
                 />
               </button>
@@ -623,7 +623,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
                     >
                       <span
                         aria-hidden
-                        className="h-2 w-2 shrink-0 rounded-full"
+                        className="h-2 w-2 shrink-0 rounded-none"
                         style={{ background: pinColor(pin) }}
                       />
                       <span className="truncate text-[13px] text-t2">{pin.name}</span>

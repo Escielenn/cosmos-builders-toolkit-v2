@@ -328,7 +328,7 @@ function EntityCard({
                       className="flex items-center gap-2 py-1 px-2 rounded-none bg-sf-surface"
                     >
                       <div
-                        className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                        className="w-1.5 h-1.5 rounded-none flex-shrink-0"
                         style={{ backgroundColor: otherColor }}
                       />
                       <span className="font-mono text-[12px] text-t4">
@@ -594,13 +594,13 @@ export default function WorldShowcase() {
         <div
           className="border-b px-6 py-3"
           style={{
-            backgroundColor: visibility === "private" ? "rgba(255,184,0,0.06)" : visibility === "community" ? "rgba(21,193,123,0.06)" : "rgba(77,159,255,0.06)",
-            borderColor: visibility === "private" ? "rgba(255,184,0,0.15)" : visibility === "community" ? "rgba(21,193,123,0.15)" : "rgba(77,159,255,0.15)",
+            backgroundColor: visibility === "private" ? "rgb(var(--sf-amber-rgb) / 0.06)" : visibility === "community" ? "rgb(var(--sf-teal-rgb) / 0.06)" : "rgb(var(--sf-azure-rgb) / 0.06)",
+            borderColor: visibility === "private" ? "var(--sf-amber)" : visibility === "community" ? "var(--sf-teal)" : "var(--sf-azure)",
           }}
         >
           <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <span className="font-sans text-sm" style={{
-              color: visibility === "private" ? "#FFB800" : visibility === "community" ? "#15C17B" : "#4D9FFF",
+              color: visibility === "private" ? "var(--sf-amber-text)" : visibility === "community" ? "var(--sf-teal-text)" : "var(--sf-azure-text)",
             }}>
               {visibility === "private"
                 ? "This showcase is private. Only you can see it."
@@ -753,7 +753,7 @@ export default function WorldShowcase() {
           <StatCard
             label="Cascade Coverage"
             value={`${cascadeCoverage}/${CASCADE_STAGES.length}`}
-            color="#FFB800"
+            color="var(--sf-amber-text)"
           />
           <StatCard
             label="Entity Types"

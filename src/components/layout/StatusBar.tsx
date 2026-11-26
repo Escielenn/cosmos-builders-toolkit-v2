@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { isManuscriptPath } from "@/lib/manuscript-path";
+import { useAuth } from "@/contexts/AuthContext";
+import { isMarketingPath, useDisplayPref } from "@/lib/display-prefs";
 import { JulianDayClock } from "@/components/ambient/JulianDayClock";
 import { SolCounter } from "@/components/ambient/SolCounter";
 import { LunarPhase } from "@/components/ambient/LunarPhase";
@@ -52,8 +54,21 @@ const formatTime = (seconds: number): string => {
   return `${h}:${m}:${s}`;
 };
 
+/**
+ * The fixed bottom telemetry bar. Ambient budget (1.6): decoration, never
+ * over content.
+ *
+ * - Default (Display > Telemetry bar: Marketing pages): signed-out marketing
+ *   pages only. Never inside the app (signed-in Home, worlds, tools, Studio).
+ * - Never on the Manuscript or a simulator canvas, whatever the setting.
+ * - Never on phones (hidden below md): it ate a line of a 390px screen.
+ * - While it renders, <html data-status-bar="on"> reserves its 24px at the
+ *   bottom of the page (index.css), so the footer's last line is never under it.
+ */
 const StatusBar = () => {
   const { pathname } = useLocation();
+  const { user } = useAuth();
+  const pref = useDisplayPref("telemetry");
   const [elapsed, setElapsed] = useState(0);
 
   const isSimulator = SIMULATOR_ROUTES.some(
@@ -63,12 +78,24 @@ const StatusBar = () => {
   // status footer — the global bar would overlap it.
   const isEditor = isManuscriptPath(pathname);
 
+  const allowedHere =
+    pref === "everywhere" || (pref === "marketing" && isMarketingPath(pathname, !!user));
+  const visible = !isSimulator && !isEditor && allowedHere;
+
   useEffect(() => {
+    if (!visible) return;
     const interval = setInterval(() => setElapsed((s) => s + 1), 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [visible]);
 
-  if (isSimulator || isEditor) return null;
+  // Reserve the bar's height at the foot of the page while it shows.
+  useEffect(() => {
+    if (!visible) return;
+    document.documentElement.setAttribute("data-status-bar", "on");
+    return () => document.documentElement.removeAttribute("data-status-bar");
+  }, [visible]);
+
+  if (!visible) return null;
 
   const today = new Date().toISOString().slice(0, 10).replace(/-/g, ".");
   const sector = getSectorLabel(pathname);
@@ -93,21 +120,16 @@ const StatusBar = () => {
         </span>
       </div>
 
-      {/* Mobile left: condensed */}
-      <div className="flex md:hidden items-center gap-2">
-        <span className="text-t4">CMB </span>
-        <span className="text-sf-amber-warm-text">627 km/s</span>
-      </div>
 
       {/* Center: sector + target star + lunar phase */}
       <div className="hidden md:flex items-center gap-4">
         <span className="text-sf-primary-text">
           // SECTOR: {sector}
         </span>
-        <span className="hidden xl:inline text-t4">·</span>
-        <TargetStar className="hidden xl:inline" />
         <span className="hidden 2xl:inline text-t4">·</span>
-        <LunarPhase className="hidden 2xl:inline" />
+        <TargetStar className="hidden 2xl:inline" />
+        <span className="hidden min-[1800px]:inline text-t4">·</span>
+        <LunarPhase className="hidden min-[1800px]:inline" />
       </div>
 
       {/* Right: session + date + sol counter */}
@@ -119,8 +141,8 @@ const StatusBar = () => {
         <span className="hidden md:inline text-t4">{today}</span>
         <span className="hidden lg:inline text-t4">·</span>
         <SolCounter className="hidden lg:inline" />
-        <span className="hidden xl:inline text-t4">·</span>
-        <JulianDayClock className="hidden xl:inline" />
+        <span className="hidden 2xl:inline text-t4">·</span>
+        <JulianDayClock className="hidden 2xl:inline" />
       </div>
     </div>
   );

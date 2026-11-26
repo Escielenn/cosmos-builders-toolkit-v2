@@ -190,7 +190,7 @@ export function Scrivenings({
       )}
 
       {docs.length === 0 ? (
-        <p className="font-serif text-[15px] italic text-t3">Nothing here to read yet. This folder holds no documents.</p>
+        <p className="font-sans text-[15px] text-t3">Nothing here to read yet. This folder holds no documents.</p>
       ) : (
         docs.map((d, i) => {
           const reload = autosave.reloaded[d.id];
@@ -213,7 +213,7 @@ export function Scrivenings({
                     onOpenDoc(d.id);
                   }}
                   title="Open this document on its own"
-                  className="flex min-h-hit max-w-[70%] items-center gap-1.5 px-1 font-serif text-[14px] italic text-t3 transition-colors duration-base hover:text-sf-primary-text"
+                  className="flex min-h-hit max-w-[70%] items-center gap-1.5 px-1 font-sans text-[14px] text-t3 transition-colors duration-base hover:text-sf-primary-text"
                 >
                   <span className="truncate">{d.title || "Untitled"}</span>
                   <ArrowUpRight className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />

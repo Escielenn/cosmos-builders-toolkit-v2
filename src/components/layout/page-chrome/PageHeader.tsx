@@ -42,7 +42,7 @@ export interface Crumb {
 
 export interface PageHeaderProps {
   title: React.ReactNode;
-  /** Bold lead-in rendered before the title, e.g. a tool's brand "Goldilocks:". */
+  /** Lead-in before the title, e.g. a tool's brand "Goldilocks:". Same face and weight as the title, one tier quieter. */
   titleLead?: React.ReactNode;
   eyebrow?: string;
   accent?: PageAccent;
@@ -148,7 +148,7 @@ export function PageHeader({
       ) : back ? (
         <Link
           to={back.to}
-          className="mb-4 inline-flex min-h-hit items-center gap-2 font-heading text-sf-eyebrow uppercase text-t3 transition-colors duration-base ease-sf-out hover:text-sf-primary-text"
+          className="mb-4 flex w-fit min-h-hit items-center gap-2 font-heading text-sf-eyebrow uppercase text-t3 transition-colors duration-base ease-sf-out hover:text-sf-primary-text"
         >
           <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden />
           <span>{back.label.replace(/^\s*[←‹<]\s*/, "")}</span>
@@ -178,7 +178,9 @@ export function PageHeader({
         <div
           className={cn(
             "flex min-w-0 items-start gap-4",
-            centred ? "flex-col items-center" : "flex-1",
+            // A 16rem basis, not 0: on a phone the actions wrap under the
+            // title instead of squeezing it to one word per line.
+            centred ? "flex-col items-center" : "flex-[1_1_16rem]",
           )}
         >
           {icon && <span className={cn("shrink-0", !centred && "mt-1")}>{icon}</span>}
@@ -188,7 +190,7 @@ export function PageHeader({
               compact ? "text-sf-h2 leading-[1.1]" : "text-sf-h1 leading-[1.04]",
             )}
           >
-            {titleLead && <span className="font-normal">{titleLead} </span>}
+            {titleLead && <span className="text-t3">{titleLead} </span>}
             {title}
           </h1>
           {badge && <span className={cn("shrink-0", centred ? "self-center" : "mt-2 self-start")}>{badge}</span>}

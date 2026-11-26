@@ -137,7 +137,7 @@ const DrakeFullReportTemplate = ({
         />
 
         {/* Equation Display */}
-        <View style={{ marginBottom: spacing.xl, padding: spacing.md, backgroundColor: "#f5f5f5", borderRadius: 4 }}>
+        <View style={{ marginBottom: spacing.xl, padding: spacing.md, backgroundColor: "#f5f5f5" }}>
           <Text style={{ fontSize: typography.sizes.xs, color: colors.text.muted, marginBottom: spacing.xs }}>
             THE EQUATION
           </Text>

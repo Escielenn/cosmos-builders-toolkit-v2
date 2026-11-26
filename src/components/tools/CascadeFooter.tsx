@@ -48,7 +48,7 @@ function RelCard({ rel }: { rel: ToolRelationship }): JSX.Element {
       className="group block border border-sf-line bg-sf-surface/60 p-3.5 transition-colors hover:border-sf-primary hover:bg-sf-surface"
     >
       <div className="flex items-center gap-2">
-        <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${CATEGORY_DOT[cat]}`} aria-hidden="true" />
+        <span className={`h-1.5 w-1.5 shrink-0 rounded-none ${CATEGORY_DOT[cat]}`} aria-hidden="true" />
         <span className="font-heading text-[13px] font-light uppercase tracking-[1px] text-t1">{name}</span>
         <span className="ml-auto font-mono text-[12px] uppercase tracking-[1px] text-t4">
           {STRENGTH_LABEL[rel.strength]}
@@ -57,7 +57,7 @@ function RelCard({ rel }: { rel: ToolRelationship }): JSX.Element {
       {casc && (
         <div className="mt-2 inline-flex items-center gap-1.5 font-mono text-[12px] uppercase tracking-[0.12em]">
           <span
-            className="h-1 w-1 shrink-0 rounded-full"
+            className="h-1 w-1 shrink-0 rounded-none"
             style={{ backgroundColor: casc.color }}
             aria-hidden="true"
           />

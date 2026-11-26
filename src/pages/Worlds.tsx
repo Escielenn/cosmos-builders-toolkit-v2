@@ -1,7 +1,7 @@
 /** Worlds index. Page chrome per docs/stellarforge/15-PAGE-CHROME.md. */
 import { useState, useMemo, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Upload, Globe } from "lucide-react";
+import { Upload, Globe, MoreHorizontal } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -14,6 +14,12 @@ import SharedWorldsSection from "@/components/dashboard/SharedWorldsSection";
 import BackupStatusWidget from "@/components/dashboard/BackupStatusWidget";
 import WorldImportDialog from "@/components/world/WorldImportDialog";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useAuth } from "@/contexts/AuthContext";
 import { PageBursts } from "@/components/ui/data-burst";
@@ -96,21 +102,44 @@ const Worlds = () => {
           lede="Each world is its own cascade: physics shapes environment, environment shapes biology, biology shapes culture. Pick one to continue, or begin a new survey."
           actions={
             <>
-              <Button variant="sf-ghost" size="sf-md" onClick={() => setImportDialogOpen(true)}>
+              {/* One primary (1.6): BEGIN SURVEY lives in the header, not as
+                  a dashed card in the grid. It owns ?create=true. */}
+              <CreateWorldButton variant="button" />
+              <Button variant="sf-ghost" size="sf-md" className="hidden sm:inline-flex" onClick={() => setImportDialogOpen(true)}>
                 <Upload className="w-4 h-4" aria-hidden />
                 Import
               </Button>
-              <ArchiveToggle
-                showArchived={showArchived}
-                onToggle={setShowArchived}
-                archivedCount={archivedCount}
-              />
-              <Button asChild variant="sf-ghost" size="sf-md">
+              <Button asChild variant="sf-ghost" size="sf-md" className="hidden sm:inline-flex">
                 <Link to="/community">
                   <Globe className="w-4 h-4" aria-hidden />
                   Community worlds
                 </Link>
               </Button>
+              {/* Phones: the secondary actions fold into one overflow. */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="sf-ghost" size="icon" className="min-h-hit min-w-hit sm:hidden" aria-label="More">
+                    <MoreHorizontal className="h-4 w-4" aria-hidden />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => setImportDialogOpen(true)}>
+                    <Upload className="mr-2 h-4 w-4" aria-hidden />
+                    Import
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/community">
+                      <Globe className="mr-2 h-4 w-4" aria-hidden />
+                      Community worlds
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <ArchiveToggle
+                showArchived={showArchived}
+                onToggle={setShowArchived}
+                archivedCount={archivedCount}
+              />
             </>
           }
         >
@@ -138,8 +167,7 @@ const Worlds = () => {
         <ExampleWorldBanner />
 
         {/* Worlds Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-          <CreateWorldButton />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
 
           {isLoading && (
             <GlassPanel className="p-5 h-full min-h-[200px] flex flex-col items-center justify-center">

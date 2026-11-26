@@ -227,8 +227,8 @@ const SettingsDialog = ({
                 <AvatarImage src={avatarUrl} />
                 <AvatarFallback className="text-lg">{initials}</AvatarFallback>
               </Avatar>
-              <div className="space-y-2">
-                <div className="flex gap-2">
+              <div className="min-w-0 space-y-2">
+                <div className="flex flex-wrap gap-2">
                   <input
                     ref={avatarInputRef}
                     type="file"
@@ -257,7 +257,7 @@ const SettingsDialog = ({
                     size="sm"
                     onClick={() => setAvatarPickerOpen(true)}
                   >
-                    Browse Avatars
+                    Browse avatars
                   </Button>
                 </div>
                 <p className="text-xs text-t3">
@@ -389,7 +389,7 @@ const SettingsDialog = ({
                         style={{
                           display: "none",
                           background:
-                            "linear-gradient(135deg, #0d1117 0%, #1a1f2e 50%, #0d1117 100%)",
+                            "linear-gradient(135deg, var(--sf-void) 0%, var(--sf-surface) 50%, var(--sf-void) 100%)",
                         }}
                       >
                         <span className="font-mono text-[12px] text-t3 uppercase tracking-wide">

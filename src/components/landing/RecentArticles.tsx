@@ -1,26 +1,14 @@
 import { Link } from "react-router-dom";
-import { BookOpen, ArrowRight, Calendar } from "lucide-react";
-import { motion } from "framer-motion";
-import { GlassPanel } from "@/components/ui/glass-panel";
-import { Badge } from "@/components/ui/badge";
+import { ArrowRight } from "lucide-react";
 import { useArticles } from "@/hooks/use-sanity-articles";
-import { urlFor } from "@/lib/sanity/client";
-import { scrollRevealStagger, fadeUpItem, scrollReveal, viewportOnce } from "@/lib/animations";
+import { CoverArt } from "@/components/learn/CoverArt";
+import { CATEGORY_LABELS, formatArticleDate } from "@/components/learn/article-meta";
+import { MarketingSection, SectionHeading } from "./marketing-ui";
 
-const categoryLabels: Record<string, string> = {
-  basics: "Worldbuilding Basics",
-  science: "Science Concepts",
-  craft: "Writing Craft",
-  "case-studies": "Case Studies",
-};
-
-const categoryColors: Record<string, string> = {
-  basics: "bg-sf-azure/[0.06] border border-sf-azure text-sf-azure-text",
-  science: "bg-sf-emerald/[0.06] border border-sf-emerald text-sf-emerald-text",
-  craft: "bg-sf-violet/[0.06] border border-sf-violet text-sf-violet-text",
-  "case-studies": "bg-sf-amber/[0.06] border border-sf-amber text-sf-amber-text",
-};
-
+/**
+ * "Latest from SF University": three articles with generated cover art
+ * (finding 6: no CMS cover images). Shown on the landing and on Home.
+ */
 const RecentArticles = () => {
   const { data: articles, isLoading } = useArticles();
 
@@ -31,73 +19,38 @@ const RecentArticles = () => {
   const recent = articles.slice(0, 3);
 
   return (
-    <section className="mt-16 mb-8">
-      <motion.div
-        className="flex items-center justify-between mb-8"
-        initial="hidden"
-        whileInView="visible"
-        viewport={viewportOnce}
-        variants={scrollReveal}
-      >
-        <h2 className="font-display text-sf-h3 font-light text-t1 flex items-center gap-3">
-          <BookOpen className="w-5 h-5 text-sf-primary-text" />
-          Latest from SF University
-        </h2>
+    <MarketingSection id="latest" labelledBy="latest-title">
+      <div className="flex flex-wrap items-end justify-between gap-x-6">
+        <SectionHeading id="latest-title" label="SF University" title="Latest from the archive" />
         <Link
           to="/learn"
-          className="text-sm text-t3 hover:text-sf-primary-text transition-colors flex items-center gap-1"
+          className="mb-10 inline-flex min-h-hit items-center gap-2 font-sans text-sm font-medium text-sf-primary-text transition-colors duration-base ease-sf-out hover:text-t1 md:mb-12"
         >
-          View all <ArrowRight className="w-4 h-4" />
+          All articles
+          <ArrowRight className="h-4 w-4" aria-hidden />
         </Link>
-      </motion.div>
+      </div>
 
-      <motion.div
-        className={`grid gap-6 grid-cols-1 ${
-          recent.length >= 2 ? "md:grid-cols-2" : ""
-        } ${recent.length >= 3 ? "lg:grid-cols-3" : ""}`}
-        initial="hidden"
-        whileInView="visible"
-        viewport={viewportOnce}
-        variants={scrollRevealStagger}
-      >
+      <ul className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {recent.map((article) => (
-          <motion.div key={article._id} variants={fadeUpItem}>
-            <Link to={`/learn/${article.slug}`}>
-              <GlassPanel className="overflow-hidden h-full hover:bg-sf-surface-elevated transition-colors cursor-pointer group">
-                {article.featuredImage?.asset && (
-                  <div className="aspect-video w-full overflow-hidden">
-                    <img
-                      src={urlFor(article.featuredImage)
-                        .width(400)
-                        .height(225)
-                        .url()}
-                      alt={article.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-slow"
-                    />
-                  </div>
-                )}
-                <div className="p-4">
-                  <Badge className={categoryColors[article.category]}>
-                    {categoryLabels[article.category]}
-                  </Badge>
-                  <h3 className="font-heading font-medium mt-2 mb-1 line-clamp-2 group-hover:text-sf-primary-text transition-colors">
-                    {article.title}
-                  </h3>
-                  <span className="text-xs text-t3 flex items-center gap-1">
-                    <Calendar className="w-3 h-3" />
-                    {new Date(article.publishedDate).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </span>
-                </div>
-              </GlassPanel>
+          <li key={article._id}>
+            <Link to={`/learn/${article.slug}`} className="group block h-full border border-sf-line bg-sf-surface sf-card-hover">
+              <div className="aspect-video w-full overflow-hidden border-b border-sf-line-hairline">
+                <CoverArt seed={article.slug} category={article.category} />
+              </div>
+              <div className="p-5">
+                <p className="mb-2 font-mono text-sf-mono uppercase text-t4">
+                  {CATEGORY_LABELS[article.category] ?? "Article"} · {formatArticleDate(article.publishedDate)}
+                </p>
+                <h3 className="line-clamp-2 font-heading text-lg font-normal text-t1 transition-colors duration-base group-hover:text-sf-primary-text">
+                  {article.title}
+                </h3>
+              </div>
             </Link>
-          </motion.div>
+          </li>
         ))}
-      </motion.div>
-    </section>
+      </ul>
+    </MarketingSection>
   );
 };
 

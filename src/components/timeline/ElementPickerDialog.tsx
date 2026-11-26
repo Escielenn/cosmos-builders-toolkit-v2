@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useWorksheets } from "@/hooks/use-worksheets";
 import { getToolDisplayName } from "@/lib/worksheet-links-config";
-import { getToolIcon } from "@/components/icons/tool-icons";
+import { ToolGlyph } from "@/components/icons/tool-icons";
 import { cn } from "@/lib/utils";
 
 interface ElementPickerDialogProps {
@@ -98,11 +98,10 @@ const ElementPickerDialog = ({
             </p>
           ) : (
             groups.map((group) => {
-              const ToolIcon = getToolIcon(group.toolType);
               return (
                 <div key={group.toolType}>
                   <div className="flex items-center gap-2 px-2 py-1">
-                    {ToolIcon && <ToolIcon className="w-4 h-4 rounded-none" />}
+                    <ToolGlyph toolId={group.toolType} className="w-4 h-4 text-t3" />
                     <span className="text-[12px] font-medium text-t3 uppercase tracking-wider">
                       {group.displayName}
                     </span>

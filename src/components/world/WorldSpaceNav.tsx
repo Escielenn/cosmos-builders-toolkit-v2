@@ -21,12 +21,15 @@
 // the owner looking. This is the navigation half.
 // ---------------------------------------------------------------------------
 
+import type React from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Compass, BookOpen, Gauge, PenLine } from "lucide-react";
 import { isWorldManuscriptPath } from "@/lib/manuscript-path";
 
 interface WorldSpaceNavProps {
   worldId: string;
+  /** Rendered before the four spaces, e.g. the phone world-index button. */
+  leading?: React.ReactNode;
 }
 
 interface Space {
@@ -80,7 +83,7 @@ const SPACES: Space[] = [
   },
 ];
 
-export function WorldSpaceNav({ worldId }: WorldSpaceNavProps) {
+export function WorldSpaceNav({ worldId, leading }: WorldSpaceNavProps) {
   const { pathname } = useLocation();
 
   return (
@@ -88,6 +91,7 @@ export function WorldSpaceNav({ worldId }: WorldSpaceNavProps) {
       aria-label="World"
       className="relative z-10 flex items-stretch border-b border-sf-line-hairline bg-sf-surface"
     >
+      {leading}
       {SPACES.map(({ id, label, hint, to, Icon, match }) => {
         const active = match(pathname, worldId);
         return (

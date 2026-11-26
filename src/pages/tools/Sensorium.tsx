@@ -20,14 +20,12 @@ import ToolPageLayout from "@/components/tools/ToolPageLayout";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, {
   KeyChoicesSection,
-  MobileKeyChoices,
 } from "@/components/tools/KeyChoicesSidebar";
 import { useToast } from "@/hooks/use-toast";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import WorksheetLinkSelector from "@/components/tools/WorksheetLinkSelector";
 import SectionNavigation, {
   Section,
-  MobileSectionNav,
 } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import QuickExportButton from "@/components/tools/QuickExportButton";
@@ -439,11 +437,6 @@ const Sensorium = () => {
             <KeyChoicesSidebar sections={keyChoices} mode="inline" />
           </ToolSidebar>
 
-          {/* Mobile Sidebars - Right side floating buttons */}
-          <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
-            <MobileSectionNav sections={sections} />
-            <MobileKeyChoices sections={keyChoices} />
-          </div>
 
           {/* Main content */}
           <div className="flex-1 min-w-0 space-y-6">

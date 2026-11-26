@@ -6,6 +6,7 @@ import { Compass, Radio } from "lucide-react";
 import { heroReveal, staggerContainer, fadeUpItem } from "@/lib/animations";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 import { PageHeader } from "@/components/layout/page-chrome";
+import { tokens } from "@/styles/tokens";
 
 // Lightweight starfield canvas
 function StarfieldCanvas() {
@@ -42,7 +43,7 @@ function StarfieldCanvas() {
     window.addEventListener("resize", resize);
 
     const draw = () => {
-      ctx.fillStyle = "#050508";
+      ctx.fillStyle = tokens.surface.simCanvas;
       ctx.fillRect(0, 0, w, h);
 
       for (const star of stars) {
@@ -88,7 +89,7 @@ function SignalPulse() {
       {[0, 1, 2].map((i) => (
         <motion.div
           key={i}
-          className="absolute inset-0 rounded-full border border-primary"
+          className="absolute inset-0 rounded-none border border-primary"
           initial={{ scale: 0.5, opacity: 0.6 }}
           animate={{ scale: 2 + i * 0.5, opacity: 0 }}
           transition={{
@@ -102,7 +103,7 @@ function SignalPulse() {
       {/* Center dot */}
       <div className="absolute inset-0 flex items-center justify-center">
         <motion.div
-          className="w-3 h-3 bg-primary/60 rounded-full"
+          className="w-3 h-3 bg-primary/60 rounded-none"
           animate={{ opacity: [0.4, 1, 0.4] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         />

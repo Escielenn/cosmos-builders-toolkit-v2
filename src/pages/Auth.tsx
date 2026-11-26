@@ -6,10 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { LogIn, Rocket, ChevronDown, Layers, Share2, FileDown, KeyRound, Mail } from "lucide-react";
-import CubeLogo from "@/components/icons/CubeLogo";
+import { Wordmark } from "@/components/brand/Wordmark";
 import { Loader } from "@/components/ui/loader";
 import { useToast } from "@/hooks/use-toast";
 import { PageBursts } from "@/components/ui/data-burst";
+import { TourVideo } from "@/components/landing/VideoShowcase";
 import { AUTH_BURSTS } from "@/lib/data-bursts";
 import { TOTAL_TOOL_COUNT } from "@/lib/tools-config";
 import { mapError, VOICE } from "@/lib/ship-voice";
@@ -18,7 +19,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useMetaTags } from "@/hooks/use-meta-tags";
 import { PageHeader } from "@/components/layout/page-chrome";
 
-const YOUTUBE_VIDEO_ID = "iGYxmAQa8DY";
 
 const Auth = () => {
   useMetaTags({ title: "Authentication" });
@@ -194,10 +194,10 @@ const Auth = () => {
 
           {/* Header: the shared PageHeader (spec 15), logo above it. */}
           <div className="space-y-7">
-            <CubeLogo size={80} className="rounded-none" />
+            <Wordmark size="lg" to="/" />
             <PageHeader
               eyebrow="OPEN EARLY ACCESS"
-              title="StellarForge"
+              title="Build worlds that hold together"
               className="mb-0"
               lede={
                 <>
@@ -208,7 +208,6 @@ const Auth = () => {
                     Design planets, species, civilizations, and spacecraft with scientific rigor.
                     Every parameter cascades logically: environment shapes biology, biology shapes
                     psychology, psychology shapes mythology, mythology shapes culture.
-                    Build worlds that hold together.
                   </p>
                 </>
               }
@@ -255,18 +254,9 @@ const Auth = () => {
             </GlassPanel>
           </div>
 
-          {/* Video */}
-          <GlassPanel className="overflow-hidden p-2" lightArc glow>
-            <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
-              <iframe
-                className="absolute top-0 left-0 w-full h-full rounded-none"
-                src={`https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?rel=0`}
-                title="StellarForge Preview"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-          </GlassPanel>
+          {/* Video: the click-to-load facade (the live iframe painted a blank
+              grey box until YouTube answered, and loaded Google first). */}
+          <TourVideo className="mx-auto max-w-none" />
 
           {/* Create Account, OAuth + email/password signup. The id is the
               scroll target for /auth#create-account links from elsewhere

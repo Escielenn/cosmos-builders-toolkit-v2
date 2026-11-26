@@ -36,8 +36,9 @@ import { Link, useSearchParams } from "react-router-dom";
 import { Crosshair, Globe2, ImagePlus, Map as MapIcon, MapPin, Plus, Shuffle, Upload } from "lucide-react";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
-import SectionNavigation, { MobileSectionNav, type Section } from "@/components/tools/SectionNavigation";
+import SectionNavigation, { type Section } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
+import { RailReadout } from "@/components/tools/tool-rail";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { WorksheetNotesSheet } from "@/components/tools/WorksheetNotesSheet";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -742,9 +743,6 @@ const SurfaceCartographer = () => {
       // The world bar sits in the Body section, where the body picker goes.
       worldBar={false}
     >
-      <div className="fixed bottom-4 right-4 z-40 flex flex-col gap-2 no-print xl:hidden">
-        <MobileSectionNav sections={SECTIONS} />
-      </div>
 
       <div className="space-y-6">
         {/* ── 1 · Body ─────────────────────────────────────────────── */}
@@ -1256,9 +1254,9 @@ const SurfaceCartographer = () => {
 
       <ToolSidebar>
         <SectionNavigation sections={SECTIONS} mode="inline" />
-        <GlassPanel className="w-56 p-4">
-          <h4 className="mb-3 font-mono text-[12px] uppercase text-t4">// SURVEY</h4>
-          <div className="space-y-1.5 font-mono text-[12px]">
+        <RailReadout>
+          <h4 className="mx-2 mb-1.5 border-b border-sf-line-hairline pb-1 font-heading text-sf-eyebrow uppercase text-t4">Survey</h4>
+          <div className="space-y-1.5 px-2 font-mono text-[12px]">
             <div className="flex justify-between gap-2">
               <span className="text-t4">BODY</span>
               <span className="truncate text-t2">{facts.name}</span>
@@ -1276,7 +1274,7 @@ const SurfaceCartographer = () => {
               <span className="text-t2">{locked ? "LOCKED" : facts.tidallyLocked ? "FREE" : "UNKNOWN"}</span>
             </div>
           </div>
-        </GlassPanel>
+        </RailReadout>
       </ToolSidebar>
 
       <WorksheetSelectorDialog

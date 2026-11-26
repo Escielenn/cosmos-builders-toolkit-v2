@@ -55,6 +55,27 @@ export const TOOL_ACCENTS: Record<string, ToolAccent> = {
   "timeline": "teal",
 };
 
+/**
+ * The cascade layer each accent stands for (CLAUDE.md: colour is a cascade
+ * layer). User-facing labels use these, never the colour token name, so a
+ * tool eyebrow reads "PHYSICS · ORRERY", not "AMBER · ORRERY" (1.6, finding 13).
+ */
+export const CASCADE_LAYER_LABEL: Record<ToolAccent, string> = {
+  amber: "Physics",
+  azure: "Environment",
+  emerald: "Biology",
+  magenta: "Psychology",
+  stellar: "Mythology",
+  violet: "Culture",
+  teal: "Integration",
+  crimson: "Integration",
+};
+
+/** The cascade layer name for a tool (e.g. "Physics" for Orrery). */
+export function getToolLayerLabel(toolType: string): string {
+  return CASCADE_LAYER_LABEL[getToolAccent(toolType)];
+}
+
 /** Fallback: teal for any unmapped tool. */
 export function getToolAccent(toolType: string): ToolAccent {
   return TOOL_ACCENTS[toolType] ?? "teal";
@@ -73,6 +94,18 @@ const TEXT: Record<ToolAccent, string> = {
   teal: "text-sf-teal-text",
   crimson: "text-sf-crimson-text",
   magenta: "text-sf-magenta-text",
+};
+
+// Canonical stop: icons, fills and large marks use --sf-X, never -text.
+const ICON: Record<ToolAccent, string> = {
+  amber: "text-sf-amber",
+  azure: "text-sf-azure",
+  emerald: "text-sf-emerald",
+  violet: "text-sf-violet",
+  stellar: "text-sf-stellar",
+  teal: "text-sf-teal",
+  crimson: "text-sf-crimson",
+  magenta: "text-sf-magenta",
 };
 
 const BORDER: Record<ToolAccent, string> = {
@@ -120,6 +153,7 @@ const BG: Record<ToolAccent, string> = {
 };
 
 export const accentTextClass = (accent: ToolAccent): string => TEXT[accent];
+export const accentIconClass = (accent: ToolAccent): string => ICON[accent];
 export const accentBorderClass = (accent: ToolAccent): string => BORDER[accent];
 export const accentChipClass = (accent: ToolAccent): string => CHIP[accent];
 export const accentArcClass = (accent: ToolAccent): string => ARC[accent];

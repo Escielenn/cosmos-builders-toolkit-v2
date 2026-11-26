@@ -51,17 +51,16 @@ const CodexSection = ({
       {/* Section header */}
       <button
         onClick={toggle}
-        className="sf-fill-sweep sf-fill-sweep--secondary w-full flex items-center gap-1.5 px-3 py-1.5 text-left"
+        className="sf-fill-sweep sf-fill-sweep--secondary w-full min-h-[40px] flex items-center gap-1.5 px-3 py-1.5 text-left"
       >
         {expanded ? (
           <ChevronDown className="w-2.5 h-2.5 text-sf-primary-text shrink-0" />
         ) : (
           <ChevronRight className="w-2.5 h-2.5 text-t3 shrink-0" />
         )}
-        {/* WRITER register: a writer's binder, not an instrument readout, so
-            layers read as words. LAYER_LABELS are already title case
-            ("Environment") — the CSS `uppercase` was doing the shouting. */}
-        <span className="font-serif text-[15px] italic text-sf-primary-text flex-1">
+        {/* Layers read as words, in DM Sans (1.6 #12: no Lora in chrome).
+            LAYER_LABELS are already title case ("Environment"). */}
+        <span className="font-sans text-[14px] font-medium text-t1 flex-1">
           {section.label}
         </span>
         {section.elements.length > 0 && (

@@ -1,5 +1,33 @@
 # StellarForge Changelog
 
+## 1.6000 · Quiet Instrument
+A full facelift. Same ship, less noise: the world and the prose are the
+brightest things on screen.
+- Identity: one wordmark everywhere; one original line-glyph family for all
+  30 instruments (replacing cartoon, clip-art and emoji icons, 3.4 MB lighter).
+- Shell: a trimmed marketing header, a compact signed-in header (Worlds,
+  Studio, Tools), a phone header with four controls, and a Display menu for
+  music, background, ambience and the telemetry bar. Floating telemetry text
+  is gone; the bottom bar shows only on public pages and never covers content.
+  The early-access banner appears once.
+- Landing: a hero with a real call to action, the cascade in three steps, the
+  Studio, one instrument map by cascade layer, a click-to-load tour, pricing,
+  FAQ. Features and Pricing rebuilt to match; SF University covers are now
+  original generated art.
+- Worlds: the Bridge is a cockpit (manuscript, canon, cascade, activity,
+  Chronicle). Instruments are grouped by cascade layer. Lora is gone from the
+  sidebar and the Studio dashboard.
+- Tools: one tabbed Sections | Readout rail; empty readouts are one line.
+  Eyebrows name the cascade layer. Pro tools open as a read-only preview with
+  a clearance panel instead of a lock wall.
+- Manuscript: two rows of controls instead of four; one inspector tab row;
+  Lora only on the page; phone drawers.
+- Legibility: worksheet placeholders and options in sentence case; one count
+  source (30 instruments, 3 free, 27 Pro, 5 simulators); button hovers glow
+  instead of flashing white.
+- Guardrails: corner-radius and alpha-border violations at zero, a new check
+  keeps Lora out of instrument chrome, world routes fit the viewport exactly.
+
 ## 1.5000 · StellarForge 1.5
 Tier 5 of the 1.5 programme closes it out: guardrails so the work holds.
 - Type safety: the full app type-checks with zero errors, and CI now blocks

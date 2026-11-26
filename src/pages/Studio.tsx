@@ -1,7 +1,8 @@
 /**
  * /studio — the writer's home (Cowork Implementation Guide §3).
  * Reference: design/Home (Writers).html
- * Register: WRITER — Lora italic voice in the modules, sentence case.
+ * Register: 1.6 Quiet Instrument. DM Sans / Jura / mono chrome; Lora only
+ * in the prose excerpt (last sentence, scratchpad note text).
  * Page chrome (H1 "Studio", greeting as the DM Sans lede, display h3
  * section headings) follows docs/stellarforge/15-PAGE-CHROME.md.
  * Glowing status dots stay. One telemetry strip, in the footer only.
@@ -21,8 +22,18 @@ import { manuscriptPath } from "@/lib/manuscript-path";
 import { WordHistoryChart } from "@/components/writing/WordHistoryChart";
 import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
 
-// Section headings (15-PAGE-CHROME §4): named blocks, display h3.
-const sectionHeading = "mb-4 font-display text-sf-h3 font-light text-t1";
+// Section headings (15-PAGE-CHROME §4): the section-header pattern, Jura
+// eyebrow over a hairline. 1.6 "Quiet Instrument": Lora lives only in the
+// prose excerpt; chrome, stats and titles are DM Sans / Jura / mono.
+const sectionHeading =
+  "mb-4 border-b border-sf-line-hairline pb-2 font-heading text-sf-eyebrow uppercase text-t4";
+const railLabel = "mb-1 font-heading text-sf-eyebrow uppercase text-t4";
+const railLink =
+  "flex min-h-hit items-center border-l-2 border-transparent pl-3 font-sans text-[14px] text-t2 transition-colors duration-base hover:border-sf-primary hover:text-t1";
+const primaryLink =
+  "inline-flex min-h-hit items-center bg-sf-primary px-5 font-sans text-[14px] font-medium text-sf-on-primary transition-shadow duration-base hover:shadow-sf-glow-teal";
+const ghostLink =
+  "inline-flex min-h-hit items-center border border-sf-line px-5 font-sans text-[14px] text-t2 transition-colors duration-base hover:border-sf-line-emphasis hover:text-t1";
 
 // ── small helpers ───────────────────────────────────────────────────
 
@@ -60,27 +71,27 @@ const COVER_GRADIENTS = [
 function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
   return (
     <aside className="sf-sb sf-sb--slim hidden w-[200px] shrink-0 overflow-y-auto border-r border-sf-line-hairline pr-4 lg:block">
-      <div className="mb-2 font-serif text-[13px] italic text-t4">Worlds</div>
-      <nav className="mb-7 space-y-0.5">
+      <div className={railLabel}>Worlds</div>
+      <nav className="mb-6">
         {worlds.slice(0, 6).map((w) => (
           <Link
             key={w.id}
             to={`/worlds/${w.id}`}
-            className="block border-l-2 border-transparent py-1.5 pl-3 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
+            className={railLink}
           >
             {w.name}
           </Link>
         ))}
         {worlds.length === 0 && (
-          <div className="py-1.5 pl-3 font-serif text-[13px] italic text-t4">
+          <div className="py-2 pl-3 font-sans text-[14px] text-t3">
             No worlds yet. Start one below.
           </div>
         )}
       </nav>
       {worlds[0] && (
         <>
-          <div className="mb-2 font-serif text-[13px] italic text-t4">Workbench · {worlds[0].name}</div>
-          <nav className="mb-7 space-y-0.5">
+          <div className={railLabel}>Workbench · {worlds[0].name}</div>
+          <nav className="mb-6">
             {[
               // World-scoped: bare /write opens the globally most-recent doc,
               // which under a "Workbench · <world>" heading could open a
@@ -93,7 +104,7 @@ function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
               <Link
                 key={i.label}
                 to={i.to}
-                className="block border-l-2 border-transparent py-1.5 pl-3 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
+                className={railLink}
               >
                 {i.label}
               </Link>
@@ -101,8 +112,8 @@ function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
           </nav>
         </>
       )}
-      <div className="mb-2 font-serif text-[13px] italic text-t4">Tools</div>
-      <nav className="space-y-0.5">
+      <div className={railLabel}>Tools</div>
+      <nav>
         {[
           { label: "All tools", to: "/tools" },
           { label: "Chain reaction", to: "/tools/environmental-chain-reaction" },
@@ -111,7 +122,7 @@ function Rail({ worlds }: { worlds: StudioWorld[] }): JSX.Element {
           <Link
             key={i.label}
             to={i.to}
-            className="block border-l-2 border-transparent py-1.5 pl-3 text-[13px] text-t2 transition-colors hover:border-sf-primary hover:text-t1"
+            className={railLink}
           >
             {i.label}
           </Link>
@@ -193,7 +204,7 @@ export default function Studio(): JSX.Element {
           {/* streak strip */}
           <div className="flex flex-wrap items-end justify-between gap-6 border-y border-sf-line-hairline py-5">
             <div>
-              <div className="mb-1.5 font-serif text-[13px] italic text-t4">The last fourteen days</div>
+              <div className="mb-1.5 font-heading text-sf-eyebrow uppercase text-t4">Last 14 days</div>
               <div className="flex h-8 items-end gap-1">
                 {(data?.activityCells ?? Array(14).fill(false)).map((lit, i) => {
                   const isToday = i === 13;
@@ -217,13 +228,13 @@ export default function Studio(): JSX.Element {
             </div>
             <div className="flex gap-5 sm:gap-10">
               {[
-                { n: data?.wordsToday ?? 0, label: "words written today" },
-                { n: data?.totalWords ?? 0, label: "words in the archive" },
-                { n: data?.entriesThisMonth ?? 0, label: "pieces this month" },
+                { n: data?.wordsToday ?? 0, label: "Words today" },
+                { n: data?.totalWords ?? 0, label: "Words on file" },
+                { n: data?.entriesThisMonth ?? 0, label: "Pieces this month" },
               ].map((s) => (
                 <div key={s.label}>
-                  <div className="font-serif text-[22px] text-t1 sm:text-[26px]">{s.n.toLocaleString()}</div>
-                  <div className="font-serif text-[13px] italic text-t4">{s.label}</div>
+                  <div className="font-mono text-[22px] text-t1 sm:text-[26px]">{s.n.toLocaleString()}</div>
+                  <div className="font-heading text-sf-eyebrow uppercase text-t4">{s.label}</div>
                 </div>
               ))}
             </div>
@@ -237,57 +248,58 @@ export default function Studio(): JSX.Element {
             <div className="p-7 md:p-8">
               {entry ? (
                 <>
-                  <div className="font-serif text-[13px] italic text-sf-primary-text">
+                  <div className="font-heading text-sf-eyebrow uppercase text-sf-primary-text">
                     {entryWorld ? entryWorld.name : "Free writing"}
                     <span className="mx-2 text-t4">·</span>
-                    <span className="text-t4">{timeAgo(entry.updated_at)}</span>
+                    <span className="font-mono normal-case tracking-normal text-t4">{timeAgo(entry.updated_at)}</span>
                   </div>
-                  <h3 className="mt-2 font-serif text-[24px] italic text-t1">
+                  <h3 className="mt-2 font-sans text-[22px] font-medium text-t1">
                     {entry.title || "Untitled"}
                   </h3>
                   {line && (
-                    <blockquote className="mt-4 max-w-[640px] border-l-2 border-sf-primary pl-4 font-serif text-[16px] leading-[1.7] text-t2">
+                    // The one Lora on the page: the writer's own prose.
+                    <blockquote className="mt-4 max-w-[640px] border-l-2 border-sf-primary pl-4 font-serif text-[16px] italic leading-[1.7] text-t2">
                       …{line}
                     </blockquote>
                   )}
                   <div className="mt-6 flex flex-wrap items-center gap-2.5">
                     <Link
                       to={entry.world_id ? manuscriptPath(entry.world_id, entry.id) : `/write/${entry.id}`}
-                      className="bg-sf-primary px-5 py-2.5 font-sans text-[13px] font-medium tracking-wider text-[hsl(var(--accent-on-accent))] transition-shadow hover:shadow-sf-glow-teal"
+                      className={primaryLink}
                     >
                       Continue writing
                     </Link>
                     {entry.world_id && (
                       <Link
                         to={`/worlds/${entry.world_id}`}
-                        className="border border-sf-line px-5 py-2.5 font-sans text-[13px] tracking-wider text-t2 transition-colors hover:border-sf-primary hover:text-t1"
+                        className={ghostLink}
                       >
                         Open the world
                       </Link>
                     )}
-                    <span className="ml-1 font-serif text-[13px] italic text-t4">
-                      {(entry.word_count ?? 0).toLocaleString()} words so far
+                    <span className="ml-1 font-mono text-sf-mono uppercase text-t4">
+                      {(entry.word_count ?? 0).toLocaleString()} words
                     </span>
                   </div>
                 </>
               ) : (
                 <>
-                  <h3 className="font-serif text-[24px] italic text-t1">Begin the first page.</h3>
-                  <p className="mt-2 max-w-[560px] font-serif text-[15px] italic leading-[1.7] text-t2">
+                  <h3 className="font-sans text-[22px] font-medium text-t1">Begin the first page.</h3>
+                  <p className="mt-2 max-w-[560px] font-sans text-[16px] leading-[1.6] text-t2">
                     Open a world and start writing. The studio remembers where you stopped,
                     keeps your streak going, and leaves your last sentence right here.
                   </p>
                   <div className="mt-6 flex flex-wrap items-center gap-2.5">
                     <Link
                       to="/worlds"
-                      className="bg-sf-primary px-5 py-2.5 font-sans text-[13px] font-medium tracking-wider text-[hsl(var(--accent-on-accent))] transition-shadow hover:shadow-sf-glow-teal"
+                      className={primaryLink}
                     >
                       Choose a world
                     </Link>
                     {data?.worlds[0] && (
                       <Link
                         to={`/worlds/${data.worlds[0].id}/write?import=1`}
-                        className="inline-flex min-h-hit items-center border border-sf-line px-5 font-sans text-[13px] tracking-wider text-t2 transition-colors hover:border-sf-primary hover:text-t1"
+                        className={ghostLink}
                       >
                         Bring a manuscript into {data.worlds[0].name}
                       </Link>
@@ -322,17 +334,17 @@ export default function Studio(): JSX.Element {
                     <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--sf-void-hsl))]/85 via-[hsl(var(--sf-void-hsl))]/20 to-transparent" aria-hidden="true" />
                     <div className="absolute inset-2 border border-sf-line-hairline" aria-hidden="true" />
                     <div className="relative flex h-full items-end p-3">
-                      <span className="font-serif text-[15px] italic leading-snug text-t1 drop-shadow">{w.name}</span>
+                      <span className="font-sans text-[15px] font-medium leading-snug text-t1 drop-shadow">{w.name}</span>
                     </div>
                   </div>
-                  <div className="mt-2 font-serif text-[13px] italic text-t4">
+                  <div className="mt-2 font-mono text-[12px] text-t4">
                     {timeAgo(w.updated_at)}
                   </div>
                 </Link>
               ))}
               <Link
                 to="/worlds"
-                className="flex aspect-[3/4] items-center justify-center border border-dashed border-sf-line-emphasis font-serif text-[14px] italic text-t3 transition-colors hover:border-sf-primary hover:text-t1"
+                className="flex aspect-[3/4] items-center justify-center border border-dashed border-sf-line-emphasis font-sans text-[14px] text-t3 transition-colors duration-base hover:border-sf-primary hover:text-t1"
               >
                 + Begin a new world
               </Link>
@@ -352,22 +364,22 @@ export default function Studio(): JSX.Element {
                       className="border border-sf-line bg-sf-surface/90 p-4 transition-colors hover:border-sf-primary"
                     >
                       <div
-                        className="mb-3 flex h-10 w-10 items-center justify-center rounded-full border border-sf-line font-serif text-[16px] italic text-t1"
+                        className="mb-3 flex h-10 w-10 items-center justify-center border border-sf-line font-sans text-[16px] font-medium text-t1"
                         style={{
                           background: `linear-gradient(140deg, ${c.color || "hsl(var(--sf-stellar-hsl))"}44, hsl(var(--sf-void-hsl)))`,
                         }}
                       >
                         {c.name.charAt(0)}
                       </div>
-                      <div className="font-serif text-[15px] italic text-t1">{c.name}</div>
+                      <div className="font-sans text-[15px] font-medium text-t1">{c.name}</div>
                       {c.summary && (
-                        <div className="mt-1 line-clamp-2 text-[13px] leading-[1.5] text-t3">{c.summary}</div>
+                        <div className="mt-1 line-clamp-2 text-[14px] leading-[1.5] text-t2">{c.summary}</div>
                       )}
                     </Link>
                   ))}
                 </div>
               ) : (
-                <p className="font-serif text-[14px] italic text-t4">
+                <p className="font-sans text-[14px] text-t3">
                   Characters you create in your worlds will gather here.
                 </p>
               )}
@@ -386,19 +398,19 @@ export default function Studio(): JSX.Element {
                         className="block border border-sf-line bg-sf-surface/90 p-4 transition-colors hover:border-sf-primary"
                       >
                         <div className="flex items-center gap-2">
-                          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-sf-amber" aria-hidden="true" />
-                          <span className="font-serif text-[14px] text-t1">{n.title}</span>
+                          <span className="h-1.5 w-1.5 shrink-0 bg-sf-amber" aria-hidden="true" />
+                          <span className="font-sans text-[14px] font-medium text-t1">{n.title}</span>
                         </div>
-                        <p className="mt-1.5 line-clamp-2 font-serif text-[13px] leading-[1.6] text-t3">
+                        <p className="mt-1.5 line-clamp-2 font-serif text-[14px] italic leading-[1.6] text-t2">
                           {n.content}
                         </p>
-                        {w && <div className="mt-2 font-serif text-[12px] italic text-t4">From {w.name}</div>}
+                        {w && <div className="mt-2 font-sans text-[12px] text-t4">From {w.name}</div>}
                       </Link>
                     );
                   })}
                 </div>
               ) : (
-                <p className="font-serif text-[14px] italic text-t4">
+                <p className="font-sans text-[14px] text-t3">
                   Notes pinned in your worlds surface here.
                 </p>
               )}
@@ -414,15 +426,15 @@ export default function Studio(): JSX.Element {
                   const w = data.worlds.find((x) => x.id === e.world_id);
                   return (
                     <div key={e.id} className="flex flex-wrap items-baseline gap-x-3 py-3">
-                      <span className="w-24 shrink-0 font-serif text-[13px] italic text-t4">
+                      <span className="w-24 shrink-0 font-mono text-[12px] text-t4">
                         {timeAgo(e.updated_at)}
                       </span>
                       <span className="text-[14px] text-t2">
-                        {editVerb(e.id)} <em className="font-serif italic text-t1">{e.title || "Untitled"}</em>
+                        {editVerb(e.id)} <span className="font-medium text-t1">{e.title || "Untitled"}</span>
                         {w && <span className="text-t3"> in {w.name}</span>}
                       </span>
                       {(e.word_count ?? 0) > 0 && (
-                        <span className="text-[13px] text-sf-primary-text">{(e.word_count ?? 0).toLocaleString()} words</span>
+                        <span className="font-mono text-[12px] text-sf-primary-text">{(e.word_count ?? 0).toLocaleString()} words</span>
                       )}
                     </div>
                   );
@@ -438,7 +450,7 @@ export default function Studio(): JSX.Element {
                 <span className="absolute h-full w-full animate-sf-pulse bg-sf-primary opacity-60" />
                 <span className="relative h-2 w-2 bg-sf-primary" />
               </span>
-              <span className="font-serif text-[13px] italic text-t3">Stellarforge Studio · online</span>
+              <span className="font-sans text-[13px] text-t3">Stellarforge Studio · online</span>
             </div>
             <div className="font-mono text-[12px] tracking-wide text-t4">
               JD {julianDay().toFixed(1)} · 39.87°N 104.97°W

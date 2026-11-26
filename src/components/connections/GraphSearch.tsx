@@ -122,7 +122,7 @@ export function GraphSearch({
               >
                 <span
                   aria-hidden
-                  className="h-1.5 w-1.5 shrink-0 rounded-full"
+                  className="h-1.5 w-1.5 shrink-0 rounded-none"
                   style={{ background: color }}
                 />
                 <div className="flex-1 min-w-0">

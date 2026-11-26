@@ -1,17 +1,19 @@
 import { useState, useEffect } from "react";
-import { User, LogIn, LogOut, ChevronDown, Zap, Menu, Globe, Wrench, BookOpen, Sparkles, Mail, Settings, Search, Image, Download, Library, Archive, Map, Compass, PenTool, Award, Users, Info } from "lucide-react";
+import { User, LogIn, LogOut, Menu, Globe, Wrench, BookOpen, Sparkles, Mail, Settings, Search, Download, Library, Archive, Map, Compass, PenTool, Award, Users, Info, Zap, HelpCircle, MessageCircle, SlidersHorizontal, Tag, Music } from "lucide-react";
 import HeaderNavigation from "./HeaderNavigation";
-import { APP_VERSION } from "@/config/version";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import CubeLogo from "@/components/icons/CubeLogo";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -21,13 +23,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import BackgroundSelector from "@/components/settings/BackgroundSelector";
 import AudioSelectorDialog from "@/components/audio/AudioSelectorDialog";
+import { OPEN_AUDIO_SELECTOR_EVENT } from "@/components/audio/audio-events";
 import SettingsDialog from "@/components/settings/SettingsDialog";
 import GlobalSearch from "@/components/search/GlobalSearch";
+import { DisplayMenu, DisplayMenuItems, MENU_LABEL_CLASS } from "./DisplayMenu";
+import { OPEN_CONTACT_EVENT, OPEN_FIELD_MANUAL_EVENT } from "./FABStack";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/hooks/use-subscription";
-import { useWorlds } from "@/hooks/use-worlds";
 
 // The ⌘K listener already accepts ctrlKey as well as metaKey, but the visible
 // hint used to hardcode the Mac glyph regardless — telling Windows/Linux
@@ -45,30 +48,38 @@ const isMac =
  * desktop's pointed at /prompts, and whose "Tools" was a scroll-to-section that
  * did nothing away from the homepage.
  */
-const MOBILE_NAV: {
-  heading: string;
-  items: { label: string; to: string; icon: typeof Globe }[];
-}[] = [
+// Phone menu. Grouped like the desktop header so both name the same
+// destinations the same way. Signed in, the app destinations lead and the
+// marketing links follow; signed out, the marketing groups lead.
+type NavGroup = { heading: string; items: { label: string; to: string; icon: typeof Globe }[] };
+
+const APP_NAV: NavGroup[] = [
   {
-    heading: "Worlds",
+    heading: "Write",
     items: [
       { label: "My Worlds", to: "/worlds", icon: Globe },
+      { label: "Studio", to: "/studio", icon: PenTool },
+      { label: "Tools", to: "/tools", icon: Wrench },
+      { label: "Writing Prompts", to: "/prompts", icon: Sparkles },
+    ],
+  },
+  {
+    heading: "Library",
+    items: [
       { label: "My Collection", to: "/profile?tab=collection", icon: Library },
       { label: "Archive", to: "/profile?tab=archive", icon: Archive },
+      { label: "Commendations", to: "/commendations", icon: Award },
     ],
   },
+];
+
+const MARKETING_NAV: NavGroup[] = [
   {
-    heading: "Tools",
+    heading: "Product",
     items: [
-      { label: "All Tools", to: "/tools", icon: Wrench },
-      { label: "Tool Reference", to: "/guide/tools", icon: BookOpen },
-    ],
-  },
-  {
-    heading: "Studio",
-    items: [
-      { label: "Studio", to: "/studio", icon: PenTool },
-      { label: "Writing Prompts", to: "/prompts", icon: Sparkles },
+      { label: "Features", to: "/features", icon: Sparkles },
+      { label: "Tools", to: "/tools", icon: Wrench },
+      { label: "Pricing", to: "/pricing", icon: Tag },
     ],
   },
   {
@@ -84,23 +95,33 @@ const MOBILE_NAV: {
     heading: "Community",
     items: [
       { label: "Community", to: "/community", icon: Users },
-      { label: "Commendations", to: "/commendations", icon: Award },
-    ],
-  },
-  {
-    heading: "About",
-    items: [
-      { label: "About StellarForge", to: "/about", icon: Info },
       { label: "Roadmap", to: "/roadmap", icon: Map },
+      { label: "About StellarForge", to: "/about", icon: Info },
       { label: "Contact", to: "/contact", icon: Mail },
     ],
   },
 ];
 
+const sheetLinkClass =
+  "flex items-center gap-3 px-3 min-h-hit text-sm font-medium text-t2 hover:text-t1 hover:bg-sf-primary/[0.06] rounded-none transition-colors duration-base";
+
+const fire = (name: string) => window.dispatchEvent(new Event(name));
+
+/**
+ * Site header (1.6 "Quiet Instrument", finding 9 / 19).
+ *
+ * One lockup (Wordmark) at every width: the full mark on desktop, the compact
+ * size on phones, never "SF". No build number (it lives in the footer).
+ *
+ * Signed out (marketing): Product, Learn, Community · search · Display · sign in.
+ * Signed in (app): Worlds, Studio, Tools · search · Unlock Pro (free tier only,
+ *   quiet ghost) · profile menu. The profile menu carries Display, Help and
+ *   the marketing links that used to crowd the bar.
+ * Phone: lockup, search, menu, profile (or sign in). Nothing else.
+ */
 const Header = () => {
   const { user, profile, signOut, loading } = useAuth();
   const { isSubscribed, isVanguard } = useSubscription();
-  const { worlds } = useWorlds();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -120,68 +141,84 @@ const Header = () => {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  const signedIn = !loading && !!user;
   const initials = profile?.display_name
     ? profile.display_name.split(" ").map(n => n[0]).join("").toUpperCase()
     : user?.email?.charAt(0).toUpperCase() || "?";
+  const displayName = profile?.display_name || user?.email?.split("@")[0];
+  const tierLabel = isVanguard ? "Vanguard" : isSubscribed ? "Pro" : "Free";
 
   const handleSignOut = async () => {
     await signOut();
     navigate("/");
   };
 
+  const openSettings = (tab: string) => {
+    setSettingsTab(tab);
+    setSettingsOpen(true);
+  };
+
+  const mobileGroups = signedIn ? [...APP_NAV, ...MARKETING_NAV] : MARKETING_NAV;
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-sf-line-hairline backdrop-blur-sf-side bg-sf-void/95">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-3 shrink-0 mr-6">
-          <div className="flex flex-col">
-            <Link to="/" className="flex items-center gap-2 group">
-              <CubeLogo size={32} className="rounded-none" />
-              {/* Full wordmark at xl+ for everyone (brand visibility for
-                  logged-out visitors during OPEN EARLY ACCESS); SF
-                  abbreviation below xl for compact layouts. */}
-              <Wordmark size="md" className="hidden xl:inline-flex" />
-              <span className="xl:hidden font-display text-lg font-light tracking-wide text-t1 uppercase">
-                SF
-              </span>
-            </Link>
-            <span className="hidden xl:block font-mono text-xs text-t4 ml-[42px] -mt-1">
-              v{APP_VERSION}
-            </span>
-          </div>
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between gap-4">
+        <Wordmark size="md" to="/" className="hidden sm:inline-flex shrink-0" />
+        <Wordmark size="xs" to="/" className="sm:hidden shrink-0" />
 
-          {/* No auth CTA here. A logged-out visitor used to get two of them at
-              once, this one and the top-right button, both going to /auth. The
-              top-right slot wins: it is where the account controls live once
-              you are signed in, and it is the only one that survives on
-              mobile. */}
+        {/* Desktop navigation */}
+        <div className="flex-1 flex justify-center lg:justify-start lg:pl-6 min-w-0">
+          <HeaderNavigation mode={signedIn ? "app" : "marketing"} />
         </div>
 
-        {/* Desktop Navigation */}
-        <HeaderNavigation isSubscribed={isSubscribed} />
+        <div className="flex items-center gap-0 sm:gap-1 shrink-0">
+          <button
+            type="button"
+            className="sf-nav-link inline-flex items-center justify-center gap-2 h-11 min-h-hit min-w-hit px-2 text-t3 hover:text-sf-primary-text transition-colors"
+            onClick={() => setSearchOpen(true)}
+            aria-label="Search"
+          >
+            <Search className="w-4 h-4 relative z-[1]" aria-hidden="true" />
+            <kbd className="hidden md:inline-flex h-5 items-center gap-1 rounded-none border border-sf-line bg-sf-surface px-2 font-mono text-[12px] font-medium text-t3 relative z-[1]">
+              {isMac ? <span className="text-xs">⌘</span> : <span className="text-xs">Ctrl</span>}K
+            </kbd>
+          </button>
 
-        {/* gap-0 below sm: five 44px controls fit beside the mark at 375px */}
-        <div className="flex items-center gap-0 sm:gap-2">
-          {/* Mobile Menu */}
+          {!loading && !user && (
+            <span className="hidden sm:inline-flex">
+              <DisplayMenu />
+            </span>
+          )}
+
+          {/* Quiet: a nav-weight link, not a filled or outlined button. */}
+          {signedIn && !isSubscribed && (
+            <Link
+              to="/pricing"
+              className="sf-nav-link hidden md:inline-flex items-center gap-1.5 h-11 min-h-hit px-2 text-t3 hover:text-sf-primary-text transition-colors"
+            >
+              <Zap className="w-3.5 h-3.5 text-sf-primary-text relative z-[1]" aria-hidden="true" />
+              <span className="font-heading text-sf-eyebrow uppercase relative z-[1]">Unlock Pro</span>
+            </Link>
+          )}
+
+          {/* Phone + tablet menu */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-            <SheetTrigger asChild className="xl:hidden">
-              <Button variant="ghost" size="icon">
+            <SheetTrigger asChild className="lg:hidden">
+              <Button variant="ghost" size="icon" className="min-h-hit min-w-hit">
                 <Menu className="w-5 h-5" />
                 <span className="sr-only">Open menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-72 bg-sf-surface/95 border-sf-line sf-sb">
+            <SheetContent side="right" className="w-72 bg-sf-surface border-sf-line sf-sb overflow-y-auto">
               <SheetHeader className="text-left">
-                <SheetTitle className="flex items-center gap-3">
-                  <CubeLogo size={32} className="rounded-none" />   {/* sheet header */}
-                  <span className="font-display text-sm font-light tracking-wide text-t1 uppercase">
-                    SF
-                  </span>
+                <SheetTitle className="flex items-center">
+                  <Wordmark size="sm" />
                 </SheetTitle>
               </SheetHeader>
-              <nav className="flex flex-col gap-1 mt-8">
-                {MOBILE_NAV.map((group) => (
+              <nav className="flex flex-col gap-1 mt-6" aria-label="Site">
+                {mobileGroups.map((group) => (
                   <div key={group.heading} className="mb-4 last:mb-0">
-                    <p className="font-heading text-[12px] font-medium uppercase tracking-wide text-t3 px-3 mb-1.5 pb-1.5 border-b border-sf-line-hairline">
+                    <p className={`${MENU_LABEL_CLASS} mb-1 border-b border-sf-line-hairline`}>
                       {group.heading}
                     </p>
                     {group.items.map((item) => {
@@ -191,38 +228,42 @@ const Header = () => {
                           key={item.to}
                           to={item.to}
                           onClick={() => setMobileMenuOpen(false)}
-                          className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t2 hover:text-t1 hover:bg-sf-primary/[0.06] rounded-none transition-colors duration-base"
+                          className={sheetLinkClass}
                         >
-                          <Icon className="w-5 h-5 shrink-0" />
+                          <Icon className="w-5 h-5 shrink-0" aria-hidden="true" />
                           {item.label}
                         </Link>
                       );
                     })}
                   </div>
                 ))}
-                {!isSubscribed && (
-                  <div className="mb-0">
-                    <p className="font-heading text-[12px] font-medium uppercase tracking-wide text-t3 px-3 mb-1.5 pb-1.5 border-b border-sf-line-hairline">
-                      Upgrade
-                    </p>
-                    <Link
-                      to="/features"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t2 hover:text-t1 hover:bg-sf-primary/[0.06] rounded-none transition-colors duration-base"
+                <div className="mb-0">
+                  <p className={`${MENU_LABEL_CLASS} mb-1 border-b border-sf-line-hairline`}>Help</p>
+                  <button
+                    type="button"
+                    className={`${sheetLinkClass} w-full text-left`}
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      fire(OPEN_CONTACT_EVENT);
+                    }}
+                  >
+                    <MessageCircle className="w-5 h-5 shrink-0" aria-hidden="true" />
+                    Open channel
+                  </button>
+                  {!user && (
+                    <button
+                      type="button"
+                      className={`${sheetLinkClass} w-full text-left`}
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        fire(OPEN_AUDIO_SELECTOR_EVENT);
+                      }}
                     >
-                      <Sparkles className="w-5 h-5 shrink-0" />
-                      Features
-                    </Link>
-                    <Link
-                      to="/pricing"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-3 py-3 text-sm font-medium text-t2 hover:text-t1 hover:bg-sf-primary/[0.06] rounded-none transition-colors duration-base"
-                    >
-                      <Zap className="w-5 h-5 shrink-0" />
-                      Pricing
-                    </Link>
-                  </div>
-                )}
+                      <Music className="w-5 h-5 shrink-0" aria-hidden="true" />
+                      Music
+                    </button>
+                  )}
+                </div>
               </nav>
               {!loading && !user && (
                 <div className="mt-8 pt-8 border-t border-sf-line-hairline">
@@ -240,74 +281,30 @@ const Header = () => {
               )}
             </SheetContent>
           </Sheet>
-          <AudioSelectorDialog />
-          <BackgroundSelector />
-          <button
-            className="sf-nav-link inline-flex items-center justify-center gap-2 h-11 min-h-hit min-w-hit px-2 text-t3 hover:text-sf-primary-text transition-colors"
-            onClick={() => setSearchOpen(true)}
-            aria-label="Search"
-          >
-            <Search className="w-4 h-4 relative z-[1]" aria-hidden="true" />
-            <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded-none border border-sf-line bg-sf-surface px-2 font-mono text-[12px] font-medium text-t3 relative z-[1]">
-              {isMac ? <span className="text-xs">⌘</span> : <span className="text-xs">Ctrl</span>}K
-            </kbd>
-          </button>
-          {!loading && user && !isSubscribed && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="hidden sm:inline-flex gap-1.5 border-sf-amber text-sf-amber hover:bg-sf-amber/[0.08] rounded-none"
-              onClick={() => navigate("/pricing")}
-            >
-              <Zap className="w-3.5 h-3.5" />
-              UNLOCK PRO
-            </Button>
-          )}
-          {!loading && user && isSubscribed && !isVanguard && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="hidden sm:inline-flex gap-1.5 border-sf-violet text-sf-violet-text hover:bg-sf-violet/[0.08] rounded-none"
-              onClick={() => navigate("/pricing")}
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              UNLOCK VANGUARD
-            </Button>
-          )}
-          {!loading && user ? (
+
+          {signedIn ? (
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
-                <button className="sf-nav-link inline-flex items-center gap-2 px-2 h-11 min-h-hit min-w-hit text-t2 hover:text-sf-primary-text transition-colors">
+                <button
+                  type="button"
+                  className="sf-nav-link inline-flex items-center gap-2 px-1.5 h-11 min-h-hit min-w-hit text-t2 hover:text-sf-primary-text transition-colors"
+                  aria-label="Account menu"
+                >
                   <Avatar className="w-7 h-7 shrink-0 relative z-[1]">
                     <AvatarImage src={profile?.avatar_url || undefined} />
                     <AvatarFallback className="text-xs">{initials}</AvatarFallback>
                   </Avatar>
-                  <span className="hidden sm:inline text-sm truncate max-w-[120px] relative z-[1]">
-                    {profile?.display_name || user.email?.split("@")[0]}
-                  </span>
-                  {isVanguard ? (
-                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-sf-tag font-mono text-[12px] uppercase tracking-wide bg-sf-violet/[0.06] border border-sf-violet text-sf-violet-text sf-shimmer-violet relative z-[1]">
-                      <Sparkles className="w-3 h-3" />
-                      Vanguard
-                    </span>
-                  ) : isSubscribed ? (
-                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-sf-tag font-mono text-[12px] uppercase tracking-wide bg-sf-violet/[0.06] border border-sf-violet text-sf-violet-text sf-shimmer relative z-[1]">
-                      <Zap className="w-3 h-3" />
-                      Pro
-                    </span>
-                  ) : null}
-                  <ChevronDown className="w-4 h-4 text-t3 relative z-[1]" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-sf-surface/95 backdrop-blur-sf-side border-sf-line rounded-none">
+              <DropdownMenuContent align="end" className="w-60 bg-sf-surface backdrop-blur-sf-side border-sf-line rounded-none">
+                <DropdownMenuLabel className="px-2 py-2 font-normal">
+                  <span className="block truncate text-sm text-t1">{displayName}</span>
+                  <span className="block font-heading text-sf-eyebrow uppercase text-t4">{tierLabel} account</span>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => navigate("/profile")}>
                   <User className="w-4 h-4 mr-2" />
                   Profile
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate("/worlds")}>
-                  <Globe className="w-4 h-4 mr-2" />
-                  My Worlds
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/profile?tab=collection")}>
                   <Library className="w-4 h-4 mr-2" />
@@ -317,52 +314,81 @@ const Header = () => {
                   <Archive className="w-4 h-4 mr-2" />
                   Archive
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/studio")}>
-                  <PenTool className="w-4 h-4 mr-2" />
-                  Studio
-                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/commendations")}>
                   <Award className="w-4 h-4 mr-2" />
                   Commendations
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => {
-                  setSettingsTab("account");
-                  setSettingsOpen(true);
-                }}>
+                <DropdownMenuItem onClick={() => openSettings("account")}>
                   <Settings className="w-4 h-4 mr-2" />
                   Settings
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => {
-                  setSettingsTab("background");
-                  setSettingsOpen(true);
-                }}>
-                  <Image className="w-4 h-4 mr-2" />
-                  Background
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => {
-                  setSettingsTab("export");
-                  setSettingsOpen(true);
-                }}>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>
+                    <SlidersHorizontal className="w-4 h-4 mr-2" />
+                    Display
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent className="w-56 bg-sf-surface border-sf-line rounded-none">
+                    <DisplayMenuItems onOpenBackgroundPicker={() => openSettings("background")} />
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+                <DropdownMenuItem onClick={() => openSettings("export")}>
                   <Download className="w-4 h-4 mr-2" />
                   Export Settings
                 </DropdownMenuItem>
-                {isVanguard ? (
-                  <DropdownMenuItem onClick={() => navigate("/pricing")} className="text-sf-violet-text">
-                    <Sparkles className="w-4 h-4 mr-2 text-sf-violet" />
-                    Manage Vanguard
-                  </DropdownMenuItem>
-                ) : isSubscribed ? (
-                  <DropdownMenuItem onClick={() => navigate("/pricing")} className="text-sf-amber">
-                    <Zap className="w-4 h-4 mr-2 text-sf-amber" />
-                    Manage Subscription
-                  </DropdownMenuItem>
-                ) : (
-                  <DropdownMenuItem onClick={() => navigate("/pricing")}>
-                    <Zap className="w-4 h-4 mr-2" />
-                    Upgrade to Pro
-                  </DropdownMenuItem>
-                )}
+                <DropdownMenuItem onClick={() => navigate("/pricing")}>
+                  <Zap className="w-4 h-4 mr-2" />
+                  {isSubscribed ? "Manage subscription" : "Upgrade to Pro"}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>
+                    <HelpCircle className="w-4 h-4 mr-2" />
+                    Help
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent className="w-52 bg-sf-surface border-sf-line rounded-none">
+                    <DropdownMenuItem onClick={() => navigate("/guide")}>
+                      <BookOpen className="w-4 h-4 mr-2" />
+                      Guide
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => fire(OPEN_FIELD_MANUAL_EVENT)}>
+                      <Compass className="w-4 h-4 mr-2" />
+                      Field Manual
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => fire(OPEN_CONTACT_EVENT)}>
+                      <MessageCircle className="w-4 h-4 mr-2" />
+                      Open channel
+                    </DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>
+                    <Info className="w-4 h-4 mr-2" />
+                    StellarForge
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent className="w-52 bg-sf-surface border-sf-line rounded-none">
+                    <DropdownMenuItem onClick={() => navigate("/learn")}>
+                      <BookOpen className="w-4 h-4 mr-2" />
+                      SF University
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/community")}>
+                      <Users className="w-4 h-4 mr-2" />
+                      Community
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/features")}>
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Features
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/roadmap")}>
+                      <Map className="w-4 h-4 mr-2" />
+                      Roadmap
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/about")}>
+                      <Info className="w-4 h-4 mr-2" />
+                      About
+                    </DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut className="w-4 h-4 mr-2" />
@@ -371,23 +397,25 @@ const Header = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            /* The one auth entry point in the header. "Authenticate" read like
-               a system prompt rather than an invitation, so it says what it
-               does, and keeps the deep link to the create-account card. */
+            /* The one auth entry point in the header. On phones it is the
+               profile slot: an icon with an accessible name. */
             <Button
               variant="outline"
               size="sm"
               asChild
-              className="gap-2 border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.08]"
+              className="min-h-hit min-w-hit gap-2 border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.08]"
             >
-              <Link to="/auth#create-account">
-                <LogIn className="w-4 h-4" />
+              <Link to="/auth#create-account" aria-label="Sign up or log in">
+                <LogIn className="w-4 h-4" aria-hidden="true" />
                 <span className="hidden sm:inline">Sign Up / Log In</span>
               </Link>
             </Button>
           )}
         </div>
       </div>
+
+      {/* Opened from the Display menu (no header button of its own). */}
+      <AudioSelectorDialog showTrigger={false} />
 
       {/* Settings Dialog */}
       <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} defaultTab={settingsTab} />

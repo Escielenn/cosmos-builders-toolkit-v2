@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // DocumentInspector, Scrivener's Inspector for the open document.
 //
-// Three panes in the right rail's "Doc" tab:
+// Collapsible sections in the right rail's "Doc" tab, one open at a time:
 //   CARD       synopsis, label, status, POV (a character on file, or free
 //              text), SET IN (a place), WHEN + TIMELINE, keywords, target.
 //              POV and SET IN drive the rail ranking and the World tab.
@@ -97,38 +97,66 @@ interface DocumentInspectorProps {
 
 const FIELD_LABEL = "font-sans text-[12px] font-medium uppercase tracking-wide text-t3";
 
+const PANE_LABEL: Record<InspectorPane, string> = {
+  card: "Card",
+  notes: "Notes",
+  comments: "Comments",
+  snapshots: "Snapshots",
+};
+
+/**
+ * One section open at a time (1.6 finding 16: the inspector has one tab row,
+ * so the Doc tab's panes are collapsible sections, not a second tab row).
+ * The open section fills the rail and scrolls on its own; the closed ones
+ * stay as one-line headers above and below it. `pane` is still the open
+ * section, so callers that jump to a field keep working.
+ */
 export function DocumentInspector(props: DocumentInspectorProps): JSX.Element {
   const { pane, onPaneChange } = props;
+  const panes: InspectorPane[] = props.comments
+    ? ["card", "notes", "comments", "snapshots"]
+    : ["card", "notes", "snapshots"];
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex border-b border-sf-line-hairline" role="tablist" aria-label="Document inspector">
-        {(props.comments ? (["card", "notes", "comments", "snapshots"] as const) : (["card", "notes", "snapshots"] as const)).map((p) => (
-          <button
+      {panes.map((p) => {
+        const open = pane === p;
+        const count = p === "snapshots" && props.snapshots.length ? props.snapshots.length : null;
+        return (
+          <section
             key={p}
-            type="button"
-            role="tab"
-            aria-selected={pane === p}
-            onClick={() => onPaneChange(p)}
-            className={`min-h-hit flex-1 font-heading text-[12px] uppercase tracking-wide transition-colors duration-fast ${
-              pane === p ? "bg-sf-surface-elevated text-t1" : "text-t3 hover:text-t1"
-            }`}
+            aria-labelledby={`doc-pane-${p}`}
+            className={`flex flex-col border-b border-sf-line-hairline ${open ? "min-h-0 flex-1" : "shrink-0"}`}
           >
-            {p === "card"
-              ? "Card"
-              : p === "notes"
-                ? "Notes"
-                : p === "comments"
-                  ? "Comments"
-                  : `Snaps${props.snapshots.length ? ` ${props.snapshots.length}` : ""}`}
-          </button>
-        ))}
-      </div>
-      <div className="sf-sb sf-sb--slim min-h-0 flex-1 overflow-y-auto">
-        {pane === "card" && <CardPane {...props} />}
-        {pane === "notes" && <NotesPane meta={props.meta} onChange={props.onChange} />}
-        {pane === "comments" && props.comments}
-        {pane === "snapshots" && <SnapshotsPane {...props} />}
-      </div>
+            <h3 className="shrink-0">
+              <button
+                id={`doc-pane-${p}`}
+                type="button"
+                aria-expanded={open}
+                aria-controls={`doc-pane-body-${p}`}
+                onClick={() => onPaneChange(p)}
+                className={`flex min-h-hit w-full items-center gap-2 px-4 text-left font-heading text-sf-eyebrow uppercase transition-colors duration-fast ${
+                  open ? "text-t1" : "text-t4 hover:text-t1"
+                }`}
+              >
+                <ChevronDown
+                  className={`h-3.5 w-3.5 shrink-0 transition-transform duration-fast ${open ? "" : "-rotate-90"}`}
+                  aria-hidden="true"
+                />
+                {PANE_LABEL[p]}
+                {count !== null && <span className="ml-auto font-mono text-[12px] text-t4">{count}</span>}
+              </button>
+            </h3>
+            {open && (
+              <div id={`doc-pane-body-${p}`} className="sf-sb sf-sb--slim flex min-h-0 flex-1 flex-col overflow-y-auto">
+                {p === "card" && <CardPane {...props} />}
+                {p === "notes" && <NotesPane meta={props.meta} onChange={props.onChange} />}
+                {p === "comments" && props.comments}
+                {p === "snapshots" && <SnapshotsPane {...props} />}
+              </div>
+            )}
+          </section>
+        );
+      })}
     </div>
   );
 }
@@ -189,7 +217,7 @@ function CardPane({
           onBlur={() => commit("synopsis", synopsis)}
           rows={3}
           placeholder="What happens in this scene?"
-          className="sf-sb sf-sb--slim w-full resize-y px-3 py-2 font-serif text-[16px] leading-relaxed text-t2"
+          className="sf-sb sf-sb--slim w-full resize-y px-3 py-2 font-sans text-[16px] leading-relaxed text-t2"
         />
       </label>
 
@@ -262,7 +290,7 @@ function CardPane({
             onBlur={commitPov}
             onKeyDown={(e) => e.key === "Enter" && (e.target as HTMLInputElement).blur()}
             placeholder="Whose eyes?"
-            className="min-h-hit min-w-0 flex-1 px-3 font-serif text-[16px] text-t2"
+            className="min-h-hit min-w-0 flex-1 px-3 font-sans text-[16px] text-t2"
           />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -277,7 +305,7 @@ function CardPane({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="sf-sb sf-sb--slim max-h-80 w-64 overflow-y-auto">
               {povOptions.length === 0 ? (
-                <p className="px-2 py-1.5 font-serif text-[13px] italic text-t3">
+                <p className="px-2 py-1.5 font-sans text-[13px] text-t3">
                   No characters on file. Make one in Dossier, or type a name.
                 </p>
               ) : (
@@ -327,7 +355,7 @@ function CardPane({
             >
               <MapPin className="h-3.5 w-3.5 shrink-0 text-t4" aria-hidden="true" />
               {meta.setInPlaceId ? (
-                <span className="min-w-0 flex-1 truncate font-serif text-[16px] text-t1">{place?.name ?? "A place no longer on file"}</span>
+                <span className="min-w-0 flex-1 truncate font-sans text-[16px] text-t1">{place?.name ?? "A place no longer on file"}</span>
               ) : (
                 <span className="min-w-0 flex-1 text-t3">Not set</span>
               )}
@@ -337,7 +365,7 @@ function CardPane({
           <DropdownMenuContent align="start" className="sf-sb sf-sb--slim max-h-80 w-72 overflow-y-auto">
             <DropdownMenuItem onClick={() => commit("setInPlaceId", "")}>Not set</DropdownMenuItem>
             {placeOptions.length === 0 ? (
-              <p className="px-2 py-1.5 font-serif text-[13px] italic text-t3">
+              <p className="px-2 py-1.5 font-sans text-[13px] text-t3">
                 No places on file. Add a place, planet or moon in the Codex.
               </p>
             ) : (
@@ -363,7 +391,7 @@ function CardPane({
             onChange={(e) => setWhen(e.target.value)}
             onBlur={() => commit("when", when.trim())}
             placeholder="In-world date"
-            className="min-h-hit w-full px-3 font-serif text-[16px] text-t2"
+            className="min-h-hit w-full px-3 font-sans text-[16px] text-t2"
           />
         </label>
         <div className="flex min-w-0 flex-col gap-1.5">
@@ -389,7 +417,7 @@ function CardPane({
                 {!meta.branchId && <span className="ml-auto font-mono text-[12px] text-t4">ON</span>}
               </DropdownMenuItem>
               {branchOptions.length === 0 ? (
-                <p className="px-2 py-1.5 font-serif text-[13px] italic text-t3">No branches. Fork one in the Chronicle.</p>
+                <p className="px-2 py-1.5 font-sans text-[13px] text-t3">No branches. Fork one in the Chronicle.</p>
               ) : (
                 branchOptions.map((b) => (
                   <DropdownMenuItem key={b.id} onClick={() => onChange({ branchId: b.id })}>
@@ -505,7 +533,7 @@ function NotesPane({
         }}
         onBlur={flush}
         placeholder="Research, reminders, what this scene still needs. Only you see these."
-        className="sf-sb sf-sb--slim min-h-0 w-full flex-1 resize-none px-3 py-2 font-serif text-[16px] leading-relaxed text-t2"
+        className="sf-sb sf-sb--slim min-h-0 w-full flex-1 resize-none px-3 py-2 font-sans text-[16px] leading-relaxed text-t2"
       />
     </div>
   );
@@ -558,7 +586,7 @@ function SnapshotsPane({
           maxLength={80}
           onChange={(e) => setName(e.target.value)}
           placeholder="Before the rewrite"
-          className="min-h-hit w-full px-3 font-serif text-[16px] text-t2"
+          className="min-h-hit w-full px-3 font-sans text-[16px] text-t2"
         />
         <Button type="submit" variant="sf-primary" size="sf-sm" disabled={busy}>
           <Camera className="h-4 w-4" aria-hidden="true" />
@@ -580,7 +608,7 @@ function SnapshotsPane({
         {snapshotsLoading ? (
           <p className="py-2 font-mono text-[12px] text-t4">LOADING SNAPSHOTS…</p>
         ) : snapshots.length === 0 ? (
-          <p className="py-2 font-serif text-[14px] italic text-t3">
+          <p className="py-2 font-sans text-[14px] text-t3">
             No snapshots yet. Take one before a big revision; restoring one always keeps a copy of the
             current text.
           </p>
@@ -596,7 +624,7 @@ function SnapshotsPane({
                     title="Compare with the current text"
                     className="flex min-h-hit min-w-0 flex-1 flex-col justify-center gap-0.5 py-1.5 pr-1 text-left transition-colors duration-fast hover:bg-sf-surface-elevated"
                   >
-                    <span className="truncate font-serif text-[14px] text-t1">
+                    <span className="truncate font-sans text-[14px] text-t1">
                       {s.name || SNAPSHOT_REASON_LABEL[s.reason].toLowerCase().replace(/^./, (c) => c.toUpperCase())}
                     </span>
                     <span className="flex flex-wrap gap-x-2 font-mono text-[12px] text-t4">

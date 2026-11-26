@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { UserPlus } from "lucide-react";
 import CubeLogo from "@/components/icons/CubeLogo";
+import { Wordmark } from "@/components/brand/Wordmark";
 import { Loader } from "@/components/ui/loader";
 import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from "react-markdown";
@@ -146,15 +147,7 @@ const Join = () => {
     <div className="relative min-h-screen bg-background flex flex-col">
       <header className="border-b border-sf-line-hairline backdrop-blur-xl bg-background/80">
         <div className="container mx-auto px-4 h-16 flex items-center">
-          <Link to="/auth" className="flex items-center gap-3 group">
-            <CubeLogo size={40} className="rounded-none" />
-            <div className="flex flex-col">
-              <span className="font-display font-light text-lg leading-tight tracking-wide">
-                STELLARFORGE
-              </span>
-              <span className="text-xs text-t3">Science Fiction Worldbuilding Tools</span>
-            </div>
-          </Link>
+          <Wordmark size="md" to="/" />
         </div>
       </header>
       <PageBursts bursts={AUTH_BURSTS} />

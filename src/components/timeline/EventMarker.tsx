@@ -91,7 +91,7 @@ const EventMarker = memo(
 
       // Child count badge when collapsed
       const childBadge = hasChildren && !isExpanded ? (
-        <span className="absolute -right-1 -top-1 w-4 h-4 rounded-full bg-muted text-[12px] font-medium flex items-center justify-center text-t2 border border-sf-line">
+        <span className="absolute -right-1 -top-1 w-4 h-4 rounded-none bg-muted text-[12px] font-medium flex items-center justify-center text-t2 border border-sf-line">
           +
         </span>
       ) : null;
@@ -161,7 +161,7 @@ const EventMarker = memo(
             type="button"
             onClick={isDimmed ? undefined : onClick}
             className={cn(
-              "absolute top-1/2 -translate-y-1/2 rounded-full cursor-pointer transition-sf duration-fast",
+              "absolute top-1/2 -translate-y-1/2 rounded-none cursor-pointer transition-sf duration-fast",
               "hover:scale-125 hover:brightness-110",
               // Touch: the dot is ~10px; its ::before carries the hit area.
               "before:absolute before:content-[''] before:-inset-2 [@media(pointer:coarse)]:before:-inset-4",

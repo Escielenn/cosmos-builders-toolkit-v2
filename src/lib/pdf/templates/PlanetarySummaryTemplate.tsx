@@ -260,7 +260,7 @@ const PlanetarySummaryTemplate = ({
         </PDFSection>
 
         {/* Consistency Score */}
-        <View style={{ marginTop: spacing.md, padding: spacing.sm, backgroundColor: "#f5f5f5", borderRadius: 4 }}>
+        <View style={{ marginTop: spacing.md, padding: spacing.sm, backgroundColor: "#f5f5f5" }}>
           <Text style={{ fontSize: typography.sizes.sm, textAlign: "center", color: colors.text.secondary }}>
             Consistency Score: {consistencyScore}/5 checks passed
           </Text>

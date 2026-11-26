@@ -30,9 +30,17 @@ const TYPE_LABELS: Record<ActivityItem["type"], string> = {
 
 interface RecentActivityProps {
   worldId: string;
+  /**
+   * "section" (default): its own titled section with a panel.
+   * "panel": bare rows for a cockpit panel that supplies the frame
+   * (the Bridge, 1.6). Empty is one line and one action, never hidden.
+   */
+  variant?: "section" | "panel";
+  /** Rows shown (default 10). */
+  limit?: number;
 }
 
-export default function RecentActivity({ worldId }: RecentActivityProps) {
+export default function RecentActivity({ worldId, variant = "section", limit = 10 }: RecentActivityProps) {
   const { user } = useAuth();
 
   const { data: items, isLoading } = useQuery({
@@ -107,6 +115,52 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
     enabled: !!user && !!worldId,
     staleTime: 30_000, // 30s cache
   });
+
+  if (variant === "panel") {
+    const rows = (items ?? []).slice(0, limit);
+    return (
+      <>
+        <div className="mb-2 flex min-h-hit items-center border-b border-sf-line-hairline">
+          <h2 className="font-heading text-sf-eyebrow uppercase text-t4">Recent activity</h2>
+        </div>
+        {isLoading ? (
+          <Skeleton className="h-16 w-full" />
+        ) : rows.length === 0 ? (
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <p className="font-sans text-[14px] text-t3">No activity on file.</p>
+            <Link
+              to={`/worlds/${worldId}/tools`}
+              className="inline-flex min-h-hit items-center font-sans text-[14px] text-sf-primary-text transition-colors duration-base hover:text-t1"
+            >
+              Run an instrument
+            </Link>
+          </div>
+        ) : (
+          <ul className="divide-y divide-sf-line-hairline">
+            {rows.map((item) => {
+              const Icon = TYPE_ICONS[item.type];
+              return (
+                <li key={`${item.type}-${item.id}`}>
+                  <Link to={item.linkTo} className="group flex min-h-hit items-center gap-3">
+                    <Icon className="h-3.5 w-3.5 shrink-0 text-t4 group-hover:text-t3" aria-hidden />
+                    <span className="min-w-0 flex-1 truncate font-sans text-[14px] text-t2 group-hover:text-t1">
+                      {item.name}
+                    </span>
+                    <span className="hidden font-heading text-sf-eyebrow uppercase text-t4 sm:inline">
+                      {TYPE_LABELS[item.type]}
+                    </span>
+                    <span className="shrink-0 font-mono text-[12px] text-t4">
+                      {formatDistanceToNow(new Date(item.updatedAt), { addSuffix: true })}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </>
+    );
+  }
 
   if (isLoading) {
     return (

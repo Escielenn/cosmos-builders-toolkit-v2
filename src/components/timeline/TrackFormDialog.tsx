@@ -152,7 +152,7 @@ const TrackFormDialog = ({
                   aria-label={c}
                   aria-pressed={color === c}
                   className={cn(
-                    "sf-hit w-7 h-7 rounded-full border-2 transition-all",
+                    "sf-hit w-7 h-7 rounded-none border-2 transition-all",
                     color === c
                       ? "border-t1 scale-110 shadow-lg"
                       : "border-transparent hover:scale-105"

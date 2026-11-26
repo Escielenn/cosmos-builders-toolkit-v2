@@ -15,6 +15,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type SetStateAction } from "react";
+import { useToolReadOnly, PREVIEW_WRITE_BLOCKED } from "@/contexts/ToolPreviewContext";
 import { useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -144,6 +145,8 @@ export function useToolWorksheet<S>(toolType: string, options: UseToolWorksheetO
 
   const { user, loading: authLoading } = useAuth();
   const signedIn = !!user;
+  // Pro preview (ProToolGuard): the page renders, nothing is ever written.
+  const readOnly = useToolReadOnly();
   const { toast } = useToast();
   const worldId = useWorldId();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -215,7 +218,7 @@ export function useToolWorksheet<S>(toolType: string, options: UseToolWorksheetO
   // ── Load: the browser draft (standalone mode) ──────────────────────
   const draftLoadedFor = useRef<string | null>(null);
   useEffect(() => {
-    if (!localKey) return;
+    if (!localKey || readOnly) return;
     const ctx = { worldId, worksheetId: urlWorksheetId, signedIn, authLoading };
     if (!shouldLoadDraft(ctx)) return;
     const k = `${worldId ?? ""}|${signedIn}`;
@@ -237,7 +240,7 @@ export function useToolWorksheet<S>(toolType: string, options: UseToolWorksheetO
   // ── File a signed-out draft once signed in with a world ────────────
   const migrating = useRef(false);
   const unfiled = !!localKey && hasUnfiledDraft(localKey);
-  const migrate = shouldMigrateDraft({ worldId, worksheetId, signedIn }, unfiled);
+  const migrate = !readOnly && shouldMigrateDraft({ worldId, worksheetId, signedIn }, unfiled);
   useEffect(() => {
     if (!migrate || !localKey || !worldId || migrating.current) return;
     const raw = readDraft(localKey);
@@ -281,10 +284,10 @@ export function useToolWorksheet<S>(toolType: string, options: UseToolWorksheetO
 
   // ── Selector: a world with no sheet open asks which one ────────────
   useEffect(() => {
-    if (autoOpenSelector && worldId && !urlWorksheetId && !sheetsLoading && signedIn && !migrate) {
+    if (!readOnly && autoOpenSelector && worldId && !urlWorksheetId && !sheetsLoading && signedIn && !migrate) {
       setSelectorOpen(true);
     }
-  }, [autoOpenSelector, worldId, urlWorksheetId, sheetsLoading, signedIn, migrate]);
+  }, [readOnly, autoOpenSelector, worldId, urlWorksheetId, sheetsLoading, signedIn, migrate]);
 
   // ── Debounced browser-draft autosave ───────────────────────────────
   // Only real edits are written, and never before auth has settled and the
@@ -292,7 +295,7 @@ export function useToolWorksheet<S>(toolType: string, options: UseToolWorksheetO
   // overwrite the very draft about to be restored.
   const pendingEdit = keyOf(state) !== savedKey;
   useEffect(() => {
-    if (!localKey || !autosaveDraftMs || authLoading || !pendingEdit) return;
+    if (readOnly || !localKey || !autosaveDraftMs || authLoading || !pendingEdit) return;
     const t = window.setTimeout(() => {
       writeDraft(localKey, state, { worldId, signedIn });
     }, autosaveDraftMs);
@@ -303,6 +306,10 @@ export function useToolWorksheet<S>(toolType: string, options: UseToolWorksheetO
 
   // ── Save ───────────────────────────────────────────────────────────
   const save = useCallback(async () => {
+    if (readOnly) {
+      toast({ title: PREVIEW_WRITE_BLOCKED });
+      return;
+    }
     const snapshot = state;
     let draftFailed = false;
     if (localKey) draftFailed = writeDraft(localKey, snapshot, { worldId, signedIn }) === "failed";
@@ -350,7 +357,7 @@ export function useToolWorksheet<S>(toolType: string, options: UseToolWorksheetO
     } catch {
       // The worksheet mutation reports its own failure in Ship's Voice (mapError).
     }
-  }, [state, localKey, worldId, signedIn, worksheetId, toast, keyOf, updateWorksheet, createWorksheet, serialize, displayName, toolType, setSearchParams, searchParams]);
+  }, [readOnly, state, localKey, worldId, signedIn, worksheetId, toast, keyOf, updateWorksheet, createWorksheet, serialize, displayName, toolType, setSearchParams, searchParams]);
 
   const select = useCallback(
     (id: string) => {
@@ -362,6 +369,7 @@ export function useToolWorksheet<S>(toolType: string, options: UseToolWorksheetO
 
   const create = useCallback(
     async (name: string): Promise<string> => {
+      if (readOnly) throw new Error(PREVIEW_WRITE_BLOCKED);
       // The new sheet starts from what is on the page (defaults on a fresh
       // page), so work done before a world was chosen is never thrown away
       // when the new row loads back in.
@@ -380,24 +388,25 @@ export function useToolWorksheet<S>(toolType: string, options: UseToolWorksheetO
       setSearchParams(withWorksheetParams(searchParams, worldId, ws.id));
       return ws.id;
     },
-    [state, createWorksheet, worldId, toolType, serialize, keyOf, localKey, setSearchParams, searchParams],
+    [readOnly, state, createWorksheet, worldId, toolType, serialize, keyOf, localKey, setSearchParams, searchParams],
   );
 
   const rename = useCallback(
     async (next: string) => {
-      if (!worksheetId) return;
+      if (!worksheetId || readOnly) return;
       await renameMutation.mutateAsync({ worksheetId, title: next });
       setTitle(next);
     },
-    [worksheetId, renameMutation],
+    [worksheetId, readOnly, renameMutation],
   );
 
   const setTags = useCallback(
     (next: string[]) => {
+      if (readOnly) return;
       setTagsState(next);
       if (worksheetId) updateWorksheetTags.mutate({ worksheetId, tags: next });
     },
-    [worksheetId, updateWorksheetTags],
+    [worksheetId, readOnly, updateWorksheetTags],
   );
 
   const markSaved = useCallback((s?: S) => setSavedKey(keyOf(s ?? state)), [keyOf, state]);

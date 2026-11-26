@@ -122,7 +122,7 @@ const AvatarPickerDialog = ({
                 type="button"
                 onClick={() => setSelected(url)}
                 className={cn(
-                  "aspect-square rounded-full overflow-hidden border-2 transition-all hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                  "aspect-square rounded-none overflow-hidden border-2 transition-all hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                   isSelected
                     ? "border-primary ring-2 ring-primary/30"
                     : isCurrent

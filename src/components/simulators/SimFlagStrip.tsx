@@ -45,7 +45,7 @@ export function SimFlagStrip({ flags, dismissedIds, onDismiss }: SimFlagStripPro
               <span className="sr-only">{style.kind}: </span>
               {f.title}
             </p>
-            <p className="mt-1 font-serif text-[13px] italic leading-relaxed text-t2">{f.body}</p>
+            <p className="mt-1 font-sans text-[13px] leading-relaxed text-t2">{f.body}</p>
             <button
               type="button"
               onClick={() => onDismiss(flagDismissKey(f))}
