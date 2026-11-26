@@ -187,7 +187,7 @@ export default function AssistantPanel({ worldId, world }: AssistantPanelProps):
 
       <div id="sf-assistant-tabpanel" role="tabpanel" aria-labelledby={`sf-assistant-tab-${tab}`}>
         {tab === "review" && (
-          <ReviewList on={on} issues={issues} picked={picked} world={world} onAdd={addTerm} />
+          <ReviewList on={on && phase !== "failed"} issues={issues} picked={picked} world={world} onAdd={addTerm} />
         )}
         {tab === "world" && <NovelList on={on} worldId={worldId} terms={novel} onAdd={addTerm} />}
         {tab === "lexicon" && <LexiconManager world={world} />}
@@ -233,7 +233,7 @@ function ReviewList({
     return () => clearTimeout(t);
   }, [picked]);
 
-  if (!on) return <Empty>Turn the assistant on to check the open document.</Empty>;
+  if (!on) return <Empty>Turn the assistant on to check the open document. Browser spellcheck covers the page until then.</Empty>;
   if (issues.length === 0) {
     return (
       <Empty>
@@ -269,7 +269,7 @@ function ReviewList({
             </div>
             <p className="mt-1 font-sans text-[13px] leading-snug text-t2">{issue.message}</p>
             <div className="mt-2 flex flex-wrap gap-2">
-              {issue.match && (
+              {issue.match && issue.match.replacement !== issue.problem && (
                 <button
                   type="button"
                   onClick={() => assistant.replaceWith(issue.id, issue.match!.replacement)}

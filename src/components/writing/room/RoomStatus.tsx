@@ -55,7 +55,9 @@ export function RoomStatus({ worldId, documentId }: RoomStatusProps): JSX.Elemen
         </>
       )}
       {assistantOn && (
-        <>
+        // Phones: the bar has no room for a second readout; the count is in
+        // the assistant's own tab and the bar button's label.
+        <span className="hidden items-center gap-2 sm:flex sm:gap-3">
           <button
             type="button"
             onClick={() => openPanel("assistant", { tab: "review" })}
@@ -73,7 +75,7 @@ export function RoomStatus({ worldId, documentId }: RoomStatusProps): JSX.Elemen
             </span>
           </button>
           <span aria-hidden="true">·</span>
-        </>
+        </span>
       )}
     </>
   );
