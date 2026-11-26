@@ -37,9 +37,9 @@ import { Link } from "react-router-dom";
 import { Copy, Download, FileText, History, Ship } from "lucide-react";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
-import SectionNavigation, { MobileSectionNav } from "@/components/tools/SectionNavigation";
+import SectionNavigation from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
-import KeyChoicesSidebar, { MobileKeyChoices, type KeyChoicesSection } from "@/components/tools/KeyChoicesSidebar";
+import KeyChoicesSidebar, { type KeyChoicesSection } from "@/components/tools/KeyChoicesSidebar";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
@@ -879,10 +879,6 @@ const GenerationShipDesigner = () => {
         <SectionNavigation sections={GENSHIP_SECTIONS} mode="inline" />
         <KeyChoicesSidebar sections={keyChoices} title="Ark Summary" mode="inline" />
       </ToolSidebar>
-      <div className="fixed right-4 bottom-4 z-40 flex flex-col gap-2 xl:hidden no-print">
-        <MobileSectionNav sections={GENSHIP_SECTIONS} />
-        <MobileKeyChoices sections={keyChoices} title="Ark Summary" />
-      </div>
 
       <WorksheetNotesSheet
         open={notesSheetOpen}

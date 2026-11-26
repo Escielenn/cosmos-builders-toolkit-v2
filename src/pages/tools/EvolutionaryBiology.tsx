@@ -30,13 +30,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
-import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
+import KeyChoicesSidebar, { KeyChoicesSection } from "@/components/tools/KeyChoicesSidebar";
 import { useToast } from "@/hooks/use-toast";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import WorksheetLinkSelector from "@/components/tools/WorksheetLinkSelector";
 import SpeciesMatrixImportModal from "@/components/tools/SpeciesMatrixImportModal";
 import { useAuth } from "@/contexts/AuthContext";
-import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
+import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
 // FormState, defaults and codec: lib/tool-worksheets/phylo.
@@ -2255,11 +2255,6 @@ const EvolutionaryBiology = () => {
           <KeyChoicesSidebar sections={keyChoicesSections} title="Species Summary" mode="inline" />
         </ToolSidebar>
 
-        {/* Mobile Sidebars - Right side floating buttons */}
-        <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
-          <MobileSectionNav sections={SECTIONS} />
-          <MobileKeyChoices sections={keyChoicesSections} title="Species Summary" />
-        </div>
 
         {/* Worksheet Selector Dialog */}
         <WorksheetSelectorDialog

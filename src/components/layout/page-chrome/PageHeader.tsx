@@ -42,7 +42,7 @@ export interface Crumb {
 
 export interface PageHeaderProps {
   title: React.ReactNode;
-  /** Bold lead-in rendered before the title, e.g. a tool's brand "Goldilocks:". */
+  /** Lead-in before the title, e.g. a tool's brand "Goldilocks:". Same face and weight as the title, one tier quieter. */
   titleLead?: React.ReactNode;
   eyebrow?: string;
   accent?: PageAccent;
@@ -190,7 +190,7 @@ export function PageHeader({
               compact ? "text-sf-h2 leading-[1.1]" : "text-sf-h1 leading-[1.04]",
             )}
           >
-            {titleLead && <span className="font-normal">{titleLead} </span>}
+            {titleLead && <span className="text-t3">{titleLead} </span>}
             {title}
           </h1>
           {badge && <span className={cn("shrink-0", centred ? "self-center" : "mt-2 self-start")}>{badge}</span>}

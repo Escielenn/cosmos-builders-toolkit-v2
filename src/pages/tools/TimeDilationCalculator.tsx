@@ -29,13 +29,11 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
-import { MobileSectionNav } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import SectionNavigation from "@/components/tools/SectionNavigation";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
 import KeyChoicesSidebar, {
   KeyChoicesSection,
-  MobileKeyChoices,
 } from "@/components/tools/KeyChoicesSidebar";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
 import QuickExportButton from "@/components/tools/QuickExportButton";
@@ -1121,11 +1119,6 @@ const TimeDilationCalculator = () => {
           />
         </ToolSidebar>
 
-        {/* Mobile Sidebars */}
-        <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
-          <MobileSectionNav sections={TIME_DILATION_SECTIONS} />
-          <MobileKeyChoices sections={keyChoicesSections} title="Dilation Summary" />
-        </div>
 
       {/* ═══ Dialogs & Sheets ═══ */}
       <WorksheetNotesSheet

@@ -17,10 +17,10 @@ import { useToast } from "@/hooks/use-toast";
 import { useWorlds } from "@/hooks/use-worlds";
 import { useAuth } from "@/contexts/AuthContext";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
-import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
+import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
-import KeyChoicesSidebar, { KeyChoicesSection, MobileKeyChoices } from "@/components/tools/KeyChoicesSidebar";
+import KeyChoicesSidebar, { KeyChoicesSection } from "@/components/tools/KeyChoicesSidebar";
 import ToolPageLayout from "@/components/tools/ToolPageLayout";
 // FormState, defaults and codec: lib/tool-worksheets/drake.
 import {
@@ -362,11 +362,6 @@ const DrakeEquationCalculator = () => {
           <KeyChoicesSidebar sections={keyChoicesSections} title="Drake Summary" mode="inline" />
         </ToolSidebar>
 
-        {/* Mobile Sidebars - Right side floating buttons */}
-        <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
-          <MobileSectionNav sections={SECTIONS} />
-          <MobileKeyChoices sections={keyChoicesSections} title="Drake Summary" />
-        </div>
 
         {/* Introduction Section */}
         <CollapsibleSection

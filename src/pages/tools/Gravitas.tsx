@@ -48,8 +48,9 @@ import { useToast } from "@/hooks/use-toast";
 import WorksheetSelectorDialog from "@/components/tools/WorksheetSelectorDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import CollapsibleSection from "@/components/tools/CollapsibleSection";
-import SectionNavigation, { Section, MobileSectionNav } from "@/components/tools/SectionNavigation";
+import SectionNavigation, { Section } from "@/components/tools/SectionNavigation";
 import ToolSidebar from "@/components/tools/ToolSidebar";
+import { RailReadout } from "@/components/tools/tool-rail";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
@@ -303,10 +304,6 @@ const Gravitas = () => {
       }
     >
 
-        {/* Mobile Navigation */}
-        <div className="fixed right-4 bottom-4 xl:hidden z-40 no-print flex flex-col gap-2">
-          <MobileSectionNav sections={SECTIONS} />
-        </div>
 
         {/* Main Content */}
         <div className="space-y-6">
@@ -1105,16 +1102,13 @@ const Gravitas = () => {
         {/* Desktop Sidebar, Navigation + Live Readout */}
         <ToolSidebar>
           <SectionNavigation sections={SECTIONS} mode="inline" />
-          <GlassPanel className="p-4 w-56">
-            <h4 className="font-mono text-[12px] tracking-[0.12em] uppercase text-t4 mb-3">
-              // READOUT
-            </h4>
-            <div className="text-center mb-3">
+          <RailReadout>
+            <div className="text-center mb-3 px-2">
               <p className="text-[12px] uppercase tracking-wider text-t3 mb-1">Effective Gravity</p>
               <p className={`font-mono text-2xl font-light ${statusColor}`}>{formatG(effectiveG)}</p>
               <p className={`text-[12px] mt-0.5 ${statusColor}`}>{gravityLabel}</p>
             </div>
-            <div className="space-y-1.5 text-[12px]">
+            <div className="space-y-1.5 px-2 text-[12px]">
               <div className="flex justify-between">
                 <span className="text-t4">Mode</span>
                 <span className="text-t2 font-mono">{MODE_LABELS[formState.activeMode]}</span>
@@ -1158,7 +1152,7 @@ const Gravitas = () => {
                 </div>
               )}
             </div>
-          </GlassPanel>
+          </RailReadout>
         </ToolSidebar>
       {/* Dialogs */}
       <WorksheetSelectorDialog

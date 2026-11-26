@@ -1,6 +1,6 @@
-import { type ReactNode, useRef, useState, useEffect } from "react";
+import { type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-import { Save, Printer, Download, Share2, StickyNote, ImageIcon, FolderOpen, Cloud, CloudOff, ChevronUp, BookOpen, ChevronDown, MoreHorizontal } from "lucide-react";
+import { Save, Printer, Download, Share2, StickyNote, ImageIcon, FolderOpen, Cloud, CloudOff, BookOpen, ChevronDown, MoreHorizontal } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -40,6 +40,8 @@ interface ToolActionBarProps {
   /** Pass worldId + worksheetId to auto-show a "Wiki" button when a linked entry exists */
   worldId?: string;
   worksheetId?: string;
+  /** The rail's Sections button (ToolRailTrigger), shown below xl. */
+  railTrigger?: ReactNode;
 }
 
 const ToolActionBar = ({
@@ -61,9 +63,9 @@ const ToolActionBar = ({
   onWikiClick,
   worldId,
   worksheetId,
+  railTrigger,
 }: ToolActionBarProps) => {
   const navigate = useNavigate();
-  const barRef = useRef<HTMLDivElement>(null);
 
   // Auto-resolve linked wiki entry for the "Wiki" button
   const { data: linkedEntryId } = useLinkedEntryId(worldId, worksheetId);
@@ -72,23 +74,17 @@ const ToolActionBar = ({
       ? () => navigate(`/worlds/${worldId}/codex/${linkedEntryId}`)
       : undefined
   );
-  const [showBottomBar, setShowBottomBar] = useState(false);
-
-  useEffect(() => {
-    const el = barRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setShowBottomBar(!entry.isIntersecting),
-      { threshold: 0 },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <>
-    <div ref={barRef} className={`no-print ${className}`}>
-      <div className="flex flex-wrap gap-2 items-center">
+    {/* Sticky under the site header (or the top of the world frame): the
+        one action row. It replaces the fixed bottom bar that used to slide
+        in over content once this row scrolled away (finding 8/14). One row
+        at every width: on phones labels drop to icons and Notes moves into
+        the More menu (finding 19). */}
+    <div
+      className={`no-print sticky top-[var(--sf-tool-sticky-top,4rem)] z-30 -mx-4 border-b border-sf-line-hairline bg-sf-void/95 px-4 py-2 backdrop-blur-sf-side ${className}`}
+    >
+      <div className="flex flex-nowrap gap-2 items-center">
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
@@ -102,11 +98,13 @@ const ToolActionBar = ({
               ) : (
                 <Save className="w-4 h-4 mr-2" />
               )}
-              {isSaving ? "SAVING..." : isCloudEnabled ? "Save" : "Save Draft"}
+              {isSaving ? "SAVING..." : isCloudEnabled ? "Save" : (
+                <span>Save<span className="hidden sm:inline"> Draft</span></span>
+              )}
               {isCloudEnabled ? (
-                <Cloud className="w-3 h-3 ml-1.5 text-sf-primary-text" />
+                <Cloud className="w-3 h-3 ml-1.5 text-sf-primary-text" aria-label="Cloud sync enabled" />
               ) : (
-                <CloudOff className="w-3 h-3 ml-1.5 text-t4" />
+                <CloudOff className="w-3 h-3 ml-1.5 text-t4" aria-label="Local only" />
               )}
             </Button>
           </TooltipTrigger>
@@ -119,10 +117,10 @@ const ToolActionBar = ({
             row, which read as three different features. */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm">
-              <Download className="w-4 h-4 mr-2" />
-              {exportLabel}
-              <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
+            <Button variant="outline" size="sm" aria-label={exportLabel}>
+              <Download className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">{exportLabel}</span>
+              <ChevronDown className="w-3.5 h-3.5 ml-1.5 text-t4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-60 bg-sf-surface/95 backdrop-blur-sf-side border-sf-line rounded-none">
@@ -147,7 +145,7 @@ const ToolActionBar = ({
         </DropdownMenu>
 
         {onNotesClick && (
-          <Button variant="outline" size="sm" onClick={onNotesClick}>
+          <Button variant="outline" size="sm" className="hidden sm:inline-flex" onClick={onNotesClick}>
             <StickyNote className="w-4 h-4 mr-2" />
             Notes
           </Button>
@@ -155,16 +153,27 @@ const ToolActionBar = ({
 
         {/* Secondary actions collapse into one overflow menu so the bar stays
             scannable no matter how many a given tool enables. */}
-        {(onOpen || onMoodboardClick || handleWikiClick || onShare) && (
+        {(onOpen || onMoodboardClick || handleWikiClick || onShare || onNotesClick) && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" aria-label="More actions">
-                <MoreHorizontal className="w-4 h-4 mr-2" />
-                More
-                <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
+              <Button
+                variant="outline"
+                size="sm"
+                aria-label="More actions"
+                className={!(onOpen || onMoodboardClick || handleWikiClick || onShare) ? "sm:hidden" : undefined}
+              >
+                <MoreHorizontal className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">More</span>
+                <ChevronDown className="w-3.5 h-3.5 ml-1.5 text-t4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-56 bg-sf-surface/95 backdrop-blur-sf-side border-sf-line rounded-none">
+              {onNotesClick && (
+                <DropdownMenuItem className="sm:hidden" onClick={onNotesClick}>
+                  <StickyNote className="w-4 h-4 mr-2" />
+                  Notes
+                </DropdownMenuItem>
+              )}
               {onMoodboardClick && (
                 <DropdownMenuItem onClick={onMoodboardClick}>
                   <ImageIcon className="w-4 h-4 mr-2" />
@@ -203,85 +212,8 @@ const ToolActionBar = ({
             </DropdownMenuContent>
           </DropdownMenu>
         )}
-      </div>
-    </div>
 
-    {/* Sticky bottom bar, appears when top bar scrolls out of view.
-        z-30 (page-content tier, not z-50/header tier) so FABStack's help
-        button — fixed in the same bottom-right corner at z-40 — always
-        renders above it instead of being fully hidden underneath. */}
-    <div
-      aria-hidden={!showBottomBar}
-      className={`no-print fixed bottom-6 left-0 right-0 z-30 transition-transform duration-slow ease-sf-out ${
-        showBottomBar ? "translate-y-0" : "translate-y-[calc(100%+24px)] pointer-events-none"
-      }`}
-    >
-      {/* Light arc glow on top edge */}
-      <div className="absolute top-0 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-[hsl(157_100%_62%/0.25)] to-transparent" />
-
-      <div className="bg-[hsl(222_25%_9%/0.95)] backdrop-blur-xl border-t border-sf-line-hairline">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-3">
-          <div className="flex min-w-0 items-center gap-2">
-            <Button
-              variant={hasUnsavedChanges ? "default" : "outline"}
-              size="sm"
-              onClick={onSave}
-              disabled={isSaving}
-            >
-              {isSaving ? (
-                <Loader variant="inline" size="sm" className="mr-2" />
-              ) : (
-                <Save className="w-4 h-4 mr-2" />
-              )}
-              {isSaving ? "SAVING..." : isCloudEnabled ? "Save" : "Save Draft"}
-              {isCloudEnabled ? (
-                <Cloud className="w-3 h-3 ml-1.5 text-sf-primary-text" />
-              ) : (
-                <CloudOff className="w-3 h-3 ml-1.5 text-t4" />
-              )}
-            </Button>
-
-            {/* Same dropdown as the top bar, not a direct onExport() fire —
-                those used to disagree: this button used to skip straight to
-                the format dialog and silently drop the Print/PDF path that
-                the top bar's version offers. */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" aria-label={exportLabel}>
-                  <Download className="w-4 h-4 sm:mr-2" />
-                  {/* Label hides at phone width: the bar used to run 76px off a 375px screen. */}
-                  <span className="hidden sm:inline">{exportLabel}</span>
-                  <ChevronDown className="w-3.5 h-3.5 ml-1.5 opacity-60" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-60 bg-sf-surface/95 backdrop-blur-sf-side border-sf-line rounded-none">
-                <DropdownMenuLabel className="text-[12px] uppercase tracking-[1.5px] text-t3 font-medium">
-                  Export
-                </DropdownMenuLabel>
-                <DropdownMenuItem onClick={onExport}>
-                  <Download className="w-4 h-4 mr-2" />
-                  Choose Format…
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={onPrint}>
-                  <Printer className="w-4 h-4 mr-2" />
-                  Print / Save as PDF
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-
-          <Button
-            variant="ghost"
-            size="sm"
-            className="shrink-0 text-t4 hover:text-t2"
-            aria-label="Back to top"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          >
-            <ChevronUp className="w-4 h-4 sm:mr-1" />
-            <span className="hidden sm:inline">Top</span>
-          </Button>
-        </div>
+        {railTrigger && <div className="ml-auto">{railTrigger}</div>}
       </div>
     </div>
     </>

@@ -133,14 +133,14 @@ const CollapsibleSection = ({
 
   if (variant === "minimal") {
     return (
-      <div id={id} className="scroll-mt-24">
+      <div id={id} data-sf-section className="scroll-mt-24">
         {content}
       </div>
     );
   }
 
   return (
-    <GlassPanel id={id} className="overflow-hidden scroll-mt-24">
+    <GlassPanel id={id} data-sf-section className="overflow-hidden scroll-mt-24">
       {content}
     </GlassPanel>
   );
