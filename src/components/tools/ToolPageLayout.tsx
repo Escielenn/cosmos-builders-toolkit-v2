@@ -28,7 +28,7 @@ import ToolIntroSection from "@/components/tools/ToolIntroSection";
 import { TOOL_INTROS } from "@/lib/tool-intros";
 import { WorksheetTitle } from "@/components/tools/WorksheetTitle";
 import { WorksheetTagsBar } from "@/components/tools/WorksheetTagsBar";
-import { getToolIcon } from "@/components/icons/tool-icons";
+import { getToolIcon, ToolTitleGlyph } from "@/components/icons/tool-icons";
 import { getToolPageConfig } from "@/lib/tool-page-config";
 import { useWorldId } from "@/hooks/use-world-id";
 import { useAuth } from "@/contexts/AuthContext";
@@ -242,7 +242,7 @@ export default function ToolPageLayout({
           eyebrow={`${accent.toUpperCase()} · ${cfg.brandName.toUpperCase()}`}
           titleLead={`${cfg.brandName}:`}
           title={cfg.fullName}
-          icon={ToolIcon ? <ToolIcon className="h-10 w-10 rounded-none" /> : undefined}
+          icon={ToolIcon ? <ToolTitleGlyph toolId={toolType} /> : undefined}
           badge={cfg.isPro ? <ProBadge /> : undefined}
           lede={cfg.subtitle}
           size={worldId ? "space" : "page"}

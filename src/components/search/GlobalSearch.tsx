@@ -12,18 +12,8 @@ import {
 import {
   Globe,
   FileText,
-  Dna,
-  Sparkles,
-  GitBranch,
-  Rocket,
-  Zap,
-  Calculator,
   Plus,
   Wrench,
-  Sun,
-  Crown,
-  Cpu,
-  Users,
   User,
   BookOpen,
   PenLine,
@@ -32,28 +22,23 @@ import { useWorlds } from "@/hooks/use-worlds";
 import { useRecentWork } from "@/hooks/use-recent-work";
 import { getToolDisplayName } from "@/lib/worksheet-links-config";
 import { TOOL_ROUTES } from "@/lib/tools-config";
+import { ToolGlyph, TOOL_GLYPH_IDS } from "@/components/icons/tool-icons";
 import { shapePaletteGroups, type PaletteItem } from "@/lib/command-palette";
 
-// Tool icon mapping. Deliberately partial — TOOL_ROUTES below is the full
-// catalog (shared with the header nav and landing showcase), and any tool
-// without an entry here falls back to the generic Wrench/FileText icons
-// where it's rendered. A tool missing from THIS map only loses its custom
-// glyph; a tool missing from TOOL_ROUTES used to mean it couldn't be found
-// or opened from search at all — that was the actual bug (roughly half the
-// catalog, including every simulator, was unreachable from ⌘K).
-const TOOL_ICONS: Record<string, React.ElementType> = {
-  "planetary-profile": Globe,
-  "evolutionary-biology": Dna,
-  "xenomythology-framework-builder": Sparkles,
-  "environmental-chain-reaction": GitBranch,
-  "spacecraft-designer": Rocket,
-  "propulsion-consequences-map": Zap,
-  "drake-equation-calculator": Calculator,
-  "star-system-builder": Sun,
-  "empire-designer": Crown,
-  "technology-consequences": Cpu,
-  "species-interaction-matrix": Users,
-};
+// Tool glyphs come from the shared line-glyph family (icons/tool-icons),
+// so every tool in TOOL_ROUTES has its own mark here, not a lucide stand-in.
+const glyphCache = new Map<string, React.ElementType>();
+function toolGlyphIcon(toolType: string | undefined): React.ElementType | null {
+  if (!toolType || !TOOL_GLYPH_IDS.includes(toolType)) return null;
+  let Icon = glyphCache.get(toolType);
+  if (!Icon) {
+    const C = ({ className }: { className?: string }) => <ToolGlyph toolId={toolType} className={className} />;
+    C.displayName = `SearchGlyph(${toolType})`;
+    Icon = C;
+    glyphCache.set(toolType, C);
+  }
+  return Icon;
+}
 
 interface GlobalSearchProps {
   open: boolean;
@@ -143,7 +128,7 @@ const GlobalSearch = ({ open, onOpenChange }: GlobalSearchProps) => {
               <PaletteRow
                 key={item.key}
                 item={item}
-                icon={(item.toolType && TOOL_ICONS[item.toolType]) || FileText}
+                icon={toolGlyphIcon(item.toolType) || FileText}
                 onSelect={go}
               />
             ))}
@@ -155,14 +140,14 @@ const GlobalSearch = ({ open, onOpenChange }: GlobalSearchProps) => {
         {/* Tools */}
         <CommandGroup heading="Tools">
           {Object.entries(TOOL_ROUTES).map(([toolType, route]) => {
-            const Icon = TOOL_ICONS[toolType] || Wrench;
+            const Icon = toolGlyphIcon(toolType) || Wrench;
             return (
               <CommandItem
                 key={toolType}
                 value={`tool ${getToolDisplayName(toolType)}`}
                 onSelect={() => go(route)}
               >
-                <Icon className="mr-2 h-4 w-4 text-sf-primary-text" aria-hidden="true" />
+                <Icon className="mr-2 h-4 w-4 shrink-0 text-t3" aria-hidden="true" />
                 <span>{getToolDisplayName(toolType)}</span>
               </CommandItem>
             );

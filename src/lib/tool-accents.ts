@@ -75,6 +75,18 @@ const TEXT: Record<ToolAccent, string> = {
   magenta: "text-sf-magenta-text",
 };
 
+// Canonical stop: icons, fills and large marks use --sf-X, never -text.
+const ICON: Record<ToolAccent, string> = {
+  amber: "text-sf-amber",
+  azure: "text-sf-azure",
+  emerald: "text-sf-emerald",
+  violet: "text-sf-violet",
+  stellar: "text-sf-stellar",
+  teal: "text-sf-teal",
+  crimson: "text-sf-crimson",
+  magenta: "text-sf-magenta",
+};
+
 const BORDER: Record<ToolAccent, string> = {
   amber: "border-sf-amber",
   azure: "border-sf-azure",
@@ -120,6 +132,7 @@ const BG: Record<ToolAccent, string> = {
 };
 
 export const accentTextClass = (accent: ToolAccent): string => TEXT[accent];
+export const accentIconClass = (accent: ToolAccent): string => ICON[accent];
 export const accentBorderClass = (accent: ToolAccent): string => BORDER[accent];
 export const accentChipClass = (accent: ToolAccent): string => CHIP[accent];
 export const accentArcClass = (accent: ToolAccent): string => ARC[accent];
