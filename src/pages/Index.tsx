@@ -29,6 +29,13 @@ import { CosmicTelemetry } from "@/components/layout/CosmicVelocityTicker";
 import SFDivider from "@/components/ui/sf-divider";
 import { PageBursts } from "@/components/ui/data-burst";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal } from "lucide-react";
 import { PageContainer, PageHeader } from "@/components/layout/page-chrome";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorlds } from "@/hooks/use-worlds";
@@ -42,8 +49,10 @@ import { dismissWelcome, isWelcomeDismissed, shouldShowWelcome } from "@/lib/onb
 const CONTINUE_LIMIT = 6;
 const ACTIVITY_LIMIT = 8;
 
-// Section headings (15-PAGE-CHROME §4): named blocks, display h3.
-const sectionHeading = "font-display text-sf-h3 font-light text-t1 mb-6";
+// Section headings (15-PAGE-CHROME §4): the section-header pattern, Jura
+// eyebrow over a hairline, the same as the Bridge cockpit (1.6).
+const sectionHeading =
+  "mb-4 border-b border-sf-line-hairline pb-2 font-heading text-sf-eyebrow uppercase text-t4";
 
 function SignedInHome() {
   const { user } = useAuth();
@@ -95,19 +104,36 @@ function SignedInHome() {
             {/* The one CreateWorldButton on this page: it owns BEGIN SURVEY
                 and the ?create=true deep link. */}
             <CreateWorldButton variant="button" />
-            <Button asChild variant="sf-ghost" size="sf-md">
+            {/* sm+: two ghost links. Phones: one overflow (1.6 #19), so the
+                header never wraps into three rows. */}
+            <Button asChild variant="sf-ghost" size="sf-md" className="hidden sm:inline-flex">
               <Link to="/worlds">All worlds</Link>
             </Button>
-            <Button asChild variant="sf-ghost" size="sf-md">
+            <Button asChild variant="sf-ghost" size="sf-md" className="hidden sm:inline-flex">
               <Link to="/tools">All tools</Link>
             </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="sf-ghost" size="icon" className="min-h-hit min-w-hit sm:hidden" aria-label="More">
+                  <MoreHorizontal className="h-4 w-4" aria-hidden />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link to="/worlds">All worlds</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/tools">All tools</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </>
         }
       />
 
       <SubscriptionBanner />
 
-      <section aria-labelledby="home-continue" className="mb-16">
+      <section aria-labelledby="home-continue" className="mb-12">
         <h2 id="home-continue" className={sectionHeading}>
           Continue writing
         </h2>
@@ -119,7 +145,7 @@ function SignedInHome() {
       </section>
 
       {worlds.length > 0 && (
-        <section aria-labelledby="home-activity" className="mb-16">
+        <section aria-labelledby="home-activity" className="mb-12">
           <h2 id="home-activity" className={sectionHeading}>
             Recent activity
           </h2>
@@ -129,7 +155,7 @@ function SignedInHome() {
 
       <SharedWorldsSection />
 
-      <section aria-labelledby="home-prompt" className="mb-16">
+      <section aria-labelledby="home-prompt" className="mb-12">
         <h2 id="home-prompt" className={sectionHeading}>
           Today's writing prompt
         </h2>

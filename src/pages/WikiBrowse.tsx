@@ -106,7 +106,8 @@ export default function WikiBrowse() {
   );
 
   const [search, setSearch] = useState("");
-  const [activeLayer, setActiveLayer] = useState<string | null>(null);
+  // `?layer=` (the Bridge cascade panel) opens the list filtered to a layer.
+  const [activeLayer, setActiveLayer] = useState<string | null>(() => searchParams.get("layer"));
   const [activeType, setActiveType] = useState<string | null>(null);
   const [activeTags, setActiveTags] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);

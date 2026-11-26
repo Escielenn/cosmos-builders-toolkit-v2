@@ -348,13 +348,13 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       {/* World name */}
       <button
         onClick={() => navigate(`/worlds/${worldId}`)}
-        className="px-3 py-1.5 text-left flex items-center gap-2"
+        className="min-h-hit px-3 py-1.5 text-left flex items-center gap-2"
       >
         {layoutContext?.worldIcon && (
           <WorldIconRenderer iconId={layoutContext.worldIcon} className="w-4 h-4 text-sf-primary-text shrink-0" />
         )}
-        {/* The world's own name, in the writer's voice — not a system label. */}
-        <span className="font-serif text-[17px] italic text-t1 block truncate">
+        {/* Instrument chrome (1.6 #12): DM Sans, not the Lora writer voice. */}
+        <span className="font-sans text-[16px] font-medium text-t1 block truncate">
           {codexData.worldName}
         </span>
       </button>
@@ -366,7 +366,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
         className="px-3 py-1 w-full text-left flex items-center gap-2 text-t3 hover:text-t2 transition-colors"
       >
         <FileText className="w-3.5 h-3.5" />
-        <span className="font-serif text-[14px] italic">World notes</span>
+        <span className="font-sans text-[14px]">World notes</span>
       </button>
 
       {/* Codex hint */}
@@ -381,7 +381,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
       <div className="px-3 pb-1 flex items-center gap-2">
         <button
           onClick={() => handleGroupByChange("cascade")}
-          className={`flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-wide transition-colors ${
+          className={`flex min-h-[32px] items-center gap-1 px-2 py-1 font-heading text-[12px] uppercase tracking-wide transition-colors ${
             groupBy === "cascade"
               ? "text-sf-primary-text bg-sf-primary/8 border border-sf-primary"
               : "border border-sf-line text-t4 hover:text-t3 hover:border-sf-line-emphasis"
@@ -393,7 +393,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
         </button>
         <button
           onClick={() => handleGroupByChange("entity")}
-          className={`flex items-center gap-1 px-2 py-1 text-[12px] uppercase tracking-wide transition-colors ${
+          className={`flex min-h-[32px] items-center gap-1 px-2 py-1 font-heading text-[12px] uppercase tracking-wide transition-colors ${
             groupBy === "entity"
               ? "text-sf-primary-text bg-sf-primary/8 border border-sf-primary"
               : "border border-sf-line text-t4 hover:text-t3 hover:border-sf-line-emphasis"
