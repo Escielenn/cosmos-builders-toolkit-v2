@@ -26,6 +26,7 @@ import {
   type PaperColors,
   type PaperId,
 } from "@/lib/writing/themes";
+import { VOID_PAPER_FALLBACK } from "@/lib/palettes/writing-papers";
 
 export const ROOM_KEY = "sf-writing-room:v1";
 export const LOOKS_KEY = "sf-writing-room-looks:v1";
@@ -342,16 +343,7 @@ export function liveVoidColors(read: (name: string) => string): PaperColors | nu
 }
 
 /** Default Void·Teal, for when the live tokens cannot be read (tests, SSR). */
-export const VOID_FALLBACK: PaperColors = {
-  paper: "#0A0E17",
-  ink: "#C9CDD3",
-  inkStrong: "#FAFAFA",
-  inkSoft: "#A7AAB0",
-  inkFaint: "#9799A0",
-  rule: "#41454C",
-  selection: "#273249",
-  wash: "#1B2334",
-};
+export const VOID_FALLBACK: PaperColors = VOID_PAPER_FALLBACK;
 
 /**
  * The sheet opacity actually drawn: what the writer asked for, never below

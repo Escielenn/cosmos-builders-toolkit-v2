@@ -1,6 +1,6 @@
 {
   "_comment": "Per-file raw hex counts for scripts/check-raw-hex.mjs. A listed file may not gain hex; an unlisted file may have none. Counts may only go down. Regenerate with `npm run check:hex -- --update-baseline` in the PR that lowers them.",
-  "total": 211,
+  "total": 179,
   "files": {
     "src/components/editor/EntityMention.tsx": 1,
     "src/components/simulators/ExoSkySimulator.tsx": 10,
@@ -12,7 +12,6 @@
     "src/components/solaris/utils/planetTexture.ts": 1,
     "src/components/tools/StellarCartographer/StellarCartographer.module.css": 26,
     "src/components/writing/WritingEntityPanel.tsx": 8,
-    "src/index.css": 48,
-    "src/lib/writing/themes.ts": 32
+    "src/index.css": 48
   }
 }
