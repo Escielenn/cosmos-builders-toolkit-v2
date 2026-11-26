@@ -25,12 +25,14 @@ const buttonVariants = cva(
         link: "text-primary sf-text-link",
         // StellarForge signature: uppercase, letter-spaced, primary fill-sweep
         sf: "bg-transparent border border-sf-line text-t1 uppercase tracking-[0.15em] text-xs font-medium sf-fill-sweep sf-fill-sweep--primary hover:border-primary hover:text-primary",
-        /* ── April 2026 handoff ── zero-radius, teal-filled primary */
+        /* ── April 2026 handoff ── zero-radius, teal-filled primary.
+           1.7 (Clarity first, CLAUDE.md Ship's Voice): actions read in
+           sentence case as written; the forced caps and tracking are gone. */
         "sf-primary":
-          "border border-sf-primary bg-sf-primary text-sf-on-primary font-sans font-medium uppercase tracking-[1.2px] transition-base ease-sf-out sf-btn-lift hover:-translate-y-[1px] active:translate-y-0",
+          "border border-sf-primary bg-sf-primary text-sf-on-primary font-sans font-medium transition-base ease-sf-out sf-btn-lift hover:-translate-y-[1px] active:translate-y-0",
         /* ── April 2026 handoff ── transparent outline ghost */
         "sf-ghost":
-          "border border-sf-line bg-transparent text-t1 font-sans font-medium uppercase tracking-[1.2px] transition-base ease-sf-out hover:border-sf-primary hover:text-sf-primary-text hover:shadow-sf-inset-teal",
+          "border border-sf-line bg-transparent text-t1 font-sans font-medium transition-base ease-sf-out hover:border-sf-primary hover:text-sf-primary-text hover:shadow-sf-inset-teal",
       },
       size: {
         /* Heights target a comfortable desktop hit area; every size clears the

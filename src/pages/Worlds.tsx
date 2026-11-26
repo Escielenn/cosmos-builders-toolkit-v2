@@ -7,6 +7,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import WorldCard from "@/components/dashboard/WorldCard";
+import { worldCoverUrl } from "@/lib/world-art";
 import CreateWorldButton from "@/components/dashboard/CreateWorldButton";
 import { TagFilter } from "@/components/dashboard/TagFilter";
 import { ArchiveToggle } from "@/components/dashboard/ArchiveToggle";
@@ -200,6 +201,7 @@ const Worlds = () => {
               description={world.description}
               headerImageUrl={world.header_image_url}
               headerImageFocusY={world.header_image_focus_y}
+              coverUrl={worldCoverUrl(world)}
               icon={world.icon}
               tags={world.tags}
               archivedAt={world.archived_at}

@@ -15,6 +15,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import WorldIconRenderer from "@/components/world/WorldIconRenderer";
+import WorldCardArt from "@/components/world/WorldCardArt";
+import { cn } from "@/lib/utils";
 
 interface SharedWorldCardProps {
   id: string;
@@ -52,27 +54,27 @@ const SharedWorldCard = ({
   const RoleIcon = myRole === "editor" ? Pencil : Eye;
 
   return (
-    <GlassPanel hover className="flex flex-col min-h-[200px]">
-      {/* Header Image */}
+    <GlassPanel hover className="flex flex-col min-h-[200px] overflow-hidden">
+      {/* The world's cover, faded behind the whole card (1.7). */}
+      <WorldCardArt url={headerImageUrl} focusY={headerImageFocusY} />
+
+      {/* Header band */}
       <div className="relative">
         {headerImageUrl ? (
-          <div className="w-full h-24 overflow-hidden">
-            <img
-              src={headerImageUrl}
-              alt=""
-              className="w-full h-full object-cover"
-              style={{ objectPosition: `center ${headerImageFocusY ?? 50}%` }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
-          </div>
+          <div className="w-full h-16" />
         ) : (
           <div className="w-full h-16 bg-gradient-to-br from-primary/10 to-accent/10">
             <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent" />
           </div>
         )}
         {/* Icon overlay */}
-        <div className="absolute -bottom-5 left-4 w-10 h-10 rounded-none bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-background flex items-center justify-center shadow-lg z-10 overflow-hidden">
-          <WorldIconRenderer iconId={icon} className="w-7 h-7 text-sf-primary-text" />
+        <div
+          className={cn(
+            "absolute -bottom-5 left-4 w-10 h-10 rounded-none border-2 border-background flex items-center justify-center shadow-lg z-10 overflow-hidden",
+            headerImageUrl ? "bg-sf-surface" : "bg-gradient-to-br from-primary/20 to-accent/20",
+          )}
+        >
+          <WorldIconRenderer iconId={icon} className="w-6 h-6 text-sf-primary-text" />
         </div>
         {/* Role badge */}
         <Badge
@@ -85,7 +87,7 @@ const SharedWorldCard = ({
       </div>
 
       {/* Content */}
-      <div className="p-5 pt-8 flex flex-col flex-1">
+      <div className="relative p-5 pt-8 flex flex-col flex-1">
         <div className="flex items-start justify-between mb-2">
           <Link to={`/worlds/${id}`} className="flex-1">
             <h3 className="font-heading font-medium text-lg hover:text-sf-primary-text transition-colors">

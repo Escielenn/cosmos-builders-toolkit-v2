@@ -44,7 +44,7 @@ test.describe("signed in", () => {
     await dialog.getByLabel("World name").fill("Tau Ceti Drift");
 
     const insert = page.waitForResponse((r) => r.request().method() === "POST" && new URL(r.url()).pathname === "/rest/v1/worlds");
-    await dialog.getByRole("button", { name: /initialize empty/i }).click();
+    await dialog.getByRole("button", { name: /skip setup and create/i }).click();
     const request = (await insert).request();
 
     expect(request.postDataJSON()).toMatchObject({ name: "Tau Ceti Drift" });

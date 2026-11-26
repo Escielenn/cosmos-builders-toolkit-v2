@@ -33,7 +33,7 @@ function mount(onInitializeEmpty = vi.fn()) {
   return { onOpenChange, onInitializeEmpty };
 }
 
-const next = () => fireEvent.click(screen.getByRole("button", { name: /^next/i }));
+const next = () => fireEvent.click(screen.getByRole("button", { name: /^next:/i }));
 
 beforeEach(() => {
   cleanup();
@@ -45,34 +45,46 @@ beforeEach(() => {
 });
 
 describe("BeginSurveyDialog", () => {
-  it("requires a designation before the survey begins", () => {
+  it("is titled Create a world and names its steps plainly", () => {
     mount();
-    const begin = screen.getByRole("button", { name: /begin survey/i });
+    expect(screen.getByRole("heading", { name: "Create a world" })).toBeInTheDocument();
+    expect(screen.getByText("Step 1 of 4: Name")).toBeInTheDocument();
+    for (const step of ["Name", "Star", "Planet", "Life"]) {
+      expect(screen.getByRole("list", { name: "Steps" })).toHaveTextContent(step);
+    }
+    expect(screen.queryByText(/survey|designation|initialize/i)).toBeNull();
+  });
+
+  it("requires a name before the next step", () => {
+    mount();
+    const begin = screen.getByRole("button", { name: /next: choose a star/i });
     expect(begin).toBeDisabled();
     fireEvent.change(screen.getByLabelText(/world name/i), { target: { value: "Kellis" } });
     expect(begin).not.toBeDisabled();
   });
 
-  it("keeps the empty-world path", () => {
+  it("creates a blank world from the first step", () => {
     const { onInitializeEmpty } = mount();
     fireEvent.change(screen.getByLabelText(/world name/i), { target: { value: "Kellis" } });
-    fireEvent.click(screen.getByRole("button", { name: /initialize empty/i }));
+    fireEvent.click(screen.getByRole("button", { name: /skip setup and create/i }));
     expect(onInitializeEmpty).toHaveBeenCalledWith({ name: "Kellis", icon: "globe", description: "" });
   });
 
-  it("walks star, world, life and files the choices, then opens the document", () => {
+  it("walks star, planet, life and creates the world, then opens its Bridge", () => {
     mount();
     fireEvent.change(screen.getByLabelText(/world name/i), { target: { value: "Kellis" } });
-    fireEvent.click(screen.getByRole("button", { name: /begin survey/i }));
+    fireEvent.click(screen.getByRole("button", { name: /next: choose a star/i }));
+    expect(screen.getByText("Step 2 of 4: Star")).toBeInTheDocument();
 
     // STAR: G2 preselected, derived readout shown; arrow keys move the choice.
     expect(screen.getByRole("radio", { name: /G2V/ })).toHaveAttribute("aria-checked", "true");
-    expect(screen.getByText("STELLAR READOUT")).toBeInTheDocument();
+    expect(screen.getByText("Star readout")).toBeInTheDocument();
     fireEvent.keyDown(screen.getByRole("radio", { name: /G2V/ }), { key: "ArrowRight" });
     expect(screen.getByRole("radio", { name: /K0V/ })).toHaveAttribute("aria-checked", "true");
     next();
 
-    // WORLD: pick the ocean world; habitable-zone verdict is in the readout.
+    // PLANET: pick the ocean world; habitable-zone verdict is in the readout.
+    expect(screen.getByRole("button", { name: /next: add life/i })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("radio", { name: /ocean world/i }));
     expect(screen.getByText("INSIDE")).toBeInTheDocument();
     next();
@@ -81,7 +93,7 @@ describe("BeginSurveyDialog", () => {
     fireEvent.change(screen.getByLabelText(/species name/i), { target: { value: "Vethari" } });
     fireEvent.click(screen.getByRole("radio", { name: /radial/i }));
     fireEvent.change(screen.getByLabelText(/one line/i), { target: { value: "They sing in tides." } });
-    fireEvent.click(screen.getByRole("button", { name: /file survey/i }));
+    fireEvent.click(screen.getByRole("button", { name: /^create world$/i }));
 
     expect(mutate).toHaveBeenCalledTimes(1);
     const [input, opts] = mutate.mock.calls[0];
@@ -92,17 +104,17 @@ describe("BeginSurveyDialog", () => {
       species: { name: "Vethari", bodyPlanId: "radial", line: "They sing in tides." },
     });
     opts.onSuccess({ worldId: "w-1", documentId: "doc-9" });
-    expect(navigate).toHaveBeenCalledWith("/worlds/w-1/write/doc-9");
+    expect(navigate).toHaveBeenCalledWith("/worlds/w-1");
   });
 
   it("skips steps: a skipped star and a skipped life step file as null", () => {
     mount();
     fireEvent.change(screen.getByLabelText(/world name/i), { target: { value: "Kellis" } });
-    fireEvent.click(screen.getByRole("button", { name: /begin survey/i }));
-    fireEvent.click(screen.getByRole("button", { name: /^skip/i })); // star
-    expect(screen.getByText(/NO STAR ON FILE/)).toBeInTheDocument();
-    next(); // world (earth-like preselected)
-    fireEvent.click(screen.getByRole("button", { name: /^skip/i })); // life → files
+    fireEvent.click(screen.getByRole("button", { name: /next: choose a star/i }));
+    fireEvent.click(screen.getByRole("button", { name: /^skip this step/i })); // star
+    expect(screen.getByText(/No star chosen, so the orbit is left unset/)).toBeInTheDocument();
+    next(); // planet (earth-like preselected)
+    fireEvent.click(screen.getByRole("button", { name: /^skip and create/i })); // life → creates
 
     const [input] = mutate.mock.calls[0];
     expect(input.choices.star).toBeNull();
@@ -110,10 +122,10 @@ describe("BeginSurveyDialog", () => {
     expect(input.choices.species).toBeNull();
   });
 
-  it("after a partial failure offers RETRY (same mutation, resumed) and OPEN WORLD", () => {
+  it("after a partial failure offers Retry (same mutation, resumed) and Open world", () => {
     partialWorldId = "w-7";
     mount();
-    expect(screen.getByRole("alert")).toHaveTextContent("WORLD CREATED. SEEDING INCOMPLETE.");
+    expect(screen.getByRole("alert")).toHaveTextContent("WORLD CREATED. SETUP INCOMPLETE.");
     expect(screen.queryByLabelText(/world name/i)).toBeNull();
 
     fireEvent.click(screen.getByRole("button", { name: /^retry/i }));
@@ -129,7 +141,7 @@ describe("BeginSurveyDialog", () => {
     const { onOpenChange } = mount();
     fireEvent.click(screen.getByRole("button", { name: /close/i }));
     expect(onOpenChange).toHaveBeenCalledWith(false);
-    expect(toast).toHaveBeenCalledWith(expect.objectContaining({ title: "WORLD CREATED. SEEDING INCOMPLETE." }));
+    expect(toast).toHaveBeenCalledWith(expect.objectContaining({ title: "WORLD CREATED. SETUP INCOMPLETE." }));
     expect(reset).toHaveBeenCalled();
   });
 });
