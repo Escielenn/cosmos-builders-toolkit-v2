@@ -444,3 +444,33 @@ export function simCanon(simulatorType: string, payload: unknown): SimCanon {
 export function defaultEntityTypeFor(simulatorType: string): EntryType {
   return simCanon(simulatorType, null).entityType;
 }
+
+// ---------------------------------------------------------------------------
+// Solaris per-planet publish (PublishPlanetDialog): PublishedFact → canon
+// ---------------------------------------------------------------------------
+
+const SYMBOL_TO_UNIT: Record<string, Unit> = {
+  AU: "au",
+  "L☉": "solar_lum",
+  "M☉": "solar_masses",
+  K: "K",
+  "S⊕": "earth_flux",
+};
+
+/**
+ * The typed half of a Solaris planet publish. Names and the display type
+ * (planet.name, system.name, planet.type) are provisional predicates the
+ * vocabulary keeps out of canon: they stay on the entity record and its cache.
+ * A colour word ("orange") is not a spectral class, so it is not asserted.
+ */
+export function planetPublishCanon(facts: readonly { predicate: string; label: string; value: number | string; unit?: string }[]): SimCanon {
+  const c = new Collector();
+  for (const f of facts) {
+    if (typeof f.value === "number") {
+      c.scalar(f.predicate, f.label, f.value, f.unit ? SYMBOL_TO_UNIT[f.unit] : undefined);
+    } else if (f.predicate === "star.spectral_class") {
+      c.spectral(f.value);
+    }
+  }
+  return { entityType: "planet", facts: c.facts, children: [], ephemeral: [] };
+}

@@ -32,7 +32,7 @@
 // ---------------------------------------------------------------------------
 
 import type { HandoffPayload } from "./handoff";
-import { SOLARIS_HZ_MID, solarisPlanetTypeLabel } from "./handoff";
+import { insolationEquivalentAU, insolationOf, isSolarisStarType, solarisPlanetTypeLabel } from "./handoff";
 import type { WorldEntry } from "@/services/world-data";
 
 // ---------------------------------------------------------------------------
@@ -46,6 +46,9 @@ export interface PublishedFact {
   label: string;
   value: number | string;
   unit?: string;
+  /** Which simulator's run set this cache entry (1.9 E12); provenance lives in canon. */
+  source_tool?: string;
+  run_id?: string;
 }
 
 export interface PublishProvenance {
@@ -98,12 +101,24 @@ export function solarisPlanetPublishFacts(payload: HandoffPayload): PublishedFac
       unit: "AU",
     },
     { predicate: "star.spectral_class", label: "Star Spectral Class", value: payload.starType },
+    // Canonical name (1.9): star.luminosity. Entries published as the
+    // deprecated star.luminosity_lsun still read through PREDICATE_ALIASES.
     {
-      predicate: "star.luminosity_lsun",
+      predicate: "star.luminosity",
       label: "Stellar Luminosity",
-      value: Number(payload.starMassLum.toFixed(4)),
+      value: Number(payload.starMassLum.toPrecision(4)),
       unit: "L☉",
     },
+    ...(payload.starTeffK
+      ? [{ predicate: "star.temp_effective", label: "Effective Temperature", value: Math.round(payload.starTeffK), unit: "K" }]
+      : []),
+    ...(payload.starMassMsun
+      ? [{ predicate: "star.mass", label: "Stellar Mass", value: Number(payload.starMassMsun.toPrecision(3)), unit: "M☉" }]
+      : []),
+    ...(() => {
+      const s = insolationOf(payload.planetAU, payload.starMassLum);
+      return s === null ? [] : [{ predicate: "planet.insolation", label: "Insolation", value: Number(s.toPrecision(3)), unit: "S⊕" }];
+    })(),
     ...(payload.systemName
       ? [{ predicate: "system.name", label: "Star System", value: payload.systemName }]
       : []),
@@ -225,6 +240,7 @@ export function readPublishedFacts(entry: WorldEntry | null | undefined): Publis
  */
 export const PREDICATE_ALIASES: Record<string, readonly string[]> = {
   "orbit.semi_major_axis": ["planet.orbital_distance_au"],
+  "star.luminosity": ["star.luminosity_lsun"],
 };
 
 /**
@@ -267,24 +283,38 @@ export function readPublishedFact(
 }
 
 /**
- * Everything Tidelock's existing ?handoff= consumer already needs
- * (SOLARIS_HZ_MID + auFraction — see TidelockSimulator.tsx), computed
- * generically from predicates instead of a Solaris-shaped payload. Returns
- * null when the entry doesn't carry both facts — a partial/foreign entity is
- * "nothing to hydrate from", not a crash.
+ * What Tidelock's ?entityId= consumer needs, from predicates alone (1.9 X4).
+ *
+ * `auFraction` is the planet's Earth-equivalent distance a/√L (see
+ * insolationEquivalentAU): Tidelock multiplies it by its own star's √L, so the
+ * planet keeps its insolation. The absolute numbers travel too, for the day
+ * Tidelock reads them directly. Null when luminosity or distance is missing:
+ * "nothing to hydrate from", never a guess.
  */
-export function readTidelockSeed(
-  entry: WorldEntry | null | undefined,
-): { auFraction: number; starLuminosity: number } | null {
-  const starType = readPublishedFact(entry, "star.spectral_class");
+export function readTidelockSeed(entry: WorldEntry | null | undefined): {
+  auFraction: number;
+  starLuminosity: number;
+  planetAU: number;
+  insolation: number;
+  starTeffK?: number;
+  starMassMsun?: number;
+} | null {
   const orbitalAU = readPublishedFact(entry, "orbit.semi_major_axis");
-  const luminosity = readPublishedFact(entry, "star.luminosity_lsun");
-  if (!starType || typeof starType.value !== "string") return null;
+  const luminosity = readPublishedFact(entry, "star.luminosity");
   if (!orbitalAU || !fin(orbitalAU.value)) return null;
   if (!luminosity || !fin(luminosity.value)) return null;
-  const hzMid = SOLARIS_HZ_MID[starType.value as keyof typeof SOLARIS_HZ_MID];
-  if (!fin(hzMid) || hzMid <= 0) return null;
-  return { auFraction: orbitalAU.value / hzMid, starLuminosity: luminosity.value };
+  const auFraction = insolationEquivalentAU(orbitalAU.value, luminosity.value);
+  if (auFraction === null) return null;
+  const teff = readPublishedFact(entry, "star.temp_effective")?.value;
+  const mass = readPublishedFact(entry, "star.mass")?.value;
+  return {
+    auFraction,
+    starLuminosity: luminosity.value,
+    planetAU: orbitalAU.value,
+    insolation: 1 / (auFraction * auFraction),
+    ...(fin(teff) ? { starTeffK: teff } : {}),
+    ...(fin(mass) ? { starMassMsun: mass } : {}),
+  };
 }
 
 /**
@@ -305,13 +335,13 @@ export function reconstructSolarisHandoff(entry: WorldEntry | null | undefined):
   const planetType = readPublishedFact(entry, "planet.type");
   const orbitalAU = readPublishedFact(entry, "orbit.semi_major_axis");
   const starType = readPublishedFact(entry, "star.spectral_class");
-  const luminosity = readPublishedFact(entry, "star.luminosity_lsun");
+  const luminosity = readPublishedFact(entry, "star.luminosity");
   if (!planetName || typeof planetName.value !== "string") return null;
   if (!planetType || typeof planetType.value !== "string") return null;
   if (!orbitalAU || !fin(orbitalAU.value)) return null;
   if (!starType || typeof starType.value !== "string") return null;
   if (!luminosity || !fin(luminosity.value)) return null;
-  if (!(starType.value in SOLARIS_HZ_MID)) return null;
+  if (!isSolarisStarType(starType.value)) return null;
 
   return {
     from: "solaris",

@@ -16,7 +16,7 @@ import NarrativeBridgePanel, { NarrativeBridgeToggle, useNarrativeBridge } from 
 import { SIM_FLAGS, SIM_MAIN, SIM_STAGE, SIM_TOOLBAR, SIM_TOOLBAR_WRAP, simStageStyle } from "@/components/simulators/sim-chrome";
 import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions";
 import { SimulatorWorldEntityPicker } from "@/components/simulators/SimulatorWorldEntityPicker";
-import { decodeHandoff, SOLARIS_HZ_MID } from "@/lib/simulators/handoff";
+import { decodeHandoff, insolationEquivalentAU } from "@/lib/simulators/handoff";
 import { evaluateTidelockFlags } from "@/sims/flags";
 import { SimFlagStrip } from "@/components/simulators/SimFlagStrip";
 import { useDismissedFlags } from "@/hooks/use-dismissed-flags";
@@ -136,7 +136,9 @@ const TidelockSimulator = () => {
     const iframe = iframeRef.current;
     if (!iframe?.contentWindow) return;
     handoffSent.current = true;
-    const hzMid = SOLARIS_HZ_MID[handoff.starType] ?? 1;
+    // 1.9 X4 (lane C): the Earth-equivalent distance a/√L, so the planet keeps
+    // its insolation around whichever Tidelock star is nearest in luminosity.
+    const auFraction = insolationEquivalentAU(handoff.planetAU, handoff.starMassLum) ?? 1;
     iframe.contentWindow.postMessage(
       {
         type: "STELLARFORGE_LOAD",
@@ -147,7 +149,11 @@ const TidelockSimulator = () => {
             // blue/white/yellow/orange/red vocabulary and Tidelock's M9V..F0V
             // spectral types share no keys). Left out rather than sent dead.
             starLuminosity: handoff.starMassLum,
-            auFraction: handoff.planetAU / hzMid,
+            auFraction,
+            // Absolute numbers for when Tidelock reads them (lane T).
+            planetAU: handoff.planetAU,
+            ...(handoff.starTeffK ? { starTeffK: handoff.starTeffK } : {}),
+            ...(handoff.starMassMsun ? { starMassMsun: handoff.starMassMsun } : {}),
           },
         },
       },
@@ -189,6 +195,9 @@ const TidelockSimulator = () => {
               handoffSeed: {
                 starLuminosity: seed.starLuminosity,
                 auFraction: seed.auFraction,
+                planetAU: seed.planetAU,
+                ...(seed.starTeffK ? { starTeffK: seed.starTeffK } : {}),
+                ...(seed.starMassMsun ? { starMassMsun: seed.starMassMsun } : {}),
               },
             },
           },

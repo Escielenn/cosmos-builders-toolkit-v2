@@ -3,9 +3,13 @@
  *
  * When a simulator sends a STELLARFORGE_PUBLISH message (or the user
  * clicks "Publish to World"), this dialog:
- * 1. Runs fuzzy name matching against existing entities
- * 2. Shows EntityMatchDialog if matches found
- * 3. Creates a new entity or links to existing
+ * 1. Shows the typed facts the run will put in canon (sim-canon)
+ * 2. Runs fuzzy name matching against existing entities
+ * 3. Creates a new entity (plus a child per Solaris planet) or links to one
+ * 4. Writes every fact through canon.assert with the run's provenance
+ *    (1.9 X6); a value that differs from canon is shown, never overwritten
+ *
+ * Metadata keeps a per-tool cache only (E12).
  *
  * Spec: StellarForge_Final_Remediation_Spec_v2, Issue 4
  */
@@ -33,8 +37,12 @@ import { findFuzzyNameMatches, type EntityMatchCandidate } from "@/services/enti
 import EntityMatchDialog from "@/components/tools/EntityMatchDialog";
 import type { SimulatorPayload } from "@/hooks/use-simulation-save";
 import type { EntryType } from "@/services/world-data";
-import { extractSimulationFacts } from "@/lib/simulation-facts";
 import { newRunId } from "@/lib/simulators/published-facts";
+import { simCanon } from "@/lib/simulators/sim-canon";
+import { publishSimRun, simRunMetadata, type PublishConflict, type SimRunSource } from "@/lib/simulators/sim-publish";
+import { canon } from "@/canon";
+import { canonKeys } from "@/canon/hooks";
+import { useQueryClient } from "@tanstack/react-query";
 
 /** Map simulator output types to entity types */
 const OUTPUT_TYPE_MAP: Record<string, EntryType> = {
@@ -72,10 +80,11 @@ export default function PublishToWorldDialog({
   // Brief S1: "Always a reviewable diff first. Never automatic." The same
   // extractor the Refs panel and the continuity engine read, so what the
   // dialog lists is exactly what travels.
-  const facts = useMemo(
-    () => (payload ? extractSimulationFacts(simulatorType, payload) : []),
-    [payload, simulatorType],
-  );
+  const sim = useMemo(() => simCanon(simulatorType, payload), [payload, simulatorType]);
+  const facts = sim.facts;
+  const qc = useQueryClient();
+  const [conflicts, setConflicts] = useState<PublishConflict[]>([]);
+  const [runSource, setRunSource] = useState<SimRunSource | null>(null);
   const [isPublishing, setIsPublishing] = useState(false);
   const [matchCandidates, setMatchCandidates] = useState<EntityMatchCandidate[]>([]);
   const [matchDialogOpen, setMatchDialogOpen] = useState(false);
@@ -99,8 +108,9 @@ export default function PublishToWorldDialog({
     if (payload?.name) setName(payload.name);
   }, [payload]);
 
-  const entryType: EntryType =
-    OUTPUT_TYPE_MAP[payload?.outputType ?? ""] ?? "custom";
+  // X8: the simulator says what it made. "custom" only for an unknown sim.
+  const mapped = OUTPUT_TYPE_MAP[payload?.outputType ?? ""];
+  const entryType: EntryType = mapped && mapped !== "custom" ? mapped : sim.entityType;
 
   /**
    * Does the payload actually carry the simulation, or only a name?
@@ -146,31 +156,40 @@ export default function PublishToWorldDialog({
     }
   }, [targetWorld, user, name]);
 
-  // The metadata a publish writes. Shared by the create path and the
-  // "link to existing entity" path so both record the same run the same way.
-  const buildSimMetadata = useCallback(
-    (): Record<string, unknown> => ({
-      _simulator_source: simulatorType,
-      // Law II, provenance up: which run produced these numbers.
-      _source: {
-        kind: "sim" as const,
-        tool_id: simulatorType,
-        run_id: newRunId(),
-        seed:
-          (payload?.parameters as Record<string, unknown> | undefined)?.seed as
-            | string
-            | number
-            | null
-            | undefined ?? null,
-        published_at: new Date().toISOString(),
-      },
-      _simulator_data: payload?.parameters ?? {},
-      _simulator_results: payload?.results ?? {},
-      ...(narrativeNotes && Object.keys(narrativeNotes).length > 0
-        ? { _narrative_notes: narrativeNotes }
-        : {}),
+  /** A fresh provenance record for this publish (Law II). */
+  const newSource = useCallback(
+    (): SimRunSource => ({
+      toolId: simulatorType,
+      runId: newRunId(),
+      seed:
+        ((payload?.parameters as Record<string, unknown> | undefined)?.seed as string | number | null | undefined) ?? null,
+      publishedAt: new Date().toISOString(),
     }),
-    [simulatorType, payload, narrativeNotes]
+    [simulatorType, payload],
+  );
+
+  /**
+   * Facts into canon for the entity (and its children), then report. Conflicts
+   * keep the dialog open so the writer sees both values and chooses.
+   */
+  const writeRun = useCallback(
+    async (rootId: string, children: Record<string, string>, src: SimRunSource) => {
+      if (!targetWorld) return;
+      const out = await publishSimRun(canon, targetWorld, sim, { root: rootId, children }, src);
+      await qc.invalidateQueries({ queryKey: canonKeys.all(targetWorld) });
+      const parts = [`${out.written + out.unchanged} ${out.written + out.unchanged === 1 ? "VALUE" : "VALUES"} IN CANON.`];
+      if (out.derived) parts.push(`${out.derived} DERIVED.`);
+      if (out.stale) parts.push(`${out.stale} DERIVED ${out.stale === 1 ? "VALUE" : "VALUES"} STALE. RECOMPUTATION OFFERED.`);
+      toast({ title: "PUBLISHED TO WORLD.", description: parts.join(" ") });
+      if (out.conflicts.length) {
+        setRunSource(src);
+        setConflicts(out.conflicts);
+      } else {
+        onOpenChange(false);
+        setName("");
+      }
+    },
+    [targetWorld, sim, qc, toast, onOpenChange],
   );
 
   const createEntity = useCallback(async () => {
@@ -178,22 +197,36 @@ export default function PublishToWorldDialog({
 
     setIsPublishing(true);
     try {
-      await createEntry(
+      const src = newSource();
+      const root = await createEntry(
         {
           worldId: targetWorld,
           title: name.trim(),
           entryType,
-          metadata: buildSimMetadata(),
+          metadata: simRunMetadata({}, src, facts.filter((f) => !f.child), {
+            parameters: payload?.parameters,
+            results: payload?.results,
+            narrativeNotes,
+          }),
         },
         user.id
       );
-
-      toast({
-        title: "PUBLISHED TO WORLD.",
-        description: `"${name.trim()}" SAVED AS ${entryType.replace("_", " ").toUpperCase()}.`,
-      });
-      onOpenChange(false);
-      setName("");
+      // Solaris planets become entities of their own, under the system.
+      const children: Record<string, string> = {};
+      for (const child of sim.children) {
+        const entry = await createEntry(
+          {
+            worldId: targetWorld,
+            title: child.name,
+            entryType: child.type,
+            parentId: root.id,
+            metadata: simRunMetadata({}, src, facts.filter((f) => f.child === child.key), {}),
+          },
+          user.id,
+        );
+        children[child.key] = entry.id;
+      }
+      await writeRun(root.id, children, src);
     } catch (error) {
       toast({
         title: "PUBLISH FAILED.",
@@ -203,13 +236,12 @@ export default function PublishToWorldDialog({
     } finally {
       setIsPublishing(false);
     }
-  }, [targetWorld, user, name, entryType, buildSimMetadata, toast, onOpenChange]);
+  }, [targetWorld, user, name, entryType, newSource, facts, payload, narrativeNotes, sim.children, writeRun, toast]);
 
   // The name matched an existing entity and the writer chose to link to it:
-  // attach this run to that entity. Merges only the keys a publish writes, so
-  // the entity's other metadata (master fields, pending changes, published
-  // facts from other tools) is left as it was. Title and content are not
-  // touched.
+  // attach this run to that entity. Metadata merges per tool (E12), so other
+  // tools' runs and provenance stay; facts go through canon like a create.
+  // Title and content are not touched.
   const handleMatchLink = useCallback(
     async (candidate: EntityMatchCandidate) => {
       setMatchDialogOpen(false);
@@ -218,16 +250,18 @@ export default function PublishToWorldDialog({
         const existing = await getEntry(candidate.id);
         if (!existing) throw { code: "PGRST116" };
         const prior = (existing.metadata ?? {}) as Record<string, unknown>;
+        const src = newSource();
         await updateEntry({
           entryId: candidate.id,
-          metadata: { ...prior, ...buildSimMetadata() },
+          metadata: simRunMetadata(prior, src, facts.filter((f) => !f.child), {
+            parameters: payload?.parameters,
+            results: payload?.results,
+            narrativeNotes,
+          }),
         });
-        toast({
-          title: "SIMULATION RUN ATTACHED.",
-          description: `"${candidate.title.toUpperCase()}" UPDATED WITH THIS RUN.`,
-        });
-        onOpenChange(false);
-        setName("");
+        // Children are not matched by name (ids are the only truth); a linked
+        // publish writes only the root entity's facts.
+        await writeRun(candidate.id, {}, src);
       } catch (error) {
         toast({
           title: "NOTHING RECORDED.",
@@ -238,8 +272,44 @@ export default function PublishToWorldDialog({
         setIsPublishing(false);
       }
     },
-    [buildSimMetadata, toast, onOpenChange]
+    [newSource, facts, payload, narrativeNotes, writeRun, toast]
   );
+
+  /** The writer chose this run's values over canon: supersede, history kept. */
+  const applyRunValues = useCallback(async () => {
+    if (!targetWorld || !runSource) return;
+    setIsPublishing(true);
+    try {
+      for (const c of conflicts) {
+        await canon.assert({
+          worldId: targetWorld,
+          subjectId: c.subjectId,
+          predicate: c.fact.predicate,
+          value: c.fact.value,
+          valueText: c.fact.display,
+          unit: c.fact.unit ?? null,
+          sourceKind: "sim",
+          sourceRef: { tool: runSource.toolId, run_id: runSource.runId, seed: runSource.seed, published_at: runSource.publishedAt },
+          supersede: true,
+        });
+      }
+      await qc.invalidateQueries({ queryKey: canonKeys.all(targetWorld) });
+      toast({ title: "CANON REVISED.", description: `${conflicts.length} ${conflicts.length === 1 ? "VALUE" : "VALUES"} REPLACED. PRIOR VALUES KEPT IN HISTORY.` });
+      setConflicts([]);
+      onOpenChange(false);
+      setName("");
+    } catch (error) {
+      toast({ title: "NOTHING RECORDED.", description: mapError(error), variant: "destructive" });
+    } finally {
+      setIsPublishing(false);
+    }
+  }, [targetWorld, runSource, conflicts, qc, toast, onOpenChange]);
+
+  const keepCanon = useCallback(() => {
+    setConflicts([]);
+    onOpenChange(false);
+    setName("");
+  }, [onOpenChange]);
 
   const handleMatchCreateSeparate = useCallback(() => {
     setMatchDialogOpen(false);
@@ -253,14 +323,55 @@ export default function PublishToWorldDialog({
     <>
       <Dialog open={open && !matchDialogOpen} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-md bg-sf-surface border-sf-line">
+          {conflicts.length > 0 ? (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <TriangleAlert className="h-4 w-4 text-sf-amber" aria-hidden />
+                  {conflicts.length} {conflicts.length === 1 ? "value differs" : "values differ"} from canon
+                </DialogTitle>
+                <DialogDescription className="mt-2 text-t2">
+                  Everything else from this run is in canon. These values were already decided, so nothing was
+                  changed. Choose which to keep.
+                </DialogDescription>
+              </DialogHeader>
+              <ul className="sf-sb mt-2 max-h-56 overflow-y-auto border border-sf-line">
+                {conflicts.map((c) => (
+                  <li
+                    key={`${c.subjectId}:${c.fact.predicate}`}
+                    className="grid grid-cols-[1fr_auto_auto] items-baseline gap-3 border-b border-sf-line-hairline px-3 py-1.5 last:border-b-0"
+                  >
+                    <span className="text-[13px] text-t3">{c.fact.label}</span>
+                    <span className="font-mono text-[13px] text-t2" title="In canon">
+                      {c.existing.value_text ?? "set"}
+                    </span>
+                    <span className="font-mono text-[13px] text-t1" title="This run">
+                      {c.fact.display}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-1 font-mono text-[12px] uppercase text-t4">Canon · this run</p>
+              <DialogFooter className="mt-4">
+                <Button variant="outline" onClick={keepCanon} disabled={isPublishing}>
+                  Keep canon
+                </Button>
+                <Button onClick={applyRunValues} disabled={isPublishing} className="gap-2">
+                  {isPublishing ? <Loader variant="inline" size="sm" /> : null}
+                  Use this run's values
+                </Button>
+              </DialogFooter>
+            </>
+          ) : (
+          <>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Globe className="w-4 h-4" />
               Publish to World
             </DialogTitle>
             <DialogDescription className="text-t2 mt-2">
-              Create a world entity from this simulation. It will appear in your
-              Codex and knowledge graph.
+              Save this simulation as an entity in your world. Its numbers go into
+              canon with a record of this run, so a scene can cite them.
             </DialogDescription>
           </DialogHeader>
 
@@ -308,26 +419,33 @@ export default function PublishToWorldDialog({
             {hasData ? (
               facts.length > 0 ? (
                 <div className="border border-sf-line">
-                  <div className="border-b border-sf-line-hairline px-3 py-1.5 font-mono text-[12px] uppercase tracking-wider text-t3">
-                    Promote {facts.length} {facts.length === 1 ? "value" : "values"} to canon
+                  <div className="border-b border-sf-line-hairline px-3 py-1.5 font-mono text-[12px] uppercase text-t3">
+                    {facts.length} {facts.length === 1 ? "value" : "values"} go to canon
+                    {sim.children.length > 0 ? ` · ${sim.children.length} planets as entities` : ""}
                   </div>
                   <ul className="sf-sb max-h-40 overflow-y-auto">
                     {facts.map((f) => (
                       <li
-                        key={f.key}
+                        key={`${f.child ?? ""}:${f.predicate}`}
                         className="flex items-baseline justify-between gap-3 px-3 py-1"
                       >
-                        <span className="text-[13px] text-t3">{f.label}</span>
-                        <span className="shrink-0 font-mono text-[13px] text-t1">
-                          {f.value}
+                        <span className="text-[13px] text-t3">
+                          {f.child ? `${sim.children.find((c) => c.key === f.child)?.name ?? f.child} · ` : ""}
+                          {f.label}
                         </span>
+                        <span className="shrink-0 font-mono text-[13px] text-t1">{f.display}</span>
                       </li>
                     ))}
                   </ul>
+                  <p className="border-t border-sf-line-hairline px-3 py-1.5 text-[12px] text-t3">
+                    Gravity, density, escape velocity and habitable-zone edges are worked out from these by the tools
+                    that own them.
+                  </p>
                 </div>
               ) : (
-                <p className="font-mono text-[13px] uppercase tracking-wider text-t4">
-                  + {fieldCount} {fieldCount === 1 ? "value" : "values"} from the simulation
+                <p className="text-[13px] text-t3">
+                  This run is saved on the entity. It has no numbers that belong in canon yet
+                  {simulatorType === "solaris" ? " (generate a system first)" : ""}.
                 </p>
               )
             ) : (
@@ -364,6 +482,8 @@ export default function PublishToWorldDialog({
               {isPublishing ? "PUBLISHING…" : "Publish"}
             </Button>
           </DialogFooter>
+          </>
+          )}
         </DialogContent>
       </Dialog>
 

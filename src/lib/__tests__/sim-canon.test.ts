@@ -53,7 +53,7 @@ describe("Tidelock golden default", () => {
   it("records the temperature profile and the habitable area", () => {
     const g = c.facts.find((f) => f.predicate === "planet.temp_gradient[]");
     expect(g?.value.kind).toBe("struct");
-    expect((g?.value as { value: { substellar_k: number } }).value.substellar_k).toBeCloseTo(296.92, 1);
+    expect((g?.value as unknown as { value: { substellar_k: number } }).value.substellar_k).toBeCloseTo(296.92, 1);
     // 14.69% of an Earth-sized surface (5.10e8 km²).
     expect(num(c.facts, "planet.habitable_area")! / 1e6).toBeCloseTo(74.9, 0);
   });
