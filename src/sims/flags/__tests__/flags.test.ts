@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { evaluateTidelockFlags, tidelockOutputFromResults } from "../tidelock";
-import { evaluateExoForgeFlags } from "../exoforge";
+import { evaluateExoForgeFlags, exoforgeOutputFromPayload } from "../exoforge";
 import { evaluateExoSkyFlags } from "../exosky";
 import { evaluateGravitasFlags } from "../gravitas";
 import { evaluateSolarisStabilityFlags, evaluateSolarisFlareFlags, evaluateSolarisSystemFlags } from "../solaris";
@@ -95,6 +95,17 @@ describe("ExoForge", () => {
 
   it("does not flag a world right at the habitable floor", () => {
     expect(evaluateExoForgeFlags({ density: 5.51, temp: 180 })).toEqual([]);
+  });
+
+  it("flags an impossible mass-radius pair with the density cited", () => {
+    const flags = evaluateExoForgeFlags({ density: 275.7, temp: 288, massRadiusVerdict: "implausible", expectedRadius: 8.09, mass: 50, radius: 1 });
+    expect(flags.map((f) => f.id)).toEqual(["exoforge.impossible-density"]);
+    expect(flags[0].title).toBe("DENSITY 276 G/CM³. NO KNOWN MATERIAL.");
+  });
+
+  it("reads the derived surface temperature, falling back to a pre-1.9 slider value", () => {
+    expect(exoforgeOutputFromPayload({ parameters: { temp: 150 }, results: { density: 5.5, surfaceTemp: 288 } }).temp).toBe(288);
+    expect(exoforgeOutputFromPayload({ parameters: { temp: 150 }, results: { density: 5.5 } }).temp).toBe(150);
   });
 });
 

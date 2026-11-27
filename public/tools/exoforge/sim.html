@@ -29,7 +29,7 @@
 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EXOFORGE — Procedural Exoplanet Forge · StellarForge.tools</title>
-<meta name="description" content="Procedural exoplanet forge. Shape rocky, oceanic, and gas worlds with real physics. Import 58 real NASA exoplanets.">
+<meta name="description" content="Procedural exoplanet forge. Shape rocky, oceanic and gas worlds with coupled physics. Import real planets from the NASA Exoplanet Archive.">
 <meta name="author" content="Jason D. Batt, Ph.D. — Dreamside Studios">
 <meta property="og:title" content="EXOFORGE — Procedural Exoplanet Forge · StellarForge.tools">
 <meta property="og:description" content="Shape rocky, oceanic, and gas worlds with real physics. Import real NASA exoplanets.">
@@ -38,8 +38,7 @@
 <meta property="og:site_name" content="StellarForge.tools">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://stellarforge.tools/tools/exoforge">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-<link href="https://fonts.cdnfonts.com/css/md-nichrome-test" rel="stylesheet">
+<link rel="stylesheet" href="/tools/_shared/sim-fonts.css">
 <script src="/vendor/three.r128.min.js"></script>
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -49,15 +48,15 @@
   --sf-accent:#15C17B;
   --accent-green: #00E5A0;
   /* Status colors */
-  --status-green: #2ECC71;
-  --status-red: #E74C3C;
-  --status-gold: #FFD43B;
-  --status-orange: #FFA500;
+  --status-green: var(--sf-emerald-text);
+  --status-red: var(--sf-crimson-text);
+  --status-gold: var(--sf-amber-text);
+  --status-orange: var(--sf-amber-text);
   /* Surfaces */
-  --bg-void: #09090B;
-  --bg-panel: #0F0F10;
-  --border-subtle: #50555E; /* sf-line: solid, never alpha */
-  --border-active: #8C909A; /* sf-line-emphasis */
+  --bg-void: var(--sf-sim-canvas);
+  --bg-panel: var(--sf-sim-panel);
+  --border-subtle: var(--sf-line); /* solid, never alpha */
+  --border-active: var(--sf-line-emphasis);
   /* Text */
   --text-primary: var(--t1);
   --text-secondary: var(--t2);
@@ -118,7 +117,7 @@ body {
 }
 #title-panel #badge { pointer-events: auto; }
 #title-panel h1 {
-  font-family: 'MD Nichrome Test','Jura', sans-serif;
+  font-family: 'MD Nichrome','Jura', sans-serif;
   font-weight: 300;
   font-size: 28px;
   letter-spacing: 4px;
@@ -127,7 +126,7 @@ body {
   line-height: 1;
 }
 #title-panel .subtitle {
-  font-family: 'MD Nichrome Test', 'DM Sans', sans-serif;
+  font-family: 'MD Nichrome', 'DM Sans', sans-serif;
   font-size: 12px;
   font-weight: 300;
   letter-spacing: 3px;
@@ -145,13 +144,13 @@ body {
   color: var(--t3);
   text-decoration: none;
   padding: 3px 8px;
-  border: 1px solid #50555E;
+  border: 1px solid var(--sf-line);
   border-radius: 0;
   transition: all 0.2s;
 }
 #title-panel .nav-links a.science-link {
   color: var(--sf-primary-text);
-  border-color: #8C909A;
+  border-color: var(--sf-line-emphasis);
   background: rgba(21,193,123, 0.04);
 }
 #title-panel .nav-links a.science-link:hover {
@@ -161,7 +160,7 @@ body {
 }
 #title-panel .nav-links a:hover {
   color: var(--sf-accent);
-  border-color: #8C909A;
+  border-color: var(--sf-line-emphasis);
   background: rgba(21,193,123,0.06);
 }
 #badge {
@@ -176,17 +175,22 @@ body {
   margin-top: 10px;
   transition: all 0.5s;
   background: rgba(0, 229, 160, 0.03);
-  border: 1px solid #50555E;
+  border: 1px solid var(--sf-line);
   color: var(--sf-primary-text);
 }
 #badge.active {
   background: rgba(0, 229, 160, 0.06);
-  border-color: #50555E;
+  border-color: var(--sf-line);
   color: var(--accent-green);
+}
+#badge.danger {
+  background: transparent;
+  border-color: var(--sf-crimson);
+  color: var(--sf-crimson-text);
 }
 #badge.success {
   background: rgba(21,193,123, 0.06);
-  border-color: #8C909A;
+  border-color: var(--sf-line-emphasis);
   color: var(--sf-accent);
   animation: pulse 2s infinite;
 }
@@ -209,7 +213,7 @@ body {
   letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--sf-primary-text);
-  border-bottom: 1px solid #50555E;
+  border-bottom: 1px solid var(--sf-line);
   padding-bottom: 6px;
   margin-top: 14px;
   margin-bottom: 10px;
@@ -283,7 +287,7 @@ input[type=range]::-webkit-slider-thumb {
   border-radius: 0;
   background: var(--sf-accent);
   cursor: pointer;
-  border: 2px solid #09090B;
+  border: 2px solid var(--sf-sim-canvas);
   margin-top: -5px; /* centers 12px thumb on 2px track: -(12-2)/2 */
   transition: transform 0.1s, box-shadow 0.15s;
 }
@@ -307,7 +311,7 @@ input[type=range]::-moz-range-thumb {
   border-radius: 0;
   background: var(--sf-accent);
   cursor: pointer;
-  border: 2px solid #09090B;
+  border: 2px solid var(--sf-sim-canvas);
 }
 
 /* === FORM ELEMENTS — sharp corners === */
@@ -316,14 +320,14 @@ select {
   font-size: 13px;
   background: rgba(255, 255, 255, 0.04);
   color: var(--t2);
-  border: 1px solid #50555E;
+  border: 1px solid var(--sf-line);
   padding: 6px 8px;
   border-radius: 0;
   outline: none;
   width: 100%;
   margin-bottom: 10px;
 }
-select option { background: #0F0F10; color: #C8C8C8; }
+select option { background: var(--sf-sim-panel); color: var(--t2); }
 
 button {
   font-family: 'DM Sans', sans-serif;
@@ -332,7 +336,7 @@ button {
   letter-spacing: 2px;
   text-transform: uppercase;
   padding: 7px 12px;
-  border: 1px solid #50555E;
+  border: 1px solid var(--sf-line);
   background: rgba(255, 255, 255, 0.03);
   color: var(--t2);
   cursor: pointer;
@@ -341,12 +345,12 @@ button {
 }
 button:hover {
   background: rgba(0, 229, 160, 0.06);
-  border-color: #50555E;
-  color: #fff;
+  border-color: var(--sf-line);
+  color: var(--t1);
 }
 button.active, button.primary {
   background: rgba(21,193,123, 0.08);
-  border-color: #8C909A;
+  border-color: var(--sf-line-emphasis);
   color: var(--sf-accent);
 }
 
@@ -453,14 +457,14 @@ button.active, button.primary {
   font-size: 12px;
   background: rgba(255, 255, 255, 0.04);
   color: var(--t1);
-  border: 1px solid #50555E;
+  border: 1px solid var(--sf-line);
   padding: 8px 12px;
   border-radius: 0;
   outline: none;
   width: 100%;
   transition: border-color 0.2s;
 }
-#search-input:focus { border-color: #8C909A; }
+#search-input:focus { border-color: var(--sf-line-emphasis); }
 #search-input::placeholder { color: var(--t4); font-style: italic; }
 
 #search-results {
@@ -481,7 +485,7 @@ button.active, button.primary {
 }
 .search-result:hover { background: rgba(0, 229, 160, 0.06); }
 .search-result .planet-name {
-  font-family: 'MD Nichrome Test','Jura', sans-serif;
+  font-family: 'MD Nichrome','Jura', sans-serif;
   font-size: 12px;
   font-weight: 300;
   color: var(--t1);
@@ -520,15 +524,16 @@ button.active, button.primary {
   letter-spacing: 1.5px;
   text-transform: uppercase;
 }
-.hz-indicator.habitable { background: rgba(46,204,113,.08); border: 1px solid rgb(46,204,113); color: #2ECC71; }
-.hz-indicator.too-hot { background: rgba(231,76,60,.08); border: 1px solid rgb(231,76,60); color: #E74C3C; }
-.hz-indicator.too-cold { background: rgba(77,159,255,.08); border: 1px solid #4D9FFF; color: #4D9FFF; }
+.hz-indicator.habitable { background: transparent; border: 1px solid var(--sf-emerald); color: var(--sf-emerald-text); }
+.hz-indicator.too-hot { background: transparent; border: 1px solid var(--sf-crimson); color: var(--sf-crimson-text); }
+.hz-indicator.too-cold { background: transparent; border: 1px solid var(--sf-azure); color: var(--sf-azure-text); }
+.hz-indicator.marginal { background: transparent; border: 1px solid var(--sf-amber); color: var(--sf-amber-text); }
 
 /* Spinner */
 .spinner {
   display: inline-block;
   width: 12px; height: 12px;
-  border: 2px solid #50555E;
+  border: 2px solid var(--sf-line);
   border-top-color: var(--accent-green);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -549,37 +554,16 @@ button.active, button.primary {
 }
 #credit a { color: var(--sf-primary-text); text-decoration: none; }
 
-/* === TEMPERATURE GRADIENT === */
-.temp-gradient-bar {
-  height: 3px;
-  margin-top: -8px;
-  margin-bottom: 8px;
-  background: linear-gradient(90deg, 
-    #4488cc 0%,
-    #6699dd 12%,
-    #88bbee 22%,
-    #44bb66 30%,
-    #22cc44 38%,
-    #aacc22 44%,
-    #ddaa22 52%,
-    #cc6622 62%,
-    #cc3311 75%,
-    #aa1100 88%,
-    #661100 100%
-  );
-  opacity: 0.5;
-  pointer-events: none;
-}
-.temp-zone-label {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 12px;
-  color: rgb(46,204,113);
-  letter-spacing: 0.5px;
-  text-align: center;
-  margin-top: -2px;
-  margin-bottom: 6px;
-}
-#kb-help{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:50;background:rgba(15,15,16,0.95);border:1px solid #50555E;padding:12px 18px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t2);letter-spacing:0.5px;display:none;gap:16px;flex-wrap:wrap;backdrop-filter:blur(16px);pointer-events:none}
+.derived-row { display:flex; justify-content:space-between; align-items:baseline; margin:2px 0 8px; }
+.derived-row .dl { font-family:'DM Sans',sans-serif; font-size:12px; color:var(--t3); }
+.derived-row .dv { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--t1); }
+.est { font-family:'DM Sans',sans-serif; font-size:12px; color:var(--sf-amber-text); margin-left:4px; }
+.check-note { font-family:'DM Sans',sans-serif; font-size:12px; line-height:1.5; color:var(--t2); margin:2px 0 8px; }
+.check-note.bad { color:var(--sf-crimson-text); }
+.check-note.warn { color:var(--sf-amber-text); }
+.panel-note { font-family:'DM Sans',sans-serif; font-size:12px; line-height:1.5; color:var(--t3); margin:0 0 8px; }
+button { min-height:44px; }
+#kb-help{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:50;background:var(--sf-sim-panel);border:1px solid var(--sf-line);padding:12px 18px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t2);letter-spacing:0.5px;display:none;gap:16px;flex-wrap:wrap;backdrop-filter:blur(16px);pointer-events:none}
 #kb-help.visible{display:flex}
 @media(max-width:768px){#kb-help{display:none !important}}
 #drag-hint{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:10;font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:0.5px;color:var(--t4);pointer-events:none;transition:opacity 2s;white-space:nowrap}
@@ -613,7 +597,10 @@ button.active, button.primary {
   <link rel="stylesheet" href="../_shared/sim-mobile.css">
   <link rel="stylesheet" href="../_shared/sim-title.css">
   <link rel="stylesheet" href="../_shared/sim-perf.css">
+  <link rel="stylesheet" href="../_shared/sim-a11y.css">
   <script src="../_shared/sim-loop.js"></script>
+  <script src="../_shared/sim-a11y.js"></script>
+  <script src="../_shared/physics.js"></script>
 </head>
 <body>
 
@@ -623,15 +610,15 @@ button.active, button.primary {
 <div class="panel" id="title-panel">
   <h1>ExoForge</h1>
   <div class="subtitle">Procedural Exoplanet Forge</div>
-  <div id="badge">Awaiting Parameters</div>
+  <div id="badge" role="status" aria-live="polite">Awaiting parameters</div>
 </div>
 
 <!-- Control Panel -->
 <div class="panel" id="control-panel">
 
-  <div class="section-header">Composition Spectrum</div>
+  <div class="section-header">Appearance</div>
   <div class="control-row">
-    <label>Rocky ← → Gaseous</label>
+    <label for="composition">Look: rocky to gaseous</label>
     <span class="value" id="composition-val">100% Rock</span>
   </div>
   <input type="range" id="composition" min="0" max="100" step="1" value="0" oninput="updateComposition()">
@@ -647,58 +634,60 @@ button.active, button.primary {
     <span>Gas Giant</span>
   </div>
 
-  <div class="section-header">Physical Parameters</div>
+  <div class="section-header">Planet</div>
 
   <div class="control-row">
-    <label>Radius</label>
+    <label for="radius">Radius</label>
     <span class="value" id="radius-val">1.00 R⊕</span>
   </div>
-  <input type="range" id="radius" min="0.3" max="15" step="0.01" value="1.0" oninput="updateSlider('radius')">
+  <input type="range" id="radius" min="0.3" max="20" step="0.01" value="1.0" oninput="updateSlider('radius')">
 
   <div class="control-row">
-    <label>Mass</label>
+    <label for="mass">Mass</label>
     <span class="value" id="mass-val">1.00 M⊕</span>
   </div>
-  <input type="range" id="mass" min="0.1" max="5000" step="0.1" value="1.0" oninput="updateSlider('mass')">
+  <input type="range" id="mass" min="0" max="1000" step="1" value="500" oninput="updateSlider('mass')" aria-valuetext="1.00 Earth masses">
+  <div class="check-note" id="mr-note" role="status" aria-live="polite"></div>
 
   <div class="control-row">
-    <label>Eq. Temperature</label>
-    <span class="value" id="temp-val">288 K</span>
+    <label for="albedo">Bond albedo</label>
+    <span class="value" id="albedo-val">0.30</span>
   </div>
-  <div class="slider-container">
-    <input type="range" id="temp" min="0" max="1000" step="1" value="500" oninput="updateTempFromSlider()">
-    <div class="temp-gradient-bar"></div>
-    <div class="temp-zone-label">▲ habitable zone: 180 – 330 K</div>
-  </div>
+  <input type="range" id="albedo" min="0" max="0.9" step="0.01" value="0.3" oninput="updateSlider('albedo')">
 
+  <div class="section-header">Orbit</div>
   <div class="control-row">
-    <label>Orbital Period</label>
-    <span class="value" id="period-val">365.25 d</span>
+    <label for="orbit">Orbital distance</label>
+    <span class="value" id="orbit-val">1.000 AU</span>
   </div>
-  <input type="range" id="period" min="0.5" max="10000" step="0.5" value="365.25" oninput="updateSlider('period')">
+  <input type="range" id="orbit" min="0" max="1000" step="1" value="500" oninput="updateSlider('orbit')" aria-valuetext="1.000 AU">
+  <div class="derived-row"><span class="dl">Year (Kepler, from star mass)</span><span class="dv" id="period-val">365.25 d</span></div>
+  <div class="derived-row"><span class="dl">Insolation</span><span class="dv" id="insol-val">1.00 × Earth</span></div>
+  <div class="derived-row"><span class="dl">Equilibrium temp</span><span class="dv" id="teq-val">255 K</span></div>
+  <div class="derived-row"><span class="dl">Surface temp</span><span class="dv" id="temp-val">288 K</span></div>
 
   <div class="section-header">Surface & Atmosphere</div>
 
   <div class="control-row">
-    <label>Ocean Coverage</label>
+    <label for="ocean">Ocean coverage</label>
     <span class="value" id="ocean-val">70%</span>
   </div>
   <input type="range" id="ocean" min="0" max="100" step="1" value="70" oninput="updateSlider('ocean')">
 
   <div class="control-row">
-    <label>Atmosphere Density</label>
+    <label for="atmo">Atmosphere (× Earth)</label>
     <span class="value" id="atmo-val">1.00</span>
   </div>
   <input type="range" id="atmo" min="0" max="5" step="0.01" value="1.0" oninput="updateSlider('atmo')">
 
   <div class="control-row">
-    <label>Cloud Coverage</label>
+    <label for="cloud">Cloud coverage</label>
     <span class="value" id="cloud-val">40%</span>
   </div>
   <input type="range" id="cloud" min="0" max="100" step="1" value="40" oninput="updateSlider('cloud')">
 
   <div class="control-row">
-    <label>Terrain Roughness</label>
+    <label for="roughness">Terrain roughness</label>
     <span class="value" id="roughness-val">0.50</span>
   </div>
   <input type="range" id="roughness" min="0" max="1" step="0.01" value="0.5" oninput="updateSlider('roughness')">
@@ -706,25 +695,25 @@ button.active, button.primary {
   <div class="section-header">Ring System</div>
 
   <div class="control-row">
-    <label>Ring Opacity</label>
+    <label for="ring-opacity">Ring opacity</label>
     <span class="value" id="ring-opacity-val">0%</span>
   </div>
   <input type="range" id="ring-opacity" min="0" max="100" step="1" value="0" oninput="updateSlider('ring-opacity')">
 
   <div class="control-row">
-    <label>Ring Width</label>
+    <label for="ring-width">Ring width</label>
     <span class="value" id="ring-width-val">1.00</span>
   </div>
   <input type="range" id="ring-width" min="0.3" max="3.0" step="0.01" value="1.0" oninput="updateSlider('ring-width')">
 
   <div class="control-row">
-    <label>Ring Tilt</label>
+    <label for="ring-tilt">Ring tilt</label>
     <span class="value" id="ring-tilt-val">25°</span>
   </div>
   <input type="range" id="ring-tilt" min="0" max="90" step="1" value="25" oninput="updateSlider('ring-tilt')">
 
   <div class="control-row">
-    <label>Ring Color</label>
+    <label for="ring-color">Ring colour</label>
     <span class="value" id="ring-color-val">Amber</span>
   </div>
   <select id="ring-color" onchange="updateSlider('ring-color')">
@@ -735,68 +724,72 @@ button.active, button.primary {
     <option value="silicate">Silicate White</option>
   </select>
 
-  <div class="section-header">Host Star</div>
-
+  <div class="section-header">Host star</div>
   <div class="control-row">
-    <label>Star Temperature</label>
-    <span class="value" id="star-temp-val">5778 K</span>
+    <label for="star-mass">Star mass</label>
+    <span class="value" id="star-mass-val">1.00 M☉</span>
   </div>
-  <input type="range" id="star-temp" min="2500" max="30000" step="10" value="5778" oninput="updateSlider('star-temp')">
-
-  <div class="control-row">
-    <label>Star Radius</label>
-    <span class="value" id="star-radius-val">1.00 R☉</span>
-  </div>
-  <input type="range" id="star-radius" min="0.1" max="10" step="0.01" value="1.0" oninput="updateSlider('star-radius')">
+  <input type="range" id="star-mass" min="0.09" max="2.3" step="0.01" value="1.0" oninput="updateSlider('star-mass')">
+  <p class="panel-note" id="star-mode-note">Main-sequence star: temperature, radius and luminosity follow from mass.</p>
+  <div class="derived-row"><span class="dl">Type</span><span class="dv" id="star-type-val">G2V</span></div>
+  <div class="derived-row"><span class="dl">Temperature</span><span class="dv" id="star-temp-val">5772 K</span></div>
+  <div class="derived-row"><span class="dl">Radius</span><span class="dv" id="star-radius-val">1.00 R☉</span></div>
+  <div class="derived-row"><span class="dl">Luminosity</span><span class="dv" id="star-lum-val">1.00 L☉</span></div>
 
   <div class="section-header">Display</div>
 
   <div class="control-row">
-    <label>Rotation Speed</label>
+    <label for="rotation">Spin animation</label>
     <span class="value" id="rotation-val">1.00×</span>
   </div>
   <input type="range" id="rotation" min="0" max="5" step="0.01" value="1.0" oninput="updateSlider('rotation')">
 
   <div style="display: flex; gap: 4px; margin-top: 6px;">
-    <button class="primary" onclick="exportSnapshot()" style="flex:1">Export Image</button>
+    <button class="primary" onclick="exportSnapshot()" style="flex:1">Export image</button>
     <button onclick="resetToEarth()" style="flex:1">Reset to Earth</button>
   </div>
 </div>
 
 <!-- Data Readout Panel -->
-<div class="panel" id="data-panel">
-  <div class="section-header">Planetary Data</div>
-  <div class="data-row"><span class="data-label">Planet Name</span><span class="data-value cyan" id="data-name">Custom World</span></div>
+<div class="panel" id="data-panel" aria-label="Readout">
+  <div class="section-header">Planetary data</div>
+  <div class="data-row"><span class="data-label">Planet name</span><span class="data-value cyan" id="data-name">Custom World</span></div>
   <div class="data-row"><span class="data-label">Classification</span><span class="data-value" id="data-class">Terrestrial</span></div>
   <div class="data-row"><span class="data-label">Radius</span><span class="data-value" id="data-radius">1.00<span class="data-unit">R⊕</span></span></div>
   <div class="data-row"><span class="data-label">Mass</span><span class="data-value" id="data-mass">1.00<span class="data-unit">M⊕</span></span></div>
-  <div class="data-row"><span class="data-label">Surface Gravity</span><span class="data-value" id="data-gravity">1.00<span class="data-unit">g</span></span></div>
-  <div class="data-row"><span class="data-label">Eq. Temperature</span><span class="data-value" id="data-temp">288<span class="data-unit">K</span></span></div>
-  <div class="data-row"><span class="data-label">Orbital Period</span><span class="data-value" id="data-period">365.25<span class="data-unit">days</span></span></div>
   <div class="data-row"><span class="data-label">Density</span><span class="data-value" id="data-density">5.51<span class="data-unit">g/cm³</span></span></div>
-  <div class="data-row"><span class="data-label">Escape Velocity</span><span class="data-value" id="data-escape">11.19<span class="data-unit">km/s</span></span></div>
+  <div class="data-row"><span class="data-label">Mass–radius check</span><span class="data-value" id="data-mr">Consistent</span></div>
+  <div class="data-row"><span class="data-label">Surface gravity</span><span class="data-value" id="data-gravity">1.00<span class="data-unit">g</span></span></div>
+  <div class="data-row"><span class="data-label">Escape velocity</span><span class="data-value" id="data-escape">11.19<span class="data-unit">km/s</span></span></div>
+  <div class="data-row"><span class="data-label">Orbital distance</span><span class="data-value" id="data-orbit">1.000<span class="data-unit">AU</span></span></div>
+  <div class="data-row"><span class="data-label">Orbital period</span><span class="data-value" id="data-period">365.25<span class="data-unit">days</span></span></div>
+  <div class="data-row"><span class="data-label">Insolation</span><span class="data-value" id="data-insol">1.00<span class="data-unit">× Earth</span></span></div>
+  <div class="data-row"><span class="data-label">Equilibrium temp</span><span class="data-value" id="data-teq">255<span class="data-unit">K</span></span></div>
+  <div class="data-row"><span class="data-label">Surface temp</span><span class="data-value" id="data-temp">288<span class="data-unit">K</span></span></div>
 
   <div class="section-header">Habitability</div>
-  <div class="data-row"><span class="data-label">Zone Status</span><span id="data-hz"></span></div>
-  <div class="data-row"><span class="data-label">Atmo Retention</span><span class="data-value" id="data-atmo-retain">Strong</span></div>
-  <div class="data-row"><span class="data-label">Liquid Water</span><span class="data-value green" id="data-water">Possible</span></div>
+  <div class="data-row"><span class="data-label">Habitable zone</span><span id="data-hz"></span></div>
+  <div class="data-row"><span class="data-label">Air retention</span><span class="data-value" id="data-atmo-retain">Retained</span></div>
+  <div class="data-row"><span class="data-label">Liquid water</span><span class="data-value green" id="data-water">Possible</span></div>
 
-  <div class="section-header">Host Star</div>
-  <div class="data-row"><span class="data-label">Star Type</span><span class="data-value gold" id="data-star-type">G2V</span></div>
-  <div class="data-row"><span class="data-label">Star Temperature</span><span class="data-value gold" id="data-star-temp">5778<span class="data-unit">K</span></span></div>
-  <div class="data-row"><span class="data-label">Star Radius</span><span class="data-value gold" id="data-star-rad">1.00<span class="data-unit">R☉</span></span></div>
+  <div class="section-header">Host star</div>
+  <div class="data-row"><span class="data-label">Star type</span><span class="data-value gold" id="data-star-type">G2V</span></div>
+  <div class="data-row"><span class="data-label">Star mass</span><span class="data-value gold" id="data-star-mass">1.00<span class="data-unit">M☉</span></span></div>
+  <div class="data-row"><span class="data-label">Star temperature</span><span class="data-value gold" id="data-star-temp">5772<span class="data-unit">K</span></span></div>
+  <div class="data-row"><span class="data-label">Star radius</span><span class="data-value gold" id="data-star-rad">1.00<span class="data-unit">R☉</span></span></div>
 
   <div class="section-header">Source</div>
-  <div class="data-row"><span class="data-label">Data Source</span><span class="data-value" id="data-source" style="font-size:12px">User-defined</span></div>
+  <div class="data-row"><span class="data-label">Data source</span><span class="data-value" id="data-source" style="font-size:12px">User-defined</span></div>
+  <p class="panel-note" id="data-estimates"></p>
 </div>
 
 <!-- NASA Search Panel -->
 <div class="panel" id="search-panel">
-  <div class="section-header" style="margin-top:0">NASA Exoplanet Archive — Search & Import</div>
-  <input type="text" id="search-input" placeholder="Search exoplanets (e.g., TRAPPIST-1, Kepler-442 b, Proxima Centauri b)">
-  <div id="search-status"></div>
-  <div id="search-results"></div>
-  <div class="search-hint">58 real exoplanets from NASA's archive · Type any name, star, or facility · Production adds live search</div>
+  <div class="section-header" style="margin-top:0"><label for="search-input">Import a real planet (NASA Exoplanet Archive)</label></div>
+  <input type="text" id="search-input" placeholder="Search by name, star or facility (TRAPPIST-1, Kepler-442 b)">
+  <div id="search-status" role="status" aria-live="polite"></div>
+  <div id="search-results" role="listbox" aria-label="Matching planets"></div>
+  <div class="search-hint" id="search-hint"></div>
 </div>
 
 <script>
@@ -833,61 +826,98 @@ class SimplexNoise {
 const simplex = new SimplexNoise(42);
 
 // ==========================================
-// LOGARITHMIC TEMPERATURE MAPPING
+// COUPLED PHYSICS (1.9, EF1)
 // ==========================================
-// Slider goes 0-1000 (linear). We map to 50-3000K with a curve
-// that gives the habitable zone (180-330K) roughly 25% of the slider width.
-const TEMP_MIN = 50;
-const TEMP_MAX = 3000;
+// Mass, radius, albedo, orbital distance and star mass are the inputs.
+// Everything else is derived through SFPhysics (/tools/_shared/physics.js,
+// twin of src/lib/physics; sources cited there): the star from the shared
+// main sequence (or the archive's measured values), the period from Kepler
+// with the star's mass, insolation, equilibrium and surface temperature,
+// density, the Chen & Kipping mass–radius check, Kopparapu HZ and gas
+// retention. Temperature and period are no longer sliders.
+const PH = window.SFPhysics;
+const MASS_MIN = 0.05, MASS_MAX = 5000, AU_MIN = 0.005, AU_MAX = 100;
+const logMap = (v, lo, hi) => lo * Math.pow(hi / lo, v / 1000);
+const logUnmap = (x, lo, hi) => 1000 * Math.log(Math.max(x, lo) / lo) / Math.log(hi / lo);
+const sliderToMass = v => logMap(v, MASS_MIN, MASS_MAX);
+const massToSlider = m => logUnmap(m, MASS_MIN, MASS_MAX);
+const sliderToAU = v => logMap(v, AU_MIN, AU_MAX);
+const auToSlider = a => logUnmap(a, AU_MIN, AU_MAX);
+// Grey-greenhouse optical depth per Earth atmosphere: Earth's τ ≈ 0.84 takes
+// 255 K to 288 K (Eddington approximation; see physics.js).
+const TAU_PER_ATMO = 0.84;
+// Exobase temperature assumed for the retention test (Earth's thermosphere).
+const EXOBASE_K = 1000;
 
-function sliderToTemp(sliderVal) {
-  // Custom piecewise mapping: more resolution in habitable range
-  const t = sliderVal / 1000; // 0 to 1
-  if (t < 0.15) {
-    // 0-0.15 → 50-180K (cold zone)
-    return TEMP_MIN + (180 - TEMP_MIN) * (t / 0.15);
-  } else if (t < 0.50) {
-    // 0.15-0.50 → 180-330K (HABITABLE ZONE — gets 35% of slider!)
-    return 180 + (330 - 180) * ((t - 0.15) / 0.35);
-  } else if (t < 0.70) {
-    // 0.50-0.70 → 330-600K (hot zone)
-    return 330 + (600 - 330) * ((t - 0.50) / 0.20);
-  } else if (t < 0.85) {
-    // 0.70-0.85 → 600-1200K (very hot)
-    return 600 + (1200 - 600) * ((t - 0.70) / 0.15);
-  } else {
-    // 0.85-1.0 → 1200-3000K (extreme)
-    return 1200 + (3000 - 1200) * ((t - 0.85) / 0.15);
+function earthState() {
+  return {
+    radius: 1.0, mass: 1.0, albedo: 0.3, orbDist: 1.0,
+    ocean: 70, atmo: 1.0, cloud: 40, roughness: 0.5,
+    composition: 0, // 0 = rocky look, 100 = gaseous look (appearance only)
+    ringOpacity: 0, ringWidth: 1.0, ringTilt: 25, ringColor: 'amber',
+    starMass: 1.0, starMode: 'ms', starTemp: 5772, starRadius: 1.0,
+    rotation: 1.0, name: 'Custom World', source: 'User-defined',
+    est: {}, archiveTeq: null, note: '',
+    // derived (filled by derive())
+    temp: 288, period: 365.25, teq: 255, insol: 1, starLum: 1, spt: 'G2V'
+  };
+}
+let P = earthState();
+let D = {};
+
+// Main-sequence mass for a measured temperature (bisection; the table's
+// Teff rises monotonically with mass). Used when the archive gives no mass.
+function massFromTeff(teff) {
+  let lo = PH.MAIN_SEQUENCE[0].mass, hi = PH.MAIN_SEQUENCE[PH.MAIN_SEQUENCE.length - 1].mass;
+  for (let i = 0; i < 50; i++) {
+    const mid = Math.sqrt(lo * hi);
+    if (PH.mainSequenceStar(mid).teff < teff) lo = mid; else hi = mid;
   }
+  return Math.sqrt(lo * hi);
 }
 
-function tempToSlider(temp) {
-  if (temp < 180) return (temp - TEMP_MIN) / (180 - TEMP_MIN) * 150;
-  if (temp < 330) return 150 + (temp - 180) / (330 - 180) * 350;
-  if (temp < 600) return 500 + (temp - 330) / (600 - 330) * 200;
-  if (temp < 1200) return 700 + (temp - 600) / (1200 - 600) * 150;
-  return 850 + (temp - 1200) / (3000 - 1200) * 150;
+function derive() {
+  if (P.starMode === 'ms') {
+    const st = PH.mainSequenceStar(P.starMass);
+    P.starTemp = st.teff; P.starRadius = st.radius; P.starLum = st.luminosity; P.spt = st.spt;
+  } else {
+    P.starLum = PH.luminosityFromRadiusTeff(P.starRadius, P.starTemp);
+    P.spt = '~' + PH.mainSequenceStar(massFromTeff(P.starTemp)).spt;
+  }
+  P.period = PH.orbitalPeriodDays(P.orbDist, P.starMass, P.mass);
+  P.insol = PH.insolation(P.starLum, P.orbDist);
+  P.teq = PH.equilibriumTemperature(P.insol, P.albedo);
+  const tau = P.atmo > 0 ? TAU_PER_ATMO * P.atmo : 0;
+  P.temp = P.teq * Math.pow(PH.greenhouseMultiplier(tau), 0.25);
+
+  const mr = PH.massRadiusCheck(P.mass, P.radius);
+  const hz = PH.kopparapuEdges(P.starTemp, P.starLum);
+  let zone, zoneCls;
+  if (P.orbDist < hz.recentVenus) { zone = 'Too hot'; zoneCls = 'too-hot'; }
+  else if (P.orbDist < hz.runawayGreenhouse) { zone = 'Optimistic (inner)'; zoneCls = 'marginal'; }
+  else if (P.orbDist <= hz.maxGreenhouse) { zone = 'In the zone'; zoneCls = 'habitable'; }
+  else if (P.orbDist <= hz.earlyMars) { zone = 'Optimistic (outer)'; zoneCls = 'marginal'; }
+  else { zone = 'Too cold'; zoneCls = 'too-cold'; }
+  const gas = P.composition >= 35 ? 'H2' : 'N2';
+  const vesc = PH.escapeVelocityKms(P.mass, P.radius);
+  const ret = PH.retention(vesc, EXOBASE_K, PH.MOLECULAR_MASS[gas]);
+  const pBar = P.atmo * 1.01325;
+  const water = mr.regime === 'terran' && mr.verdict !== 'implausible' && pBar >= PH.WATER_TRIPLE_BAR
+    && P.temp >= 273.15 && P.temp <= PH.waterBoilingPoint(pBar);
+  let cls;
+  if (mr.verdict === 'implausible') cls = 'Implausible';
+  else if (mr.regime === 'terran') cls = P.radius < 1.25 ? 'Terrestrial' : 'Super-Earth';
+  else if (mr.regime === 'neptunian') cls = P.radius < 4 ? 'Mini-Neptune' : 'Neptune-like';
+  else cls = 'Gas giant';
+  D = {
+    gravity: PH.surfaceGravity(P.mass, P.radius), density: mr.density, escapeVel: vesc,
+    mr: mr, hz: hz, zone: zone, zoneCls: zoneCls, gas: gas === 'H2' ? 'H₂' : 'N₂',
+    retention: ret.verdict === 'retained' ? 'Retained' : ret.verdict === 'marginal' ? 'Marginal' : 'Lost',
+    water: water, classification: cls
+  };
 }
 
-// ==========================================
-// PLANET STATE
-// ==========================================
-let P = {
-  radius: 1.0, mass: 1.0, temp: 288, period: 365.25,
-  ocean: 70, atmo: 1.0, cloud: 40, roughness: 0.5,
-  composition: 0, // 0 = pure rock, 100 = pure gas
-  ringOpacity: 0, ringWidth: 1.0, ringTilt: 25, ringColor: 'amber',
-  starTemp: 5778, starRadius: 1.0, rotation: 1.0,
-  name: 'Custom World', source: 'User-defined'
-};
-
-function getClassification() {
-  if (P.composition < 15) return 'Terrestrial';
-  if (P.composition < 35) return 'Super-Earth';
-  if (P.composition < 60) return 'Mini-Neptune';
-  if (P.composition < 85) return 'Ice Giant';
-  return 'Gas Giant';
-}
+function getClassification() { return D.classification || 'Terrestrial'; }
 
 function getGaseousFraction() {
   return P.composition / 100; // 0 = full rock, 1 = full gas
@@ -1176,6 +1206,7 @@ function generatePlanetTexture(octaves = 6) {
 
 function updateVisuals() {
   // Shortcut for bulk loads (reset, exoplanet import) — do everything once
+  derive();
   swapGeometry(false); // ensure full-detail
   updateShell();
   generatePlanetTexture(6); // full quality
@@ -1197,6 +1228,7 @@ const TERRAIN_THROTTLE = 150; // ms — throttle terrain regen during drag
 let pendingReadoutRAF = 0;
 
 function scheduleUpdate(terrainNeeded) {
+  derive(); // temperature feeds the terrain colours
   if (terrainNeeded) dirty.terrain = true;
   dirty.shell = true;
   dirty.readouts = true;
@@ -1241,10 +1273,16 @@ function updateShell() {
   ringGroup.rotation.x = (P.ringTilt / 90) * (Math.PI / 2);
 }
 
+let lastBadgeText = '';
 function updateBadge() {
   const badge = document.getElementById('badge');
-  badge.textContent = P.source.includes('NASA') ? 'Real Exoplanet Loaded' : 'Custom Parameters';
-  badge.className = P.source.includes('NASA') ? 'success' : 'active';
+  let text, cls;
+  if (D.mr && D.mr.verdict === 'implausible') { text = 'Impossible density'; cls = 'danger'; }
+  else if (P.source.includes('NASA')) { text = 'Real exoplanet loaded'; cls = 'success'; }
+  else { text = 'Custom parameters'; cls = 'active'; }
+  badge.textContent = text;
+  badge.className = cls;
+  if (text !== lastBadgeText) { lastBadgeText = text; if (window.SFA11y) SFA11y.announce(text); }
 }
 
 function blackBodyColor(temp) {
@@ -1256,56 +1294,93 @@ function blackBodyColor(temp) {
   return [r, g, b];
 }
 
+function unitHTML(el, value, unit) {
+  // Values are numbers this page formats itself; no external text reaches innerHTML.
+  SFSim.html(el, value + '<span class="data-unit">' + unit + '</span>');
+}
+function setCls(el, base, cls) { el.className = base + (cls ? ' ' + cls : ''); }
+function fmtAU(a) { return a < 0.1 ? a.toFixed(4) : a < 10 ? a.toFixed(3) : a.toFixed(1); }
+function fmtMass(m) { return m < 10 ? m.toFixed(2) : m < 1000 ? m.toFixed(1) : Math.round(m).toString(); }
 function updateDataReadouts() {
-  const rE = P.radius, mE = P.mass;
-  const gravity = mE / (rE * rE);
-  const density = mE / (rE * rE * rE) * 5.51;
-  const escapeVel = Math.sqrt(gravity * rE) * 11.19;
+  derive();
+  const $ = id => document.getElementById(id);
+  const mr = D.mr;
+  SFSim.text($('data-name'), P.name);
+  SFSim.text($('data-class'), D.classification);
+  setCls($('data-class'), 'data-value', D.classification === 'Implausible' ? 'red' : '');
+  unitHTML($('data-radius'), P.radius.toFixed(2), 'R⊕');
+  unitHTML($('data-mass'), fmtMass(P.mass), 'M⊕');
+  unitHTML($('data-density'), D.density < 100 ? D.density.toFixed(2) : Math.round(D.density).toString(), 'g/cm³');
+  SFSim.text($('data-mr'), mr.verdict === 'consistent' ? 'Consistent' : mr.verdict === 'unusual' ? 'Unusual' : '// Implausible');
+  setCls($('data-mr'), 'data-value', mr.verdict === 'consistent' ? 'green' : mr.verdict === 'unusual' ? 'orange' : 'red');
+  unitHTML($('data-gravity'), D.gravity.toFixed(2), 'g');
+  unitHTML($('data-escape'), D.escapeVel.toFixed(2), 'km/s');
+  unitHTML($('data-orbit'), fmtAU(P.orbDist), 'AU');
+  unitHTML($('data-period'), P.period.toFixed(P.period < 10 ? 2 : 1), 'days');
+  unitHTML($('data-insol'), P.insol < 0.1 ? P.insol.toFixed(4) : P.insol.toFixed(2), '× Earth');
+  unitHTML($('data-teq'), Math.round(P.teq).toString(), 'K');
+  unitHTML($('data-temp'), Math.round(P.temp).toString(), 'K');
 
-  document.getElementById('data-name').textContent = P.name;
-  document.getElementById('data-class').textContent = getClassification();
-  document.getElementById('data-radius').innerHTML = `${rE.toFixed(2)}<span class="data-unit">R⊕</span>`;
-  document.getElementById('data-mass').innerHTML = `${mE.toFixed(mE<10?2:0)}<span class="data-unit">M⊕</span>`;
-  document.getElementById('data-gravity').innerHTML = `${gravity.toFixed(2)}<span class="data-unit">g</span>`;
-  document.getElementById('data-temp').innerHTML = `${Math.round(P.temp)}<span class="data-unit">K</span>`;
-  document.getElementById('data-period').innerHTML = `${P.period.toFixed(P.period<10?2:1)}<span class="data-unit">days</span>`;
-  document.getElementById('data-density').innerHTML = `${density.toFixed(2)}<span class="data-unit">g/cm³</span>`;
-  document.getElementById('data-escape').innerHTML = `${escapeVel.toFixed(2)}<span class="data-unit">km/s</span>`;
+  SFSim.html($('data-hz'), '<span class="hz-indicator ' + D.zoneCls + '">' + D.zone + '</span>');
+  SFSim.text($('data-atmo-retain'), D.retention + ' · ' + D.gas);
+  setCls($('data-atmo-retain'), 'data-value', D.retention === 'Retained' ? 'green' : D.retention === 'Marginal' ? 'orange' : 'red');
+  SFSim.text($('data-water'), D.water ? 'Possible' : 'Unlikely');
+  setCls($('data-water'), 'data-value', D.water ? 'green' : 'red');
 
-  const hzEl = document.getElementById('data-hz');
-  if (P.temp >= 180 && P.temp <= 330) hzEl.innerHTML = '<span class="hz-indicator habitable">Habitable Zone</span>';
-  else if (P.temp > 330) hzEl.innerHTML = '<span class="hz-indicator too-hot">Too Hot</span>';
-  else hzEl.innerHTML = '<span class="hz-indicator too-cold">Too Cold</span>';
+  SFSim.text($('data-star-type'), P.spt);
+  unitHTML($('data-star-mass'), P.starMass.toFixed(2) + (P.est.starMass ? ' est.' : ''), 'M☉');
+  unitHTML($('data-star-temp'), Math.round(P.starTemp).toString(), 'K');
+  unitHTML($('data-star-rad'), P.starRadius.toFixed(2), 'R☉');
+  SFSim.text($('data-source'), P.source);
 
-  const retain = gravity > 0.5 ? (gravity > 1.5 ? 'Very Strong' : 'Strong') : (gravity > 0.2 ? 'Moderate' : 'Weak');
-  document.getElementById('data-atmo-retain').textContent = retain;
-  document.getElementById('data-atmo-retain').className = `data-value ${gravity > 0.5 ? 'green' : gravity > 0.2 ? 'orange' : 'red'}`;
+  // Controls panel: derived values beside the inputs.
+  SFSim.text($('period-val'), P.period.toFixed(P.period < 10 ? 2 : 1) + ' d');
+  SFSim.text($('insol-val'), (P.insol < 0.1 ? P.insol.toFixed(4) : P.insol.toFixed(2)) + ' × Earth');
+  SFSim.text($('teq-val'), Math.round(P.teq) + ' K');
+  SFSim.text($('temp-val'), Math.round(P.temp) + ' K');
+  SFSim.text($('star-type-val'), P.spt);
+  SFSim.text($('star-temp-val'), Math.round(P.starTemp) + ' K');
+  SFSim.text($('star-radius-val'), P.starRadius.toFixed(2) + ' R☉');
+  SFSim.text($('star-lum-val'), (P.starLum < 0.01 ? P.starLum.toExponential(2) : P.starLum.toFixed(3)) + ' L☉');
+  SFSim.text($('star-mode-note'), P.starMode === 'ms'
+    ? 'Main-sequence star: temperature, radius and luminosity follow from mass.'
+    : 'Measured star (archive): temperature and radius as published, luminosity from them. Move the mass slider to switch to a main-sequence star.');
 
-  const waterOk = P.temp >= 180 && P.temp <= 400 && gravity > 0.15;
-  document.getElementById('data-water').textContent = waterOk ? 'Possible' : 'Unlikely';
-  document.getElementById('data-water').className = `data-value ${waterOk ? 'green' : 'red'}`;
+  // EF1: mass–radius consistency, said in words beside the inputs.
+  const note = $('mr-note');
+  if (mr.verdict === 'implausible') {
+    SFSim.text(note, '// Density ' + Math.round(mr.density) + ' g/cm³ is denser than pure iron at this mass. No known material. A ' + fmtMass(P.mass) + ' M⊕ planet should be about ' + mr.expectedRadius.toFixed(2) + ' R⊕ (Chen & Kipping 2017).');
+    note.className = 'check-note bad';
+  } else if (mr.verdict === 'unusual') {
+    SFSim.text(note, 'Unusual for its mass: typical radius ' + mr.expectedRadius.toFixed(2) + ' R⊕ (Chen & Kipping 2017). Possible, but say why.');
+    note.className = 'check-note warn';
+  } else {
+    SFSim.text(note, 'Mass and radius agree (typical ' + mr.expectedRadius.toFixed(2) + ' R⊕ for this mass).');
+    note.className = 'check-note';
+  }
 
-  const starType = P.starTemp > 10000 ? 'B/A' : P.starTemp > 7500 ? 'F' : P.starTemp > 6000 ? 'F/G' :
-    P.starTemp > 5200 ? 'G' : P.starTemp > 3700 ? 'K' : 'M';
-  document.getElementById('data-star-type').textContent = starType + (starType === 'G' ? '2V' : starType === 'M' ? ' Dwarf' : '');
-  document.getElementById('data-star-temp').innerHTML = `${Math.round(P.starTemp)}<span class="data-unit">K</span>`;
-  document.getElementById('data-star-rad').innerHTML = `${P.starRadius.toFixed(2)}<span class="data-unit">R☉</span>`;
-  document.getElementById('data-source').textContent = P.source;
+  // EF2: say which numbers are estimates, never fill them silently.
+  const notes = [];
+  if (P.est.mass === 'estimated') notes.push('mass estimated from radius (Chen & Kipping 2017)');
+  if (P.est.mass === 'assumed') notes.push('mass unknown: giant planets of every mass share a radius, so ' + fmtMass(P.mass) + ' M⊕ is assumed');
+  if (P.est.radius) notes.push('radius estimated from mass (Chen & Kipping 2017)');
+  if (P.est.starMass) notes.push('star mass estimated from its temperature (main sequence)');
+  if (P.est.starTemp) notes.push('star temperature not in the archive; Sun-like assumed');
+  if (P.est.starRadius) notes.push('star radius not in the archive; main-sequence value used');
+  if (P.est.orbit) notes.push('orbit not in the archive; 1 AU assumed');
+  if (P.est.albedo) notes.push('Bond albedo ' + P.albedo.toFixed(2) + ' assumed');
+  let text = notes.length ? 'Estimates: ' + notes.join('; ') + '.' : '';
+  if (P.archiveTeq != null) text += (text ? ' ' : '') + 'Archive equilibrium temperature: ' + Math.round(P.archiveTeq) + ' K (its own albedo and heat-redistribution assumptions).';
+  if (P.note) text += (text ? ' ' : '') + P.note;
+  SFSim.text($('data-estimates'), text);
 }
 
 // ==========================================
 // UI HANDLERS — dirty flag system
 // ==========================================
 // Params that require expensive terrain regeneration
-const TERRAIN_PARAMS = new Set(['temp', 'ocean', 'roughness', 'composition']);
-
-function updateTempFromSlider() {
-  const sliderVal = parseFloat(document.getElementById('temp').value);
-  P.temp = Math.round(sliderToTemp(sliderVal));
-  document.getElementById('temp-val').textContent = P.temp + ' K';
-  P.name = 'Custom World'; P.source = 'User-defined';
-  scheduleUpdate(true);
-}
+// Temperature drives the terrain colours, so anything that moves it regenerates.
+const TERRAIN_PARAMS = new Set(['ocean', 'roughness', 'composition', 'orbit', 'albedo', 'atmo', 'star-mass']);
 
 function updateComposition() {
   const val = parseInt(document.getElementById('composition').value);
@@ -1334,27 +1409,60 @@ function updateSlider(param) {
   const val = param === 'ring-color' ? el.value : parseFloat(el.value);
 
   switch(param) {
-    case 'radius': P.radius = val; document.getElementById('radius-val').textContent = val.toFixed(2)+' R⊕'; break;
-    case 'mass': P.mass = val; document.getElementById('mass-val').textContent = val.toFixed(val<10?2:0)+' M⊕'; break;
-    case 'period': P.period = val; document.getElementById('period-val').textContent = val.toFixed(val<10?2:1)+' d'; break;
-    case 'ocean': P.ocean = val; document.getElementById('ocean-val').textContent = Math.round(val)+'%'; break;
-    case 'atmo': P.atmo = val; document.getElementById('atmo-val').textContent = val.toFixed(2); break;
-    case 'cloud': P.cloud = val; document.getElementById('cloud-val').textContent = Math.round(val)+'%'; break;
-    case 'roughness': P.roughness = val; document.getElementById('roughness-val').textContent = val.toFixed(2); break;
-    case 'ring-opacity': P.ringOpacity = val; document.getElementById('ring-opacity-val').textContent = Math.round(val)+'%'; break;
-    case 'ring-width': P.ringWidth = val; document.getElementById('ring-width-val').textContent = val.toFixed(2); break;
-    case 'ring-tilt': P.ringTilt = val; document.getElementById('ring-tilt-val').textContent = Math.round(val)+'°'; break;
-    case 'ring-color':
-      P.ringColor = val;
-      document.getElementById('ring-color-val').textContent = val.charAt(0).toUpperCase()+val.slice(1);
-      break;
-    case 'star-temp': P.starTemp = val; document.getElementById('star-temp-val').textContent = Math.round(val)+' K'; break;
-    case 'star-radius': P.starRadius = val; document.getElementById('star-radius-val').textContent = val.toFixed(2)+' R☉'; break;
-    case 'rotation': P.rotation = val; document.getElementById('rotation-val').textContent = val.toFixed(2)+'×'; break;
+    case 'radius': P.radius = val; P.est.radius = false; break;
+    case 'mass': P.mass = sliderToMass(val); P.est.mass = false; break;
+    case 'albedo': P.albedo = val; P.est.albedo = false; break;
+    case 'orbit': P.orbDist = sliderToAU(val); P.est.orbit = false; break;
+    case 'ocean': P.ocean = val; break;
+    case 'atmo': P.atmo = val; break;
+    case 'cloud': P.cloud = val; break;
+    case 'roughness': P.roughness = val; break;
+    case 'ring-opacity': P.ringOpacity = val; break;
+    case 'ring-width': P.ringWidth = val; break;
+    case 'ring-tilt': P.ringTilt = val; break;
+    case 'ring-color': P.ringColor = val; break;
+    case 'star-mass':
+      // Touching the mass returns to a main-sequence star.
+      P.starMass = val; P.starMode = 'ms'; P.est.starMass = false; P.est.starTemp = false; P.est.starRadius = false; break;
+    case 'rotation': P.rotation = val; break;
   }
-
-  P.name = 'Custom World'; P.source = 'User-defined';
+  syncLabels();
+  P.name = 'Custom World'; P.source = 'User-defined'; P.archiveTeq = null; P.note = '';
   scheduleUpdate(TERRAIN_PARAMS.has(param));
+}
+
+// Write every control's position and label from P (reset, import, load).
+function syncControls() {
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+  set('radius', P.radius); set('mass', massToSlider(P.mass)); set('albedo', P.albedo);
+  set('orbit', auToSlider(P.orbDist)); set('ocean', P.ocean); set('atmo', P.atmo);
+  set('cloud', P.cloud); set('roughness', P.roughness); set('composition', P.composition);
+  set('ring-opacity', P.ringOpacity); set('ring-width', P.ringWidth); set('ring-tilt', P.ringTilt);
+  set('ring-color', P.ringColor); set('star-mass', Math.min(Math.max(P.starMass, 0.09), 2.3)); set('rotation', P.rotation);
+  const comp = P.composition;
+  document.getElementById('composition-val').textContent = comp < 5 ? '100% Rock' : comp > 95 ? '100% Gas' : (100 - comp) + '% Rock / ' + comp + '% Gas';
+  document.getElementById('spectrum-rock').style.width = (100 - comp) + '%';
+  document.getElementById('spectrum-gas').style.width = comp + '%';
+  syncLabels();
+}
+function syncLabels() {
+  const t = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  t('radius-val', P.radius.toFixed(2) + ' R⊕');
+  t('mass-val', fmtMass(P.mass) + ' M⊕');
+  document.getElementById('mass').setAttribute('aria-valuetext', fmtMass(P.mass) + ' Earth masses');
+  t('albedo-val', P.albedo.toFixed(2));
+  t('orbit-val', fmtAU(P.orbDist) + ' AU');
+  document.getElementById('orbit').setAttribute('aria-valuetext', fmtAU(P.orbDist) + ' AU');
+  t('ocean-val', Math.round(P.ocean) + '%');
+  t('atmo-val', P.atmo.toFixed(2));
+  t('cloud-val', Math.round(P.cloud) + '%');
+  t('roughness-val', P.roughness.toFixed(2));
+  t('ring-opacity-val', Math.round(P.ringOpacity) + '%');
+  t('ring-width-val', P.ringWidth.toFixed(2));
+  t('ring-tilt-val', Math.round(P.ringTilt) + '°');
+  t('ring-color-val', P.ringColor.charAt(0).toUpperCase() + P.ringColor.slice(1));
+  t('star-mass-val', P.starMass.toFixed(2) + ' M☉' + (P.est.starMass ? ' (est.)' : ''));
+  t('rotation-val', P.rotation.toFixed(2) + '×');
 }
 
 // Track slider drag state for quality switching
@@ -1376,40 +1484,9 @@ function finishSliderDrag() {
 }
 
 function resetToEarth() {
-  P = { radius:1, mass:1, temp:288, period:365.25, ocean:70, atmo:1, cloud:40, roughness:0.5,
-    composition:0, ringOpacity:0, ringWidth:1, ringTilt:25, ringColor:'amber',
-    starTemp:5778, starRadius:1, rotation:1, name:'Earth Analog', source:'User-defined' };
-
-  document.getElementById('radius').value = 1; document.getElementById('mass').value = 1;
-  document.getElementById('temp').value = tempToSlider(288);
-  document.getElementById('period').value = 365.25; document.getElementById('ocean').value = 70;
-  document.getElementById('atmo').value = 1; document.getElementById('cloud').value = 40;
-  document.getElementById('roughness').value = 0.5; document.getElementById('composition').value = 0;
-  document.getElementById('ring-opacity').value = 0; document.getElementById('ring-width').value = 1;
-  document.getElementById('ring-tilt').value = 25; document.getElementById('ring-color').value = 'amber';
-  document.getElementById('star-temp').value = 5778; document.getElementById('star-radius').value = 1;
-  document.getElementById('rotation').value = 1;
-
-  // Update all display values
-  document.getElementById('radius-val').textContent = '1.00 R⊕';
-  document.getElementById('mass-val').textContent = '1.00 M⊕';
-  document.getElementById('temp-val').textContent = '288 K';
-  document.getElementById('period-val').textContent = '365.25 d';
-  document.getElementById('ocean-val').textContent = '70%';
-  document.getElementById('atmo-val').textContent = '1.00';
-  document.getElementById('cloud-val').textContent = '40%';
-  document.getElementById('roughness-val').textContent = '0.50';
-  document.getElementById('composition-val').textContent = '100% Rock';
-  document.getElementById('ring-opacity-val').textContent = '0%';
-  document.getElementById('ring-width-val').textContent = '1.00';
-  document.getElementById('ring-tilt-val').textContent = '25°';
-  document.getElementById('ring-color-val').textContent = 'Amber';
-  document.getElementById('star-temp-val').textContent = '5778 K';
-  document.getElementById('star-radius-val').textContent = '1.00 R☉';
-  document.getElementById('rotation-val').textContent = '1.00×';
-  document.getElementById('spectrum-rock').style.width = '100%';
-  document.getElementById('spectrum-gas').style.width = '0%';
-
+  P = earthState();
+  P.name = 'Earth Analog';
+  syncControls();
   updateVisuals();
 }
 
@@ -1444,7 +1521,7 @@ function exportFallback() {
     const dataUrl = renderer.domElement.toDataURL('image/png');
     const win = window.open();
     if (win) {
-      win.document.write(`<html><head><title>${P.name} — ExoForge Export</title><style>body{margin:0;background:#09090B;display:flex;align-items:center;justify-content:center;min-height:100vh}</style>
+      win.document.write(`<html><head><title>${P.name.replace(/[<>&]/g, '')} — ExoForge Export</title><style>body{margin:0;background:black;display:flex;align-items:center;justify-content:center;min-height:100vh}</style>
 </head><body><img src="${dataUrl}" style="max-width:100%;max-height:100vh"><br></body></html>`);
     } else {
       alert('Export blocked by popup blocker. Please allow popups for this page, or right-click the planet and select "Save Image As".');
@@ -1457,7 +1534,8 @@ function exportFallback() {
 // ==========================================
 // NASA EXOPLANET DATABASE — EMBEDDED DATASET
 // Real data from NASA Exoplanet Archive (pscomppars table)
-// Production version will use Supabase Edge Function proxy
+// Live search asks the archive's public TAP service directly; there is no
+// proxy. If the browser or network refuses, the embedded planets still work.
 // ==========================================
 const EXOPLANET_DB = [
   // TRAPPIST-1 system
@@ -1540,11 +1618,12 @@ let searchTimeout;
 const searchInput = document.getElementById('search-input');
 const searchResults = document.getElementById('search-results');
 const searchStatus = document.getElementById('search-status');
+document.getElementById('search-hint').textContent = EXOPLANET_DB.length + ' planets are built in. Anything else is searched live in the NASA Exoplanet Archive when your browser can reach it.';
 
 searchInput.addEventListener('input', (e) => {
   clearTimeout(searchTimeout);
   const q = e.target.value.trim().toLowerCase();
-  if (q.length < 1) { searchResults.innerHTML = ''; searchStatus.textContent = ''; return; }
+  if (q.length < 1) { searchResults.textContent = ''; searchStatus.textContent = ''; return; }
 
   // Search embedded database (instant)
   const matches = EXOPLANET_DB.filter(p =>
@@ -1554,30 +1633,43 @@ searchInput.addEventListener('input', (e) => {
   );
 
   if (matches.length > 0) {
-    searchStatus.textContent = `${matches.length} result${matches.length > 1 ? 's' : ''} from embedded catalog (${EXOPLANET_DB.length} planets)`;
+    searchStatus.textContent = `${matches.length} built-in result${matches.length > 1 ? 's' : ''}`;
     renderSearchResults(matches);
   } else {
-    searchStatus.textContent = `No matches in embedded catalog. Trying live NASA query...`;
+    searchStatus.textContent = 'Not built in. Searching the live archive.';
     searchTimeout = setTimeout(() => searchNASALive(q), 600);
   }
 });
 
+// Archive text never reaches innerHTML: names and facilities come from the
+// network, so results are built with textContent (EF3).
 function renderSearchResults(data) {
-  searchResults.innerHTML = data.slice(0, 15).map(planet => {
-    const radius = planet.pl_rade ? `${planet.pl_rade.toFixed(1)}R⊕` : '—';
-    const temp = planet.pl_eqt ? `${Math.round(planet.pl_eqt)}K` : '—';
-    const safeData = btoa(unescape(encodeURIComponent(JSON.stringify(planet))));
-    return `<div class="search-result" onclick="loadExoplanetB64('${safeData}')">
-      <span class="planet-name">${planet.pl_name}</span>
-      <span class="planet-info">${radius} · ${temp} · ${planet.disc_facility || '—'}</span>
-    </div>`;
-  }).join('');
+  searchResults.textContent = '';
+  data.slice(0, 15).forEach(planet => {
+    const row = document.createElement('div');
+    row.className = 'search-result';
+    row.setAttribute('role', 'option');
+    row.tabIndex = 0;
+    const name = document.createElement('span');
+    name.className = 'planet-name';
+    name.textContent = String(planet.pl_name || 'Unnamed');
+    const info = document.createElement('span');
+    info.className = 'planet-info';
+    const radius = Number.isFinite(planet.pl_rade) ? planet.pl_rade.toFixed(1) + ' R⊕' : '—';
+    const mass = Number.isFinite(planet.pl_bmasse) ? fmtMass(planet.pl_bmasse) + ' M⊕' : '—';
+    info.textContent = radius + ' · ' + mass + ' · ' + String(planet.disc_facility || '—');
+    row.appendChild(name); row.appendChild(info);
+    const pick = () => loadExoplanet(planet);
+    row.addEventListener('click', pick);
+    row.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
+    searchResults.appendChild(row);
+  });
 }
 
 async function searchNASALive(query) {
   try {
     const safeQuery = query.replace(/'/g, "''");
-    const adql = `select+pl_name,hostname,pl_rade,pl_bmasse,pl_eqt,pl_orbper,st_teff,st_rad,disc_facility+from+pscomppars+where+upper(pl_name)+like+upper('%25${encodeURIComponent(safeQuery)}%25')+order+by+pl_name`;
+    const adql = `select+pl_name,hostname,pl_rade,pl_bmasse,pl_eqt,pl_orbper,pl_orbsmax,st_teff,st_rad,st_mass,disc_facility+from+pscomppars+where+upper(pl_name)+like+upper('%25${encodeURIComponent(safeQuery)}%25')+order+by+pl_name`;
     const url = `https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=${adql}&format=csv`;
 
     const response = await fetch(url);
@@ -1586,11 +1678,12 @@ async function searchNASALive(query) {
 
     const lines = csvText.trim().split('\n');
     if (lines.length < 2) {
-      searchStatus.textContent = 'No results from NASA either. Try: TRAPPIST, Kepler, Proxima, TOI, GJ, tau Cet, Wolf';
-      searchResults.innerHTML = '';
+      searchStatus.textContent = 'No match in the archive either. Try TRAPPIST, Kepler, Proxima, TOI or GJ.';
+      searchResults.textContent = '';
       return;
     }
 
+    const TEXT_KEYS = new Set(['pl_name', 'hostname', 'disc_facility']);
     const headers = lines[0].split(',');
     const data = [];
     for (let i = 1; i < lines.length && i <= 20; i++) {
@@ -1598,18 +1691,17 @@ async function searchNASALive(query) {
       const obj = {};
       headers.forEach((h, idx) => {
         const key = h.trim();
-        const val = vals[idx]?.trim() || '';
-        obj[key] = (key === 'pl_name' || key === 'hostname' || key === 'disc_facility') ? val : (val !== '' ? parseFloat(val) : null);
+        const val = (vals[idx] || '').trim();
+        obj[key] = TEXT_KEYS.has(key) ? val : (val !== '' ? parseFloat(val) : null);
       });
       data.push(obj);
     }
 
-    searchStatus.textContent = `${data.length} result${data.length > 1 ? 's' : ''} from NASA Exoplanet Archive (live)`;
+    searchStatus.textContent = `${data.length} result${data.length > 1 ? 's' : ''} from the NASA Exoplanet Archive (live)`;
     renderSearchResults(data);
   } catch (err) {
-    // Expected CORS failure in local/embedded mode — production uses Supabase proxy
-    searchStatus.textContent = `Not found in embedded catalog (${EXOPLANET_DB.length} planets). Full archive search available in production.`;
-    searchResults.innerHTML = '';
+    searchStatus.textContent = `Not in the ${EXOPLANET_DB.length} embedded planets, and the live archive could not be reached from this browser.`;
+    searchResults.textContent = '';
   }
 }
 
@@ -1627,94 +1719,57 @@ function parseCSVLine(line) {
   return result;
 }
 
-function loadExoplanetB64(b64) {
-  const data = JSON.parse(atob(b64));
-  loadExoplanet(data);
-}
-
+const num = v => { const n = parseFloat(v); return Number.isFinite(n) && n > 0 ? n : null; };
 function loadExoplanet(data) {
-  const radius = parseFloat(data.pl_rade) || 1.0;
-  const mass = parseFloat(data.pl_bmasse) || (radius > 1.5 ? radius*radius*3 : radius*radius);
-  const temp = parseFloat(data.pl_eqt) || 288;
-  const period = parseFloat(data.pl_orbper) || 365;
-  const starTemp = parseFloat(data.st_teff) || 5778;
-  const starRad = parseFloat(data.st_rad) || 1.0;
+  const est = {};
+  let radius = num(data.pl_rade), mass = num(data.pl_bmasse);
+  // EF2: a missing value is estimated by a cited relation and labelled,
+  // never filled silently.
+  if (radius == null && mass != null) { radius = PH.radiusFromMass(mass); est.radius = true; }
+  if (radius == null) { radius = 1; est.radius = true; }
+  if (mass == null) {
+    const m = PH.massFromRadius(radius);
+    if (m != null) { mass = m; est.mass = 'estimated'; } else { mass = 317.8; est.mass = 'assumed'; }
+  }
+  let starTemp = num(data.st_teff);
+  if (starTemp == null) { starTemp = 5772; est.starTemp = true; }
+  let starMass = num(data.st_mass);
+  if (starMass == null) { starMass = massFromTeff(starTemp); est.starMass = true; }
+  let starRadius = num(data.st_rad);
+  if (starRadius == null) { starRadius = PH.mainSequenceStar(starMass).radius; est.starRadius = true; }
+  const period = num(data.pl_orbper);
+  let orbDist = num(data.pl_orbsmax);
+  if (orbDist == null && period != null) orbDist = PH.semiMajorAxisAU(period, starMass, mass);
+  if (orbDist == null) { orbDist = 1; est.orbit = true; }
+  est.albedo = true;
 
-  // Classify composition from radius/mass
-  let composition = 0;
+  // Appearance from radius (decorative; the physics does not read it).
+  let composition = 5;
   if (radius > 10) composition = 95;
   else if (radius > 5) composition = 80;
   else if (radius > 3) composition = 55;
   else if (radius > 1.8) composition = 25;
-  else composition = 5;
 
-  let ocean = 0, atmo = 0.5, cloud = 20;
-  if (composition < 30) {
-    ocean = temp >= 200 && temp <= 400 ? Math.max(10, 80 - Math.abs(temp - 288)) : 0;
-    atmo = composition < 15 ? 1.0 : 2.0;
-    cloud = temp >= 200 && temp <= 400 ? 40 : 10;
-  } else {
-    atmo = 3.0 + composition / 50;
-    cloud = 30;
-  }
+  P = earthState();
+  Object.assign(P, {
+    radius, mass, orbDist, starMass, starTemp, starRadius, starMode: 'measured', composition,
+    albedo: composition >= 55 ? 0.34 : 0.3,
+    roughness: Math.max(0, 0.5 * (1 - composition / 100)),
+    atmo: composition < 15 ? 1.0 : composition < 30 ? 2.0 : 3.0 + composition / 50,
+    ringOpacity: 0, // rings are not in the archive; add them by hand if wanted
+    name: String(data.pl_name || 'Imported planet'),
+    source: 'NASA Exoplanet Archive · ' + String(data.disc_facility || 'multiple sources'),
+    est, archiveTeq: num(data.pl_eqt)
+  });
+  derive();
+  const habitableTemp = P.temp >= 273 && P.temp <= 373;
+  P.ocean = composition < 30 && habitableTemp ? 60 : 0;
+  P.cloud = habitableTemp ? 40 : composition >= 55 ? 30 : 10;
 
-  // Auto-add rings for large gas worlds
-  let ringOp = 0;
-  if (composition > 70 && radius > 6) ringOp = 25 + Math.random() * 30;
-
-  P = {
-    radius, mass, temp, period,
-    ocean, atmo, cloud,
-    roughness: Math.max(0, 0.5 * (1 - composition/100)),
-    composition,
-    ringOpacity: ringOp, ringWidth: 1.0 + Math.random()*0.5, ringTilt: 15 + Math.random()*30, ringColor: 'amber',
-    starTemp, starRadius: starRad, rotation: 1.0,
-    name: data.pl_name,
-    source: `NASA Exoplanet Archive · ${data.disc_facility || 'Multiple sources'}`
-  };
-
-  // Update all sliders
-  document.getElementById('radius').value = radius;
-  document.getElementById('mass').value = mass;
-  document.getElementById('temp').value = tempToSlider(temp);
-  document.getElementById('period').value = period;
-  document.getElementById('ocean').value = ocean;
-  document.getElementById('atmo').value = atmo;
-  document.getElementById('cloud').value = cloud;
-  document.getElementById('roughness').value = P.roughness;
-  document.getElementById('composition').value = composition;
-  document.getElementById('ring-opacity').value = P.ringOpacity;
-  document.getElementById('ring-width').value = P.ringWidth;
-  document.getElementById('ring-tilt').value = P.ringTilt;
-  document.getElementById('star-temp').value = starTemp;
-  document.getElementById('star-radius').value = starRad;
-  document.getElementById('rotation').value = 1;
-
-  // Update all display labels
-  document.getElementById('radius-val').textContent = radius.toFixed(2)+' R⊕';
-  document.getElementById('mass-val').textContent = mass.toFixed(mass<10?2:0)+' M⊕';
-  document.getElementById('temp-val').textContent = Math.round(temp)+' K';
-  document.getElementById('period-val').textContent = period.toFixed(period<10?2:1)+' d';
-  document.getElementById('ocean-val').textContent = Math.round(ocean)+'%';
-  document.getElementById('atmo-val').textContent = atmo.toFixed(2);
-  document.getElementById('cloud-val').textContent = Math.round(cloud)+'%';
-  document.getElementById('roughness-val').textContent = P.roughness.toFixed(2);
-  document.getElementById('ring-opacity-val').textContent = Math.round(P.ringOpacity)+'%';
-  document.getElementById('ring-width-val').textContent = P.ringWidth.toFixed(2);
-  document.getElementById('ring-tilt-val').textContent = Math.round(P.ringTilt)+'°';
-  document.getElementById('star-temp-val').textContent = Math.round(starTemp)+' K';
-  document.getElementById('star-radius-val').textContent = starRad.toFixed(2)+' R☉';
-  document.getElementById('rotation-val').textContent = '1.00×';
-
-  // Composition spectrum
-  const compLabel = composition < 5 ? '100% Rock' : composition > 95 ? '100% Gas' : `${100-composition}% Rock / ${composition}% Gas`;
-  document.getElementById('composition-val').textContent = compLabel;
-  document.getElementById('spectrum-rock').style.width = (100 - composition) + '%';
-  document.getElementById('spectrum-gas').style.width = composition + '%';
-
+  syncControls();
   updateVisuals();
-  searchResults.innerHTML = '';
-  searchStatus.textContent = `✓ Loaded: ${data.pl_name}`;
+  searchResults.textContent = '';
+  searchStatus.textContent = 'Loaded ' + P.name + '.';
   searchInput.value = '';
 }
 
@@ -1791,7 +1846,8 @@ function animate(time, dtMs) {
   atmoMat.uniforms.viewVector.value.copy(camera.position);
 
   // --- Rotation ---
-  const rs = P.rotation * 0.15;
+  // Spin is decoration: it stops under reduced motion (X9).
+  const rs = P.rotation * 0.15 * (window.SFA11y && SFA11y.reducedMotion() ? 0 : 1);
   if (rs > 0.0001) {
     planet.rotation.y += dt * rs;
     clouds.rotation.y += dt * rs * 1.08;
@@ -1824,8 +1880,8 @@ window.addEventListener('resize', () => {
   }, 80);
 });
 
-// Init temp slider to Earth
-document.getElementById('temp').value = tempToSlider(288);
+// Init to Earth around the Sun
+syncControls();
 updateVisuals();
 SFSim.loop(animate).start();
 
@@ -1846,46 +1902,56 @@ window.addEventListener('keydown', function(e) {
 });
 
 // ─── PostMessage bridge for StellarForge save/load ───
+// Only the embedding StellarForge page may drive this sim (X14).
+function fromHost(event) {
+  return event.source === window.parent && window.parent !== window && event.origin === window.location.origin;
+}
 window.addEventListener('message', function(event) {
+  if (!fromHost(event)) return;
   if (!event.data || !event.data.type) return;
 
   if (event.data.type === 'STELLARFORGE_LOAD') {
     var payload = event.data.payload;
     if (!payload || !payload.parameters) return;
     var p = payload.parameters;
-
-    // Restore all physical parameters
-    if (p.radius != null) { P.radius = p.radius; document.getElementById('radius').value = P.radius; document.getElementById('radius-val').textContent = P.radius.toFixed(2) + ' R\u2295'; }
-    if (p.mass != null) { P.mass = p.mass; document.getElementById('mass').value = P.mass; document.getElementById('mass-val').textContent = P.mass.toFixed(P.mass < 10 ? 2 : 0) + ' M\u2295'; }
-    if (p.temp != null) { P.temp = p.temp; document.getElementById('temp').value = tempToSlider(P.temp); document.getElementById('temp-val').textContent = Math.round(P.temp) + ' K'; }
-    if (p.period != null) { P.period = p.period; document.getElementById('period').value = P.period; document.getElementById('period-val').textContent = P.period.toFixed(P.period < 10 ? 2 : 1) + ' d'; }
-    if (p.ocean != null) { P.ocean = p.ocean; document.getElementById('ocean').value = P.ocean; document.getElementById('ocean-val').textContent = Math.round(P.ocean) + '%'; }
-    if (p.atmo != null) { P.atmo = p.atmo; document.getElementById('atmo').value = P.atmo; document.getElementById('atmo-val').textContent = P.atmo.toFixed(2); }
-    if (p.cloud != null) { P.cloud = p.cloud; document.getElementById('cloud').value = P.cloud; document.getElementById('cloud-val').textContent = Math.round(P.cloud) + '%'; }
-    if (p.roughness != null) { P.roughness = p.roughness; document.getElementById('roughness').value = P.roughness; document.getElementById('roughness-val').textContent = P.roughness.toFixed(2); }
-    if (p.composition != null) { P.composition = p.composition; document.getElementById('composition').value = P.composition; updateComposition(); }
-
-    // Ring system
-    if (p.ringOpacity != null) { P.ringOpacity = p.ringOpacity; document.getElementById('ring-opacity').value = P.ringOpacity; document.getElementById('ring-opacity-val').textContent = Math.round(P.ringOpacity) + '%'; }
-    if (p.ringWidth != null) { P.ringWidth = p.ringWidth; document.getElementById('ring-width').value = P.ringWidth; document.getElementById('ring-width-val').textContent = P.ringWidth.toFixed(2); }
-    if (p.ringTilt != null) { P.ringTilt = p.ringTilt; document.getElementById('ring-tilt').value = P.ringTilt; document.getElementById('ring-tilt-val').textContent = Math.round(P.ringTilt) + '\u00B0'; }
-    if (p.ringColor && typeof p.ringColor === 'string') { P.ringColor = p.ringColor; document.getElementById('ring-color').value = P.ringColor; document.getElementById('ring-color-val').textContent = P.ringColor.charAt(0).toUpperCase() + P.ringColor.slice(1); }
-
-    // Host star
-    if (p.starTemp != null) { P.starTemp = p.starTemp; document.getElementById('star-temp').value = P.starTemp; document.getElementById('star-temp-val').textContent = Math.round(P.starTemp) + ' K'; }
-    if (p.starRadius != null) { P.starRadius = p.starRadius; document.getElementById('star-radius').value = P.starRadius; document.getElementById('star-radius-val').textContent = P.starRadius.toFixed(2) + ' R\u2609'; }
-
-    // Display
-    if (p.rotation != null) { P.rotation = p.rotation; document.getElementById('rotation').value = P.rotation; document.getElementById('rotation-val').textContent = P.rotation.toFixed(2) + '\u00D7'; }
-
-    // Metadata
-    if (p.name && typeof p.name === 'string') P.name = p.name;
-    if (p.source && typeof p.source === 'string') P.source = p.source;
-
+    var n = function (v) { return typeof v === 'number' && isFinite(v) ? v : null; };
+    var next = earthState();
+    next.est = {};
+    ['radius', 'mass', 'ocean', 'atmo', 'cloud', 'roughness', 'composition', 'ringOpacity', 'ringWidth', 'ringTilt', 'rotation', 'albedo'].forEach(function (k) {
+      if (n(p[k]) != null) next[k] = p[k];
+    });
+    if (typeof p.ringColor === 'string' && RING_COLORS[p.ringColor]) next.ringColor = p.ringColor;
+    if (typeof p.name === 'string') next.name = p.name;
+    if (typeof p.source === 'string') next.source = p.source;
+    if (n(p.archiveTeq) != null) next.archiveTeq = p.archiveTeq;
+    // Star: 1.9 saves carry starMode/starMass. Older saves had free
+    // starTemp/starRadius sliders: treat those as a measured star and
+    // estimate its mass from the temperature.
+    if (p.starMode === 'ms' && n(p.starMass) != null) { next.starMode = 'ms'; next.starMass = p.starMass; }
+    else if (n(p.starTemp) != null) {
+      next.starMode = 'measured'; next.starTemp = p.starTemp;
+      next.starMass = n(p.starMass) != null ? p.starMass : massFromTeff(p.starTemp);
+      if (n(p.starMass) == null) next.est.starMass = true;
+      next.starRadius = n(p.starRadius) != null ? p.starRadius : PH.mainSequenceStar(next.starMass).radius;
+    }
+    // Orbit: 1.9 saves carry the distance; older ones (and open-on seeds)
+    // the period in days, from which Kepler gives the distance.
+    if (n(p.orbDistAU) != null) next.orbDist = p.orbDistAU;
+    else if (n(p.period) != null) next.orbDist = PH.semiMajorAxisAU(p.period, next.starMass, next.mass);
+    if (p.est && typeof p.est === 'object') Object.assign(next.est, p.est);
+    P = next;
+    derive();
+    if (n(p.temp) != null && n(p.orbDistAU) == null && Math.abs(p.temp - P.temp) > 1) {
+      P.note = 'Saved before 1.9 with a set temperature of ' + Math.round(p.temp) + ' K; temperature now follows the orbit and star.';
+    }
+    syncControls();
     updateVisuals();
   }
 
   if (event.data.type === 'STELLARFORGE_REQUEST_STATE') {
+    derive();
+    var estimated = [];
+    Object.keys(P.est).forEach(function (k) { if (P.est[k]) estimated.push(k); });
     var state = {
       parameters: {
         radius: P.radius,
@@ -1905,19 +1971,51 @@ window.addEventListener('message', function(event) {
         starRadius: P.starRadius,
         rotation: P.rotation,
         name: P.name,
-        source: P.source
+        source: P.source,
+        // 1.9 inputs
+        starMass: P.starMass,
+        starMode: P.starMode,
+        orbDistAU: P.orbDist,
+        albedo: P.albedo,
+        archiveTeq: P.archiveTeq,
+        est: P.est
       },
+      // temp is the derived SURFACE temperature (K), period is DERIVED (days),
+      // ocean/cloud are percent 0–100, rotation is a display spin multiplier
+      // (not a day length).
       results: {
-        classification: typeof getClassification === 'function' ? getClassification() : '',
-        gravity: P.mass / (P.radius * P.radius),
-        density: 5.51 * P.mass / (P.radius * P.radius * P.radius),
-        escapeVelocity: 11.186 * Math.sqrt(P.mass / P.radius)
+        classification: getClassification(),
+        gravity: D.gravity,
+        density: D.density,
+        escapeVelocity: D.escapeVel,
+        units: { gravity: 'g', density: 'g/cm3', escapeVelocity: 'km/s', teq: 'K', surfaceTemp: 'K', insolation: 'S_earth', orbDistAU: 'AU', periodDays: 'd', starMass: 'M_sun', starLum: 'L_sun', starTeff: 'K', starRadius: 'R_sun', expectedRadius: 'R_earth' },
+        teq: P.teq,
+        surfaceTemp: P.temp,
+        insolation: P.insol,
+        orbDistAU: P.orbDist,
+        periodDays: P.period,
+        starType: P.spt,
+        starMass: P.starMass,
+        starLum: P.starLum,
+        starTeff: P.starTemp,
+        starRadius: P.starRadius,
+        hzZone: D.zone,
+        hzInnerAU: D.hz.runawayGreenhouse,
+        hzOuterAU: D.hz.maxGreenhouse,
+        massRadiusVerdict: D.mr.verdict,
+        expectedRadius: D.mr.expectedRadius,
+        massRadiusZ: D.mr.z,
+        ironRadius: D.mr.ironRadius,
+        retention: D.retention,
+        retentionGas: D.gas,
+        liquidWater: D.water ? 'Possible' : 'Unlikely',
+        estimated: estimated
       }
     };
     window.parent.postMessage({
       type: 'STELLARFORGE_SAVE',
       payload: state
-    }, '*');
+    }, window.location.origin);
   }
 });
 </script>
@@ -1928,10 +2026,10 @@ window.addEventListener('message', function(event) {
   <span><b style="color:var(--sf-primary-text)">R</b> reset view</span>
   <span><b style="color:var(--sf-primary-text)">?</b> this help</span>
 </div>
-<div id="drag-hint">DRAG TO ORBIT · SCROLL TO ZOOM · ? FOR SHORTCUTS</div>
+<div id="drag-hint">Drag to orbit · scroll to zoom · ? for shortcuts</div>
 <button id="mobile-toggle-controls" onclick="toggleMobilePanel('control-panel')" title="Toggle controls panel" aria-label="Toggle controls panel" aria-expanded="false" aria-controls="control-panel">☰</button>
 <button id="mobile-toggle-data" onclick="toggleMobilePanel('data-panel')" title="Toggle data readout panel" aria-label="Toggle data readout panel" aria-expanded="false" aria-controls="data-panel">▤</button>
-<button id="mobile-toggle-search" onclick="toggleMobilePanel('search-panel')" title="NASA Exoplanet Archive — Search & Import" aria-label="NASA Exoplanet Archive — Search & Import" aria-expanded="false" aria-controls="search-panel">⌕</button>
+<button id="mobile-toggle-search" onclick="toggleMobilePanel('search-panel')" title="Import a real planet" aria-label="Import a real planet" aria-expanded="false" aria-controls="search-panel">⌕</button>
 
 </body>
 </html>
