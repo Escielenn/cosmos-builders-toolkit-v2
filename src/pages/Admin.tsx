@@ -750,7 +750,7 @@ const TicketDetail = ({ ticket }: { ticket: AdminTicket }) => {
             disabled={saving}
           >
             <Save className="w-3 h-3" />
-            {saving ? "SAVING..." : "SAVE NOTES"}
+            {saving ? "Saving…" : "Save notes"}
           </Button>
         )}
       </div>
@@ -896,7 +896,7 @@ const ContactDetail = ({ contact }: { contact: AdminContact }) => {
             disabled={saving}
           >
             <Save className="w-3 h-3" />
-            {saving ? "SAVING..." : "SAVE NOTES"}
+            {saving ? "Saving…" : "Save notes"}
           </Button>
         )}
       </div>

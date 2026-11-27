@@ -162,7 +162,7 @@ export default function NarrativeBridgePanel({
               className="min-h-hit text-[13px] px-3 gap-1 border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12]"
             >
               <Save className="w-3 h-3" />
-              {saved ? "NOTES SAVED" : "SAVE NOTES"}
+              {saved ? "NOTES SAVED." : "Save notes"}
             </Button>
           </div>
           <p className="text-[12px] text-t4 leading-relaxed">

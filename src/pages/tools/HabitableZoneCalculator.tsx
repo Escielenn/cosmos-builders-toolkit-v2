@@ -311,7 +311,7 @@ const HabitableZoneCalculator = () => {
     >
         {/* Introduction */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
-          <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 gradient-text">
+          <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 text-t1">
             The Goldilocks Zone
           </h2>
           <blockquote className="border-l-2 border-sf-primary pl-4 italic text-lg mb-4">

@@ -9,7 +9,7 @@ interface ToolIntroSectionProps {
 const ToolIntroSection = ({ data }: ToolIntroSectionProps) => {
   return (
     <GlassPanel glow className="p-6 md:p-8 mb-8">
-      <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-3 gradient-text">
+      <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-3 text-t1">
         {data.title}
       </h2>
       <p className="text-t2 mb-6">{data.purpose}</p>
