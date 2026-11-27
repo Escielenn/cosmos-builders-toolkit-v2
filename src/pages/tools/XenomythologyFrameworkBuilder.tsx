@@ -90,6 +90,9 @@ import {
   SECTION_GUIDANCE,
 } from "@/lib/xenomythology-data";
 import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
+import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
+import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
+import { manifest as mythosManifest } from "@/tools/mythos/manifest";
 import {
   codec as mythosCodec,
   type FormState,
@@ -290,8 +293,13 @@ const XenomythologyFrameworkBuilder = () => {
     localKey: LOCAL_STORAGE_KEY,
     loadedToast: true,
     onDraftCreated: (id, title) => entityMatch.check(id, title),
+    // 1.9 lane C wiring: this sheet's facts reach canon on save.
+    onSaved: (saved, { worksheetId: savedId }) =>
+      canonEmit.emit(saved, { subjectId: canonSubjectId, worksheetId: savedId }),
   });
   const { state: formState, setState: setFormState, worldId } = worksheet;
+  const canonSubjectId = useToolSubject(worksheet.worksheetId);
+  const canonEmit = useCanonEmit(mythosManifest, worldId);
   const currentWorksheetId = worksheet.worksheetId;
   const currentWorksheetTitle = worksheet.worksheetTitle;
   const worksheetId = worksheet.worksheetId;
@@ -2361,6 +2369,7 @@ const XenomythologyFrameworkBuilder = () => {
       )}
 
       <EntityMatchDialog {...entityMatch.dialogProps} />
+      <CanonConflictPrompt {...canonEmit} />
     </ToolPageLayout>
   );
 };

@@ -47,6 +47,9 @@ import {
   LOCAL_STORAGE_KEY,
 } from "@/lib/tool-worksheets/phylo";
 import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
+import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
+import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
+import { manifest as phyloManifest } from "@/tools/phylo/manifest";
 import QuickExportButton from "@/components/tools/QuickExportButton";
 import ExportDialog from "@/components/tools/ExportDialog";
 import ShareDialog from "@/components/sharing/ShareDialog";
@@ -129,8 +132,13 @@ const EvolutionaryBiology = () => {
     // The draft used to be written on every edit; a short debounce keeps that.
     autosaveDraftMs: 300,
     onDraftCreated: (id, title) => entityMatch.check(id, title),
+    // 1.9 lane C wiring: this sheet's facts reach canon on save.
+    onSaved: (saved, { worksheetId: savedId }) =>
+      canonEmit.emit(saved, { subjectId: canonSubjectId, worksheetId: savedId }),
   });
   const { state: formState, setState: setFormState, worldId } = worksheet;
+  const canonSubjectId = useToolSubject(worksheet.worksheetId);
+  const canonEmit = useCanonEmit(phyloManifest, worldId);
   const currentWorksheetId = worksheet.worksheetId;
   const currentWorksheetTitle = worksheet.worksheetTitle;
   const worksheetId = worksheet.worksheetId;
@@ -2309,6 +2317,7 @@ const EvolutionaryBiology = () => {
       />
 
       <EntityMatchDialog {...entityMatch.dialogProps} />
+      <CanonConflictPrompt {...canonEmit} />
     </ToolPageLayout>
   );
 };

@@ -233,7 +233,7 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
     // 1.9 F-03: Orrery's star numbers travel. Goldilocks and Genesis need the
     // luminosity; the Teff-corrected habitable zone needs mass and Teff.
     {
-      label: "Luminosity (L☉)",
+      label: "Stellar Luminosity (Sol)",
       key: "stellarLuminosity",
       type: "number",
       worksheetPaths: { "star-system-builder": "primaryStar.luminosity" },
@@ -305,6 +305,25 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
       key: "cognitionType",
       type: "text",
       worksheetPaths: { "evolutionary-biology": "cognition.cognitionType" },
+    },
+    // 1.9 F-08: Phylo and Sensorium sent four fields between them.
+    {
+      label: "Reproduction",
+      key: "reproductionMode",
+      type: "text",
+      worksheetPaths: { "evolutionary-biology": "reproduction.reproductionMode" },
+    },
+    {
+      label: "Social Structure",
+      key: "socialStructure",
+      type: "text",
+      worksheetPaths: { "evolutionary-biology": "social.socialStructure" },
+    },
+    {
+      label: "Senses",
+      key: "senseModalities",
+      type: "text",
+      worksheetPaths: { sensorium: "finalSelection" },
     },
     {
       label: "Interaction Equilibrium",
@@ -380,6 +399,20 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
       key: "civilizationLongevity",
       type: "number",
       worksheetPaths: { "drake-equation-calculator": "values.L" },
+    },
+    // 1.9 F-08: the numbers the two tools exist to compute, from the
+    // `derived` snapshot each now writes on save.
+    {
+      label: "Communicating Civilizations (Drake N)",
+      key: "communicatingCivilizations",
+      type: "number",
+      worksheetPaths: { "drake-equation-calculator": "derived.N" },
+    },
+    {
+      label: "Kardashev Rating",
+      key: "kardashevRating",
+      type: "number",
+      worksheetPaths: { "kardashev-scale": "derived.kardashev" },
     },
     // ── Space Expansion Modeler ──
     // Listed in EXTRA_TOOLS.faction with nothing behind it, so an entire model
@@ -720,6 +753,31 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
       key: "consciousnessType",
       type: "text",
       worksheetPaths: { "xenomythology-framework-builder": "cognitiveArchitecture.consciousnessType" },
+    },
+    // 1.9 F-08: what a mythology says, not only who holds it.
+    {
+      label: "Cosmology",
+      key: "cosmology",
+      type: "text",
+      worksheetPaths: { "xenomythology-framework-builder": "cosmologicalStructure.dimensionalStructure" },
+    },
+    {
+      label: "Deities",
+      key: "deities",
+      type: "text",
+      worksheetPaths: { "xenomythology-framework-builder": "divineConceptualization.deities" },
+    },
+    {
+      label: "Taboos",
+      key: "taboos",
+      type: "text",
+      worksheetPaths: { "xenomythology-framework-builder": "synthesis.ethicalTaboos" },
+    },
+    {
+      label: "Death Rites",
+      key: "deathRites",
+      type: "text",
+      worksheetPaths: { "xenomythology-framework-builder": "deathPractices.deathRituals" },
     },
   ],
 
