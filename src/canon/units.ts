@@ -39,6 +39,8 @@ export const UNITS = {
   deg: "°",
   individuals: "individuals",
   fraction: "",
+  /** Stellar flux relative to Earth's (1361 W/m²). Added 1.9 for planet.insolation. */
+  earth_flux: "S⊕",
   kg_C_m2_yr: "kg C/m²/yr",
 } as const;
 

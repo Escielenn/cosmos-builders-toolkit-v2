@@ -230,6 +230,26 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
       options: ["single", "binary", "trinary"],
       worksheetPaths: { "star-system-builder": "configuration.type" },
     },
+    // 1.9 F-03: Orrery's star numbers travel. Goldilocks and Genesis need the
+    // luminosity; the Teff-corrected habitable zone needs mass and Teff.
+    {
+      label: "Luminosity (L☉)",
+      key: "stellarLuminosity",
+      type: "number",
+      worksheetPaths: { "star-system-builder": "primaryStar.luminosity" },
+    },
+    {
+      label: "Stellar Mass (M☉)",
+      key: "starMass",
+      type: "number",
+      worksheetPaths: { "star-system-builder": "primaryStar.mass" },
+    },
+    {
+      label: "Stellar Age (Gyr)",
+      key: "starAge",
+      type: "number",
+      worksheetPaths: { "star-system-builder": "primaryStar.age" },
+    },
   ],
 
   species: [

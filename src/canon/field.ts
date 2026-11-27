@@ -200,7 +200,13 @@ export function planEmit(manifest: ToolManifest, data: unknown, opts: EmitOption
         else vals[input] = v;
       }
       if (!complete) continue;
-      const diverged = d.inputs.filter((input) => {
+      // Optional inputs refine the result when the sheet has them (F-01:
+      // Goldilocks' Teff); the derivation states its own default otherwise.
+      for (const input of d.optionalInputs ?? []) {
+        const v = opts.inputs?.[input];
+        if (typeof v === "number" && Number.isFinite(v)) vals[input] = v;
+      }
+      const diverged = Object.keys(vals).filter((input) => {
         const canonV = opts.canonInputs?.[input];
         return canonV ? !valuesAgree({ kind: "scalar", value: vals[input] }, canonV) : false;
       });

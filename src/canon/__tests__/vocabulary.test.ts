@@ -1,4 +1,6 @@
 import { describe, it, expect } from "vitest";
+import { extractTidelockFacts, extractExoforgeFacts } from "@/lib/simulators/iframe-sim-facts";
+import { TIDELOCK_DEFAULT, EXOFORGE_DEFAULT } from "@/lib/__tests__/fixtures/sim-payloads";
 import { ENTITY_MASTER_FIELDS } from "@/lib/entity-config";
 import { extractTimelineFacts } from "@/lib/timeline-facts";
 import { PREDICATE_ALIASES } from "@/lib/simulators/published-facts";
@@ -50,6 +52,9 @@ const BESPOKE_KEYS = [
   "encounter.ejected.kellis",
   "event.date",
   "branch.name",
+  // The two iframe sims' real keys, from their golden default payloads.
+  ...extractTidelockFacts(TIDELOCK_DEFAULT).map((f) => f.key),
+  ...extractExoforgeFacts(EXOFORGE_DEFAULT).map((f) => f.key),
 ];
 
 describe("vocabulary: alias coverage", () => {

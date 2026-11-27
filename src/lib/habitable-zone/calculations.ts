@@ -107,6 +107,27 @@ export function luminosityFromMass(mass: number): number {
   return 32000 * M;
 }
 
+// ─── Main-sequence effective temperature ───────────────────────────
+
+/**
+ * Teff of a main-sequence star from its luminosity (L☉) and mass (M☉), for
+ * tools that record L and M but not a temperature (Orrery).
+ *
+ *   R = M^0.945            (M < 1.66 M☉)
+ *   R = 1.66^0.945 · (M/1.66)^0.555   (above; continuous at the break)
+ *   Teff = 5772 K · (L / R²)^¼        (Stefan-Boltzmann, IAU 2015 nominal T☉)
+ *
+ * Mass-radius exponents: Demircan & Kahraman 1991 (Ap&SS 181:313), normalised
+ * so the Sun is exact. Proxima Cen (L 0.00155, M 0.122) gives ≈3100 K against
+ * a measured 3042 K; an M3V (0.013 L☉, 0.33 M☉) ≈3200 K. Null for remnants and
+ * nonsense input; callers fall back to the Sun's temperature and say so.
+ */
+export function mainSequenceTeff(luminosityLsun: number, massMsun: number): number | null {
+  if (!(luminosityLsun > 0) || !(massMsun > 0) || !Number.isFinite(luminosityLsun) || !Number.isFinite(massMsun)) return null;
+  const r = massMsun < 1.66 ? Math.pow(massMsun, 0.945) : Math.pow(1.66, 0.945) * Math.pow(massMsun / 1.66, 0.555);
+  return 5772 * Math.pow(luminosityLsun / (r * r), 0.25);
+}
+
 // ─── Equilibrium Temperature ────────────────────────────────────────
 
 export function equilibriumTemperature(

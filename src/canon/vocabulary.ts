@@ -28,7 +28,11 @@
 //     would assert a FactValue shape the data does not have.
 //   - simulator display strings (sky.*, encounter.*, system.stars...). 08
 //     ("What that audit also found") says these are formatted strings, not
-//     facts, until raw values travel with them.
+//     facts, until raw values travel with them. 1.9: the ExoForge/Tidelock
+//     keys whose meaning is exactly one predicate (forged.gravity,
+//     locked.period...) now alias it; their raw numbers travel through
+//     src/lib/simulators/sim-canon.ts on publish. Keys with no exact
+//     predicate (locked.daySide, forged.cloud) stay legacy.*.
 // ---------------------------------------------------------------------------
 
 import type { Unit } from "@/canon/units";
@@ -111,10 +115,10 @@ const DEFS: PredicateDef[] = [
   ]),
   ...domain("star", "physics", "orrery", [
     ["spectral_class", "Spectral class", "enum", { aliases: ["starType", "primaryStarClass"] }],
-    ["mass", "Stellar mass", "scalar", { unit: "solar_masses" }],
+    ["mass", "Stellar mass", "scalar", { unit: "solar_masses", aliases: ["starMass"] }],
     ["luminosity", "Stellar luminosity", "scalar", { unit: "solar_lum", aliases: ["stellarLuminosity"] }],
     ["temp_effective", "Effective temperature", "scalar", { unit: "K" }],
-    ["age", "Stellar age", "scalar", { unit: "gyr" }],
+    ["age", "Stellar age", "scalar", { unit: "gyr", aliases: ["starAge"] }],
     ["flare_activity", "Flare activity", "enum"],
   ]),
   ...domain("system", "physics", "orrery", [
@@ -128,25 +132,32 @@ const DEFS: PredicateDef[] = [
   ...domain("orbit", "physics", "orrery", [
     ["semi_major_axis", "Orbital distance", "scalar", { unit: "au", aliases: ["orbitalDistance"] }],
     ["eccentricity", "Eccentricity", "scalar"],
-    ["period", "Orbital period", "scalar", { unit: "days" }],
+    ["period", "Orbital period", "scalar", { unit: "days", aliases: ["forged.period", "locked.period"] }],
     ["inclination", "Inclination", "scalar", { unit: "deg" }],
     ["tidally_locked", "Tidally locked", "bool"],
     ["resonance", "Resonance", "text"],
   ]),
   ...domain("planet", "environment", "genesis", [
-    ["radius", "Radius", "scalar", { unit: "earth_radii", aliases: ["radius"] }],
-    ["mass", "Mass", "scalar", { unit: "earth_masses", aliases: ["mass"] }],
-    ["density", "Density", "scalar", { unit: "g_cm3", producer: "atlas" }],
-    ["surface_gravity", "Surface gravity", "scalar", { unit: "g", producer: "atlas", aliases: ["surfaceGravity"] }],
-    ["escape_velocity", "Escape velocity", "scalar", { unit: "km_s", producer: "atlas" }],
+    ["radius", "Radius", "scalar", { unit: "earth_radii", aliases: ["radius", "forged.radius"] }],
+    ["mass", "Mass", "scalar", { unit: "earth_masses", aliases: ["mass", "forged.mass"] }],
+    ["density", "Density", "scalar", { unit: "g_cm3", producer: "atlas", aliases: ["forged.density"] }],
+    ["surface_gravity", "Surface gravity", "scalar", { unit: "g", producer: "atlas", aliases: ["surfaceGravity", "forged.gravity", "locked.gravity"] }],
+    ["escape_velocity", "Escape velocity", "scalar", { unit: "km_s", producer: "atlas", aliases: ["forged.escape", "locked.escape"] }],
     ["rotation_period", "Day length", "scalar", { unit: "hours", aliases: ["dayLength"] }],
     ["obliquity", "Axial tilt", "scalar", { unit: "deg", aliases: ["axialTilt"] }],
     ["year_length", "Year length", "scalar", { unit: "local_days" }],
     ["atmo_pressure", "Atmospheric pressure", "scalar", { unit: "bar" }],
     ["atmo_composition", "Atmospheric composition", "text"],
-    ["temp_mean", "Mean surface temperature", "scalar", { unit: "K", aliases: ["surfaceTemperature"] }],
+    ["temp_mean", "Mean surface temperature", "scalar", { unit: "K", aliases: ["surfaceTemperature", "forged.temperature"] }],
+    // Added 1.9 (/sf-fact, lane C "True Numbers"): what every simulator that
+    // places a planet around a star can compute exactly, and what prose most
+    // often gets wrong. Insolation S = L / a² (L in L☉, a in AU; Earth = 1).
+    // Equilibrium temperature is NOT the surface temperature: no greenhouse,
+    // so it has its own predicate rather than overloading temp_mean.
+    ["insolation", "Insolation", "scalar", { unit: "earth_flux" }],
+    ["temp_equilibrium", "Equilibrium temperature", "scalar", { unit: "K" }],
     ["temp_gradient[]", "Temperature gradient", "range[]", { unit: "K", producer: "tidelock" }],
-    ["hydrosphere_fraction", "Hydrosphere fraction", "scalar", { unit: "fraction" }],
+    ["hydrosphere_fraction", "Hydrosphere fraction", "scalar", { unit: "fraction", aliases: ["forged.ocean"] }],
     ["albedo", "Albedo", "scalar", { unit: "fraction" }],
     ["magnetosphere", "Magnetosphere", "enum"],
     ["terminator_band_width", "Terminator band width", "scalar", { unit: "km", producer: "tidelock" }],

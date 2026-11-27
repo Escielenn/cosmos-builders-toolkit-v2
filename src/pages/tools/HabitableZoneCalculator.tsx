@@ -126,7 +126,8 @@ const HabitableZoneCalculator = () => {
       canonEmit.emit(saved, {
         subjectId: canonSubjectId,
         worksheetId: savedId,
-        inputs: { "star.luminosity": saved.star.luminosity },
+        // F-01: the saved edges use the same Teff the screen draws with.
+        inputs: { "star.luminosity": saved.star.luminosity, "star.temp_effective": saved.star.temperature },
       }),
   });
   const { state: formState, setState: setFormState, worldId } = worksheet;
