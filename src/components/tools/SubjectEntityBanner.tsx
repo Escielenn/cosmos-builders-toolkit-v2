@@ -31,7 +31,7 @@ export default function SubjectEntityBanner({ worldId }: { worldId: string | nul
   return (
     <div className="mb-6 flex flex-wrap items-center gap-2 border border-sf-primary bg-sf-primary/[0.06] px-3 py-2">
       <Crosshair className="h-3.5 w-3.5 text-sf-primary-text" aria-hidden />
-      <span className="font-mono text-[12px] uppercase tracking-wider text-t3">Surveying</span>
+      <span className="font-mono text-[12px] uppercase tracking-wider text-t3">Working on</span>
       {codexHref ? (
         <Link to={codexHref} className="font-heading text-[14px] text-t1 underline-offset-4 hover:underline">
           {e.title}

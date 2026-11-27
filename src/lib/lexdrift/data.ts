@@ -82,7 +82,7 @@ export interface MediaAccessLevel {
 export const MEDIA_ACCESS_LEVELS: MediaAccessLevel[] = [
   { id: "full", label: "Full", description: "Complete Earth media library, regularly updated" },
   { id: "archived", label: "Archived", description: "Departure-era media only" },
-  { id: "limited", label: "Limited", description: "Curated educational materials" },
+  { id: "limited", label: "Limited", description: "Selected educational materials" },
   { id: "minimal", label: "Minimal", description: "Technical documentation only" },
   { id: "none", label: "None", description: "Complete media independence" },
 ];

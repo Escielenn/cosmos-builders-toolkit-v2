@@ -3,14 +3,14 @@ import type { DataBurstConfig } from "./types";
 // Auth page, security / access control
 export const AUTH_BURSTS: DataBurstConfig[] = [
   {
-    content: "CLEARANCE: PENDING",
+    content: "SIGN-IN: PENDING",
     position: { top: "8%", right: "3%" },
     variant: "status",
     animation: "flicker",
     parallax: -0.05,
   },
   {
-    content: "BIOMETRIC SCAN: INITIALIZING",
+    content: "SIGN-IN: STANDBY",
     position: { top: "24%", left: "1%" },
     variant: "margin",
     animation: "breathe",
@@ -61,7 +61,7 @@ export const ARCHIVE_BURSTS: DataBurstConfig[] = [
     parallax: -0.08,
   },
   {
-    content: "VAULT INTEGRITY: 99.97%",
+    content: "VAULT: SEALED",
     position: { top: "56%", left: "1%" },
     variant: "margin",
     animation: "live",
@@ -116,7 +116,7 @@ export const BOOKSHELF_BURSTS: DataBurstConfig[] = [
 // Collection, inventory / manifest
 export const COLLECTION_BURSTS: DataBurstConfig[] = [
   {
-    content: "MANIFEST: LOADING",
+    content: "INVENTORY: LOADING",
     position: { top: "8%", right: "3%" },
     variant: "status",
     animation: "flicker",
@@ -213,7 +213,7 @@ export const INVITE_ACCEPT_BURSTS: DataBurstConfig[] = [
     parallax: -0.06,
   },
   {
-    content: "CLEARANCE: PENDING CREW AUTH",
+    content: "INVITE: AWAITING SIGN-IN",
     position: { top: "58%", left: "1%" },
     variant: "margin",
     parallax: -0.08,
@@ -324,7 +324,7 @@ export const WORLD_CONNECTIONS_BURSTS: DataBurstConfig[] = [
     parallax: -0.12,
   },
   {
-    content: "LINK INTEGRITY: 99.2%",
+    content: "LINKS: TRACED",
     position: { top: "56%", right: "2%" },
     variant: "coordinates",
     animation: "live",

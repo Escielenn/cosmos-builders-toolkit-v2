@@ -163,8 +163,8 @@ export function CodexTimelineView({ worldId }: CodexTimelineViewProps) {
                 ))}
               </ul>
               <p className="mt-2 text-[12px] leading-relaxed text-t3">
-                No epoch range and no linked event. Listed, not placed — a bar
-                drawn at a guessed date would read exactly like one you meant.
+                No date range and no linked event, so these are listed but not
+                drawn. A bar at a guessed date would look like one you chose.
               </p>
             </>
           )}

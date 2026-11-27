@@ -104,7 +104,7 @@ const PromptBrowserPage = () => {
           size="page"
           eyebrow="Weekly rotation"
           title="Writing prompts"
-          lede="Seven prompts rotate each week, one for every day. Act on them before Sunday or they vanish. Each prompt is tuned for science fiction worldbuilders at different experience levels."
+          lede="Seven prompts rotate each week, one for every day. Act on them before Sunday or they vanish. They range from first-time worldbuilders to experienced ones."
         >
           <div className="flex flex-wrap items-center gap-4 text-sm">
             <div className="flex items-center gap-2 text-t2">

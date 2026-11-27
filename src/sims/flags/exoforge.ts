@@ -35,7 +35,7 @@ const ironCoreNoTectonics: SimFlagRule<ExoForgeOutput> = (o) => {
     sim: "exoforge",
     severity: "tension",
     title: `DENSITY: ${o.density.toFixed(1)} G/CM³`,
-    body: "No carbon cycle. A body this dense for its size is iron-dominated straight through — there's no silicate mantle left to drive plate tectonics, and climate has no long-term thermostat.",
+    body: "No carbon cycle. A body this dense for its size is iron straight through. With no silicate mantle to drive plate tectonics, its climate has no long-term thermostat.",
     cites: { density: Number(o.density.toFixed(2)) },
   };
 };
@@ -47,7 +47,7 @@ const belowPhotosynthesisFloor: SimFlagRule<ExoForgeOutput> = (o) => {
     sim: "exoforge",
     severity: "tension",
     title: `SURFACE TEMPERATURE: ${Math.round(o.temp)}K`,
-    body: "Below this tool's own habitable floor. What eats here? A food web built on photosynthesis needs more warmth than this world receives — life, if any, runs on something other than sunlight.",
+    body: "Below this tool's own habitable floor. What eats here? A food web built on photosynthesis needs more warmth than this world receives, so any life here runs on something other than sunlight.",
     cites: { temp: Math.round(o.temp), floor: HABITABLE_FLOOR_K },
   };
 };

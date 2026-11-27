@@ -403,10 +403,10 @@ const SpaceExpansionModeler = () => {
           </h2>
           <blockquote className="border-l-2 border-sf-primary pl-4 italic text-lg mb-4">
             "One 'what if?' Follow the ripples. Over time, you get to a full world that fits well together."
-            <span className="block text-sm text-t3 mt-1">, Adrian Tchaikovsky</span>
+            <span className="block text-sm text-t3 mt-1">Adrian Tchaikovsky</span>
           </blockquote>
           <p className="text-t2 mb-4">
-            Space expansion is not a linear march outward. It pulses, stalls, redirects, and sometimes retreats based on the interaction of multiple forces. This tool helps you model those dynamics systematically, revealing consequences and story hooks you hadn't considered.
+            Expansion into space pulses, stalls, changes direction, and sometimes retreats as competing forces push against each other. Model those forces here and find the consequences and story hooks you had not considered.
           </p>
           <div className="text-sm text-t3">
             <strong className="text-t1">The Cascade:</strong>

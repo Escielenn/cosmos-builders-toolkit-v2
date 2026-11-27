@@ -59,13 +59,13 @@ export const manifest: ToolManifest = {
       predicate: "star.luminosity",
       required: true,
       onMissing: "prompt",
-      prompt: "NO STELLAR LUMINOSITY ON FILE. ENTER IT HERE OR RUN ORRERY.",
+      prompt: "NO STAR BRIGHTNESS SET. ENTER IT HERE OR RUN ORRERY.",
     },
     {
       predicate: "orbit.semi_major_axis",
       required: false,
       onMissing: "prompt",
-      prompt: "NO ORBITAL DISTANCE ON FILE. PLACE THE PLANET HERE.",
+      prompt: "NO ORBITAL DISTANCE SET. PLACE THE PLANET HERE.",
     },
   ],
 

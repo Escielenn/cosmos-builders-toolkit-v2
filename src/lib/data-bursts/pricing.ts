@@ -2,7 +2,7 @@ import type { DataBurstConfig } from "./types";
 
 export const PRICING_BURSTS: DataBurstConfig[] = [
   {
-    content: "REQUISITION: TIER SELECT",
+    content: "PLAN: SELECT",
     position: { top: "6%", right: "3%" },
     variant: "status",
     parallax: -0.05,
@@ -21,7 +21,7 @@ export const PRICING_BURSTS: DataBurstConfig[] = [
     parallax: -0.08,
   },
   {
-    content: "CLEARANCE: STD → PRO → VANGUARD",
+    content: "PLANS: FREE → PRO → VANGUARD",
     position: { top: "38%", left: "1%" },
     variant: "margin",
     animation: "flicker",

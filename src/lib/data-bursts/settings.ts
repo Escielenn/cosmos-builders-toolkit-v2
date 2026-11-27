@@ -8,14 +8,14 @@ export const SETTINGS_BURSTS: DataBurstConfig[] = [
     parallax: -0.05,
   },
   {
-    content: "CLEARANCE: LEVEL 3",
+    content: "ACCOUNT: SIGNED IN",
     position: { top: "28%", left: "1%" },
     variant: "margin",
     animation: "breathe",
     parallax: -0.1,
   },
   {
-    content: "BIOMETRIC: CONFIRMED",
+    content: "SESSION: ACTIVE",
     position: { top: "48%", right: "1.5%" },
     variant: "coordinates",
     parallax: -0.08,

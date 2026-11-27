@@ -55,17 +55,17 @@ Deno.serve(async (req) => {
       const html = `
         <div style="font-family:'Courier New',monospace;max-width:560px;margin:0 auto;padding:32px 24px;background:#0A0E17;color:#C8C8C8;">
           <div style="border:1px solid rgba(255,255,255,0.12);padding:36px 32px;">
-            <div style="font-size:11px;letter-spacing:3px;color:#15C17B;margin-bottom:18px;">// TRANSMISSION CONFIRMED</div>
-            <h2 style="margin:0 0 16px;font-size:20px;letter-spacing:1px;color:#FAFAFA;font-weight:normal;">CLEARANCE REQUEST RECEIVED</h2>
+            <div style="font-size:11px;letter-spacing:3px;color:#15C17B;margin-bottom:18px;">// SIGNED UP</div>
+            <h2 style="margin:0 0 16px;font-size:20px;letter-spacing:1px;color:#FAFAFA;font-weight:normal;">YOU'RE ON THE EARLY ACCESS LIST</h2>
             <p style="margin:0 0 20px;font-size:14px;line-height:1.7;color:#C8C8C8;">
-              You're on the manifest. StellarForge Early Access opens
+              StellarForge Early Access opens
               <strong style="color:#15C17B;">August 11, 2026</strong>.
             </p>
             <p style="margin:0 0 20px;font-size:13px;line-height:1.7;color:#8A8F98;">
               First 500 writers on the list get 40% off the first year of Pro
               with code <strong style="color:#FFB800;">EARLY40</strong>.
             </p>
-            <p style="margin:0;font-size:11px;letter-spacing:2px;color:#6A6F78;">NO SPAM &middot; ONE TRANSMISSION PER WEEK &middot; UNSUBSCRIBE ANY TIME</p>
+            <p style="margin:0;font-size:11px;letter-spacing:2px;color:#6A6F78;">NO SPAM &middot; ONE EMAIL A WEEK AT MOST &middot; UNSUBSCRIBE ANY TIME</p>
           </div>
           <p style="margin:20px 0 0;font-size:11px;color:#565B64;text-align:center;font-style:italic;">
             These worlds exist in you. Waiting to be found.
@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           from: FROM_EMAIL,
           to: [clean],
-          subject: "Clearance request received — StellarForge Early Access · Aug 11",
+          subject: "You're on the StellarForge Early Access list (opens Aug 11)",
           html,
         }),
       });

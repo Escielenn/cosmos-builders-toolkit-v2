@@ -495,7 +495,7 @@ export function checkContinuity(
         proseValue: formatNumber(claimed),
         excerpt: sentence.length > 160 ? sentence.slice(0, 157) + "…" : sentence,
         message: multi
-          ? `CONTRADICTS ALL ${comparable.length} ${spec.subjectNoun} ON FILE.`
+          ? `CONTRADICTS ALL ${comparable.length} ${spec.subjectNoun} IN CANON.`
           : `${first.source ?? "Your world"} records ${first.label} as ${first.value}; this reads ${formatNumber(claimed)}.`,
       });
       break;

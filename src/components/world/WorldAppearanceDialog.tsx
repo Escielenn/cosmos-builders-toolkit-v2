@@ -255,7 +255,7 @@ export default function WorldAppearanceDialog({
                 {/* Mock completion bar */}
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-[12px] uppercase tracking-wider text-t3">
-                    SURVEY:
+                    COMPLETE:
                   </span>
                   <div className="flex-1 h-1 bg-sf-surface-elevated relative">
                     <div

@@ -176,7 +176,7 @@ const LearnIndex = () => {
             size="page"
             eyebrow="Learn"
             title="SF University"
-            lede="Deep dives into worldbuilding concepts, science for storytellers, and the craft of creating believable fictional universes."
+            lede="Articles on worldbuilding, science for storytellers, and the craft of believable fictional universes."
             actions={
               <>
                 <Button asChild variant="sf-ghost" size="sf-md">
@@ -211,7 +211,7 @@ const LearnIndex = () => {
 
           {error && !isLoading && (
             <Notice tone="caution" label="Archive offline" className="mb-8">
-              Unable to load articles from the CMS. Showing cached content.
+              Couldn't load the latest articles. Showing saved copies.
             </Notice>
           )}
 

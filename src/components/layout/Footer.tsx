@@ -75,7 +75,7 @@ const Footer = () => {
             </div>
             <p className="text-sm text-t2 max-w-xs mb-6">
               Science-first worldbuilding tools for writers, game designers, and
-              creators who demand internal consistency.
+              anyone who wants a world that holds together.
             </p>
             {/* Social Links */}
             <div className="flex items-center gap-4">

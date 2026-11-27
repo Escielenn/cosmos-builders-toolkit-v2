@@ -124,7 +124,7 @@ const CompressionEditorDialog = ({
           <div className="space-y-2 max-h-[50vh] overflow-y-auto sf-sb">
             {state.compressions.length === 0 && (
               <p className="text-sm text-t2 text-center py-4">
-                NO COMPRESSIONS ON FILE. CREATE ONE TO COLLAPSE LONG STRETCHES OF UNEVENTFUL TIME.
+                No compressions yet. Create one to shrink long stretches where nothing happens.
               </p>
             )}
             {state.compressions.map((comp) => (

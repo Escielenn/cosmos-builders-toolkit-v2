@@ -21,7 +21,7 @@ const CodexEntityRoute = () => {
   if (!worldId || !entityId) {
     return (
       <PageContainer variant="space">
-        <Notice tone="danger" label="ENTRY NOT ON FILE">
+        <Notice tone="danger" label="Entry not found">
           This Codex address does not name an entry in this world.
         </Notice>
       </PageContainer>

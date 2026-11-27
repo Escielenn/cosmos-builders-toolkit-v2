@@ -20,7 +20,7 @@ const PLANS = [
     name: "Free",
     price: "$0",
     per: "forever",
-    line: `The whole Studio, Codex, Chronicle and Canon, compile and ${FREE_TOOL_COUNT} instruments.`,
+    line: `The whole Studio, the Codex, the Chronicle, Canon capture, Compile, and ${FREE_TOOL_COUNT} instruments.`,
   },
   {
     name: "Pro",
@@ -33,7 +33,7 @@ const PLANS = [
     name: "Vanguard",
     price: `$${PRICING.vanguard.monthly.price}`,
     per: "month",
-    line: "Everything in Pro, early access, roadmap votes and office hours.",
+    line: "Everything in Pro, plus early access, roadmap votes, and office hours.",
   },
 ] as const;
 
@@ -84,11 +84,11 @@ export function PricingTeaser(): JSX.Element {
 const FAQ = [
   {
     q: "Is the writing Studio really free?",
-    a: "Yes. The Studio (binder, corkboard, outliner, snapshots), the Codex, the Chronicle, Canon capture and Compile come with every free account, with no limit on worlds.",
+    a: "Yes. The Studio (binder, corkboard, outliner, snapshots), the Codex, the Chronicle, Canon capture, and Compile come with every free account, with no limit on worlds.",
   },
   {
     q: "What does Pro add?",
-    a: `The other ${PRO_TOOL_COUNT} instruments, including ${SIMULATOR_COUNT} real-time simulators and both cartographers, the World Bible PDF, full-world exports and collaborator invites. Cancel any time; your manuscript stays open.`,
+    a: `The other ${PRO_TOOL_COUNT} instruments, including ${SIMULATOR_COUNT} real-time simulators and both cartographers, the World Bible PDF, full-world exports, and collaborator invites. Cancel any time; your manuscript stays open.`,
   },
   {
     q: "Do I need to know the science?",
@@ -96,22 +96,22 @@ const FAQ = [
   },
   {
     q: "Can I bring a manuscript I already started?",
-    a: "Yes. Import Word, Markdown, plain text, RTF or a zipped Scrivener project into the binder, then start pulling canon out of it.",
+    a: "Yes. Import Word, Markdown, plain text, RTF, or a zipped Scrivener project into the binder, then start pulling canon out of it.",
   },
   {
     q: "Does StellarForge write for me?",
-    a: "No. Nothing ever edits your prose. The Studio points at contradictions and offers to file claims; every decision stays yours. Your worlds are never used to train AI models.",
+    a: "No. Nothing ever edits your prose. The Studio points out contradictions and offers to add new claims to your canon; every decision stays yours. Your worlds are never used to train AI models.",
   },
   {
     q: "Who owns my worlds?",
-    a: "You do. Export worksheets to PDF, Word, Notion or JSON and compile your manuscript to Word, PDF or EPUB whenever you like.",
+    a: "You do. Export worksheets to PDF, Word, Notion, or JSON, and compile your manuscript to Word, PDF, or EPUB whenever you like.",
   },
 ] as const;
 
 export function LandingFAQ(): JSX.Element {
   return (
     <MarketingSection id="faq" labelledBy="faq-title">
-      <SectionHeading id="faq-title" label="Questions" title="Before you begin" />
+      <SectionHeading id="faq-title" label="Questions" title="Common questions" />
       <div className="max-w-3xl border-t border-sf-line">
         {FAQ.map((item) => (
           <details key={item.q} className="group border-b border-sf-line-hairline">

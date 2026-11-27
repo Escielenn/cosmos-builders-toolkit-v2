@@ -57,22 +57,22 @@ export const CATEGORY_META: Record<
   'stars-systems': {
     label: 'Stars & Systems',
     color: hueTextVar("amber"),
-    description: 'The cosmic context, what your world orbits and who its neighbors are.',
+    description: 'What your world orbits, and who its neighbors are.',
   },
   worlds: {
     label: 'Worlds',
     color: hueTextVar("azure"),
-    description: 'Planetary parameters, the physics that constrains everything else.',
+    description: 'Planetary physics that constrains everything else.',
   },
   life: {
     label: 'Life',
     color: hueTextVar("emerald"),
-    description: 'Biology, from basic biochemistry to complex organisms.',
+    description: 'Life, from biochemistry to complex organisms.',
   },
   civilizations: {
     label: 'Civilizations',
     color: hueTextVar("violet"),
-    description: 'Societies, how intelligent life organizes itself.',
+    description: 'How intelligent life organizes itself.',
   },
   mythology: {
     label: 'Mythology',
@@ -82,7 +82,7 @@ export const CATEGORY_META: Record<
   integration: {
     label: 'Integration',
     color: hueTextVar("teal"),
-    description: 'Bringing it all together, cross-tool connections and timelines.',
+    description: 'Timelines and the links between tools.',
   },
 };
 
@@ -93,17 +93,17 @@ export const COMPLEXITY_META: Record<
   entry: {
     label: 'Entry',
     icon: '○',
-    description: 'No prerequisites. Good first tool in its category.',
+    description: 'No prerequisites. A good first tool in its category.',
   },
   intermediate: {
     label: 'Intermediate',
     icon: '◐',
-    description: 'Assumes basic familiarity. Benefits from prior tool outputs.',
+    description: 'Assumes some familiarity. Works best with results from earlier tools.',
   },
   advanced: {
     label: 'Advanced',
     icon: '●',
-    description: 'Requires understanding of related concepts. Maximum flexibility.',
+    description: 'Assumes you know the related concepts. The most room to adjust.',
   },
 };
 
@@ -141,7 +141,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   // ── FREE TOOLS ──────────────────────────────────────────────
   'environmental-chain-reaction': {
     id: 'environmental-chain-reaction',
-    tagline: 'Change one variable, trace the cascade through biology, psychology, mythology, and culture.',
+    tagline: 'Change one variable and trace it through biology, psychology, mythology, and culture.',
     category: 'integration',
     complexity: 'entry',
     type: 'worksheet',
@@ -155,7 +155,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   },
   'spacecraft-designer': {
     id: 'spacecraft-designer',
-    tagline: 'Design spacecraft as lived-in spaces, beyond engineering specs to daily life.',
+    tagline: 'Design a spacecraft as a place people live, from engineering to daily routine.',
     category: 'civilizations',
     complexity: 'intermediate',
     type: 'worksheet',
@@ -196,7 +196,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   // ── PRO WORKSHEETS ──────────────────────────────────────────
   'planetary-profile': {
     id: 'planetary-profile',
-    tagline: 'The foundation document, systematic documentation of your world\'s physical characteristics.',
+    tagline: 'Record your world\'s physical characteristics. Most other tools start here.',
     category: 'worlds',
     complexity: 'entry',
     type: 'worksheet',
@@ -215,7 +215,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   },
   'one-big-lie': {
     id: 'one-big-lie',
-    tagline: 'Declare your single speculative element, commit to rigor everywhere else.',
+    tagline: 'Name the one impossible thing your story allows, then keep everything else rigorous.',
     category: 'civilizations',
     complexity: 'entry',
     type: 'worksheet',
@@ -231,7 +231,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   },
   'evolutionary-biology': {
     id: 'evolutionary-biology',
-    tagline: 'Design species shaped by environmental pressures, evolution as conversation.',
+    tagline: 'Design species shaped by the pressures of their environment.',
     category: 'life',
     complexity: 'entry',
     type: 'worksheet',
@@ -305,7 +305,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   },
   'technology-consequences': {
     id: 'technology-consequences',
-    tagline: 'Every invention changes everything, trace the ripple effects across society.',
+    tagline: 'Pick an invention and trace what it changes across society.',
     category: 'civilizations',
     complexity: 'intermediate',
     type: 'worksheet',
@@ -324,7 +324,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   },
   'species-interaction-matrix': {
     id: 'species-interaction-matrix',
-    tagline: 'Map predator-prey dynamics, mutualism, parasitism, the ecological web of your world.',
+    tagline: 'Map predators and prey, mutualism, and parasitism across your world\'s ecology.',
     category: 'life',
     complexity: 'intermediate',
     type: 'worksheet',
@@ -357,7 +357,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   },
   'space-expansion-modeler': {
     id: 'space-expansion-modeler',
-    tagline: 'Model how civilizations expand through space, colonization waves, trade, and frontier dynamics.',
+    tagline: 'Model how a civilization spreads through space: colonization waves, trade, and frontiers.',
     category: 'civilizations',
     complexity: 'advanced',
     type: 'worksheet',
@@ -394,7 +394,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   },
   'surface-gravity-calculator': {
     id: 'surface-gravity-calculator',
-    tagline: 'Calculate surface gravity, how it shapes biology, architecture, and daily life.',
+    tagline: 'Calculate surface gravity and how it shapes biology, architecture, and daily life.',
     category: 'worlds',
     complexity: 'entry',
     type: 'calculator',
@@ -410,7 +410,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   },
   'time-dilation': {
     id: 'time-dilation',
-    tagline: 'Calculate relativistic time dilation, essential for hard SF plotting.',
+    tagline: 'Calculate relativistic time dilation for journeys near light speed.',
     category: 'civilizations',
     complexity: 'intermediate',
     type: 'calculator',
@@ -427,7 +427,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   },
   'drake-equation-calculator': {
     id: 'drake-equation-calculator',
-    tagline: 'Estimate communicating civilizations in the galaxy, your universe\'s cosmic context.',
+    tagline: 'Estimate how many civilizations in the galaxy could be signaling.',
     category: 'civilizations',
     complexity: 'advanced',
     type: 'calculator',
@@ -442,7 +442,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   },
   lexdrift: {
     id: 'lexdrift',
-    tagline: 'Model language evolution during interstellar travel, dialects, splits, and communication barriers.',
+    tagline: 'Model how language changes on long voyages: dialects, splits, and barriers to understanding.',
     category: 'civilizations',
     complexity: 'advanced',
     type: 'calculator',
@@ -460,7 +460,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   },
   sensorium: {
     id: 'sensorium',
-    tagline: 'Design alien sensory systems, echolocation, infrared, electroreception, and beyond.',
+    tagline: 'Design alien senses such as echolocation, infrared vision, and electroreception.',
     category: 'life',
     complexity: 'intermediate',
     type: 'calculator',
@@ -480,7 +480,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   // ── PRO SIMULATORS ──────────────────────────────────────────
   rogue: {
     id: 'rogue',
-    tagline: 'Real-time gravitational dynamics, orbital mechanics, multi-body systems, and stellar encounters.',
+    tagline: 'Simulate gravity in real time: orbits, many-body systems, and stellar encounters.',
     category: 'worlds',
     complexity: 'advanced',
     type: 'simulator',
@@ -497,7 +497,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   },
   tidelock: {
     id: 'tidelock',
-    tagline: 'Explore tidally locked worlds, terminator zones, heat distribution, and habitable regions.',
+    tagline: 'Explore a tidally locked world: its terminator, heat flow, and habitable bands.',
     category: 'worlds',
     complexity: 'intermediate',
     type: 'simulator',
@@ -514,7 +514,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   },
   exosky: {
     id: 'exosky',
-    tagline: 'Visualize alien skies, star colors, visible planets, moons, and celestial events.',
+    tagline: 'See an alien sky: star colors, visible planets, moons, and events overhead.',
     category: 'stars-systems',
     complexity: 'intermediate',
     type: 'simulator',
@@ -549,7 +549,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   },
   solaris: {
     id: 'solaris',
-    tagline: 'Procedural star system simulator, single, binary, trinary, and quaternary stellar configurations with real orbital mechanics.',
+    tagline: 'Generate star systems with one to four stars and real orbital mechanics.',
     category: 'stars-systems',
     complexity: 'advanced',
     type: 'simulator',
@@ -569,7 +569,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   },
   gravitas: {
     id: 'gravitas',
-    tagline: 'Simulate gravity aboard spacecraft, rotation, thrust gravity, zero-g, and experiential effects.',
+    tagline: 'Simulate gravity aboard a spacecraft: spin, thrust, zero-g, and how each feels.',
     category: 'civilizations',
     complexity: 'intermediate',
     type: 'simulator',
@@ -589,7 +589,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   // ── PRO CALCULATOR (Civilizations) ─────────────────────────
   'kardashev-scale': {
     id: 'kardashev-scale',
-    tagline: 'Classify civilizations by energy consumption, Kardashev numbers, cascade implications, and growth projections.',
+    tagline: 'Classify a civilization by its energy use on the Kardashev scale, and project its growth.',
     category: 'civilizations',
     complexity: 'intermediate',
     type: 'calculator',
@@ -635,7 +635,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   // ── PRO: PSYCHOLOGY ─────────────────────────────────────────
   dossier: {
     id: 'dossier',
-    tagline: 'Characters who inherit their bodies, senses, language and beliefs from your world, with overrides.',
+    tagline: 'Characters who inherit their bodies, senses, language, and beliefs from your world, with overrides.',
     category: 'civilizations',
     complexity: 'intermediate',
     type: 'worksheet',
@@ -658,7 +658,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   // ── PRO CARTOGRAPHER ────────────────────────────────────────
   'stellar-cartographer': {
     id: 'stellar-cartographer',
-    tagline: 'Map star systems, sectors, and regions, spatial relationships and trade routes.',
+    tagline: 'Map star systems, sectors, regions, and the trade routes between them.',
     category: 'stars-systems',
     complexity: 'advanced',
     type: 'cartographer',
@@ -676,7 +676,7 @@ export const TOOL_WIKI: Record<string, ToolWikiEntry> = {
   },
   'surface-cartographer': {
     id: 'surface-cartographer',
-    tagline: 'Map a planet or moon: your own sheet or a generated one, places with coordinates, and the sky, climate and travel time each place inherits from canon.',
+    tagline: 'Map a planet or moon: your own sheet or a generated one, places with coordinates, and the sky, climate, and travel time each place inherits from canon.',
     category: 'worlds',
     complexity: 'intermediate',
     type: 'cartographer',

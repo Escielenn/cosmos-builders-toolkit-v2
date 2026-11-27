@@ -26,7 +26,7 @@ const coriolisDiscomfort: SimFlagRule<GravitasSpinOutput> = (o) => {
     sim: "gravitas",
     severity: "tension",
     title: `CORIOLIS: ${o.coriolis_intensity.toUpperCase()}`,
-    body: "Walking along the ring feels wrong at this spin rate — everyone here has sea legs. Fast head turns produce vertigo, thrown objects curve, and it never stops being noticeable to someone born on a planet.",
+    body: "Walking along the ring feels wrong at this spin rate, and everyone here has sea legs. Fast head turns produce vertigo, thrown objects curve, and it never stops being noticeable to someone born on a planet.",
     cites: { coriolis_intensity: o.coriolis_intensity, gradient_percent: Number(o.gradient_percent.toFixed(1)) },
   };
 };

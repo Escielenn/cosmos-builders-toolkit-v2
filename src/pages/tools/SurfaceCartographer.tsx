@@ -485,7 +485,7 @@ const SurfaceCartographer = () => {
       setState((s) => ({ ...s, mapSource: "sheet" }));
       toast({
         title: "MAP SHEET ATTACHED.",
-        description: check.warning ?? `${MAP_PROJECTION_LABELS[pendingProjection].toUpperCase()} SHEET ON FILE. THE ATLAS NOW SHOWS IT.`,
+        description: check.warning ?? `${MAP_PROJECTION_LABELS[pendingProjection].toUpperCase()} SHEET SAVED. THE ATLAS NOW SHOWS IT.`,
         variant: check.ok ? undefined : "destructive",
       });
     } catch (err) {
@@ -609,7 +609,7 @@ const SurfaceCartographer = () => {
       try {
         if (wsId) {
           await updateWorksheet.mutateAsync({ worksheetId: wsId, data: toSave as unknown as Json });
-          toast({ title: VOICE.savedWorksheet, description: "MAP SETTINGS AND GAZETTEER SNAPSHOT ON FILE." });
+          toast({ title: VOICE.savedWorksheet, description: "MAP SETTINGS AND GAZETTEER SNAPSHOT SAVED." });
         } else {
           const ws = await createWorksheet.mutateAsync({
             worldId,
@@ -621,7 +621,7 @@ const SurfaceCartographer = () => {
           setCurrentWorksheetId(ws.id);
           setCurrentWorksheetTitle(ws.title);
           setSearchParams({ worldId, worksheetId: ws.id });
-          toast({ title: "CREATED.", description: "NEW SURFACE MAP ON FILE." });
+          toast({ title: "CREATED.", description: "SURFACE MAP CREATED." });
         }
         setState(toSave);
         setSavedJson(JSON.stringify(toSave));
@@ -760,7 +760,7 @@ const SurfaceCartographer = () => {
                   <Label htmlFor="sc-body">Planet or moon</Label>
                   <Select value={bodyValue} onValueChange={chooseBody}>
                     <SelectTrigger id="sc-body" className="min-h-hit">
-                      <SelectValue placeholder={bodyOptions.length ? "Choose a body" : "No planets on file"} />
+                      <SelectValue placeholder={bodyOptions.length ? "Choose a body" : "No planets yet"} />
                     </SelectTrigger>
                     <SelectContent>
                       {bodyOptions.map((o) => (

@@ -92,7 +92,7 @@ export function FieldManualContent({ scale = "sheet" }: { scale?: ManualScale } 
     resetAllHints();
     toast({
       title: "HINTS RESET.",
-      description: "All onboarding hints will appear again on next encounter.",
+      description: "Every hint will show again the next time you reach its feature.",
     });
   };
 
@@ -108,7 +108,7 @@ export function FieldManualContent({ scale = "sheet" }: { scale?: ManualScale } 
           tools and wiki pages.
         </p>
         <p className="font-mono text-[12px] text-t4">
-          Completion indicators: ● surveyed&ensp;◐ partial&ensp;○ pending
+          Completion: ● done&ensp;◐ partial&ensp;○ not started
         </p>
       </ManualSection>
 
@@ -120,12 +120,12 @@ export function FieldManualContent({ scale = "sheet" }: { scale?: ManualScale } 
         </p>
       </ManualSection>
 
-      <ManualDivider label="Survey Instruments" />
+      <ManualDivider label="Instruments" />
 
       <ManualSection title="Wiki Pages">
         <p>
-          Each survey instrument generates an encyclopedia entry. Content
-          editor supports freeform prose below the Data Profile.
+          Each instrument creates an encyclopedia entry. You can write your
+          own prose below its data profile.
         </p>
         <p>
           Type <span className="font-mono text-sf-primary-text">{`[[`}</span> to
@@ -153,8 +153,7 @@ export function FieldManualContent({ scale = "sheet" }: { scale?: ManualScale } 
           war, discovery, founding, death, custom).
         </p>
         <p>
-          Gap detection flags temporal lacunae: unusually large stretches
-          between events. Sub-events nest under parent events for
+          Gap detection flags unusually long stretches between events. Sub-events nest under parent events for
           hierarchical organization.
         </p>
       </ManualSection>

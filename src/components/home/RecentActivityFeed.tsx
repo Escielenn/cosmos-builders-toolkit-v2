@@ -26,7 +26,7 @@ export default function RecentActivityFeed({ items }: { items: ActivityItem[] })
   if (items.length === 0) {
     return (
       <GlassPanel className="p-6">
-        <p className="font-mono text-sf-mono uppercase text-t3">NO ACTIVITY ON FILE.</p>
+        <p className="font-mono text-sf-mono uppercase text-t3">No activity yet.</p>
       </GlassPanel>
     );
   }

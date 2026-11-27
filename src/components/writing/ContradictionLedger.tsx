@@ -200,7 +200,7 @@ export function ContradictionLedger(props: ContradictionLedgerProps): JSX.Elemen
         <div className="px-4 py-6">
           <p className="mb-1 font-sans text-[15px] text-sf-primary-text">Consistent so far</p>
           <p className="text-[13px] leading-relaxed text-t2">
-            No claim in this document disagrees with the world, and none is waiting to be filed.
+            No claim in this document disagrees with the world, and none is waiting to be added to canon.
           </p>
         </div>
       )}
@@ -282,7 +282,7 @@ function Excerpt({ text, onLocate }: { text: string; onLocate: () => void }): JS
 function useSubjectName(id: string | null): string {
   const world = useStudioWorld();
   if (!id) return "WORLD · NO SUBJECT";
-  return world?.entityById.get(id)?.name ?? "A SUBJECT NO LONGER ON FILE";
+  return world?.entityById.get(id)?.name ?? "A SUBJECT THAT NO LONGER EXISTS";
 }
 
 function SubjectLine({ item }: { item: CaptureItem }): JSX.Element {
@@ -330,7 +330,7 @@ function ClaimCard({
           const res = r as AssertResult;
           if (res.status === "conflict") return setConflict(res.existing);
           setConflict(null);
-          toast({ title: supersede ? "CANON REPLACED. PRIOR VALUE KEPT ON FILE." : "ADOPTED AS CANON." });
+          toast({ title: supersede ? "CANON REPLACED. PREVIOUS VALUE KEPT." : "ADOPTED AS CANON." });
         },
       },
     );
@@ -415,7 +415,7 @@ function ContradictionCard({
             return;
           }
           setMode("idle");
-          toast({ title: isCanon ? "CANON REPLACED. PRIOR VALUE KEPT ON FILE." : "ADOPTED AS CANON." });
+          toast({ title: isCanon ? "CANON REPLACED. PREVIOUS VALUE KEPT." : "ADOPTED AS CANON." });
         },
       },
     );
@@ -445,7 +445,7 @@ function ContradictionCard({
       <dl className="mb-2 grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-1 font-mono text-[12px] uppercase">
         <dt className="text-t4">Prose</dt>
         <dd className="text-t1">{item.valueText}</dd>
-        <dt className="text-t4">On file</dt>
+        <dt className="text-t4">Canon</dt>
         <dd className="flex flex-wrap items-center gap-1.5 text-t1">
           {fact.insert}
           <ConfidenceTag confidence={fact.confidence} outranked={!!fact.outrankedBy} />
@@ -546,7 +546,7 @@ function ContradictionCard({
 
       {fact.confidence === "proposed" && fact.factId && mode === "idle" && (
         <div className="mt-3 border-t border-sf-line-hairline pt-2">
-          <p className="mb-1.5 font-mono text-[12px] uppercase text-t4">The value on file is proposed</p>
+          <p className="mb-1.5 font-mono text-[12px] uppercase text-t4">The canon value is only proposed</p>
           <ProposedFactActions worldId={worldId} factId={fact.factId} label={predicateLabel(item.claim.predicate)} />
         </div>
       )}

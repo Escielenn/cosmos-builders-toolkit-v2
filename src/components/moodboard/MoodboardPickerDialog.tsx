@@ -87,7 +87,7 @@ export function MoodboardPickerDialog({
               <ImageIcon className="w-8 h-8 mb-2" />
               <p className="text-sm">
                 {images.length === 0
-                  ? "NO REFERENCE IMAGES ON FILE."
+                  ? "No reference images yet."
                   : "No images match your search."}
               </p>
             </div>

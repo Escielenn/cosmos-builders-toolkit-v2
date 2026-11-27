@@ -63,7 +63,7 @@ const BackupStatusWidget = ({ worlds }: BackupStatusWidgetProps) => {
       console.error("Download all worlds error:", error);
       toast({
         title: "ARCHIVE FAILED.",
-        description: "Could not compile world archive. Retry.",
+        description: "The download could not be built. Try again.",
         variant: "destructive",
       });
     } finally {
@@ -143,7 +143,7 @@ const BackupStatusWidget = ({ worlds }: BackupStatusWidgetProps) => {
             ) : (
               <Download className="w-3.5 h-3.5 mr-2" />
             )}
-            {isDownloading ? "Compiling..." : "Download All Worlds"}
+            {isDownloading ? "Zipping worlds..." : "Download all worlds"}
           </Button>
         </>
       )}

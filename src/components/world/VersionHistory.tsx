@@ -149,7 +149,7 @@ const VersionHistory = ({ worldId, worldName, defaultExpanded = false, onTakeSna
               </div>
             ) : versions.length === 0 ? (
               <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
-                <p className="font-mono text-sf-mono uppercase text-t3">NO SNAPSHOTS ON FILE. VERSIONS ARE TAKEN AS YOU WORK.</p>
+                <p className="font-mono text-sf-mono uppercase text-t3">No snapshots yet. Versions are saved as you work.</p>
                 {onTakeSnapshot && (
                   <Button variant="sf-ghost" size="sf-sm" onClick={onTakeSnapshot}>
                     Take snapshot

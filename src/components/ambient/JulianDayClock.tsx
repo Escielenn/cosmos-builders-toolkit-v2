@@ -17,7 +17,7 @@ export function JulianDayClock({ className }: { className?: string }) {
   return (
     <span
       className={`font-mono text-xs tracking-wide text-t4 whitespace-nowrap cursor-help ${className ?? ""}`}
-      title="Julian Day — the continuous count of days astronomers use, running since Jan 1, 4713 BCE. Today, in cosmic time."
+      title="Julian Day: the continuous count of days astronomers use, running since January 1, 4713 BCE."
     >
       JD {jd.toFixed(3)}
     </span>

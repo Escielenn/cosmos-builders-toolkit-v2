@@ -404,7 +404,7 @@ function CardPane({
               <button
                 type="button"
                 aria-label="Pick the POV character"
-                title="Pick a character on file"
+                title="Pick a character from your world"
                 className="sf-field -ml-px flex min-h-hit w-11 shrink-0 items-center justify-center text-t3 hover:text-t1"
               >
                 <UserRound className="h-4 w-4" aria-hidden="true" />
@@ -413,7 +413,7 @@ function CardPane({
             <DropdownMenuContent align="end" className="sf-sb sf-sb--slim max-h-80 w-64 overflow-y-auto">
               {povOptions.length === 0 ? (
                 <p className="px-2 py-1.5 font-sans text-[13px] text-t3">
-                  No characters on file. Make one in Dossier, or type a name.
+                  No characters yet. Make one in Dossier, or type a name.
                 </p>
               ) : (
                 povOptions.map((o) => {
@@ -445,7 +445,7 @@ function CardPane({
           </DropdownMenu>
         </div>
         {povLinked && (
-          <span className="font-mono text-[12px] text-sf-magenta-text">// ON FILE. DRIVES THE RAIL AND THE WORLD TAB.</span>
+          <span className="font-mono text-[12px] text-sf-magenta-text">// LINKED. DRIVES THE RAIL AND THE WORLD TAB.</span>
         )}
       </div>
 
@@ -462,7 +462,7 @@ function CardPane({
             >
               <MapPin className="h-3.5 w-3.5 shrink-0 text-t4" aria-hidden="true" />
               {meta.setInPlaceId ? (
-                <span className="min-w-0 flex-1 truncate font-sans text-[16px] text-t1">{place?.name ?? "A place no longer on file"}</span>
+                <span className="min-w-0 flex-1 truncate font-sans text-[16px] text-t1">{place?.name ?? "A place that no longer exists"}</span>
               ) : (
                 <span className="min-w-0 flex-1 text-t3">Not set</span>
               )}
@@ -473,7 +473,7 @@ function CardPane({
             <DropdownMenuItem onClick={() => commit("setInPlaceId", "")}>Not set</DropdownMenuItem>
             {placeOptions.length === 0 ? (
               <p className="px-2 py-1.5 font-sans text-[13px] text-t3">
-                No places on file. Add a place, planet or moon in the Codex.
+                No places yet. Add a place, planet, or moon in the Codex.
               </p>
             ) : (
               placeOptions.map((p) => (

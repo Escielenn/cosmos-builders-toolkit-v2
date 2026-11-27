@@ -45,9 +45,9 @@ export const manifest: ToolManifest = {
       predicate: "propulsion.cruise_fraction_c",
       required: true,
       onMissing: "prompt",
-      prompt: "NO CRUISE VELOCITY ON FILE. SET IT HERE.",
+      prompt: "NO CRUISE SPEED SET. SET IT HERE.",
     },
-    { predicate: "route.distance_ly", required: false, onMissing: "prompt", prompt: "NO ROUTE ON FILE. PICK A JOURNEY." },
+    { predicate: "route.distance_ly", required: false, onMissing: "prompt", prompt: "NO ROUTE SET. PICK A JOURNEY." },
   ],
 
   derives: [dilationFactor],

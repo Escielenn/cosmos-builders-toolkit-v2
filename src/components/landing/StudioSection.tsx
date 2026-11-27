@@ -27,7 +27,7 @@ export default function StudioSection(): JSX.Element {
         id="studio-title"
         label="The Studio"
         title="A manuscript that argues back"
-        lede="A Scrivener-style writing space, free with every account: binder, corkboard, outliner, snapshots and compile. The difference is that it knows your world."
+        lede="A Scrivener-style writing space, free with every account: binder, corkboard, outliner, snapshots, and compile. The difference is that it knows your world."
       />
 
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:items-start">

@@ -93,7 +93,7 @@ const ElementPickerDialog = ({
           {groups.length === 0 ? (
             <p className="text-sm text-t2 text-center py-6">
               {worksheets.length === 0
-                ? "NO WORKSHEETS ON FILE IN THIS WORLD."
+                ? "This world has no worksheets yet."
                 : "NO WORKSHEETS MATCH THIS SEARCH."}
             </p>
           ) : (

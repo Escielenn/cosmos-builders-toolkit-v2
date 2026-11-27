@@ -55,7 +55,7 @@ const AccountDataSettings = () => {
       a.click();
       URL.revokeObjectURL(url);
 
-      toast({ title: "ACCOUNT ARCHIVE DOWNLOADED.", description: "Every record on file, in one JSON document." });
+      toast({ title: "ACCOUNT ARCHIVE DOWNLOADED.", description: "Everything in your account, in one JSON file." });
     } catch (err) {
       toast({ title: "EXPORT FAILED.", description: mapError(err), variant: "destructive" });
     } finally {
@@ -105,8 +105,8 @@ const AccountDataSettings = () => {
 
       <div className="space-y-2">
         <p className="text-sm text-t2 sf-measure">
-          Download every record on file: profile, subscription, every world you own in full,
-          your writing, simulations, and settings. One JSON document.
+          Download everything in your account as one JSON file: your profile, subscription,
+          every world you own, your writing, simulations, and settings.
         </p>
         <Button variant="outline" className="w-full gap-2" onClick={handleExport} disabled={exporting}>
           {exporting ? <Loader variant="inline" size="sm" /> : <Download className="w-4 h-4" aria-hidden="true" />}

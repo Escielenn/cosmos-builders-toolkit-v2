@@ -86,7 +86,7 @@ export default function PublishPlanetDialog({
       setPublishedId(entry.id);
       toast({
         title: "PROMOTED TO CANON.",
-        description: `"${payload.planetName}" is now on file in your Codex.`,
+        description: `"${payload.planetName}" is now in your Codex.`,
       });
     } catch (error) {
       toast({

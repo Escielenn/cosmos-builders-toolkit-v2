@@ -153,7 +153,7 @@ export const TOOL_INTROS: Record<string, ToolIntroData> = {
           "On Winter they will not exist. One is respected and judged only as a human being. It is an appalling experience.",
         ],
         explanation:
-          "Gethen\u2019s permanent ice age shaped not just technology and architecture but the fundamental nature of its inhabitants\u2014ambisexual biology that eliminates gender-based social structures entirely.",
+          "Gethen\u2019s permanent ice age shaped its technology, its architecture, and its people, whose ambisexual biology leaves no room for gender-based social structures.",
       },
       {
         bookTitle: "Dune",
@@ -192,7 +192,7 @@ export const TOOL_INTROS: Record<string, ToolIntroData> = {
           "Earth and Mars have been fighting over the Belt for a hundred years.",
         ],
         explanation:
-          "The Expanse trilogy demonstrates how expansion creates faction: Earth\u2019s gravity-bound billions, Mars\u2019s terraforming dream, and the Belters\u2014humans physically and culturally adapted to microgravity who have become something new.",
+          "The Expanse trilogy demonstrates how expansion creates faction: Earth\u2019s gravity-bound billions, Mars\u2019s terraforming dream, and the Belters, humans so adapted to microgravity, in body and culture, that they have become something new.",
       },
       {
         bookTitle: "Aurora",
@@ -229,7 +229,7 @@ export const TOOL_INTROS: Record<string, ToolIntroData> = {
         isbn: "9780812515282",
         quotes: [],
         explanation:
-          "The Tines are pack-minds\u2014individual creatures that only achieve sapience in groups of 4-8. Their mythology emerges from this biology: concepts of self, death, and identity differ fundamentally when consciousness is distributed across multiple bodies that can be reconfigured.",
+          "The Tines are pack-minds: individual creatures that reach sapience only in groups of four to eight. Their mythology emerges from this biology: concepts of self, death, and identity differ fundamentally when consciousness is distributed across multiple bodies that can be reconfigured.",
       },
       {
         bookTitle: "Dune",
@@ -418,7 +418,7 @@ export const TOOL_INTROS: Record<string, ToolIntroData> = {
         isbn: "9780441172719",
         quotes: [],
         explanation:
-          "Herbert\u2019s Big Lie is prescience\u2014the ability to see possible futures. From this single violation, he derives: the Spacing Guild\u2019s navigation monopoly (they need spice to see safe paths), the Bene Gesserit breeding program (to create the Kwisatz Haderach), and the political structures that control spice production. Everything else follows real physics.",
+          "Herbert\u2019s Big Lie is prescience, the ability to see possible futures. From this single violation, he derives: the Spacing Guild\u2019s navigation monopoly (they need spice to see safe paths), the Bene Gesserit breeding program (to create the Kwisatz Haderach), and the political structures that control spice production. Everything else follows real physics.",
       },
       {
         bookTitle: "Ancillary Justice",
@@ -446,7 +446,7 @@ export const TOOL_INTROS: Record<string, ToolIntroData> = {
         isbn: "9781501197987",
         quotes: [],
         explanation:
-          "Sagan dramatizes the Drake Equation\u2019s emotional weight: each parameter represents a decision about the universe\u2019s hospitality to life. The equation isn\u2019t just calculation\u2014it\u2019s a statement about cosmic loneliness or community.",
+          "Sagan dramatizes the Drake Equation\u2019s emotional weight: each parameter represents a decision about the universe\u2019s hospitality to life. Whatever numbers you choose, the answer says whether we are alone.",
       },
       {
         bookTitle: "The Three-Body Problem",
@@ -476,7 +476,7 @@ export const TOOL_INTROS: Record<string, ToolIntroData> = {
           "The highest function of ecology is the understanding of consequences.",
         ],
         explanation:
-          "Arrakis orbits Canopus at a distance that makes it marginally habitable\u2014hot, dry, and hostile. Herbert derived the entire Fremen culture from this orbital position: water discipline, stillsuits, the dream of terraforming, and the ecological relationship with sandworms.",
+          "Arrakis orbits Canopus at a distance that leaves it barely habitable: hot, dry, and hostile. Herbert derived the entire Fremen culture from this orbital position: water discipline, stillsuits, the dream of terraforming, and the ecological relationship with sandworms.",
       },
       {
         bookTitle: "The Left Hand of Darkness",
@@ -487,7 +487,7 @@ export const TOOL_INTROS: Record<string, ToolIntroData> = {
           "On Winter they will not exist. One is respected and judged only as a human being. It is an appalling experience.",
         ],
         explanation:
-          "Gethen (Winter) sits at the outer edge of its habitable zone\u2014a permanent ice age world. Le Guin derives everything from this position: the biology of kemmer (ambisexual adaptation to harsh conditions), the architecture, the politics of survival, and the psychology of a species shaped by relentless cold.",
+          "Gethen (Winter) sits at the outer edge of its habitable zone, locked in a permanent ice age. Le Guin derives everything from this position: the biology of kemmer (ambisexual adaptation to harsh conditions), the architecture, the politics of survival, and the psychology of a species shaped by relentless cold.",
       },
       {
         bookTitle: "Echopraxia",
@@ -496,7 +496,7 @@ export const TOOL_INTROS: Record<string, ToolIntroData> = {
         isbn: "9780765328038",
         quotes: [],
         explanation:
-          "Watts explores how stellar environment shapes not just habitability but cognition itself. The relationship between star and planet determines the electromagnetic environment, radiation exposure, and atmospheric chemistry that constrain what kinds of nervous systems can evolve.",
+          "Watts asks how a star shapes cognition as well as habitability. The relationship between star and planet determines the electromagnetic environment, radiation exposure, and atmospheric chemistry that constrain what kinds of nervous systems can evolve.",
       },
     ],
   },

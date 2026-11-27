@@ -100,7 +100,7 @@ const Community = () => {
             </h2>
             <p className="font-sans text-sf-small text-t2 max-w-sm mx-auto">
               {search
-                ? "No worlds match your search. Try a different query."
+                ? "No worlds match your search. Try different words."
                 : "Be the first to share a world with the community. Set your world's visibility to Community or Public in its share settings."}
             </p>
           </GlassPanel>

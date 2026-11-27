@@ -1006,7 +1006,7 @@ export default function Write(): JSX.Element {
         }
         return false;
       }
-      toast({ title: "VERSION RESTORED.", description: "The text it replaced is on file as a snapshot." });
+      toast({ title: "VERSION RESTORED.", description: "The text it replaced is saved as a snapshot." });
       return true;
     },
     [doc, editorInstance, flushPending, restoreVersion, liveHtml, updateContent, toast],

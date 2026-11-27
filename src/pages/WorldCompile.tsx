@@ -397,7 +397,7 @@ export default function WorldCompile() {
                       ? manuscript.backMatter
                           .map((b) => `${b.title.toUpperCase()} ${b.id === "bible" ? b.blocks.filter((x) => x.type === "li").length : b.blocks.length}`)
                           .join(" · ")
-                      : "NOTHING ON FILE FOR THE CHOSEN BACK MATTER."}
+                      : "Your world has nothing yet for the back matter you chose."}
                   </p>
                 )}
               </div>

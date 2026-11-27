@@ -281,7 +281,7 @@ const Profile = () => {
                 id="bio"
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
-                placeholder="Personnel notes..."
+                placeholder="A line or two about you"
                 rows={4}
               />
             </div>
@@ -462,7 +462,7 @@ function CommendationsSummary({ navigate }: { navigate: (path: string) => void }
               Commendations
             </h3>
             <p className="font-mono text-sf-mono text-t4 mt-0.5">
-              {isLoading ? "INITIALIZING..." : `${earnedCount} OF ${totalCount} EARNED`}
+              {isLoading ? "LOADING..." : `${earnedCount} OF ${totalCount} EARNED`}
             </p>
           </div>
         </div>

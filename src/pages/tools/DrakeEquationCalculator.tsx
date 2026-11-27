@@ -165,14 +165,14 @@ const PRESETS = [
   {
     id: "optimistic",
     name: "Optimistic / Space Opera",
-    description: "A crowded galaxy with civilizations everywhere. Perfect for space opera, galactic empires, and first contact stories.",
+    description: "A crowded galaxy with civilizations everywhere. Suits space opera, galactic empires, and first contact stories.",
     values: { rStar: 3, fp: 1, ne: 2, fl: 1, fi: 0.5, fc: 0.5, L: 1000000 },
     storyTypes: ["Space opera", "Galactic politics", "Federation stories", "Alien allies"],
   },
   {
     id: "pessimistic",
     name: "Pessimistic / Lonely Universe",
-    description: "A quiet galaxy where we might be alone. Perfect for hard SF, existential themes, and exploration stories.",
+    description: "A quiet galaxy where we might be alone. Suits hard SF, existential themes, and exploration stories.",
     values: { rStar: 1, fp: 0.5, ne: 0.1, fl: 0.01, fi: 0.01, fc: 0.01, L: 1000 },
     storyTypes: ["Hard SF", "Generation ships", "Silent cosmos", "Human manifest destiny"],
   },

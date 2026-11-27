@@ -151,7 +151,7 @@ describe("bindSystem", () => {
     ]);
     expect(system.bodies.map((b) => b.name)).toEqual(["Placed"]);
     expect(system.unplaced).toEqual([
-      { id: expect.any(String), name: "Nowhere", reason: "No orbital distance on file." },
+      { id: expect.any(String), name: "Nowhere", reason: "No orbital distance set." },
     ]);
   });
 

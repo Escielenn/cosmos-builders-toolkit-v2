@@ -42,7 +42,7 @@ export const manifest: ToolManifest = {
       predicate: "star.luminosity",
       required: false,
       onMissing: "prompt",
-      prompt: "NO STELLAR LUMINOSITY ON FILE. RUN GOLDILOCKS OR ENTER MANUALLY.",
+      prompt: "NO STAR BRIGHTNESS SET. RUN GOLDILOCKS OR ENTER IT HERE.",
     },
     { predicate: "planet.surface_gravity", required: false, onMissing: "link", producer: "atlas" },
   ],

@@ -254,7 +254,7 @@ export function CodexWebView({
                 height={600}
                 emptyMessage={
                   allEntities.length === 0
-                    ? "NO ENTITIES ON FILE. CREATE ONE TO BEGIN."
+                    ? "No entries yet. Create one to see the web."
                     : "NO ENTITIES MATCH THESE FILTERS."
                 }
               />

@@ -435,7 +435,7 @@ const CodexCustomSection = ({
         <div>
           {sortedTopLevel.length === 0 ? (
             <p className="px-3 py-1.5 font-mono text-sf-mono uppercase text-t4">
-              NO ENTRIES ON FILE.
+              No entries yet.
             </p>
           ) : (
             <DndContext

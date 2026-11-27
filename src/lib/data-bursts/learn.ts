@@ -21,7 +21,7 @@ export const LEARN_INDEX_BURSTS: DataBurstConfig[] = [
     parallax: -0.08,
   },
   {
-    content: "CLEARANCE: PUBLIC",
+    content: "ACCESS: FREE",
     position: { top: "72%", left: "1%" },
     variant: "coordinates",
     parallax: -0.06,

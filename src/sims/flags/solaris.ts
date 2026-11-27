@@ -46,7 +46,7 @@ const unstableOrbitInHZ: SimFlagRule<SolarisStabilityOutput> = (o) => {
     sim: "solaris",
     severity: "tension",
     title: `${o.planetName.toUpperCase()}: ORBIT UNSTABLE`,
-    body: "Unstable on 10⁵-year timescales, and it's inside the habitable zone. That's no time for biology — evolution needs a stable climate for longer than this orbit will hold one.",
+    body: "Unstable on 10⁵-year timescales, and it's inside the habitable zone. Evolution needs a stable climate for longer than this orbit will hold one.",
     cites: { planet: o.planetName, stability: o.stabCls },
   };
 };
@@ -58,7 +58,7 @@ const atmosphereStrippedByFlares: SimFlagRule<SolarisFlareOutput> = (o) => {
     sim: "solaris",
     severity: "tension",
     title: `${o.planetName.toUpperCase()}: UNMAGNETISED, FLARE-ACTIVE STAR`,
-    body: "Atmosphere stripped in roughly 200 million years. With no magnetic field to deflect it, stellar wind from an active star erodes the air faster than outgassing can replace it — surface life as written is unsupported.",
+    body: "Atmosphere stripped in roughly 200 million years. With no magnetic field to deflect it, stellar wind from an active star erodes the air faster than outgassing can replace it. Surface life as written does not fit this world.",
     cites: { planet: o.planetName },
   };
 };

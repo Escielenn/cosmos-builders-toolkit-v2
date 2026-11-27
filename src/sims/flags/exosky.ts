@@ -26,7 +26,7 @@ const emptySky: SimFlagRule<ExoSkyOutput> = (o) => {
     sim: "exosky",
     severity: "tension",
     title: `NAKED EYE: ${o.visibleCount} STARS`,
-    body: "A sky this empty produces no constellations. No navigation by starlight, no astrology, no founding myths written across it — whatever this culture worships, it isn't up there.",
+    body: "A sky this empty produces no constellations. No navigation by starlight, no astrology, and no founding myths written across it. Whatever this culture worships, it is not up there.",
     cites: { visibleCount: o.visibleCount },
   };
 };

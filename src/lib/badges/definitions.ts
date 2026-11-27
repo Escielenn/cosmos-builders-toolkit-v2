@@ -163,7 +163,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
   {
     id: "systems-thinker",
     name: "Systems Thinker",
-    description: "Used 5 different tools. You see the cascade -not just the pieces.",
+    description: "Used 5 different tools. You can see the cascade now.",
     lockedHint: "Use 5 different tool types",
     tier: "stellar",
     category: "depth",
@@ -275,7 +275,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
   {
     id: "polymath",
     name: "Polymath",
-    description: "Ten different tools mastered. You see the whole system, not just the parts.",
+    description: "Used 10 different tools. You can see the whole system.",
     lockedHint: "Use 10 different tool types",
     tier: "stellar",
     category: "depth",
@@ -443,7 +443,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
   {
     id: "ambassador",
     name: "Ambassador",
-    description: "Three worlds with open doors. You're building a community, not just a cosmos.",
+    description: "Three worlds shared with other writers.",
     lockedHint: "Have collaborators on 3+ worlds",
     tier: "stellar",
     category: "exploration",

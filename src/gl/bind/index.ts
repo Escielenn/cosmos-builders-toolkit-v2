@@ -107,12 +107,12 @@ export function bindStar(entry: WorldEntry | null | undefined): StarBinding {
   } else if (fromClass !== null) {
     temperature = inferred(
       fromClass,
-      `No effective temperature on file. Colour taken from the class ${spectralClass}. This is a render choice, not a fact.`,
+      `No effective temperature set. Colour taken from the class ${spectralClass}. This is a render choice, not a fact.`,
     );
   } else {
     temperature = inferred(
       NEUTRAL_STAR_K,
-      "Neither a temperature nor a class on file. Rendered as a neutral G-type; nothing here is a claim about this star.",
+      "Neither a temperature nor a class is set. Rendered as a neutral G-type; nothing here is a claim about this star.",
     );
   }
 
@@ -124,7 +124,7 @@ export function bindStar(entry: WorldEntry | null | undefined): StarBinding {
     limbDarkening: limbDarkening(temperature.value),
     coronaAmplitude:
       flare === null
-        ? inferred(coronaAmplitude(null), "No flare activity on file; drawn calm.")
+        ? inferred(coronaAmplitude(null), "No flare activity set; drawn calm.")
         : fromFact(coronaAmplitude(flare)),
     spectralClass,
   };
@@ -152,7 +152,7 @@ export function bindPlanet(entry: WorldEntry | null | undefined): PlanetBinding 
   const lockedFact = bool(entry, "orbit.tidally_locked");
   const tidallyLocked: Provenanced<boolean> =
     lockedFact === null
-      ? inferred(false, "Nothing on file says this world is locked; drawn rotating.")
+      ? inferred(false, "Nothing in canon says this world is tidally locked; drawn rotating.")
       : fromFact(lockedFact);
 
   return {
@@ -160,7 +160,7 @@ export function bindPlanet(entry: WorldEntry | null | undefined): PlanetBinding 
     surface: surfaceUniforms(surfaceType, albedo, tidallyLocked.value),
     radius:
       radius === null
-        ? inferred(1, "No radius on file; drawn at one Earth radius for scale.")
+        ? inferred(1, "No radius set; drawn at one Earth radius for scale.")
         : fromFact(radius),
     tidallyLocked,
   };

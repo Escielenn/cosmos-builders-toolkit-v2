@@ -254,7 +254,7 @@ const GenerationShipDesigner = () => {
       const keys = Object.keys(patch);
       const brand = IMPORT_SOURCES[tool]?.brand ?? tool;
       if (keys.length === 0) {
-        toast({ title: "NOTHING TO IMPORT.", description: `NO READABLE VALUES ON FILE IN ${brand.toUpperCase()}.` });
+        toast({ title: "NOTHING TO IMPORT.", description: `NO USABLE VALUES IN ${brand.toUpperCase()} YET.` });
         return;
       }
       setForm((prev) => {
@@ -409,7 +409,7 @@ const GenerationShipDesigner = () => {
           <div className="space-y-6">
             {worldId && (paradoxSheets.length + impulseSheets.length + vesselSheets.length > 0) && (
               <div className="flex flex-wrap items-center gap-2">
-                <span className="font-heading text-[12px] uppercase tracking-[0.12em] text-t4">On file in this world</span>
+                <span className="font-heading text-[12px] uppercase tracking-[0.12em] text-t4">Import from this world</span>
                 <ImportMenu tool="time-dilation" worksheets={paradoxSheets} onImport={handleImport} />
                 <ImportMenu tool="propulsion-consequences-map" worksheets={impulseSheets} onImport={handleImport} />
                 <ImportMenu tool="spacecraft-designer" worksheets={vesselSheets} onImport={handleImport} />
@@ -678,7 +678,7 @@ const GenerationShipDesigner = () => {
           <div className="space-y-6">
             {worldId && gravitasSheets.length > 0 && (
               <div className="flex flex-wrap items-center gap-2">
-                <span className="font-heading text-[12px] uppercase tracking-[0.12em] text-t4">Spin on file</span>
+                <span className="font-heading text-[12px] uppercase tracking-[0.12em] text-t4">Import spin</span>
                 <ImportMenu tool="gravitas" worksheets={gravitasSheets} onImport={handleImport} />
               </div>
             )}
@@ -811,7 +811,7 @@ const GenerationShipDesigner = () => {
                         </div>
                         <div className="md:justify-self-end">
                           {onFile ? (
-                            <Tag variant="teal">ON FILE</Tag>
+                            <Tag variant="teal">IN CHRONICLE</Tag>
                           ) : (
                             <Button
                               variant="sf-ghost"

@@ -272,7 +272,7 @@ export const SF_TECHNOLOGY_EXAMPLES = [
     name: "Room Temperature Superconductors",
     category: "materials",
     description: "Lossless electrical transmission",
-    consequences: "Revolutionizes power grid, transportation, computing",
+    consequences: "Transforms the power grid, transportation, and computing",
   },
 ];
 

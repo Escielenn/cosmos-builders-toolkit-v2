@@ -211,8 +211,8 @@ export function AnchorStarSection({
 
               <p className="mt-2 text-[12px] leading-relaxed text-t2">
                 Every star above is a real one, at the brightness and direction
-                it has from this system — not from Earth. The constellations do
-                not match anyone's, and that is the point.
+                it has from this system, not from Earth, so the constellations
+                match no one's on Earth.
                 {epoch !== null
                   ? " Precessed to the epoch on this page, at Earth's rate and tilt."
                   : ""}
@@ -222,8 +222,8 @@ export function AnchorStarSection({
 
           <p className="text-[12px] leading-relaxed text-t2">
             Drawn at this star's real position in the Codex Atlas's Real sky
-            view. The distances above are measured, not chosen — they are what
-            travel time and time dilation are calculated from.
+            view. The distances above are measured, and travel time and time
+            dilation are calculated from them.
           </p>
         </div>
       ) : canEdit ? (
@@ -236,7 +236,7 @@ export function AnchorStarSection({
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Anchor to a real star — Tau Ceti, Sirius…"
+              placeholder="A real star, such as Tau Ceti or Sirius"
               aria-label="Find a real star"
               className="h-10 pl-9 text-sm"
             />
@@ -272,9 +272,8 @@ export function AnchorStarSection({
 
           <p className="text-[12px] leading-relaxed text-t3">
             Optional. Anchoring puts this system at a real star's position and
-            gives you real distances to work from. A world that belongs
-            nowhere real is a world too — leave this empty and it stays on
-            your own chart.
+            gives you real distances to work from. Leave it empty and the
+            system stays on your own chart.
           </p>
         </div>
       ) : null}

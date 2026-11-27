@@ -130,7 +130,7 @@ const ENTRY_POINTS = [
     label: "Just exploring",
     description:
       "Want to browse, experiment, and learn the tools without commitment.",
-    tone: "The forge is yours. Browse tools by what they help you build. Try anything; nothing is permanent until you save it.",
+    tone: "Browse tools by what they help you build. Try anything; nothing is permanent until you save it.",
     action: "wiki",
   },
 ] as const;
@@ -432,7 +432,7 @@ const GettingStarted = () => {
                   </Link>
                 </Button>
               ) : (
-                <Notice compact label="No world yet">File a world first.</Notice>
+                <Notice compact label="No world yet">Create a world first.</Notice>
               )}
             </StepShell>
           </ol>

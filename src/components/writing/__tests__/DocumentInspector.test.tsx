@@ -87,12 +87,12 @@ describe("DocumentInspector scene context", () => {
   it("still shows a free-text POV from before the picker", () => {
     mount("card", { pov: "Old Ix" });
     expect(screen.getByLabelText("POV")).toHaveValue("Old Ix");
-    expect(screen.queryByText(/ON FILE/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/LINKED\./)).not.toBeInTheDocument();
   });
 
   it("typing a different name unbinds a picked character", () => {
     const p = mount("card", { pov: "Kael", povEntityId: "e1", povDossierId: "d1" });
-    expect(screen.getByText(/ON FILE/)).toBeInTheDocument();
+    expect(screen.getByText(/LINKED\./)).toBeInTheDocument();
     const box = screen.getByLabelText("POV");
     fireEvent.change(box, { target: { value: "Someone else" } });
     fireEvent.blur(box);
@@ -101,7 +101,7 @@ describe("DocumentInspector scene context", () => {
 
   it("shows SET IN and TIMELINE", () => {
     mount("card", { setInPlaceId: "gone", branchId: "b9" });
-    expect(screen.getByText("A place no longer on file")).toBeInTheDocument();
+    expect(screen.getByText("A place that no longer exists")).toBeInTheDocument();
     expect(screen.getByText("Unknown branch")).toBeInTheDocument();
   });
 });

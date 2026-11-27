@@ -21,9 +21,9 @@ const CATEGORY_LABELS: Record<BadgeCategory, string> = {
 };
 
 const CATEGORY_DESCRIPTIONS: Record<BadgeCategory, string> = {
-  exploration: "Charting new territory: worlds created, tools discovered, connections made.",
-  consistency: "The discipline of return: streaks held, words committed, habits forged.",
-  depth: "Mastery through layers: cascade thinking, cross-tool synthesis, architectural vision.",
+  exploration: "Worlds created, tools tried, and connections made.",
+  consistency: "Coming back: writing streaks, words written, and habits kept.",
+  depth: "Working across layers: following the cascade and connecting tools.",
 };
 
 export default function Commendations() {
@@ -82,7 +82,7 @@ export default function Commendations() {
             back={{ label: "Back to profile", to: "/profile" }}
             eyebrow="Marks of progress"
             title="Commendations"
-            lede="Each commendation is earned through use: worlds built, words written, systems explored. The cascade rewards the doer, not the visitor."
+            lede="You earn commendations by using StellarForge: building worlds, writing, and following the cascade through the tools."
           />
 
           {/* Reading column, left-aligned on the shared edge. */}

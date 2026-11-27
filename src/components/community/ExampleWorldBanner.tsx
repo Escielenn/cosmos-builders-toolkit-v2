@@ -149,12 +149,12 @@ export default function ExampleWorldBanner() {
           <Globe className="w-8 h-8 text-sf-primary-text flex-shrink-0" />
           <div className="min-w-0">
             <h3 className="font-heading text-sm font-light uppercase tracking-wide text-t1">
-              Explore The Tidelock Archives
+              The Tidelock Archives
             </h3>
             <p className="font-sans text-xs text-t3 mt-0.5">
               {alreadyForked
                 ? "You've already forked this world. View the original or go to your fork."
-                : "Our example world - see how a fully-built world looks in StellarForge."}
+                : "Our example world. See what a fully built world looks like in StellarForge."}
             </p>
           </div>
         </div>
@@ -176,7 +176,7 @@ export default function ExampleWorldBanner() {
                 className="inline-flex items-center gap-1.5 font-sans text-xs font-medium uppercase tracking-[1px] px-3 py-1.5 bg-sf-primary/[0.06] border border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] transition-colors"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
-                Go to Your Fork
+                Go to your fork
               </Link>
             ) : (
               <Button

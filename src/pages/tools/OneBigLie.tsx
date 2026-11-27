@@ -294,9 +294,9 @@ const OneBigLie = () => {
           <p className="text-t2 mb-4">
             The One Big Lie is a foundational principle of hard science fiction:
             you're allowed one major departure from known physics, but everything
-            else must follow real science rigorously. This tool guides you through
-            declaring that departure and tracing its consequences across your
-            entire world, from physics to biology to mythology to culture.
+            else must follow real science rigorously. Here you name that departure
+            and trace its consequences across your world, from physics to
+            biology to mythology to culture.
           </p>
           <div className="text-sm text-t3 mb-4">
             <strong className="text-t1">The Cascade Principle:</strong>

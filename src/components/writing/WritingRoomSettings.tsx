@@ -233,7 +233,7 @@ export function WritingRoomSettings({
       setLookName("");
       setLookNote(`LOOK SAVED. ${name.toUpperCase()}`);
     } else {
-      setLookNote(`SHELF FULL. ${MAX_LOOKS} LOOKS ON FILE. DELETE ONE FIRST.`);
+      setLookNote(`SHELF FULL. ${MAX_LOOKS} LOOKS SAVED. DELETE ONE FIRST.`);
     }
   };
 

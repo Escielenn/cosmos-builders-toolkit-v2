@@ -47,7 +47,7 @@ export function ProposedFactActions({
             return;
           }
           setConflict(null);
-          toast({ title: supersede ? "CANON REPLACED. PRIOR VALUE KEPT ON FILE." : "PROMOTED TO CANON." });
+          toast({ title: supersede ? "CANON REPLACED. PREVIOUS VALUE KEPT." : "PROMOTED TO CANON." });
           onDone?.();
         },
       },
