@@ -12,7 +12,8 @@ import SimulatorCascadeFooter from "@/components/simulators/SimulatorCascadeFoot
 import LoadSimulationSheet from "@/components/simulators/LoadSimulationSheet";
 import PublishToWorldDialog from "@/components/simulators/PublishToWorldDialog";
 import Header from "@/components/layout/Header";
-import NarrativeBridgePanel, { useNarrativeBridge } from "@/components/simulators/NarrativeBridgePanel";
+import NarrativeBridgePanel, { NarrativeBridgeToggle, useNarrativeBridge } from "@/components/simulators/NarrativeBridgePanel";
+import { SIM_FLAGS, SIM_MAIN, SIM_STAGE, SIM_TOOLBAR, SIM_TOOLBAR_WRAP, simStageStyle } from "@/components/simulators/sim-chrome";
 import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions";
 import { SimulatorWorldEntityPicker } from "@/components/simulators/SimulatorWorldEntityPicker";
 import { decodeHandoff, SOLARIS_HZ_MID } from "@/lib/simulators/handoff";
@@ -210,7 +211,7 @@ const TidelockSimulator = () => {
         <Header />
         {/* One viewport tall rather than flex-1, so the cascade footer sits
             below the simulator instead of squeezing it. */}
-        <main id="main" tabIndex={-1} className="relative h-[calc(100dvh-64px)] shrink-0" style={{ marginTop: 64 }}>
+        <main id="main" tabIndex={-1} className={SIM_MAIN} style={{ marginTop: 64 }}>
           {!loaded && (
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-background">
               <Loader message="INITIALIZING TIDELOCK" />
@@ -220,11 +221,8 @@ const TidelockSimulator = () => {
               iframe inside stays w-full h-full so its WebGL canvas sizes
               reliably. */}
           <div
-            className="absolute inset-y-0 left-0"
-            style={{
-              right: narrativeBridge.panelProps.open ? 340 : 0,
-              transition: 'right 280ms cubic-bezier(0.2, 0, 0, 1)',
-            }}
+            className={SIM_STAGE}
+            style={simStageStyle(narrativeBridge.panelProps.open)}
           >
             <iframe
               ref={iframeRef}
@@ -244,8 +242,8 @@ const TidelockSimulator = () => {
               chrome rather than "below the numeric results", and only takes
               up space when it has something to say. */}
           {loaded && (
-            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex flex-col items-stretch gap-2">
-              <div className="flex items-center gap-2 border border-sf-line bg-sf-surface px-3 py-2">
+            <div className={SIM_TOOLBAR_WRAP}>
+              <div className={SIM_TOOLBAR}>
                 <Button
                   variant="outline"
                   size="sm"
@@ -287,6 +285,12 @@ const TidelockSimulator = () => {
                 />
                 {/* Brief S1: the writer can see what this run is ON. */}
                 <SimSubjectChip worldId={worldId} />
+                <NarrativeBridgeToggle {...narrativeBridge.panelProps} />
+                {/* Below lg the scene button joins the docked strip rather
+                    than adding a second strip of chrome above the sim. */}
+                <div className="lg:hidden">
+                  <SceneProseButton facts={sceneFacts} simulatorType="tidelock" />
+                </div>
                 {/* Browses a world's own entities, so it genuinely needs one.
                     Save and Publish do not: they ask which world instead. */}
                 {worldId && (
@@ -299,7 +303,7 @@ const TidelockSimulator = () => {
                 )}
               </div>
               {simFlags.length > 0 && (
-                <div className="max-w-sm border border-sf-line bg-sf-surface px-3 py-2">
+                <div className={SIM_FLAGS}>
                   <SimFlagStrip flags={simFlags} dismissedIds={dismissedIds} onDismiss={dismissFlag} />
                 </div>
               )}
@@ -307,7 +311,7 @@ const TidelockSimulator = () => {
                   same reason: Tidelock has no React-rendered data panel of its
                   own to sit beneath, so this sits in the chrome that exists
                   rather than a panel that doesn't. */}
-              <div className="max-w-sm border border-sf-line bg-sf-surface px-3 py-2">
+              <div className={`hidden lg:block ${SIM_FLAGS}`}>
                 <SceneProseButton facts={sceneFacts} simulatorType="tidelock" />
               </div>
             </div>

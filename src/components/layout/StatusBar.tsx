@@ -111,8 +111,10 @@ const StatusBar = () => {
           <span className="text-t4">GALACTIC </span>
           <span className="text-sf-amber-warm-text">230 km/s</span>
         </span>
-        <span className="text-t4">·</span>
-        <span>
+        {/* SOLAR and the sector join at lg: between 768 and 1023px the
+            full bar ran past the right edge and was clipped. */}
+        <span className="hidden lg:inline text-t4">·</span>
+        <span className="hidden lg:inline">
           <span className="text-t4">SOLAR </span>
           <span className="text-sf-amber-warm-text">29.78 km/s</span>
         </span>
@@ -120,7 +122,7 @@ const StatusBar = () => {
 
 
       {/* Center: sector + target star + lunar phase */}
-      <div className="hidden md:flex items-center gap-4">
+      <div className="hidden lg:flex items-center gap-4">
         <span className="text-sf-primary-text">
           // SECTOR: {sector}
         </span>

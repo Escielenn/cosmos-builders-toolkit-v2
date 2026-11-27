@@ -78,14 +78,14 @@ const Footer = () => {
               creators who demand internal consistency.
             </p>
             {/* Social Links */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1 -ml-3">
               {social.map((item) => (
                 <a
                   key={item.name}
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-t3 hover:text-sf-primary-bright transition-colors duration-base"
+                  className="inline-flex items-center justify-center min-h-hit min-w-hit text-t3 hover:text-sf-primary-bright transition-colors duration-base"
                   aria-label={item.name}
                 >
                   <item.icon className="w-5 h-5" />

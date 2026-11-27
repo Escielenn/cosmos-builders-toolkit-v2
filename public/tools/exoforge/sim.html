@@ -595,6 +595,16 @@ button.active, button.primary {
   #control-panel{top:auto;bottom:170px;left:18px;right:18px;width:auto;max-height:45vh}
   #data-panel{top:auto;bottom:170px;left:18px;right:18px;width:auto;max-height:45vh}
 }
+#mobile-toggle-search{display:none;position:fixed;z-index:15;border-radius:0;font-size:16px;text-align:center;padding:0;background:var(--bg-panel);border:1px solid var(--border-subtle);color:rgba(255,255,255,0.5);cursor:pointer}
+/* Phone, or a phone on its side: the archive search becomes a third
+   drawer behind the dock instead of a 135px block that always sits on the
+   planet, and all three drawers open above the dock. */
+@media(max-width:640px),(max-height:500px){
+  #search-panel{display:none;left:12px;right:12px;width:auto;transform:none;bottom:var(--sim-dock-clear);max-height:45vh;overflow-y:auto}
+  #search-panel.mobile-visible{display:block}
+  #mobile-toggle-search{display:block}
+  #control-panel,#data-panel{bottom:var(--sim-dock-clear);left:12px;right:12px;max-height:calc(100% - var(--sim-dock-clear) - 120px)}
+}
 </style>
   <link rel="stylesheet" href="../_shared/sim-mobile.css">
   <link rel="stylesheet" href="../_shared/sim-title.css">
@@ -1000,11 +1010,16 @@ const RING_COLORS = {
 let isDragging = false, prevMouse = { x: 0, y: 0 };
 let spherical = { theta: 0, phi: Math.PI / 6, radius: 4 };
 let targetSpherical = { ...spherical };
+// One drawer open at a time; each toggle reports its drawer's state.
+const MOBILE_PANELS = { 'control-panel': 'mobile-toggle-controls', 'data-panel': 'mobile-toggle-data', 'search-panel': 'mobile-toggle-search' };
 function toggleMobilePanel(id) {
-  const el = document.getElementById(id);
-  const otherId = id === 'control-panel' ? 'data-panel' : 'control-panel';
-  document.getElementById(otherId).classList.remove('mobile-visible');
-  el.classList.toggle('mobile-visible');
+  for (const [panelId, btnId] of Object.entries(MOBILE_PANELS)) {
+    const panel = document.getElementById(panelId);
+    const open = panelId === id ? !panel.classList.contains('mobile-visible') : false;
+    panel.classList.toggle('mobile-visible', open);
+    const btn = document.getElementById(btnId);
+    if (btn) btn.setAttribute('aria-expanded', String(open));
+  }
 }
 
 let hasInteracted = false;
@@ -1910,8 +1925,9 @@ window.addEventListener('message', function(event) {
   <span><b style="color:rgba(21,193,123,0.7)">?</b> this help</span>
 </div>
 <div id="drag-hint">DRAG TO ORBIT · SCROLL TO ZOOM · ? FOR SHORTCUTS</div>
-<button id="mobile-toggle-controls" onclick="toggleMobilePanel('control-panel')" title="Toggle controls panel" aria-label="Toggle controls panel">☰</button>
-<button id="mobile-toggle-data" onclick="toggleMobilePanel('data-panel')" title="Toggle data readout panel" aria-label="Toggle data readout panel">📊</button>
+<button id="mobile-toggle-controls" onclick="toggleMobilePanel('control-panel')" title="Toggle controls panel" aria-label="Toggle controls panel" aria-expanded="false" aria-controls="control-panel">☰</button>
+<button id="mobile-toggle-data" onclick="toggleMobilePanel('data-panel')" title="Toggle data readout panel" aria-label="Toggle data readout panel" aria-expanded="false" aria-controls="data-panel">▤</button>
+<button id="mobile-toggle-search" onclick="toggleMobilePanel('search-panel')" title="NASA Exoplanet Archive — Search & Import" aria-label="NASA Exoplanet Archive — Search & Import" aria-expanded="false" aria-controls="search-panel">⌕</button>
 
 </body>
 </html>

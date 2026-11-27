@@ -84,7 +84,10 @@ const ToolActionBar = ({
     <div
       className={`no-print sticky top-[var(--sf-tool-sticky-top,4rem)] z-30 -mx-4 border-b border-sf-line-hairline bg-sf-void/95 px-4 py-2 backdrop-blur-sf-side ${className}`}
     >
-      <div className="flex flex-nowrap gap-2 items-center">
+      {/* Buttons keep their width (they used to shrink and clip their own
+          labels between 640 and 900px); if the row is still too narrow it
+          scrolls sideways inside itself, never the page. */}
+      <div className="flex flex-nowrap gap-2 items-center overflow-x-auto sf-sb -my-1 py-1 [&>*]:shrink-0">
         <Tooltip>
           <TooltipTrigger asChild>
             <Button

@@ -409,31 +409,31 @@ const ToolsWiki = () => {
 
         {/* View tabs */}
         <Tabs defaultValue="category" className="w-full">
-          <TabsList className="bg-transparent border-b border-sf-line-hairline rounded-none w-full justify-start gap-0 h-auto p-0 mb-6">
+          <TabsList className="bg-transparent border-b border-sf-line-hairline rounded-none w-full justify-start gap-0 h-auto p-0 mb-6 overflow-x-auto overflow-y-hidden sf-sb">
             <TabsTrigger
               value="category"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-sf-primary data-[state=active]:text-sf-primary-text data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-wide font-heading px-4 py-2.5"
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-sf-primary data-[state=active]:text-sf-primary-text data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-wide font-heading px-4 py-2.5 min-h-hit shrink-0"
             >
               <Layers className="w-3.5 h-3.5 mr-1.5" />
               Category
             </TabsTrigger>
             <TabsTrigger
               value="cascade"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-sf-primary data-[state=active]:text-sf-primary-text data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-wide font-heading px-4 py-2.5"
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-sf-primary data-[state=active]:text-sf-primary-text data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-wide font-heading px-4 py-2.5 min-h-hit shrink-0"
             >
               <ArrowRight className="w-3.5 h-3.5 mr-1.5" />
               Cascade
             </TabsTrigger>
             <TabsTrigger
               value="complexity"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-sf-primary data-[state=active]:text-sf-primary-text data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-wide font-heading px-4 py-2.5"
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-sf-primary data-[state=active]:text-sf-primary-text data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-wide font-heading px-4 py-2.5 min-h-hit shrink-0"
             >
               <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
               Complexity
             </TabsTrigger>
             <TabsTrigger
               value="workshop"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-sf-primary data-[state=active]:text-sf-primary-text data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-wide font-heading px-4 py-2.5"
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-sf-primary data-[state=active]:text-sf-primary-text data-[state=active]:bg-transparent bg-transparent text-t3 text-xs uppercase tracking-wide font-heading px-4 py-2.5 min-h-hit shrink-0"
             >
               <Calendar className="w-3.5 h-3.5 mr-1.5" />
               Workshop

@@ -37,7 +37,9 @@ export const KeyValueRow = React.forwardRef<HTMLDivElement, KeyValueRowProps>(
       )}
       {...props}
     >
-      <span className="text-t4 uppercase whitespace-nowrap">
+      {/* Long labels wrap on a phone instead of pushing the row past the
+          screen edge; one line from sm up. */}
+      <span className="min-w-0 text-t4 uppercase sm:whitespace-nowrap">
         {label}
         {colon && <span className="text-t4">{" : "}</span>}
       </span>
