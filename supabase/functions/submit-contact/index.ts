@@ -220,10 +220,10 @@ Deno.serve(async (req) => {
     } else if (type === "beta") {
       confirmationSubject = "Thank you for your beta feedback - StellarForge";
       confirmationHtml = `
-        <h2>Thank you for your beta feedback!</h2>
+        <h2>Thank you for your beta feedback</h2>
         <p>Hi ${safeName},</p>
-        <p>We really appreciate you taking the time to share your thoughts on StellarForge beta.</p>
-        <p>Your feedback helps us improve and build a better experience for everyone.</p>
+        <p>Thank you for taking the time to tell us what you think of the StellarForge beta.</p>
+        <p>Reports like yours shape what we fix and build next.</p>
         <p>Best regards,<br/>The StellarForge Team</p>
       `;
     } else {

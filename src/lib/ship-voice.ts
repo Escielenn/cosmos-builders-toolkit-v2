@@ -6,7 +6,7 @@
  * for actions, no emoji, no "Oops!" or "Let's go!".
  *
  * Examples:
- *   save success   , WORLD FILE SECURED.
+ *   save success   , WORLD SAVED.
  *   save failure   , TRANSMISSION FAILED. RETRY WHEN READY.
  *   export success , EXPORT COMPLETE. TRANSMISSION LOGGED.
  *   load           , CALIBRATING INSTRUMENTS...
@@ -18,7 +18,7 @@
 
 export const VOICE = {
   // Save / persist
-  savedWorld: "WORLD FILE SECURED.",
+  savedWorld: "WORLD SAVED.",
   savedWorksheet: "WORKSHEET SECURED.",
   savedGeneric: "FILE SECURED.",
   saveFailed: "TRANSMISSION FAILED. RETRY WHEN READY.",
@@ -30,7 +30,7 @@ export const VOICE = {
   copyToClipboard: "COPIED TO CLIPBOARD.",
 
   // Load / sync
-  loading: "INITIALIZING...",
+  loading: "LOADING...",
   loadingInstruments: "CALIBRATING INSTRUMENTS...",
   syncing: "SYNCHRONIZING...",
 
@@ -44,7 +44,7 @@ export const VOICE = {
   outsideRange: "PARAMETERS OUTSIDE OPERATIONAL RANGE.",
   requiredField: "FIELD REQUIRED BEFORE TRANSMISSION.",
   accessDenied: "ACCESS DENIED. YOU DO NOT HAVE PERMISSION.",
-  recordConflict: "RECORD CONFLICT. ENTRY ALREADY ON FILE.",
+  recordConflict: "RECORD CONFLICT. ENTRY ALREADY EXISTS.",
   notFound: "COORDINATES DO NOT MATCH ANY KNOWN RECORD.",
   paywall: "THIS INSTRUMENT IS PART OF PRO.",
   offline: "CONNECTION LOST. OPERATING IN LOCAL MODE.",
@@ -53,7 +53,7 @@ export const VOICE = {
   sessionEstablished: "SESSION ESTABLISHED.",
   sessionTerminated: "SESSION TERMINATED.",
   credentialsRejected: "CREDENTIALS NOT RECOGNIZED. VERIFY AND RETRY.",
-  accountExists: "ACCOUNT ALREADY ON FILE. SIGN IN INSTEAD.",
+  accountExists: "AN ACCOUNT WITH THIS EMAIL EXISTS. SIGN IN INSTEAD.",
   emailUnconfirmed: "EMAIL NOT CONFIRMED. CHECK YOUR INBOX FOR THE CONFIRMATION LINK.",
   weakPassword: "PASSWORD REJECTED. CHOOSE A STRONGER ONE.",
   samePassword: "NEW PASSWORD MUST DIFFER FROM THE CURRENT ONE.",

@@ -494,8 +494,8 @@ export function WritingEntityPanel({
                   </p>
                   <p className="font-mono text-[12px] uppercase tracking-wide text-t4 leading-relaxed">
                     {filter
-                      ? "NO MATCHING RECORDS."
-                      : "NO ENTITIES ON FILE."}
+                      ? "No matches."
+                      : "No entries yet."}
                   </p>
                   {!filter && (
                     <p className="font-sans text-[12px] text-t4 leading-relaxed normal-case tracking-normal">

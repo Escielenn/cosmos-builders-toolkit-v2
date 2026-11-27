@@ -59,7 +59,7 @@ export function SimRunExportButton({
         }}
         className={
           className ??
-          "bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] uppercase tracking-wider min-h-hit px-3"
+          "bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] min-h-hit px-3"
         }
       >
         <FileDown className="w-3 h-3 mr-1" />

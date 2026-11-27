@@ -7,6 +7,7 @@
 (function(){try{var h=window.parent!==window?window.parent.document.documentElement:null;if(!h)return;var cs=getComputedStyle(h);var p=cs.getPropertyValue('--sf-primary').trim();var b=cs.getPropertyValue('--sf-primary-bright').trim();var r=document.documentElement.style;if(p)r.setProperty('--sf-accent',p);if(b)r.setProperty('--sf-accent-bright',b);}catch(e){}})();
 </script>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="/tools/_shared/sim-tokens.css">
 <!--
   SOLARIS — Multi-Star System & Habitable-Zone Simulator
   StellarForge.tools · © 2025–2026 Jason D. Batt, Ph.D.
@@ -44,22 +45,22 @@ canvas{display:block;position:fixed;top:0;left:0;width:100vw;height:100vh}
 #title-block{position:fixed;top:18px;left:18px;width:272px;padding:0;background:none;border:none;backdrop-filter:none;z-index:20;pointer-events:none}
 #title-block button{pointer-events:auto}
 .tool-name{font-family:'MD Nichrome Test','Jura',sans-serif;font-weight:300;font-size:22px;letter-spacing:5px;text-transform:uppercase;color:#FAFAFA;line-height:1}
-.tool-sub{font-family:'MD Nichrome Test','DM Sans',sans-serif;font-size:10px;font-weight:300;letter-spacing:3px;text-transform:uppercase;color:rgba(0,229,160,0.35);margin-top:5px}
-.tool-ctx{font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(21,193,123,0.65);margin-top:6px;min-height:14px}
-.credit{font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:1px;color:rgba(255,255,255,0.12);margin-top:8px;text-transform:uppercase;pointer-events:none}
-#badge{position:fixed;top:128px;left:18px;padding:5px 14px;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;border-radius:0;transition:all 0.5s;z-index:20;background:rgba(21,193,123,0.03);border:1px solid #50555E;color:rgba(21,193,123,0.4)}
+.tool-sub{font-family:'MD Nichrome Test','DM Sans',sans-serif;font-size:12px;font-weight:300;letter-spacing:3px;text-transform:uppercase;color:var(--sf-primary-text);margin-top:5px}
+.tool-ctx{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--sf-primary-text);margin-top:6px;min-height:14px}
+.credit{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1px;color:var(--t4);margin-top:8px;text-transform:uppercase;pointer-events:none}
+#badge{position:fixed;top:136px;left:18px;padding:5px 14px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;border-radius:0;transition:all 0.5s;z-index:20;background:rgba(21,193,123,0.03);border:1px solid #50555E;color:var(--sf-primary-text)}
 #badge.active{background:rgba(21,193,123,0.08);border-color:#8C909A;color:var(--sf-accent)}
 #badge.gen{background:rgba(255,165,0,0.08);border-color:rgb(255,165,0);color:#FFA500;animation:pulse 1.2s infinite}
 #badge.ok{background:rgba(46,204,113,0.08);border-color:rgb(46,204,113);color:#2ECC71;animation:pulse 2s infinite}
 #badge.edit{background:rgba(255,215,0,0.08);border-color:rgb(255,215,0);color:#FFD43B}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.55}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 transparent}50%{box-shadow:0 0 12px 0 currentColor}} /* glow, not opacity: the badge text stays at full strength */
 #main-panel{top:170px;left:18px;width:272px;padding:0;max-height:calc(100vh - 200px)}
 /* Between the 640px mobile floor and a full desktop, the control panel
    has no room to coexist with the system it's steering - same pattern
    Tidelock solves with a toggle-behind-a-button, replicated here. Only
    #main-panel is always-on; #info-panel/#moon-panel are already opt-in
    (shown only once a planet or moon is selected), so they're left alone. */
-#mobile-toggle-main{display:none;position:fixed;z-index:25;bottom:18px;left:18px;width:36px;height:36px;border-radius:0;font-size:16px;line-height:36px;text-align:center;padding:0;background:rgba(13,13,15,0.94);border:1px solid #50555E;color:rgba(255,255,255,0.5);cursor:pointer;backdrop-filter:blur(16px)}
+#mobile-toggle-main{display:none;position:fixed;z-index:25;bottom:18px;left:18px;width:36px;height:36px;border-radius:0;font-size:16px;line-height:36px;text-align:center;padding:0;background:rgba(13,13,15,0.94);border:1px solid #50555E;color:var(--t2);cursor:pointer;backdrop-filter:blur(16px)}
 @media(max-width:1024px){
   #main-panel{display:none}
   #main-panel.mobile-visible{display:block}
@@ -67,20 +68,20 @@ canvas{display:block;position:fixed;top:0;left:0;width:100vw;height:100vh}
   #main-panel{top:auto;bottom:80px;left:18px;right:18px;width:auto;max-height:45vh}
 }
 .tab-bar{display:flex;border-bottom:1px solid #50555E;padding:0 10px;overflow-x:auto}
-.tab{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;padding:10px 7px 8px;color:rgba(255,255,255,0.3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;white-space:nowrap;flex-shrink:0}
-.tab:hover{color:rgba(255,255,255,0.6)}
+.tab{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;padding:10px 7px 8px;color:var(--t4);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;white-space:nowrap;flex-shrink:0}
+.tab:hover{color:var(--t2)}
 .tab.active{color:var(--sf-accent);border-bottom-color:var(--sf-accent)}
 .tab-content{display:none;padding:14px 16px 18px}
 .tab-content.active{display:block}
-.sec{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:rgba(21,193,123,0.35);border-bottom:1px solid #50555E;padding-bottom:6px;margin-bottom:10px;margin-top:14px}
+.sec{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:var(--sf-primary-text);border-bottom:1px solid #50555E;padding-bottom:6px;margin-bottom:10px;margin-top:14px}
 .sec:first-child{margin-top:0}
-label{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:300;color:rgba(255,255,255,0.55);display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
-.val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;color:rgba(255,255,255,0.85)}
+label{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:300;color:var(--t2);display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;color:var(--t1)}
 input[type=range]{-webkit-appearance:none;width:100%;height:3px;background:rgba(255,255,255,0.1);border-radius:0;outline:none;margin-bottom:12px;cursor:pointer}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:0;background:var(--sf-accent);border:2px solid #09090B;cursor:pointer}
 .panel,.panel *{cursor:default!important}
 .panel button,.panel button *{cursor:pointer!important}
-button{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;padding:7px 12px;border:1px solid #50555E;background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.6);cursor:pointer;border-radius:0;transition:all 0.2s}
+button{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;padding:7px 12px;border:1px solid #50555E;background:rgba(255,255,255,0.03);color:var(--t2);cursor:pointer;border-radius:0;transition:all 0.2s}
 button:hover{background:rgba(21,193,123,0.08);border-color:#8C909A;color:#fff}
 button.active{background:rgba(21,193,123,0.10);border-color:var(--sf-accent);color:var(--sf-accent)}
 .btn-row{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
@@ -94,23 +95,23 @@ button.active{background:rgba(21,193,123,0.10);border-color:var(--sf-accent);col
 .smode-btn{padding:6px 4px;font-size:12px;letter-spacing:0.8px;text-align:center}
 .chk-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
 .chk-row input[type=checkbox]{accent-color:var(--sf-accent);width:16px;height:16px;cursor:pointer}
-.chk-row span{font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:0.8px;text-transform:uppercase;color:rgba(255,255,255,0.45)}
-input[type=text]{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.82);border:1px solid #50555E;padding:7px 10px;border-radius:0;outline:none;width:100%;margin-bottom:10px;font-weight:300}
+.chk-row span{font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:0.8px;text-transform:uppercase;color:var(--t3)}
+input[type=text]{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;background:rgba(255,255,255,0.04);color:var(--t1);border:1px solid #50555E;padding:7px 10px;border-radius:0;outline:none;width:100%;margin-bottom:10px;font-weight:300}
 input[type=text]:focus{border-color:var(--sf-accent)}
 #gen-btn{width:100%;padding:10px;margin-top:6px;font-size:12px;letter-spacing:2px;background:rgba(21,193,123,0.10);border-color:var(--sf-accent);color:var(--sf-accent)}
 #gen-btn:hover{background:rgba(21,193,123,0.18);border-color:var(--sf-accent)}
 .pal-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px}
 .pal-pages{display:flex;gap:3px;margin-bottom:10px;flex-wrap:wrap}
-.pal-pg{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:4px 9px;border-radius:0;cursor:pointer;border:1px solid #50555E;background:rgba(255,255,255,0.02);color:rgba(255,255,255,0.4);transition:all 0.18s}
-.pal-pg:hover{color:rgba(255,255,255,0.7);border-color:#787D87}
+.pal-pg{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:4px 9px;border-radius:0;cursor:pointer;border:1px solid #50555E;background:rgba(255,255,255,0.02);color:var(--t3);transition:all 0.18s}
+.pal-pg:hover{color:var(--t2);border-color:#787D87}
 .pal-pg.active{background:rgba(21,193,123,0.08);border-color:#8C909A;color:var(--sf-accent)}
 .pal-item{display:flex;align-items:center;gap:7px;padding:7px 9px;cursor:grab;border-radius:0;border:1px solid #41454D;background:rgba(255,255,255,0.02);transition:all 0.2s}
 .pal-item:hover{background:rgba(21,193,123,0.06);border-color:#50555E}
 .pal-item.dragging{opacity:0.35}
 .pal-dot{width:20px;height:20px;border-radius:50%;flex-shrink:0}
-.pal-name{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.8px;text-transform:uppercase;color:rgba(255,255,255,0.78);line-height:1.3}
-.pal-tag{font-family:'DM Sans',sans-serif;font-size:9px;color:rgba(255,255,255,0.28);margin-top:1px}
-.drag-hint{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-bottom:8px;text-align:center;padding:4px;border:1px dashed #50555E;border-radius:0}
+.pal-name{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.8px;text-transform:uppercase;color:var(--t1);line-height:1.3}
+.pal-tag{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--t4);margin-top:1px}
+.drag-hint{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--t4);margin-bottom:8px;text-align:center;padding:4px;border:1px dashed #50555E;border-radius:0}
 #drag-ghost{position:fixed;pointer-events:none;z-index:999;width:36px;height:36px;border-radius:50%;border:2px solid var(--sf-accent);box-shadow:0 0 16px rgba(21,193,123,0.5);display:none;transform:translate(-50%,-50%)}
 /* INFO PANEL */
 #info-panel{top:16px;right:16px;width:272px;display:none}
@@ -120,32 +121,32 @@ input[type=text]:focus{border-color:var(--sf-accent)}
 .planet-hdr>div{min-width:0;flex:1;padding-right:24px}
 .p-name-input{font-family:'DM Sans',sans-serif;font-weight:300;font-size:15px;letter-spacing:2px;text-transform:uppercase;color:#FAFAFA;background:transparent;border:none;border-bottom:1px solid transparent;outline:none;width:100%;transition:border-color 0.2s;cursor:pointer;padding:0}
 .p-name-input:focus{border-bottom-color:var(--sf-accent);cursor:text}
-.p-type-lbl{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-top:2px}
+.p-type-lbl{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t4);margin-top:2px}
 .close-x{position:absolute;top:0;right:0;padding:3px 7px;font-size:12px;letter-spacing:1px}
 .dbl-slider{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.dbl-slider span{font-family:'DM Sans',sans-serif;font-size:12px;text-transform:uppercase;color:rgba(255,255,255,0.28);flex-shrink:0}
+.dbl-slider span{font-family:'DM Sans',sans-serif;font-size:12px;text-transform:uppercase;color:var(--t4);flex-shrink:0}
 .dbl-slider input{flex:1;margin-bottom:0}
 .dgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px 12px;margin-top:8px}
-.di .dl{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:300;color:rgba(255,255,255,0.55);margin-bottom:1px}
-.di .dv{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;color:rgba(255,255,255,0.85)}
+.di .dl{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:300;color:var(--t2);margin-bottom:1px}
+.di .dv{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;color:var(--t1)}
 .dv.cyan{color:var(--sf-accent)}.dv.green{color:#2ECC71}.dv.orange{color:#FFA500}.dv.gold{color:#FFD43B}.dv.red{color:#E74C3C}
 .remove-btn{width:100%;margin-top:8px;font-size:12px}
 .remove-btn:hover{background:rgba(231,76,60,0.1);border-color:rgb(231,76,60);color:#E74C3C}
 .handoff-row{display:flex;flex-direction:column;gap:4px;margin-top:10px}
-.handoff-btn{width:100%;font-size:11px;letter-spacing:1px;background:rgba(21,193,123,0.08);border-color:#8C909A;color:#15C17B}
+.handoff-btn{width:100%;font-size:12px;letter-spacing:1px;background:rgba(21,193,123,0.08);border-color:#8C909A;color:#15C17B}
 .handoff-btn:hover{background:rgba(21,193,123,0.16);border-color:var(--sf-accent);color:#3DFFCD}
 /* MOON PANEL */
 #moon-panel{top:16px;right:302px;width:200px;display:none;z-index:25}
 #moon-panel.visible{display:block}
 .moon-hdr{font-family:'DM Sans',sans-serif;font-weight:300;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#FAFAFA;margin-bottom:4px}
-.moon-sub{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:10px}
+.moon-sub{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--t4);margin-bottom:10px}
 .moon-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;margin-top:6px}
-.world-note{font-family:'DM Sans',sans-serif;font-size:11px;line-height:1.5;color:rgba(255,255,255,0.38);padding:7px 10px;border-left:2px solid #50555E;margin-top:10px;background:rgba(21,193,123,0.02);border-radius:0}
+.world-note{font-family:'DM Sans',sans-serif;font-size:12px;line-height:1.5;color:var(--t3);padding:7px 10px;border-left:2px solid #50555E;margin-top:10px;background:rgba(21,193,123,0.02);border-radius:0}
 /* SAVE PANEL */
 #save-list{margin-top:8px}
 .save-entry{display:flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid #41454D;border-radius:0;margin-bottom:5px;background:rgba(255,255,255,0.02)}
-.save-name{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.72);flex:1}
-.save-meta{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,0.3);flex-shrink:0}
+.save-name{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t2);flex:1}
+.save-meta{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t4);flex-shrink:0}
 .save-btns{display:flex;gap:3px;flex-shrink:0}
 .save-btns button{padding:3px 7px;font-size:12px;letter-spacing:1px}
 .save-btns .del-btn:hover{background:rgba(231,76,60,0.1);border-color:rgb(231,76,60);color:#E74C3C}
@@ -153,24 +154,46 @@ input[type=text]:focus{border-color:var(--sf-accent)}
 #transport{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:6px;align-items:center;z-index:20;background:#0D0D0F;border:1px solid #50555E;border-radius:0;padding:8px 14px}
 .tbtn{padding:6px 10px;font-size:12px;letter-spacing:0;min-width:32px;text-align:center}
 .tbtn.playing{background:rgba(21,193,123,0.08);border-color:#8C909A;color:var(--sf-accent)}
-#spd-disp{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,0.4);padding:0 8px;min-width:38px;text-align:center}
+#spd-disp{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t3);padding:0 8px;min-width:38px;text-align:center}
 .t-div{width:1px;height:16px;background:rgba(255,255,255,0.1);margin:0 4px}
 #zoom-ind{position:fixed;bottom:16px;right:16px;text-align:right;z-index:20;pointer-events:none}
-#z-val{font-family:'DM Sans',sans-serif;font-weight:300;font-size:15px;color:rgba(21,193,123,0.5);line-height:1}
-#z-lbl{font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.18)}
+#z-val{font-family:'DM Sans',sans-serif;font-weight:300;font-size:15px;color:var(--sf-primary-text);line-height:1}
+#z-lbl{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--t4)}
+/* The drawer opens above the dock (sim-mobile.css). On a phone the
+   transport takes the rest of the bottom row beside the dock button instead
+   of centring over it, and the zoom readout and physics note move up out of
+   its way. */
+@media(max-width:1024px),(max-height:500px){
+  #main-panel{bottom:var(--sim-dock-clear)}
+}
+@media(max-width:640px),(max-height:500px){
+  #transport{left:calc(64px + env(safe-area-inset-left));right:auto;max-width:calc(100% - 76px - env(safe-area-inset-left) - env(safe-area-inset-right));bottom:var(--sim-dock-bottom);transform:none;justify-content:center;gap:4px;padding:0 6px;overflow-x:auto;scrollbar-width:thin}
+  #transport .t-div{display:none}
+  #spd-disp{padding:0 4px}
+  #zoom-ind,#phys-note{bottom:var(--sim-dock-clear)}
+  #zoom-ind{right:12px}
+  /* The Show Your Work button is 44px tall here (touch floor), which
+     pushes the title block down onto the status badge. */
+  #badge{top:158px}
+  #main-panel{left:12px;right:12px;max-height:calc(100% - var(--sim-dock-clear) - 120px);z-index:30}
+}
 #hz-leg{position:fixed;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:14px;align-items:center;z-index:20;background:#0D0D0F;border:1px solid #41454D;border-radius:0;padding:6px 16px;opacity:0;transition:opacity 0.5s;pointer-events:none}
 #hz-leg.vis{opacity:1}
-.leg-i{display:flex;align-items:center;gap:5px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.35)}
+.leg-i{display:flex;align-items:center;gap:5px;font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--t3)}
 .leg-d{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-#phys-note{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(255,215,0,0.6);background:rgba(255,215,0,0.04);border:1px solid rgb(255,215,0);padding:6px 18px;border-radius:0;z-index:20;pointer-events:none;opacity:0;transition:opacity 0.5s;white-space:nowrap;max-width:90vw;text-align:center}
+#phys-note{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);font-family:'DM Sans',sans-serif;font-size:12px;color:rgb(255,215,0);background:rgba(255,215,0,0.04);border:1px solid rgb(255,215,0);padding:6px 18px;border-radius:0;z-index:20;pointer-events:none;opacity:0;transition:opacity 0.5s;white-space:nowrap;max-width:90vw;text-align:center}
 #phys-note.vis{opacity:1}
 #empty-hint{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;z-index:5}
-#empty-hint p{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.07);margin-bottom:6px}
+#empty-hint p{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--t4);margin-bottom:6px}
+/* Now that the hint is readable it must not sit on the title block: on a
+   short landscape screen the centre of the canvas is beside it, so the
+   hint moves to the right half. */
+@media(max-height:500px) and (min-width:641px){#empty-hint{left:auto;right:24px;transform:translateY(-50%);text-align:right}}
 /* ARCHITECTURE BADGE */
-.arch-badge{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:1px;color:rgba(255,215,0,0.5);background:rgba(255,215,0,0.04);border:1px solid rgb(255,215,0);border-radius:0;padding:4px 10px;margin-bottom:10px;text-align:center}
+.arch-badge{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1px;color:rgb(255,215,0);background:rgba(255,215,0,0.04);border:1px solid rgb(255,215,0);border-radius:0;padding:4px 10px;margin-bottom:10px;text-align:center}
 /* NAV LINKS */
 #title-block .nav-links{display:flex;gap:10px;margin-top:7px}
-#title-block .nav-links a{font-size:11px;font-family:'DM Sans',sans-serif;font-weight:300;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);text-decoration:none;padding:3px 8px;border:1px solid #50555E;border-radius:0;transition:all 0.2s}
+#title-block .nav-links a{font-size:12px;font-family:'DM Sans',sans-serif;font-weight:300;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);text-decoration:none;padding:3px 8px;border:1px solid #50555E;border-radius:0;transition:all 0.2s}
 #title-block .nav-links a:hover{color:var(--sf-accent);border-color:#8C909A;background:rgba(21,193,123,0.06)}
 </style>
   <link rel="stylesheet" href="../_shared/sim-mobile.css">
@@ -186,7 +209,7 @@ input[type=text]:focus{border-color:var(--sf-accent)}
   <div class="tool-sub">Multi-Star System Simulator</div>
   <div class="tool-ctx" id="sys-label">No system generated</div>
   <div style="margin-top:8px">
-    <button onclick="openMathPage()" style="width:100%;font-size:11px;letter-spacing:1.5px;padding:5px 8px;background:rgba(21,193,123,0.03);border-color:#50555E;color:rgba(21,193,123,0.45)" id="math-link-btn">Show Your Work ↗</button>
+    <button onclick="openMathPage()" style="width:100%;font-size:12px;letter-spacing:1.5px;padding:5px 8px;background:rgba(21,193,123,0.03);border-color:#50555E;color:var(--sf-primary-text)" id="math-link-btn">Show Your Work ↗</button>
   </div>
 </div>
 <div id="badge">Standby</div>
@@ -338,7 +361,7 @@ input[type=text]:focus{border-color:var(--sf-accent)}
     <input id="save-name-input" type="text" placeholder="SYSTEM NAME" style="text-transform:uppercase">
     <button style="width:100%;background:rgba(0,229,160,0.08);border-color:#50555E;color:#00E5A0;font-size:12px;padding:9px;letter-spacing:2px" onclick="saveSystem()">⊕ Save Current System</button>
     <div class="sec" style="margin-top:14px">Saved Systems</div>
-    <div id="save-list"><div style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(255,255,255,0.22);text-align:center;padding:12px 0">No saved systems</div></div>
+    <div id="save-list"><div style="font-family:'DM Sans',sans-serif;font-size:12px;color:var(--t4);text-align:center;padding:12px 0">No saved systems</div></div>
     <div class="sec" style="margin-top:14px">Export</div>
     <button style="width:100%;margin-bottom:6px;font-size:12px" onclick="exportJSON()">Export JSON</button>
     <button style="width:100%;font-size:12px" onclick="exportTXT()">Export World Notes</button>
@@ -408,7 +431,7 @@ input[type=text]:focus{border-color:var(--sf-accent)}
 <div id="zoom-ind"><div id="z-val">1.0×</div><div id="z-lbl">Zoom</div></div>
 <div id="phys-note"></div>
 <div id="empty-hint"><p>Generate a system to begin</p><p>or drag planets from Palette</p></div>
-<button id="mobile-toggle-main" onclick="document.getElementById('main-panel').classList.toggle('mobile-visible')" title="Toggle controls panel" aria-label="Toggle controls panel">☰</button>
+<button id="mobile-toggle-main" onclick="this.setAttribute('aria-expanded',String(document.getElementById('main-panel').classList.toggle('mobile-visible')))" title="Toggle controls panel" aria-label="Toggle controls panel" aria-expanded="false" aria-controls="main-panel">☰</button>
 
 <script>
 // ═══════════════════════════════════════════════════════════════════════
@@ -1204,7 +1227,7 @@ function deleteSystem(id){
 }
 function renderSaveList(){
   const el=document.getElementById('save-list');
-  if(!savedSystems.length){el.innerHTML='<div style="font-family:\'DM Sans\',sans-serif;font-size:11px;color:rgba(255,255,255,0.22);text-align:center;padding:12px 0">No saved systems</div>';return}
+  if(!savedSystems.length){el.innerHTML='<div style="font-family:\'DM Sans\',sans-serif;font-size:12px;color:var(--t4);text-align:center;padding:12px 0">No saved systems</div>';return}
   el.innerHTML=savedSystems.map(s=>`
     <div class="save-entry">
       <div>
@@ -1667,7 +1690,7 @@ function drawStar(s,brightness,showName,ts){
   bg.addColorStop(0,'#FFFFFF');bg.addColorStop(0.3,star.color);bg.addColorStop(1,star.glow+'0.7)');
   ctx.beginPath();ctx.arc(sx,sy,r+pulse,0,Math.PI*2);ctx.fillStyle=bg;ctx.fill();
   if(showName){
-    ctx.font='400 9px "DM Sans"';ctx.fillStyle='rgba(255,255,255,0.32)';ctx.textAlign='center';
+    ctx.font='400 12px "DM Sans"';ctx.fillStyle='#A7AAB0';ctx.textAlign='center';
     ctx.fillText(s.nameStr||system.name,sx,sy+r+18);
   }
 }
@@ -1838,7 +1861,7 @@ function drawPlanet(p,showLbl,showGrav,showRot,ts){
   // Label
   if(showLbl){
     const maxM=p.moons.length?Math.max(...p.moons.map(m=>m.r)):0;
-    ctx.font='400 9.5px "DM Sans"';ctx.fillStyle=h2a(p.color,0.55);ctx.textAlign='center';
+    ctx.font='400 12px "DM Sans"';ctx.fillStyle='#C9CDD3';ctx.textAlign='center';
     ctx.fillText(p.name,0,Math.max(r,maxM)+18);
   }
   ctx.restore();
@@ -2037,20 +2060,20 @@ function setMathTab(tab){
   const tg=document.getElementById('math-tab-general');
   const ts=document.getElementById('math-tab-system');
   const activeStyle='border-bottom:2px solid var(--sf-accent);color:var(--sf-accent)';
-  const inactiveStyle='border-bottom:2px solid transparent;color:rgba(255,255,255,0.3)';
+  const inactiveStyle='border-bottom:2px solid transparent;color:var(--t4)';
   tg.style.cssText=tg.style.cssText.replace(/border-bottom:[^;]+/,'').replace(/color:[^;]+/,'');
   ts.style.cssText=ts.style.cssText.replace(/border-bottom:[^;]+/,'').replace(/color:[^;]+/,'');
   if(tab==='general'){
     tg.style.borderBottom='2px solid var(--sf-accent)'; tg.style.color='var(--sf-accent)';
-    ts.style.borderBottom='2px solid transparent'; ts.style.color='rgba(255,255,255,0.3)';
+    ts.style.borderBottom='2px solid transparent'; ts.style.color='var(--t4)';
     document.getElementById('math-refresh-btn').style.display='none';
     buildGeneralPage();
   } else {
     ts.style.borderBottom='2px solid var(--sf-accent)'; ts.style.color='var(--sf-accent)';
-    tg.style.borderBottom='2px solid transparent'; tg.style.color='rgba(255,255,255,0.3)';
+    tg.style.borderBottom='2px solid transparent'; tg.style.color='var(--t4)';
     document.getElementById('math-refresh-btn').style.display='inline-block';
     if(!system){
-      document.getElementById('math-page-content').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:60px 0;font-family:DM Sans,sans-serif;font-size:13px;color:rgba(255,255,255,0.2)">Generate a system first to see per-system orbital mechanics.</div>';
+      document.getElementById('math-page-content').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:60px 0;font-family:DM Sans,sans-serif;font-size:13px;color:var(--t4)">Generate a system first to see per-system orbital mechanics.</div>';
     } else {
       refreshMathPage();
     }
@@ -2133,7 +2156,7 @@ function buildGeneralPage(){
 
 function refreshMathPage(){
   const el = document.getElementById('math-page-content');
-  if(!system){ el.innerHTML='<div style="color:rgba(255,255,255,0.2);padding:40px;text-align:center">Generate a system first.</div>'; return; }
+  if(!system){ el.innerHTML='<div style="color:var(--t4);padding:40px;text-align:center">Generate a system first.</div>'; return; }
 
   const AU = system.AU;
   const k  = 2*Math.PI/14;
@@ -2280,13 +2303,16 @@ function updateMathBtn(){
   if(!btn) return;
   if(system){
     btn.style.opacity='1';
-    btn.style.color='rgba(21,193,123,0.7)';
+    btn.style.background='';
+    btn.style.color='var(--sf-primary-text)';
     btn.style.borderColor='#8C909A';
     btn.style.cursor='pointer';
   } else {
-    btn.style.opacity='0.3';
-    btn.style.color='rgba(21,193,123,0.35)';
-    btn.style.borderColor='#50555E';
+    // Unavailable until a system exists: the disabled tokens, not opacity.
+    btn.style.opacity='1';
+    btn.style.background='var(--sf-disabled-bg)';
+    btn.style.color='var(--sf-disabled-text)';
+    btn.style.borderColor='var(--sf-disabled-line)';
     btn.style.cursor='default';
   }
 }
@@ -2504,17 +2530,17 @@ function publishSelectedPlanet(){
     <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
       <div>
         <div style="font-family:'MD Nichrome Test','Jura',sans-serif;font-weight:300;font-size:18px;letter-spacing:3px;text-transform:uppercase;color:#FAFAFA">Show Your Work</div>
-        <div style="font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.28);margin-top:2px;letter-spacing:1px">Orbital mechanics · SOLARIS</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:12px;color:var(--t4);margin-top:2px;letter-spacing:1px">Orbital mechanics · SOLARIS</div>
       </div>
       <div style="display:flex;align-items:center;gap:8px;padding-top:4px">
-        <button onclick="refreshMathPage()" id="math-refresh-btn" style="font-size:12px;letter-spacing:1.5px;padding:5px 12px;background:rgba(21,193,123,0.06);border-color:#8C909A;color:rgba(21,193,123,0.6);display:none">↺ Refresh</button>
+        <button onclick="refreshMathPage()" id="math-refresh-btn" style="font-size:12px;letter-spacing:1.5px;padding:5px 12px;background:rgba(21,193,123,0.06);border-color:#8C909A;color:var(--sf-primary-text);display:none">↺ Refresh</button>
         <button onclick="closeMathPage()" style="font-size:12px;letter-spacing:1.5px;padding:5px 12px">✕ Close</button>
       </div>
     </div>
     <!-- Mode tabs -->
     <div style="display:flex;gap:0">
-      <div id="math-tab-general" onclick="setMathTab('general')" style="font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;padding:8px 18px 10px;cursor:pointer;border-bottom:2px solid var(--sf-accent);color:var(--sf-accent);transition:all 0.2s">How It Works</div>
-      <div id="math-tab-system" onclick="setMathTab('system')" style="font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;padding:8px 18px 10px;cursor:pointer;border-bottom:2px solid transparent;color:rgba(255,255,255,0.3);transition:all 0.2s" id="math-tab-system">This System</div>
+      <div id="math-tab-general" onclick="setMathTab('general')" style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;padding:8px 18px 10px;cursor:pointer;border-bottom:2px solid var(--sf-accent);color:var(--sf-accent);transition:all 0.2s">How It Works</div>
+      <div id="math-tab-system" onclick="setMathTab('system')" style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;padding:8px 18px 10px;cursor:pointer;border-bottom:2px solid transparent;color:var(--t4);transition:all 0.2s" id="math-tab-system">This System</div>
     </div>
   </div>
 
@@ -2534,26 +2560,26 @@ function publishSelectedPlanet(){
 .math-card-title{
   font-family:'DM Sans',sans-serif;font-weight:500;
   font-size:12px;letter-spacing:2.5px;text-transform:uppercase;
-  color:rgba(21,193,123,0.4);
+  color:var(--sf-primary-text);
   border-bottom:1px solid #50555E;
   padding-bottom:10px;margin-bottom:14px;
 }
 .math-row{
   display:flex;gap:10px;margin-bottom:7px;align-items:flex-start;
-  font-size:11px;line-height:1.55;
+  font-size:12px;line-height:1.55;
 }
 .math-lbl{
   min-width:130px;flex-shrink:0;
   font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:0.8px;
-  text-transform:uppercase;color:rgba(255,255,255,0.25);padding-top:1px;
+  text-transform:uppercase;color:var(--t4);padding-top:1px;
 }
 .math-val{
   font-family:'JetBrains Mono',monospace;font-size:13px;
-  color:rgba(255,255,255,0.7);flex:1;
+  color:var(--t2);flex:1;
 }
 .math-val.note{
-  font-family:'DM Sans',sans-serif;font-size:10px;
-  color:rgba(255,255,255,0.45);font-style:italic;
+  font-family:'DM Sans',sans-serif;font-size:12px;
+  color:var(--t3);font-style:italic;
 }
 .math-val.stable{color:#00E5A0}
 .math-val.warn{color:#FFA500}
@@ -2561,18 +2587,18 @@ function publishSelectedPlanet(){
 .math-formula{
   background:rgba(21,193,123,0.03);border:1px solid #50555E;
   padding:10px 14px;margin:10px 0;font-family:'JetBrains Mono',monospace;
-  font-size:10px;color:rgba(21,193,123,0.55);line-height:1.7;
+  font-size:12px;color:var(--sf-primary-text);line-height:1.7;
 }
 .math-divider{
   border:none;border-top:1px solid #41454D;margin:10px 0;
 }
 .math-planet-header{
   font-family:'DM Sans',sans-serif;font-size:12px;font-weight:300;
-  color:rgba(255,255,255,0.75);margin-bottom:4px;
+  color:var(--t1);margin-bottom:4px;
 }
 .math-planet-sub{
-  font-family:'DM Sans',sans-serif;font-size:10px;
-  color:rgba(255,255,255,0.3);margin-bottom:12px;
+  font-family:'DM Sans',sans-serif;font-size:12px;
+  color:var(--t4);margin-bottom:12px;
 }
 /* Full-width card spans both columns */
 .math-card.full{grid-column:1/-1}

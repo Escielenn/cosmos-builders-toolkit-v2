@@ -21,7 +21,7 @@ const FieldManual = () => {
             eyebrow="Guide · Field manual"
             icon={<Compass className="h-6 w-6 text-sf-primary-text" aria-hidden />}
             title="Field manual"
-            lede="Platform navigation, sharing, keyboard shortcuts and the operational systems behind StellarForge."
+            lede="How to get around StellarForge: navigation, sharing, keyboard shortcuts, and settings."
           >
             <GuideNav />
           </PageHeader>

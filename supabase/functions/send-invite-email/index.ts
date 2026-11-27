@@ -65,7 +65,7 @@ Deno.serve(async (req) => {
               "<strong style="color: #a78bfa;">${safeWorld}</strong>" on StellarForge.
             </p>
             <p style="margin: 0 0 28px; font-size: 14px; color: #94a3b8;">
-              <strong>Your role:</strong> ${role === "editor" ? "Editor — can edit worksheets" : "Viewer — read-only access"}
+              <strong>Your role:</strong> ${role === "editor" ? "Editor (can edit worksheets)" : "Viewer (can read, not edit)"}
             </p>
             <p style="margin: 0 0 24px;">
               <a href="${acceptUrl}" style="display: inline-block; padding: 12px 28px; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 15px;">

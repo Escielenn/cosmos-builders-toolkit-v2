@@ -54,7 +54,7 @@ import {
 
 const REFUSALS = {
   empty: "// ENTER A TERM.",
-  duplicate: "// TERM ALREADY ON FILE.",
+  duplicate: "// TERM ALREADY IN THE LEXICON.",
   full: `// LEXICON FULL. ${MAX_CUSTOM_TERMS.toLocaleString()} TERMS.`,
 } as const;
 
@@ -306,7 +306,7 @@ function ReviewList({
                   onClick={() => {
                     const term = stripPossessive(issue.problem).stem;
                     if (onAdd(term)) toast({ title: "TERM ADDED TO LEXICON.", description: term });
-                    else toast({ title: "TERM NOT ADDED.", description: "Already on file, or the lexicon is full." });
+                    else toast({ title: "TERM NOT ADDED.", description: "Already in the lexicon, or the lexicon is full." });
                   }}
                   className={ACTION_QUIET}
                 >
@@ -361,7 +361,7 @@ function NovelList({
       {
         onSuccess: () => {
           setFiling(null);
-          toast({ title: "CODEX ENTRY FILED.", description: `${term} · ${ENTITY_TYPE_LABELS[type]}` });
+          toast({ title: "CODEX ENTRY CREATED.", description: `${term} · ${ENTITY_TYPE_LABELS[type]}` });
         },
       },
     );

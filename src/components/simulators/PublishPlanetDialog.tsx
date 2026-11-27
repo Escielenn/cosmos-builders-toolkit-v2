@@ -86,7 +86,7 @@ export default function PublishPlanetDialog({
       setPublishedId(entry.id);
       toast({
         title: "PROMOTED TO CANON.",
-        description: `"${payload.planetName}" is now on file in your Codex.`,
+        description: `"${payload.planetName}" is now in your Codex.`,
       });
     } catch (error) {
       toast({
@@ -110,7 +110,7 @@ export default function PublishPlanetDialog({
                 Published
               </DialogTitle>
               <DialogDescription className="mt-2 text-t2">
-                "{payload?.planetName}" is on file. Open it in another simulator, already pointed at it.
+                "{payload?.planetName}" is saved to this world. Open it in another simulator, already pointed at it.
               </DialogDescription>
             </DialogHeader>
             {/* `entityId` is the canonical subject param (F4); every

@@ -2,7 +2,7 @@
 
 const loadingMessages: Record<string, string[]> = {
   dashboard: [
-    "COMPILING SURVEY DATA...",
+    "LOADING YOUR WORLDS...",
     "RETRIEVING WORLD INDEX...",
     "LOADING INSTRUMENTS...",
   ],
@@ -39,7 +39,7 @@ const loadingMessages: Record<string, string[]> = {
   ],
   "tools/generation-ship": [
     "PRESSURIZING HABITAT RING...",
-    "CENSUSING THE CREW MANIFEST...",
+    "COUNTING THE CREW...",
     "BALANCING THE CLOSED LOOP...",
   ],
   "tools/evolutionary-biology": [
@@ -52,7 +52,7 @@ const loadingMessages: Record<string, string[]> = {
     "COMPILING MYTHOLOGICAL STRUCTURE...",
   ],
   "tools/spacecraft-designer": [
-    "INITIALIZING DRYDOCK...",
+    "OPENING DRYDOCK...",
     "LOADING HULL SPECIFICATIONS...",
   ],
   "tools/time-dilation": [
@@ -112,13 +112,13 @@ const loadingMessages: Record<string, string[]> = {
     "LOADING EPOCH DATA...",
   ],
   rogue: [
-    "INITIALIZING N-BODY ENGINE...",
+    "LOADING N-BODY ENGINE...",
     "LOADING GRAVITATIONAL MODEL...",
   ],
   "tools/solaris": [
     "COMPUTING STELLAR ORBITS...",
     "RESOLVING HABITABLE ZONE BOUNDARIES...",
-    "INITIALIZING N-BODY INTEGRATOR...",
+    "LOADING N-BODY INTEGRATOR...",
   ],
   "tools/exosky": [
     "RENDERING ALIEN ATMOSPHERE...",
@@ -152,14 +152,14 @@ const loadingMessages: Record<string, string[]> = {
   ],
   learn: [
     "RETRIEVING ARCHIVE ENTRY...",
-    "LOADING TRANSMISSION...",
+    "LOADING ARTICLE...",
   ],
   profile: [
     "LOADING YOUR PROFILE...",
-    "RETRIEVING CREDENTIALS...",
+    "LOADING ACCOUNT DETAILS...",
   ],
   worlds: [
-    "COMPILING SURVEY DATA...",
+    "LOADING YOUR WORLDS...",
     "RETRIEVING WORLD INDEX...",
   ],
   pricing: [
@@ -167,13 +167,13 @@ const loadingMessages: Record<string, string[]> = {
     "RETRIEVING SUBSCRIPTION DATA...",
   ],
   roadmap: [
-    "LOADING DEVELOPMENT MANIFEST...",
+    "LOADING THE ROADMAP...",
     "RETRIEVING VOTE TALLIES...",
     "SCANNING UPCOMING INSTRUMENTS...",
   ],
   workshop: [
     "LOADING WRITING PROMPTS...",
-    "PREPARING COMPOSITION SURFACE...",
+    "OPENING THE PAGE...",
     "RETRIEVING JOURNAL ENTRIES...",
   ],
   courses: [
@@ -181,7 +181,7 @@ const loadingMessages: Record<string, string[]> = {
     "RETRIEVING COURSE CATALOG...",
   ],
   default: [
-    "INITIALIZING...",
+    "LOADING...",
     "RESOLVING...",
     "ESTABLISHING CONNECTION...",
   ],

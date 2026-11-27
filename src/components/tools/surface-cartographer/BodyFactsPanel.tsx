@@ -51,7 +51,7 @@ function Row<T>({
           </>
         ) : (
           <>
-            <span className="font-mono text-[13px] text-t4">NOT ON FILE</span>
+            <span className="font-mono text-[13px] text-t4">NOT SET</span>
             <Link
               to={setHref}
               className="inline-flex min-h-hit items-center font-mono text-[12px] text-sf-primary-text underline-offset-2 hover:underline"

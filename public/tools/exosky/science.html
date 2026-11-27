@@ -7,6 +7,7 @@
 (function(){try{var h=window.parent!==window?window.parent.document.documentElement:null;if(!h)return;var cs=getComputedStyle(h);var p=cs.getPropertyValue('--sf-primary').trim();var b=cs.getPropertyValue('--sf-primary-bright').trim();var r=document.documentElement.style;if(p)r.setProperty('--sf-accent',p);if(b)r.setProperty('--sf-accent-bright',b);}catch(e){}})();
 </script>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="/tools/_shared/sim-tokens.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EXOSKY — Showing Our Work | StellarForge.tools</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
@@ -18,17 +19,17 @@
     --bg-deep: #09090B;
     --bg-panel: rgba(15,15,16,0.92);
     --sf-accent: #15C17B;
-    --cyan-dim: rgba(0,229,160,0.4);
+    --cyan-dim: var(--sf-primary-text);
     --cyan-border: #50555E;
     --gold: #FFD43B;
     --green: #2ECC71;
     --accent-green: #00E5A0;
     --orange: #FFA500;
     --red: #E74C3C;
-    --text-primary: #FAFAFA;
-    --text-secondary: #C8C8C8;
-    --text-muted: rgba(255,255,255,0.35);
-    --text-ghost: rgba(255,255,255,0.18);
+    --text-primary: var(--t1);
+    --text-secondary: var(--t2);
+    --text-muted: var(--t4);
+    --text-ghost: var(--t4);
     --border: #50555E;
     --font-display: 'MD Nichrome Test', 'MD Nichrome','Jura', sans-serif;
     --font-body: 'DM Sans', sans-serif;
@@ -84,14 +85,14 @@
   }
   .header .subtitle {
     font-family: var(--font-body);
-    font-size: 9px;
+    font-size: 12px;
     letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: rgba(0,229,160,0.35);
+    color: var(--sf-primary-text);
     margin-top: 4px;
   }
   .header .subtitle a {
-    color: rgba(0,229,160,0.25);
+    color: var(--sf-primary-text);
     text-decoration: none;
   }
   .header h1 {
@@ -106,7 +107,7 @@
   .header .intro {
     margin-top: 16px;
     font-size: 13px;
-    color: rgba(255,255,255,0.45);
+    color: var(--t3);
     max-width: 640px;
     line-height: 1.85;
   }
@@ -118,7 +119,7 @@
   .section-header {
     font-family: var(--font-display);
     font-weight: 300;
-    font-size: 8px;
+    font-size: 12px;
     letter-spacing: 3px;
     text-transform: uppercase;
     color: var(--cyan-dim);
@@ -137,12 +138,12 @@
   }
   .section p {
     margin-bottom: 14px;
-    color: rgba(255,255,255,0.55);
+    color: var(--t2);
     line-height: 1.8;
     font-size: 13.5px;
   }
   .section p strong {
-    color: rgba(255,255,255,0.75);
+    color: var(--t1);
     font-weight: 500;
   }
 
@@ -158,7 +159,7 @@
   .data-card .card-header {
     font-family: var(--font-display);
     font-weight: 300;
-    font-size: 7.5px;
+    font-size: 12px;
     letter-spacing: 2.5px;
     text-transform: uppercase;
     color: var(--cyan-dim);
@@ -172,15 +173,15 @@
   }
   .data-label {
     font-family: var(--font-body);
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-muted);
     font-weight: 400;
     letter-spacing: 0.5px;
   }
   .data-value {
     font-family: var(--font-mono);
-    font-size: 11px;
-    color: rgba(255,255,255,0.6);
+    font-size: 12px;
+    color: var(--t2);
     font-weight: 400;
   }
   .data-value.highlight { color: var(--gold); }
@@ -196,12 +197,12 @@
     margin: 16px 0;
     font-family: var(--font-mono);
     font-size: 12px;
-    color: rgba(21,193,123,0.55);
+    color: var(--sf-primary-text);
     line-height: 1.9;
     overflow-x: auto;
   }
   .equation-block .comment {
-    color: rgba(255,255,255,0.18);
+    color: var(--t4);
   }
   .equation-block .keyword {
     color: var(--orange);
@@ -222,13 +223,13 @@
     gap: 14px;
     align-items: flex-start;
     font-size: 12px;
-    color: rgba(255,255,255,0.45);
+    color: var(--t3);
     line-height: 1.7;
   }
   .source-list li:last-child { border-bottom: none; }
   .source-tag {
     font-family: var(--font-display);
-    font-size: 7px;
+    font-size: 12px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     padding: 3px 8px;
@@ -243,13 +244,13 @@
   .source-tag.paper { background: rgba(155,89,182,0.08); color: #9B59B6; border: 1px solid #50555E; }
 
   .source-list .source-title {
-    color: rgba(255,255,255,0.65);
+    color: var(--t2);
     font-weight: 500;
   }
   .source-list .source-url {
     font-family: var(--font-mono);
-    font-size: 10px;
-    color: rgba(0,229,160,0.3);
+    font-size: 12px;
+    color: var(--sf-primary-text);
     word-break: break-all;
   }
 
@@ -268,7 +269,7 @@
   }
   .diagram .caption {
     font-family: var(--font-body);
-    font-size: 10px;
+    font-size: 12px;
     color: var(--text-ghost);
     margin-top: 10px;
     letter-spacing: 0.5px;
@@ -278,7 +279,7 @@
   .val {
     font-family: var(--font-mono);
     font-size: 12px;
-    color: rgba(21,193,123,0.6);
+    color: var(--sf-primary-text);
     background: rgba(21,193,123,0.04);
     padding: 1px 6px;
     border-radius: 0;
@@ -289,12 +290,12 @@
     margin-top: 80px;
     padding-top: 24px;
     border-top: 1px solid var(--border);
-    font-size: 8px;
+    font-size: 12px;
     letter-spacing: 1.5px;
     color: var(--text-ghost);
     text-align: center;
   }
-  .footer a { color: rgba(0,229,160,0.25); text-decoration: none; }
+  .footer a { color: var(--sf-primary-text); text-decoration: none; }
 
   /* ── FLOW DIAGRAM ── */
   .flow {
@@ -311,11 +312,11 @@
     border-radius: 0;
     padding: 10px 16px;
     font-family: var(--font-display);
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 300;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.6);
+    color: var(--t2);
     text-align: center;
     backdrop-filter: blur(8px);
   }
@@ -325,7 +326,7 @@
   }
   .flow-arrow {
     font-size: 14px;
-    color: rgba(255,255,255,0.1);
+    color: var(--t4);
     padding: 0 6px;
   }
 
@@ -334,11 +335,11 @@
     width: 100%;
     border-collapse: collapse;
     margin: 16px 0;
-    font-size: 11px;
+    font-size: 12px;
   }
   .data-table th {
     font-family: var(--font-display);
-    font-size: 7.5px;
+    font-size: 12px;
     font-weight: 300;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -350,12 +351,12 @@
   .data-table td {
     padding: 7px 12px;
     border-bottom: 1px solid #41454D;
-    color: rgba(255,255,255,0.5);
+    color: var(--t2);
   }
-  .data-table td:first-child { color: rgba(255,255,255,0.65); font-weight: 500; }
+  .data-table td:first-child { color: var(--t2); font-weight: 500; }
   .data-table .mono {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 12px;
   }
 
   @media (max-width: 640px) {
@@ -363,9 +364,10 @@
     .header .tool-name { font-size: 24px; letter-spacing: 5px; }
     .section-title { font-size: 15px; }
     .flow { gap: 4px; }
-    .flow-node { font-size: 7px; padding: 6px 10px; }
+    .flow-node { font-size: 12px; padding: 6px 10px; }
   }
 </style>
+<link rel="stylesheet" href="/tools/_shared/science-floor.css">
 <script src="/tools/_shared/science-embed.js"></script>
 </head>
 <body>
@@ -380,7 +382,7 @@
     <div class="subtitle"><a href="https://stellarforge.tools">STELLARFORGE.TOOLS</a></div>
     <h1>Showing Our Work</h1>
     <p class="intro">
-      EXOSKY is not a painting. Every star, every twist of the Milky Way, every atmospheric hue is computed from real astrophysical data and peer-reviewed models. Here's how we built an alien night sky you can trust — and what "trust" means when we're extrapolating beyond what any human has ever seen.
+      Every star, every twist of the Milky Way, and every atmospheric hue in EXOSKY is computed from real astrophysical data and peer-reviewed models. This page shows how the sky is built, and where we are extrapolating beyond anything a human has seen.
     </p>
   </header>
 
@@ -788,10 +790,10 @@
     <div class="section-header">FOR WRITERS</div>
     <div class="section-title">Using EXOSKY in Your Fiction</div>
     <p>
-      When you draw a constellation on an alien sky and name it, you're doing what every sapient species in the universe must do — finding patterns in the real. The stars your character sees from Kepler-442b are in the right places. The Milky Way is brighter and shifted because you're 1,100 light-years deeper into the Perseus Arm. The atmosphere dims and colors the sky because that's what CO₂ and N₂ actually do.
+      When you draw a constellation on an alien sky and name it, you're doing what every sapient species must do: finding patterns in what is really there. The stars your character sees from Kepler-442b are in the right places. The Milky Way is brighter and shifted because you're 1,100 light-years deeper into the Perseus Arm. The atmosphere dims and colors the sky because that's what CO₂ and N₂ actually do.
     </p>
     <p>
-      Your world's mythology can draw from a sky that's been <strong>honestly computed</strong>. The constellations your aliens name aren't arbitrary — they're the shapes that real stellar geometry produces from that specific vantage point. That's what makes them feel alive.
+      Your world's mythology can draw from a sky that's been <strong>honestly computed</strong>. The constellations your aliens name are the shapes real stellar geometry produces from that exact vantage point.
     </p>
     <p>
       Every world exported from EXOSKY carries its provenance: the star coordinates, the viewing planet, the atmospheric model. Your world bible knows its own science.
@@ -801,7 +803,7 @@
   <!-- ════ FOOTER ════ -->
   <footer class="footer">
     © 2025–2026 JASON D. BATT, PH.D. · <a href="https://stellarforge.tools">STELLARFORGE.TOOLS</a><br>
-    <span style="margin-top:6px;display:inline-block;color:rgba(21,193,123,0.15)">These worlds exist in you. Waiting to be found.</span>
+    <span style="margin-top:6px;display:inline-block;color:var(--sf-primary-text)">These worlds exist in you. Waiting to be found.</span>
   </footer>
 
 </div>

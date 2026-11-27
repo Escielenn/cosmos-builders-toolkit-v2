@@ -155,9 +155,9 @@ function CascadeCoverageBar({ entities }: { entities: Entity[] }) {
   }, [entities]);
 
   return (
-    <div className="flex items-center gap-1 w-full">
+    <div className="grid grid-cols-2 min-[480px]:grid-cols-3 md:grid-cols-6 gap-x-1 gap-y-3 w-full">
       {CASCADE_STAGES.map((stage, i) => (
-        <div key={stage} className="flex-1 flex flex-col items-center gap-1.5">
+        <div key={stage} className="min-w-0 flex flex-col items-center gap-1.5">
           <div
             className="w-full h-2 transition-all duration-slow"
             style={{
@@ -449,7 +449,7 @@ export default function WorldShowcase() {
   // --- Feature 1: Dynamic OG meta tags ---
   useMetaTags({
     title: world?.name,
-    description: world?.description || (world ? `Explore ${world.name} - a world built with StellarForge` : undefined),
+    description: world?.description || (world ? `${world.name}, a world built with StellarForge` : undefined),
     url: window.location.href,
     image: world?.header_image_url || undefined,
   });
@@ -554,6 +554,9 @@ export default function WorldShowcase() {
     <div className="min-h-screen bg-sf-void">
       <Header />
 
+      {/* The header is fixed (h-16); everything below starts under it. */}
+      <div className="pt-16">
+
       {/* ----------------------------------------------------------------- */}
       {/* Sample World Banner                                               */}
       {/* ----------------------------------------------------------------- */}
@@ -570,12 +573,12 @@ export default function WorldShowcase() {
               <MoonStar className="w-6 h-6 mt-0.5 shrink-0 text-sf-stellar" aria-hidden="true" />
               <div>
                 <p className="font-heading text-sm font-light uppercase tracking-wide text-sf-stellar-text mb-1">
-                  Sample World - The Tidelock Archives
+                  Sample world: The Tidelock Archives
                 </p>
                 <p className="text-[13px] text-t2 leading-relaxed max-w-2xl">
-                  This is StellarForge's example world, demonstrating the full Environmental Cascade
-                  from physics through culture. Explore the entities, connections, and lore to see
-                  how a world comes together.
+                  StellarForge's example world, built through the full Environmental Cascade from
+                  physics to culture. Read its entries, links, and lore to see how the layers fit
+                  together.
                 </p>
                 <p className="text-[12px] text-t3 leading-relaxed mt-1.5">
                   <strong className="text-t2">Want to edit or build on this world?</strong> Fork
@@ -862,6 +865,7 @@ export default function WorldShowcase() {
         <span className="font-mono text-[12px] uppercase tracking-wide text-t4">
           Built with StellarForge
         </span>
+      </div>
       </div>
     </div>
   );

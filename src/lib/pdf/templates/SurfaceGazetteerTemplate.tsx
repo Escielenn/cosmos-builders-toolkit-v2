@@ -58,7 +58,7 @@ const SurfaceGazetteerTemplate = ({ report, mapImage, worldName, date }: Props) 
         </View>
       )}
       {report.groups.length === 0 && report.unplaced.length === 0 && (
-        <Text style={styles.notesText}>No places on file for this body.</Text>
+        <Text style={styles.notesText}>No places on this body yet.</Text>
       )}
       <PDFFooter />
     </Page>

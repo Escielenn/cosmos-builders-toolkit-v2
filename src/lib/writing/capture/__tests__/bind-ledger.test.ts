@@ -79,13 +79,13 @@ describe("bindClaim", () => {
     const onePlanet = ENTITIES.filter((e) => e.id !== "vorn");
     let b = bindFirst(para("The planet's gravity was 1.6 g."), {}, onePlanet);
     expect(b?.subjectId).toBe("kellis");
-    expect(b?.reason).toBe("ONLY ONE ON FILE");
+    expect(b?.reason).toBe("ONLY ONE IN CANON");
     b = bindFirst(para("The planet's gravity was 1.6 g."));
     expect(b?.subjectId).toBeNull();
     expect(b?.reason).toBeNull();
   });
 
-  it("never uses ONLY ONE ON FILE for vessels", () => {
+  it("never uses ONLY ONE IN CANON for vessels", () => {
     const b = bindFirst(para("A crew of 4 crammed into the shuttle."));
     expect(b?.subjectId).toBeNull();
   });

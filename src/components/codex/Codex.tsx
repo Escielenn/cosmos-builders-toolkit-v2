@@ -484,7 +484,7 @@ const Codex = ({ worldId, collapsed, onCollapse }: CodexProps) => {
           return allEmpty ? (
             <div className="px-3 py-6 text-center">
               <p className="font-mono text-[12px] uppercase tracking-wider text-t4">
-                NO MATCHES ON FILE.
+                No matches.
               </p>
             </div>
           ) : null;

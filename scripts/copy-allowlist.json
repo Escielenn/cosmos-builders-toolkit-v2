@@ -1,5 +1,8 @@
 [
-  { "file": "src/lib/continuity.ts", "phrase": "effortless", "reason": "Detection keyword: prose that says 'effortless' contradicts high gravity. Not copy." },
-  { "file": "src/lib/gravitas/experiential.ts", "phrase": "effortless", "reason": "Physical description of low-gravity motion in generated sensory prose." },
-  { "file": "src/lib/surface-gravity/data.ts", "phrase": "effortless", "reason": "Physical description of motion at very low gravity." }
+  {"file": "src/lib/continuity.ts", "phrase": "effortless", "reason": "Detection keyword: prose that says 'effortless' contradicts high gravity. Not copy."},
+  {"file": "src/lib/gravitas/experiential.ts", "phrase": "effortless", "reason": "Physical description of low-gravity motion in generated sensory prose."},
+  {"file": "src/lib/surface-gravity/data.ts", "phrase": "effortless", "reason": "Physical description of motion at very low gravity."},
+  {"file": "src/components/audio/AudioSelectorDialog.tsx", "phrase": "curated", "reason": "The JSX-text matcher picks up the useState<Tab>(\"curated\") generic. Code, not copy."},
+  {"file": "src/lib/technology-data.ts", "phrase": "empower", "reason": "Political-science category values (who a technology gives power to). Literal, not filler."},
+  {"file": "src/pages/tools/EnvironmentalChainReaction.tsx", "phrase": "leverage", "reason": "Physical leverage (a high-gravity fear), not the business verb."}
 ]

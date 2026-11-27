@@ -12,7 +12,8 @@ import SimulatorCascadeFooter from "@/components/simulators/SimulatorCascadeFoot
 import LoadSimulationSheet from "@/components/simulators/LoadSimulationSheet";
 import PublishToWorldDialog from "@/components/simulators/PublishToWorldDialog";
 import Header from "@/components/layout/Header";
-import NarrativeBridgePanel, { useNarrativeBridge } from "@/components/simulators/NarrativeBridgePanel";
+import NarrativeBridgePanel, { NarrativeBridgeToggle, useNarrativeBridge } from "@/components/simulators/NarrativeBridgePanel";
+import { SIM_MAIN, SIM_STAGE, SIM_TOOLBAR, SIM_TOOLBAR_WRAP } from "@/components/simulators/sim-chrome";
 import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions";
 import { decodeHandoff, type HandoffPayload } from "@/lib/simulators/handoff";
 import { getEntry } from "@/services/world-entries";
@@ -131,7 +132,10 @@ const ExoskySimulator = () => {
         <Header />
         {/* In flow (not fixed) at one viewport tall, so the cascade footer
             can sit below the sky. */}
-        <main id="main" tabIndex={-1} className="relative h-[calc(100dvh-64px)]" style={{ marginTop: 64 }}>
+        <main id="main" tabIndex={-1} className={SIM_MAIN} style={{ marginTop: 64 }}>
+          {/* ExoSky moves its own panels for the bridge (narrativeBridgeOpen),
+              so its stage takes no bridge offset. */}
+          <div className={SIM_STAGE}>
           <Suspense fallback={<SimLoader />}>
             <ExoSkyV2
               narrativeBridgeOpen={narrativeBridge.panelProps.open}
@@ -140,9 +144,11 @@ const ExoskySimulator = () => {
               onHandoffConsumed={clearHandoffParam}
             />
           </Suspense>
+          </div>
           {/* Save/Load controls */}
           {(
-            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 border border-sf-line bg-sf-surface px-3 py-2">
+            <div className={SIM_TOOLBAR_WRAP}>
+            <div className={SIM_TOOLBAR}>
               <Button
                 variant="outline"
                 size="sm"
@@ -152,7 +158,7 @@ const ExoskySimulator = () => {
                   refreshPayload();
                   setPublishDialogOpen(true);
                 }}
-                className="bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] uppercase tracking-wider min-h-hit px-3"
+                className="bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] min-h-hit px-3"
               >
                 <Rocket className="w-3 h-3 mr-1" />
                 Publish
@@ -161,7 +167,7 @@ const ExoskySimulator = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setLoadSheetOpen(true)}
-                className="bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] uppercase tracking-wider min-h-hit px-3"
+                className="bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] min-h-hit px-3"
               >
                 <FolderOpen className="w-3 h-3 mr-1" />
                 Load
@@ -170,7 +176,7 @@ const ExoskySimulator = () => {
                 variant="outline"
                 size="sm"
                 onClick={requestSave}
-                className="bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] uppercase tracking-wider min-h-hit px-3"
+                className="bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] min-h-hit px-3"
               >
                 <Save className="w-3 h-3 mr-1" />
                 Save
@@ -184,6 +190,8 @@ const ExoskySimulator = () => {
               />
               {/* Brief S1: the writer can see what this run is ON. */}
               <SimSubjectChip worldId={worldId} />
+              <NarrativeBridgeToggle {...narrativeBridge.panelProps} />
+            </div>
             </div>
           )}
           <NarrativeBridgePanel

@@ -201,7 +201,7 @@ export function WorldPalette({ editor, state, onClose }: WorldPaletteProps): JSX
       >
         {results.length === 0 && (
           <p className="px-3 py-3 font-mono text-[12px] uppercase text-t3">
-            {world.loading ? "READING THE WORLD…" : "NO MATCH ON FILE."}
+            {world.loading ? "READING THE WORLD…" : "No matches."}
           </p>
         )}
         {results.map((it, i) => {

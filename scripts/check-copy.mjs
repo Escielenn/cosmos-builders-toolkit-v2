@@ -41,7 +41,34 @@ export const BANNED = [
   ["supercharge", /\bsupercharg(?:e|es|ed|ing)\b/i],
   ["effortless", /\beffortless(?:ly)?\b/i],
   ["game-changer", /\bgame[- ]chang(?:er|ing)\b/i],
+  // 1.8: "on file" as filler (empty states, readouts, toasts). The writing
+  // ledger's "CLAIM DETECTED. NOT ON FILE. ADOPT?" family is CLAUDE.md's own
+  // Ship's Voice example and is allow-listed by file.
+  ["on file", /\bon file\b/i],
+  ["initializing", /\binitiali[sz]ing\b/i],
+  ["commence", /\bcommenc(?:e|es|ed|ing)\b/i],
+  ["personnel", /\bpersonnel\b/i],
+  ["clearance", /\bclearance\b/i],
+  ["curated", /\bcurated\b/i],
+  ["empower", /\bempower(?:s|ed|ing|ment)?\b/i],
+  ["leverage", /\bleverag(?:e|es|ed|ing)\b/i],
+  ["tapestry", /\btapestr(?:y|ies)\b/i],
+  ["delve", /\bdelv(?:e|es|ing)\b/i],
+  ["embark", /\bembark(?:s|ed|ing)?\b/i],
+  ["cutting-edge", /\bcutting[- ]edge\b/i],
+  ["revolutionize", /\brevolutioni[sz](?:e|es|ed|ing)\b/i],
+  ["in today's world", /\bin today(?:'|’)s (?:world|landscape|age)\b/i],
+  ["harness the power", /\bharness(?:es|ed|ing)? the power\b/i],
+  ["unleash", /\bunleash(?:es|ed|ing)?\b/i],
+  ["robust", /\brobust\b/i],
+  ["not just X, but Y", /\bnot (?:just|only|merely)\b[^.!?]{0,80},\s*(?:but|it(?:'|’)s|they(?:'|’)re)\b/i],
 ];
+
+/**
+ * A lowercase token with no spaces ("curated", "sf-clearance-title",
+ * "empowers-state") is an identifier, enum value or class name, not copy.
+ */
+const IDENTIFIER = /^[a-z0-9_.:/-]+$/;
 
 /** Strip block and line comments; keep line numbers (newlines survive). */
 export function stripComments(src) {
@@ -78,6 +105,7 @@ export function extractStrings(src) {
 export function findViolations(src) {
   const hits = [];
   for (const { value, line } of extractStrings(src)) {
+    if (IDENTIFIER.test(value.trim())) continue;
     // A designation is fine as a value ("G2V"); only a bare label is banned.
     for (const [id, re] of BANNED) {
       if (re.test(value)) hits.push({ id, line, value: value.trim().slice(0, 90) });

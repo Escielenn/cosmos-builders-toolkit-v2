@@ -378,14 +378,14 @@ const PlanetaryProfile = () => {
 
         {/* Introduction */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
-          <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 gradient-text">
+          <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 text-t1">
             Building Believable Worlds
           </h2>
           <blockquote className="border-l-2 border-sf-primary pl-4 italic text-lg mb-4">
-            "The environment isn't just a backdrop, it's a character that shapes every aspect of the story."
+            "The environment is a character. It shapes every part of the story."
           </blockquote>
           <p className="text-t2 mb-4">
-            This tool helps you create scientifically-grounded planetary environments and explore how they shape the societies, psychology, and narratives of their inhabitants. Start with the physical parameters, then trace their consequences through to story.
+            Build a planet from real physics, then follow what it does to the societies, minds, and stories of the people who live there. Start with the physical parameters and trace them through to story.
           </p>
           <div className="text-sm text-t3 mb-4">
             <strong className="text-t1">The Cascade Principle:</strong>

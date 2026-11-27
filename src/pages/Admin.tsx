@@ -362,7 +362,7 @@ const TasksSidebarContent = ({ onNavigate }: { onNavigate: (tab: string) => void
         {isLoading ? (
           <div className="flex justify-center py-6"><Loader size="sm" /></div>
         ) : pendingTodos.length === 0 && doneTodos.length === 0 ? (
-          <p className="text-center text-t4 text-xs py-8">NO TASKS ON FILE.</p>
+          <p className="text-center text-t4 text-xs py-8">No tasks yet.</p>
         ) : (
           <>
             {/* Active tasks */}
@@ -655,7 +655,7 @@ const UsersTab = () => {
               {(!users || users.length === 0) && (
                 <tr>
                   <td colSpan={7} className="px-4 py-8 text-center text-t4">
-                    {searchQuery.length >= 2 ? "NO USERS MATCH THE QUERY." : "NO USERS ON FILE."}
+                    {searchQuery.length >= 2 ? "NO USERS MATCH THE QUERY." : "No users yet."}
                   </td>
                 </tr>
               )}
@@ -750,7 +750,7 @@ const TicketDetail = ({ ticket }: { ticket: AdminTicket }) => {
             disabled={saving}
           >
             <Save className="w-3 h-3" />
-            {saving ? "SAVING..." : "SAVE NOTES"}
+            {saving ? "Saving…" : "Save notes"}
           </Button>
         )}
       </div>
@@ -823,7 +823,7 @@ const TicketsTab = () => {
               );
             })}
             {(!tickets || tickets.length === 0) && (
-              <tr><td colSpan={7} className="px-4 py-8 text-center text-t4">NO TICKETS ON FILE.</td></tr>
+              <tr><td colSpan={7} className="px-4 py-8 text-center text-t4">No tickets yet.</td></tr>
             )}
           </tbody>
         </table>
@@ -896,7 +896,7 @@ const ContactDetail = ({ contact }: { contact: AdminContact }) => {
             disabled={saving}
           >
             <Save className="w-3 h-3" />
-            {saving ? "SAVING..." : "SAVE NOTES"}
+            {saving ? "Saving…" : "Save notes"}
           </Button>
         )}
       </div>
@@ -963,7 +963,7 @@ const ContactsTab = () => {
               );
             })}
             {(!contacts || contacts.length === 0) && (
-              <tr><td colSpan={6} className="px-4 py-8 text-center text-t4">NO CONTACTS ON FILE.</td></tr>
+              <tr><td colSpan={6} className="px-4 py-8 text-center text-t4">No contacts yet.</td></tr>
             )}
           </tbody>
         </table>
@@ -1054,7 +1054,7 @@ const SubscriptionsTab = () => {
                     </tr>
                   ))}
                   {(!subs || subs.length === 0) && (
-                    <tr><td colSpan={7} className="px-4 py-8 text-center text-t4">NO SUBSCRIPTIONS ON FILE.</td></tr>
+                    <tr><td colSpan={7} className="px-4 py-8 text-center text-t4">No subscriptions yet.</td></tr>
                   )}
                 </tbody>
               </table>

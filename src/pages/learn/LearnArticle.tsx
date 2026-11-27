@@ -79,11 +79,11 @@ const LearnArticle = () => {
               size="page"
               back={{ label: "Back to Learn", to: "/learn" }}
               eyebrow="Learn"
-              title="Article not on file"
+              title="Article not found"
               lede="This article doesn't exist or hasn't been published yet."
             />
             <EmptyState
-              title="ARTICLE NOT ON FILE."
+              title="ARTICLE NOT FOUND."
               actionLabel="OPEN SF UNIVERSITY"
               actionTo="/learn"
             />

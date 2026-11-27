@@ -35,7 +35,7 @@ export type BindReason =
   | "SUBJECT"
   | "SETTING"
   | "POV"
-  | "ONLY ONE ON FILE";
+  | "ONLY ONE IN CANON";
 
 export interface SceneBinding {
   subjectEntityId?: string | null;
@@ -147,7 +147,7 @@ export function bindClaim(claim: RawClaim, p: Paragraph, ctx: BindContext): Boun
   // world with no moons, a one-star system.
   if (candidates === 1) {
     const id = only.find((x): x is string => !!x);
-    if (id) return done(id, "ONLY ONE ON FILE");
+    if (id) return done(id, "ONLY ONE IN CANON");
   }
 
   return done(null, null);

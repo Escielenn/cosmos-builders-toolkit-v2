@@ -65,7 +65,7 @@ export default function UserPlaylistsTab() {
 
         {expanded.tracks.length === 0 ? (
           <p className="text-t4 text-xs py-4 text-center">
-            No tracks yet. Browse curated tracks and add them to this playlist.
+            No tracks yet. Browse the Library tab and add tracks to this playlist.
           </p>
         ) : (
           <div className="border border-sf-line-hairline divide-y divide-sf-line-hairline">

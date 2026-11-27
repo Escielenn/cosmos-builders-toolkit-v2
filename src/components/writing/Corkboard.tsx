@@ -243,7 +243,7 @@ export function Corkboard({
           className="py-0 pb-4"
           eyebrow="// CORKBOARD"
           title="Nothing on the board yet."
-          description="NO SYNOPSES ON FILE."
+          description="No synopses yet."
         />
         <p className="mx-auto max-w-sm font-sans text-[14px] leading-relaxed text-t2">
           Create a document and give it a synopsis. The board shows one card per

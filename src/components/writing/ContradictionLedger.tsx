@@ -124,7 +124,7 @@ export function ContradictionLedger(props: ContradictionLedgerProps): JSX.Elemen
   return (
     <div ref={listRef} className="pb-4">
       <p className="px-4 pt-3 font-mono text-[12px] uppercase text-t3" role="status" aria-live="polite">
-        {contradictions.length + continuityNotes.length} CONTRADICTIONS · {claims.length} NOT ON FILE
+        {contradictions.length + continuityNotes.length} CONTRADICTIONS · {claims.length} NOT IN CANON
       </p>
 
       {contradictions.length + continuityNotes.length > 0 && (
@@ -170,8 +170,8 @@ export function ContradictionLedger(props: ContradictionLedgerProps): JSX.Elemen
       )}
 
       {claims.length > 0 && (
-        <section aria-label="Claims not on file">
-          <Eyebrow>Not on file</Eyebrow>
+        <section aria-label="Claims not in canon">
+          <Eyebrow>Not in canon</Eyebrow>
           {claims.map((i) => (
             <ClaimCard
               key={i.key}
@@ -200,7 +200,7 @@ export function ContradictionLedger(props: ContradictionLedgerProps): JSX.Elemen
         <div className="px-4 py-6">
           <p className="mb-1 font-sans text-[15px] text-sf-primary-text">Consistent so far</p>
           <p className="text-[13px] leading-relaxed text-t2">
-            No claim in this document disagrees with the world, and none is waiting to be filed.
+            No claim in this document disagrees with the world, and none is waiting to be added to canon.
           </p>
         </div>
       )}
@@ -235,7 +235,7 @@ export function ContradictionLedger(props: ContradictionLedgerProps): JSX.Elemen
                           <span aria-hidden="true" className="text-sf-teal">⟡</span>
                         )}
                         <span className="min-w-0 flex-1 truncate">
-                          {i.kind === "contradiction" ? "CONTRADICTION" : "NOT ON FILE"} · {predicateLabel(i.claim.predicate)} ·{" "}
+                          {i.kind === "contradiction" ? "CONTRADICTION" : "NOT IN CANON"} · {predicateLabel(i.claim.predicate)} ·{" "}
                           {i.valueText}
                           {i.kind === "contradiction" ? ` VS ${i.fact.insert}` : ""}
                         </span>
@@ -282,7 +282,7 @@ function Excerpt({ text, onLocate }: { text: string; onLocate: () => void }): JS
 function useSubjectName(id: string | null): string {
   const world = useStudioWorld();
   if (!id) return "WORLD · NO SUBJECT";
-  return world?.entityById.get(id)?.name ?? "A SUBJECT NO LONGER ON FILE";
+  return world?.entityById.get(id)?.name ?? "A SUBJECT THAT NO LONGER EXISTS";
 }
 
 function SubjectLine({ item }: { item: CaptureItem }): JSX.Element {
@@ -330,7 +330,7 @@ function ClaimCard({
           const res = r as AssertResult;
           if (res.status === "conflict") return setConflict(res.existing);
           setConflict(null);
-          toast({ title: supersede ? "CANON REPLACED. PRIOR VALUE KEPT ON FILE." : "ADOPTED AS CANON." });
+          toast({ title: supersede ? "CANON REPLACED. PREVIOUS VALUE KEPT." : "ADOPTED AS CANON." });
         },
       },
     );
@@ -338,14 +338,14 @@ function ClaimCard({
   return (
     <div className={cardClass(focused)} data-capture-key={item.key} tabIndex={-1}>
       <p className="mb-1 font-mono text-[12px] uppercase text-sf-teal-text">
-        <span aria-hidden="true">⟡ </span>Claim detected. Not on file. Adopt?
+        <span aria-hidden="true">⟡ </span>Claim detected. Not in canon. Adopt?
       </p>
       <SubjectLine item={item} />
       <Excerpt text={item.claim.sentence} onLocate={onLocate} />
       {conflict ? (
         <div className="mt-2" role="group" aria-label="Canon conflict">
           <p className="mb-2 font-mono text-[12px] uppercase text-sf-amber-text">
-            // CANON ON FILE: {conflict.value_text ?? "A DIFFERENT VALUE"}.
+            // IN CANON: {conflict.value_text ?? "A DIFFERENT VALUE"}.
           </p>
           <div className="flex flex-wrap gap-2">
             <button type="button" className={ACTION_QUIET} disabled={busy} onClick={() => setConflict(null)}>
@@ -415,7 +415,7 @@ function ContradictionCard({
             return;
           }
           setMode("idle");
-          toast({ title: isCanon ? "CANON REPLACED. PRIOR VALUE KEPT ON FILE." : "ADOPTED AS CANON." });
+          toast({ title: isCanon ? "CANON REPLACED. PREVIOUS VALUE KEPT." : "ADOPTED AS CANON." });
         },
       },
     );
@@ -445,7 +445,7 @@ function ContradictionCard({
       <dl className="mb-2 grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-1 font-mono text-[12px] uppercase">
         <dt className="text-t4">Prose</dt>
         <dd className="text-t1">{item.valueText}</dd>
-        <dt className="text-t4">On file</dt>
+        <dt className="text-t4">Canon</dt>
         <dd className="flex flex-wrap items-center gap-1.5 text-t1">
           {fact.insert}
           <ConfidenceTag confidence={fact.confidence} outranked={!!fact.outrankedBy} />
@@ -546,7 +546,7 @@ function ContradictionCard({
 
       {fact.confidence === "proposed" && fact.factId && mode === "idle" && (
         <div className="mt-3 border-t border-sf-line-hairline pt-2">
-          <p className="mb-1.5 font-mono text-[12px] uppercase text-t4">The value on file is proposed</p>
+          <p className="mb-1.5 font-mono text-[12px] uppercase text-t4">The canon value is only proposed</p>
           <ProposedFactActions worldId={worldId} factId={fact.factId} label={predicateLabel(item.claim.predicate)} />
         </div>
       )}

@@ -284,7 +284,7 @@ const OneBigLie = () => {
 
         {/* Introduction Panel */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
-          <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 gradient-text">
+          <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 text-t1">
             The One Big Lie Framework
           </h2>
           <blockquote className="border-l-2 border-sf-primary pl-4 italic text-lg mb-4">
@@ -294,9 +294,9 @@ const OneBigLie = () => {
           <p className="text-t2 mb-4">
             The One Big Lie is a foundational principle of hard science fiction:
             you're allowed one major departure from known physics, but everything
-            else must follow real science rigorously. This tool guides you through
-            declaring that departure and tracing its consequences across your
-            entire world, from physics to biology to mythology to culture.
+            else must follow real science rigorously. Here you name that departure
+            and trace its consequences across your world, from physics to
+            biology to mythology to culture.
           </p>
           <div className="text-sm text-t3 mb-4">
             <strong className="text-t1">The Cascade Principle:</strong>

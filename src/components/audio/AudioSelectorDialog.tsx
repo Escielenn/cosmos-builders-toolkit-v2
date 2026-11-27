@@ -24,7 +24,7 @@ import { OPEN_AUDIO_SELECTOR_EVENT } from "./audio-events";
 type Tab = "curated" | "playlists" | "upload";
 
 const TABS: { id: Tab; label: string; pro?: boolean }[] = [
-  { id: "curated", label: "Curated" },
+  { id: "curated", label: "Library" },
   { id: "playlists", label: "My Playlists", pro: true },
   { id: "upload", label: "Upload", pro: true },
 ];

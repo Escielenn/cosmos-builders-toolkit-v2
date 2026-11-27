@@ -1793,10 +1793,11 @@ html {
   padding: 6px 8px;
   border-left: 2px solid transparent;
   transition: all 0.15s ease;
-  color: rgb(var(--t2-rgb) / 0.4);
+  /* Real tiers, not t2 at 40%: the nav is read, not decoration. */
+  color: var(--t3);
 }
 .sf-instrument-nav-item:hover {
-  color: rgb(var(--t2-rgb) / 0.7);
+  color: var(--t1);
   background: rgb(var(--t1-rgb) / 0.03);
 }
 .sf-instrument-nav-item[data-active="true"] {
@@ -1806,7 +1807,7 @@ html {
 .sf-instrument-nav-number {
   font-family: var(--sf-font-mono);
   font-size: 12px;
-  color: rgba(255, 179, 71, 0.4);
+  color: var(--sf-amber-warm-text);
   margin-right: 6px;
 }
 

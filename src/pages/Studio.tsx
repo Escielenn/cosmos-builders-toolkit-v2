@@ -379,7 +379,7 @@ export default function Studio(): JSX.Element {
                 </div>
               ) : (
                 <p className="font-sans text-[14px] text-t3">
-                  Characters you create in your worlds will gather here.
+                  Characters you create in your worlds appear here.
                 </p>
               )}
             </section>
@@ -410,7 +410,7 @@ export default function Studio(): JSX.Element {
                 </div>
               ) : (
                 <p className="font-sans text-[14px] text-t3">
-                  Notes pinned in your worlds surface here.
+                  Notes pinned in your worlds appear here.
                 </p>
               )}
             </section>

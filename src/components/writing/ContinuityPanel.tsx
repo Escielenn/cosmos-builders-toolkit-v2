@@ -176,11 +176,11 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
     return (
       <div className="px-4 py-6">
         <p className="mb-1 font-mono text-[13px] uppercase tracking-wide text-t1">
-          Ambiguous: {candidates.length} {noun} on file. Which is this scene about?
+          Ambiguous: {candidates.length} {noun} in canon. Which is this scene about?
         </p>
         <p className="mb-3 text-[13px] leading-relaxed text-t2">
           Picking one lets the check compare your prose to the right numbers
-          instead of every candidate on file.
+          instead of every candidate.
         </p>
         <div className="space-y-2">
           {candidates.map((c) => (
@@ -211,7 +211,7 @@ export function ContinuityPanel({ worldId, content, entityId, onSetEntityId }: C
   const subjectBar = entityId && (
     <div className="flex items-center justify-between border-b border-sf-line-hairline px-4 py-2">
       <span className="text-[12px] uppercase tracking-wide text-t4">
-        Scene about <span className="text-t2">{currentSubject?.title ?? "a subject no longer on file"}</span>
+        Scene about <span className="text-t2">{currentSubject?.title ?? "a subject that no longer exists"}</span>
       </span>
       {canChangeSubject && (
         <button

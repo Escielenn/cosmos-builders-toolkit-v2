@@ -39,7 +39,7 @@ export default function FactInfobox({ worldId, rows, isLoading }: FactInfoboxPro
   if (isLoading && rows.length === 0) return null;
   return (
     <div className="sf-infobox">
-      <div className="sf-infobox-header">ON FILE</div>
+      <div className="sf-infobox-header">CANON</div>
       {rows.length === 0 ? (
         <p className="py-2 font-mono text-[12px] uppercase tracking-wider text-t4">
           // NO INSTRUMENT HAS RECORDED THIS ENTITY YET.

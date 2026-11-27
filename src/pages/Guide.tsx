@@ -14,7 +14,7 @@ const SECTIONS = [
   {
     title: "Getting Started",
     description:
-      "Learn the Environmental Cascade principle and build your first world through a guided 4-step pathway.",
+      "Learn the Environmental Cascade principle and build your first world in three free steps.",
     to: "/getting-started",
     icon: Sparkles,
     accent: "text-sf-emerald-text",
@@ -64,9 +64,9 @@ const Guide = () => {
         <PageContainer variant="standalone">
         <PageHeader
           size="page"
-          eyebrow="Navigation systems"
+          eyebrow="Help"
           title="Guide"
-          lede="Every system referenced, every course charted: start with the cascade, look up a tool, or learn the platform."
+          lede="Start with the cascade, look up a tool, or learn your way around StellarForge."
         >
           <GuideNav />
         </PageHeader>

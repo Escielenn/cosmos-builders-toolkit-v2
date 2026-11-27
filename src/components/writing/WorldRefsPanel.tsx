@@ -132,7 +132,7 @@ export function WorldRefsPanel({ pins, onUnpin, onPinSource, onCite, onInsertPla
 
       {filtered ? (
         <ul aria-label="Matching values" className="px-3">
-          {filtered.length === 0 && <li className="py-3 font-mono text-[12px] uppercase text-t3">NO MATCH ON FILE.</li>}
+          {filtered.length === 0 && <li className="py-3 font-mono text-[12px] uppercase text-t3">No matches.</li>}
           {filtered.map((r) => row(r.item, r.reason, true))}
         </ul>
       ) : (

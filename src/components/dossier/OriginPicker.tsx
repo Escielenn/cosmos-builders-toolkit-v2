@@ -87,7 +87,7 @@ export function OriginPicker({
         </Select>
       ) : (
         <p id={selectId} className="font-mono text-[12px] uppercase tracking-[0.10em] text-t3">
-          // NO {brand.toUpperCase()} RECORDS ON FILE IN THIS WORLD.
+          // NO {brand.toUpperCase()} RECORDS IN THIS WORLD YET.
         </p>
       )}
 

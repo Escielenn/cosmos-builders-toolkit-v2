@@ -33,7 +33,7 @@ const narrowHabitableBand: SimFlagRule<TidelockOutput> = (o) => {
     sim: "tidelock",
     severity: "tension",
     title: `HABITABLE BAND: ${o.habPct.toFixed(1)}°`,
-    body: "That is not a civilization. That is a valley. A band this narrow supports one settlement, not a species-scale story — worth knowing before the manuscript assumes more than one.",
+    body: "A band this narrow supports one valley's worth of settlement. Check this before the manuscript assumes more than one city.",
     cites: { habPct: Number(o.habPct.toFixed(1)) },
   };
 };
@@ -46,7 +46,7 @@ const noHeatTransport: SimFlagRule<TidelockOutput> = (o) => {
     sim: "tidelock",
     severity: "tension",
     title: `DAYSIDE ${Math.round(o.tSSP)}K, NIGHTSIDE ${Math.round(o.tASP)}K`,
-    body: "No heat transport. Nothing crosses the terminator — the night side is its own separate world, physically, and the day side never cools.",
+    body: "No heat transport. Nothing crosses the terminator. The night side is physically a separate world, and the day side never cools.",
     cites: { tSSP: Math.round(o.tSSP), tASP: Math.round(o.tASP) },
   };
 };
@@ -58,7 +58,7 @@ const weakEscapeVelocity: SimFlagRule<TidelockOutput> = (o) => {
     sim: "tidelock",
     severity: "tension",
     title: `ESCAPE VELOCITY: ${o.escVel.toFixed(1)} KM/S`,
-    body: "Below Mars's own 5.0 km/s. Over geological time a world this small tends to lose its atmosphere rather than keep one — this world may not have air by the time your story is set.",
+    body: "Below Mars's own 5.0 km/s. Over geological time a world this small tends to lose its atmosphere, so this world may have no air left by the time your story is set.",
     cites: { escVel: Number(o.escVel.toFixed(1)) },
   };
 };
@@ -70,7 +70,7 @@ const invertedThermalGradient: SimFlagRule<TidelockOutput> = (o) => {
     sim: "tidelock",
     severity: "tension",
     title: `TERMINATOR ${Math.round(o.tTerm)}K OVER SUBSTELLAR ${Math.round(o.tSSP)}K`,
-    body: "The terminator reads hotter than the point facing the star directly — the reverse of what tidal heating from the star alone produces. Worth a second look if that wasn't the intent.",
+    body: "The terminator reads hotter than the point facing the star, the reverse of what the star's heating alone would produce. Worth a second look if that wasn't the intent.",
     cites: { tSSP: Math.round(o.tSSP), tTerm: Math.round(o.tTerm) },
   };
 };

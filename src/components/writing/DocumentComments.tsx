@@ -126,7 +126,7 @@ export function DocumentComments({ docId, worldId, editor }: DocumentCommentsPro
   if (unavailable) {
     return (
       <p className="px-4 py-4 font-mono text-[12px] text-sf-amber-text" role="status">
-        {"// COMMENTS NOT ON FILE YET. STORAGE PENDING."}
+        {"// COMMENTS CANNOT BE SAVED YET."}
       </p>
     );
   }

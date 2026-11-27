@@ -119,7 +119,7 @@ describe("staleness", () => {
   it("is missing when the source no longer records it", () => {
     const s = factRefStatus(GRAVITY, undefined);
     expect(s.state).toBe("missing");
-    expect(staleLine(s)).toBe("WAS 1.4 g · NO LONGER ON FILE");
+    expect(staleLine(s)).toBe("WAS 1.4 g · NO LONGER IN CANON");
   });
 
   it("treats case as meaning", () => {

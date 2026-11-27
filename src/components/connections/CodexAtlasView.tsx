@@ -367,7 +367,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
                   navigate(`/worlds/${worldId}/codex/${pin.id}`);
                 }}
                 className="block cursor-grab active:cursor-grabbing"
-                title={`${pin.name} — open its Codex page`}
+                title={`Open the Codex page for ${pin.name}`}
               >
                 <span
                   className="block h-3 w-3 rounded-none ring-2 ring-sf-surface transition-transform group-hover:scale-125"
@@ -397,7 +397,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
             <p className="absolute inset-0 flex items-center justify-center bg-sf-surface/70 px-6 text-center font-mono text-[12px] uppercase tracking-wider text-t3">
               {pins.length === 0
                 ? here.id === null
-                  ? "NO SYSTEMS ON FILE. CREATE ONE IN THE CODEX."
+                  ? "No star systems yet. Create one in the Codex."
                   : "NOTHING INSIDE THIS YET."
                 : "NOTHING PLACED YET. DRAG FROM THE TRAY."}
             </p>
@@ -541,7 +541,7 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
                 {territoryField.territories.length > 0 && (
                   <p className="mt-2 text-[12px] leading-relaxed text-t2">
                     Each border is the convex hull of the systems that polity
-                    governs — the smallest region the holdings support. It
+                    governs, the smallest region its holdings support. It
                     claims nothing about the space outside it.
                   </p>
                 )}
@@ -636,9 +636,9 @@ export function CodexAtlasView({ worldId }: CodexAtlasViewProps) {
               </ul>
               <p className="mt-2 flex items-start gap-1.5 text-[12px] leading-relaxed text-t3">
                 <Crosshair className="mt-0.5 h-3 w-3 shrink-0" aria-hidden />
-                Drag one onto the map to place it. Nothing is positioned for
-                you — a pin you did not place would be a guess wearing the
-                same dot as a decision.
+                Drag one onto the map to place it. Nothing is placed for you,
+                because a pin you did not place would look the same as one
+                you decided on.
               </p>
             </>
           )}

@@ -260,7 +260,7 @@ const WorldNotes = ({ worldId, readOnly }: WorldNotesProps) => {
               <>
                 {notes.length === 0 && (
                   <p className="font-mono text-sf-mono uppercase text-t4 py-2">
-                    NO NOTES ON FILE. ADD ONE TO CAPTURE IDEAS ABOUT THIS WORLD.
+                    No notes yet. Add one to keep an idea about this world.
                   </p>
                 )}
 

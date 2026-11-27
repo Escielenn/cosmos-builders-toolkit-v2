@@ -318,7 +318,7 @@ export const TIMELINE_TEMPLATES: TimelineTemplate[] = [
     id: "war-and-treaty",
     name: "War & Treaty",
     description:
-      "A conflict arc between two factions, from political tensions through open war to eventual peace. Perfect for military sci-fi.",
+      "A conflict arc between two factions, from political tensions through open war to eventual peace. Suits military SF.",
     category: "conflict",
     icon: "Swords",
     tracks: [

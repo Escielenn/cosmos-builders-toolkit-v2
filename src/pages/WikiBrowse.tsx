@@ -411,8 +411,8 @@ export default function WikiBrowse() {
           </p>
           <p className="text-t4 text-xs mb-4">
             {allEntries.length === 0
-              ? "Every planet, species, culture and system gets a page here the moment an instrument records it — or create one by hand."
-              : "Try adjusting your search or filter criteria."}
+              ? "Every planet, species, culture, and system gets a page here as soon as an instrument records it. You can also create one by hand."
+              : "Change the search or filters to see more."}
           </p>
           {allEntries.length === 0 && (
             <Button

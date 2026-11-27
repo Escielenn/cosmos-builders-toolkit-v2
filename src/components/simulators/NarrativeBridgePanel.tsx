@@ -68,7 +68,7 @@ export default function NarrativeBridgePanel({
     return (
       <button
         onClick={() => onOpenChange(true)}
-        className="absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-sf-primary/[0.08] border border-sf-primary border-r-0 px-2.5 py-5 hover:bg-sf-primary/[0.16] transition-colors duration-base ease-sf-out group shadow-sf-glow-teal"
+        className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-sf-primary/[0.08] border border-sf-primary border-r-0 px-2.5 py-5 hover:bg-sf-primary/[0.16] transition-colors duration-base ease-sf-out group shadow-sf-glow-teal"
         title="Open Narrative Bridge"
         aria-label="Open Narrative Bridge"
       >
@@ -159,10 +159,10 @@ export default function NarrativeBridgePanel({
               size="sm"
               onClick={handleSave}
               disabled={filledCount === 0}
-              className="min-h-hit text-[12px] uppercase tracking-wider px-3 gap-1 border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12]"
+              className="min-h-hit text-[13px] px-3 gap-1 border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12]"
             >
               <Save className="w-3 h-3" />
-              {saved ? "NOTES SAVED" : "SAVE NOTES"}
+              {saved ? "NOTES SAVED." : "Save notes"}
             </Button>
           </div>
           <p className="text-[12px] text-t4 leading-relaxed">
@@ -177,6 +177,40 @@ export default function NarrativeBridgePanel({
 /**
  * Hook for managing narrative bridge state.
  */
+/**
+ * The bridge's opener below lg, where the vertical edge tab would sit on
+ * top of the simulator's own panels. It lives in the simulator toolbar
+ * strip instead (src/components/simulators/sim-chrome.ts), with the same
+ * label and the same answered-count badge.
+ */
+export function NarrativeBridgeToggle({
+  notes,
+  open,
+  onOpenChange,
+}: Pick<NarrativeBridgePanelProps, "notes" | "open" | "onOpenChange">) {
+  const filledCount = Object.values(notes).filter((v) => v.trim()).length;
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={() => onOpenChange(!open)}
+      aria-expanded={open}
+      className="lg:hidden bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] min-h-hit px-3 gap-1.5"
+    >
+      <PenLine className="w-3 h-3" />
+      Narrative Bridge
+      {filledCount > 0 && (
+        <span
+          className="min-w-[20px] h-5 px-1.5 inline-flex items-center justify-center rounded-sf-tag bg-sf-primary text-[13px] font-mono font-medium text-sf-on-primary tabular-nums tracking-tight"
+          aria-label={`${filledCount} answered`}
+        >
+          {filledCount}
+        </span>
+      )}
+    </Button>
+  );
+}
+
 export function useNarrativeBridge() {
   const [open, setOpen] = useState(false);
   const [notes, setNotes] = useState<Record<string, string>>({});

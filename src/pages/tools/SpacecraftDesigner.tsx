@@ -348,14 +348,14 @@ const SpacecraftDesigner = () => {
 
         {/* Introduction */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
-          <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 gradient-text">
+          <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 text-t1">
             Ships as Characters
           </h2>
           <blockquote className="border-l-2 border-sf-primary pl-4 italic text-lg mb-4">
-            "The best SF ships aren't just vehicles, they're places people live, with all the mess, personality, and history that implies."
+            "The best SF ships are places people live, with all the mess, personality, and history that implies."
           </blockquote>
           <p className="text-t2 mb-4">
-            A lived-in ship tells stories through its details: the worn patch on the pilot's seat, the coffee stains near the nav console, the shrine in the cargo bay. This tool helps you design vessels that feel real.
+            A lived-in ship tells stories through its details: the worn patch on the pilot's seat, the coffee stains near the nav console, the shrine in the cargo bay. Design a vessel down to those details.
           </p>
           <div className="text-sm text-t3 mb-4">
             <strong className="text-t1">The Lived-In Principle:</strong>

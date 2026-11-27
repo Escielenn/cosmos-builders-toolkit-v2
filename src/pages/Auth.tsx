@@ -372,7 +372,7 @@ const Auth = () => {
               variant="outline"
               size="lg"
               onClick={() => setShowLogin(!showLogin)}
-              className="w-full gap-2"
+              className="w-full h-auto min-h-hit gap-2 whitespace-normal py-2 text-center"
             >
               <LogIn className="w-4 h-4" />
               Already have an account? Sign in

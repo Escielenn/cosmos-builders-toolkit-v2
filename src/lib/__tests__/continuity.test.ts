@@ -84,7 +84,7 @@ describe("multi-candidate facts — the two-planet world (S-FIX)", () => {
   it("fires, and says so, only when the sentence contradicts every candidate", () => {
     const notes = checkContinuity("<p>At 9.8 gravity she was crushed flat.</p>", twoPlanets);
     expect(notes).toHaveLength(1);
-    expect(notes[0].message).toBe("CONTRADICTS ALL 2 PLANETS ON FILE.");
+    expect(notes[0].message).toBe("CONTRADICTS ALL 2 PLANETS IN CANON.");
     expect(notes[0].worldValue).toBe("1.47 / 0.3");
     expect(notes[0].proseValue).toBe("9.8");
   });
@@ -107,7 +107,7 @@ describe("multi-candidate facts — the two-planet world (S-FIX)", () => {
     const threePlanets = [gravity("1.47"), gravity("9.8"), gravity("2.1")];
     const notes = checkContinuity("<p>At 0.3 gravity she barely felt her own weight.</p>", threePlanets);
     expect(notes).toHaveLength(1);
-    expect(notes[0].message).toBe("CONTRADICTS ALL 3 PLANETS ON FILE.");
+    expect(notes[0].message).toBe("CONTRADICTS ALL 3 PLANETS IN CANON.");
   });
 
   it("ignores a qualitative (non-numeric) candidate when judging 'every candidate'", () => {
@@ -174,7 +174,7 @@ describe("subject scoping — the two-planet world (S0)", () => {
   it("omitting subjectId keeps the unscoped S-FIX behaviour byte-identical", () => {
     const notes = checkContinuity("<p>At 9.8 gravity she was crushed flat.</p>", twoPlanets);
     expect(notes).toHaveLength(1);
-    expect(notes[0].message).toBe("CONTRADICTS ALL 2 PLANETS ON FILE.");
+    expect(notes[0].message).toBe("CONTRADICTS ALL 2 PLANETS IN CANON.");
   });
 });
 

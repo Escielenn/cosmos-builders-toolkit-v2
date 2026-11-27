@@ -185,7 +185,7 @@ export function PlaceReadouts({
               }`}
             />
           ) : (
-            <Notice tone="caution" compact label="RADIUS NOT ON FILE">
+            <Notice tone="caution" compact label="RADIUS NOT SET">
               Distance cannot be measured.{" "}
               <Link to={setHref} className="text-sf-amber-text underline underline-offset-2">
                 Set it at the source.

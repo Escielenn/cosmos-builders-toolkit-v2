@@ -1,0 +1,109 @@
+/* ==========================================================================
+   science-floor.css: the legibility and phone floor for the five Science
+   pages (public/rogue/science.html, public/tools/<sim>/science.html).
+
+   The Science pages were set as a dense print-style explainer: section
+   labels at 8 to 9px with 2.5px tracking, table headers at 7 to 8px, and a
+   phone media query that made them smaller still (7px). Every one of those
+   is under the product's 12px floor (CLAUDE.md, Legibility), at every width.
+   On a 390px phone the wide tables also pushed the whole page sideways.
+
+   This file fixes both, for all five pages at once:
+     1. a 12px floor on every class the pages use for small type, with the
+        tracking pulled back to the product scale (0.12em) so the labels
+        keep their word shape
+     2. tables, equations and diagrams scroll inside themselves on a phone
+        instead of widening the page
+
+   !important on purpose, as in sim-mobile.css: these are floors that must
+   beat each page's own inline stylesheet (including its phone query, which
+   is later in source order), without editing five stylesheets in step.
+   Selectors that match nothing in a given page cost nothing.
+   ========================================================================== */
+
+/* ---- 1. Legibility floor (12px) --------------------------------------- */
+
+/* Micro labels: eyebrows, section titles, table headers, tags. */
+.science-page .subtitle,
+.header .subtitle,
+.sci-section,
+.section-header,
+.data-card .card-header,
+.source-tag,
+.footer,
+.flow-node,
+.sys-table th,
+.data-table th {
+  font-size: 12px !important;
+  letter-spacing: 0.12em !important;
+  line-height: 1.4 !important;
+}
+
+/* Running small type: sources, notes, captions, equations, table cells. */
+.science-page code,
+.src,
+.src *,
+.note,
+.eq,
+.sys-table,
+.sys-table td,
+.sys-table td code,
+.data-label,
+.data-value,
+.data-table,
+.data-table td,
+.data-table .mono,
+.source-list .source-url,
+.diagram .caption {
+  font-size: 12px !important;
+}
+
+/* Long URLs and identifiers wrap instead of running off a narrow screen. */
+.src,
+.source-list .source-url,
+.science-page code {
+  overflow-wrap: anywhere;
+}
+
+/* ---- 2. Wide content scrolls inside itself on a phone ------------------ */
+
+@media (max-width: 640px) {
+  .sys-table,
+  .data-table {
+    display: block !important;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  .sys-table th,
+  .sys-table td,
+  .data-table th,
+  .data-table td {
+    white-space: nowrap;
+  }
+
+  .eq,
+  .diagram,
+  .flow {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+
+  /* Scrollbars stay visible and solid (the app's sf-sb, without its
+     tokens, which a static page cannot read). */
+  .sys-table,
+  .data-table,
+  .eq,
+  .diagram,
+  .flow {
+    scrollbar-width: thin;
+  }
+}
+
+/* Exponents (2<sup>1.5</sup>) inherit a 75% size that lands under 12px. */
+sup,
+sub {
+  font-size: 12px !important;
+}

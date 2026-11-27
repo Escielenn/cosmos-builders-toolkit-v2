@@ -103,7 +103,7 @@ export const CASCADE_STEPS = [
   {
     n: "01",
     title: "Decide a number",
-    body: "Set what is true in an instrument: a star, a gravity, a sense, a god. It goes on file as canon.",
+    body: "Set what is true in an instrument: a star, a gravity, a sense, a god. That value becomes canon.",
     detail:
       "Every instrument writes to one canon graph, so the planet you define in Genesis is the planet Phylo evolves life on and the planet Dossier's characters were born under.",
     Vignette: DecideVignette,

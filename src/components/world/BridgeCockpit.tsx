@@ -240,7 +240,7 @@ function CascadePanel({ worldId }: { worldId: string }): JSX.Element {
               <Link
                 to={`/worlds/${worldId}/codex?layer=${l.key}`}
                 className="group flex min-h-hit flex-col justify-center gap-1.5 py-2"
-                aria-label={`${l.label}: ${l.n === 0 ? "empty" : `${l.n} on file`}`}
+                aria-label={`${l.label}: ${l.n === 0 ? "empty" : `${l.n} saved`}`}
               >
                 <span
                   className={cn(

@@ -137,7 +137,7 @@ const CalendarEditorDialog = ({
           <div className="space-y-2 max-h-[50vh] overflow-y-auto sf-sb">
             {state.calendars.length === 0 && (
               <p className="text-sm text-t2 text-center py-4">
-                NO CUSTOM CALENDARS ON FILE. CREATE ONE TO USE ALIEN OR FICTIONAL DATE SYSTEMS.
+                No custom calendars yet. Create one to date events in an alien or invented calendar.
               </p>
             )}
             {state.calendars.map((cal) => (

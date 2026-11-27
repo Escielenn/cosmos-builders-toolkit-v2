@@ -126,7 +126,7 @@ const Bookshelf = () => {
           size="page"
           eyebrow={`Catalog · ${searchTerm.length >= 2 ? `${filteredBooks.length} of ${BOOKSHELF_DATA.length}` : `${BOOKSHELF_DATA.length} works`}`}
           title="Bookshelf"
-          lede="The science fiction novels that inspired our worldbuilding tools. Each book demonstrates how a single constraint (environmental, biological, technological, or political) cascades through an entire world."
+          lede="The science fiction novels that inspired our worldbuilding tools. Each book shows how one constraint, whether environmental, biological, technological, or political, runs through an entire world."
         />
 
         {/* Search */}

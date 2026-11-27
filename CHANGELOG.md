@@ -1,5 +1,27 @@
 # StellarForge Changelog
 
+## 1.8000 · Plain Signal
+Every screen says what it does in plain words, and every screen, simulators
+included, works on a phone.
+- Copy: 348 more strings rewritten with the humanizer, UX copy and house
+  writing rules. "On file" filler, faux clearance and manifest labels, fake
+  uptime and policy numbers, run-on taglines and "not just X, but Y" lines are
+  gone. The About page and waitlist email are rewritten. The CI copy check now
+  blocks the common AI-speak words.
+- Simulators on phones: the Publish / Load / Save toolbar docks above the sim
+  and scrolls instead of running off screen. Control and data panels open as
+  drawers with 44px buttons, so the canvas stays visible. ExoSky's sky is no
+  longer squashed or blurry, Rogue and Stellar Cartographer panels can be
+  reached on phones, and ExoForge's archive search is a drawer.
+- Legibility: simulator text uses real text tiers (nothing near-invisible),
+  with a 12px minimum at every width, including LexDrift's charts and the
+  Science pages. Science tables scroll inside themselves.
+- Layout fixes: tool tabs, the showcase cascade bar, tool action bars, the
+  status bar, the sign-in toggle and footer icons fit at every width.
+  Gradient headings on tool intros are now plain text.
+- Guardrail: a new responsive test checks 14 key screens and simulators at
+  phone and desktop widths for sideways scrolling and page errors.
+
 ## 1.7000 · Writing Room
 The Manuscript becomes a writing room, the simulators run smooth, and the
 words on screen say plainly what they do.

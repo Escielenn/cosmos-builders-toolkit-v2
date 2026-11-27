@@ -97,7 +97,7 @@ export function decideTier(inputs: TierInputs): TierDecision {
   if (inputs.isLightScheme) {
     return {
       tier: "chart",
-      reason: "Light themes render flat — bloom over a light base destroys contrast.",
+      reason: "Light themes render flat, because bloom over a light background destroys contrast.",
       forced: true,
     };
   }

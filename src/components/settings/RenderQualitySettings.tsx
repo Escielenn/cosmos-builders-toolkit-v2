@@ -75,7 +75,7 @@ const RenderQualitySettings = () => {
       <p className="font-mono text-sf-mono text-t4 sf-measure">
         {`// RUNNING AT ${tier.tier.toUpperCase()}. ${tier.reason.toUpperCase()}`}
         {tier.forced
-          ? " THIS ONE IS NOT NEGOTIABLE — IT PROTECTS LEGIBILITY AND MOTION SENSITIVITY."
+          ? " THIS ONE IS FIXED. IT PROTECTS LEGIBILITY AND MOTION SENSITIVITY."
           : ""}
       </p>
     </div>

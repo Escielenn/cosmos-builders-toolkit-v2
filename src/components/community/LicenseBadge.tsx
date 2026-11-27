@@ -16,22 +16,22 @@ const LICENSE_META: Record<
   cc_by: {
     label: "CC BY",
     tone: "bg-sf-teal/[0.06] border-sf-teal text-sf-teal-text",
-    tip: "Creative Commons Attribution -- fork and remix with credit.",
+    tip: "Creative Commons Attribution: fork and remix with credit.",
   },
   cc_by_sa: {
     label: "CC BY-SA",
     tone: "bg-sf-azure/[0.06] border-sf-azure text-sf-azure-text",
-    tip: "Creative Commons Attribution-ShareAlike -- forks must use the same license.",
+    tip: "Creative Commons Attribution-ShareAlike: forks must use the same license.",
   },
   cc_by_nc: {
     label: "CC BY-NC",
     tone: "bg-sf-violet/[0.06] border-sf-violet text-sf-violet-text",
-    tip: "Creative Commons Attribution-NonCommercial -- non-commercial use only.",
+    tip: "Creative Commons Attribution-NonCommercial: non-commercial use only.",
   },
   view_only: {
     label: "View Only",
     tone: "bg-sf-amber/[0.06] border-sf-amber text-sf-amber-text",
-    tip: "This world cannot be forked. View and admire only.",
+    tip: "This world can be viewed but not forked.",
   },
 };
 

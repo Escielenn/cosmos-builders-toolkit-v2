@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="/tools/_shared/sim-tokens.css">
 <!--
   ROGUE — N-body Wandering-Object Encounter Simulator
   StellarForge.tools · © 2025–2026 Jason D. Batt, Ph.D.
@@ -41,9 +42,9 @@
   --surface-base:#0F0F10;
   --surface-elevated:rgba(15,15,16,0.98);
   --border-subtle:rgba(255,255,255,0.08);
-  --text-primary:rgba(255,255,255,0.85);
-  --text-secondary:rgba(255,255,255,0.55);
-  --text-muted:rgba(255,255,255,0.25);
+  --text-primary:var(--t1);
+  --text-secondary:var(--t2);
+  --text-muted:var(--t4);
   --font-display:'MD Nichrome Test','MD Nichrome','Jura',sans-serif;
   --font-body:'DM Sans',sans-serif;
   --font-mono:'JetBrains Mono',monospace;
@@ -56,26 +57,26 @@ canvas{display:block;position:absolute;top:0;left:0}
 .p{pointer-events:all;background:var(--surface-base);border:1px solid var(--border-subtle);border-radius:0}
 #title{position:fixed;top:18px;left:18px;padding:0;background:none;border:none;backdrop-filter:none;z-index:20;pointer-events:none}
 #title h1{font-family:var(--font-display);font-size:26px;font-weight:300;color:#fff;letter-spacing:6px;margin-bottom:2px;text-transform:uppercase}
-#title .sub{font-family:var(--font-body);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.45)}
-#title .sys-name{font-size:10px;color:var(--accent-cyan);margin-top:4px;font-style:normal;font-family:var(--font-body);opacity:.6}
-#title .credit{font-size:9px;letter-spacing:1px;color:var(--text-muted);margin-top:3px;font-family:var(--font-body)}
-#title .credit a{color:rgba(0,229,160,.25);text-decoration:none}
+#title .sub{font-family:var(--font-body);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--t3)}
+#title .sys-name{font-size:12px;color:var(--accent-cyan);margin-top:4px;font-style:normal;font-family:var(--font-body)}
+#title .credit{font-size:12px;letter-spacing:1px;color:var(--text-muted);margin-top:3px;font-family:var(--font-body)}
+#title .credit a{color:var(--sf-primary-text);text-decoration:none}
 #title .nav-links{display:flex;gap:10px;margin-top:7px}
-#title .nav-links a{font-size:11px;font-family:var(--font-display);font-weight:300;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.4);text-decoration:none;padding:3px 8px;border:1px solid var(--border-subtle);border-radius:0;transition:all .2s}
+#title .nav-links a{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);text-decoration:none;padding:3px 8px;border:1px solid var(--border-subtle);border-radius:0;transition:all .2s}
 #title .nav-links a:hover{color:var(--accent-cyan);border-color:rgba(21,193,123,.25);background:rgba(21,193,123,.06)}
-#title .nav-links a.science-link{color:rgba(21,193,123,.6);border-color:rgba(21,193,123,.2);background:rgba(21,193,123,.04)}
+#title .nav-links a.science-link{color:var(--sf-primary-text);border-color:rgba(21,193,123,.2);background:rgba(21,193,123,.04)}
 #title .nav-links a.science-link:hover{color:var(--accent-cyan);border-color:rgba(21,193,123,.4);background:rgba(21,193,123,.1)}
-#badge{position:absolute;top:90px;left:18px;padding:6px 14px;font-size:9px;font-family:var(--font-display);font-weight:300;letter-spacing:2px;text-transform:uppercase;transition:all .5s;border-radius:0}
+#badge{position:absolute;top:104px;left:18px;padding:6px 14px;font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2px;text-transform:uppercase;transition:all .5s;border-radius:0}
 .st-orbit{background:rgba(21,193,123,.08);border:1px solid rgba(21,193,123,.2);color:var(--accent-cyan)}
 .st-perturb{background:rgba(255,165,0,.08);border:1px solid rgba(255,165,0,.2);color:#ffa500}
 .st-eject{background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.2);color:#2ecc71;animation:pulse 2s infinite}
 .st-chaos{background:rgba(231,76,60,.08);border:1px solid rgba(231,76,60,.2);color:#e74c3c;animation:pulse 1.5s infinite}
-.st-wait{background:rgba(0,229,160,.03);border:1px solid rgba(0,229,160,.08);color:rgba(0,229,160,.4)}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.65}}
+.st-wait{background:rgba(0,229,160,.03);border:1px solid rgba(0,229,160,.08);color:var(--sf-primary-text)}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 transparent}50%{box-shadow:0 0 12px 0 currentColor}} /* glow, not opacity: the badge text stays at full strength */
 
-#ctrl{position:absolute;top:130px;left:18px;padding:14px 18px;width:260px;max-height:calc(100vh - 210px);overflow-y:auto}
+#ctrl{position:absolute;top:144px;left:18px;padding:14px 18px;width:260px;max-height:calc(100vh - 224px);overflow-y:auto}
 #ctrl::-webkit-scrollbar{width:3px}#ctrl::-webkit-scrollbar-track{background:transparent}#ctrl::-webkit-scrollbar-thumb{background:rgba(0,229,160,.12)}
-.sh{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2.5px;text-transform:uppercase;color:rgba(0,229,160,.55);margin-top:14px;margin-bottom:6px;padding-bottom:3px;border-bottom:1px solid rgba(0,229,160,.1)}
+.sh{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2.5px;text-transform:uppercase;color:var(--sf-primary-text);margin-top:14px;margin-bottom:6px;padding-bottom:3px;border-bottom:1px solid rgba(0,229,160,.1)}
 .sh:first-child{margin-top:0}
 label{display:block;font-size:13px;font-family:var(--font-body);letter-spacing:1.2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:4px;margin-top:8px}
 input[type=range]{-webkit-appearance:none;width:100%;height:14px;background:transparent;outline:none}
@@ -85,8 +86,8 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);box-shadow:0
 input[type=range]::-webkit-slider-thumb:active{transform:scale(1.25);box-shadow:0 0 10px rgba(21,193,123,.6)}
 input[type=range]::-moz-range-track{height:2px;background:rgba(255,255,255,.08);border:none;border-radius:0}
 input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:0;background:var(--accent-cyan);cursor:pointer;border:2px solid rgba(0,0,0,.5)}
-.vd{font-size:13px;font-family:var(--font-mono);color:rgba(255,255,255,.7);float:right;font-weight:300}
-button{font-family:var(--font-body);font-size:12px;font-weight:300;letter-spacing:1.5px;text-transform:uppercase;padding:7px 12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:rgba(255,255,255,.7);cursor:pointer;border-radius:0;transition:all .2s;margin-right:4px;margin-top:3px}
+.vd{font-size:13px;font-family:var(--font-mono);color:var(--t2);float:right;font-weight:300}
+button{font-family:var(--font-body);font-size:12px;font-weight:300;letter-spacing:1.5px;text-transform:uppercase;padding:7px 12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--t2);cursor:pointer;border-radius:0;transition:all .2s;margin-right:4px;margin-top:3px}
 button:hover{background:rgba(0,229,160,.06);border-color:rgba(0,229,160,.2);color:#fff}
 button.a{background:rgba(21,193,123,.1);border-color:rgba(21,193,123,.3);color:var(--accent-cyan)}
 button.ab{background:rgba(21,193,123,.1);border-color:rgba(21,193,123,.3);color:var(--accent-cyan)}
@@ -94,11 +95,11 @@ button.ab{background:rgba(21,193,123,.1);border-color:rgba(21,193,123,.3);color:
 /* Transport controls - bottom-center dock, matching Solaris's #transport */
 #transport-dock{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:20;pointer-events:all;background:#0D0D0F;border:1px solid rgba(255,255,255,.08);border-radius:0;padding:8px 14px}
 .transport{display:flex;gap:3px;align-items:center;margin-top:0}
-.transport button{flex:1;text-align:center;margin:0;font-size:10px;padding:7px 6px;letter-spacing:0}
+.transport button{flex:1;text-align:center;margin:0;font-size:12px;padding:7px 6px;letter-spacing:0}
 .transport #btn-go{flex:2}
 .transport #btn-pause{font-size:12px;flex:1.5}
-.transport #btn-rewind{font-size:11px}
-.transport #btn-stepb,.transport #btn-stepf{font-size:10px}
+.transport #btn-rewind{font-size:12px}
+.transport #btn-stepb,.transport #btn-stepf{font-size:12px}
 .transport #btn-reset{font-size:12px}
 .transport button.playing{background:rgba(21,193,123,.12);border-color:rgba(21,193,123,.3);color:var(--accent-cyan)}
 .transport #btn-rewind:active,.transport #btn-rewind.rewinding{background:rgba(255,165,0,.12);border-color:rgba(255,165,0,.3);color:#ffa500}
@@ -106,8 +107,8 @@ button.ab{background:rgba(21,193,123,.1);border-color:rgba(21,193,123,.3);color:
 .br button{margin:0;flex:0 0 auto}
 .cr{display:flex;align-items:center;gap:7px;margin-top:6px}
 .cr input[type=checkbox]{accent-color:var(--accent-cyan);width:11px;height:11px}
-.cr label{margin:0!important;font-size:13px;cursor:pointer;color:rgba(255,255,255,.6)}
-select{font-family:var(--font-body);font-size:12px;background:rgba(255,255,255,.04);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.1);padding:6px 8px;border-radius:0;width:100%;outline:none;margin-top:4px;cursor:pointer}
+.cr label{margin:0!important;font-size:13px;cursor:pointer;color:var(--t2)}
+select{font-family:var(--font-body);font-size:12px;background:rgba(255,255,255,.04);color:var(--t2);border:1px solid rgba(255,255,255,.1);padding:6px 8px;border-radius:0;width:100%;outline:none;margin-top:4px;cursor:pointer}
 select option{background:#0F0F10;color:#c8c8c8}
 .type-btn{position:relative;padding-left:18px!important}
 .type-btn::before{content:'';position:absolute;left:6px;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%}
@@ -118,44 +119,61 @@ select option{background:#0F0F10;color:#c8c8c8}
 
 #data{position:absolute;top:18px;right:18px;padding:14px 18px;width:255px;font-size:12px;font-family:var(--font-body);line-height:1.9;max-height:calc(100vh - 140px);overflow-y:auto}
 #data::-webkit-scrollbar{width:3px}#data::-webkit-scrollbar-track{background:transparent}#data::-webkit-scrollbar-thumb{background:rgba(0,229,160,.12)}
-.ds{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2.5px;text-transform:uppercase;color:rgba(0,229,160,.5);margin-top:7px;margin-bottom:1px;padding-bottom:2px;border-bottom:1px solid rgba(0,229,160,.1)}
+.ds{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2.5px;text-transform:uppercase;color:var(--sf-primary-text);margin-top:7px;margin-bottom:1px;padding-bottom:2px;border-bottom:1px solid rgba(0,229,160,.1)}
 .ds:first-child{margin-top:0}
 .dr{display:flex;justify-content:space-between}.dl{color:var(--text-secondary);font-weight:300}.dv{color:var(--text-primary);font-weight:500;font-family:var(--font-mono);font-size:14px}
 
-#zoom-info{position:absolute;bottom:14px;right:14px;padding:8px 14px;font-size:9px;font-family:var(--font-body);color:rgba(255,255,255,.45);text-align:center;min-width:130px}
-#zoom-info .zv{font-size:16px;font-family:var(--font-display);font-weight:300;color:rgba(21,193,123,.5);display:block;margin-bottom:1px}
-#zoom-info .zh{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.18)}
+#zoom-info{position:absolute;bottom:14px;right:14px;padding:8px 14px;font-size:12px;font-family:var(--font-body);color:var(--t3);text-align:center;min-width:130px}
+#zoom-info .zv{font-size:16px;font-family:var(--font-display);font-weight:300;color:var(--sf-primary-text);display:block;margin-bottom:1px}
+#zoom-info .zh{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--t4)}
 
 /* Builder Modal */
 #builder-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(9,9,11,.94);z-index:100;pointer-events:all;overflow-y:auto}
 #builder-overlay.open{display:flex;align-items:flex-start;justify-content:center;padding:40px 20px}
 #builder{max-width:680px;width:100%;padding:30px 36px;background:var(--surface-elevated);border:1px solid rgba(0,229,160,.08);border-radius:0}
 #builder h2{font-family:var(--font-display);font-size:28px;font-weight:300;color:#fff;margin-bottom:4px;letter-spacing:4px;text-transform:uppercase}
-#builder .bsub{font-size:10px;font-family:var(--font-body);letter-spacing:2px;text-transform:uppercase;color:rgba(0,229,160,.3);margin-bottom:20px}
-#builder .bsh{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2.5px;text-transform:uppercase;color:rgba(0,229,160,.3);margin-top:18px;margin-bottom:8px;padding-bottom:3px;border-bottom:1px solid rgba(0,229,160,.06)}
-#builder input[type=text],#builder input[type=number]{font-family:var(--font-body);font-size:10px;background:rgba(255,255,255,.04);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.1);padding:7px 10px;border-radius:0;outline:none;width:100%}
+#builder .bsub{font-size:12px;font-family:var(--font-body);letter-spacing:2px;text-transform:uppercase;color:var(--sf-primary-text);margin-bottom:20px}
+#builder .bsh{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2.5px;text-transform:uppercase;color:var(--sf-primary-text);margin-top:18px;margin-bottom:8px;padding-bottom:3px;border-bottom:1px solid rgba(0,229,160,.06)}
+#builder input[type=text],#builder input[type=number]{font-family:var(--font-body);font-size:12px;background:rgba(255,255,255,.04);color:var(--t1);border:1px solid rgba(255,255,255,.1);padding:7px 10px;border-radius:0;outline:none;width:100%}
 #builder input[type=text]:focus,#builder input[type=number]:focus{border-color:rgba(21,193,123,.35)}
-#builder label{font-size:13px;font-family:var(--font-body);letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:3px;margin-top:10px;display:block}
+#builder label{font-size:13px;font-family:var(--font-body);letter-spacing:1.2px;text-transform:uppercase;color:var(--t4);margin-bottom:3px;margin-top:10px;display:block}
 .b-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .b-row3{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 30px;gap:6px;align-items:end;margin-bottom:6px}
 .b-row3 input{width:100%}
-.b-row3 button{padding:5px 8px;margin:0;font-size:10px;color:rgba(255,100,100,.5);border-color:rgba(255,100,100,.1);height:30px}
+.b-row3 button{padding:5px 8px;margin:0;font-size:12px;color:rgb(255,100,100);border-color:rgba(255,100,100,.1);height:30px}
 .b-row3 select{margin:0;font-size:12px;padding:5px;font-family:var(--font-body)}
 #planet-rows{margin-top:8px}
 .b-btns{display:flex;gap:8px;margin-top:24px;flex-wrap:wrap}
 .b-btns button{margin:0}
 .star-preview{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-left:6px;box-shadow:0 0 8px currentColor}
-.b-note{font-size:9px;font-family:var(--font-body);color:rgba(0,229,160,.15);letter-spacing:.5px;margin-top:4px;font-style:italic}
-#share-msg{font-size:9px;color:var(--accent-cyan);margin-left:10px;opacity:0;transition:opacity .3s}
+.b-note{font-size:12px;font-family:var(--font-body);color:var(--sf-primary-text);letter-spacing:.5px;margin-top:4px;font-style:italic}
+#share-msg{font-size:12px;color:var(--accent-cyan);margin-left:10px;opacity:0;transition:opacity .3s}
 #kb-help{display:none;position:fixed;top:14px;right:280px;z-index:50;pointer-events:all;padding:14px 18px;width:210px;background:var(--surface-base);border:1px solid var(--border-subtle);border-radius:0}
 #kb-help.open{display:block}
-#kb-help .kh-title{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2.5px;text-transform:uppercase;color:rgba(0,229,160,.55);margin-bottom:8px;padding-bottom:3px;border-bottom:1px solid rgba(0,229,160,.1)}
+#kb-help .kh-title{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2.5px;text-transform:uppercase;color:var(--sf-primary-text);margin-bottom:8px;padding-bottom:3px;border-bottom:1px solid rgba(0,229,160,.1)}
 #kb-help .kh-row{display:flex;justify-content:space-between;align-items:baseline;line-height:2}
-#kb-help .kh-key{font-family:var(--font-mono);font-size:9px;color:var(--accent-cyan);font-weight:400;min-width:56px}
+#kb-help .kh-key{font-family:var(--font-mono);font-size:12px;color:var(--accent-cyan);font-weight:400;min-width:56px}
 #kb-help .kh-desc{font-family:var(--font-body);font-size:13px;color:var(--text-secondary);text-align:right}
-@media(max-width:1024px){#ctrl{width:260px;top:160px;left:10px;max-height:calc(100vh - 240px)}#data{width:220px;font-size:11px;right:10px;max-height:calc(100vh - 140px)}}
-@media(max-width:768px){#title h1{font-size:20px}#badge{top:120px}#title .nav-links{gap:6px}#title .nav-links a{font-size:9px;padding:2px 6px}#builder{padding:20px}.b-row3{grid-template-columns:1.5fr 1fr 1fr 1fr 26px;gap:4px}}
-@media(max-width:480px){#data{display:none}#ctrl{width:calc(100vw - 20px)}#zoom-info{min-width:0;padding:6px 10px}#zoom-info .zh{display:none}.b-row3{grid-template-columns:1fr 1fr;gap:4px}.b-row3 button{grid-column:span 2}}
+@media(max-width:1024px){#ctrl{width:260px;top:160px;left:10px;max-height:calc(100vh - 240px)}#data{width:220px;font-size:12px;right:10px;max-height:calc(100vh - 140px)}}
+@media(max-width:768px){#title h1{font-size:20px}#badge{top:120px}#title .nav-links{gap:6px}#title .nav-links a{font-size:12px;padding:2px 6px}#builder{padding:20px}.b-row3{grid-template-columns:1.5fr 1fr 1fr 1fr 26px;gap:4px}}
+@media(max-width:480px){#zoom-info{min-width:0;padding:6px 10px}#zoom-info .zh{display:none}.b-row3{grid-template-columns:1fr 1fr;gap:4px}.b-row3 button{grid-column:span 2}}
+/* Below 1024px (and on a phone on its side) the two panels left no sky to
+   watch: #ctrl covered the left of the canvas and #data the right, and on a
+   phone #data was simply hidden, so its readouts were unreachable. Both now
+   sit behind toggle buttons in the bottom-left dock, the pattern the other
+   sims use (sizes and spacing in sim-mobile.css), and open one at a time
+   above the dock. */
+#mobile-toggle-controls,#mobile-toggle-data{display:none;position:fixed;z-index:25;border-radius:0;font-size:16px;text-align:center;padding:0;background:var(--surface-base);border:1px solid var(--border-subtle);color:var(--text-secondary);cursor:pointer;pointer-events:all}
+@media(max-width:1024px),(max-height:500px){
+  #ctrl,#data{display:none}
+  #ctrl.mobile-visible,#data.mobile-visible{display:block}
+  #mobile-toggle-controls,#mobile-toggle-data{display:block}
+  #ctrl,#data{top:auto;bottom:var(--sim-dock-clear);left:12px;right:12px;width:auto;max-height:calc(100% - var(--sim-dock-clear) - 110px)}
+}
+@media(max-width:640px),(max-height:500px){
+  #transport-dock{left:calc(116px + env(safe-area-inset-left));transform:none;bottom:var(--sim-dock-bottom);padding:0 6px}
+  #zoom-info{bottom:var(--sim-dock-bottom);right:12px}
+}
 </style>
 
   <link rel="stylesheet" href="/tools/_shared/sim-mobile.css">
@@ -265,6 +283,9 @@ select option{background:#0F0F10;color:#c8c8c8}
     <div id="planet-status-list"></div>
   </div>
 
+  <button id="mobile-toggle-controls" onclick="toggleMobilePanel('ctrl')" title="Toggle controls panel" aria-label="Toggle controls panel" aria-expanded="false" aria-controls="ctrl">☰</button>
+  <button id="mobile-toggle-data" onclick="toggleMobilePanel('data')" title="Toggle data readout panel" aria-label="Toggle data readout panel" aria-expanded="false" aria-controls="data">▤</button>
+
   <div id="zoom-info" class="p">
     <span class="zv" id="zv-text">—</span>
     <span class="zh">scroll · drag · space to launch · <span style="cursor:pointer;color:var(--accent-cyan)" onclick="document.getElementById('kb-help').classList.toggle('open')">?</span></span>
@@ -310,8 +331,8 @@ select option{background:#0F0F10;color:#c8c8c8}
     </select></div>
   </div>
 
-  <div class="bsh">Binary Companion <span style="font-size:7px;color:rgba(21,193,123,.12);text-transform:none;letter-spacing:0;font-family:'DM Sans',sans-serif">(optional)</span></div>
-  <div class="cr"><input type="checkbox" id="b-binary"><label for="b-binary" style="font-size:8.5px">Enable binary companion star</label></div>
+  <div class="bsh">Binary Companion <span style="font-size:12px;color:var(--sf-primary-text);text-transform:none;letter-spacing:0;font-family:'DM Sans',sans-serif">(optional)</span></div>
+  <div class="cr"><input type="checkbox" id="b-binary"><label for="b-binary" style="font-size:12px">Enable binary companion star</label></div>
   <div id="binary-fields" style="display:none;margin-top:8px">
     <div class="b-row">
       <div><label>Companion Mass (M☉)</label><input type="number" id="b-star2-mass" value="0.9" min="0.08" max="50" step="0.01"></div>
@@ -321,10 +342,10 @@ select option{background:#0F0F10;color:#c8c8c8}
 
   <div class="bsh">Planets</div>
   <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 30px;gap:6px;margin-bottom:4px">
-    <span style="font-size:7px;font-family:'Jura',sans-serif;letter-spacing:1px;text-transform:uppercase;color:rgba(21,193,123,.2)">Name</span>
-    <span style="font-size:7px;font-family:'Jura',sans-serif;letter-spacing:1px;text-transform:uppercase;color:rgba(21,193,123,.2)">Type</span>
-    <span style="font-size:7px;font-family:'Jura',sans-serif;letter-spacing:1px;text-transform:uppercase;color:rgba(21,193,123,.2)">Mass</span>
-    <span style="font-size:7px;font-family:'Jura',sans-serif;letter-spacing:1px;text-transform:uppercase;color:rgba(21,193,123,.2)">Dist (AU)</span>
+    <span style="font-size:12px;font-family:'Jura',sans-serif;letter-spacing:1px;text-transform:uppercase;color:var(--sf-primary-text)">Name</span>
+    <span style="font-size:12px;font-family:'Jura',sans-serif;letter-spacing:1px;text-transform:uppercase;color:var(--sf-primary-text)">Type</span>
+    <span style="font-size:12px;font-family:'Jura',sans-serif;letter-spacing:1px;text-transform:uppercase;color:var(--sf-primary-text)">Mass</span>
+    <span style="font-size:12px;font-family:'Jura',sans-serif;letter-spacing:1px;text-transform:uppercase;color:var(--sf-primary-text)">Dist (AU)</span>
     <span></span>
   </div>
   <div id="planet-rows"></div>
@@ -341,6 +362,17 @@ select option{background:#0F0F10;color:#c8c8c8}
 </div>
 
 <script>
+// Bottom-left drawer dock (below 1024px): one panel open at a time, and
+// each toggle reports its panel's state.
+function toggleMobilePanel(id){
+  const pairs={ctrl:'mobile-toggle-controls',data:'mobile-toggle-data'};
+  for(const [panelId,btnId] of Object.entries(pairs)){
+    const panel=document.getElementById(panelId);
+    const open=panelId===id?!panel.classList.contains('mobile-visible'):false;
+    panel.classList.toggle('mobile-visible',open);
+    document.getElementById(btnId).setAttribute('aria-expanded',String(open));
+  }
+}
 // ============================================================================
 // ROGUE — N-Body Gravitational Encounter Simulator
 // © 2026 Jason D. Batt, Ph.D. / Dreamside Studios
@@ -898,7 +930,7 @@ function drawGravityVectors(){
 // further apart with no way to make their names readable. Floor/ceiling here
 // keep labels legible even fully zoomed out and let them keep growing well
 // past where the orbs themselves stop.
-function labelFontPx(){return Math.max(11,Math.min(20,cam.zoom*.025+9));}
+function labelFontPx(){return Math.max(12,Math.min(20,cam.zoom*.025+9));}
 
 function drawStar(b){
   const s=toS(b.x,b.y),time=Date.now()*.001,c=b.color;
@@ -908,7 +940,7 @@ function drawStar(b){
   const g=makeGrad(s.sx,s.sy,0,r*5,[[0,hexRGBA(c,.2)],[.3,hexRGBA(c,.07)],[1,hexRGBA(c,0)]]);ctx.fillStyle=g;ctx.beginPath();ctx.arc(s.sx,s.sy,r*5,0,Math.PI*2);ctx.fill();
   const rayAlpha=hexRGBA(c,.06);for(let i=0;i<6;i++){const a=(i/6)*Math.PI*2+time*.08,len=r*(1.4+Math.sin(time*1.2+i)*.2);ctx.strokeStyle=rayAlpha;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(s.sx+Math.cos(a)*r,s.sy+Math.sin(a)*r);ctx.lineTo(s.sx+Math.cos(a)*len,s.sy+Math.sin(a)*len);ctx.stroke();}
   const cg=makeGrad(s.sx-r*.2,s.sy-r*.2,0,r,[[0,lighten(c,60)],[.4,c],[1,darken(c,40)]]);ctx.fillStyle=cg;ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.fill();
-  if(showLabels){ctx.fillStyle=hexRGBA(c,.4);ctx.font=`${labelFontPx()}px "DM Sans"`;ctx.textAlign='center';ctx.fillText(b.name.toUpperCase(),s.sx,s.sy+r+12);}
+  if(showLabels){ctx.fillStyle='#A7AAB0';ctx.font=`${labelFontPx()}px "DM Sans"`;ctx.textAlign='center';ctx.fillText(b.name.toUpperCase(),s.sx,s.sy+r+12);}
 }
 
 function drawPlanet(b){
@@ -922,7 +954,7 @@ function drawPlanet(b){
   // Rings for gas giants with size > 1
   if(b.ptype==='gas'&&b.size>1&&r>3){ctx.save();ctx.translate(s.sx,s.sy);ctx.scale(1,.3);ctx.strokeStyle=hexRGBA(b.color,ej?.15:.3);ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,r*1.8,0,Math.PI*2);ctx.stroke();ctx.restore();}
   if(ej){ctx.fillStyle='rgba(150,180,210,.25)';ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.fill();}
-  if(showLabels){const lf=labelFontPx();ctx.fillStyle=hexRGBA(b.color,ej?.25:.4);ctx.font=`${lf}px "DM Sans"`;ctx.textAlign='center';ctx.fillText((b.sym||'●')+' '+b.name.toUpperCase(),s.sx,s.sy+r+11);if(ej){ctx.fillStyle='rgba(46,204,113,.3)';ctx.fillText('EJECTED',s.sx,s.sy+r+11+lf*1.15);}}
+  if(showLabels){const lf=labelFontPx();ctx.fillStyle=ej?'#9799A0':'#A7AAB0';ctx.font=`${lf}px "DM Sans"`;ctx.textAlign='center';ctx.fillText((b.sym||'●')+' '+b.name.toUpperCase(),s.sx,s.sy+r+11);if(ej){ctx.fillStyle='#15C17B';ctx.fillText('EJECTED',s.sx,s.sy+r+11+lf*1.15);}}
 }
 
 function drawIntruder(b){
@@ -930,9 +962,9 @@ function drawIntruder(b){
   // Size intruder proportionally to system
   const sys=getSystemDef();const starM=sys.starMass||1;const starR=Math.pow(Math.max(.08,starM),.8);
   const starPx=Math.max(6,Math.min(28,cam.zoom*.04*starR+4));
-  if(b.intruderType==='bh'){const r=Math.max(4,Math.min(starPx*.7,cam.zoom*.035+3));const lg=makeGrad(s.sx,s.sy,r*1.5,r*5,[[0,'rgba(231,76,60,.08)'],[1,'rgba(150,30,20,0)']]);ctx.fillStyle=lg;ctx.beginPath();ctx.arc(s.sx,s.sy,r*5,0,Math.PI*2);ctx.fill();ctx.save();ctx.translate(s.sx,s.sy);ctx.rotate(.3+time*.04);ctx.scale(1,.3);for(let i=0;i<3;i++){ctx.strokeStyle=`rgba(255,${110-i*25},${50-i*10},${.22-i*.05})`;ctx.lineWidth=2.5-i*.5;ctx.beginPath();ctx.arc(0,0,r*(2+i*.5),0,Math.PI*2);ctx.stroke();}ctx.restore();ctx.fillStyle='#000';ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.fill();ctx.strokeStyle='rgba(180,50,30,.5)';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.stroke();if(showLabels){ctx.fillStyle='rgba(231,76,60,.4)';ctx.font=`${labelFontPx()}px "DM Sans"`;ctx.textAlign='center';ctx.fillText('● BLACK HOLE',s.sx,s.sy+r*1.5+14);}}
-  else if(b.intruderType==='bd'){const r=Math.max(5,Math.min(starPx*.6,cam.zoom*.04+3));const g=makeGrad(s.sx,s.sy,0,r*4,[[0,'rgba(200,85,61,.15)'],[1,'rgba(100,30,20,0)']]);ctx.fillStyle=g;ctx.beginPath();ctx.arc(s.sx,s.sy,r*4,0,Math.PI*2);ctx.fill();const cg=makeGrad(s.sx-r*.25,s.sy-r*.25,0,r,[[0,'#d4785a'],[.8,'#6b3020'],[1,'#3a1810']]);ctx.fillStyle=cg;ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.fill();if(showLabels){ctx.fillStyle='rgba(200,85,61,.4)';ctx.font=`${labelFontPx()}px "DM Sans"`;ctx.textAlign='center';ctx.fillText('◉ BROWN DWARF',s.sx,s.sy+r+14);}}
-  else{const r=Math.max(4,Math.min(starPx*.5,cam.zoom*.03+2));const cg=makeGrad(s.sx-r*.3,s.sy-r*.3,0,r,[[0,'#b89860'],[.8,'#5a4410'],[1,'#2a2008']]);ctx.fillStyle=cg;ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.fill();if(showLabels){ctx.fillStyle='rgba(139,105,20,.4)';ctx.font=`${labelFontPx()}px "DM Sans"`;ctx.textAlign='center';ctx.fillText('◉ ROGUE PLANET',s.sx,s.sy+r+14);}}
+  if(b.intruderType==='bh'){const r=Math.max(4,Math.min(starPx*.7,cam.zoom*.035+3));const lg=makeGrad(s.sx,s.sy,r*1.5,r*5,[[0,'rgba(231,76,60,.08)'],[1,'rgba(150,30,20,0)']]);ctx.fillStyle=lg;ctx.beginPath();ctx.arc(s.sx,s.sy,r*5,0,Math.PI*2);ctx.fill();ctx.save();ctx.translate(s.sx,s.sy);ctx.rotate(.3+time*.04);ctx.scale(1,.3);for(let i=0;i<3;i++){ctx.strokeStyle=`rgba(255,${110-i*25},${50-i*10},${.22-i*.05})`;ctx.lineWidth=2.5-i*.5;ctx.beginPath();ctx.arc(0,0,r*(2+i*.5),0,Math.PI*2);ctx.stroke();}ctx.restore();ctx.fillStyle='#000';ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.fill();ctx.strokeStyle='rgba(180,50,30,.5)';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.stroke();if(showLabels){ctx.fillStyle='#FF658B';ctx.font=`${labelFontPx()}px "DM Sans"`;ctx.textAlign='center';ctx.fillText('● BLACK HOLE',s.sx,s.sy+r*1.5+14);}}
+  else if(b.intruderType==='bd'){const r=Math.max(5,Math.min(starPx*.6,cam.zoom*.04+3));const g=makeGrad(s.sx,s.sy,0,r*4,[[0,'rgba(200,85,61,.15)'],[1,'rgba(100,30,20,0)']]);ctx.fillStyle=g;ctx.beginPath();ctx.arc(s.sx,s.sy,r*4,0,Math.PI*2);ctx.fill();const cg=makeGrad(s.sx-r*.25,s.sy-r*.25,0,r,[[0,'#d4785a'],[.8,'#6b3020'],[1,'#3a1810']]);ctx.fillStyle=cg;ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.fill();if(showLabels){ctx.fillStyle='#FFB347';ctx.font=`${labelFontPx()}px "DM Sans"`;ctx.textAlign='center';ctx.fillText('◉ BROWN DWARF',s.sx,s.sy+r+14);}}
+  else{const r=Math.max(4,Math.min(starPx*.5,cam.zoom*.03+2));const cg=makeGrad(s.sx-r*.3,s.sy-r*.3,0,r,[[0,'#b89860'],[.8,'#5a4410'],[1,'#2a2008']]);ctx.fillStyle=cg;ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.fill();if(showLabels){ctx.fillStyle='#FFB800';ctx.font=`${labelFontPx()}px "DM Sans"`;ctx.textAlign='center';ctx.fillText('◉ ROGUE PLANET',s.sx,s.sy+r+14);}}
 }
 
 const $id=(()=>{const m={};return id=>m[id]||(m[id]=document.getElementById(id));})();
@@ -944,7 +976,7 @@ function updateData(){
   SFSim.text($id('d-itype'),ITYPES[intruderType].name);SFSim.style($id('d-itype'),'color',ITYPES[intruderType].color);
   SFSim.text($id('d-imass'),getIntruderMass().display);SFSim.style($id('d-imass'),'color',ITYPES[intruderType].color);
   if(intruder&&intruder.active&&star0){const dx=intruder.x-star0.x,dy=intruder.y-star0.y;SFSim.text($id('d-isdist'),Math.sqrt(dx*dx+dy*dy).toFixed(2)+' AU');}else SFSim.text($id('d-isdist'),'—');
-  SFSim.text($id('d-pej'),ejectedSet.size+' / '+nPlanets);SFSim.style($id('d-pej'),'color',ejectedSet.size>0?'#2ecc71':'rgba(255,255,255,.7)');
+  SFSim.text($id('d-pej'),ejectedSet.size+' / '+nPlanets);SFSim.style($id('d-pej'),'color',ejectedSet.size>0?'#2ecc71':'var(--t2)');
   SFSim.text($id('d-time'),simTime.toFixed(2)+' yr');
   let html='';for(const b of bodies){if(!b.isPlanet)continue;const ej=ejectedSet.has(b.name);html+=`<div class="dr"><span class="dl">${b.sym||'●'} ${b.name}</span><span class="dv" style="color:${ej?'#2ecc71':b.color}">${ej?'EJECTED':'orbiting'}</span></div>`;}
   SFSim.html($id('planet-status-list'),html);

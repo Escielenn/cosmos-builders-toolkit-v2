@@ -541,11 +541,11 @@ const PropulsionConsequencesMap = () => {
 
         {/* Introduction */}
         <GlassPanel glow className="p-6 md:p-8 mb-8">
-          <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 gradient-text">
+          <h2 className="font-heading text-xl font-light uppercase tracking-[2px] mb-4 text-t1">
             Propulsion as Worldbuilding
           </h2>
           <blockquote className="border-l-2 border-sf-primary pl-4 italic text-lg mb-4">
-            "Your propulsion system isn't just a way to move the plot between locations, it fundamentally shapes economics, politics, relationships, and psychology."
+            "Your propulsion system moves more than the plot. It shapes economics, politics, relationships, and psychology."
           </blockquote>
           <p className="text-t2 mb-4">
             Fast travel creates empires; slow travel creates autonomous colonies. Cheap travel democratizes; expensive travel stratifies.
@@ -1504,7 +1504,7 @@ const PropulsionConsequencesMap = () => {
           <CollapsibleSection
             id="section-synthesis"
             title="Final Synthesis: The Propulsion Thesis"
-            subtitle="Distill your worldbuilding into key insights"
+            subtitle="Sum up what you decided"
           >
             <div className="space-y-6">
               <div className="space-y-2">
