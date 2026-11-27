@@ -1,0 +1,7 @@
+HYG Database v4.1 (https://github.com/astronexus/HYG-Database, now https://codeberg.org/astronexus/hyg)
+Copyright David Nash (astronexus). Used by StellarForge ExoSky as public/tools/exosky/hyg-v41.bin,
+a derived subset built by scripts/exosky/build-hyg-catalogue.py. The derived file is shared under the same licence.
+
+Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+https://creativecommons.org/licenses/by-sa/4.0/legalcode
+
