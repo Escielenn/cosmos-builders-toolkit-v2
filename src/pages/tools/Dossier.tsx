@@ -537,7 +537,7 @@ const Dossier = (): JSX.Element => {
     if (!currentWorksheetId) cast.push({ title: formState.identity.name, data: exportState });
     const md = buildDramatisPersonae(cast);
     if (!md) {
-      toast({ title: "NO NAMED CHARACTERS ON FILE.", variant: "destructive" });
+      toast({ title: "No named characters yet.", variant: "destructive" });
       return;
     }
     void copy(md);
@@ -575,7 +575,7 @@ const Dossier = (): JSX.Element => {
         choices: [
           { label: "Inherited", value: String(traits.filter((t) => t.status === "inherited").length) },
           { label: "Overridden", value: String(overridden) },
-          { label: "Not on file", value: String(missing) },
+          { label: "Not set", value: String(missing) },
         ],
       },
     ];
@@ -679,7 +679,7 @@ const Dossier = (): JSX.Element => {
                 onChange={(e) => setFormState((p) => ({ ...p, origins: { ...p.origins, house: e.target.value } }))}
                 placeholder="e.g. House Adran" />
               {polityFactions.length > 0 && (
-                <div className="flex flex-wrap gap-2" aria-label="Factions on file in Dominion">
+                <div className="flex flex-wrap gap-2" aria-label="Factions in Dominion">
                   {polityFactions.map((f) => (
                     <Button key={f} type="button" variant="sf-ghost" size="sf-sm"
                       aria-pressed={formState.origins.house === f}
@@ -819,7 +819,7 @@ const Dossier = (): JSX.Element => {
           <div className="grid gap-6 md:grid-cols-2">
             {PSYCHOLOGY_FIELDS.map((f) => (
               <Field key={f.key} id={`dossier-psych-${f.key}`} label={f.label}
-                help={f.key === "values" && inherited("polityValues") ? `${f.help} Polity values on file: ${inherited("polityValues")}.` : f.help}>
+                help={f.key === "values" && inherited("polityValues") ? `${f.help} Polity values in canon: ${inherited("polityValues")}.` : f.help}>
                 <Textarea id={`dossier-psych-${f.key}`} value={formState.psychology[f.key]}
                   onChange={(e) => setPsych(f.key, e.target.value)} placeholder={f.prompt} className="min-h-[96px]" />
               </Field>
@@ -1000,7 +1000,7 @@ const Dossier = (): JSX.Element => {
             </Button>
             {worldId && (
               <Link to={`/worlds/${worldId}/chronicle`} className="inline-flex min-h-hit items-center font-mono text-[12px] uppercase tracking-[0.10em] text-sf-primary-text underline-offset-4 hover:underline">
-                {events.length === 0 ? "// No Chronicle events on file. Open the Chronicle." : "Open the Chronicle"}
+                {events.length === 0 ? "// No Chronicle events yet. Open the Chronicle." : "Open the Chronicle"}
               </Link>
             )}
           </div>

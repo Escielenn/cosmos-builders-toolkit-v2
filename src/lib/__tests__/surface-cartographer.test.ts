@@ -237,7 +237,7 @@ describe("tidally locked sky", () => {
       substellarLon: 0,
     });
     expect(sky.daylight).toBeNull();
-    expect(sky.narrative).toMatch(/NOT ON FILE/);
+    expect(sky.narrative).toMatch(/NOT SET/);
     const locked = placeSky({ lat: 0, lon: 0 }, { tiltDeg: 0, dayLengthHours: 24, tidallyLocked: true, substellarLon: 0 });
     expect(locked.narrative).toMatch(/PERMANENT DAY/);
     expect(locked.narrative).not.toMatch(/!/);

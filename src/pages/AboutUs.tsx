@@ -8,7 +8,7 @@ import { useMetaTags } from "@/hooks/use-meta-tags";
 const AboutUs = () => {
   useMetaTags({
     title: "About StellarForge",
-    description: "The story behind StellarForge - science fiction worldbuilding tools built on the Environmental Cascade.",
+    description: "Why StellarForge exists, and the Environmental Cascade behind every tool.",
   });
 
   return (
@@ -21,7 +21,7 @@ const AboutUs = () => {
           size="page"
           eyebrow="About"
           title="About StellarForge"
-          lede="A science fiction worldbuilding platform for writers who demand scientific credibility alongside creative imagination."
+          lede="Worldbuilding instruments and a writing studio for science fiction writers who want their worlds to hold up."
         />
 
         {/* The Story */}
@@ -38,25 +38,25 @@ const AboutUs = () => {
             <div className="space-y-4 text-t2 leading-relaxed">
               <p>
                 StellarForge began as a curriculum for a science fiction writing
-                workshop. The core insight was simple: most worldbuilding tools
-                treat their subject as a creative free-for-all, generating
-                planets and species from random tables with no internal logic.
-                The result is worlds that feel arbitrary rather than inevitable.
+                workshop. Most worldbuilding tools treat a world as a creative
+                free-for-all, rolling planets and species from random tables
+                with no internal logic. The worlds that come out of them feel
+                arbitrary rather than inevitable.
               </p>
               <p>
                 We took a different approach. Real worlds are shaped by causality.
                 Change the mass of a star and you change the habitable zone.
                 Change the habitable zone and you change the atmosphere. Change
                 the atmosphere and you change what can live there. Change biology
-                and you change psychology, mythology, culture, language.
+                and you change psychology, mythology, culture, and language.
               </p>
               <p>
                 This is the Environmental Cascade principle that runs through
                 every tool on the platform: Physics leads to Environment,
                 Environment shapes Biology, Biology drives Psychology, Psychology
                 gives rise to Mythology, and Mythology crystallizes into Culture.
-                Change something upstream and everything downstream shifts in
-                ways that are surprising yet scientifically grounded.
+                Change something upstream and everything downstream shifts, often
+                in ways you did not see coming, always for a reason you can trace.
               </p>
             </div>
           </GlassPanel>
@@ -98,10 +98,9 @@ const AboutUs = () => {
               ))}
             </div>
             <p className="text-t2 leading-relaxed mt-4">
-              Each layer builds on what came before. Each output becomes input
-              for what follows. The result is worlds with genuine internal
-              consistency, the kind of lived-in coherence that separates
-              memorable science fiction from forgettable rubber-suit aliens.
+              Each layer takes its inputs from the one before it. A world built
+              this way holds together, and its aliens are shaped by where they
+              evolved instead of being humans in rubber suits.
             </p>
           </GlassPanel>
         </section>
@@ -122,18 +121,17 @@ const AboutUs = () => {
                 <span className="text-t1 font-medium">
                   Jason D. Batt, Ph.D.
                 </span>{" "}
-                is a writer, educator, and researcher whose work sits at the
-                intersection of science, narrative, and technology. He built
+                is a writer, educator, and researcher who works across science,
+                narrative, and technology. He built
                 StellarForge to solve a problem he encountered teaching science
                 fiction workshops: beginning writers wanted rigorous,
                 science-based tools for worldbuilding, not random generators or
                 vague creative prompts.
               </p>
               <p>
-                The platform grew from that workshop curriculum into a full suite
-                of calculators, simulators, and structured worksheets, each one
-                designed to help writers think through the consequences of their
-                creative choices.
+                That workshop curriculum grew into calculators, simulators,
+                worksheets, and a writing studio, each built to help writers
+                think through what their choices set in motion.
               </p>
             </div>
           </GlassPanel>
@@ -152,10 +150,9 @@ const AboutUs = () => {
               Waiting to be found.
             </p>
             <p className="text-t2 text-sm leading-relaxed max-w-lg mx-auto">
-              StellarForge is built for writers who believe that the best science
-              fiction begins with a question, not a formula. Our tools help you
-              explore the consequences of that question, rigorously and
-              imaginatively.
+              The best science fiction begins with a question. StellarForge helps
+              you follow it through physics, biology, and culture until you know
+              what it means for the people in your story.
             </p>
           </GlassPanel>
         </section>

@@ -351,7 +351,7 @@ export function BranchesView({ worldId, data, onOpenEvent, onLogEvent }: Branche
           {`// ADVISORIES · ${advisories.length}`}
         </h2>
         {advisories.length === 0 ? (
-          <p className="px-4 py-4 font-mono text-[12px] text-t3">NO PARADOX ON FILE.</p>
+          <p className="px-4 py-4 font-mono text-[12px] text-t3">NO PARADOXES.</p>
         ) : (
           <ul className="divide-y divide-sf-line-hairline">
             {advisories.map((a) => {

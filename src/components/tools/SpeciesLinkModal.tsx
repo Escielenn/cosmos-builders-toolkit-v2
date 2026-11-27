@@ -165,7 +165,7 @@ const SpeciesLinkModal = ({
               </div>
             ) : !evoBioWorksheets || evoBioWorksheets.length === 0 ? (
               <div className="text-sm text-t3 p-4 border border-dashed rounded-none text-center">
-                NO SPECIES WORKSHEETS ON FILE IN THIS WORLD.
+                This world has no species worksheets yet.
                 <br />
                 <span className="text-xs">
                   Create one in the Evolutionary Biology tool first.

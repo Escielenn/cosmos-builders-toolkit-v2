@@ -43,7 +43,7 @@ const ejectedBodyStillWarm: SimFlagRule<RogueEjectionOutput> = (o) => {
     sim: "rogue",
     severity: "opportunity",
     title: `${o.bodyName.toUpperCase()}: STARLESS, STILL WARM`,
-    body: `A subsurface ocean for roughly ${Math.round(o.tidalHeatingYears / 1e6)} million years after ejection — this world doesn't need a sun to keep a story alive underneath it.`,
+    body: `A subsurface ocean for roughly ${Math.round(o.tidalHeatingYears / 1e6)} million years after ejection. This world does not need a sun to keep something alive under its ice.`,
     cites: { body: o.bodyName, tidalHeatingYears: Math.round(o.tidalHeatingYears) },
   };
 };
@@ -55,7 +55,7 @@ const accidentalHabitability: SimFlagRule<RogueEncounterOutput> = (o) => {
     sim: "rogue",
     severity: "opportunity",
     title: `${o.bodyName.toUpperCase()}: HABITABLE BY ACCIDENT`,
-    body: `This world became habitable by accident, at ${o.epochLabel}. Nothing about its formation intended that — the story of how it got here may be more interesting than what lives there now.`,
+    body: `This world became habitable by accident, at ${o.epochLabel}. Nothing in its formation pointed that way, so how it got here may make a better story than what lives there now.`,
     cites: { body: o.bodyName, epoch: o.epochLabel },
   };
 };

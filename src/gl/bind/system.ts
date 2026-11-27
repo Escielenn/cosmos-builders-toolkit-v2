@@ -135,7 +135,7 @@ export function bindSystem(
       unplaced.push({
         id: child.id,
         name: child.title,
-        reason: "No orbital distance on file.",
+        reason: "No orbital distance set.",
       });
       continue;
     }

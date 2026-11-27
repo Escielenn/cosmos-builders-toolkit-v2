@@ -52,7 +52,7 @@ export default function LoadSimulationSheet({
           {!isLoading && saves.length === 0 && (
             <EmptyState
               hideDial
-              title="NO SAVED SIMULATIONS ON FILE."
+              title="No saved simulations yet."
               description="Save a run from the simulator toolbar to see it here."
             />
           )}

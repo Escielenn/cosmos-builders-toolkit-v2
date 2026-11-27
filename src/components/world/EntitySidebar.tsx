@@ -507,7 +507,7 @@ function CascadeGroup({
 
       {expanded && entities.length === 0 && (
         <p className="px-3 py-1.5 font-mono text-sf-mono uppercase text-t4">
-          NO ENTITIES ON FILE.
+          No entries yet.
         </p>
       )}
     </div>
@@ -688,7 +688,7 @@ const EntitySidebar = ({
           <div>
             {alphabeticalList.length === 0 ? (
               <p className="px-3 py-4 text-center font-mono text-sf-mono uppercase text-t4">
-                {searchQuery ? "NO MATCHES ON FILE." : "NO ENTITIES ON FILE."}
+                {searchQuery ? "No matches." : "No entries yet."}
               </p>
             ) : (
               alphabeticalList.map((entity) => (
@@ -711,7 +711,7 @@ const EntitySidebar = ({
           Object.values(cascadeGroups).every((g) => g.length === 0) && (
             <div className="px-3 py-6 text-center">
               <p className="font-mono text-[12px] uppercase tracking-wider text-t4">
-                NO MATCHES ON FILE.
+                No matches.
               </p>
             </div>
           )}

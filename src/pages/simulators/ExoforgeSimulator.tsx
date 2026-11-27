@@ -92,7 +92,7 @@ const ExoforgeSimulator = () => {
         <main id="main" tabIndex={-1} className="relative h-[calc(100dvh-64px)] shrink-0" style={{ marginTop: 64 }}>
           {!loaded && (
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-background">
-              <Loader message="INITIALIZING EXOFORGE" />
+              <Loader message="LOADING EXOFORGE" />
             </div>
           )}
           {/* Wrapper shrinks 340px right when NarrativeBridge is open;

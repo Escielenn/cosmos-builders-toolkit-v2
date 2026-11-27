@@ -888,7 +888,7 @@ export function useDeleteFolder(worldId: string | undefined) {
       if (readError) throw readError;
       const all = (rows ?? []) as (WorldEntry & { metadata: unknown })[];
       const plan = planFolderTrash(all, folderId);
-      if (!plan) throw new Error("FOLDER NOT ON FILE.");
+      if (!plan) throw new Error("FOLDER NOT FOUND.");
 
       // Never lose words: snapshot every document before it moves.
       if (user) {

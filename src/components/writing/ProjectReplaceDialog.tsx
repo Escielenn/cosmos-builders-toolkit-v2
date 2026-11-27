@@ -369,7 +369,7 @@ export function ProjectReplaceDialog(props: ProjectReplaceDialogProps): JSX.Elem
               className="mr-auto min-h-hit"
               disabled={busy}
               onClick={() => void revert()}
-              title={`Restore the snapshots filed before replacing "${lastReplace.find}"`}
+              title={`Restore the snapshots taken before replacing "${lastReplace.find}"`}
             >
               Revert replace
             </Button>

@@ -76,7 +76,7 @@ export function CascadeFilterBar({
                 ? "border-sf-line-emphasis"
                 : "border-transparent hover:border-sf-line-emphasis"
             }`}
-            title={`${CASCADE_STAGE_LABELS[stage]} — click to solo, shift-click to toggle`}
+            title={`${CASCADE_STAGE_LABELS[stage]}: click to show only this layer, shift-click to add or remove it`}
           >
             <span
               aria-hidden

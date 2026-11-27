@@ -279,7 +279,7 @@ export const CURATED_PLAYLISTS: AudioPlaylist[] = [
   },
   {
     id: "playlist-all-curated",
-    name: "All Curated Tracks",
+    name: "All library tracks",
     source: "curated",
     tracks: CURATED_TRACKS.filter((t) =>
       !t.id.startsWith("curated-stem") && !t.id.startsWith("curated-short")

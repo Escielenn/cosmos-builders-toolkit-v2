@@ -1192,7 +1192,7 @@ const StarSystemBuilder = () => {
               id="section-examples"
               title="SF Examples"
               levelNumber={8}
-              guidance="See how other creators have used star system design to enhance their worldbuilding."
+              guidance="How other writers have used star systems in their fiction."
             >
               <div className="space-y-4">
                 {SF_SYSTEM_EXAMPLES.map((example, i) => (

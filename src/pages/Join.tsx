@@ -172,7 +172,7 @@ const Join = () => {
             disabled={isLoading}
           >
             <GoogleMark />
-            CREATE ACCOUNT VIA GOOGLE
+            Create account with Google
           </Button>
 
           <div className="relative my-4">
@@ -279,7 +279,7 @@ const Join = () => {
                 </li>
                 <li className="flex gap-2">
                   <span className="text-sf-amber-text shrink-0" aria-hidden>-</span>
-                  <span><strong className="text-t2">Work in progress.</strong> Features may change, and you may encounter bugs. We have a fully working bug reporting system - your feedback directly shapes the product.</span>
+                  <span><strong className="text-t2">Work in progress.</strong> Features may change, and you may encounter bugs. You can report bugs from inside the app, and those reports shape what gets fixed and built.</span>
                 </li>
                 <li className="flex gap-2">
                   <span className="text-sf-amber-text shrink-0" aria-hidden>-</span>
@@ -289,7 +289,7 @@ const Join = () => {
             </Notice>
 
             {/* Privacy notice */}
-            <Notice tone="info" label="Your Worlds Are Yours Alone">
+            <Notice tone="info" label="Your worlds are yours alone">
               All creative content is encrypted, user-isolated, and never accessed by StellarForge systems. No AI training. No data mining. No third-party sharing.
             </Notice>
           </div>

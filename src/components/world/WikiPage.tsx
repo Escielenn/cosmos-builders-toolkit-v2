@@ -290,7 +290,7 @@ export function WikiPage({ worldId, entryId }: WikiPageProps) {
           accent="teal"
           title="Entry unavailable"
         />
-        <Notice tone="danger" label="NOT ON FILE">
+        <Notice tone="danger" label="NOT SET">
           This entry could not be read. It may have been deleted, or you may not have access to it.
         </Notice>
       </PageContainer>

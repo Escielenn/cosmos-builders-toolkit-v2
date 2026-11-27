@@ -356,7 +356,7 @@ function EntityBody({ worldId, entity }: { worldId: string; entity: Entity }): J
       )}
       {facts.length > 0 && (
         <>
-          <p className="mt-5 font-heading text-sf-eyebrow uppercase text-t4">On file</p>
+          <p className="mt-5 font-heading text-sf-eyebrow uppercase text-t4">Canon</p>
           <dl className="mt-1 border-t border-sf-line-hairline">
             {facts.slice(0, 16).map((f) => (
               <div key={f.ref} className="flex items-baseline gap-3 border-b border-sf-line-hairline py-2">
@@ -396,7 +396,7 @@ function WorksheetBody({
       </p>
       <h2 className="mt-1 font-sans text-[24px] text-t1">{sheet.title || getToolDisplayName(sheet.tool_type)}</h2>
       {facts.length === 0 ? (
-        <p className="mt-3 font-sans text-[15px] text-t3">No values on file in this worksheet yet.</p>
+        <p className="mt-3 font-sans text-[15px] text-t3">This worksheet has no values yet.</p>
       ) : (
         <dl className="mt-4 border-t border-sf-line-hairline">
           {facts.map((f) => (

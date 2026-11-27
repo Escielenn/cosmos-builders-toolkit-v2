@@ -520,7 +520,7 @@ const EvolutionaryBiology = () => {
             "Every trait is a solution to a problem. Every solution creates new problems."
           </blockquote>
           <p className="text-t2 mb-4">
-            This tool helps you design alien species where biology emerges from environment, and psychology emerges from biology. Start with the survival pressures your world creates, then trace their consequences through biochemistry, body plan, sensory systems, reproduction, social structure, cognition, and psychology.
+            Design alien species whose biology comes from their environment and whose psychology comes from their biology. Start with the survival pressures your world creates, then trace their consequences through biochemistry, body plan, sensory systems, reproduction, social structure, cognition, and psychology.
           </p>
           <div className="text-sm text-t3 mb-4">
             <strong className="text-t1">The Evolutionary Cascade:</strong>

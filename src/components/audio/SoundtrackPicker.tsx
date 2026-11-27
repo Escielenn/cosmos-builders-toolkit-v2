@@ -73,7 +73,7 @@ function PlaylistOption({
       <Music className="w-3 h-3 shrink-0" />
       <span className="text-xs truncate flex-1">{playlist.name}</span>
       <span className="font-mono text-[12px] text-t4">
-        {playlist.source === "curated" ? "CURATED" : "CUSTOM"}
+        {playlist.source === "curated" ? "LIBRARY" : "CUSTOM"}
       </span>
     </button>
   );

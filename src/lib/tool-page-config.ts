@@ -54,7 +54,7 @@ export const TOOL_PAGE_CONFIGS: Record<string, ToolPageConfig> = {
     "spacecraft-designer",
     "Vessel",
     "Lived-In Spacecraft Designer",
-    "Design ships that feel inhabited, with cultural context, life support realities, and ship-as-character development.",
+    "Design ships people live on: their culture, the limits of life support, and the ship as a character.",
   ),
   "propulsion-consequences-map": config(
     "propulsion-consequences-map",
@@ -68,13 +68,13 @@ export const TOOL_PAGE_CONFIGS: Record<string, ToolPageConfig> = {
     "planetary-profile",
     "Genesis",
     "Planetary Profile",
-    "Define your world's stellar environment, physical characteristics, atmosphere, and the narrative pressures that shape life.",
+    "Define your world's star, physical characteristics, atmosphere, and the pressures that shape life and story.",
   ),
   "one-big-lie": config(
     "one-big-lie",
     "Axiom",
     "The One Big Lie",
-    "Declare your single violation of known physics, then systematically trace its consequences across every domain of your world.",
+    "Name the one rule of known physics your story breaks, then trace what that changes across your world.",
   ),
   "evolutionary-biology": config(
     "evolutionary-biology",
@@ -86,7 +86,7 @@ export const TOOL_PAGE_CONFIGS: Record<string, ToolPageConfig> = {
     "xenomythology-framework-builder",
     "Mythos",
     "Xenomythology Framework",
-    "Create comprehensive alien mythological systems derived from species biology, environment, and evolutionary pressures.",
+    "Build alien mythologies from a species' biology, environment, and evolutionary history.",
   ),
   "star-system-builder": config(
     "star-system-builder",
@@ -116,19 +116,19 @@ export const TOOL_PAGE_CONFIGS: Record<string, ToolPageConfig> = {
     "space-expansion-modeler",
     "Exodus",
     "Space Expansion Modeler",
-    "Model how competing forces, industrial, governmental, religious, economic, shape expansion beyond Earth.",
+    "Model how industry, government, religion, and economics compete to shape expansion beyond Earth.",
   ),
   "timeline": config(
     "timeline",
     "Epoch",
     "Timeline",
-    "Plot events across deep time. Build multi-track timelines that reveal how characters, civilizations, and technologies intersect.",
+    "Plot events across deep time on parallel tracks, so you can see where characters, civilizations, and technologies cross.",
   ),
   "drake-equation-calculator": config(
     "drake-equation-calculator",
     "Signal",
     "Drake Equation Calculator",
-    "Calculate the number of detectable civilizations in your galaxy and establish the cosmic context for your world.",
+    "Estimate how many detectable civilizations share your galaxy.",
   ),
 
   // ── Pro Calculators ──────────────────────────────────────────────────
@@ -136,7 +136,7 @@ export const TOOL_PAGE_CONFIGS: Record<string, ToolPageConfig> = {
     "habitable-zone-calculator",
     "Goldilocks",
     "Habitable Zone Calculator",
-    "Where your planet sits relative to its star determines everything that follows.",
+    "Find where liquid water can last around your star, and where your planet sits in that range.",
   ),
   "surface-gravity-calculator": config(
     "surface-gravity-calculator",
@@ -173,7 +173,7 @@ export const TOOL_PAGE_CONFIGS: Record<string, ToolPageConfig> = {
     "kardashev-scale",
     "K-Scale",
     "Kardashev Scale Calculator",
-    "Classify your civilization's energy consumption and explore the cascade implications of each level.",
+    "Classify your civilization by its energy use and see what each level implies downstream.",
   ),
   "generation-ship": config(
     "generation-ship",
@@ -185,13 +185,13 @@ export const TOOL_PAGE_CONFIGS: Record<string, ToolPageConfig> = {
     "dossier",
     "Dossier",
     "Character Development",
-    "Characters who inherit their bodies, senses and beliefs from your world, with every departure marked as yours.",
+    "Characters who inherit their bodies, senses, and beliefs from your world, with every change you make marked as yours.",
   ),
   "surface-cartographer": config(
     "surface-cartographer",
     "Surface Cartographer",
     "Planet & Moon Maps",
-    "Put your own map on a planet or moon, drop the places your story happens, and read their sky, climate and distances from canon.",
+    "Put your own map on a planet or moon, drop the places your story happens, and read their sky, climate, and distances from canon.",
   ),
 };
 

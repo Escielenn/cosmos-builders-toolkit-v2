@@ -316,10 +316,10 @@ const HabitableZoneCalculator = () => {
           </h2>
           <blockquote className="border-l-2 border-sf-primary pl-4 italic text-lg mb-4">
             "The highest function of ecology is the understanding of consequences."
-            <span className="block text-sm text-t3 mt-1">,  Frank Herbert, Dune</span>
+            <span className="block text-sm text-t3 mt-1">Frank Herbert, Dune</span>
           </blockquote>
           <p className="text-t2">
-            Define your host star and place your planet. See instantly where it falls relative to the
+            Define your host star and place your planet. You will see where it falls relative to the
             habitable zone, and what that means for climate, biology, psychology, mythology, and culture.
             All calculations use Kopparapu et al. (2013) habitable zone boundaries.
           </p>

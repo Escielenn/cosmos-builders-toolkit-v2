@@ -50,12 +50,12 @@ export function bindGlobe(f: GlobeFacts): GlobeBinding {
   const tiltDeg = f.tiltDeg;
   const tilt: Provenanced<number> =
     tiltDeg === null || !Number.isFinite(tiltDeg)
-      ? { value: 0, derived: true, note: "No axial tilt on file; drawn upright." }
+      ? { value: 0, derived: true, note: "No axial tilt set; drawn upright." }
       : { value: (tiltDeg * Math.PI) / 180, derived: false };
 
   const locked: Provenanced<boolean> =
     f.tidallyLocked === null
-      ? { value: false, derived: true, note: "Nothing on file says this body is locked; drawn turning." }
+      ? { value: false, derived: true, note: "Nothing in canon says this body is tidally locked; drawn turning." }
       : { value: f.tidallyLocked, derived: false };
 
   // A retrograde rotator (tilt past 90°) turns the other way — already

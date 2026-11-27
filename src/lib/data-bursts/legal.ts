@@ -2,7 +2,7 @@ import type { DataBurstConfig } from "./types";
 
 export const PRIVACY_BURSTS: DataBurstConfig[] = [
   {
-    content: "DOC: PRIVACY-POLICY // v3.1",
+    content: "DOC: PRIVACY POLICY",
     position: { top: "6%", right: "3%" },
     variant: "status",
     parallax: -0.05,
@@ -21,7 +21,7 @@ export const PRIVACY_BURSTS: DataBurstConfig[] = [
     parallax: -0.08,
   },
   {
-    content: "DATA RETENTION: 90d",
+    content: "YOUR WORLDS ARE YOURS ALONE",
     position: { top: "65%", left: "1%" },
     variant: "margin",
     parallax: -0.12,
@@ -30,7 +30,7 @@ export const PRIVACY_BURSTS: DataBurstConfig[] = [
 
 export const TERMS_BURSTS: DataBurstConfig[] = [
   {
-    content: "DOC: TERMS-OF-SERVICE // v2.4",
+    content: "DOC: TERMS OF SERVICE",
     position: { top: "6%", right: "3%" },
     variant: "status",
     parallax: -0.05,
@@ -49,7 +49,7 @@ export const TERMS_BURSTS: DataBurstConfig[] = [
     parallax: -0.08,
   },
   {
-    content: "EFFECTIVE: 2026-01-15",
+    content: "STATUS: IN FORCE",
     position: { top: "65%", left: "1%" },
     variant: "margin",
     parallax: -0.12,

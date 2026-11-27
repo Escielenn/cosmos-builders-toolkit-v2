@@ -83,7 +83,7 @@ export function TimelineScrubber({
     return (
       <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-3 border border-sf-line bg-sf-surface px-4 py-2">
         <span className="font-sans text-[13px] text-t3">
-          NO EPOCH ON FILE. Date a relation to scrub it.
+          No dated links yet. Give a link a date to scrub through time.
         </span>
         <button
           type="button"

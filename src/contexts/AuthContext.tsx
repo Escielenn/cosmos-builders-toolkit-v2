@@ -206,7 +206,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             accent="crimson"
             eyebrow="CONNECTION LOST"
             title="Can't reach the forge"
-            lede="StellarForge couldn't reach its servers. This is usually a brief network hiccup, not your worlds — they're safe. Give it a moment, then try again."
+            lede="StellarForge couldn't reach its servers. This is usually a brief network problem, and your worlds are safe. Wait a moment, then try again."
           />
           <button
             onClick={() => {

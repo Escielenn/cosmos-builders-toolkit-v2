@@ -375,7 +375,7 @@ export function detectBranchAdvisories(
       id: `orphan-branch:${lane.key}`,
       kind: "orphan-branch",
       title: ADVISORY_TITLES["orphan-branch"],
-      detail: `${lane.branch.name.toUpperCase()} NAMES A PARENT THAT IS NOT ON FILE OR DESCENDS FROM ITSELF. DRAWN FROM THE PRIME TIMELINE UNTIL A PARENT IS SET.`,
+      detail: `${lane.branch.name.toUpperCase()} NAMES A PARENT THAT DOES NOT EXIST OR DESCENDS FROM ITSELF. DRAWN FROM THE PRIME TIMELINE UNTIL A PARENT IS SET.`,
       eventIds: [],
       jumpIds: [],
       branchIds: [lane.key],

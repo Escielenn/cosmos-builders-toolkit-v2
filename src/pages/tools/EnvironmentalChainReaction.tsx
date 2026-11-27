@@ -677,10 +677,10 @@ const EnvironmentalChainReaction = () => {
           </blockquote>
           <p className="text-t2">
             This tool applies the xenomythological principle that planetary
-            conditions generate unique cultures, psychologies, and
-            spiritualities. A desert world doesn't just have different
-            weather, it produces different religions, social structures,
-            technologies, and concepts of value.
+            conditions produce their own cultures, psychologies, and
+            spiritualities. A desert world has different weather, and from
+            that weather come different religions, social structures,
+            technologies, and ideas of value.
           </p>
         </GlassPanel>
 

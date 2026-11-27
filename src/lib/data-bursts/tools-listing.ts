@@ -27,7 +27,7 @@ export const TOOL_CARD_WATERMARKS: Record<string, string> = {
 /** Section headers between tool rows */
 export const SECTION_BURSTS: DataBurstConfig[] = [
   {
-    content: "MANIFEST: TOOL INVENTORY",
+    content: "INDEX: ALL TOOLS",
     position: { top: "2%", right: "3%" },
     variant: "status",
     parallax: -0.05,

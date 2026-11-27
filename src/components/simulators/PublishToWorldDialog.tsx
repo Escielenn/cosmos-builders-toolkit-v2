@@ -190,7 +190,7 @@ export default function PublishToWorldDialog({
 
       toast({
         title: "PUBLISHED TO WORLD.",
-        description: `"${name.trim()}" ON FILE AS ${entryType.replace("_", " ").toUpperCase()}.`,
+        description: `"${name.trim()}" SAVED AS ${entryType.replace("_", " ").toUpperCase()}.`,
       });
       onOpenChange(false);
       setName("");

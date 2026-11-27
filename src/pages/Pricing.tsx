@@ -128,7 +128,7 @@ const Pricing = () => {
     } catch (error) {
       toast({
         title: "OPERATION FAILED.",
-        description: "BILLING PORTAL UNAVAILABLE. RETRY WHEN READY.",
+        description: "BILLING PORTAL UNAVAILABLE. TRY AGAIN IN A MOMENT.",
         variant: "destructive",
       });
     } finally {
@@ -180,7 +180,7 @@ const Pricing = () => {
             <em className="block font-serif font-normal italic text-sf-primary-text">Pay for the instruments.</em>
           </h1>
           <p className="mt-6 max-w-[60ch] font-sans text-[17px] leading-[1.6] text-t2 md:text-[19px]">
-            {`The Studio, Codex, Chronicle, Canon and Compile come with every account. Pro opens all ${TOTAL_TOOL_COUNT} instruments and full-world exports. Vanguard shapes what comes next.`}
+            {`The Studio, Codex, Chronicle, Canon, and Compile come with every account. Pro opens all ${TOTAL_TOOL_COUNT} instruments and full-world exports. Vanguard shapes what comes next.`}
           </p>
         </section>
 
@@ -290,7 +290,7 @@ const Pricing = () => {
             id="vanguard-title"
             label="Vanguard"
             title="Shape what comes next"
-            lede="Vanguard members help build StellarForge: vote on the roadmap, try new tools before anyone else, and join Office Hours on science fiction worldbuilding with the creator."
+            lede="Vanguard members help build StellarForge: vote on the roadmap, try new tools before anyone else, and join Office Hours on science fiction worldbuilding with StellarForge's creator."
             className="mb-0 md:mb-0"
           />
           <dl className="grid gap-8 self-end sm:grid-cols-2">
@@ -336,16 +336,16 @@ const Pricing = () => {
 const PRICING_FAQ = [
   {
     q: "Is the writing Studio free?",
-    a: "Yes. The Studio (binder, corkboard, outliner, snapshots), the Codex, the Chronicle, Canon capture and Compile come with every free account. Pro adds instruments and world-level exports; it never locks your manuscript.",
+    a: "Yes. The Studio (binder, corkboard, outliner, snapshots), the Codex, the Chronicle, Canon capture, and Compile come with every free account. Pro adds instruments and world-level exports; it never locks your manuscript.",
   },
   { q: "Can I cancel any time?", a: "Yes. Cancel from your billing portal. You keep access until the end of your billing period." },
   { q: "What payment methods do you accept?", a: "All major credit and debit cards, and many local payment methods, through Stripe." },
   {
     q: "Will I lose my data if I cancel?",
-    a: "No. Your worlds, worksheets and manuscripts stay saved, and the Studio stays open. Pro and Vanguard instruments lock until you resubscribe.",
+    a: "No. Your worlds, worksheets, and manuscripts stay saved, and the Studio stays open. Pro and Vanguard instruments lock until you resubscribe.",
   },
-  { q: "Can I upgrade from Pro to Vanguard?", a: "Yes, anytime. Stripe prorates the billing so you only pay the difference for the rest of your current period." },
-  { q: "Can I switch between monthly and yearly?", a: "Yes. Change your plan anytime through the billing portal." },
+  { q: "Can I upgrade from Pro to Vanguard?", a: "Yes, any time. Stripe prorates the billing so you only pay the difference for the rest of your current period." },
+  { q: "Can I switch between monthly and yearly?", a: "Yes. Change your plan any time through the billing portal." },
   {
     q: "What are roadmap votes?",
     a: "Vanguard members get 10 votes per billing period to cast on upcoming tools and features. The highest-voted items get priority in development.",

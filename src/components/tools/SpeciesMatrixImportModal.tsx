@@ -205,7 +205,7 @@ const SpeciesMatrixImportModal = ({
               </div>
             ) : !matrixWorksheets || matrixWorksheets.length === 0 ? (
               <div className="text-sm text-t3 p-4 border border-dashed rounded-none text-center">
-                NO SPECIES INTERACTION MATRIX WORKSHEETS ON FILE IN THIS WORLD.
+                This world has no Species Interaction Matrix worksheets yet.
                 <br />
                 <span className="text-xs">
                   Create one in the Species Interaction Matrix tool first.
@@ -239,7 +239,7 @@ const SpeciesMatrixImportModal = ({
               <Label>Select Species</Label>
               {speciesList.length === 0 ? (
                 <div className="text-sm text-t3 p-4 border border-dashed rounded-none text-center">
-                  NO NAMED SPECIES ON FILE IN THIS WORKSHEET.
+                  This worksheet has no named species yet.
                 </div>
               ) : (
                 <Select

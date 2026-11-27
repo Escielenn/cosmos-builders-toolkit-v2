@@ -100,7 +100,7 @@ export function CanonProvenance({
   if (state === "missing") {
     return (
       <div className={cn("flex flex-wrap items-center gap-x-3", className)}>
-        <span className="font-mono text-[12px] uppercase tracking-[0.10em] text-t4">{"// NOT ON FILE"}</span>
+        <span className="font-mono text-[12px] uppercase tracking-[0.10em] text-t4">{"// NOT SET"}</span>
         {editLink("SET")}
       </div>
     );
@@ -110,7 +110,7 @@ export function CanonProvenance({
     return (
       <div className={cn("flex flex-wrap items-center gap-x-3", className)}>
         <span className="font-mono text-[12px] uppercase tracking-[0.10em] text-t4">
-          {`// ${pick.candidates.length} VALUES ON FILE. NONE BOUND TO THIS SUBJECT.`}
+          {`// ${pick.candidates.length} VALUES IN CANON. NONE BOUND TO THIS SUBJECT.`}
         </span>
         {editLink("EDIT")}
       </div>

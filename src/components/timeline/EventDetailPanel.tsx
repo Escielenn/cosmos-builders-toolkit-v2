@@ -486,7 +486,7 @@ const EventDetailPanel = ({
                   </div>
                 ) : (
                   <p className="text-[12px] text-t3">
-                    NO CAUSALITY LINKS ON FILE.
+                    No cause-and-effect links yet.
                   </p>
                 )}
               </div>
@@ -547,7 +547,7 @@ const EventDetailPanel = ({
                   </div>
                 ) : (
                   <p className="text-[12px] text-t3">
-                    NO LINKED ELEMENTS ON FILE.
+                    No linked worksheets yet.
                   </p>
                 )}
               </div>

@@ -252,7 +252,7 @@ const ImportFromECRModal = ({
           {worksheets.length === 0 ? (
             <div className="text-center py-6 text-t3">
               <AlertCircle className="w-8 h-8 mx-auto mb-2 text-t4" />
-              <p>NO ENVIRONMENTAL CHAIN REACTION WORKSHEETS ON FILE FOR THIS WORLD.</p>
+              <p>This world has no Environmental Chain Reaction worksheets yet.</p>
               <p className="text-sm mt-1">Complete an ECR worksheet first to import data.</p>
             </div>
           ) : (

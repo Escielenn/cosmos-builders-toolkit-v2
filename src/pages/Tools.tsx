@@ -86,14 +86,14 @@ const TOOLS_BY_CATEGORY: { category: ToolCategory; tools: CatalogTool[] }[] = [
         id: "exosky",
         title: "Exosky: Alien Night Sky",
         description:
-          "Alien night sky simulator. View the stars from any exoplanet using real astronomical data and create your own constellations.",
+          "See the night sky from any exoplanet, using real star data, and draw your own constellations.",
         status: "available",
       },
       {
         id: "stellar-cartographer",
         title: "Stellar Cartographer: Galaxy Mapper",
         description:
-          "Interactive galaxy mapping tool. Generate procedural galaxies with 3D projection, empire territories, trade routes, and wormholes.",
+          "Generate a galaxy in 3D and map empire territories, trade routes, and wormholes.",
         status: "available",
       },
       {
@@ -128,7 +128,7 @@ const TOOLS_BY_CATEGORY: { category: ToolCategory; tools: CatalogTool[] }[] = [
         id: "surface-cartographer",
         title: "Surface Cartographer: Planet & Moon Maps",
         description:
-          "Map a planet or moon from your own sheet or a generated one. Places carry coordinates, and inherit sky, climate and travel time from canon.",
+          "Map a planet or moon from your own sheet or a generated one. Places carry coordinates and inherit sky, climate, and travel time from canon.",
         icon: MapIcon,
         status: "available",
       },
@@ -143,14 +143,14 @@ const TOOLS_BY_CATEGORY: { category: ToolCategory; tools: CatalogTool[] }[] = [
         id: "tidelock",
         title: "Tidelock: Locked World Simulator",
         description:
-          "Tidally locked world simulator. Explore habitable zones, atmospheric dynamics, and surface conditions on exoplanets around M-dwarf and K-dwarf stars.",
+          "Simulate a tidally locked planet around a red or orange dwarf: where it is habitable, how its air moves, and what its surface is like.",
         status: "available",
       },
       {
         id: "rogue",
         title: "Rogue: Wandering Object Encounters",
         description:
-          "N-body gravitational encounter simulator. Launch black holes, brown dwarfs, and rogue planets at real star systems.",
+          "Send black holes, brown dwarfs, and rogue planets through real star systems and watch the gravity play out.",
         path: "/rogue",
         status: "available",
       },
@@ -163,7 +163,7 @@ const TOOLS_BY_CATEGORY: { category: ToolCategory; tools: CatalogTool[] }[] = [
         id: "evolutionary-biology",
         title: "Phylo: Evolutionary Biology",
         description:
-          "Design biologically plausible alien species with 13 comprehensive sections covering biochemistry, body plan, cognition, and psychology.",
+          "Design biologically plausible alien species across 13 sections covering biochemistry, body plan, cognition, and psychology.",
         icon: Dna,
         status: "available",
       },
@@ -171,7 +171,7 @@ const TOOLS_BY_CATEGORY: { category: ToolCategory; tools: CatalogTool[] }[] = [
         id: "species-interaction-matrix",
         title: "Symbiosis: Species Interaction Matrix",
         description:
-          "Map predator-prey dynamics, mutualism, parasitism: the ecological web of your world.",
+          "Map predators and prey, mutualism, and parasitism across your world's ecology.",
         icon: Network,
         status: "available",
       },
@@ -208,7 +208,7 @@ const TOOLS_BY_CATEGORY: { category: ToolCategory; tools: CatalogTool[] }[] = [
         id: "spacecraft-designer",
         title: "Vessel: Lived-In Spacecraft Designer",
         description:
-          "Design ships that feel inhabited with cultural context, life support realities, and ship-as-character development.",
+          "Design ships people live on: their culture, the limits of life support, and the ship as a character.",
         icon: Rocket,
         status: "available",
       },
@@ -238,7 +238,7 @@ const TOOLS_BY_CATEGORY: { category: ToolCategory; tools: CatalogTool[] }[] = [
         id: "time-dilation",
         title: "Paradox: Time Dilation Calculator",
         description:
-          "Calculate relativistic time dilation for interstellar journeys. See how fast travel warps time for your characters.",
+          "Calculate relativistic time dilation for interstellar journeys and see how much time your characters lose.",
         icon: Clock,
         status: "available",
       },
@@ -246,7 +246,7 @@ const TOOLS_BY_CATEGORY: { category: ToolCategory; tools: CatalogTool[] }[] = [
         id: "drake-equation-calculator",
         title: "Signal: Drake Equation Calculator",
         description:
-          "Calculate the number of civilizations in your galaxy. Establish your cosmic context from lonely universe to teeming space opera.",
+          "Estimate how many civilizations share your galaxy, from a lonely universe to a crowded space opera.",
         icon: Calculator,
         status: "available",
       },
@@ -262,7 +262,7 @@ const TOOLS_BY_CATEGORY: { category: ToolCategory; tools: CatalogTool[] }[] = [
         id: "gravitas",
         title: "Gravitas: Gravity Simulator",
         description:
-          "Calculate gravity conditions on spacecraft, habitats, and planetary surfaces. Spin, thrust, orbital, and artificial gravity with experiential output.",
+          "Calculate gravity on spacecraft, habitats, and planets, from spin, thrust, or orbit, and read what it feels like.",
         icon: Weight,
         status: "available",
       },
@@ -278,7 +278,7 @@ const TOOLS_BY_CATEGORY: { category: ToolCategory; tools: CatalogTool[] }[] = [
         id: "dossier",
         title: "Dossier: Character Development",
         description:
-          "Characters born into your world. Lifespan, senses, native gravity, phonology and funeral customs inherited from your tools, with every override marked.",
+          "Characters born into your world. Lifespan, senses, native gravity, phonology, and funeral customs come from your tools, with every override marked.",
         icon: ContactRound,
         status: "available",
       },
@@ -291,7 +291,7 @@ const TOOLS_BY_CATEGORY: { category: ToolCategory; tools: CatalogTool[] }[] = [
         id: "xenomythology-framework-builder",
         title: "Mythos: Xenomythology Framework",
         description:
-          "Create comprehensive alien mythological systems derived from species biology, environment, and evolutionary pressures.",
+          "Build alien mythologies from a species' biology, environment, and evolutionary history.",
         icon: Sparkles,
         status: "available",
       },
@@ -312,7 +312,7 @@ const TOOLS_BY_CATEGORY: { category: ToolCategory; tools: CatalogTool[] }[] = [
         id: "timeline",
         title: "Timeline",
         description:
-          "Plot events across deep time. Build multi-track timelines that reveal how characters, civilizations, and technologies intersect.",
+          "Plot events across deep time on parallel tracks, so you can see where characters, civilizations, and technologies cross.",
         icon: Clock,
         status: "available",
       },
@@ -347,16 +347,16 @@ export const COMING_SOON_ITEMS = [
 type SortMode = "category" | "type" | "complexity";
 
 const TYPE_GROUP_META: Record<ToolType, { label: string; color: string; description: string }> = {
-  worksheet: { label: "Worksheets", color: "var(--sf-azure-text)", description: "In-depth design tools with guided questions and exportable results." },
+  worksheet: { label: "Worksheets", color: "var(--sf-azure-text)", description: "Design tools with guided questions and exportable results." },
   calculator: { label: "Calculators", color: "var(--sf-amber-text)", description: "Quick-reference tools for specific physical parameters." },
   simulator: { label: "Simulators", color: "var(--sf-emerald-text)", description: "Interactive visual simulations and procedural generators." },
   cartographer: { label: "Cartographers", color: "var(--sf-violet-text)", description: "Spatial mapping and visualization tools." },
 };
 
 const COMPLEXITY_GROUP_META: Record<ComplexityLevel, { label: string; color: string; description: string }> = {
-  entry: { label: "Entry Level", color: "var(--sf-emerald-text)", description: "No prerequisites. Great starting points for new worldbuilders." },
-  intermediate: { label: "Intermediate", color: "var(--sf-amber-text)", description: "Benefits from prior tool outputs. Deeper domain exploration." },
-  advanced: { label: "Advanced", color: "var(--sf-violet-text)", description: "Maximum flexibility. Best with prior tool experience." },
+  entry: { label: "Entry Level", color: "var(--sf-emerald-text)", description: "No prerequisites. Good places to start." },
+  intermediate: { label: "Intermediate", color: "var(--sf-amber-text)", description: "Works best with results from earlier tools." },
+  advanced: { label: "Advanced", color: "var(--sf-violet-text)", description: "The most room to adjust. Best once you know the earlier tools." },
 };
 
 const TYPE_ORDER: ToolType[] = ["worksheet", "calculator", "simulator", "cartographer"];

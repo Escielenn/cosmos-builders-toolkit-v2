@@ -219,6 +219,6 @@ export function factRefStatus(
 /** "WAS 1.4 g · NOW 1.6 g", the line the hover card shows. */
 export function staleLine(status: FactRefStatus): string {
   if (status.state === "stale") return `WAS ${status.was} · NOW ${status.now}`;
-  if (status.state === "missing") return `WAS ${status.was} · NO LONGER ON FILE`;
+  if (status.state === "missing") return `WAS ${status.was} · NO LONGER IN CANON`;
   return "";
 }

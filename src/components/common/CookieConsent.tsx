@@ -45,8 +45,8 @@ export const CookieConsent = () => {
           <div className="flex-1">
             <h3 className="font-medium text-sm text-t1 mb-1">Cookie Notice</h3>
             <p className="text-xs text-t3 leading-relaxed">
-              Essential cookies required for authentication and session management.
-              No tracking cookies deployed. No third-party data sharing.{" "}
+              We use only the cookies needed to keep you signed in.
+              No tracking cookies, and no data shared with third parties.{" "}
               <Link to="/privacy" className="text-sf-primary-text hover:underline">
                 Learn more
               </Link>

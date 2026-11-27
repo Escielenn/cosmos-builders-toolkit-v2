@@ -279,7 +279,7 @@ export function placeSky(
       band,
       daylight: null,
       lockedSky: null,
-      narrative: "DAY LENGTH NOT ON FILE. SET IT IN GENESIS TO RESOLVE DAYLIGHT.",
+      narrative: "DAY LENGTH NOT SET. SET IT IN GENESIS TO WORK OUT DAYLIGHT.",
     };
   }
   const d = daylightProfile(place.lat, tilt, body.dayLengthHours);

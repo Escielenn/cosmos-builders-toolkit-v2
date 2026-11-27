@@ -191,7 +191,7 @@ export const BOOKSHELF_DATA: BookEntry[] = [
     year: "1989",
     isbn: "9780553283686",
     description:
-      "Seven pilgrims\u2019 stories reveal a civilization built around the mystery of the Time Tombs. Simmons weaves mythology, time travel, and interstellar politics into a tapestry of interconnected worldbuilding.",
+      "Seven pilgrims\u2019 stories reveal a civilization built around the mystery of the Time Tombs. Simmons ties mythology, time travel, and interstellar politics into one world, each thread depending on the others.",
     toolsReferenced: [
       { name: "Xenomythology", path: "/tools/xenomythology-framework-builder" },
       { name: "Time Dilation Calculator", path: "/tools/time-dilation-calculator" },

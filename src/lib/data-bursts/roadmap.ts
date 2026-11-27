@@ -2,7 +2,7 @@ import type { DataBurstConfig } from "./types";
 
 export const ROADMAP_BURSTS: DataBurstConfig[] = [
   {
-    content: "MANIFEST: DEVELOPMENT QUEUE",
+    content: "ROADMAP: IN DEVELOPMENT",
     position: { top: "6%", right: "2%" },
     variant: "status",
     parallax: -0.05,
