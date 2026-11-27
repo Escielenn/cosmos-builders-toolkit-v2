@@ -784,7 +784,7 @@ function ManuscriptPreview({ manuscript: m }: { manuscript: ReturnType<typeof bu
                 )}
                 {showDocTitle(m, sec, d) && <h4 className="text-center font-serif italic text-t2">{d.title}</h4>}
                 <div
-                  className="prose prose-invert prose-sm max-w-none font-serif leading-relaxed text-t2"
+                  className="sf-article sf-article-sm font-serif"
                   dangerouslySetInnerHTML={{ __html: sanitizeHtml(blocksToXhtml(d.blocks)) }}
                 />
               </div>
@@ -801,13 +801,13 @@ function ManuscriptPreview({ manuscript: m }: { manuscript: ReturnType<typeof bu
       {m.appendix && (
         <section className="space-y-2">
           <h3 className="text-center font-serif text-lg italic text-t1">Appendix: World Reference</h3>
-          <div className="prose prose-invert prose-sm max-w-none text-t2" dangerouslySetInnerHTML={{ __html: sanitizeHtml(blocksToXhtml(m.appendix)) }} />
+          <div className="sf-article sf-article-sm" dangerouslySetInnerHTML={{ __html: sanitizeHtml(blocksToXhtml(m.appendix)) }} />
         </section>
       )}
       {m.backMatter.map((b) => (
         <section key={b.id} className="space-y-2">
           <h3 className="text-center font-serif text-lg italic text-t1">{b.title}</h3>
-          <div className="prose prose-invert prose-sm max-w-none text-t2" dangerouslySetInnerHTML={{ __html: sanitizeHtml(blocksToXhtml(b.blocks)) }} />
+          <div className="sf-article sf-article-sm" dangerouslySetInnerHTML={{ __html: sanitizeHtml(blocksToXhtml(b.blocks)) }} />
         </section>
       ))}
     </div>

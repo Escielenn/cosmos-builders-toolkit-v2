@@ -227,6 +227,58 @@
 }
 
 @layer components {
+  /* ── Article typography (2026-11-26) ──────────────────────────────
+     Long-form reading: Learn articles (Sanity and MDX), tool explainers,
+     Compile previews. Replaces the Tailwind `prose` classes, whose plugin
+     was never registered in the generated config, so they styled nothing.
+     :where() keeps specificity at zero: component classes still win. */
+  .sf-article { color: var(--t2); font-size: 18px; line-height: 1.7; }
+  .sf-article.sf-article-sm { font-size: 16px; line-height: 1.65; }
+  .sf-article :where(p) { margin: 0 0 1.1em; }
+  /* Not :where(): the base layer styles bare headings, so this needs the
+     class's specificity to win. Component classes still override. */
+  .sf-article h1, .sf-article h2, .sf-article h3, .sf-article h4 {
+    font-family: var(--font-heading);
+    font-weight: 500; color: var(--t1); line-height: 1.25;
+  }
+  .sf-article :where(h1) { font-size: 1.9em; margin: 0 0 0.6em; }
+  .sf-article :where(h2) { font-size: 1.55em; margin: 2em 0 0.6em; }
+  .sf-article :where(h3) { font-size: 1.25em; margin: 1.6em 0 0.5em; }
+  .sf-article :where(h4) { font-size: 1.05em; margin: 1.4em 0 0.4em; }
+  .sf-article :where(h1, h2, h3, h4):first-child { margin-top: 0; }
+  .sf-article :where(strong, b) { font-weight: 500; color: var(--t1); }
+  .sf-article :where(em, i) { font-style: italic; }
+  .sf-article :where(a) { color: var(--sf-primary-text); text-decoration: underline; text-underline-offset: 3px; }
+  .sf-article :where(a:hover) { color: var(--sf-primary-bright); }
+  .sf-article :where(ul, ol) { margin: 0 0 1.1em; padding-left: 1.5em; }
+  .sf-article :where(ul) { list-style: disc; }
+  .sf-article :where(ol) { list-style: decimal; }
+  .sf-article :where(li) { margin: 0.35em 0; padding-left: 0.25em; }
+  .sf-article :where(li)::marker { color: var(--t4); }
+  .sf-article :where(li > ul, li > ol) { margin: 0.35em 0 0; }
+  .sf-article :where(blockquote) {
+    margin: 1.4em 0; padding: 0.2em 0 0.2em 1.1em;
+    border-left: 2px solid var(--sf-primary); color: var(--t1);
+  }
+  .sf-article :where(blockquote p:last-child) { margin-bottom: 0; }
+  .sf-article :where(code) {
+    font-family: var(--font-mono); font-size: 0.85em;
+    background: var(--sf-surface-elevated); padding: 0.1em 0.35em;
+  }
+  .sf-article :where(pre) {
+    margin: 1.4em 0; padding: 1em; overflow-x: auto;
+    background: var(--sf-surface-elevated); border: 1px solid var(--sf-line);
+  }
+  .sf-article :where(pre code) { background: none; padding: 0; }
+  .sf-article :where(hr) { margin: 2.5em 0; border: 0; border-top: 1px dashed var(--sf-line-hairline); }
+  .sf-article :where(img, figure) { margin: 1.6em 0; max-width: 100%; }
+  .sf-article :where(figcaption) { font-size: 14px; color: var(--t3); margin-top: 0.5em; }
+  .sf-article :where(table) {
+    display: block; overflow-x: auto; width: 100%; margin: 1.4em 0;
+    border-collapse: collapse; font-size: 0.9em;
+  }
+  .sf-article :where(th, td) { padding: 0.5em 0.75em; border-bottom: 1px solid var(--sf-line-hairline); text-align: left; }
+  .sf-article :where(th) { color: var(--t1); font-weight: 500; }
   /* Text tiers — April 2026 handoff: use `text-t1`..`text-t4` Tailwind utilities
      (defined in tailwind.config.ts colors). Legacy `.text-tier-N` classes were
      migrated to `text-tN` site-wide and removed from this file in the cleanup
