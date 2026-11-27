@@ -159,7 +159,7 @@ export default function NarrativeBridgePanel({
               size="sm"
               onClick={handleSave}
               disabled={filledCount === 0}
-              className="min-h-hit text-[12px] uppercase tracking-wider px-3 gap-1 border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12]"
+              className="min-h-hit text-[13px] px-3 gap-1 border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12]"
             >
               <Save className="w-3 h-3" />
               {saved ? "NOTES SAVED" : "SAVE NOTES"}
@@ -195,7 +195,7 @@ export function NarrativeBridgeToggle({
       size="sm"
       onClick={() => onOpenChange(!open)}
       aria-expanded={open}
-      className="lg:hidden bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] uppercase tracking-wider min-h-hit px-3 gap-1.5"
+      className="lg:hidden bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] min-h-hit px-3 gap-1.5"
     >
       <PenLine className="w-3 h-3" />
       Narrative Bridge

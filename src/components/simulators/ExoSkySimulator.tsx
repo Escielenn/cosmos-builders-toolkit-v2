@@ -1551,10 +1551,10 @@ export default function ExoSkyV2({
         if (_fov < 120) {
           const labelPt = horizPts[Math.floor(horizPts.length * 0.85)];
           if (labelPt && labelPt.y > 20 && labelPt.y < H - 20) {
-            ctx.font = '11px "MD Nichrome", "Jura", sans-serif';
-            ctx.fillStyle = "rgba(255,255,255,0.08)";
+            ctx.font = '12px "MD Nichrome", "Jura", sans-serif';
+            ctx.fillStyle = tokens.text.t4;
             ctx.textAlign = "center";
-            ctx.letterSpacing = "3px";
+            ctx.letterSpacing = "1.5px";
             ctx.fillText("H O R I Z O N", labelPt.x, labelPt.y - 6);
             ctx.letterSpacing = "0px";
           }
@@ -1660,8 +1660,8 @@ export default function ExoSkyV2({
         ctx.beginPath(); ctx.arc(p.x,p.y,pr,0,Math.PI*2);
         ctx.strokeStyle = `rgba(255,215,59,${0.25+Math.sin(t*2)*0.1})`;
         ctx.lineWidth = 1; ctx.stroke();
-        ctx.font = '11px "MD Nichrome", "Jura", sans-serif';
-        ctx.fillStyle = "rgba(255,215,59,0.6)";
+        ctx.font = '12px "MD Nichrome", "Jura", sans-serif';
+        ctx.fillStyle = "rgb(255,215,59)";
         ctx.textAlign = "center";
         ctx.fillText("SOL", p.x, p.y-14);
       }
@@ -1805,8 +1805,8 @@ export default function ExoSkyV2({
         ctx.arc(pts[i].x, pts[i].y, 2.5, 0, Math.PI * 2);
         ctx.fillStyle = _drawColor + "AA";
         ctx.fill();
-        ctx.font = '11px "JetBrains Mono", monospace';
-        ctx.fillStyle = _drawColor + "88";
+        ctx.font = '12px "JetBrains Mono", monospace';
+        ctx.fillStyle = _drawColor;
         ctx.textAlign = "center";
         ctx.fillText(`${i + 1}`, pts[i].x, pts[i].y - 10);
       }
@@ -1815,40 +1815,41 @@ export default function ExoSkyV2({
       ctx.fillStyle = _drawColor + "88";
       ctx.textAlign = "center";
       ctx.fillText(`DRAWING: ${_currentDrawing.length} STAR${_currentDrawing.length !== 1 ? 'S' : ''} SELECTED`, W / 2, 24);
-      ctx.font = '11px "DM Sans", sans-serif';
-      ctx.fillStyle = "rgba(255,255,255,0.25)";
+      ctx.font = '12px "DM Sans", sans-serif';
+      ctx.fillStyle = tokens.text.t3;
       ctx.fillText("Click stars to connect · Esc to cancel", W / 2, 38);
     } else if (_drawMode) {
       ctx.font = '12px "MD Nichrome", "Jura", sans-serif';
       ctx.fillStyle = _drawColor + "88";
       ctx.textAlign = "center";
       ctx.fillText("CONSTELLATION DRAWING MODE", W / 2, 24);
-      ctx.font = '11px "DM Sans", sans-serif';
-      ctx.fillStyle = "rgba(255,255,255,0.25)";
+      ctx.font = '12px "DM Sans", sans-serif';
+      ctx.fillStyle = tokens.text.t3;
       ctx.fillText("Click a star to begin", W / 2, 38);
     }
 
     // ── HUD OVERLAYS ────────────────────────────────
     ctx.font = '16px "MD Nichrome", "Jura", sans-serif';
-    ctx.fillStyle = withAlpha(tokens.sim.accent, 0.3);
+    ctx.fillStyle = tokens.sim.accent;
     ctx.textAlign = "right";
     // On a phone the credit line spans the bottom edge, so the readout
     // sits above it instead of on top of it.
-    const hudLift = W < 480 ? 40 : 0;
+    // (the credit wraps to two lines below 480px, about 50px tall).
+    const hudLift = W < 480 ? 48 : 0;
     ctx.fillText(`${Math.round(_fov)}°`, W-18, H-30-hudLift);
-    ctx.font = '11px "DM Sans", sans-serif';
-    ctx.fillStyle = "rgba(255,255,255,0.15)";
+    ctx.font = '12px "DM Sans", sans-serif';
+    ctx.fillStyle = tokens.text.t4;
     ctx.fillText("FIELD OF VIEW", W-18, H-18-hudLift);
 
     ctx.textAlign = "left";
-    ctx.font = '11px "MD Nichrome", "Jura", sans-serif';
-    ctx.fillStyle = "rgba(255,255,255,0.12)";
+    ctx.font = '12px "MD Nichrome", "Jura", sans-serif';
+    ctx.fillStyle = tokens.text.t4;
     // Above the credit line (the DOM footer at bottom:14), not under it.
-    ctx.fillText(`${count} STARS IN VIEW`, 18, H-44);
+    ctx.fillText(`${count} STARS IN VIEW`, 18, H-44-(W < 480 ? 28 : 0));
 
     if (_showMilkyWay && !_mwReady) {
       ctx.font = '12px "MD Nichrome", "Jura", sans-serif';
-      ctx.fillStyle = "rgba(255,165,0,0.5)";
+      ctx.fillStyle = "rgb(255,165,0)";
       ctx.textAlign = "center";
       ctx.fillText("COMPUTING GALACTIC STRUCTURE...", W/2, H-44-hudLift);
     }

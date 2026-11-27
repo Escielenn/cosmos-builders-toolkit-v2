@@ -7,6 +7,7 @@
 (function(){try{var h=window.parent!==window?window.parent.document.documentElement:null;if(!h)return;var cs=getComputedStyle(h);var p=cs.getPropertyValue('--sf-primary').trim();var b=cs.getPropertyValue('--sf-primary-bright').trim();var r=document.documentElement.style;if(p)r.setProperty('--sf-accent',p);if(b)r.setProperty('--sf-accent-bright',b);}catch(e){}})();
 </script>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="/tools/_shared/sim-tokens.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SOLARIS — The Science | StellarForge</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,7 +25,7 @@
 html{scroll-behavior:smooth}
 body{
   background:#09090B;
-  color:rgba(255,255,255,.6);
+  color:var(--t2);
   font-family:var(--font-body);
   min-height:100vh;
   -webkit-font-smoothing:antialiased;
@@ -45,18 +46,18 @@ body{
   margin-bottom:6px;
 }
 .science-page .subtitle{
-  font-size:8.5px;font-family:var(--font-body);
+  font-size:12px;font-family:var(--font-body);
   letter-spacing:2.5px;text-transform:uppercase;
-  color:rgba(0,229,160,.35);
+  color:var(--sf-primary-text);
   margin-bottom:36px;
 }
 .sci-section{
-  font-size:9px;
+  font-size:12px;
   font-family:var(--font-display);
   font-weight:300;
   letter-spacing:2.5px;
   text-transform:uppercase;
-  color:rgba(0,229,160,.4);
+  color:var(--sf-primary-text);
   margin-top:40px;
   margin-bottom:12px;
   padding-bottom:5px;
@@ -67,16 +68,16 @@ body{
   font-family:var(--font-body);
   font-size:13.5px;
   line-height:1.8;
-  color:rgba(255,255,255,.6);
+  color:var(--t2);
   margin:0 0 14px;
 }
 .science-page p strong{
-  color:rgba(255,255,255,.85);
+  color:var(--t1);
   font-weight:600;
 }
 .science-page code{
   font-family:var(--font-mono);
-  font-size:11px;
+  font-size:12px;
   color:var(--sf-accent);
   background:rgba(21,193,123,.06);
   padding:1px 5px;
@@ -85,7 +86,7 @@ body{
 .eq{
   font-family:var(--font-mono);
   font-size:12.5px;
-  color:rgba(21,193,123,.7);
+  color:var(--sf-primary-text);
   background:rgba(21,193,123,.04);
   border:1px solid #50555E;
   border-radius:0;
@@ -98,20 +99,20 @@ body{
 }
 .src{
   font-family:var(--font-body);
-  font-size:11px;
-  color:rgba(255,255,255,.35);
+  font-size:12px;
+  color:var(--t3);
   margin:5px 0;
   line-height:1.7;
   padding-left:12px;
   border-left:2px solid #50555E;
 }
-.src a{color:rgba(0,229,160,.35);text-decoration:none}
+.src a{color:var(--sf-primary-text);text-decoration:none}
 .src a:hover{color:var(--accent-green);text-decoration:underline}
 .note{
   font-family:var(--font-body);
-  font-size:11.5px;
+  font-size:12px;
   font-style:italic;
-  color:rgba(255,255,255,.35);
+  color:var(--t3);
   border-left:2px solid #50555E;
   padding:10px 16px;
   margin:16px 0;
@@ -124,37 +125,37 @@ body{
   border-collapse:collapse;
   margin:14px 0 18px;
   font-family:var(--font-body);
-  font-size:11.5px;
+  font-size:12px;
 }
 .sys-table th{
   font-family:var(--font-display);
-  font-size:8px;font-weight:300;
+  font-size:12px;font-weight:300;
   letter-spacing:1.5px;text-transform:uppercase;
-  color:rgba(0,229,160,.35);
+  color:var(--sf-primary-text);
   text-align:left;
   padding:7px 10px;
   border-bottom:1px solid #50555E;
 }
 .sys-table td{
-  color:rgba(255,255,255,.5);
+  color:var(--t2);
   padding:6px 10px;
   border-bottom:1px solid #41454D;
   line-height:1.6;
 }
 .sys-table td:first-child{
-  color:rgba(255,255,255,.7);
+  color:var(--t2);
   font-weight:500;
 }
-.sys-table td code{font-size:10px}
+.sys-table td code{font-size:12px}
 
 /* ── RESPONSIVE ─────────────────────────────────── */
 @media(max-width:600px){
   .science-page{padding:32px 18px 60px}
   .science-page h1{font-size:22px;letter-spacing:3px}
   .science-page p{font-size:12.5px}
-  .eq{font-size:10.5px;padding:10px 12px}
-  .sys-table{font-size:10px}
-  .sys-table th{font-size:7px}
+  .eq{font-size:12px;padding:10px 12px}
+  .sys-table{font-size:12px}
+  .sys-table th{font-size:12px}
 }
 </style>
 <link rel="stylesheet" href="/tools/_shared/science-floor.css">
@@ -269,7 +270,7 @@ body{
   <div class="sci-section">For Writers</div>
   <p>SOLARIS exists to answer a question every science fiction writer eventually has to face honestly: <strong>given this star, or these stars, where could a habitable world actually sit — and what would the sky look like from its surface?</strong></p>
   <p>A single yellow star gives you something close to home. A circumbinary system gives you Tatooine's two suns, with the stability math to know exactly how far out a planet has to orbit to survive them. A hierarchical trinary gives you a sky where a third, distant star slowly bends the fate of a planet's orbit over centuries — a Kozai-Lidov drift you can watch happen rather than invent. None of these are arbitrary; they come from where you drop the stars and what the physics does from there.</p>
-  <p>SOLARIS is part of the <a href="https://stellarforge.tools" style="color:rgba(21,193,123,.5)">StellarForge</a> worldbuilding toolkit. A system generated here is the first link in the cascade — feed it into <strong>Habitable Zone Calculator</strong> and <strong>Planetary Profile</strong> to develop a specific world in detail, following the same principle that runs through every tool: <em>environment shapes biology, biology shapes psychology, psychology shapes culture, and culture shapes mythology.</em></p>
+  <p>SOLARIS is part of the <a href="https://stellarforge.tools" style="color:var(--sf-primary-text)">StellarForge</a> worldbuilding toolkit. A system generated here is the first link in the cascade — feed it into <strong>Habitable Zone Calculator</strong> and <strong>Planetary Profile</strong> to develop a specific world in detail, following the same principle that runs through every tool: <em>environment shapes biology, biology shapes psychology, psychology shapes culture, and culture shapes mythology.</em></p>
 </main>
 
 </body>

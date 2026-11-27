@@ -134,7 +134,7 @@ const BackupStatusWidget = ({ worlds }: BackupStatusWidgetProps) => {
           <Button
             variant="outline"
             size="sm"
-            className="w-full text-xs uppercase tracking-wider"
+            className="w-full min-h-hit text-sm"
             onClick={handleDownloadAll}
             disabled={isDownloading}
           >

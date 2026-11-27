@@ -171,7 +171,7 @@ export function SimulatorWorldEntityPicker({
         variant="outline"
         size="sm"
         onClick={() => setOpen(true)}
-        className="bg-sf-surface border-sf-line text-sf-primary-text hover:bg-sf-surface-elevated hover:border-sf-line-emphasis text-[13px] uppercase tracking-wider min-h-hit px-3"
+        className="bg-sf-surface border-sf-line text-sf-primary-text hover:bg-sf-surface-elevated hover:border-sf-line-emphasis text-[13px] min-h-hit px-3"
         title="Bind to a planet/star/system in your world"
       >
         <Globe className="w-3 h-3 mr-1" />
@@ -234,7 +234,7 @@ export function SimulatorWorldEntityPicker({
                       size="sm"
                       onClick={() => handleLoad(e.id)}
                       disabled={!hasPreset}
-                      className="flex-1 bg-sf-surface border-sf-line text-sf-primary-text hover:bg-sf-surface-elevated hover:border-sf-line-emphasis text-[13px] uppercase tracking-wider min-h-hit"
+                      className="flex-1 bg-sf-surface border-sf-line text-sf-primary-text hover:bg-sf-surface-elevated hover:border-sf-line-emphasis text-[13px] min-h-hit"
                     >
                       Load Preset
                     </Button>
@@ -243,7 +243,7 @@ export function SimulatorWorldEntityPicker({
                       size="sm"
                       onClick={() => handleSaveState(e.id)}
                       disabled={isSavingThis || updateEntity.isPending}
-                      className="flex-1 bg-sf-primary/[0.08] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.16] text-[13px] uppercase tracking-wider min-h-hit"
+                      className="flex-1 bg-sf-primary/[0.08] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.16] text-[13px] min-h-hit"
                     >
                       <SaveIcon className="w-3 h-3 mr-1" />
                       {isSavingThis ? "SAVING…" : "Save State"}

@@ -101,3 +101,9 @@
     scrollbar-width: thin;
   }
 }
+
+/* Exponents (2<sup>1.5</sup>) inherit a 75% size that lands under 12px. */
+sup,
+sub {
+  font-size: 12px !important;
+}

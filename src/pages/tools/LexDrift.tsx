@@ -784,8 +784,11 @@ const LexDrift = () => {
                 {calculationResult.generations > 0 && (() => {
                   const rate = calculationResult.effectiveRate;
                   const totalGen = calculationResult.generations;
-                  const W = 440, H = 160;
-                  const PL = 40, PR = 12, PT = 14, PB = 32;
+                  // Drawn at 1:1 (it scrolls inside its box on a narrow
+                  // screen rather than shrinking), so 12-unit text renders
+                  // at 12px or more.
+                  const W = 440, H = 180;
+                  const PL = 44, PR = 12, PT = 28, PB = 34;
                   const pw = W - PL - PR, ph = H - PT - PB;
                   const N = 40;
                   const xP = (f: number) => PL + f * pw;
@@ -808,12 +811,13 @@ const LexDrift = () => {
                   return (
                     <div className="px-1 py-2">
                       <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-t2 mb-2">Divergence Over Time</p>
-                      <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-[480px]" aria-label="Divergence and intelligibility over generations">
+                      <div className="overflow-x-auto sf-sb">
+                      <svg viewBox={`0 0 ${W} ${H}`} className="w-full min-w-[440px] max-w-[480px]" aria-label="Divergence and intelligibility over generations">
                         {/* Grid lines */}
                         {[0, 25, 50, 75, 100].map(v => (
                           <g key={v}>
                             <line x1={PL} y1={yP(v)} x2={W - PR} y2={yP(v)} stroke="rgba(255,255,255,0.06)" strokeWidth={0.5} />
-                            <text x={PL - 4} y={yP(v) + 3} textAnchor="end" fill="rgba(255,255,255,0.25)" fontSize={7} fontFamily="monospace">{v}%</text>
+                            <text x={PL - 6} y={yP(v) + 4} textAnchor="end" className="fill-t4" fontSize={12} fontFamily="monospace">{v}%</text>
                           </g>
                         ))}
                         {/* Intelligibility fill + line */}
@@ -826,15 +830,16 @@ const LexDrift = () => {
                         <circle cx={divPts[N][0]} cy={divPts[N][1]} r={3} fill="rgba(255,165,0,0.8)" />
                         <circle cx={intPts[N][0]} cy={intPts[N][1]} r={3} fill="rgba(0,229,160,0.7)" />
                         {/* X-axis labels */}
-                        <text x={PL} y={H - 6} fill="rgba(255,255,255,0.3)" fontSize={7} fontFamily="monospace">0 gen</text>
-                        <text x={W - PR} y={H - 6} textAnchor="end" fill="rgba(255,255,255,0.3)" fontSize={7} fontFamily="monospace">{Math.round(totalGen)} gen</text>
-                        <text x={PL + pw / 2} y={H - 6} textAnchor="middle" fill="rgba(255,255,255,0.2)" fontSize={7} fontFamily="monospace">({Math.round(totalGen * 25)} yr)</text>
+                        <text x={PL} y={H - 8} className="fill-t3" fontSize={12} fontFamily="monospace">0 gen</text>
+                        <text x={W - PR} y={H - 8} textAnchor="end" className="fill-t3" fontSize={12} fontFamily="monospace">{Math.round(totalGen)} gen</text>
+                        <text x={PL + pw / 2} y={H - 8} textAnchor="middle" className="fill-t4" fontSize={12} fontFamily="monospace">({Math.round(totalGen * 25)} yr)</text>
                         {/* Legend */}
-                        <rect x={PL} y={2} width={8} height={3} rx={1} fill="rgba(255,165,0,0.7)" />
-                        <text x={PL + 11} y={6} fill="rgba(255,255,255,0.35)" fontSize={7} fontFamily="monospace">Divergence</text>
-                        <rect x={PL + 80} y={2} width={8} height={3} rx={1} fill="rgba(0,229,160,0.6)" />
-                        <text x={PL + 93} y={6} fill="rgba(255,255,255,0.35)" fontSize={7} fontFamily="monospace">Intelligibility</text>
+                        <rect x={PL} y={6} width={10} height={4} fill="rgba(255,165,0,0.7)" />
+                        <text x={PL + 14} y={12} className="fill-t3" fontSize={12} fontFamily="monospace">Divergence</text>
+                        <rect x={PL + 110} y={6} width={10} height={4} fill="rgba(0,229,160,0.6)" />
+                        <text x={PL + 124} y={12} className="fill-t3" fontSize={12} fontFamily="monospace">Intelligibility</text>
                       </svg>
+                      </div>
                     </div>
                   );
                 })()}
@@ -1154,7 +1159,7 @@ const LexDrift = () => {
                       {(() => {
                         const ships = calculationResult.shipResults || [];
                         const primaryDiv = calculationResult.divergencePercent;
-                        const W = 400, H = 40 + ships.length * 50 + 60;
+                        const W = 400, H = 40 + ships.length * 50 + 80;
                         const rootX = W / 2, rootY = 30;
                         const branchY = 70;
                         const allBranches = [
@@ -1163,16 +1168,19 @@ const LexDrift = () => {
                         ];
                         const count = allBranches.length;
                         const spacing = Math.min(120, (W - 60) / count);
+                        // Names are shortened to what fits a branch at 12px mono.
+                        const maxChars = Math.max(4, Math.floor(spacing / 7.6));
                         const startX = rootX - ((count - 1) * spacing) / 2;
                         allBranches.forEach((b, i) => { b.x = startX + i * spacing; });
 
                         return (
                           <div className="mt-4">
                             <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-t2 mb-2">Language Family Tree</p>
-                            <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-[440px]" aria-label="Language family tree showing divergence branches">
+                            <div className="overflow-x-auto sf-sb">
+                            <svg viewBox={`0 0 ${W} ${H}`} className="w-full min-w-[400px] max-w-[440px]" aria-label="Language family tree showing divergence branches">
                               {/* Root node: Earth Standard */}
                               <circle cx={rootX} cy={rootY} r={4} fill="rgba(21,193,123,0.6)" />
-                              <text x={rootX} y={rootY - 10} textAnchor="middle" fill="rgba(255,255,255,0.5)" fontSize={8} fontFamily="monospace">Earth Standard</text>
+                              <text x={rootX} y={rootY - 10} textAnchor="middle" className="fill-t2" fontSize={12} fontFamily="monospace">Earth Standard</text>
 
                               {/* Branches */}
                               {allBranches.map((b, i) => {
@@ -1188,16 +1196,17 @@ const LexDrift = () => {
                                     {/* Leaf node */}
                                     <circle cx={b.x} cy={leafY} r={3} fill={hue} />
                                     {/* Label */}
-                                    <text x={b.x} y={leafY + 14} textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize={7} fontFamily="monospace">
-                                      {b.name.length > 14 ? b.name.slice(0, 12) + "…" : b.name}
+                                    <text x={b.x} y={leafY + 18} textAnchor="middle" className="fill-t3" fontSize={12} fontFamily="monospace">
+                                      {b.name.length > maxChars ? b.name.slice(0, maxChars - 1) + "…" : b.name}
                                     </text>
-                                    <text x={b.x} y={leafY + 24} textAnchor="middle" fill={hue} fontSize={7} fontFamily="monospace">
+                                    <text x={b.x} y={leafY + 33} textAnchor="middle" className="fill-t2" fontSize={12} fontFamily="monospace">
                                       {b.div.toFixed(0)}%
                                     </text>
                                   </g>
                                 );
                               })}
                             </svg>
+                            </div>
                           </div>
                         );
                       })()}

@@ -1,0 +1,54 @@
+/* ==========================================================================
+   sim-tokens.css: the text, line and state tokens for the static simulator
+   pages and their Science pages (public/tools/<sim>/*.html,
+   public/rogue/*.html).
+
+   These pages cannot read the app's generated src/styles/tokens.css, so
+   they had grown their own text colours: white at 7% to 45% alpha for
+   labels, hints and badges, and teal at 25% to 55% for section titles.
+   Over a moving starfield none of that is a contrast ratio. This file is the
+   one place the static pages take their readable colours from; the values
+   mirror the default Void·Teal theme (design/derive.py output) and every
+   one is solved for at least 4.5:1 on the darkest panel.
+
+     t1  #FAFAFA  titles, values
+     t2  #C9CDD3  body
+     t3  #A7AAB0  secondary, captions, labels
+     t4  #9799A0  the minimum for anything with words or numbers
+
+   Decorative marks (grid lines, orbit traces, glows) keep their own alpha;
+   anything readable uses a tier. Disabled is a colour, never opacity.
+   ========================================================================== */
+
+:root {
+  --t1: #FAFAFA;
+  --t2: #C9CDD3;
+  --t3: #A7AAB0;
+  --t4: #9799A0;
+
+  --sf-primary: #15C17B;
+  --sf-primary-text: #15C17B;
+  --sf-amber-text: #FFB800;
+  --sf-crimson-text: #FF658B;
+
+  --sf-line-hairline: #41454D;
+  --sf-line: #50555E;
+  --sf-line-interactive: #787D87;
+  --sf-line-emphasis: #8C909A;
+
+  --sf-disabled-bg: #151B29;
+  --sf-disabled-line: #575C65;
+  --sf-disabled-text: #787B81;
+}
+
+/* Disabled controls: the disabled tokens, at full opacity. */
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  background: var(--sf-disabled-bg) !important;
+  border-color: var(--sf-disabled-line) !important;
+  color: var(--sf-disabled-text) !important;
+  opacity: 1 !important;
+  cursor: not-allowed;
+}

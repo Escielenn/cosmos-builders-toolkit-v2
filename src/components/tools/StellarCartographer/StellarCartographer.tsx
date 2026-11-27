@@ -798,7 +798,7 @@ const StellarCartographer: React.FC = () => {
 
       // Label
       if (zoom >= 0.8) {
-        ctx.font = '500 9px "Jura", sans-serif';
+        ctx.font = '500 12px "Jura", sans-serif';
         ctx.textAlign = 'center';
         ctx.fillStyle = 'rgba(5, 5, 8, 0.85)';
         ctx.fillText(blackHole.name, sx + 1, sy - visualRadius - 6 + 1);
@@ -1221,7 +1221,7 @@ const StellarCartographer: React.FC = () => {
   ]);
 
   const drawLabel = (ctx: CanvasRenderingContext2D, star: ScreenStar, isSelected: boolean) => {
-    const fontSize = isSelected ? 10 : 8;
+    const fontSize = isSelected ? 13 : 12;
     ctx.font = `500 ${fontSize}px "Jura", sans-serif`;
     ctx.textAlign = 'center';
 
@@ -1230,7 +1230,7 @@ const StellarCartographer: React.FC = () => {
     ctx.fillText(star.name, star.screenX + 1, star.screenY + star.size + 12 + 1);
 
     // Text
-    ctx.fillStyle = isSelected ? GALAXY_MARK.core : (star.empire ? star.empire.color : 'rgba(255,255,255,0.5)');
+    ctx.fillStyle = isSelected ? GALAXY_MARK.core : (star.empire ? star.empire.color : tokens.text.t3);
     ctx.fillText(star.name, star.screenX, star.screenY + star.size + 12);
   };
 

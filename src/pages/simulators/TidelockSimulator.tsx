@@ -253,7 +253,7 @@ const TidelockSimulator = () => {
                     refreshPayload();
                     setPublishDialogOpen(true);
                   }}
-                  className="bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] uppercase tracking-wider min-h-hit px-3"
+                  className="bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] min-h-hit px-3"
                 >
                   <Rocket className="w-3 h-3 mr-1" />
                   Publish
@@ -262,7 +262,7 @@ const TidelockSimulator = () => {
                   variant="outline"
                   size="sm"
                   onClick={() => setLoadSheetOpen(true)}
-                  className="bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] uppercase tracking-wider min-h-hit px-3"
+                  className="bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] min-h-hit px-3"
                 >
                   <FolderOpen className="w-3 h-3 mr-1" />
                   Load
@@ -271,7 +271,7 @@ const TidelockSimulator = () => {
                   variant="outline"
                   size="sm"
                   onClick={requestSave}
-                  className="bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] uppercase tracking-wider min-h-hit px-3"
+                  className="bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] min-h-hit px-3"
                 >
                   <Save className="w-3 h-3 mr-1" />
                   Save
