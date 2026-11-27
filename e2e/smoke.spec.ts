@@ -29,7 +29,7 @@ test.describe("signed in", () => {
   test("home renders the world list", async ({ page }) => {
     await page.goto("/");
     await dismissNotices(page);
-    await expect(page.getByRole("heading", { name: "Home" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Home", exact: true })).toBeVisible();
     await expect(page.getByText(WORLD_NAME).first()).toBeVisible();
 
     await page.goto("/worlds");

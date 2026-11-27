@@ -30,7 +30,7 @@ export function SimSubjectChip({ worldId }: { worldId?: string | null }) {
         className="flex min-h-hit items-center gap-1.5 border border-sf-crimson px-3 font-mono text-[12px] uppercase tracking-wider text-sf-crimson-text"
         title="This link points to something that is no longer in that world."
       >
-        // SUBJECT NOT ON FILE
+        // NO SUBJECT SET
       </span>
     );
   }

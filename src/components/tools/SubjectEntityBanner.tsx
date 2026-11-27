@@ -21,7 +21,7 @@ export default function SubjectEntityBanner({ worldId }: { worldId: string | nul
   if (subject.isMissing || !subject.entry) {
     return (
       <div className="mb-6 flex items-center gap-2 border border-sf-crimson px-3 py-2 font-mono text-[12px] uppercase tracking-wider text-sf-crimson-text">
-        <span>// SUBJECT NOT ON FILE. THIS WORKSHEET WILL SAVE UNATTACHED.</span>
+        <span>// NO SUBJECT SET. THIS WORKSHEET WILL SAVE UNATTACHED.</span>
       </div>
     );
   }

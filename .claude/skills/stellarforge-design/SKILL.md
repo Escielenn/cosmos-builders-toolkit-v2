@@ -171,12 +171,12 @@ The product is the ship, not an app. Uppercase system messages, no emoji, no exc
 
 | Web slop | Ship's Voice |
 |---|---|
-| "Great job saving your world! 🎉" | `WORLD FILE SECURED.` |
+| "Great job saving your world! 🎉" | `WORLD SAVED.` |
 | "Oops! Something went wrong." | `OPERATION FAILED. RETRY WHEN READY.` |
 | "Welcome back, Jason!" | `SESSION ESTABLISHED.` |
 | "Please enter a valid value." | `PARAMETERS OUTSIDE OPERATIONAL RANGE.` |
 
-`//` prefixes section labels. `§` prefixes long-form sub-sections. Map PostgREST errors before display: `23505` → `RECORD CONFLICT. ENTRY ALREADY ON FILE.`
+`//` prefixes section labels. `§` prefixes long-form sub-sections. Map PostgREST errors before display: `23505` → `RECORD CONFLICT. ENTRY ALREADY EXISTS.`
 
 ---
 

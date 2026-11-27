@@ -237,7 +237,7 @@ const LearnIndex = () => {
                 </>
               )}
               {!isSearching && searchResults && searchResults.length === 0 && (
-                <p className="py-8 text-center text-t2">NO ARTICLES ON FILE FOR &ldquo;{searchTerm}&rdquo;.</p>
+                <p className="py-8 text-center text-t2">No articles match &ldquo;{searchTerm}&rdquo;.</p>
               )}
             </section>
           )}

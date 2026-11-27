@@ -69,7 +69,7 @@ export function ProposedFactActions({
     return (
       <div role="group" aria-label={`Canon conflict for ${label}`} className="flex flex-col gap-2">
         <p className="font-mono text-[12px] uppercase text-sf-amber-text">
-          // CANON ON FILE: {conflict.value_text ?? "A DIFFERENT VALUE"}.
+          // IN CANON: {conflict.value_text ?? "A DIFFERENT VALUE"}.
         </p>
         <div className="flex flex-wrap gap-2">
           <button type="button" disabled={busy} onClick={() => doRetract("keep")} className={QUIET}>

@@ -89,7 +89,7 @@ describe("canon.assert: never silently overwrites canon", () => {
     // Simulate a second writer landing between the check and the insert.
     const racing = { ...store, findLiveCanon: async () => null };
     await canon.assert(g(1.4));
-    await expect(createCanon(racing).assert(g(1.6))).rejects.toThrow("RECORD CONFLICT. ENTRY ALREADY ON FILE.");
+    await expect(createCanon(racing).assert(g(1.6))).rejects.toThrow("RECORD CONFLICT. ENTRY ALREADY EXISTS.");
   });
 });
 

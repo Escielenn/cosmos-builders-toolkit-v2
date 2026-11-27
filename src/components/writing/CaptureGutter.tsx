@@ -31,7 +31,7 @@ function markerLabel(items: readonly CaptureItem[]): string {
   const n = items.length - c;
   const parts = [
     c ? `${c} contradiction${c === 1 ? "" : "s"}` : "",
-    n ? `${n} claim${n === 1 ? "" : "s"} not on file` : "",
+    n ? `${n} claim${n === 1 ? "" : "s"} not in canon` : "",
   ].filter(Boolean);
   return `${parts.join(", ")} in this paragraph. Open in the ledger.`;
 }
@@ -125,7 +125,7 @@ export function CaptureGutter({
             type="button"
             onClick={() => onSelect(m.items.find((i) => i.kind === "contradiction") ?? m.items[0])}
             aria-label={markerLabel(m.items)}
-            title={contradiction ? "CONTRADICTION. REVIEW." : "CLAIM DETECTED. NOT ON FILE. ADOPT?"}
+            title={contradiction ? "CONTRADICTION. REVIEW." : "CLAIM DETECTED. NOT IN CANON. ADOPT?"}
             style={{ top: m.top }}
             className={`pointer-events-auto absolute right-0 flex h-11 w-6 flex-col items-center justify-start pt-1 font-mono text-[14px] leading-none transition-colors duration-fast hover:text-t1 ${
               contradiction ? "sf-capture-contradiction text-sf-amber" : "sf-capture-claim text-sf-teal"

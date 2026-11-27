@@ -110,7 +110,7 @@ export default function PublishPlanetDialog({
                 Published
               </DialogTitle>
               <DialogDescription className="mt-2 text-t2">
-                "{payload?.planetName}" is on file. Open it in another simulator, already pointed at it.
+                "{payload?.planetName}" is saved to this world. Open it in another simulator, already pointed at it.
               </DialogDescription>
             </DialogHeader>
             {/* `entityId` is the canonical subject param (F4); every

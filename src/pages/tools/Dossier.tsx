@@ -210,7 +210,7 @@ function Readout({ label, value, unit, note }: { label: string; value: string | 
           {unit && <span className="ml-1.5 font-mono text-[12px] text-t4">{unit}</span>}
         </span>
       ) : (
-        <span className="font-mono text-[12px] uppercase tracking-[0.10em] text-t3">// NOT ON FILE</span>
+        <span className="font-mono text-[12px] uppercase tracking-[0.10em] text-t3">// NOT SET</span>
       )}
       {note && value !== null && (
         <span className="font-mono text-[12px] uppercase tracking-[0.10em] text-sf-magenta-text">{note}</span>
@@ -720,7 +720,7 @@ const Dossier = (): JSX.Element => {
               )}
               {events.length === 0 && worldId && (
                 <Link to={`/worlds/${worldId}/chronicle`} className="font-mono text-[12px] uppercase tracking-[0.10em] text-sf-primary-text underline-offset-4 hover:underline">
-                  // NO CHRONICLE EVENTS ON FILE. OPEN THE CHRONICLE.
+                  // NO CHRONICLE EVENTS YET. OPEN THE CHRONICLE.
                 </Link>
               )}
             </Field>
@@ -771,7 +771,7 @@ const Dossier = (): JSX.Element => {
 
           {otherWorlds.length > 0 && body.nativeG !== null && (
             <div className="space-y-2">
-              <h4 className="font-heading text-sf-eyebrow uppercase text-t4">// Felt weight on other worlds on file</h4>
+              <h4 className="font-heading text-sf-eyebrow uppercase text-t4">// Felt weight on your other worlds</h4>
               <ul className="divide-y divide-sf-line-hairline border border-sf-line">
                 {otherWorlds.map(({ sheet, g, ratio }) => (
                   <li key={sheet.id} className="grid gap-2 p-3 md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-center md:gap-6">
@@ -856,7 +856,7 @@ const Dossier = (): JSX.Element => {
         <CollapsibleSection id="relationships" title="RELATIONSHIPS" levelNumber={8}
           subtitle="Typed links to other characters and entities. Mirrored to the world graph on save.">
           {formState.relationships.length === 0 && (
-            <p className="font-mono text-[12px] uppercase tracking-[0.10em] text-t3">// NO RELATIONSHIPS ON FILE.</p>
+            <p className="font-mono text-[12px] uppercase tracking-[0.10em] text-t3">// NO RELATIONSHIPS YET.</p>
           )}
           <ul className="space-y-4">
             {formState.relationships.map((r) => {
@@ -944,7 +944,7 @@ const Dossier = (): JSX.Element => {
           </Button>
           {otherDossiers.length === 0 && entityTargets.length === 0 && (
             <p className="font-mono text-[12px] uppercase tracking-[0.10em] text-t3">
-              // NO OTHER CHARACTERS OR ENTITIES ON FILE. SAVE ANOTHER DOSSIER TO LINK THEM.
+              // NO OTHER CHARACTERS OR ENTITIES YET. SAVE ANOTHER DOSSIER TO LINK THEM.
             </p>
           )}
         </CollapsibleSection>
@@ -953,7 +953,7 @@ const Dossier = (): JSX.Element => {
         <CollapsibleSection id="arc" title="ARC" levelNumber={9}
           subtitle="Beats bound to events in the world's Chronicle, in story order.">
           {formState.arc.length === 0 && (
-            <p className="font-mono text-[12px] uppercase tracking-[0.10em] text-t3">// NO ARC BEATS ON FILE.</p>
+            <p className="font-mono text-[12px] uppercase tracking-[0.10em] text-t3">// NO ARC BEATS YET.</p>
           )}
           <ol className="space-y-4">
             {formState.arc.map((b, i) => (

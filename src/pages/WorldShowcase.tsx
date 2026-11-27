@@ -554,6 +554,9 @@ export default function WorldShowcase() {
     <div className="min-h-screen bg-sf-void">
       <Header />
 
+      {/* The header is fixed (h-16); everything below starts under it. */}
+      <div className="pt-16">
+
       {/* ----------------------------------------------------------------- */}
       {/* Sample World Banner                                               */}
       {/* ----------------------------------------------------------------- */}
@@ -862,6 +865,7 @@ export default function WorldShowcase() {
         <span className="font-mono text-[12px] uppercase tracking-wide text-t4">
           Built with StellarForge
         </span>
+      </div>
       </div>
     </div>
   );

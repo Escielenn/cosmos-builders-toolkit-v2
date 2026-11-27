@@ -154,7 +154,7 @@ function ImportMenu({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="max-h-72 overflow-y-auto sf-sb">
         <DropdownMenuLabel className="font-heading text-[12px] uppercase tracking-[0.12em] text-t4">
-          {brand} worksheets on file
+          {brand} worksheets saved
         </DropdownMenuLabel>
         {worksheets.map((ws) => (
           <DropdownMenuItem key={ws.id} onSelect={() => onImport(tool, ws)} className="min-h-hit">
@@ -775,7 +775,7 @@ const GenerationShipDesigner = () => {
                 />
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="font-mono text-[12px] text-t4">
-                    {events.length} EVENTS · {loggedCount} ON FILE · DATED FROM LAUNCH {form.identity.launchYear} IN THE HOME CALENDAR
+                    {events.length} EVENTS · {loggedCount} LOGGED · DATED FROM LAUNCH {form.identity.launchYear} IN THE HOME CALENDAR
                   </p>
                   {worldId && (
                     <Link to={`/worlds/${worldId}/chronicle`} className="inline-flex min-h-hit items-center gap-1.5 text-[13px] text-sf-primary-text hover:underline">

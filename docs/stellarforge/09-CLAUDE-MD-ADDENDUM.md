@@ -165,18 +165,18 @@ Enforced by `npm run check:copy` (`scripts/check-copy.mjs`, allow-list in
 | `Pick up the scene you left, see what changed across your worlds, and take today's prompt.` | (deleted: the page already shows it) |
 | `View Pro clearance` | `See Pro plans` |
 
-Status confirmations keep the voice: `WORLD CREATED.`, `WORLD FILE SECURED.`
+Status confirmations keep the voice: `WORLD CREATED.`, `WORLD SAVED.` "On file" is retired as filler (decision 2026-11-26): say "in canon", "saved", "not set" or "yet".
 
 
-  WORLD FILE SECURED.
+  WORLD SAVED.
   PARAMETERS OUTSIDE OPERATIONAL RANGE.
-  CLAIM DETECTED. NOT ON FILE. ADOPT?
+  CLAIM DETECTED. NOT IN CANON. ADOPT?
   PARAMETER REVISED. 6 DERIVED VALUES STALE. 4 DOCUMENTS AFFECTED.
 
 Never: "Oops!", "Great job!", "Let's go!", emoji, or exclamation points.
 
 Map PostgREST errors before display. `23505` → `RECORD CONFLICT. ENTRY
-ALREADY ON FILE.`
+ALREADY EXISTS.`
 
 ### The two one-line tests
 

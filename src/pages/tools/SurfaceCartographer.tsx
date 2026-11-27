@@ -772,7 +772,7 @@ const SurfaceCartographer = () => {
                   </Select>
                   {bodyOptions.length === 0 && (
                     <p className="font-mono text-[12px] text-t3">
-                      // NO PLANET ON FILE.{" "}
+                      // NO PLANET IN THIS WORLD YET.{" "}
                       <Link
                         to={`/tools/planetary-profile?worldId=${worldId}`}
                         className="text-sf-primary-text underline underline-offset-2"
@@ -987,7 +987,7 @@ const SurfaceCartographer = () => {
                 )}
                 {missingDefaults.length > 0 && (
                   <p className="w-full font-mono text-[12px] text-t3">
-                    // {missingDefaults.join(", ")} NOT ON FILE. DRAWN WITH EARTH-LIKE DEFAULTS. NOTHING IS FILED FROM THIS PICTURE.
+                    // {missingDefaults.join(", ")} NOT SET. DRAWN WITH EARTH-LIKE DEFAULTS. NOTHING IS SAVED FROM THIS PICTURE.
                   </p>
                 )}
               </div>
@@ -1074,7 +1074,7 @@ const SurfaceCartographer = () => {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="font-heading text-sf-eyebrow uppercase text-t4">
-                    {places.length} on file{unplacedCount ? ` · ${unplacedCount} unplaced` : ""}
+                    {places.length} saved{unplacedCount ? ` · ${unplacedCount} unplaced` : ""}
                   </span>
                   <Button
                     variant="sf-ghost"
@@ -1089,7 +1089,7 @@ const SurfaceCartographer = () => {
                 </div>
                 <ul className="sf-sb max-h-[420px] overflow-y-auto border border-sf-line">
                   {places.length === 0 && (
-                    <li className="p-3 font-mono text-[12px] text-t3">// NO PLACES ON FILE. CLICK THE MAP TO BEGIN.</li>
+                    <li className="p-3 font-mono text-[12px] text-t3">// NO PLACES YET. CLICK THE MAP TO ADD ONE.</li>
                   )}
                   {places.map((p) => (
                     <li key={p.id} className="border-b border-sf-line-hairline last:border-b-0">

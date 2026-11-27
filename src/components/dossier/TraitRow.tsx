@@ -106,7 +106,7 @@ export function TraitRow({ trait, worldId, override, onOverride, narrative }: Tr
           </p>
         ) : (
           <p className="font-mono text-[12px] uppercase tracking-[0.10em] text-t3">
-            // NOT ON FILE. LINK A {slotNoun(trait.slot)} ABOVE, OR SET IT HERE.
+            // NOT SET. LINK A {slotNoun(trait.slot)} ABOVE, OR SET IT HERE.
           </p>
         )}
 
