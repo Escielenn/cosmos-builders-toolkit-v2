@@ -1,5 +1,11 @@
 # StellarForge Changelog
 
+## 1.8001 · Article type
+- Learn articles, the Drake tool explainer, Compile previews and the Join page
+  get their typography back: headings, spacing, lists, quotes, code and
+  tables, built from the design tokens. The old classes relied on a Tailwind
+  plugin the generated config never registered.
+
 ## 1.8000 · Plain Signal
 Every screen says what it does in plain words, and every screen, simulators
 included, works on a phone.

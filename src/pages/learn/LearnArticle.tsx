@@ -132,7 +132,7 @@ const LearnArticle = () => {
 
         {/* Article Content */}
         <GlassPanel className="p-6 md:p-10">
-          <article className="prose prose-invert prose-lg max-w-none prose-headings:font-heading prose-headings:font-medium prose-a:text-sf-primary-text prose-a:no-underline hover:prose-a:underline prose-blockquote:border-sf-primary prose-blockquote:not-italic prose-code:bg-sf-surface-elevated prose-code:px-1 prose-code:py-0.5 prose-code:rounded-none prose-code:before:content-none prose-code:after:content-none">
+          <article className="sf-article sf-measure">
             {useSanityContent ? (
               <PortableTextRenderer content={sanityArticle.content} />
             ) : FallbackContent ? (

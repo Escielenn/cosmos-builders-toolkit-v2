@@ -370,7 +370,7 @@ const DrakeEquationCalculator = () => {
           icon={<Info className="w-5 h-5 text-sf-primary-text" />}
           defaultOpen={true}
         >
-          <div className="prose prose-invert max-w-none">
+          <div className="sf-article sf-article-sm">
             <p className="text-t2">
               In 1961, astronomer Frank Drake created an equation to estimate the number of
               active, communicative extraterrestrial civilizations in the Milky Way. For worldbuilders,
