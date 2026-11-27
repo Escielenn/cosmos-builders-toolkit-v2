@@ -12,27 +12,32 @@
   SOLARIS — Multi-Star System & Habitable-Zone Simulator
   StellarForge.tools · © 2025–2026 Jason D. Batt, Ph.D.
 
-  PHYSICS (verified 2026-04-25):
-  • Single-star: analytic Keplerian orbits. Newton-Raphson on
-    M = E − e·sin(E) (5 iterations). r = a(1 − e·cos E). True anomaly
-    via atan2 of (cos E − e, √(1−e²)·sin E).
-  • Multi-star: Velocity Verlet N-body integration (second-order,
-    drift-resistant): x_{n+1} = x_n + v_n·dt + ½·a₀·dt²; v_{n+1} =
-    v_n + ½·(a₀ + a₁)·dt. Adaptive substeps cap planet displacement
-    to ~2% per step for stability.
-  • Gravity: F = G·m₁·m₂/r² between every pair. Shell theorem applied
-    so an object's orbital velocity sees only the interior mass.
-  • Habitable zone: Kopparapu et al. (2013) effective-flux boundaries
-    using Recent Venus / Runaway Greenhouse / Maximum Greenhouse /
-    Early Mars limits. Multi-star combined luminosity = √(Σ L_i²).
-  • Star type → mass / luminosity / radius from O/B/A/F/G/K/M classes.
+  PHYSICS (1.9, sources in sf-astro.js and solaris-core.js):
+  • Stars: real main-sequence rows (Mamajek 2022). Blue B8V, White A5V,
+    Yellow G2V, Orange K5V, Red M4V.
+  • Single star: circular Keplerian orbits, P = √(a³/M) years.
+  • Multi-star: stars on analytic circular orbits about the barycentre of
+    the pair they belong to (hierarchical); planets are test particles
+    integrated by Velocity Verlet in the host group's frame, feeling every
+    star at its position at each substep plus the frame's inertial term.
+  • Time: 1 year = 14 s of simulation time at 1× (≈ 26 days per second,
+    ≈ 2.3 × 10⁶ × real time).
+  • Habitable zone: Kopparapu et al. 2014 (ApJL 787, L29), d = √(ΣL/S_eff),
+    S_eff from Teff. Per planet: orbit-averaged insolation ΣL/d² and the
+    equilibrium temperature 278.3 K · S^¼ (1 − A)^¼.
+  • Stability: Holman & Wiegert 1999 eq. 1 (S-type) and eq. 3 (P-type).
+  • An unbound planet is flagged ejected, never respawned.
+  • Generation is seeded (mulberry32): Save restores the exact system.
 
   STELLARFORGE postMessage protocol: LOAD / REQUEST_STATE / SAVE / PUBLISH.
 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SOLARIS — StellarForge Star System Simulator</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-<link href="https://fonts.cdnfonts.com/css/md-nichrome-test" rel="stylesheet">
+<!-- Fonts as the app loads them: MD Nichrome self-hosted, DM Sans and
+     JetBrains Mono from the same Google Fonts request as index.html.
+     Space Grotesk is retired; md-nichrome-test CDN removed. -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="/fonts/md-nichrome/md-nichrome.css" rel="stylesheet">
 <style>
 :root{--sf-accent:#15C17B;--sf-accent-bright:#3DFFCD}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -50,9 +55,9 @@ canvas{display:block;position:fixed;top:0;left:0;width:100vw;height:100vh}
 .credit{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1px;color:var(--t4);margin-top:8px;text-transform:uppercase;pointer-events:none}
 #badge{position:fixed;top:136px;left:18px;padding:5px 14px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;border-radius:0;transition:all 0.5s;z-index:20;background:rgba(21,193,123,0.03);border:1px solid #50555E;color:var(--sf-primary-text)}
 #badge.active{background:rgba(21,193,123,0.08);border-color:#8C909A;color:var(--sf-accent)}
-#badge.gen{background:rgba(255,165,0,0.08);border-color:rgb(255,165,0);color:#FFA500;animation:pulse 1.2s infinite}
-#badge.ok{background:rgba(46,204,113,0.08);border-color:rgb(46,204,113);color:#2ECC71;animation:pulse 2s infinite}
-#badge.edit{background:rgba(255,215,0,0.08);border-color:rgb(255,215,0);color:#FFD43B}
+#badge.gen{background:rgba(255,184,0,0.06);border-color:var(--sf-amber-text);color:var(--sf-amber-text);animation:pulse 1.2s infinite}
+#badge.ok{background:rgba(21,193,123,0.06);border-color:var(--sf-primary);color:var(--sf-primary-text)}
+#badge.edit{background:rgba(255,184,0,0.06);border-color:var(--sf-amber-text);color:var(--sf-amber-text)}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 transparent}50%{box-shadow:0 0 12px 0 currentColor}} /* glow, not opacity: the badge text stays at full strength */
 #main-panel{top:170px;left:18px;width:272px;padding:0;max-height:calc(100vh - 200px)}
 /* Between the 640px mobile floor and a full desktop, the control panel
@@ -68,8 +73,8 @@ canvas{display:block;position:fixed;top:0;left:0;width:100vw;height:100vh}
   #main-panel{top:auto;bottom:80px;left:18px;right:18px;width:auto;max-height:45vh}
 }
 .tab-bar{display:flex;border-bottom:1px solid #50555E;padding:0 10px;overflow-x:auto}
-.tab{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;padding:10px 7px 8px;color:var(--t4);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;white-space:nowrap;flex-shrink:0}
-.tab:hover{color:var(--t2)}
+.tab{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;letter-spacing:0;text-transform:none;padding:10px 6px 8px;min-height:44px;color:var(--t3);cursor:pointer;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color 0.18s,border-color 0.18s;white-space:nowrap;flex:1 1 auto}
+.tab:hover{color:var(--t1);background:none}
 .tab.active{color:var(--sf-accent);border-bottom-color:var(--sf-accent)}
 .tab-content{display:none;padding:14px 16px 18px}
 .tab-content.active{display:block}
@@ -77,7 +82,7 @@ canvas{display:block;position:fixed;top:0;left:0;width:100vw;height:100vh}
 .sec:first-child{margin-top:0}
 label{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:300;color:var(--t2);display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
 .val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;color:var(--t1)}
-input[type=range]{-webkit-appearance:none;width:100%;height:3px;background:rgba(255,255,255,0.1);border-radius:0;outline:none;margin-bottom:12px;cursor:pointer}
+input[type=range]{-webkit-appearance:none;width:100%;height:3px;background:var(--sf-line-interactive);border-radius:0;margin-bottom:12px;cursor:pointer}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:0;background:var(--sf-accent);border:2px solid #09090B;cursor:pointer}
 .panel,.panel *{cursor:default!important}
 .panel button,.panel button *{cursor:pointer!important}
@@ -96,7 +101,7 @@ button.active{background:rgba(21,193,123,0.10);border-color:var(--sf-accent);col
 .chk-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
 .chk-row input[type=checkbox]{accent-color:var(--sf-accent);width:16px;height:16px;cursor:pointer}
 .chk-row span{font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:0.8px;text-transform:uppercase;color:var(--t3)}
-input[type=text]{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;background:rgba(255,255,255,0.04);color:var(--t1);border:1px solid #50555E;padding:7px 10px;border-radius:0;outline:none;width:100%;margin-bottom:10px;font-weight:300}
+input[type=text]{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;background:rgba(255,255,255,0.04);color:var(--t1);border:1px solid #50555E;padding:7px 10px;border-radius:0;width:100%;margin-bottom:10px;font-weight:300}
 input[type=text]:focus{border-color:var(--sf-accent)}
 #gen-btn{width:100%;padding:10px;margin-top:6px;font-size:12px;letter-spacing:2px;background:rgba(21,193,123,0.10);border-color:var(--sf-accent);color:var(--sf-accent)}
 #gen-btn:hover{background:rgba(21,193,123,0.18);border-color:var(--sf-accent)}
@@ -119,7 +124,7 @@ input[type=text]:focus{border-color:var(--sf-accent)}
 .planet-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px;position:relative;overflow:visible}
 #icon-canvas{width:36px;height:36px;border-radius:50%;flex-shrink:0}
 .planet-hdr>div{min-width:0;flex:1;padding-right:24px}
-.p-name-input{font-family:'DM Sans',sans-serif;font-weight:300;font-size:15px;letter-spacing:2px;text-transform:uppercase;color:#FAFAFA;background:transparent;border:none;border-bottom:1px solid transparent;outline:none;width:100%;transition:border-color 0.2s;cursor:pointer;padding:0}
+.p-name-input{font-family:'DM Sans',sans-serif;font-weight:300;font-size:15px;letter-spacing:2px;text-transform:uppercase;color:#FAFAFA;background:transparent;border:none;border-bottom:1px solid transparent;width:100%;transition:border-color 0.2s;cursor:pointer;padding:0}
 .p-name-input:focus{border-bottom-color:var(--sf-accent);cursor:text}
 .p-type-lbl{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t4);margin-top:2px}
 .close-x{position:absolute;top:0;right:0;padding:3px 7px;font-size:12px;letter-spacing:1px}
@@ -129,7 +134,7 @@ input[type=text]:focus{border-color:var(--sf-accent)}
 .dgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px 12px;margin-top:8px}
 .di .dl{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:300;color:var(--t2);margin-bottom:1px}
 .di .dv{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;color:var(--t1)}
-.dv.cyan{color:var(--sf-accent)}.dv.green{color:#2ECC71}.dv.orange{color:#FFA500}.dv.gold{color:#FFD43B}.dv.red{color:#E74C3C}
+.dv.cyan{color:var(--sf-primary-text)}.dv.green{color:var(--sf-primary-text)}.dv.orange{color:var(--sf-amber-text)}.dv.gold{color:var(--sf-amber-text)}.dv.red{color:var(--sf-crimson-text)}
 .remove-btn{width:100%;margin-top:8px;font-size:12px}
 .remove-btn:hover{background:rgba(231,76,60,0.1);border-color:rgb(231,76,60);color:#E74C3C}
 .handoff-row{display:flex;flex-direction:column;gap:4px;margin-top:10px}
@@ -142,6 +147,15 @@ input[type=text]:focus{border-color:var(--sf-accent)}
 .moon-sub{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--t4);margin-bottom:10px}
 .moon-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;margin-top:6px}
 .world-note{font-family:'DM Sans',sans-serif;font-size:12px;line-height:1.5;color:var(--t3);padding:7px 10px;border-left:2px solid #50555E;margin-top:10px;background:rgba(21,193,123,0.02);border-radius:0}
+/* PLANET LIST: the keyboard path to every planet (and from there to
+   Publish this planet). One button per body, in orbit order. */
+.planet-list{display:flex;flex-direction:column;gap:4px;margin-bottom:8px}
+.planet-list button{display:flex;justify-content:space-between;align-items:center;gap:8px;text-align:left;text-transform:none;letter-spacing:0;font-size:13px;min-height:44px;padding:6px 10px}
+.planet-list .pl-au{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t3)}
+.planet-list .pl-flag{color:var(--sf-crimson-text)}
+.world-note.warn{border-left-color:var(--sf-amber-text);color:var(--t2)}
+.world-note.danger{border-left-color:var(--sf-crimson-text);color:var(--t2)}
+#sim-clock{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t3);padding:0 6px;white-space:nowrap}
 /* SAVE PANEL */
 #save-list{margin-top:8px}
 .save-entry{display:flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid #41454D;border-radius:0;margin-bottom:5px;background:rgba(255,255,255,0.02)}
@@ -199,7 +213,11 @@ input[type=text]:focus{border-color:var(--sf-accent)}
   <link rel="stylesheet" href="../_shared/sim-mobile.css">
   <link rel="stylesheet" href="../_shared/sim-title.css">
   <link rel="stylesheet" href="../_shared/sim-perf.css">
+  <link rel="stylesheet" href="../_shared/sim-a11y.css">
   <script src="../_shared/sim-loop.js"></script>
+  <script src="../_shared/sim-a11y.js"></script>
+  <script src="./sf-astro.js"></script>
+  <script src="./solaris-core.js"></script>
 </head>
 <body>
 <canvas id="canvas"></canvas>
@@ -209,10 +227,10 @@ input[type=text]:focus{border-color:var(--sf-accent)}
   <div class="tool-sub">Multi-Star System Simulator</div>
   <div class="tool-ctx" id="sys-label">No system generated</div>
   <div style="margin-top:8px">
-    <button onclick="openMathPage()" style="width:100%;font-size:12px;letter-spacing:1.5px;padding:5px 8px;background:rgba(21,193,123,0.03);border-color:#50555E;color:var(--sf-primary-text)" id="math-link-btn">Show Your Work ↗</button>
+    <button onclick="openMathPage()" style="width:100%;font-size:12px;letter-spacing:0;text-transform:none;padding:5px 8px;background:rgba(21,193,123,0.03);border-color:#50555E;color:var(--sf-primary-text)" id="math-link-btn">Show your work</button>
   </div>
 </div>
-<div id="badge">Standby</div>
+<div id="badge" role="status" aria-live="polite">Standby</div>
 <div id="drag-ghost"></div>
 
 <!-- MOON PANEL -->
@@ -230,12 +248,12 @@ input[type=text]:focus{border-color:var(--sf-accent)}
 
 <!-- MAIN PANEL -->
 <div class="panel" id="main-panel">
-  <div class="tab-bar">
-    <div class="tab active" data-tab="system">System</div>
-    <div class="tab" data-tab="palette">Palette</div>
-    <div class="tab" data-tab="oort">Oort</div>
-    <div class="tab" data-tab="view">View</div>
-    <div class="tab" data-tab="save">Save</div>
+  <div class="tab-bar" role="tablist" aria-label="Solaris controls">
+    <button type="button" class="tab active" role="tab" aria-selected="true" aria-controls="tab-system" data-tab="system">System</button>
+    <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="tab-palette" data-tab="palette">Palette</button>
+    <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="tab-oort" data-tab="oort">Oort</button>
+    <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="tab-view" data-tab="view">View</button>
+    <button type="button" class="tab" role="tab" aria-selected="false" aria-controls="tab-save" data-tab="save">Save</button>
   </div>
 
   <!-- SYSTEM TAB -->
@@ -263,8 +281,8 @@ input[type=text]:focus{border-color:var(--sf-accent)}
       <label>Inner A–B <span class="val" id="bsep-val">1.0 AU</span></label>
       <input type="range" id="bsep-slider" min="2" max="24" value="8" oninput="onBsepChange(this.value)">
       <div id="csep-wrap" style="display:none">
-        <label>C Distance <span class="val" id="csep-val">2.4 AU</span></label>
-        <input type="range" id="csep-slider" min="5" max="30" value="12" oninput="onCsepChange(this.value)">
+        <label>C distance <span class="val" id="csep-val">20 AU</span></label>
+        <input type="range" id="csep-slider" min="5" max="80" value="20" oninput="onCsepChange(this.value)">
       </div>
       <div id="dsep-wrap" style="display:none">
         <label>D Distance <span class="val" id="dsep-val">—</span></label>
@@ -302,7 +320,10 @@ input[type=text]:focus{border-color:var(--sf-accent)}
     </div>
     <div class="chk-row"><input type="checkbox" id="chk-ast" checked><span>Asteroid Belt</span></div>
 
-    <button id="gen-btn" onclick="generateSystem()">⊕ Generate System</button>
+    <button id="gen-btn" onclick="generateSystem()">Generate a new system</button>
+
+    <div class="sec" style="margin-top:14px">Planets</div>
+    <div class="planet-list" id="planet-list" aria-label="Planets in orbit order"></div>
 
     <div class="sec" style="margin-top:14px">Camera</div>
     <div class="btn-row">
@@ -314,7 +335,7 @@ input[type=text]:focus{border-color:var(--sf-accent)}
 
   <!-- PALETTE TAB -->
   <div class="tab-content" id="tab-palette">
-    <div class="drag-hint">Drag type onto canvas to place</div>
+    <div class="drag-hint">Drag a type onto the canvas, or press Enter on one to add it in its band</div>
     <div class="pal-pages" id="pal-pages"></div>
     <div class="pal-grid" id="pal-grid"></div>
   </div>
@@ -335,7 +356,7 @@ input[type=text]:focus{border-color:var(--sf-accent)}
     <div class="chk-row"><input type="checkbox" id="chk-oort-comets" checked><span>Active Comets</span></div>
     <label>Comet Count <span class="val" id="oort-comets-val">3</span></label>
     <input type="range" id="oort-comets" min="0" max="8" value="3" oninput="document.getElementById('oort-comets-val').textContent=this.value">
-    <button style="width:100%;margin-top:4px;background:rgba(46,204,113,0.08);border-color:rgb(46,204,113);color:#2ECC71;font-size:12px;padding:9px;letter-spacing:2px" onclick="generateOort()">⊕ Apply Oort Cloud</button>
+    <button style="width:100%;margin-top:4px;background:rgba(21,193,123,0.06);border-color:var(--sf-primary);color:var(--sf-primary-text);font-size:12px;padding:9px" onclick="generateOort()">Apply Oort cloud</button>
     <button style="width:100%;margin-top:6px;font-size:12px" onclick="clearOort()">Clear Oort Cloud</button>
     <div class="world-note" style="margin-top:12px">The inner Hills Cloud (~2k–20k AU) is toroidal. The outer shell (~20k–100k AU) is spherical. Gravitational perturbations from passing stars send Oort bodies inward as long-period comets.</div>
   </div>
@@ -359,7 +380,7 @@ input[type=text]:focus{border-color:var(--sf-accent)}
   <div class="tab-content" id="tab-save">
     <div class="sec">Save System</div>
     <input id="save-name-input" type="text" placeholder="SYSTEM NAME" style="text-transform:uppercase">
-    <button style="width:100%;background:rgba(0,229,160,0.08);border-color:#50555E;color:#00E5A0;font-size:12px;padding:9px;letter-spacing:2px" onclick="saveSystem()">⊕ Save Current System</button>
+    <button style="width:100%;background:rgba(21,193,123,0.06);border-color:var(--sf-primary);color:var(--sf-primary-text);font-size:12px;padding:9px" onclick="saveSystem()">Save this system</button>
     <div class="sec" style="margin-top:14px">Saved Systems</div>
     <div id="save-list"><div style="font-family:'DM Sans',sans-serif;font-size:12px;color:var(--t4);text-align:center;padding:12px 0">No saved systems</div></div>
     <div class="sec" style="margin-top:14px">Export</div>
@@ -400,14 +421,14 @@ input[type=text]:focus{border-color:var(--sf-accent)}
   <div class="world-note" id="world-note-text"></div>
   <div class="sec">Send To</div>
   <div class="handoff-row">
-    <button class="handoff-btn" onclick="sendToSimulator('exosky')">Open Sky in ExoSky →</button>
-    <button class="handoff-btn" onclick="sendToSimulator('tidelock')">Model Surface in Tidelock →</button>
+    <button class="handoff-btn" onclick="sendToSimulator('exosky')">Open its sky in ExoSky</button>
+    <button class="handoff-btn" onclick="sendToSimulator('tidelock')">Model its surface in Tidelock</button>
   </div>
   <div class="sec">World</div>
   <div class="handoff-row">
-    <button class="handoff-btn" onclick="publishSelectedPlanet()">Publish This Planet →</button>
+    <button class="handoff-btn" onclick="publishSelectedPlanet()">Publish this planet</button>
   </div>
-  <button class="remove-btn" onclick="removePlanet()">✕ Remove Planet</button>
+  <button class="remove-btn" onclick="removePlanet()">Remove planet</button>
 </div>
 
 <div id="hz-leg">
@@ -418,19 +439,20 @@ input[type=text]:focus{border-color:var(--sf-accent)}
 </div>
 
 <div id="transport">
-  <button class="tbtn" onclick="changeSpd(-1)">◀</button>
-  <button class="tbtn playing" id="play-btn" onclick="togglePlay()">⏸</button>
-  <button class="tbtn" onclick="changeSpd(1)">▶</button>
-  <div id="spd-disp">1×</div>
+  <button class="tbtn" onclick="changeSpd(-1)" aria-label="Slower">◀</button>
+  <button class="tbtn playing" id="play-btn" onclick="togglePlay()" aria-label="Pause">⏸</button>
+  <button class="tbtn" onclick="changeSpd(1)" aria-label="Faster">▶</button>
+  <div id="spd-disp" aria-live="polite">1×</div>
+  <div id="sim-clock" title="Simulated time since this system was generated">0.00 yr</div>
   <div class="t-div"></div>
-  <button class="tbtn" onclick="resetPositions()" title="Reset positions">↺</button>
+  <button class="tbtn" onclick="resetPositions()" title="Reset positions" aria-label="Reset positions">↺</button>
   <div class="t-div"></div>
-  <button class="tbtn" style="font-size:12px;padding:6px 8px;letter-spacing:1px" onclick="showPhysNote()" title="Architecture info">?</button>
+  <button class="tbtn" style="font-size:12px;padding:6px 8px;letter-spacing:1px" onclick="showPhysNote()" title="Architecture info" aria-label="Architecture info">?</button>
 </div>
 
 <div id="zoom-ind"><div id="z-val">1.0×</div><div id="z-lbl">Zoom</div></div>
 <div id="phys-note"></div>
-<div id="empty-hint"><p>Generate a system to begin</p><p>or drag planets from Palette</p></div>
+<div id="empty-hint"><p>Generating a system</p></div>
 <button id="mobile-toggle-main" onclick="this.setAttribute('aria-expanded',String(document.getElementById('main-panel').classList.toggle('mobile-visible')))" title="Toggle controls panel" aria-label="Toggle controls panel" aria-expanded="false" aria-controls="main-panel">☰</button>
 
 <script>
@@ -462,53 +484,21 @@ const ghostEl=document.getElementById('drag-ghost');
 let savedSystems=[];
 
 // ── STAR DEFS ──
-// lum is the sim luminosity (L☉) and teffK the effective temperature.
-// mass (M☉) and hz (AU) are DERIVED below, never hand-set:
-//   mass: main-sequence mass-luminosity relation inverted (L ∝ M^4 for
-//         0.43–2 M☉, L = 0.23 M^2.3 below, L = 1.4 M^3.5 above), the same
-//         relation as src/lib/habitable-zone/calculations.ts.
-//   hz:   conservative habitable zone, d = √(L / S_eff(Teff)), with the
-//         Kopparapu et al. 2014 (ApJ 787:L29, 1 M⊕) polynomial, the same
-//         table as src/lib/habitable-zone/kopparapu.ts. Sun: 0.95–1.68 AU.
-const STARS={
-  blue:  {color:'#9BB8FF',glow:'rgba(155,184,255,',r:24,name:'Blue Star',  lum:4.5, teffK:30000,temp:'Very Hot'},
-  white: {color:'#FFFDE7',glow:'rgba(255,253,231,',r:20,name:'White Star', lum:2.2, teffK:8500, temp:'Hot'},
-  yellow:{color:'#FFD700',glow:'rgba(255,215,0,',  r:19,name:'Yellow Star',lum:1.0, teffK:5780, temp:'Moderate'},
-  orange:{color:'#FF8C42',glow:'rgba(255,140,66,', r:16,name:'Orange Star',lum:0.42,teffK:4500, temp:'Cool'},
-  red:   {color:'#FF5555',glow:'rgba(255,85,85,',  r:13,name:'Red Dwarf',  lum:0.08,teffK:3200, temp:'Very Cool'}
-};
-const SKEYS=['blue','white','yellow','orange','red'];
-
-// Kopparapu et al. 2014, Table 1 (1 M⊕): [S_eff☉, a, b, c, d], valid 2600–7200 K.
-const KOP={
-  runaway:[1.107,1.332e-4,1.58e-8,-8.308e-12,-1.931e-15],
-  maxGH:  [0.356,6.171e-5,1.698e-9,-3.198e-12,-5.575e-16]
-};
-function kopSeff(teffK,c){
-  const t=Math.max(2600,Math.min(7200,teffK))-5780;
-  return c[0]+c[1]*t+c[2]*t*t+c[3]*t*t*t+c[4]*t*t*t*t;
-}
-// Conservative HZ [inner, outer] in AU for total luminosity L (L☉) at Teff.
-function kopHZ(L,teffK){
-  const l=Math.max(L,1e-10);
-  return [Math.sqrt(l/kopSeff(teffK,KOP.runaway)),Math.sqrt(l/kopSeff(teffK,KOP.maxGH))];
-}
-// Main-sequence mass (M☉) from luminosity (L☉): inverse of the piecewise
-// mass-luminosity relation used by the Habitable Zone calculator.
-function massFromLum(L){
-  const l=Math.max(L,1e-6);
-  if(l<0.23*Math.pow(0.43,2.3))return Math.pow(l/0.23,1/2.3);
-  if(l<16)return Math.pow(l,0.25);
-  return Math.pow(l/1.4,1/3.5);
-}
-// Combined HZ for several stars: flux ∝ ΣL/d², so use the total luminosity
-// once, at the luminosity-weighted Teff. (Do not also scale a per-star HZ.)
-function combinedHZ(defs){
-  const L=defs.reduce((s,d)=>s+(d.lum||0),0)||1;
-  const T=defs.reduce((s,d)=>s+(d.lum||0)*(d.teffK||5780),0)/L;
-  return kopHZ(L,T);
-}
-SKEYS.forEach(k=>{const d=STARS[k];d.mass=massFromLum(d.lum);d.hz=kopHZ(d.lum,d.teffK)});
+// Real main-sequence stars (solaris-core.js STAR_TYPES ← sf-astro.js, Mamajek
+// 2022): mass, luminosity, Teff and radius come from one table row each, so
+// they obey Stefan-Boltzmann together. hz is Kopparapu 2014 for that row.
+const STARS=SolarisCore.STAR_TYPES;
+const SKEYS=SolarisCore.STAR_KEYS;
+const SPT_LABEL={blue:'B8V',white:'A5V',yellow:'G2V',orange:'K5V',red:'M4V'};
+// Seeded generation stream. Everything that decides what the system IS
+// (stars, orbits, types, names, moons, belts) draws from srnd; decoration
+// that is redrawn every frame keeps Math.random.
+let srnd=Math.random;
+function seedRng(seed){srnd=SolarisCore.mulberry32(seed);}
+function newSeed(){return (Math.random()*4294967296)>>>0;}
+function sr(a,b){return srnd()*(b-a)+a}
+function spick(a){return a[Math.floor(srnd()*a.length)]}
+function srInt(a,b){return Math.floor(sr(a,b+1))}
 
 // ── MULTI-STAR ARCHITECTURES ──
 // binary: A–B pair, planets circumbinary (P-type)
@@ -592,9 +582,9 @@ function lighten(hex,amt){if(!hex||hex[0]!=='#')return'#808080';return`rgb(${Mat
 document.querySelectorAll('.tab').forEach(tab=>{
   tab.addEventListener('click',()=>{
     const t=tab.dataset.tab;
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-selected','false');});
     document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
-    tab.classList.add('active');
+    tab.classList.add('active');tab.setAttribute('aria-selected','true');
     document.getElementById('tab-'+t).classList.add('active');
     if(t==='save')renderSaveList();
   });
@@ -676,7 +666,7 @@ function onBsepChange(v){
   document.getElementById('bsep-val').textContent=au+' AU';
 }
 function onCsepChange(v){
-  const au=(v/5).toFixed(1);
+  const au=(+v).toFixed(0);
   document.getElementById('csep-val').textContent=au+' AU';
 }
 function onDsepChange(v){
@@ -685,7 +675,7 @@ function onDsepChange(v){
 }
 
 function resolveStarKey(which){
-  return starChoices[which]==='random'?pick(SKEYS):starChoices[which];
+  return starChoices[which]==='random'?spick(SKEYS):starChoices[which];
 }
 
 function toggleCond(c){
@@ -695,9 +685,17 @@ function toggleCond(c){
 function setBadge(cls,txt){const b=document.getElementById('badge');b.className=cls;b.textContent=txt}
 function setCam(mode,btn){camMode=mode;document.querySelectorAll('[id^="cam-"]').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active')}
 function updateSysName(){if(system)system.name=document.getElementById('star-name').value||system.name}
-function togglePlay(){playing=!playing;const b=document.getElementById('play-btn');b.textContent=playing?'⏸':'▶';b.classList.toggle('playing',playing)}
-function changeSpd(d){spdIdx=Math.max(0,Math.min(SPEEDS.length-1,spdIdx+d));document.getElementById('spd-disp').textContent=SPEEDS[spdIdx]+'×'}
-function resetPositions(){if(system)system.planets.forEach(p=>p.angle=rnd(0,Math.PI*2))}
+function togglePlay(){playing=!playing;const b=document.getElementById('play-btn');b.textContent=playing?'⏸':'▶';b.setAttribute('aria-label',playing?'Pause':'Play');b.classList.toggle('playing',playing)}
+// At 1× one simulated year takes 14 s, so 26.1 days pass per second.
+function changeSpd(d){spdIdx=Math.max(0,Math.min(SPEEDS.length-1,spdIdx+d));const dps=SPEEDS[spdIdx]*365.25/SIM_S_PER_YEAR;document.getElementById('spd-disp').textContent=SPEEDS[spdIdx]+'× · '+(dps<10?dps.toFixed(1):Math.round(dps))+' d/s'}
+function resetPositions(){
+  if(!system)return;
+  // Back to the generated (or loaded) starting orbits: clock to zero,
+  // circular state re-seeded, ejection flags cleared.
+  system.t=0;
+  system.planets.forEach(p=>{if(p.startPx!==undefined)p.orbitPx=p.startPx;delete p.vx;delete p.vy;delete p.px;delete p.py;p.ejected=false;delete p.ejectedAtYears;p.angSpd=kepAngSpd(p.orbitPx);});
+  placeStars(0);trailData.clear();renderPlanetList();if(selPlanet)openInfo(selPlanet);
+}
 function showPhysNote(){
   const n=document.getElementById('phys-note');
   const arch=ARCH_OPTIONS[starModeVal]||ARCH_OPTIONS['single'];
@@ -711,191 +709,169 @@ document.getElementById('chk-hz').addEventListener('change',function(){document.
 // ═══════════════════════════════════════════════════════════════════════
 // GENERATION
 // ═══════════════════════════════════════════════════════════════════════
-function generateSystem(){setBadge('gen','Generating…');setTimeout(doGen,60)}
+function generateSystem(seed){setBadge('gen','Generating…');setTimeout(()=>doGen(seed),60)}
 
-function doGen(){
+// Build the star list and the orbital layout the core needs. Separations in
+// AU come from the sliders; phases from the seeded stream.
+function buildStars(mode,arch,sName){
+  const stars=[{key:resolveStarKey('a'),nameStr:sName+' A'}];
+  if(mode!=='single')stars.push({key:resolveStarKey('b'),nameStr:sName+' B'});
+  if(mode==='trinary'||mode==='quaternary')stars.push({key:resolveStarKey('c'),nameStr:sName+' C'});
+  if(mode==='quaternary')stars.push({key:resolveStarKey('d'),nameStr:sName+' D'});
+  stars.forEach(s=>{s.def=STARS[s.key];s.x=0;s.y=0;});
+  const ab=parseInt(document.getElementById('bsep-slider').value)/8;
+  const c=parseInt(document.getElementById('csep-slider').value);
+  const d=parseInt(document.getElementById('dsep-slider').value)/4;
+  const sep={ab, c, d, cd:ab};
+  // tri_22_1 is S-type: the planets circle A inside a WIDE A–B pair, so the
+  // separation slider reads as ten times wider there (3–30 AU).
+  if(arch==='tri_22_1'){sep.ab=ab*10;sep.c=Math.max(c,sep.ab*4);}
+  // quad_31: the inner triple is compact (C within a few AU of AB), D far.
+  if(arch==='quad_31'){sep.c=Math.max(c/8,ab*3.2);sep.d=Math.max(d,sep.c*15);}
+  // A circumbinary planet needs ~2.4× the inner separation (H&W eq. 3) and
+  // must stay inside ~0.3× the outer one (eq. 1), so a P-type triple with
+  // room for planets needs the outer star at least ~12× further out. The
+  // separation shown on the slider is updated to the value used.
+  if(arch==='tri_31'||arch==='quad_22'){sep.c=Math.max(sep.c,ab*12);}
+  const phase={ab:sr(0,Math.PI*2),c:sr(0,Math.PI*2),cd:sr(0,Math.PI*2),d:sr(0,Math.PI*2)};
+  document.getElementById('bsep-val').textContent=sep.ab.toFixed(2)+' AU';
+  if(mode==='trinary'||mode==='quaternary')document.getElementById('csep-val').textContent=sep.c.toFixed(1)+' AU';
+  if(mode==='quaternary')document.getElementById('dsep-val').textContent=sep.d.toFixed(1)+' AU';
+  return {stars,sep,phase};
+}
+
+function doGen(seed){
   const mode=starModeVal;
-  const arch=archVal||mode;
-  const skA=resolveStarKey('a');
-  const starA=STARS[skA];
-  const sName=document.getElementById('star-name').value||pick(SYS_NAMES);
+  const arch=mode==='single'?'single':mode==='binary'?'binary':(archVal||mode);
+  if(seed==null)seed=newSeed();
+  seedRng(seed);
+  const sName=document.getElementById('star-name').value||spick(SYS_NAMES);
   const num=parseInt(document.getElementById('pc-slider').value);
   const hasAst=document.getElementById('chk-ast').checked;
   const AU=Math.min(W,H)*0.08;
-  const lum=starA.lum;
-  const bsepAU=parseInt(document.getElementById('bsep-slider').value)/8;
-  const csepAU=parseInt(document.getElementById('csep-slider').value)/5;
-  const dsepAU=parseInt(document.getElementById('dsep-slider').value)/4;
-  const bSep=bsepAU*AU, cSep=csepAU*AU, dSep=dsepAU*AU;
+  const lay=buildStars(mode,arch,sName);
+  system={name:sName,seed,starMode:mode,arch,stars:lay.stars,sep:lay.sep,phase:lay.phase,t:0,AU,planets:[],asteroidBelt:null,oort:null};
 
-  // ── BUILD STARS ARRAY ──
-  // Each star: {key, def, x, y, nameStr, isBcomp, isCcomp, isDcomp, bAngle, cAngle, dAngle, angSpd, bSep, cSep, dSep}
-  const stars=[];
-  stars.push({key:skA,def:starA,x:0,y:0,nameStr:sName+' A'});
-
-  if(mode!=='single'){
-    const skB=resolveStarKey('b');
-    // Keplerian angular speed of B orbiting A/B barycenter:
-    //   Period scales as a^1.5 / sqrt(M_total), with stellar masses (M☉).
-    //   Simplified: T_AB = 14 × bsepAU^1.5 / sqrt((M_A+M_B)/2)
-    const lum_AB = ((STARS[skA]?.mass||1) + (STARS[skB]?.mass||1)) / 2;
-    const angSpdB = (2*Math.PI) / (14 * Math.pow(Math.max(bsepAU,0.05), 1.5) / Math.sqrt(lum_AB));
-    stars.push({key:skB,def:STARS[skB],x:-bSep*0.5,y:0,nameStr:sName+' B',
-      isBcomp:true,bAngle:Math.PI,angSpd:angSpdB,bSep});
-    stars[0].x=bSep*0.5;
-    stars[0].bPair=true;
-  }
-  if(mode==='trinary'||mode==='quaternary'){
-    const skC=resolveStarKey('c');
-    // Keplerian angular speed of C orbiting AB barycenter:
-    //   T_C = 14 × csepAU^1.5  sim-seconds  (same formula as planet periods)
-    //   angSpd_C = 2π / T_C
-    const angSpdC=(2*Math.PI)/(14*Math.pow(Math.max(csepAU,0.1),1.5));
-    stars.push({key:skC,def:STARS[skC],x:cSep,y:0,nameStr:sName+' C',
-      isCcomp:true,cAngle:0,angSpd:angSpdC,cSep});
-  }
-  if(mode==='quaternary'){
-    const skD=resolveStarKey('d');
-    // quad_22: D pairs with C as a second binary. quad_31: D is the distant outer star.
-    if(arch==='quad_22'){
-      // C+D form a second binary pair, that pair orbits the AB barycenter
-      stars[2].cdPair=true;                    // C is inner of the CD pair
-      // CD binary separation ≈ bSep (same scale as AB). Keplerian period for CD.
-      const lum_CD = ((STARS[skC]?.mass||1) + (STARS[skD]?.mass||1)) / 2;
-      const angSpdD_cd = (2*Math.PI) / (14 * Math.pow(Math.max(bsepAU,0.05), 1.5) / Math.sqrt(lum_CD));
-      stars.push({key:skD,def:STARS[skD],x:cSep+bSep*0.5,y:0,nameStr:sName+' D',
-        isDcomp:true,isDcd:true,dAngle:Math.PI,angSpd:angSpdD_cd,bSep,cSep});
-    } else { // quad_31 — inner triple + distant D
-      // D orbits AB+C barycenter at dSep — Kepler speed
-      const angSpdD = (2*Math.PI) / (14 * Math.pow(Math.max(dsepAU,0.1), 1.5));
-      stars.push({key:skD,def:STARS[skD],x:dSep,y:0,nameStr:sName+' D',
-        isDcomp:true,isDfar:true,dAngle:0,angSpd:angSpdD,dSep});
-    }
-  }
-
-  // ── BAND RANGES (AU-based, scaled from luminosity + binary clearance) ──
-  // For multi-star: circumbinary planets need clearance beyond ~3.5× binary separation
-  let innerClearAU=0;
-  if(mode!=='single'){
-    // The inner pair occupies ~bsepAU; stable zone starts ~3.5× beyond
-    innerClearAU=bsepAU*3.5;
-  }
-  if(arch==='quad_31'){innerClearAU=Math.max(innerClearAU,csepAU*3.5)}
-
-  // Holman & Wiegert (1999) outer stability limit for P-type (circumbinary) orbits:
-  //   a_max ≈ 0.38 × a_C  (for mass ratio q≈0.5, eccentricity e≈0.2)
-  // We use 0.30× as a conservative margin for the worldbuilding tool.
-  // This ensures generated planets sit in genuinely stable zones.
-  let outerStableLimitAU = Infinity;
-  if(mode==='trinary'||mode==='quaternary'){
-    outerStableLimitAU = csepAU * 0.30;
-  }
-  // For binary alone the outer limit is very large — no constraint needed.
-
-  const hardMax = (au) => Math.min(au, outerStableLimitAU);
-  // Bands are keyed to the combined Kopparapu HZ so the "habitable" band
-  // is the habitable zone drawn on screen.
-  const [hzInAU,hzOutAU]=combinedHZ(stars.map(st=>st.def));
-  const bandRanges={
-    inner:{   min:Math.max(innerClearAU,0.45*hzInAU),   max:hardMax(Math.max(innerClearAU+0.8,hzInAU))},
-    habitable:{min:Math.max(innerClearAU+0.8,hzInAU),   max:hardMax(Math.max(innerClearAU+2.5,hzOutAU))},
-    outer:{   min:Math.max(innerClearAU+2.5,hzOutAU),   max:hardMax(Math.max(innerClearAU+5,3.3*hzOutAU))},
-    remote:{  min:Math.max(innerClearAU+5,3.3*hzOutAU), max:hardMax(Math.max(innerClearAU+9,5.4*hzOutAU))}
+  // ── Where planets can live (Holman & Wiegert 1999) ──
+  const lim=SolarisCore.limits(system);
+  const [hzInAU,hzOutAU]=SolarisCore.hzAU(system);
+  const innerOK=lim.inner*1.15;                       // margin over the P-type limit
+  const outerOK=isFinite(lim.outer)?lim.outer*0.9:Infinity;
+  // A band that falls outside the stable range is moved to the nearest
+  // stable stretch; the planet's archetype keeps its band, and the info
+  // panel says when insolation disagrees with it.
+  const clampBand=(lo,hi)=>{
+    lo=Math.max(lo,innerOK);hi=Math.min(hi,outerOK);
+    if(lo<hi)return{min:lo,max:hi};
+    if(hi<=innerOK)return{min:innerOK,max:Math.min(outerOK,innerOK*1.4)};
+    return{min:Math.max(innerOK,outerOK*0.7),max:outerOK};
   };
-  // Clamp mins to be <= maxes (stability limit may compress bands)
-  Object.values(bandRanges).forEach(b=>{if(b.min>=b.max)b.min=b.max*0.85});
-
-  // For quad_22, the C+D pair orbits far out — same outer-limit logic applies
-  if(arch==='quad_22'){
-    const limit=csepAU*0.30;
-    Object.values(bandRanges).forEach(b=>{b.max=Math.min(b.max,limit);if(b.min>=b.max)b.min=b.max*0.85});
-  }
+  const bandRanges={
+    inner:clampBand(0.35*hzInAU,hzInAU),
+    habitable:clampBand(hzInAU,hzOutAU),
+    outer:clampBand(hzOutAU,3.3*hzOutAU),
+    remote:clampBand(3.3*hzOutAU,6*hzOutAU)
+  };
+  const noRoom=isFinite(outerOK)&&outerOK<=innerOK;
 
   let bands=[];
   for(let i=0;i<num;i++){
     const t=i/num;
-    if(t<0.18)bands.push('inner');
-    else if(t<0.45)bands.push('habitable');
-    else if(t<0.72)bands.push('outer');
-    else bands.push('remote');
+    bands.push(t<0.18?'inner':t<0.45?'habitable':t<0.72?'outer':'remote');
   }
   if(conds.hab&&!bands.includes('habitable'))bands[Math.floor(num*0.4)]='habitable';
   if(conds.gas&&!bands.filter(b=>b==='outer').length)bands[Math.floor(num*0.65)]='outer';
   if(conds.rogue)bands[bands.length-1]='remote';
-  bands.sort((a,b)=>['inner','habitable','outer','remote'].indexOf(a)-['inner','habitable','outer','remote'].indexOf(b));
+  const ORDER=['inner','habitable','outer','remote'];
+  bands.sort((a,b)=>ORDER.indexOf(a)-ORDER.indexOf(b));
 
   const planets=[];
   const usedAU=[];
-  bands.forEach((band,i)=>{
+  if(!noRoom)bands.forEach((band,i)=>{
     const br=bandRanges[band];
     let au,tries=0;
-    do{au=rnd(br.min,br.max);tries++}while(usedAU.some(u=>Math.abs(u-au)<0.2*Math.max(lum,0.3))&&tries<30);
+    // Keep neighbours apart by 15% in radius (a crude spacing rule, not a
+    // stability claim; the info panel reports stability per planet).
+    do{au=Math.exp(sr(Math.log(br.min),Math.log(br.max)));tries++}while(usedAU.some(u=>Math.abs(u-au)<0.15*Math.max(u,au))&&tries<30);
     usedAU.push(au);
     let pool=[...BAND_POOL[band]];
     if(conds.tidal&&band==='habitable')pool=['tidallocked'];
     if(conds.rogue&&i===bands.length-1)pool=['rogue'];
     if(conds.hab&&band==='habitable')pool=['terrestrial','ocean','superearth','waterworld','hycean','jungle'];
     if(conds.gas&&band==='outer')pool=['gasgiant','icegiant','stormworld'];
-    const typeKey=pick(pool);
+    const typeKey=spick(pool);
     const pt=PTYPES[typeKey];
-    const sz=rnd(pt.sz[0],pt.sz[1]);
-    planets.push(makePlanet(typeKey,au*AU,rnd(0,Math.PI*2),sz,i));
+    const sz=sr(pt.sz[0],pt.sz[1]);
+    planets.push(makePlanet(typeKey,au*AU,sr(0,Math.PI*2),sz,i));
   });
+  system.planets=planets;
 
   // Asteroid belt
-  let ast=null;
-  if(hasAst){
+  if(hasAst&&!noRoom){
     const hP=planets.filter(p=>p.band==='habitable');
     const oP=planets.filter(p=>p.band==='outer');
     let bAU;
     if(hP.length&&oP.length)bAU=(hP[hP.length-1].orbitPx/AU+oP[0].orbitPx/AU)/2;
-    else bAU=rnd(1.2,2.4)*hzOutAU;
-    const bR=bAU*AU,spread=AU*rnd(0.3,0.5),pts=[];
+    else bAU=Math.min(sr(1.2,2.4)*hzOutAU,isFinite(outerOK)?outerOK:Infinity);
+    const bR=bAU*AU,spread=bR*sr(0.08,0.14),pts=[];
     for(let a=0;a<80;a++){
-      const r=bR+rnd(-spread/2,spread/2),ang=rnd(0,Math.PI*2);
-      pts.push({r,ang,spd:rnd(0.006,0.02),sz:rnd(1.5,4.5),col:`rgba(${rndInt(120,170)},${rndInt(100,140)},${rndInt(70,100)},${rnd(0.35,0.75).toFixed(2)})`});
+      const r=bR+sr(-spread/2,spread/2),ang=sr(0,Math.PI*2);
+      pts.push({r,ang,spd:sr(0.006,0.02),sz:sr(1.5,4.5),col:`rgba(${srInt(120,170)},${srInt(100,140)},${srInt(70,100)},${sr(0.35,0.75).toFixed(2)})`});
     }
-    ast={r:bR,pts};
+    system.asteroidBelt={r:bR,pts};
   }
 
   planets.sort((a,b)=>a.orbitPx-b.orbitPx);
   planets.forEach((p,i)=>{p.index=i;p.name=sName+'-'+toRoman(i+1)});
 
-  // Combined habitable zone: each star contributes flux ∝ L/r², so the HZ
-  // comes from the TOTAL luminosity once (d = √(ΣL / S_eff)). Scaling a
-  // single-star HZ by √ΣL would count star A's luminosity twice.
-  system={
-    name:sName,starMode:mode,arch,stars,AU,planets,asteroidBelt:ast,oort:null,
-    hz:{inner:hzInAU*AU,outer:hzOutAU*AU}
-  };
+  // Combined habitable zone of the host group: total luminosity once,
+  // d = √(ΣL / S_eff) (Kopparapu 2014), at the luminosity-weighted Teff.
+  system.hz={inner:hzInAU*AU,outer:hzOutAU*AU};
+  placeStars(0);
 
   document.getElementById('sys-label').textContent=sName+' System';
   document.getElementById('star-name').value=sName;
   document.getElementById('empty-hint').style.display='none';
   selPlanet=null;closeInfo();trailData.clear();
-  setBadge('ok',sName+' · '+num+' Bodies');
-  setTimeout(()=>setBadge('active','Orbits Active'),2500);
+  if(noRoom){setBadge('edit','// NO STABLE ORBITS FOR THIS ARRANGEMENT');}
+  else{setBadge('ok',sName+' · '+planets.length+' bodies');setTimeout(()=>setBadge('active','Orbits active'),2500);}
+  renderPlanetList();
   updateMathBtn();
   if(document.getElementById('chk-hz').checked)document.getElementById('hz-leg').classList.add('vis');
   fitSys();
 }
 
+/** Angular speed (rad per sim-second) of a circular orbit of radius orbitPx. */
+function kepAngSpd(orbitPx){
+  const au=Math.max(orbitPx/Math.max(system?system.AU:Math.min(W,H)*0.08,1),1e-4);
+  const M=system?SolarisCore.hostMass(system):1;
+  return (Math.PI*2)/(SIM_S_PER_YEAR*SFAstro.periodYears(au,M));
+}
+
 function makePlanet(typeKey,orbitPx,angle,sz,idx){
   const pt=PTYPES[typeKey];
-  const au=orbitPx/Math.max((system?system.AU:Math.min(W,H)*0.08),1);
-  const period=Math.pow(Math.max(au,0.1),1.5)*14;
-  const angSpd=(Math.PI*2)/period;
   const moons=[];
   const mc=(['gasgiant','icegiant','stormworld','superearth','waterworld'].includes(typeKey))
-    ?rndInt(1,4):(Math.random()>0.6?1:0);
+    ?srInt(1,4):(srnd()>0.6?1:0);
   for(let m=0;m<mc;m++)
-    moons.push({r:sz+rnd(10,22+m*10),angle:rnd(0,Math.PI*2),spd:rnd(0.7,2.5),sz:rnd(1.5,3.5)});
+    moons.push({r:sz+sr(10,22+m*10),angle:sr(0,Math.PI*2),spd:sr(0.7,2.5),sz:sr(1.5,3.5)});
   return {
     name:'',typeKey,band:pt.band==='any'?'habitable':pt.band,typeDef:pt,
-    orbitPx,angle,angSpd,sz,color:pt.color,altColor:pt.alt,moons,index:idx,
-    glowPh:rnd(0,Math.PI*2),rotAngle:0,rotSpeed:1.0,
+    orbitPx,angle,angSpd:kepAngSpd(orbitPx),sz,color:pt.color,altColor:pt.alt,moons,index:idx,
+    glowPh:sr(0,Math.PI*2),rotAngle:0,rotSpeed:1.0,albedo:pt.band==='outer'?0.34:0.3,
     tidalLock:typeKey==='tidallocked',retrograde:false,
   };
+}
+
+// Simulation clock: one year is 14 s of sim time at 1× (the old calibration,
+// now applied with the real stellar mass). 1 real second at 1× = 26.1 days.
+const SIM_S_PER_YEAR=14;
+
+/** Put every star at its analytic position for time t (years), in px. */
+function placeStars(t){
+  if(!system)return;
+  const pos=SolarisCore.starPositionsAU(system,t);
+  system.stars.forEach((s,i)=>{s.x=pos[i].x*system.AU;s.y=pos[i].y*system.AU;});
 }
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -947,12 +923,12 @@ function generateOort(){
   }
   system.oort={pts,comets,hillsMax,outerMax};
   setBadge('ok','Oort Cloud Applied — zoom out to see');
-  setTimeout(()=>setBadge('active','Orbits Active'),3000);
+  setTimeout(()=>setBadge('active','Orbits active'),3000);
   // Auto-zoom to show inner hills band
   const fz=Math.min(W,H)/(hillsMax*2.4);
   tcam.zoom=Math.max(0.004,Math.min(fz,tcam.zoom)); // only zoom out, never in
 }
-function clearOort(){if(system)system.oort=null;setBadge('edit','Oort Cleared');setTimeout(()=>setBadge('active','Orbits Active'),1200)}
+function clearOort(){if(system)system.oort=null;setBadge('edit','Oort Cleared');setTimeout(()=>setBadge('active','Orbits active'),1200)}
 
 function fitSys(){
   if(!system)return;
@@ -986,22 +962,58 @@ function openInfo(p){
   document.getElementById('rot-retro').classList.toggle('active',!!p.retrograde);
   drawIcon(p);
   const pt=p.typeDef;
-  const grav=(p.sz/10).toFixed(1)+'g';
+  const m=planetMetricsFor(p);
+  const st=planetStability(p);
+  const fmt=(x,d)=>Number.isFinite(x)?x.toFixed(d):'—';
+  const periodStr=m.periodDays<1000?fmt(m.periodDays,m.periodDays<10?2:1)+' d':fmt(m.periodYears,2)+' yr';
+  const hzCls=m.hzStatus==='habitable'?'green':(m.hzStatus==='hot'||m.hzStatus==='cold')?'orange':'gold';
+  // Computed values first (these are what Publish and Save carry); the
+  // archetype's flavour labels after, marked as such.
   const fields=[
-    ['Life',     pt.life,    pt.life!=='None'?'green':''],
-    ['Water',    pt.water,   (pt.water.includes('Abundant')||pt.water.includes('Global'))?'cyan':''],
-    ['Atmo',     pt.atmo,    ''],
-    ['Temp',     pt.temp,    ''],
-    ['Hazard',   pt.hazard,  (pt.hazard!=='None'&&pt.hazard!=='Low')?'orange':''],
-    ['Resources',pt.res,     pt.res.includes('Rich')?'gold':''],
-    ['Gravity',  grav,       'cyan'],
+    ['Orbit',    fmt(m.aAU,3)+' AU',''],
+    ['Year',     periodStr,'cyan'],
+    ['Insolation',fmt(m.insolation,m.insolation<10?2:0)+' S⊕',''],
+    ['Equilibrium temp', fmt(m.teqK,0)+' K',''],
+    ['Habitable zone', SFAstro.HZ_STATUS_LABEL[m.hzStatus].split(':')[0], hzCls],
+    ['Stability', st.label, st.sf==='stable'?'':st.sf==='marginal'?'gold':'red'],
     ['Moons',    p.moons.length+'',''],
-    ['Rotation', p.tidalLock?'Tidal Lock':p.retrograde?'Retrograde':'Prograde',''],
-    ['Orbit AU', (p.orbitPx/Math.max(system.AU,1)).toFixed(2)+' AU',''],
+    ['Rotation', p.tidalLock?'Tidal lock':p.retrograde?'Retrograde':'Prograde',''],
+    ['Life (archetype)',  pt.life,  ''],
+    ['Water (archetype)', pt.water, ''],
+    ['Atmosphere (archetype)', pt.atmo, ''],
+    ['Resources (archetype)', pt.res, ''],
   ];
   document.getElementById('data-grid').innerHTML=fields.map(([l,v,c])=>
     `<div class="di"><div class="dl">${l}</div><div class="dv ${c}">${v}</div></div>`).join('');
-  document.getElementById('world-note-text').textContent=pt.note;
+  const note=document.getElementById('world-note-text');
+  let warn='';
+  if(p.ejected)warn='EJECTED AT YEAR '+fmt(p.ejectedAtYears,1)+'. NO LONGER BOUND TO THE SYSTEM.';
+  else if(st.sf==='unstable')warn='// '+st.label.toUpperCase()+'. HOLMAN & WIEGERT 1999.';
+  else if(p.band==='habitable'&&!m.inHabitableZone)warn='ARCHETYPE SAYS HABITABLE. INSOLATION SAYS '+fmt(m.insolation,2)+' S⊕, T_EQ '+fmt(m.teqK,0)+' K.';
+  note.className='world-note'+(warn?(p.ejected||st.sf==='unstable'?' danger':' warn'):'');
+  note.textContent=(warn?warn+' ':'')+pt.note+' Equilibrium temperature assumes Bond albedo '+m.albedo.toFixed(2)+' and full heat redistribution; the surface can be warmer under an atmosphere.';
+  renderPlanetList();
+}
+
+/** Real-unit metrics for one planet at its current distance from the host. */
+function planetMetricsFor(p){
+  return SolarisCore.planetMetrics(system,p.orbitPx/Math.max(system.AU,1),p.albedo);
+}
+
+/** Keyboard path to every planet: one button each, in orbit order. */
+function renderPlanetList(){
+  const el=document.getElementById('planet-list');
+  if(!el)return;
+  if(!system||!system.planets.length){el.innerHTML='<div class="world-note" style="margin-top:0">No planets yet.</div>';return;}
+  el.innerHTML=system.planets.map((p,i)=>{
+    const st=planetStability(p);
+    const flag=p.ejected?' <span class="pl-flag">// ejected</span>':st.sf==='unstable'?' <span class="pl-flag">// unstable</span>':'';
+    return `<button type="button" data-pi="${i}" aria-pressed="${selPlanet===p}"${selPlanet===p?' class="active"':''}><span>${p.name}${flag}</span><span class="pl-au">${(p.orbitPx/Math.max(system.AU,1)).toFixed(2)} AU</span></button>`;
+  }).join('');
+  el.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+    const p=system.planets[+b.dataset.pi];
+    if(p){closeMoonInfo();openInfo(p);const f=document.getElementById('p-name-input');if(f)f.focus({preventScroll:true});}
+  }));
 }
 function drawIcon(p){
   const ic=document.getElementById('icon-canvas').getContext('2d');
@@ -1010,7 +1022,7 @@ function drawIcon(p){
   g.addColorStop(0,lighten(p.color,50));g.addColorStop(0.6,p.color);g.addColorStop(1,p.altColor);
   ic.beginPath();ic.arc(22,22,20,0,Math.PI*2);ic.fillStyle=g;ic.fill();
 }
-function closeInfo(){selPlanet=null;document.getElementById('info-panel').classList.remove('visible');closeMoonInfo()}
+function closeInfo(){selPlanet=null;document.getElementById('info-panel').classList.remove('visible');closeMoonInfo();renderPlanetList()}
 function closeMoonInfo(){selMoon=null;selMoonParent=null;document.getElementById('moon-panel').classList.remove('visible')}
 function openMoonInfo(moon, parentPlanet, moonIdx){
   selMoon=moon; selMoonParent=parentPlanet;
@@ -1029,25 +1041,14 @@ function openMoonInfo(moon, parentPlanet, moonIdx){
   g.addColorStop(1,`rgb(${Math.max(40,brightness-50)},${Math.max(40,brightness-50)},${Math.max(45,brightness-45)})`);
   ic.beginPath();ic.arc(18,18,16,0,Math.PI*2);ic.fillStyle=g;ic.fill();
 
-  // Orbital data
-  const au = moon.r / Math.max(system.AU,1);
-  const parentAU = parentPlanet.orbitPx / Math.max(system.AU,1);
-  // Moon orbital period: T_moon = T_planet * (r_moon/r_planet)^1.5 * (1/sqrt(planet_mass_proxy))
-  // Simplified: period relative to planet = (r_moon/sz_planet)^1.5 * some_scale
-  const relR = moon.r / parentPlanet.sz;
-  const moonPeriod = (relR * relR * 0.5).toFixed(2); // relative to planet rotation
-  const speedLabel = moon.spd > 1.8 ? 'Fast' : moon.spd > 1.0 ? 'Moderate' : 'Slow';
-  const distKm = (au * 149597871).toExponential(2); // AU to km
-
+  // Moons are drawn for legibility, not to scale: their orbits are in
+  // screen pixels around the planet's disc, and no moon mass or distance is
+  // modelled. Say so instead of inventing AU and km.
   const fields = [
-    ['Orbit radius', moon.r.toFixed(0)+' px'],
-    ['AU equiv.', au.toFixed(5)+' AU'],
-    ['Dist. from planet', (moon.r - parentPlanet.sz).toFixed(0)+' px clear'],
-    ['Relative orbit', relR.toFixed(1)+'× planet radius'],
-    ['Orbital speed', speedLabel+' ('+moon.spd.toFixed(2)+'×)'],
-    ['Size', moon.sz.toFixed(1)+' px radius'],
-    ['Parent orbit', parentAU.toFixed(3)+' AU'],
-    ['Moon index', 'Moon '+(moonIdx+1)+' of '+parentPlanet.moons.length],
+    ['Moon', (moonIdx+1)+' of '+parentPlanet.moons.length],
+    ['Parent orbit', (parentPlanet.orbitPx/Math.max(system.AU,1)).toFixed(3)+' AU'],
+    ['Drawn orbit', (moon.r/parentPlanet.sz).toFixed(1)+'× disc radius'],
+    ['Scale', 'Not to scale'],
   ];
   document.getElementById('moon-data-grid').innerHTML=fields.map(([l,v])=>
     `<div class="di"><div class="dl">${l}</div><div class="dv">${v}</div></div>`
@@ -1058,10 +1059,12 @@ function resizePlanet(v){if(selPlanet){selPlanet.sz=parseInt(v);drawIcon(selPlan
 function reorbitPlanet(v){
   if(!selPlanet||!system)return;
   selPlanet.orbitPx=parseInt(v);
-  const au=selPlanet.orbitPx/Math.max(system.AU,1);
-  selPlanet.angSpd=(Math.PI*2)/Math.max(Math.pow(Math.max(au,0.1),1.5)*14,0.1);
-  // Clear N-body state so it reinitializes from new orbit
+  selPlanet.angSpd=kepAngSpd(selPlanet.orbitPx);
+  // Clear N-body state so it reinitializes from the new orbit, and clear an
+  // ejection flag: a moved planet is a new orbit.
   delete selPlanet.vx;delete selPlanet.vy;delete selPlanet.px;delete selPlanet.py;
+  selPlanet.ejected=false;delete selPlanet.ejectedAtYears;
+  openInfo(selPlanet);
 }
 function setMoonCount(v){
   if(!selPlanet)return;
@@ -1093,7 +1096,7 @@ function removePlanet(){
   system.planets=system.planets.filter(p=>p!==selPlanet);
   system.planets.sort((a,b)=>a.orbitPx-b.orbitPx);
   system.planets.forEach((p,i)=>{p.index=i;p.name=system.name+'-'+toRoman(i+1)});
-  closeInfo();setBadge('edit','Planet Removed');setTimeout(()=>setBadge('active','Orbits Active'),1500);
+  closeInfo();setBadge('edit','PLANET REMOVED.');setTimeout(()=>setBadge('active','Orbits active'),1500);
 }
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -1119,6 +1122,9 @@ function renderPalPage(){
     const pt=PTYPES[key];
     const div=document.createElement('div');
     div.className='pal-item';
+    div.tabIndex=0;div.setAttribute('role','button');
+    div.setAttribute('aria-label','Add a '+pt.name+' planet');
+    div.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();addPlanetInBand(key);}});
     div.innerHTML=`<div class="pal-dot" style="background:${pt.color};box-shadow:0 0 6px ${pt.color}55"></div><div><div class="pal-name">${pt.name}</div><div class="pal-tag">${pt.tag}</div></div>`;
     div.addEventListener('mousedown',e=>{e.preventDefault();startPalDrag(key,pt,div,e)});
     grid.appendChild(div);
@@ -1139,15 +1145,28 @@ function dropPlanet(cx,cy,typeKey){
   system.planets.push(planet);
   system.planets.sort((a,b)=>a.orbitPx-b.orbitPx);
   system.planets.forEach((p,i)=>{p.index=i;p.name=system.name+'-'+toRoman(i+1)});
-  openInfo(planet);setBadge('edit','Planet Added');setTimeout(()=>setBadge('active','Orbits Active'),1500);
+  openInfo(planet);setBadge('edit','PLANET ADDED.');setTimeout(()=>setBadge('active','Orbits active'),1500);
+}
+// Keyboard alternative to dragging: place the type in the middle of its
+// band (the habitable zone for habitable types), at a random bearing.
+function addPlanetInBand(typeKey){
+  if(!system)initEmptySystem();
+  const pt=PTYPES[typeKey];
+  const [hi,ho]=SolarisCore.hzAU(system);
+  const mid={inner:0.6*hi,habitable:Math.sqrt(hi*ho),outer:2*ho,remote:4.5*ho,any:Math.sqrt(hi*ho)}[pt.band]||Math.sqrt(hi*ho);
+  const planet=makePlanet(typeKey,mid*system.AU,Math.random()*Math.PI*2,(pt.sz[0]+pt.sz[1])/2,system.planets.length);
+  system.planets.push(planet);
+  system.planets.sort((a,b)=>a.orbitPx-b.orbitPx);
+  system.planets.forEach((p,i)=>{p.index=i;p.name=system.name+'-'+toRoman(i+1)});
+  openInfo(planet);setBadge('edit','PLANET ADDED.');setTimeout(()=>setBadge('active','Orbits active'),1500);
 }
 function initEmptySystem(){
-  const skA=resolveStarKey('a');
-  const starA=STARS[skA];
   const sName=document.getElementById('star-name').value||pick(SYS_NAMES);
   const AU=Math.min(W,H)*0.08;
-  system={name:sName,starMode:'single',arch:'single',stars:[{key:skA,def:starA,x:0,y:0,nameStr:sName+' A'}],
-    AU,planets:[],asteroidBelt:null,oort:null,hz:{inner:starA.hz[0]*AU,outer:starA.hz[1]*AU}};
+  const key=starChoices.a==='random'?pick(SKEYS):starChoices.a;
+  system={name:sName,seed:newSeed(),starMode:'single',arch:'single',
+    stars:[{key,def:STARS[key],x:0,y:0,nameStr:sName+' A'}],sep:{},phase:{},t:0,
+    AU,planets:[],asteroidBelt:null,oort:null,hz:{inner:STARS[key].hz[0]*AU,outer:STARS[key].hz[1]*AU}};
   document.getElementById('sys-label').textContent=sName+' System';
   document.getElementById('empty-hint').style.display='none';
 }
@@ -1162,64 +1181,59 @@ function persistSavedSystems(){
   try{localStorage.setItem('solaris_systems',JSON.stringify(savedSystems))}catch(e){console.warn('Storage full',e)}
 }
 function saveSystem(){
-  if(!system){setBadge('edit','No system to save');setTimeout(()=>setBadge('active','Ready'),1500);return}
+  if(!system){setBadge('edit','NO SYSTEM TO SAVE.');setTimeout(()=>setBadge('active','Ready'),1500);return}
   const rawName=document.getElementById('save-name-input').value.trim();
   const saveName=(rawName||system.name).toUpperCase();
-  // Serialize: strip canvas-only fields, keep data
-  const snap={
-    id:Date.now(),
-    saveName,
-    date:new Date().toLocaleDateString(),
-    systemName:system.name,
-    starMode:system.starMode,
-    arch:system.arch,
-    stars:system.stars.map(s=>({key:s.key,nameStr:s.nameStr})),
-    planets:system.planets.map(p=>({
-      name:p.name,typeKey:p.typeKey,band:p.band,
-      orbitPx:p.orbitPx,angle:p.angle,sz:p.sz,
-      tidalLock:p.tidalLock,retrograde:p.retrograde,rotSpeed:p.rotSpeed,
-      moons:p.moons.map(m=>({r:m.r,angle:m.angle,spd:m.spd,sz:m.sz}))
-    })),
-    hz:{inner:system.hz.inner,outer:system.hz.outer},
-    AU:system.AU
-  };
-  // Overwrite if same name
+  // The whole system, exactly: stars, separations and phases, the clock,
+  // every planet with its edits and live orbital state, moons, belt, Oort
+  // cloud, and the seed it was generated from (solaris-core.js serialize).
+  const snap={id:Date.now(),saveName,date:new Date().toLocaleDateString(),
+    systemName:system.name,planetCount:system.planets.length,snapshot:SolarisCore.serialize(system)};
   const idx=savedSystems.findIndex(s=>s.saveName===saveName);
   if(idx>=0)savedSystems[idx]=snap;else savedSystems.unshift(snap);
   persistSavedSystems();
   renderSaveList();
-  setBadge('ok',saveName+' Saved');
-  setTimeout(()=>setBadge('active','Orbits Active'),2000);
+  setBadge('ok',saveName+' SAVED.');
+  setTimeout(()=>setBadge('active','Orbits active'),2000);
+}
+/** Replace the live system with a snapshot, exactly as it was saved. */
+function restoreSnapshot(snapshot,label){
+  const AU=Math.min(W,H)*0.08;
+  const sys=SolarisCore.deserialize(snapshot,AU,PTYPES);
+  if(!sys)return false;
+  system=sys;
+  system.planets.forEach(p=>{p.angSpd=kepAngSpd(p.orbitPx)});
+  placeStars(system.t);
+  syncControlsToSystem();
+  document.getElementById('sys-label').textContent=system.name+' System';
+  document.getElementById('star-name').value=system.name;
+  document.getElementById('empty-hint').style.display='none';
+  selPlanet=null;closeInfo();trailData.clear();
+  renderPlanetList();updateMathBtn();
+  if(label){setBadge('ok',label+' LOADED.');setTimeout(()=>setBadge('active','Orbits active'),2000);}
+  fitSys();
+  return true;
+}
+// Mirror a restored system's configuration in the System tab, so Generate
+// next starts from what the writer is looking at.
+function syncControlsToSystem(){
+  starModeVal=system.starMode;
+  const mb=document.getElementById('smode-'+system.starMode);
+  if(mb)setStarMode(system.starMode,mb);
+  archVal=system.arch;
+  const letters=['a','b','c','d'];
+  system.stars.forEach((s,i)=>{starChoices[letters[i]]=s.key;});
 }
 function loadSystem(id){
   const snap=savedSystems.find(s=>s.id===id);
   if(!snap)return;
-  const AU=snap.AU||Math.min(W,H)*0.08;
-  const starObjs=snap.stars.map(s=>({key:s.key,def:STARS[s.key]||STARS.yellow,x:0,y:0,nameStr:s.nameStr}));
-  system={
-    name:snap.systemName,starMode:snap.starMode,arch:snap.arch,
-    stars:starObjs,AU,
-    planets:snap.planets.map((p,i)=>{
-      const pt=PTYPES[p.typeKey]||PTYPES.barren;
-      const au=p.orbitPx/Math.max(AU,1);
-      const angSpd=(Math.PI*2)/Math.max(Math.pow(Math.max(au,0.1),1.5)*14,0.1);
-      return {
-        name:p.name,typeKey:p.typeKey,band:p.band,typeDef:pt,
-        orbitPx:p.orbitPx,angle:p.angle,angSpd,sz:p.sz,
-        color:pt.color,altColor:pt.alt,
-        tidalLock:p.tidalLock,retrograde:p.retrograde,rotSpeed:p.rotSpeed||1,
-        rotAngle:0,glowPh:rnd(0,Math.PI*2),index:i,
-        moons:p.moons.map(m=>({...m}))
-      };
-    }),
-    asteroidBelt:null,oort:null,
-    hz:snap.hz
-  };
-  document.getElementById('sys-label').textContent=snap.systemName+' System';
-  selPlanet=null;closeInfo();trailData.clear();
-  setBadge('ok',snap.saveName+' Loaded');
-  setTimeout(()=>setBadge('active','Orbits Active'),2000);
-  fitSys();
+  if(snap.snapshot){restoreSnapshot(snap.snapshot,snap.saveName);return;}
+  // A save from before 1.9 holds only a partial copy. Rebuild what it has
+  // and say that it is approximate.
+  const legacy={v:1,name:snap.systemName,starMode:snap.starMode,arch:snap.arch,t:0,sep:{ab:1,c:10,d:20,cd:1},phase:{},
+    stars:snap.stars,planets:(snap.planets||[]).map(p=>Object.assign({},p,{orbitAU:p.orbitPx/Math.max(snap.AU||1,1)}))};
+  restoreSnapshot(legacy,null);
+  setBadge('edit','// OLD SAVE. STAR SEPARATIONS NOT RECORDED; APPROXIMATED.');
 }
 function deleteSystem(id){
   savedSystems=savedSystems.filter(s=>s.id!==id);
@@ -1231,103 +1245,99 @@ function renderSaveList(){
   el.innerHTML=savedSystems.map(s=>`
     <div class="save-entry">
       <div>
-        <div class="save-name">${s.saveName}</div>
-        <div class="save-meta">${s.date} · ${s.planets.length} planets</div>
+        <div class="save-name">${escapeHtml(s.saveName)}</div>
+        <div class="save-meta">${s.date} · ${s.planetCount!=null?s.planetCount:(s.planets||[]).length} planets</div>
       </div>
       <div class="save-btns">
         <button onclick="loadSystem(${s.id})">Load</button>
-        <button class="del-btn" onclick="deleteSystem(${s.id})">✕</button>
+        <button class="del-btn" onclick="deleteSystem(${s.id})" aria-label="Delete ${escapeHtml(s.saveName)}">✕</button>
       </div>
     </div>`).join('');
 }
-function exportJSON(){
-  if(!system){alert('No system loaded');return}
-  const AU=system.AU;
-  const snap={
-    tool:'SOLARIS',version:'5',exported:new Date().toISOString(),
-    system:{
-      name:system.name,
-      starMode:system.starMode,
-      arch:system.arch,
-      habitableZone:{
-        innerAU:(system.hz.inner/AU).toFixed(3),
-        outerAU:(system.hz.outer/AU).toFixed(3),
-        note:'Combined luminosity HZ (sqrt sum of all stellar luminosities)'
-      },
-      stars:system.stars.map(s=>{
-        const obj={key:s.key,name:s.nameStr,type:s.def.name,luminosity:s.def.lum};
-        if(s.isBcomp) obj.separation_AU=(s.bSep/AU).toFixed(3);
-        if(s.isCcomp) obj.separation_AU=(s.cSep/AU).toFixed(3);
-        if(s.isDcomp&&s.dSep) obj.separation_AU=(s.dSep/AU).toFixed(3);
-        return obj;
-      }),
-      planets:system.planets.map(p=>{
-        const au=p.orbitPx/Math.max(AU,1);
-        const period=(14*Math.pow(Math.max(au,0.01),1.5)).toFixed(2);
-        return {
-          name:p.name,type:p.typeDef.name,band:p.band,
-          orbitAU:au.toFixed(3),
-          orbitalPeriod_simS:period,
-          size_px:p.sz.toFixed(1),
-          moons:p.moons.length,
-          tidalLock:!!p.tidalLock,
-          retrograde:!!p.retrograde,
-          life:p.typeDef.life,water:p.typeDef.water,
-          atmosphere:p.typeDef.atmo,
-          temperature:p.typeDef.temp,
-          hazard:p.typeDef.hazard,
-          resources:p.typeDef.res,
-          worldNote:p.typeDef.note
-        };
-      })
-    }
+function escapeHtml(t){return String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+/**
+ * The system in real units, for canon (posted as parameters.sf2System) and
+ * for Export JSON. Shape follows src/components/solaris/types.ts StarSystem
+ * (the keys src/lib/simulation-facts.ts already reads), with units in the
+ * key names or in `units`. Every number is a number.
+ */
+function realSystem(){
+  if(!system)return null;
+  const AU=Math.max(system.AU,1);
+  const [hzIn,hzOut]=SolarisCore.hzAU(system);
+  const lim=SolarisCore.limits(system);
+  const pos=SolarisCore.starPositionsAU(system,0);
+  const frame=SolarisCore.frameOf(system);
+  const stars=system.stars.map((s,i)=>{
+    const d=STARS[s.key];
+    const r=Math.hypot(pos[i].x,pos[i].y);
+    return {name:s.nameStr,classification:d.cls,spectralType:d.spt,
+      massSOL:d.mass,luminositySOL:d.lum,radiusSOL:d.radius,temperatureK:d.teffK,
+      habitableZoneInnerAU:hzIn,habitableZoneOuterAU:hzOut,
+      orbitRadiusAU:r,role:frame.host.includes(i)?'host':'companion'};
+  });
+  const planets=system.planets.map(p=>{
+    const m=planetMetricsFor(p);
+    const st=planetStability(p);
+    return {name:p.name,type:p.typeKey,displayType:p.typeDef.name,band:p.band,
+      semiMajorAxisAU:m.aAU,eccentricity:0,orbitalPeriodYears:m.periodYears,orbitalPeriodDays:m.periodDays,
+      insolationEarth:m.insolation,equilibriumTempK:m.teqK,albedo:m.albedo,
+      inHabitableZone:m.inHabitableZone,hzStatus:m.hzStatus,stability:st.sf,
+      ejected:!!p.ejected,ejectedAtYears:p.ejected?p.ejectedAtYears:null,
+      tidallyLocked:!!p.tidalLock,retrograde:!!p.retrograde,
+      moons:p.moons.map((mo,i)=>({name:p.name+' moon '+(i+1)}))};
+  });
+  return {
+    id:'solaris-'+system.seed,name:system.name,seed:String(system.seed),
+    architecture:system.starMode,arch:system.arch,
+    star:stars[0],stars,planets,
+    habitableZone:{innerAU:hzIn,outerAU:hzOut,method:'Kopparapu et al. 2014, conservative (runaway to maximum greenhouse)'},
+    stabilityLimits:{innerAU:lim.inner,outerAU:isFinite(lim.outer)?lim.outer:null,method:'Holman & Wiegert 1999 eq. 1 (S-type), eq. 3 (P-type)'},
+    separationsAU:Object.assign({},system.sep),
+    simTimeYears:system.t||0,
+    asteroidBelts:system.asteroidBelt?[{innerAU:system.asteroidBelt.r/AU*0.94,outerAU:system.asteroidBelt.r/AU*1.06}]:[],
+    units:{semiMajorAxisAU:'au',orbitalPeriodDays:'days',orbitalPeriodYears:'yr',insolationEarth:'S⊕ (Earth = 1)',equilibriumTempK:'K',massSOL:'solar_masses',luminositySOL:'solar_lum',temperatureK:'K'},
+    generatedAt:new Date().toISOString()
   };
-  const blob=new Blob([JSON.stringify(snap,null,2)],{type:'application/json'});
+}
+
+function exportJSON(){
+  if(!system){setBadge('edit','NO SYSTEM LOADED.');return}
+  const out={tool:'SOLARIS',version:'6',exported:new Date().toISOString(),system:realSystem(),snapshot:SolarisCore.serialize(system)};
+  const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
   a.download=system.name.replace(/\s+/g,'_')+'_solaris.json';a.click();
 }
 function exportTXT(){
-  if(!system){alert('No system loaded');return}
-  const AU=system.AU;
+  if(!system){setBadge('edit','NO SYSTEM LOADED.');return}
+  const rs=realSystem();
   const hr='─'.repeat(50);
   let txt='SOLARIS WORLD NOTES — STELLARFORGE.TOOLS\n';
   txt+='© 2025–2026 Jason D. Batt, Ph.D.\n'+hr+'\n\n';
-  txt+='SYSTEM: '+system.name+'\n';
-  txt+='Configuration: '+system.starMode.toUpperCase()+' ('+system.arch+')\n\n';
-
-  // Stars
-  txt+='STELLAR BODIES\n';
-  system.stars.forEach((s,i)=>{
-    const lbl=['A','B','C','D'][i]||String(i);
-    txt+='  Star '+lbl+': '+s.nameStr+' ['+s.def.name+']  Lum: '+s.def.lum.toFixed(2)+'  L☉\n';
-    if(s.isBcomp) txt+='    Separation (A–B): '+(s.bSep/AU).toFixed(2)+' AU\n';
-    if(s.isCcomp) txt+='    Separation (C from AB): '+(s.cSep/AU).toFixed(2)+' AU\n';
-    if(s.isDcomp&&s.dSep) txt+='    Separation (D): '+(s.dSep/AU).toFixed(2)+' AU\n';
+  txt+='SYSTEM: '+rs.name+'   (seed '+rs.seed+')\n';
+  txt+='Configuration: '+system.starMode+' ('+system.arch+')\n\n';
+  txt+='STARS\n';
+  rs.stars.forEach((s,i)=>{
+    txt+='  '+s.name+'  '+s.spectralType+'  '+s.massSOL.toFixed(2)+' M☉  '+s.luminositySOL.toPrecision(3)+' L☉  '+Math.round(s.temperatureK)+' K  '+s.radiusSOL.toFixed(2)+' R☉';
+    txt+=s.orbitRadiusAU>0?'  (orbit radius '+s.orbitRadiusAU.toFixed(2)+' AU)\n':'\n';
   });
-  const sumLum=system.stars.reduce((s,st)=>s+(st.def.lum||1),0);
-  txt+='  Combined luminosity: '+sumLum.toFixed(2)+' L☉\n';
-  txt+='  Habitable Zone (combined): '+(system.hz.inner/AU).toFixed(2)+'–'+(system.hz.outer/AU).toFixed(2)+' AU\n';
-  txt+='  (HZ scaled by √total_luminosity — Kopparapu et al. 2013)\n\n';
-  txt+=hr+'\n';
-
-  // Planets
-  txt+='\nPLANETARY BODIES ('+system.planets.length+' worlds)\n';
-  system.planets.forEach((p,i)=>{
-    const au=(p.orbitPx/Math.max(AU,1));
-    const period=(14*Math.pow(Math.max(au,0.01),1.5)).toFixed(1);
-    txt+='\n'+p.name+' — '+p.typeDef.name+' ('+p.band+' band)\n';
-    txt+='  Orbit: '+au.toFixed(3)+' AU  |  Period: '+period+' sim-s  |  Moons: '+p.moons.length+'\n';
-    txt+='  Size: '+p.sz.toFixed(1)+'  |  Rotation: '+(p.tidalLock?'Tidally Locked':p.retrograde?'Retrograde':'Prograde')+'\n';
-    txt+='  Life: '+p.typeDef.life+'  |  Water: '+p.typeDef.water+'\n';
-    txt+='  Atmosphere: '+p.typeDef.atmo+'\n';
-    txt+='  Temperature: '+p.typeDef.temp+'  |  Hazard: '+p.typeDef.hazard+'\n';
-    txt+='  Resources: '+p.typeDef.res+'\n';
-    if(p.moons.length>0) txt+='  Moon orbits: '+p.moons.map((m,mi)=>'Moon '+(mi+1)+' @ '+(m.r/p.sz).toFixed(1)+'× planet radius').join(', ')+'\n';
-    txt+='  World Note: '+p.typeDef.note+'\n';
+  txt+='  Habitable zone: '+rs.habitableZone.innerAU.toFixed(3)+'–'+rs.habitableZone.outerAU.toFixed(3)+' AU\n';
+  txt+='  ('+rs.habitableZone.method+'; d = √(ΣL / S_eff))\n';
+  txt+='  Stable orbits: '+rs.stabilityLimits.innerAU.toFixed(2)+' AU to '+(rs.stabilityLimits.outerAU==null?'no outer limit':rs.stabilityLimits.outerAU.toFixed(2)+' AU')+' ('+rs.stabilityLimits.method+')\n\n';
+  txt+=hr+'\n\nPLANETS ('+rs.planets.length+')\n';
+  rs.planets.forEach((p,i)=>{
+    txt+='\n'+p.name+' — '+p.displayType+'\n';
+    txt+='  Orbit '+p.semiMajorAxisAU.toFixed(3)+' AU  |  Year '+p.orbitalPeriodDays.toFixed(1)+' days  |  Insolation '+p.insolationEarth.toFixed(2)+' S⊕\n';
+    txt+='  Equilibrium temperature '+Math.round(p.equilibriumTempK)+' K (albedo '+p.albedo.toFixed(2)+')  |  '+SFAstro.HZ_STATUS_LABEL[p.hzStatus]+'\n';
+    txt+='  Stability: '+p.stability+(p.ejected?'  (ejected at year '+p.ejectedAtYears.toFixed(1)+')':'')+'  |  Moons: '+p.moons.length+'  |  Rotation: '+(p.tidallyLocked?'tidally locked':p.retrograde?'retrograde':'prograde')+'\n';
+    const pt=PTYPES[p.type];
+    txt+='  Archetype notes: life '+pt.life+', water '+pt.water+', atmosphere '+pt.atmo+'. '+pt.note+'\n';
   });
   txt+='\n'+hr+'\n';
   txt+='Generated by SOLARIS — StellarForge.tools\n';
   const blob=new Blob([txt],{type:'text/plain'});
+
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
   a.download=system.name.replace(/\s+/g,'_')+'_world_notes.txt';a.click();
 }
@@ -1348,41 +1358,8 @@ function loop(ts,dt){
   if(!system)return;
 
   const spd=SPEEDS[spdIdx];
-
-  // ── ANIMATE STARS ──
-  if(system.starMode!=='single'&&playing){
-    system.stars.forEach(s=>{
-      if(s.isBcomp){
-        s.bAngle=(s.bAngle||Math.PI)+s.angSpd*(dt/1000)*spd;
-        s.x=Math.cos(s.bAngle)*s.bSep*0.5;
-        s.y=Math.sin(s.bAngle)*s.bSep*0.5;
-        system.stars[0].x=-Math.cos(s.bAngle)*s.bSep*0.5;
-        system.stars[0].y=-Math.sin(s.bAngle)*s.bSep*0.5;
-      }
-      if(s.isCcomp){
-        s.cAngle=(s.cAngle||0)+s.angSpd*(dt/1000)*spd;
-        s.x=Math.cos(s.cAngle)*s.cSep;
-        s.y=Math.sin(s.cAngle)*s.cSep;
-      }
-      if(s.isDcomp){
-        if(s.isDcd){
-          // D is companion to C — orbits the C position
-          const cStar=system.stars[2];
-          s.dAngle=(s.dAngle||Math.PI)+s.angSpd*(dt/1000)*spd;
-          s.x=cStar.x+Math.cos(s.dAngle)*s.bSep*0.5;
-          s.y=cStar.y+Math.sin(s.dAngle)*s.bSep*0.5;
-          // C also orbits within the CD pair
-          cStar.x=cStar.x-Math.cos(s.dAngle)*s.bSep*0.35;
-          cStar.y=cStar.y-Math.sin(s.dAngle)*s.bSep*0.35;
-        }
-        if(s.isDfar){
-          s.dAngle=(s.dAngle||0)+s.angSpd*(dt/1000)*spd;
-          s.x=Math.cos(s.dAngle)*s.dSep;
-          s.y=Math.sin(s.dAngle)*s.dSep;
-        }
-      }
-    });
-  }
+  const sdt=playing?(dt/1000)*spd:0;               // sim-seconds this frame
+  const t0=system.t||0;
 
   ctx.save();
   ctx.translate(W/2+cam.x*cam.zoom,H/2+cam.y*cam.zoom);
@@ -1403,136 +1380,30 @@ function loop(ts,dt){
   if(system.oort)drawOort(dt,spd);
 
   // ── UPDATE PLANET POSITIONS ──
-  if(playing){
+  if(sdt>0){
     if(system.starMode==='single'){
-      // Pure Keplerian — fast, stable, no perturbation needed
+      // Circular Keplerian orbits, P = √(a³/M) (kepAngSpd).
       system.planets.forEach(p=>{
-        p.angle+=p.angSpd*(dt/1000)*spd;
-        p.moons.forEach(m=>m.angle+=m.spd*(dt/1000)*spd*0.4);
+        p.angle+=p.angSpd*sdt;
+        p.moons.forEach(m=>m.angle+=m.spd*sdt*0.4);
         if(showRot){
           const rs=p.tidalLock?0:p.retrograde?-(p.rotSpeed||1)*0.9:(p.rotSpeed||1);
-          p.rotAngle=(p.rotAngle||0)+rs*(dt/1000)*spd*0.6;
+          p.rotAngle=(p.rotAngle||0)+rs*sdt*0.6;
         }
       });
     } else {
-      // ── N-BODY: Velocity Verlet with adaptive substeps ──
-      // GM calibration: circular orbit at r=AU around a 1 M☉ star has
-      //   period T = 14 sim-seconds  (matches Keplerian angSpd = 2π/14)
-      //   v_circ = 2π·AU/T  →  GM = v²·r  →  GM_base = (2π/14)²·AU³
-      const AU  = system.AU;
-      const k   = (2 * Math.PI / 14);
-      const GM_base = k * k * AU * AU * AU;
-      // Outer stability radius for ejection guard (Holman-Wiegert limit or generous fallback)
-      const cStar = system.stars.find(s=>s.isCcomp);
-      const outerStableR = cStar ? (cStar.cSep * 0.30) : AU * 15;
-      const rng = () => 0.5 + Math.random() * 0.5;
-
-      // Snapshot star positions once per frame
-      const starSnap = system.stars.map(s => ({
-        x: s.x, y: s.y,
-        GM: GM_base * (s.def.mass || 1)
-      }));
-
-      // Acceleration helper — closed over starSnap
-      // (1.7) writes into accX/accY instead of returning a fresh {ax, ay}
-      // object per call: this runs once per substep per planet.
-      let accX = 0, accY = 0;
-      const accel = (px, py) => {
-        let ax = 0, ay = 0;
-        for (let i = 0; i < starSnap.length; i++) {
-          const dx = starSnap[i].x - px;
-          const dy = starSnap[i].y - py;
-          const d2 = dx*dx + dy*dy;
-          if (d2 < 9) continue;
-          const inv = starSnap[i].GM / (d2 * Math.sqrt(d2));
-          ax += inv * dx;
-          ay += inv * dy;
-        }
-        accX = ax; accY = ay;
-      };
-
-      // Substep size capped so no planet moves more than ~2% of its orbit per substep.
-      // This keeps the integrator stable even at speed×10.
-      const totalSdt = (dt / 1000) * spd;
-      const MAX_SUBSTEP = 0.025;
-      const nSteps = Math.max(1, Math.ceil(totalSdt / MAX_SUBSTEP));
-      const subDt  = totalSdt / nSteps;
-
-      system.planets.forEach(p => {
-        // ── Seed Cartesian state from polar on first touch ──
-        if (p.vx === undefined) {
-          const r  = p.orbitPx;
-          // Circular velocity is set by the INTERIOR mass only (shell theorem).
-          // For a circumbinary P-type orbit, both A and B are interior.
-          // Exterior companions (C, D) perturb the orbit but don't set v_circ.
-          // We approximate interior mass as the sum of GM of all stars whose
-          // distance from the system barycenter is less than the planet's orbit radius.
-          let GM_interior = 0;
-          starSnap.forEach(s => {
-            const starDist = Math.hypot(s.x, s.y); // distance of star from barycenter
-            if (starDist < r) GM_interior += s.GM;
-          });
-          // Fallback: if no star is interior (shouldn't happen), use primary
-          if (GM_interior < GM_base * 0.001) GM_interior = starSnap[0].GM;
-          const vcirc = Math.sqrt(GM_interior / r);
-          const sign  = p.retrograde ? -1 : 1;
-          p.px =  Math.cos(p.angle) * r;
-          p.py =  Math.sin(p.angle) * r;
-          p.vx = -Math.sin(p.angle) * vcirc * sign;
-          p.vy =  Math.cos(p.angle) * vcirc * sign;
-        }
-
-        // ── Velocity Verlet substep loop ──
-        let px = p.px, py = p.py, vx = p.vx, vy = p.vy;
-        accel(px, py);
-        let ax0 = accX, ay0 = accY;
-
-        for (let s = 0; s < nSteps; s++) {
-          // Full position step
-          px += vx * subDt + 0.5 * ax0 * subDt * subDt;
-          py += vy * subDt + 0.5 * ay0 * subDt * subDt;
-          // Acceleration at new position
-          accel(px, py);
-          const ax1 = accX, ay1 = accY;
-          // Velocity step using average acceleration
-          vx += 0.5 * (ax0 + ax1) * subDt;
-          vy += 0.5 * (ay0 + ay1) * subDt;
-          ax0 = ax1; ay0 = ay1;
-        }
-
-        p.px = px; p.py = py; p.vx = vx; p.vy = vy;
-
-        // ── Ejection guard ──
-        // If a planet's KE >= its PE relative to ALL stars, it's unbound.
-        // v_esc² = 2 × Σ(GM_i / r_i). We check v² > 2.5 × v_esc² (generous margin).
-        const v2 = vx*vx + vy*vy;
-        let v_esc2 = 0;
-        starSnap.forEach(s => {
-          const d = Math.hypot(px - s.x, py - s.y);
-          if(d > 1) v_esc2 += 2 * s.GM / d;
-        });
-        if(v2 > v_esc2 * 2.5 || Math.hypot(px,py) > AU * 60){
-          // Planet escaped — re-seed at its original orbital radius with fresh velocity
-          p.ejectionCount = (p.ejectionCount||0) + 1;
-          p.lastEjected = Date.now();
-          delete p.vx; delete p.vy; delete p.px; delete p.py;
-          // Keep angle, snap orbitPx back within stability zone
-          const maxSafeR = outerStableR || AU * 8;
-          if(p.orbitPx > maxSafeR) p.orbitPx = maxSafeR * rng();
-        }
-
-        // Back-project to polar so all draw/info/trail code is unchanged
-        p.angle   = Math.atan2(py, px);
-        p.orbitPx = Math.hypot(px, py);
-
-        p.moons.forEach(m => m.angle += m.spd * (dt/1000) * spd * 0.4);
-        if (showRot) {
-          const rs = p.tidalLock ? 0 : p.retrograde ? -(p.rotSpeed||1)*0.9 : (p.rotSpeed||1);
-          p.rotAngle = (p.rotAngle||0) + rs * (dt/1000) * spd * 0.6;
+      stepNBody(sdt,t0);
+      system.planets.forEach(p=>{
+        p.moons.forEach(m=>m.angle+=m.spd*sdt*0.4);
+        if(showRot){
+          const rs=p.tidalLock?0:p.retrograde?-(p.rotSpeed||1)*0.9:(p.rotSpeed||1);
+          p.rotAngle=(p.rotAngle||0)+rs*sdt*0.6;
         }
       });
     }
+    system.t=t0+sdt/SIM_S_PER_YEAR;
   }
+  placeStars(system.t||0);
 
   // Trails
   // (1.7) One sample per 60 Hz frame of elapsed time, not per rendered
@@ -1569,7 +1440,91 @@ function loop(ts,dt){
   system.planets.forEach(p=>drawPlanet(p,showLbl,showGrav,showRot,ts));
   system.stars.forEach(s=>drawStar(s,brightness,showStarName,ts));
   ctx.restore();
+  drawLabels(showLbl,showStarName);
+  SFSim.text($id('sim-clock'),'Year '+(system.t||0).toFixed(2));
   SFSim.text($id('z-val'),cam.zoom.toFixed(2)+'×');
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// N-BODY (multi-star): planets are test particles in the host group's frame
+// ═══════════════════════════════════════════════════════════════════════
+// Units inside: px and sim-seconds. GM for a star of M solar masses is
+// G·M·AU³/14² with G = 4π² (one year = 14 sim-s), so a circular orbit at
+// radius a around host mass M has the Kepler period √(a³/M) years.
+// Each substep places every star at its analytic position for that instant
+// (solaris-core.js starPositionsAU) and subtracts the frame's own
+// acceleration (frameAccelAU), so a distant companion perturbs the planets
+// tidally, as it does in an inertial frame, rather than dragging them.
+const _sp=[];
+function stepNBody(sdt,t0){
+  const AU=system.AU;
+  const k=(2*Math.PI/SIM_S_PER_YEAR);
+  const GMu=k*k*AU*AU*AU;                     // per solar mass
+  const Mhost=SolarisCore.hostMass(system);
+  const masses=system.stars.map(s=>STARS[s.key].mass);
+  const aConv=AU/(SIM_S_PER_YEAR*SIM_S_PER_YEAR); // AU/yr² → px/sim-s²
+  const farPx=AU*Math.max(60,8*system.hz.outer/AU);
+
+  // Substep: ≤ 0.025 sim-s and ≤ 1/200 of the shortest orbit in play.
+  let minP=Infinity;
+  system.planets.forEach(p=>{if(!p.ejected){const r=p.orbitPx/AU;minP=Math.min(minP,SIM_S_PER_YEAR*SFAstro.periodYears(Math.max(r,1e-3),Mhost));}});
+  const maxSub=Math.min(0.025,minP/200);
+  const nSteps=Math.max(1,Math.min(4000,Math.ceil(sdt/maxSub)));
+  const h=sdt/nSteps;
+
+  const live=system.planets.filter(p=>!(p.ejected&&Math.hypot(p.px||0,p.py||0)>farPx));
+  // Seed Cartesian state from polar on first touch: circular speed about
+  // the host group's mass.
+  live.forEach(p=>{
+    if(p.vx===undefined){
+      const r=p.orbitPx, vc=Math.sqrt(GMu*Mhost/r), sg=p.retrograde?-1:1;
+      p.px=Math.cos(p.angle)*r;p.py=Math.sin(p.angle)*r;
+      p.vx=-Math.sin(p.angle)*vc*sg;p.vy=Math.cos(p.angle)*vc*sg;
+    }
+  });
+  const n=live.length;
+  if(!n)return;
+  const ax=new Float64Array(n),ay=new Float64Array(n);
+  function accelAll(tYears){
+    const pos=SolarisCore.starPositionsAU(system,tYears);
+    const fa=SolarisCore.frameAccelAU(system,tYears,pos);
+    const fx=fa.x*aConv,fy=fa.y*aConv;
+    for(let j=0;j<pos.length;j++){_sp[j]=_sp[j]||{};_sp[j].x=pos[j].x*AU;_sp[j].y=pos[j].y*AU;_sp[j].gm=GMu*masses[j];}
+    for(let i=0;i<n;i++){
+      const p=live[i];let sx=-fx,sy=-fy;
+      for(let j=0;j<pos.length;j++){
+        const dx=_sp[j].x-p.px,dy=_sp[j].y-p.py,d2=dx*dx+dy*dy;
+        if(d2<1e-6)continue;
+        const inv=_sp[j].gm/(d2*Math.sqrt(d2));sx+=inv*dx;sy+=inv*dy;
+      }
+      ax[i]=sx;ay[i]=sy;
+    }
+  }
+  accelAll(t0);
+  for(let s=0;s<nSteps;s++){
+    for(let i=0;i<n;i++){const p=live[i];p.px+=p.vx*h+0.5*ax[i]*h*h;p.py+=p.vy*h+0.5*ay[i]*h*h;p._ax=ax[i];p._ay=ay[i];}
+    accelAll(t0+(s+1)*h/SIM_S_PER_YEAR);
+    for(let i=0;i<n;i++){const p=live[i];p.vx+=0.5*(p._ax+ax[i])*h;p.vy+=0.5*(p._ay+ay[i])*h;}
+  }
+  const tEnd=t0+sdt/SIM_S_PER_YEAR;
+  live.forEach(p=>{
+    delete p._ax;delete p._ay;
+    const r=Math.hypot(p.px,p.py);
+    // Unbound from the host (specific energy > 0) and already well outside
+    // its starting orbit: flag it. It is never moved back.
+    if(!p.ejected){
+      const E=0.5*(p.vx*p.vx+p.vy*p.vy)-GMu*Mhost/Math.max(r,1e-6);
+      if((E>0&&r>1.5*(p.startPx||p.orbitPx))||r>farPx){
+        p.ejected=true;p.ejectedAtYears=tEnd;
+        setBadge('edit','// '+p.name+' EJECTED AT YEAR '+tEnd.toFixed(1)+'.');
+        renderPlanetList();
+        try{window.parent.postMessage({type:'STELLARFORGE_STATUS',status:'ejected',planet:p.name},'*');}catch(e){}
+      }
+    }
+    if(p.startPx===undefined)p.startPx=p.orbitPx;
+    p.angle=Math.atan2(p.py,p.px);
+    p.orbitPx=r;
+  });
 }
 
 // ── BG STARS ──
@@ -1580,7 +1535,7 @@ function loop(ts,dt){
 const BG_ALPHA=(()=>{const a=[];for(let i=0;i<=40;i++)a.push(`rgba(255,255,255,${(i/100).toFixed(2)})`);return a;})();
 const _bgBuckets=BG_ALPHA.map(()=>[]);
 function drawBg(ts){
-  const offX=cam.x*0.04+W,offY=cam.y*0.04+H,tt=ts*0.0005;
+  const offX=cam.x*0.04+W,offY=cam.y*0.04+H,tt=SFA11y.reducedMotion()?0:ts*0.0005;
   for(let i=0;i<bgStars.length;i++){
     const s=bgStars[i];
     let q=Math.round((s.a+Math.sin(tt+s.tw)*0.05)*100);
@@ -1670,6 +1625,7 @@ function drawOort(dt,spd){
 // ── STAR ──
 function drawStar(s,brightness,showName,ts){
   const star=s.def,sx=s.x,sy=s.y,r=star.r;
+  if(SFA11y.reducedMotion())ts=0;
   const pulse=Math.sin(ts*0.0007+sx*0.1)*1.8;
   for(let i=4;i>=1;i--){
     const g=ctx.createRadialGradient(sx,sy,r,sx,sy,r*(2.5+i*1.5)*Math.min(brightness,2));
@@ -1689,9 +1645,37 @@ function drawStar(s,brightness,showName,ts){
   const bg=ctx.createRadialGradient(sx,sy,0,sx,sy,r+pulse);
   bg.addColorStop(0,'#FFFFFF');bg.addColorStop(0.3,star.color);bg.addColorStop(1,star.glow+'0.7)');
   ctx.beginPath();ctx.arc(sx,sy,r+pulse,0,Math.PI*2);ctx.fillStyle=bg;ctx.fill();
-  if(showName){
-    ctx.font='400 12px "DM Sans"';ctx.fillStyle='#A7AAB0';ctx.textAlign='center';
-    ctx.fillText(s.nameStr||system.name,sx,sy+r+18);
+}
+
+// ── LABELS ──
+// Screen space, after the camera transform is undone: 12px DM Sans at any
+// zoom (they used to scale with the canvas and fall to ~5px zoomed out).
+// A label that would overlap one already drawn is skipped; zoom in to see it.
+const _lblRects=[];
+function drawLabels(showLbl,showStarName){
+  _lblRects.length=0;
+  ctx.font='400 12px "DM Sans"';ctx.textAlign='center';ctx.textBaseline='alphabetic';
+  const toScreen=(x,y)=>[W/2+(x+cam.x)*cam.zoom,H/2+(y+cam.y)*cam.zoom];
+  const place=(text,sx,sy,color)=>{
+    const w=ctx.measureText(text).width+6,h=16,x=sx-w/2,y=sy-12;
+    if(sx<-w||sx>W+w||sy<0||sy>H+h)return;
+    for(const r of _lblRects)if(x<r.x+r.w&&x+w>r.x&&y<r.y+r.h&&y+h>r.y)return;
+    _lblRects.push({x,y,w,h});
+    ctx.fillStyle=color;ctx.fillText(text,sx,sy);
+  };
+  if(showStarName)system.stars.forEach(s=>{
+    const [sx,sy]=toScreen(s.x,s.y);
+    place(s.nameStr||system.name,sx,sy+s.def.r*cam.zoom+16,'#A7AAB0');
+  });
+  if(showLbl){
+    // Selected first, then inner to outer.
+    const order=system.planets.slice().sort((a,b)=>(b===selPlanet)-(a===selPlanet));
+    order.forEach(p=>{
+      const px=Math.cos(p.angle)*p.orbitPx,py=Math.sin(p.angle)*p.orbitPx;
+      const [sx,sy]=toScreen(px,py);
+      const rr=Math.max(p.sz*cam.zoom,4);
+      place(p.ejected?p.name+' · ejected':p.name,sx,sy+rr+16,p.ejected?'#FF658B':'#C9CDD3');
+    });
   }
 }
 
@@ -1858,12 +1842,6 @@ function drawPlanet(p,showLbl,showGrav,showRot,ts){
     ctx.fillStyle=sh;ctx.fillRect(-r,-r,r*2,r*2);ctx.restore();
   }
 
-  // Label
-  if(showLbl){
-    const maxM=p.moons.length?Math.max(...p.moons.map(m=>m.r)):0;
-    ctx.font='400 12px "DM Sans"';ctx.fillStyle='#C9CDD3';ctx.textAlign='center';
-    ctx.fillText(p.name,0,Math.max(r,maxM)+18);
-  }
   ctx.restore();
 }
 
@@ -1890,8 +1868,8 @@ canvas.addEventListener('mousedown',e=>{
   // Companion star drag
   if(system&&system.starMode!=='single'){
     let best=null,bestD=Infinity;
-    system.stars.forEach(s=>{
-      if(!s.isBcomp&&!s.isCcomp&&!s.isDcomp)return;
+    system.stars.forEach((s,i)=>{
+      if(i===0)return;
       const d=Math.hypot(wx-s.x,wy-s.y);
       if(d<Math.max(s.def.r+16,22/cam.zoom)&&d<bestD){bestD=d;best=s}
     });
@@ -1913,32 +1891,14 @@ canvas.addEventListener('mousemove',e=>{
   const wx=(e.clientX-W/2)/cam.zoom-cam.x,wy=(e.clientY-H/2)/cam.zoom-cam.y;
   if(!drag&&!starDragActive&&!planetDragActive&&system&&system.starMode!=='single'){
     let over=false;
-    system.stars.forEach(s=>{
-      if(!s.isBcomp&&!s.isCcomp&&!s.isDcomp)return;
+    system.stars.forEach((s,i)=>{
+      if(i===0)return;
       if(Math.hypot(wx-s.x,wy-s.y)<Math.max(s.def.r+16,22/cam.zoom))over=true;
     });
     canvas.style.cursor=over?'grab':'crosshair';
   }
   if(starDragActive&&starDragTarget){
-    const s=starDragTarget;
-    if(s.isBcomp){
-      const newSep=Math.hypot(wx,wy)*2;
-      s.bAngle=Math.atan2(wy,wx);s.bSep=newSep;
-      system.stars[0].bSep=newSep;
-      s.x=wx;s.y=wy;system.stars[0].x=-wx;system.stars[0].y=-wy;
-      document.getElementById('bsep-val').textContent=(newSep/Math.max(system.AU,1)).toFixed(2)+' AU';
-    }
-    if(s.isCcomp){
-      const dist=Math.hypot(wx,wy);
-      s.cAngle=Math.atan2(wy,wx);s.cSep=dist;s.x=wx;s.y=wy;
-      document.getElementById('csep-val').textContent=(dist/Math.max(system.AU,1)).toFixed(1)+' AU';
-    }
-    if(s.isDcomp){
-      const dist=Math.hypot(wx,wy);
-      s.dAngle=Math.atan2(wy,wx);s.x=wx;s.y=wy;
-      if(s.isDfar)s.dSep=dist;
-      document.getElementById('dsep-val')&&(document.getElementById('dsep-val').textContent=(dist/Math.max(system.AU,1)).toFixed(1)+' AU');
-    }
+    dragStarTo(system.stars.indexOf(starDragTarget),wx/system.AU,wy/system.AU);
   }
   if(drag&&!planetDragActive&&!starDragActive){
     tcam.x=camSt.x+(e.clientX-dragSt.x)/cam.zoom;
@@ -1949,8 +1909,11 @@ canvas.addEventListener('mousemove',e=>{
   }
   if(planetDragActive&&planetDragTarget){
     const dist=Math.hypot(wx,wy);
-    planetDragTarget.orbitPx=Math.max(60,dist);
+    planetDragTarget.orbitPx=Math.max(20,dist);
     planetDragTarget.angle=Math.atan2(wy,wx);
+    planetDragTarget.angSpd=kepAngSpd(planetDragTarget.orbitPx);
+    delete planetDragTarget.vx;delete planetDragTarget.vy;delete planetDragTarget.px;delete planetDragTarget.py;delete planetDragTarget.startPx;
+    planetDragTarget.ejected=false;
     if(selPlanet===planetDragTarget)document.getElementById('orb-slider').value=Math.round(dist);
   }
 });
@@ -1977,6 +1940,36 @@ canvas.addEventListener('touchmove',e=>{
   if(e.touches.length===1&&drag){tcam.x=camSt.x+(e.touches[0].clientX-dragSt.x)/cam.zoom;tcam.y=camSt.y+(e.touches[0].clientY-dragSt.y)/cam.zoom}
 },{passive:true});
 canvas.addEventListener('touchend',()=>{drag=false});
+
+// Drag a companion: its separation and phase are set so that it sits under
+// the cursor now; its period then follows from Kepler with the real masses.
+function dragStarTo(i,xAU,yAU){
+  if(i<1)return;
+  const M=k=>STARS[system.stars[k].key].mass;
+  const t=system.t||0, arch=system.arch, dist=Math.max(Math.hypot(xAU,yAU),0.05), th=Math.atan2(yAU,xAU);
+  const mAB=M(0)+M(1), tot=SolarisCore.totalMass(system);
+  const setPhase=(key,aAU,mass)=>{system.phase[key]=th-2*Math.PI*t/SFAstro.periodYears(aAU,mass);};
+  if(i===1){
+    const ab=arch==='tri_22_1'?dist:dist*mAB/M(0);
+    system.sep.ab=ab;if(arch==='quad_22')system.sep.cd=ab;setPhase('ab',ab,mAB);
+    document.getElementById('bsep-val').textContent=ab.toFixed(2)+' AU';
+  } else if(i===2||(i===3&&arch==='quad_22')){
+    let c=dist,mass=mAB+M(2);
+    if(arch==='quad_31'){const mABC=mAB+M(2);c=dist*mABC/mAB;mass=mABC;}
+    if(arch==='quad_22')mass=tot;
+    if(arch==='tri_22_1')mass=tot;
+    system.sep.c=c;setPhase('c',c,mass);
+    document.getElementById('csep-val').textContent=c.toFixed(1)+' AU';
+  } else if(i===3){
+    system.sep.d=dist;setPhase('d',dist,tot);
+    document.getElementById('dsep-val').textContent=dist.toFixed(1)+' AU';
+  }
+  const [hi,ho]=SolarisCore.hzAU(system);
+  system.hz={inner:hi*system.AU,outer:ho*system.AU};
+  placeStars(t);
+  renderPlanetList();
+  if(selPlanet)openInfo(selPlanet);
+}
 
 function handleClick(cx,cy){
   if(!system)return;
@@ -2023,8 +2016,8 @@ window.addEventListener('resize',()=>{
     if(system.asteroidBelt)system.asteroidBelt.r*=sc;
     if(system.oort){system.oort.pts.forEach(p=>p.r*=sc);system.oort.comets.forEach(c=>{c.r*=sc;c.perihelion*=sc;c.startR*=sc;c.tailLen*=sc})}
     system.hz.inner*=sc;system.hz.outer*=sc;
-    system.stars.forEach(s=>{s.x=(s.x||0)*sc;s.y=(s.y||0)*sc;if(s.bSep)s.bSep*=sc;if(s.cSep)s.cSep*=sc;if(s.dSep)s.dSep*=sc});
-    system.AU=AU;fitSys();
+    system.planets.forEach(p=>{if(p.startPx!==undefined)p.startPx*=sc;if(p.vx!==undefined){p.px*=sc;p.py*=sc;p.vx*=sc;p.vy*=sc;}});
+    system.AU=AU;placeStars(system.t||0);fitSys();
   }
 });
 
@@ -2035,7 +2028,12 @@ function init(){
   for(let i=0;i<700;i++)bgStars.push({x:rnd(0,W),y:rnd(0,H),r:rnd(0.4,1.1),a:rnd(0.04,0.28),tw:rnd(0,Math.PI*2)});
   buildPalette();
   loadSavedSystems();
+  renderPlanetList();
+  changeSpd(0);
   SFSim.loop(loop).start();
+  // First screen: a system, not an empty canvas (S9). A STELLARFORGE_LOAD
+  // that arrives after this replaces it.
+  doGen();
 }
 init();
 
@@ -2085,70 +2083,65 @@ function buildGeneralPage(){
   let cards=[];
 
   cards.push(card('What is SOLARIS?',`
-    ${mrow('Purpose','A procedural star system simulator for science fiction worldbuilding. Every orbit is grounded in real astrophysics.')}
-    ${mrow('Core question','Given the physics of your stellar configuration, where can stable worlds exist — and what conditions would they experience?')}
+    ${mrow('Purpose','A star system simulator for science fiction worldbuilding. Stars are real main-sequence stars; orbits, years, insolation and temperatures are computed, not chosen from a list.')}
+    ${mrow('Core question','Given the physics of your stellar configuration, where can stable worlds exist, and what conditions would they experience?')}
     ${mrow('The Cascade','Stellar physics drives planetary environment, which drives biology, which drives psychology, which drives mythology, which drives culture. Change the star, everything shifts.')}
   `,'full'));
 
-  cards.push(card('Kepler’s Third Law',`
-    <div class="math-formula">T² ∝ a³<br>T = 14 × a^1.5 &nbsp; [sim-s, a in AU]</div>
-    ${mrow('What it means','A planet twice as far from its star takes 2¹·⁵ ≈ 2.83× longer to complete one orbit. Distance and time are inseparable.')}
-    ${mrow('Example','At 1 AU: T = 14 sim-s. At 4 AU: T = 14 × 8 = 112 sim-s. At 0.1 AU: T = 0.44 sim-s.')}
-    ${mrow('Calibration','1 AU around a 1 L☉ star = 14 simulation seconds. All other periods scale from this anchor.')}
-    ${mrow('Worldbuilding implication','Outer planets have long, cold years. Inner planets have short, hot years. Year length shapes seasons, biology, and cultural calendars.')}
+  cards.push(card('The stars',`
+    ${mrow('Table','Mamajek (2022), A Modern Mean Dwarf Stellar Color and Effective Temperature Sequence, after Pecaut & Mamajek 2013, ApJS 208, 9.')}
+    ${['blue','white','yellow','orange','red'].map(k=>{const d=STARS[k];return mrow(d.name,d.spt+' · '+d.mass.toFixed(2)+' M☉ · '+d.lum.toPrecision(3)+' L☉ · '+d.teffK+' K · '+d.radius.toFixed(2)+' R☉');}).join('')}
+    ${mrow('Consistency','Each row obeys Stefan–Boltzmann, L = R² (T/5772 K)⁴, to within the table’s rounding.')}
   `));
 
-  cards.push(card('Circular Velocity & the Shell Theorem',`
-    <div class="math-formula">v_circ = √( GM / r )</div>
-    ${mrow('What it means','The exact speed a planet needs to maintain a stable circular orbit at radius r. Too fast = spiral out. Too slow = spiral in.')}
-    ${mrow('Shell theorem','Only mass interior to a planet’s orbit matters for setting v_circ. A distant companion star perturbs the orbit but doesn’t set the baseline speed — it’s exterior mass and contributes zero to v_circ.')}
-    ${mrow('Planet mass','Planets are treated as massless test particles. M☉ ÷ M⊕ ≈ 333,000. Planet–planet gravity is < 0.03% of stellar gravity at closest approach — negligible.')}
-    ${mrow('Worldbuilding implication','Planets close to massive stars move faster and experience stronger tidal forces. This affects volcanism, plate tectonics, and magnetic field strength.')}
+  cards.push(card('Kepler’s third law',`
+    <div class="math-formula">P = √(a³ / M) years &nbsp; [a in AU, M in M☉]<br>P_days = 365.25 × P</div>
+    ${mrow('M','The mass the planet orbits: one star, or the whole inner pair (or triple) for a circumbinary world.')}
+    ${mrow('Example','Earth, 1 AU around 1 M☉: 365 days. Proxima b, 0.0486 AU around 0.122 M☉: 11.2 days.')}
+    ${mrow('Time scale','One simulated year takes 14 s at 1×: about 26 days per second, roughly 2.3 × 10⁶ × real time. The transport shows the simulated year.')}
   `));
 
-  cards.push(card('Habitable Zone',`
-    <div class="math-formula">HZ ∝ √L_total<br>inner ≈ 0.95 AU, outer ≈ 1.67 AU (1 L☉)</div>
-    ${mrow('What it means','The range of orbital distances where liquid water could exist on a rocky surface, given the stellar flux. Named the circumstellar habitable zone (CHZ).')}
-    ${mrow('Inner edge','Runaway greenhouse effect. Water evaporates into the atmosphere, creating a feedback loop that bakes the planet (like Venus).')}
-    ${mrow('Outer edge','Maximum greenhouse limit. CO₂ freezes out and can no longer keep the planet warm (like early Mars).')}
-    ${mrow('Multi-star systems','For binary and trinary systems, SOLARIS sums all stellar luminosities and scales the HZ by √L_total. A G+K binary at 1.7 L☉ combined moves the HZ out by a factor of √1.7 ≈ 1.30.')}
-    ${mrow('Reference','Kopparapu et al. (2013), ApJ 765:131')}
-    ${mrow('Worldbuilding implication','The HZ is probabilistic, not a guarantee. Atmospheric composition, albedo, and tidal heating can all push a world into or out of habitability.')}
+  cards.push(card('Insolation and temperature',`
+    <div class="math-formula">S = Σ L_i / d_i² &nbsp; [S⊕, Earth = 1]<br>T_eq = 278.3 K × S^¼ × (1 − A)^¼</div>
+    ${mrow('Several stars','Every star contributes. For a planet circling a moving pair the flux is averaged over the orbit: ⟨1/d²⟩ = 1/(a² − r²) for a star on a path of radius r.')}
+    ${mrow('T_eq','Equilibrium temperature with full heat redistribution and Bond albedo A (0.30 for rocky worlds, 0.34 for giants). Earth: 254 K. The surface is warmer under a greenhouse atmosphere (Earth: 288 K).')}
   `));
 
-  cards.push(card('Multi-Star Stability (Holman & Wiegert)',`
-    <div class="math-formula">a_max ≈ 0.30 × a_C &nbsp; (P-type, conservative)<br>a_min ≈ 3.5 × a_AB &nbsp; (circumbinary clearance)</div>
-    ${mrow('P-type orbits','Circumbinary — the planet orbits both stars together, outside the binary. Requires the orbit to be large enough that the binary looks like a single mass.')}
-    ${mrow('S-type orbits','Satellite-type — the planet orbits one star only, inside a binary. SOLARIS does not currently model S-type orbits.')}
-    ${mrow('Inner clearance','Circumbinary planets must stay beyond ~3.5× the A–B separation. Inside that, orbital resonances with the binary create chaos zones.')}
-    ${mrow('Outer limit','With a third star (C) at distance a_C, planets must stay inside ~0.30× a_C. Beyond that, C’s tidal perturbation overwhelms the primary’s restoring force.')}
-    ${mrow('Why 0.30?','The exact fraction depends on mass ratio and orbital eccentricity. Published empirical range: 0.30–0.38 × a_C. SOLARIS uses 0.30 as a conservative margin.')}
-    ${mrow('Reference','Holman & Wiegert (1999), AJ 117:621')}
-    ${mrow('Worldbuilding implication','Multi-star systems have compressed habitable regions. The fewer stable orbits available, the more precious each habitable world becomes.')}
+  cards.push(card('Habitable zone',`
+    <div class="math-formula">d = √( L_total / S_eff(Teff) )<br>Sun: 0.95–1.68 AU (conservative)</div>
+    ${mrow('Inner edge','Runaway greenhouse: water vapour traps heat until the oceans boil (Venus).')}
+    ${mrow('Outer edge','Maximum greenhouse: more CO₂ stops warming and starts reflecting light (early Mars).')}
+    ${mrow('Optimistic edges','Recent Venus and early Mars, shown per planet as "edge" when a world falls between the two pairs of limits.')}
+    ${mrow('Several stars','The total luminosity is used once, at the luminosity-weighted temperature. Each planet’s own status uses the flux it actually receives.')}
+    ${mrow('Range','S_eff is fitted for Teff 2,600–7,200 K. The Blue (B8V) and White (A5V) stars are hotter, so their zones are extrapolations and say so.')}
+    ${mrow('Reference','Kopparapu et al. (2014), ApJL 787, L29, Table 1 (1 M⊕).')}
   `));
 
-  cards.push(card('N-Body Physics & the Integrator',`
-    <div class="math-formula">Velocity Verlet (2nd-order symplectic)<br>x(t+Δt) = x + vΔt + ½ aΔt²<br>v(t+Δt) = v + ½(a₀+a₁)Δt</div>
-    ${mrow('What it means','At each timestep, positions are updated using current velocity and acceleration, then velocity is updated using the average of old and new acceleration. This keeps energy stable over long runs.')}
-    ${mrow('Adaptive substeps','Each frame is subdivided so no substep exceeds 0.025 sim-s. At speed ×10, this means up to 8 sub-steps per frame. The integrator stays stable even at high simulation rates.')}
-    ${mrow('Stars vs. planets','Stars follow prescribed Keplerian orbits around the system barycenter (not true N-body for stars). Planets feel gravity from all stars simultaneously. This is accurate for hierarchical systems.')}
-    ${mrow('Ejection guard','If a planet’s kinetic energy exceeds 2.5× its escape velocity, it is respawned at its stable orbital radius. This is a simulation artifact protection, not physical. The "This System" tab shows if and when it has fired.')}
-    ${mrow('Worldbuilding implication','You can watch Kozai-Lidov-like oscillations in trinary systems — the distant companion gradually pumps eccentricity into inner planet orbits over time.')}
+  cards.push(card('Multi-star stability (Holman & Wiegert)',`
+    <div class="math-formula">S-type (eq. 1): a_c/a_b = 0.464 − 0.380μ − 0.631e + 0.586μe + 0.150e² − 0.198μe²<br>P-type (eq. 3): a_c/a_b = 1.60 + 5.10e − 2.22e² + 4.12μ − 4.27eμ − 5.09μ² + 4.61e²μ²</div>
+    ${mrow('μ, e','μ = m₂/(m₁+m₂), e = the stars’ orbital eccentricity (0 here: SOLARIS stars move on circles).')}
+    ${mrow('P-type','Circumbinary: the planet circles the pair. It must stay outside the eq. 3 limit; for two equal stars that is 2.39 × their separation.')}
+    ${mrow('S-type','The planet circles one star (or one tight group) with a companion outside. It must stay inside the eq. 1 limit; for equal masses, 0.27 × the separation.')}
+    ${mrow('In SOLARIS','Binary: P-type. 3+1: P-type about A+B, S-type limit from C. 2+1: S-type about A, limits from B and C. 2+2: P-type about A+B, S-type limit from the C+D pair. 3+1 inner triple: P-type about A+B+C, S-type limit from D.')}
+    ${mrow('Reference','Holman & Wiegert (1999), AJ 117, 621 (astro-ph/9809315). Fitted for 0.1 ≤ μ ≤ 0.9 (eq. 1) and 0.1 ≤ μ ≤ 0.5 (eq. 3); inputs outside are clamped.')}
   `));
 
-  cards.push(card('Tidal Locking',`
-    ${mrow('What it means','A body whose rotational period equals its orbital period, so one face permanently points toward the primary. The Moon is tidally locked to Earth.')}
-    ${mrow('Mechanism','Differential gravitational force across the body creates a tidal bulge. Friction dissipates rotational energy until the bulge aligns permanently with the primary.')}
-    ${mrow('Timescale','Proportional to a⁶ / (M_star × R_planet³). Inner planets around dim red stars lock fastest — often within a billion years.')}
-    ${mrow('Twilight zone','Tidally locked worlds have a permanent day side, night side, and a narrow terminator ring where temperatures may permit liquid water. A worldbuilding classic.')}
-    ${mrow('In SOLARIS','Tidal lock is a per-planet toggle. The night-side gradient and terminator glow are rendered in real time. The planet’s dark face always tracks away from the primary.')}
+  cards.push(card('N-body integration',`
+    <div class="math-formula">Velocity Verlet (2nd order, symplectic)<br>x ← x + vΔt + ½aΔt²<br>v ← v + ½(a₀ + a₁)Δt</div>
+    ${mrow('Stars','Stars move on circular Kepler orbits about the barycentre of the pair they belong to. Their positions are computed for every substep.')}
+    ${mrow('Planets','Massless test particles. They feel every star, in the frame of the group they orbit, minus that frame’s own acceleration, so a distant companion raises tides instead of dragging them along.')}
+    ${mrow('Substeps','Each step is at most 0.025 s of sim time and at most 1/200 of the shortest orbit in the system.')}
+    ${mrow('Ejection','A planet that becomes unbound (positive orbital energy) and leaves its starting orbit is flagged as ejected, with the year it happened. It is never put back.')}
   `));
 
-  cards.push(card('Oort Cloud & Long-Period Comets',`
-    ${mrow('Hills Cloud','The inner toroidal region (~2,000–20,000 AU equivalent). Gravitationally bound to the system, slightly flattened from the ecliptic plane.')}
-    ${mrow('Outer shell','The spherical outer Oort Cloud (~20,000–100,000 AU). Nearly isotropic. Vulnerable to perturbation by passing stars.')}
-    ${mrow('Comets','Long-period comets originate in the outer shell, perturbed inward by stellar flybys or galactic tides. Their tails always point away from the primary (solar wind pressure).')}
-    ${mrow('Worldbuilding implication','An active Oort cloud means regular cometary bombardment of inner worlds — water and organic delivery, but also extinction-level impacts. A quiet Oort cloud means a geologically older, more stable system.')}
+  cards.push(card('Tidal locking',`
+    ${mrow('What it means','A body whose rotational period equals its orbital period, so one face permanently points toward the primary.')}
+    ${mrow('In SOLARIS','Tidal lock is a per-planet toggle drawn as a fixed day side. No locking timescale is computed here; Tidelock models the surface.')}
+  `));
+
+  cards.push(card('Moons, belts and the Oort cloud',`
+    ${mrow('Moons','Drawn for legibility, not to scale. No moon mass or distance is modelled.')}
+    ${mrow('Oort cloud','Decorative: the inner Hills cloud (toroidal) and outer shell (spherical) are drawn at a chosen multiple of the outermost planet, not at their real 2,000–100,000 AU.')}
   `,'full'));
 
   el.innerHTML=cards.join('');
@@ -2157,132 +2150,59 @@ function buildGeneralPage(){
 function refreshMathPage(){
   const el = document.getElementById('math-page-content');
   if(!system){ el.innerHTML='<div style="color:var(--t4);padding:40px;text-align:center">Generate a system first.</div>'; return; }
-
-  const AU = system.AU;
-  const k  = 2*Math.PI/14;
-  const GM_base = k*k*AU*AU*AU;
-
-  const starTempLabels = {blue:'25,000–50,000 K',white:'7,500–10,000 K',yellow:'5,300–6,000 K',orange:'3,700–5,200 K',red:'2,400–3,700 K'};
-
+  const rs = realSystem();
+  const lim = SolarisCore.limits(system);
+  const f2 = x => Number.isFinite(x) ? x.toFixed(2) : '—';
   let cards = [];
 
-  // ── Physics model card ──
-  cards.push(card('Physics Model', `
-    ${mrow('Integrator','Velocity Verlet — time-symmetric, 2nd-order accurate')}
-    ${mrow('Substep cap','Δt ≤ 0.025 sim-s per substep (auto-subdivides at high speed)')}
-    ${mrow('Planet masses','Not computed. Planets are massless test particles.')}
-    ${mrow('Why no planet mass?','M☉ ÷ M⊕ ≈ 333,000. Planet-planet gravity is < 0.03% of stellar gravity at closest approach — below any visible threshold.')}
-    ${mrow('Star masses','Stars interact gravitationally with planets but not each other (stars follow prescribed Keplerian orbits around barycenter).')}
-    <div class="math-formula">T = 14 × a^1.5 sim-s<br>v_circ = √( GM_interior / r )<br>GM_base = (2π/14)² × AU³</div>
-    ${mrow('AU (pixels)','1 AU = '+AU.toFixed(1)+' px (canvas-relative)')}
-    ${mrow('GM_base',GM_base.toExponential(3)+' px³/sim-s²')}
+  cards.push(card('This system', `
+    ${mrow('Configuration', system.starMode+' ('+system.arch+')')}
+    ${mrow('Seed', String(system.seed)+' (Save keeps it; the same seed and settings generate the same system)')}
+    ${mrow('Host mass', SolarisCore.hostMass(system).toFixed(3)+' M☉ (what the planets orbit)')}
+    ${mrow('Habitable zone', rs.habitableZone.innerAU.toFixed(3)+'–'+rs.habitableZone.outerAU.toFixed(3)+' AU')}
+    ${mrow('Stable orbits', (lim.inner>0?lim.inner.toFixed(2)+' AU':'from the star')+' to '+(isFinite(lim.outer)?lim.outer.toFixed(2)+' AU':'no outer limit'))}
+    ${lim.notes.map(n=>mrow('H&W eq. '+n.eq+' ('+n.by+')','μ = '+n.mu.toFixed(3)+', a_b = '+f2(n.a)+' AU → '+n.limit.toFixed(2)+' AU')).join('')}
+    ${mrow('Simulated time', 'Year '+(system.t||0).toFixed(2))}
   `,'full'));
 
-  // ── One card per star ──
-  system.stars.forEach((s,i)=>{
-    const lbl = ['A','B','C','D'][i]||String(i);
-    let rows = '';
-    rows += mrow('Type', s.def.name + ' (' + s.key + ')');
-    rows += mrow('Approx. mass', s.def.mass.toFixed(2)+' M☉ (from luminosity, mass–luminosity relation)');
-    rows += mrow('Surface temp.', starTempLabels[s.key]||'—');
-    rows += mrow('Luminosity (sim)', s.def.lum.toFixed(2) + ' L☉');
-    rows += mrow('GM', (GM_base * s.def.mass).toExponential(3) + ' px³/sim-s²');
-    if(i===0){
-      rows += '<hr class="math-divider">';
-      const sumLum=system.stars.reduce((s,st)=>s+(st.def.lum||1),0);
-      const lumScale=Math.sqrt(sumLum).toFixed(3);
-      rows += mrow('Habitable zone', (system.hz.inner/AU).toFixed(2)+'–'+(system.hz.outer/AU).toFixed(2)+' AU (combined)');
-      rows += mrow('Combined lum.', sumLum.toFixed(2)+' L☉ → √L_total = '+lumScale);
-      rows += mrow('HZ method','d = √(L_total / S_eff), S_eff from Teff (Kopparapu et al. 2014; runaway to maximum greenhouse; Teff clamped to 2,600–7,200 K)');
-    }
-    if(s.isBcomp){
-      const bAU = (s.bSep/AU).toFixed(2);
-      const T_AB = (14*Math.pow(parseFloat(bAU),1.5)).toFixed(2);
-      rows += '<hr class="math-divider">';
-      rows += mrow('Role','Inner companion (A+B binary)');
-      rows += mrow('A–B separation', bAU+' AU');
-      rows += mrow('Binary period', T_AB+' sim-s');
-      rows += mrow('Angular speed', (s.angSpd*(180/Math.PI)).toFixed(3)+'°/sim-s  (Keplerian)');
-      rows += mrow('Inner clear zone','Circumbinary planets must orbit > 3.5× a_AB = '+(parseFloat(bAU)*3.5).toFixed(2)+' AU');
-    }
-    if(s.isCcomp){
-      const cAU = (s.cSep/AU).toFixed(2);
-      const T_C = (14*Math.pow(parseFloat(cAU),1.5)).toFixed(2);
-      const hwLimit = (parseFloat(cAU)*0.30).toFixed(2);
-      rows += '<hr class="math-divider">';
-      rows += mrow('Role','Distant trinary companion');
-      rows += mrow('C separation', cAU+' AU from AB barycenter');
-      rows += mrow('C orbital period', T_C+' sim-s  (T = 14 × a^1.5)');
-      rows += mrow('Angular speed', (s.angSpd*(180/Math.PI)).toFixed(4)+'°/sim-s  (Keplerian)');
-      rows += '<hr class="math-divider">';
-      rows += mrow('Outer stability limit','<span class="math-val stable">a_max = 0.30 × a_C = '+hwLimit+' AU</span>');
-      rows += mrow('Reference','Holman & Wiegert (1999), AJ 117:621');
-      rows += mrow('Why 0.30×?','P-type orbits become chaotic when the companion'+String.fromCharCode(8217)+'s tidal perturbation exceeds the primary'+String.fromCharCode(8217)+'s restoring force. Published range: 0.30–0.38× a_C depending on mass ratio and eccentricity.');
-    }
-    cards.push(card('Star ' + lbl + ' — ' + s.def.name, rows));
+  rs.stars.forEach((s,i)=>{
+    cards.push(card(s.name, `
+      ${mrow('Type', s.spectralType)}
+      ${mrow('Mass', s.massSOL.toFixed(3)+' M☉')}
+      ${mrow('Luminosity', s.luminositySOL.toPrecision(3)+' L☉')}
+      ${mrow('Temperature', Math.round(s.temperatureK)+' K'+(SFAstro.hzExtrapolated(s.temperatureK)?' (outside Kopparapu’s fitted range)':''))}
+      ${mrow('Radius', s.radiusSOL.toFixed(3)+' R☉')}
+      ${mrow('Role', s.role==='host'?'Host group (planets orbit it)':'Companion (perturbs from outside)')}
+      ${s.orbitRadiusAU>0?mrow('Orbit radius', s.orbitRadiusAU.toFixed(2)+' AU about its barycentre'):''}
+    `));
   });
 
-  // ── Orbital mechanics card (Kepler summary) ──
-  cards.push(card('Kepler'+String.fromCharCode(8217)+'s Third Law — All Orbits',`
-    <div class="math-formula">T² ∝ a³<br>T = 14 × a^1.5  [sim-seconds, a in AU]<br>Calibrated: 1 AU orbit around 1 L☉ star = 14 sim-s</div>
-    ${mrow('At 0.5 AU','T = '+(14*Math.pow(0.5,1.5)).toFixed(1)+' sim-s')}
-    ${mrow('At 1.0 AU','T = 14.0 sim-s')}
-    ${mrow('At 2.0 AU','T = '+(14*Math.pow(2,1.5)).toFixed(1)+' sim-s')}
-    ${mrow('At 5.0 AU','T = '+(14*Math.pow(5,1.5)).toFixed(1)+' sim-s')}
-    ${mrow('At 10.0 AU','T = '+(14*Math.pow(10,1.5)).toFixed(1)+' sim-s')}
-    <hr class="math-divider">
-    ${mrow('Circular velocity','v_circ = √(GM_interior / r)')}
-    ${mrow('Shell theorem','Only mass interior to planet'+String.fromCharCode(8217)+'s orbit contributes to v_circ. Exterior companions perturb but don'+String.fromCharCode(8217)+'t set the baseline speed.')}
-  `));
-
-  // ── Planet cards ──
-  system.planets.forEach(p=>{
-    const au = (p.orbitPx/AU);
-    const auStr = au.toFixed(3);
-    const T = (14*Math.pow(Math.max(au,0.01),1.5)).toFixed(2);
-    const stabInfo = planetStability(p);
-    const stab = stabInfo.label, stabCls = stabInfo.cls;
-
-    let speedStr = '—';
-    if(p.vx !== undefined){
-      const v = Math.hypot(p.vx, p.vy);
-      const v_circ = Math.sqrt(GM_base * system.stars[0].def.mass / p.orbitPx);
-      const ratio = (v/v_circ).toFixed(3);
-      speedStr = v.toFixed(1)+' px/sim-s  (v/v_circ = '+ratio+')';
+  rs.planets.forEach((p,i)=>{
+    const live=system.planets[i];
+    let speedStr='—';
+    if(live.vx!==undefined){
+      const v=Math.hypot(live.vx,live.vy), vc=Math.sqrt(Math.pow(2*Math.PI/SIM_S_PER_YEAR,2)*Math.pow(system.AU,3)*SolarisCore.hostMass(system)/live.orbitPx);
+      speedStr='v / v_circ = '+(v/vc).toFixed(3);
     }
-
-    // Hill sphere: r_H = a × (m_planet / 3M_star)^(1/3)
-    // Mass proxy: sz³ / 100000 (dimensionless, terrestrial density assumption)
-    const m_proxy = Math.pow(p.sz,3)/100000;
-    const r_Hill_AU = au * Math.pow(m_proxy / (3 * system.stars[0].def.mass * 1e4), 1/3);
-    const hillStr = r_Hill_AU > 0.0001 ? r_Hill_AU.toFixed(4)+' AU (approx)' : '< 0.0001 AU';
-
-    let rows = '';
-    rows += `<div class="math-planet-header">${p.name||'Planet '+(p.index+1)}</div>`;
-    rows += `<div class="math-planet-sub">${p.typeDef?.name||p.type}</div>`;
-    rows += mrow('Orbital radius', auStr+' AU  ('+p.orbitPx.toFixed(0)+' px)');
-    rows += mrow('Orbital period', T+' sim-s');
-    rows += mrow('Current speed', speedStr);
-    rows += mrow('Hill sphere', hillStr);
-    rows += mrow('Stability', '<span class="math-val '+stabCls+'">'+stab+'</span>');
-    if(p.ejectionCount){
-      const secAgo=p.lastEjected?Math.round((Date.now()-p.lastEjected)/1000)+'s ago':'—';
-      rows += mrow('Ejection guard', '<span class="math-val warn">Fired '+p.ejectionCount+'× (last: '+secAgo+'). Planet was respawned at stable radius. Consider reducing orbit or C-separation.</span>');
-    }
-    if(p.tidalLock) rows += mrow('Tidal lock','Rotation period = orbital period. One face always toward primary.');
-    if(p.retrograde) rows += mrow('Retrograde','Orbits counter-clockwise. May indicate past collision or capture.');
-    if(p.moons?.length) rows += mrow('Moons', p.moons.length+' moon(s) (Keplerian sub-orbits, not N-body)');
-
-    cards.push(card('', rows));
+    cards.push(card('', `
+      <div class="math-planet-header">${escapeHtml(p.name)}</div>
+      <div class="math-planet-sub">${p.displayType}</div>
+      ${mrow('Orbit', p.semiMajorAxisAU.toFixed(3)+' AU')}
+      ${mrow('Year', p.orbitalPeriodDays.toFixed(1)+' days ('+p.orbitalPeriodYears.toFixed(3)+' yr)')}
+      ${mrow('Insolation', p.insolationEarth.toFixed(3)+' S⊕')}
+      ${mrow('T_eq', Math.round(p.equilibriumTempK)+' K (A = '+p.albedo.toFixed(2)+')')}
+      ${mrow('Habitable zone', SFAstro.HZ_STATUS_LABEL[p.hzStatus])}
+      ${mrow('Stability', '<span class="math-val '+(p.stability==='stable'?'stable':p.stability==='marginal'?'warn':'danger')+'">'+planetStability(live).label+'</span>')}
+      ${system.starMode!=='single'?mrow('Speed', speedStr):''}
+      ${p.ejected?mrow('Ejected','<span class="math-val danger">Year '+p.ejectedAtYears.toFixed(2)+'</span>'):''}
+    `));
   });
 
-  // ── Notes card ──
-  cards.push(card('Simulation Notes &amp; Limitations', `
-    ${mrow('Time compression','~10⁸× real time. Orbital shapes are qualitatively correct; eccentricities may evolve due to live star perturbations (Kozai-Lidov-like mechanism).')}
-    ${mrow('Ejection guard','If a planet exceeds 2.5× escape velocity or drifts beyond 60 AU equivalent, it is respawned at its last stable orbital radius. This is a simulation artifact protection.')}
-    ${mrow('Integrator error','Velocity Verlet conserves energy to O(Δt²). Small energy drift accumulates over thousands of orbits at high speed. Use low speed for precision.')}
-    ${mrow('Planet mass','Not included. This is the standard "restricted N-body" or "massless test particle" approximation used in planetary system simulations (e.g., Mercury, REBOUND).')}
-    ${mrow('Star motion','Stars follow prescribed Keplerian orbits (not true N-body). This is accurate for hierarchical systems where stellar separations are well-defined.')}
+  cards.push(card('Limits of this model', `
+    ${mrow('Orbits','Planets start on circular orbits. In multi-star systems the integration lets companions raise eccentricity; the readouts use the current distance.')}
+    ${mrow('Planet masses','Not modelled: planets do not pull on each other or on the stars.')}
+    ${mrow('Stars','Circular stellar orbits. Real binaries are often eccentric, which shrinks S-type and widens P-type limits (the e terms of H&W).')}
+    ${mrow('Temperatures','Equilibrium only. Atmosphere, clouds and tides change the surface.')}
   `,'full'));
 
   el.innerHTML = cards.join('');
@@ -2328,14 +2248,15 @@ function planetStability(p){
   if(!system) return {label, cls, sf, au: 0};
   const AU = Math.max(system.AU, 1);
   const au = p.orbitPx/AU;
-  const cStar = system.stars.find(s=>s.isCcomp);
-  const bStar = system.stars.find(s=>s.isBcomp);
-  if(cStar){
-    const limit = (cStar.cSep/AU)*0.30;
-    if(au > limit*0.85){ label='Unstable — beyond H&W limit'; cls='danger'; sf='unstable'; }
-    else if(au > limit*0.65){ label='Marginally stable'; cls='warn'; sf='marginal'; }
-  }
-  if(bStar && au < (bStar.bSep/AU)*3.5){ label='Unstable — inside binary clear zone'; cls='danger'; sf='unstable'; }
+  if(p.ejected) return {label:'Ejected', cls:'danger', sf:'unstable', au};
+  // Holman & Wiegert 1999: eq. 3 (P-type) gives the innermost stable
+  // circumbinary orbit, eq. 1 (S-type) the outermost orbit a companion
+  // allows. Within 10–15% of a limit the fits' scatter and the chaotic
+  // islands they report make the orbit marginal.
+  const lim = SolarisCore.limits(system);
+  if(lim.inner>0 && au < lim.inner){ label='Unstable: inside the '+lim.inner.toFixed(2)+' AU P-type limit'; cls='danger'; sf='unstable'; }
+  else if(isFinite(lim.outer) && au > lim.outer){ label='Unstable: beyond the '+lim.outer.toFixed(2)+' AU S-type limit'; cls='danger'; sf='unstable'; }
+  else if((lim.inner>0 && au < lim.inner*1.15) || (isFinite(lim.outer) && au > lim.outer*0.85)){ label='Marginal: near a stability limit'; cls='warn'; sf='marginal'; }
   return {label, cls, sf, au};
 }
 
@@ -2414,9 +2335,15 @@ window.addEventListener('message', function(event) {
       if (spdDisp && SPEEDS[spdIdx] != null) spdDisp.textContent = SPEEDS[spdIdx] + '\u00D7';
     }
 
-    // Re-generate system with restored settings
-    if (typeof generateSystem === 'function') {
-      generateSystem();
+    // 1.9: a save made since carries the exact system; restore it as-is.
+    // Older saves carry only settings: regenerate from them, with the saved
+    // seed when there is one (same seed + settings = same system).
+    if (p.solarisSnapshot && restoreSnapshot(p.solarisSnapshot, null)) {
+      setBadge('ok', 'SYSTEM RESTORED.');
+      setTimeout(function(){ setBadge('active','Orbits active'); }, 2000);
+    } else {
+      doGen(typeof p.seed === 'number' ? p.seed : undefined);
+      if (typeof p.seed !== 'number') setBadge('edit', '// OLD SAVE. SETTINGS RESTORED; SYSTEM REGENERATED.');
     }
   }
 
@@ -2446,7 +2373,15 @@ window.addEventListener('message', function(event) {
         bsep: parseInt(document.getElementById('bsep-slider').value),
         csep: parseInt(document.getElementById('csep-slider').value),
         dsep: parseInt(document.getElementById('dsep-slider').value),
-        spdIdx: spdIdx
+        spdIdx: spdIdx,
+        // 1.9 additions (no existing key renamed):
+        //   seed             regenerates the same system from these settings
+        //   solarisSnapshot  the exact system for Load (edits, clock, state)
+        //   sf2System        real-unit star / orbit / planet values for canon
+        seed: system ? system.seed : null,
+        sf2Version: 2,
+        solarisSnapshot: system ? SolarisCore.serialize(system) : null,
+        sf2System: realSystem()
       },
       results: {
         systemName: sysName,
@@ -2457,8 +2392,15 @@ window.addEventListener('message', function(event) {
         // Per-planet stability (Brief S4). Same function the overlay uses.
         planets: (system && system.planets ? system.planets : []).map(function(pl){
           var st = planetStability(pl);
+          var m = planetMetricsFor(pl);
           return { name: pl.name || ('Planet ' + (pl.index + 1)), au: +st.au.toFixed(3),
-                   band: pl.band, stabCls: st.sf, inHabitableZone: pl.band === 'habitable' };
+                   band: pl.band, stabCls: st.sf,
+                   // Computed from the flux this planet receives (Kopparapu
+                   // 2014), not from its archetype's band.
+                   inHabitableZone: m.inHabitableZone,
+                   periodDays: +m.periodDays.toFixed(3), insolation: +m.insolation.toFixed(4),
+                   teqK: +m.teqK.toFixed(1), hzStatus: m.hzStatus,
+                   ejected: !!pl.ejected, ejectedAtYears: pl.ejected ? +pl.ejectedAtYears.toFixed(3) : null };
         })
       }
     };
@@ -2472,6 +2414,24 @@ window.addEventListener('message', function(event) {
 // ─── Cross-simulator handoff: send the selected planet's context to
 // ExoSky (its sky) or Tidelock (its surface). Solaris only generates
 // systems; it does not itself need STELLARFORGE_HANDOFF listened for. ───
+// Absolute values for the receiving tool (X4): the host's real luminosity,
+// temperature and mass, and this planet's distance, year and flux. Added
+// beside the original keys (starMassLum is kept, unrenamed).
+function planetPhysicsPayload(p){
+  const m=planetMetricsFor(p);
+  const host=SolarisCore.frameOf(system).host.map(i=>STARS[system.stars[i].key]);
+  const L=host.reduce((s,d)=>s+d.lum,0);
+  return {
+    starLuminositySun:L,
+    starTeffK:host.reduce((s,d)=>s+d.lum*d.teffK,0)/L,
+    starMassSun:SolarisCore.hostMass(system),
+    starSpectralType:STARS[system.stars[0].key].spt,
+    periodDays:m.periodDays,
+    insolationEarth:m.insolation,
+    equilibriumTempK:m.teqK,
+    hzStatus:m.hzStatus,
+  };
+}
 function sendToSimulator(target){
   if(!selPlanet||!system||!system.stars||!system.stars[0])return;
   const star=system.stars[0];
@@ -2485,6 +2445,7 @@ function sendToSimulator(target){
       planetAU: selPlanet.orbitPx/Math.max(system.AU,1),
       planetName: selPlanet.name,
       planetType: selPlanet.typeKey,
+      ...planetPhysicsPayload(selPlanet),
     },
   }, '*');
 }
@@ -2506,6 +2467,7 @@ function publishSelectedPlanet(){
       planetName: selPlanet.name,
       planetType: selPlanet.typeKey,
       systemName: (system.name||''),
+      ...planetPhysicsPayload(selPlanet),
     },
   }, '*');
 }
@@ -2581,9 +2543,9 @@ function publishSelectedPlanet(){
   font-family:'DM Sans',sans-serif;font-size:12px;
   color:var(--t3);font-style:italic;
 }
-.math-val.stable{color:#00E5A0}
-.math-val.warn{color:#FFA500}
-.math-val.danger{color:#E74C3C}
+.math-val.stable{color:var(--sf-primary-text)}
+.math-val.warn{color:var(--sf-amber-text)}
+.math-val.danger{color:var(--sf-crimson-text)}
 .math-formula{
   background:rgba(21,193,123,0.03);border:1px solid #50555E;
   padding:10px 14px;margin:10px 0;font-family:'JetBrains Mono',monospace;

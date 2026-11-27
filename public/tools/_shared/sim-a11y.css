@@ -1,0 +1,25 @@
+/* ==========================================================================
+   sim-a11y.css: the focus and motion floor for the static simulators.
+
+   MINIMAL LOCAL EQUIVALENT written by lane S (1.9) because lane T's shared
+   file was not on this branch yet. Lane T owns public/tools/_shared/: when
+   its sim-a11y.css lands, keep theirs and drop this one.
+
+   - Every interactive element shows a visible :focus-visible ring
+     (CLAUDE.md Legibility). No sim may suppress it.
+   - prefers-reduced-motion: CSS animation and transition are cut to an
+     instant; sims read SFSim.reducedMotion for canvas motion.
+   ========================================================================== */
+:where(button, a, input, select, textarea, [tabindex], [role="button"], [role="tab"]):focus-visible {
+  outline: 2px solid var(--sf-primary-text, #15C17B) !important;
+  outline-offset: 2px !important;
+}
+input[type=range]:focus-visible { outline-offset: 4px !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

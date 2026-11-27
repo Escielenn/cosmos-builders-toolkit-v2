@@ -34,8 +34,11 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://stellarforge.tools/rogue">
 <style>
+/* Fonts as the app loads them: MD Nichrome self-hosted (linked in <head>),
+   DM Sans and JetBrains Mono from the same Google Fonts request as
+   index.html. The md-nichrome-test CDN is gone. */
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap');
-@import url('https://fonts.cdnfonts.com/css/md-nichrome-test');
+@import url('/fonts/md-nichrome/md-nichrome.css');
 :root{
   --accent-cyan:#15C17B;
   --accent-green:#00E5A0;
@@ -79,12 +82,12 @@ canvas{display:block;position:absolute;top:0;left:0}
 .sh{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2.5px;text-transform:uppercase;color:var(--sf-primary-text);margin-top:14px;margin-bottom:6px;padding-bottom:3px;border-bottom:1px solid rgba(0,229,160,.1)}
 .sh:first-child{margin-top:0}
 label{display:block;font-size:13px;font-family:var(--font-body);letter-spacing:1.2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:4px;margin-top:8px}
-input[type=range]{-webkit-appearance:none;width:100%;height:14px;background:transparent;outline:none}
-input[type=range]::-webkit-slider-runnable-track{height:2px;background:rgba(255,255,255,.08);border-radius:0}
+input[type=range]{-webkit-appearance:none;width:100%;height:14px;background:transparent}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--sf-line-interactive);border-radius:0}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:0;background:var(--accent-cyan);cursor:pointer;border:2px solid rgba(0,0,0,.5);margin-top:-5px;transition:transform .15s,box-shadow .15s}
 input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);box-shadow:0 0 6px rgba(21,193,123,.4)}
 input[type=range]::-webkit-slider-thumb:active{transform:scale(1.25);box-shadow:0 0 10px rgba(21,193,123,.6)}
-input[type=range]::-moz-range-track{height:2px;background:rgba(255,255,255,.08);border:none;border-radius:0}
+input[type=range]::-moz-range-track{height:2px;background:var(--sf-line-interactive);border:none;border-radius:0}
 input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:0;background:var(--accent-cyan);cursor:pointer;border:2px solid rgba(0,0,0,.5)}
 .vd{font-size:13px;font-family:var(--font-mono);color:var(--t2);float:right;font-weight:300}
 button{font-family:var(--font-body);font-size:12px;font-weight:300;letter-spacing:1.5px;text-transform:uppercase;padding:7px 12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--t2);cursor:pointer;border-radius:0;transition:all .2s;margin-right:4px;margin-top:3px}
@@ -108,7 +111,7 @@ button.ab{background:rgba(21,193,123,.1);border-color:rgba(21,193,123,.3);color:
 .cr{display:flex;align-items:center;gap:7px;margin-top:6px}
 .cr input[type=checkbox]{accent-color:var(--accent-cyan);width:11px;height:11px}
 .cr label{margin:0!important;font-size:13px;cursor:pointer;color:var(--t2)}
-select{font-family:var(--font-body);font-size:12px;background:rgba(255,255,255,.04);color:var(--t2);border:1px solid rgba(255,255,255,.1);padding:6px 8px;border-radius:0;width:100%;outline:none;margin-top:4px;cursor:pointer}
+select{font-family:var(--font-body);font-size:12px;background:rgba(255,255,255,.04);color:var(--t2);border:1px solid rgba(255,255,255,.1);padding:6px 8px;border-radius:0;width:100%;margin-top:4px;cursor:pointer}
 select option{background:#0F0F10;color:#c8c8c8}
 .type-btn{position:relative;padding-left:18px!important}
 .type-btn::before{content:'';position:absolute;left:6px;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%}
@@ -121,7 +124,9 @@ select option{background:#0F0F10;color:#c8c8c8}
 #data::-webkit-scrollbar{width:3px}#data::-webkit-scrollbar-track{background:transparent}#data::-webkit-scrollbar-thumb{background:rgba(0,229,160,.12)}
 .ds{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2.5px;text-transform:uppercase;color:var(--sf-primary-text);margin-top:7px;margin-bottom:1px;padding-bottom:2px;border-bottom:1px solid rgba(0,229,160,.1)}
 .ds:first-child{margin-top:0}
-.dr{display:flex;justify-content:space-between}.dl{color:var(--text-secondary);font-weight:300}.dv{color:var(--text-primary);font-weight:500;font-family:var(--font-mono);font-size:14px}
+.dr{display:flex;justify-content:space-between}
+.sim-note{font-size:12px;line-height:1.5;color:var(--t3);margin-top:4px}
+.sim-note.warn{color:var(--sf-amber-text);border-left:2px solid var(--sf-amber-text);padding-left:8px}.dl{color:var(--text-secondary);font-weight:300}.dv{color:var(--text-primary);font-weight:500;font-family:var(--font-mono);font-size:14px}
 
 #zoom-info{position:absolute;bottom:14px;right:14px;padding:8px 14px;font-size:12px;font-family:var(--font-body);color:var(--t3);text-align:center;min-width:130px}
 #zoom-info .zv{font-size:16px;font-family:var(--font-display);font-weight:300;color:var(--sf-primary-text);display:block;margin-bottom:1px}
@@ -134,7 +139,7 @@ select option{background:#0F0F10;color:#c8c8c8}
 #builder h2{font-family:var(--font-display);font-size:28px;font-weight:300;color:#fff;margin-bottom:4px;letter-spacing:4px;text-transform:uppercase}
 #builder .bsub{font-size:12px;font-family:var(--font-body);letter-spacing:2px;text-transform:uppercase;color:var(--sf-primary-text);margin-bottom:20px}
 #builder .bsh{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2.5px;text-transform:uppercase;color:var(--sf-primary-text);margin-top:18px;margin-bottom:8px;padding-bottom:3px;border-bottom:1px solid rgba(0,229,160,.06)}
-#builder input[type=text],#builder input[type=number]{font-family:var(--font-body);font-size:12px;background:rgba(255,255,255,.04);color:var(--t1);border:1px solid rgba(255,255,255,.1);padding:7px 10px;border-radius:0;outline:none;width:100%}
+#builder input[type=text],#builder input[type=number]{font-family:var(--font-body);font-size:12px;background:rgba(255,255,255,.04);color:var(--t1);border:1px solid rgba(255,255,255,.1);padding:7px 10px;border-radius:0;width:100%}
 #builder input[type=text]:focus,#builder input[type=number]:focus{border-color:rgba(21,193,123,.35)}
 #builder label{font-size:13px;font-family:var(--font-body);letter-spacing:1.2px;text-transform:uppercase;color:var(--t4);margin-bottom:3px;margin-top:10px;display:block}
 .b-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -179,7 +184,11 @@ select option{background:#0F0F10;color:#c8c8c8}
   <link rel="stylesheet" href="/tools/_shared/sim-mobile.css">
   <link rel="stylesheet" href="/tools/_shared/sim-title.css">
   <link rel="stylesheet" href="/tools/_shared/sim-perf.css">
+  <link rel="stylesheet" href="/tools/_shared/sim-a11y.css">
   <script src="/tools/_shared/sim-loop.js"></script>
+  <script src="/tools/_shared/sim-a11y.js"></script>
+  <script src="/tools/solaris/sf-astro.js"></script>
+  <script src="/rogue/rogue-physics.js"></script>
 </head>
 <body>
 <canvas id="sim"></canvas>
@@ -189,11 +198,11 @@ select option{background:#0F0F10;color:#c8c8c8}
     <div class="sub">N-Body Gravitational Encounter Simulator</div>
     <div class="sys-name" id="sys-display">Our Solar System</div>
   </div>
-  <div id="badge" class="p st-wait">● Awaiting Launch</div>
+  <div id="badge" class="p st-wait" role="status" aria-live="polite">● Awaiting launch</div>
 
   <div id="ctrl" class="p">
     <div class="sh">Star System</div>
-    <select id="sys-select">
+    <select id="sys-select" aria-label="Star system">
       <option value="solar">☉ Our Solar System</option>
       <option value="trappist">★ TRAPPIST-1 (7 planets, ultra-compact)</option>
       <option value="kepler90">★ Kepler-90 (8 planets, Sun-like)</option>
@@ -211,19 +220,21 @@ select option{background:#0F0F10;color:#c8c8c8}
     </div>
 
     <div class="sh">Intruder Parameters</div>
-    <label>Mass <span class="vd" id="mass-val">10 M☉</span></label>
+    <label for="sl-mass">Mass <span class="vd" id="mass-val">10 M☉</span></label>
     <input type="range" id="sl-mass" min="0" max="100" value="50" step="1">
-    <label>Closest Approach <span class="vd" id="dist-val">2.0 AU</span></label>
+    <label for="sl-dist">Closest Approach <span class="vd" id="dist-val">2.0 AU</span></label>
     <input type="range" id="sl-dist" min="0.1" max="15" value="2.0" step="0.1">
-    <label>Velocity <span class="vd" id="speed-val">25 km/s</span></label>
+    <label for="sl-speed">Velocity <span class="vd" id="speed-val">25 km/s</span></label>
     <input type="range" id="sl-speed" min="3" max="120" value="25" step="1">
-    <label>Approach Angle <span class="vd" id="angle-val">30°</span></label>
+    <label for="sl-angle">Approach Angle <span class="vd" id="angle-val">30°</span></label>
     <input type="range" id="sl-angle" min="-90" max="90" value="30" step="1">
 
     <div class="sh">Simulation</div>
-    <label>Time Scale <span class="vd" id="time-val">1.0×</span></label>
+    <label for="sl-time">Time scale <span class="vd" id="time-val">1.0×</span></label>
     <input type="range" id="sl-time" min="0.1" max="100" value="1" step="0.1">
-    <div class="br"><button id="btn-publish-aftermath" class="a" style="display:none">Publish Aftermath →</button></div>
+    <div class="sim-note" id="time-note" aria-live="polite"></div>
+    <div class="br"><button id="btn-publish-aftermath" class="a" style="display:none">Publish aftermath</button></div>
+    <div class="sim-note warn" id="publish-note" style="display:none" aria-live="polite"></div>
 
     <div class="sh">Camera</div>
     <div class="br" id="cam-btns">
@@ -279,6 +290,8 @@ select option{background:#0F0F10;color:#c8c8c8}
     <div class="ds">Disruption</div>
     <div class="dr"><span class="dl">Ejected</span><span class="dv" id="d-pej">0</span></div>
     <div class="dr"><span class="dl">Sim time</span><span class="dv" id="d-time">0.00 yr</span></div>
+    <div class="dr"><span class="dl">Captured</span><span class="dv" id="d-pcap">0</span></div>
+    <div class="dr"><span class="dl">Energy error</span><span class="dv" id="d-energy" title="|E − E₀| / |E₀| since launch. Above 1e-3 the run cannot be published.">—</span></div>
     <div class="ds">Planet Status</div>
     <div id="planet-status-list"></div>
   </div>
@@ -379,7 +392,10 @@ function toggleMobilePanel(id){
 // stellarforge.tools/rogue
 // ============================================================================
 
-const G=4*Math.PI*Math.PI, AUtoKM=4.7405, MJ=9.547e-4, ME=3.003e-6, dt_base=0.00008;
+// Physics lives in rogue-physics.js (RoguePhysics) and shared star data in
+// /tools/solaris/sf-astro.js (SFAstro); both are tested as shipped.
+const RP=window.RoguePhysics;
+const G=RP.G, AUtoKM=RP.AU_YR_TO_KM_S, MJ=RP.M_JUPITER, ME=RP.M_EARTH;
 const canvas=document.getElementById('sim'), ctx=canvas.getContext('2d');
 
 // === STAR COLORS BY TYPE ===
@@ -399,7 +415,7 @@ function planetSize(type){const t=PLANET_TYPES[type]||PLANET_TYPES.rocky;return 
 // === SYSTEM PRESETS ===
 const SYSTEMS = {
   solar: {
-    name:'Our Solar System', starMass:1.0, starType:'G', binary:null,
+    name:'Our Solar System', starMass:1.0, starType:'G', lum:1.0, teffK:5772, binary:null,
     planets:[
       {name:'Mercury',a:.387,mass:1.66e-7,type:'rocky',color:'#a0a0a0',size:.3,sym:'☿'},
       {name:'Venus',a:.723,mass:2.45e-6,type:'rocky',color:'#e8cda0',size:.5,sym:'♀'},
@@ -410,10 +426,10 @@ const SYSTEMS = {
       {name:'Uranus',a:19.19,mass:4.37e-5,type:'ice',color:'#7ec8c8',size:.8,sym:'⛢'},
       {name:'Neptune',a:30.07,mass:5.15e-5,type:'ice',color:'#4466ff',size:.8,sym:'♆'},
     ],
-    habZone:[.95,1.37], defaultZoom:55, note:'8 planets, 4.6 billion years old'
+    defaultZoom:55, note:'8 planets, 4.6 billion years old'
   },
   trappist: {
-    name:'TRAPPIST-1', starMass:0.0898, starType:'M', binary:null,
+    name:'TRAPPIST-1', starMass:0.0898, starType:'M', lum:0.000553, teffK:2566, binary:null, // Agol et al. 2021; Ducrot et al. 2020
     planets:[
       {name:'T-1b',a:.01154,mass:1.374*ME,type:'rocky',color:'#cc6644',size:.45,sym:'b'},
       {name:'T-1c',a:.01580,mass:1.308*ME,type:'rocky',color:'#cc8855',size:.45,sym:'c'},
@@ -423,10 +439,10 @@ const SYSTEMS = {
       {name:'T-1g',a:.04683,mass:1.321*ME,type:'rocky',color:'#6699bb',size:.48,sym:'g'},
       {name:'T-1h',a:.06189,mass:.326*ME,type:'rocky',color:'#8899aa',size:.3,sym:'h'},
     ],
-    habZone:[.029,.046], defaultZoom:3500, note:'Ultra-compact, 7 Earth-sized worlds in resonance chain. 39 light-years away.'
+    defaultZoom:3500, note:'Ultra-compact, 7 Earth-sized worlds in resonance chain. 39 light-years away.'
   },
   kepler90: {
-    name:'Kepler-90', starMass:1.2, starType:'G', binary:null,
+    name:'Kepler-90', starMass:1.2, starType:'G', lum:1.77, teffK:6080, binary:null, // Cabrera et al. 2014: 6080 K, 1.2 R☉ → L = R²(T/5772)⁴
     planets:[
       {name:'K90b',a:.074,mass:2.0*ME,type:'rocky',color:'#aa8866',size:.35,sym:'b'},
       {name:'K90c',a:.089,mass:3.0*ME,type:'rocky',color:'#bb9977',size:.4,sym:'c'},
@@ -437,27 +453,48 @@ const SYSTEMS = {
       {name:'K90g',a:.71,mass:200*ME,type:'gas',color:'#c88b3a',size:1.3,sym:'g'},
       {name:'K90h',a:1.01,mass:200*ME,type:'gas',color:'#d4956a',size:1.3,sym:'h'},
     ],
-    habZone:[1.0,1.5], defaultZoom:180, note:'8 planets, most found in any system besides ours. 2,545 light-years away.'
+    defaultZoom:180, note:'8 planets, most found in any system besides ours. 2,545 light-years away.'
   },
   proxima: {
-    name:'Proxima Centauri', starMass:0.122, starType:'M', binary:null,
+    name:'Proxima Centauri', starMass:0.122, starType:'M', lum:0.00155, teffK:3042, binary:null, // Boyajian et al. 2012; Ségransan et al. 2003
     planets:[
       {name:'Prox d',a:.02885,mass:.26*ME,type:'rocky',color:'#aa8877',size:.25,sym:'d'},
       {name:'Prox b',a:.0485,mass:1.07*ME,type:'rocky',color:'#5588cc',size:.45,sym:'b'},
       {name:'Prox c',a:1.489,mass:7.0*ME,type:'ice',color:'#7799bb',size:.65,sym:'c'},
     ],
-    habZone:[.038,.082], defaultZoom:2500, note:'Nearest star at 4.24 light-years. Proxima b is in the habitable zone.'
+    defaultZoom:2500, note:'Nearest star at 4.24 light-years. Proxima b is in the habitable zone.'
   },
   alphacen: {
-    name:'Alpha Centauri AB', starMass:1.1, starType:'G', 
-    binary:{mass:0.907, type:'K', separation:23},
+    // Kervella et al. 2016 (A&A 594, A107): masses 1.1055 / 0.9373 M☉, a =
+    // 17.66″ at 747.17 mas = 23.64 AU; e = 0.5208 (Pourbaix & Boffin 2016).
+    // Luminosity / Teff: Kervella et al. 2017; Thévenin et al. 2002.
+    // The planets are hypothetical (*), on S-type orbits around ONE star
+    // each, inside the Holman & Wiegert 1999 eq. 1 limits (A: 2.7 AU,
+    // B: 2.5 AU for this eccentric pair).
+    name:'Alpha Centauri AB', starMass:1.1055, starType:'G', lum:1.519, teffK:5790,
+    binary:{mass:0.9373, type:'K', separation:23.64, e:0.5208, lum:0.5002, teffK:5260},
     planets:[
-      {name:'α Cen Ab*',a:1.1,mass:1.5*ME,type:'rocky',color:'#5588cc',size:.45,sym:'b'},
-      {name:'α Cen Ac*',a:2.0,mass:5*ME,type:'rocky',color:'#88aacc',size:.5,sym:'c'},
+      {name:'α Cen Bb*',a:0.7,mass:5*ME,type:'rocky',color:'#88aacc',size:.5,sym:'B',host:'B'},
+      {name:'α Cen Ab*',a:1.1,mass:1.5*ME,type:'rocky',color:'#5588cc',size:.45,sym:'A',host:'A'},
     ],
-    habZone:[1.0,1.6], defaultZoom:10, note:'Binary pair 4.37 ly away. Planets hypothetical (*). Binary separation ~23 AU, eccentricity ~0.52.'
+    defaultZoom:10, note:'Binary pair 4.37 ly away. Planets hypothetical (*), one around each star. Separation 11–36 AU, eccentricity 0.52.'
   }
 };
+
+// Habitable zones from the shared Kopparapu 2014 function (SFAstro.hz),
+// per star, replacing the hand-set 0.95–1.37 AU and friends (R6). A star
+// without literature values takes its main-sequence row by mass.
+function starPhys(mass,lum,teffK){
+  if(lum&&teffK)return{lum,teffK};
+  const ms=SFAstro.msFromMass(mass);return{lum:ms.lum,teffK:ms.teffK};
+}
+function applyHabZones(sys){
+  const a=starPhys(sys.starMass,sys.lum,sys.teffK);
+  sys.habZone=SFAstro.hz(a.lum,a.teffK);
+  sys.habZoneB=sys.binary?(()=>{const b=starPhys(sys.binary.mass,sys.binary.lum,sys.binary.teffK);return SFAstro.hz(b.lum,b.teffK);})():null;
+  return sys;
+}
+Object.values(SYSTEMS).forEach(applyHabZones);
 
 const ITYPES={bh:{name:'Black Hole',unit:'M☉',min:3,max:100,color:'#e74c3c'},bd:{name:'Brown Dwarf',unit:'Mⱼ',min:13,max:80,color:'#c8553d'},rp:{name:'Rogue Planet',unit:'Mⱼ',min:0.5,max:13,color:'#8b6914'}};
 let intruderType='bh';
@@ -465,13 +502,17 @@ let intruderType='bh';
 // === STATE ===
 // Circular buffer for trails — avoids O(n) shift on large arrays
 const TRAIL_MAX=2000;
-function TrailBuffer(){this.x=new Float64Array(TRAIL_MAX);this.y=new Float64Array(TRAIL_MAX);this.head=0;this.count=0;}
-TrailBuffer.prototype.push=function(px,py){this.x[this.head]=px;this.y[this.head]=py;this.head=(this.head+1)%TRAIL_MAX;if(this.count<TRAIL_MAX)this.count++;};
+function TrailBuffer(){this.x=new Float64Array(TRAIL_MAX);this.y=new Float64Array(TRAIL_MAX);this.head=0;this.count=0;this.total=0;}
+TrailBuffer.prototype.push=function(px,py){this.x[this.head]=px;this.y[this.head]=py;this.head=(this.head+1)%TRAIL_MAX;if(this.count<TRAIL_MAX)this.count++;this.total++;};
 TrailBuffer.prototype._pt={x:0,y:0};
 TrailBuffer.prototype.get=function(i){var idx=((this.head-this.count+i)%TRAIL_MAX+TRAIL_MAX)%TRAIL_MAX;this._pt.x=this.x[idx];this._pt.y=this.y[idx];return this._pt;};
-TrailBuffer.prototype.truncate=function(len){if(len<this.count)this.count=len;};
+TrailBuffer.prototype.truncate=function(len){if(len<this.count){this.count=len;trailCache.dirty=true;}};
 
-let bodies=[], trails={}, simTime=0, running=false, launched=false, maxSpeed=0, ejectedSet=new Set();
+let bodies=[], trails={}, simTime=0, running=false, launched=false, maxSpeed=0, ejectedSet=new Set(), capturedSet=new Set();
+// Softening for this system (RP.softening), the energy at launch and the
+// live relative error, and the intruder's closest approach (the encounter
+// epoch the Chronicle dates).
+let soft={eps2:0,eps2I:0}, E0=null, energyErr=null, closest={au:Infinity,years:null};
 let trailStepCounter=0;
 let currentSystem='solar', customSystem=null;
 let cam={x:0,y:0,zoom:55}, targetCam={x:0,y:0,zoom:55}, camMode='free';
@@ -490,6 +531,7 @@ function saveState(){
   if(stateHistory.length>historyMaxLen)stateHistory.splice(0,stateHistory.length-historyMaxLen);
 }
 function restoreState(snap){
+  trailCache.dirty=true;
   bodies=snap.bodies.map(b=>({...b}));
   simTime=snap.simTime;ejectedSet=new Set(snap.ejected);maxSpeed=snap.maxSpeed;
   for(const k in snap.trailLens){if(trails[k])trails[k].truncate(snap.trailLens[k]);}
@@ -548,46 +590,24 @@ function getSystemDef(){
 // === INIT BODIES FROM SYSTEM ===
 function initBodies(){
   const sys=getSystemDef();
-  bodies=[];trails={};ejectedSet=new Set();simTime=0;launched=false;maxSpeed=0;
+  bodies=[];trails={};ejectedSet=new Set();capturedSet=new Set();simTime=0;launched=false;maxSpeed=0;
+  soft=RP.softening(sys);E0=null;energyErr=null;closest={au:Infinity,years:null};
 
-  // Primary star
-  const sc=starColor(sys.starType);
-  bodies.push({name:sys.binary?'Star A':'Star',x:0,y:0,vx:0,vy:0,mass:sys.starMass,color:sc,size:2,isStar:true,starType:sys.starType});
-  trails['Star A']=new TrailBuffer();trails['Star']=new TrailBuffer();
-
-  // Binary companion
-  if(sys.binary){
-    const sep=sys.binary.separation;
-    const totalM=sys.starMass+sys.binary.mass;
-    // Both orbit center of mass
-    const r1=sep*sys.binary.mass/totalM, r2=sep*sys.starMass/totalM;
-    const v1=Math.sqrt(G*sys.binary.mass*r1/(sep*sep))*Math.sqrt(sep/r1);
-    const v2=Math.sqrt(G*sys.starMass*r2/(sep*sep))*Math.sqrt(sep/r2);
-    const ov1=Math.sqrt(G*totalM/sep)*(sys.binary.mass/totalM);
-    const ov2=Math.sqrt(G*totalM/sep)*(sys.starMass/totalM);
-    
-    bodies[0].x=-r1;bodies[0].y=0;bodies[0].vx=0;bodies[0].vy=-ov1;bodies[0].name='Star A';
-    const sc2=starColor(sys.binary.type||'K');
-    bodies.push({name:'Star B',x:r2,y:0,vx:0,vy:ov2,mass:sys.binary.mass,color:sc2,size:1.8,isStar:true,starType:sys.binary.type||'K'});
-    trails['Star B']=new TrailBuffer();
-  }
-
-  // Planets
-  const phases=[];for(let i=0;i<(sys.planets||[]).length;i++)phases.push(i*2.39996+.1);
-  (sys.planets||[]).forEach((pd,i)=>{
-    const angle=phases[i];
-    // Orbital velocity around primary (simplified for binary — uses total mass for stability)
-    const centralMass=sys.binary?(sys.starMass+sys.binary.mass):sys.starMass;
-    const v=Math.sqrt(G*centralMass/pd.a);
-    const ox=sys.binary?0:0, oy=sys.binary?0:0; // orbit around CoM
-    bodies.push({
-      name:pd.name, x:pd.a*Math.cos(angle)+ox, y:pd.a*Math.sin(angle)+oy,
-      vx:-v*Math.sin(angle), vy:v*Math.cos(angle),
-      mass:pd.mass, color:pd.color, size:pd.size||.5, sym:pd.sym||'●',
-      a:pd.a, ptype:pd.type||'rocky', isPlanet:true
-    });
-    trails[pd.name]=new TrailBuffer();
+  // Positions and velocities from RoguePhysics.initialState: an eccentric
+  // binary starts at apoastron, an S-type planet circles its own star.
+  const state=RP.initialState(sys);
+  state.forEach(b=>{
+    if(b.isStar){
+      const isB=b.name==='Star B';
+      const type=isB?(sys.binary.type||'K'):sys.starType;
+      Object.assign(b,{color:starColor(type),size:isB?1.8:2,starType:type});
+    } else {
+      const pd=sys.planets.find(q=>q.name===b.name)||{};
+      Object.assign(b,{color:pd.color,size:pd.size||.5,sym:pd.sym||'●',ptype:pd.type||'rocky'});
+    }
+    bodies.push(b);trails[b.name]=new TrailBuffer();
   });
+  trailCache.dirty=true;
 
   setupIntruder();
   updateSliderRanges();
@@ -640,23 +660,9 @@ function setupIntruder(){
 }
 
 // === PHYSICS ===
-const _accelPool={ax:new Float64Array(32),ay:new Float64Array(32)};
-function computeAccel(bodies,full){
-  const n=bodies.length,soft=0.00005;
-  if(_accelPool.ax.length<n){_accelPool.ax=new Float64Array(n);_accelPool.ay=new Float64Array(n);}
-  const ax=_accelPool.ax,ay=_accelPool.ay;ax.fill(0,0,n);ay.fill(0,0,n);
-  for(let i=0;i<n;i++){
-    if(bodies[i].isIntruder&&!bodies[i].active)continue;
-    for(let j=i+1;j<n;j++){
-      if(bodies[j].isIntruder&&!bodies[j].active)continue;
-      // Pre-launch: skip planet↔planet forces to prevent resonance drift
-      if(!full&&bodies[i].isPlanet&&bodies[j].isPlanet)continue;
-      const dx=bodies[j].x-bodies[i].x,dy=bodies[j].y-bodies[i].y,r2=dx*dx+dy*dy+soft,r=Math.sqrt(r2),f=G/r2,fx=f*dx/r,fy=f*dy/r;
-      ax[i]+=bodies[j].mass*fx;ay[i]+=bodies[j].mass*fy;ax[j]-=bodies[i].mass*fx;ay[j]-=bodies[i].mass*fy;
-    }
-  }
-  return{ax,ay};
-}
+// RoguePhysics.computeAccel with this system's softening. Kept as a local
+// name because the gravity-vector overlay calls it too.
+function computeAccel(bodies,full){return RP.computeAccel(bodies,full,soft);}
 
 // Orbital elements (semi-major axis, eccentricity) from a body's current
 // state vector relative to a primary mass, via vis-viva. Rogue's live
@@ -680,17 +686,8 @@ function orbitalElementsFromState(body,primary){
 }
 
 function step(dt){
-  const n=bodies.length;
-  const full=launched; // full N-body only after intruder is active
-  // Leapfrog (kick-drift-kick)
-  // Half-kick
-  let acc=computeAccel(bodies,full);
-  for(let i=0;i<n;i++){if(bodies[i].isIntruder&&!bodies[i].active)continue;bodies[i].vx+=acc.ax[i]*dt*.5;bodies[i].vy+=acc.ay[i]*dt*.5;}
-  // Drift
-  for(let i=0;i<n;i++){if(bodies[i].isIntruder&&!bodies[i].active)continue;bodies[i].x+=bodies[i].vx*dt;bodies[i].y+=bodies[i].vy*dt;}
-  // Half-kick (recompute forces at new positions)
-  acc=computeAccel(bodies,full);
-  for(let i=0;i<n;i++){if(bodies[i].isIntruder&&!bodies[i].active)continue;bodies[i].vx+=acc.ax[i]*dt*.5;bodies[i].vy+=acc.ay[i]*dt*.5;}
+  // Kick-drift-kick leapfrog; full N-body only after the intruder is live.
+  RP.advance(bodies,dt,launched,soft);
   simTime+=dt;
   trailStepCounter++;
   if(trailStepCounter>=4){trailStepCounter=0;for(const b of bodies){if(b.isIntruder&&!b.active)continue;if(!trails[b.name])trails[b.name]=new TrailBuffer();trails[b.name].push(b.x,b.y);}}
@@ -712,16 +709,38 @@ function starCom(){
   _com.m=m;_com.x=x/m;_com.y=y/m;_com.vx=vx/m;_com.vy=vy/m;
   return _com;
 }
+// Unbound from the stars and outside its old orbit: ejected, unless it is
+// bound to the intruder instead, which is a capture (R4: a captured planet
+// used to be counted as ejected). Also records the intruder's closest
+// approach to the stars, the date of the encounter.
+let _intr=null;
+// S-type planets read as unbound from the pair's centre while bound to
+// their own star; they are not ejected.
+function boundToAStar(b){
+  for(let i=0;i<bodies.length;i++){
+    const s=bodies[i];if(!s.isStar)continue;
+    const dx=b.x-s.x,dy=b.y-s.y,dvx=b.vx-s.vx,dvy=b.vy-s.vy;
+    if(0.5*(dvx*dvx+dvy*dvy)-G*s.mass/Math.sqrt(dx*dx+dy*dy)<0)return true;
+  }
+  return false;
+}
 function trackEjections(){
   const c=starCom();
-  ejectedSet.clear();
+  ejectedSet.clear();capturedSet.clear();
+  if(!_intr||!bodies.includes(_intr))_intr=bodies.find(b=>b.isIntruder)||null;
+  const I=_intr&&_intr.active?_intr:null;
+  if(I){const d=Math.hypot(I.x-c.x,I.y-c.y);if(d<closest.au){closest.au=d;closest.years=simTime;}}
   for(let i=0;i<bodies.length;i++){
     const b=bodies[i];
     if(b.isStar||b.isIntruder)continue;
     const dx=b.x-c.x,dy=b.y-c.y,r=Math.sqrt(dx*dx+dy*dy);
     const dvx=b.vx-c.vx,dvy=b.vy-c.vy,v2=dvx*dvx+dvy*dvy;
     const E=0.5*v2-G*c.m/r;
-    if(E>0&&r>(b.a||1)*1.5)ejectedSet.add(b.name);
+    if(E>0&&r>(b.a||1)*1.5&&!boundToAStar(b)){
+      let capt=false;
+      if(I){const ix=b.x-I.x,iy=b.y-I.y,ivx=b.vx-I.vx,ivy=b.vy-I.vy;capt=0.5*(ivx*ivx+ivy*ivy)-G*I.mass/Math.sqrt(ix*ix+iy*iy+soft.eps2I)<0;}
+      (capt?capturedSet:ejectedSet).add(b.name);
+    }
     const spd=Math.sqrt(v2)*AUtoKM;if(spd>maxSpeed)maxSpeed=spd;
   }
 }
@@ -730,6 +749,7 @@ function refreshStatus(){
   let nPlanets=0;for(let i=0;i<bodies.length;i++)if(bodies[i].isPlanet)nPlanets++;
   if(ejectedSet.size>=Math.max(1,Math.floor(nPlanets*.4)))setStatus('chaos','● System Disrupted — '+ejectedSet.size+' Ejected');
   else if(ejectedSet.size>0)setStatus('eject','● '+ejectedSet.size+' Planet'+(ejectedSet.size>1?'s':'')+' Ejected');
+  else if(capturedSet.size>0)setStatus('perturb','● '+capturedSet.size+' Captured by the intruder');
   else{const intruder=bodies.find(b=>b.isIntruder);if(intruder&&intruder.active){const c=starCom();const dx=intruder.x-c.x,dy=intruder.y-c.y;if(Math.sqrt(dx*dx+dy*dy)<(getSystemDef().planets||[]).reduce((m,p)=>Math.max(m,p.a),2)*2)setStatus('perturb','● Orbits Perturbed');else setStatus('orbit','● Post-Encounter');}}
 }
 // Kept under its old name for any caller that wants both halves at once.
@@ -747,44 +767,41 @@ function bodyOrbitalReport(){
   if(!launched)return[];
   const stars=bodies.filter(b=>b.isStar);
   if(!stars.length)return[];
-  const primary=stars.reduce((m,s)=>s.mass>m.mass?s:m,stars[0]);
   return bodies.filter(b=>b.isPlanet).map(b=>{
-    const{a,e}=orbitalElementsFromState(b,primary);
-    const ej=ejectedSet.has(b.name);
+    // RoguePhysics.outcome: the centre (a star, the stellar barycentre or
+    // the intruder) this body is most tightly bound to, and its a and e
+    // there. a is null when it is bound to nothing; it is never clamped.
+    const o=RP.outcome(b,bodies);
+    const ej=o.outcome==='ejected';
     return{name:b.name,ptype:b.ptype||'rocky',a0:+(+b.a).toFixed(4),
-           a:(isFinite(a)&&a>0)?+a.toFixed(4):null,e:(isFinite(e)&&a>0)?+e.toFixed(4):null,ejected:ej};
+           a:o.a!=null&&isFinite(o.a)?+o.a.toPrecision(6):null,
+           e:isFinite(o.e)?+o.e.toFixed(4):null,
+           ejected:ej,captured:o.outcome==='captured',outcome:o.outcome,boundTo:o.boundTo,host:b.host||null};
   });
+}
+
+/** The encounter's date on the run's own clock (years since launch). */
+function encounterEpoch(){
+  return{unit:'yr',reference:'launch',
+    encounterYears:closest.years!=null?+closest.years.toFixed(4):null,
+    closestApproachAU:isFinite(closest.au)?+closest.au.toPrecision(4):null,
+    elapsedYears:+simTime.toFixed(4)};
 }
 
 function survivorsToSystemPayload(){
   const stars=bodies.filter(b=>b.isStar);
-  // Not reachable from today's builder (a system always starts with at
-  // least one star), but stars.reduce below seeds its accumulator with
-  // stars[0]; an empty array would make that undefined, and primary.mass /
-  // orbitalElementsFromState(b, primary) further down would throw a
-  // TypeError instead of failing safely.
   if(!stars.length)return null;
   const primary=stars.reduce((m,s)=>s.mass>m.mass?s:m,stars[0]);
-  const survivors=bodies.filter(b=>b.isPlanet&&!ejectedSet.has(b.name));
+  const report=bodyOrbitalReport();
+  const byName=Object.fromEntries(report.map(r=>[r.name,r]));
+  const survivors=bodies.filter(b=>b.isPlanet&&byName[b.name]&&(byName[b.name].outcome==='retained'||byName[b.name].outcome==='orbit_changed'));
   const planets=survivors.map(b=>{
-    // e is computed but intentionally not threaded into the payload below:
-    // loadFromURL's {n,t,m,d} shape has no eccentricity field, and extending
-    // that parser is a second concern out of scope for this task.
-    const{a,e}=orbitalElementsFromState(b,primary);void e;
-    // Floor guards a hyperbolic/near-ejected survivor's negative or
-    // near-zero vis-viva 'a'. Ceiling guards the opposite case: a survivor
-    // just barely bound (specific energy just under zero) can compute an
-    // arbitrarily large 'a' as that energy approaches zero. 500 AU is a
-    // generous but bounded "still meaningfully part of this system" cap.
-    // A plausible outer-system distance is better than a four-digit AU
-    // value stated as fact.
-    return{n:b.name,t:b.ptype||'rocky',m:+b.mass.toFixed(3),d:+Math.min(Math.max(a,0.05),500).toFixed(4)};
+    const r=byName[b.name];
+    // d is the post-encounter semi-major axis exactly as computed (no
+    // 0.05–500 AU clamp); e and the star it orbits travel with it.
+    return{n:b.name,t:b.ptype||'rocky',m:+b.mass.toFixed(3),d:r.a,e:r.e,host:r.boundTo};
   }).sort((x,y)=>x.d-y.d);
   return{
-    // sys-display's own text (e.g. "Our Solar System — 8 planets...") uses
-    // an em dash; that's pre-existing copy, out of scope here. The suffix
-    // this task generates uses '·' instead, matching this file's existing
-    // no-em-dash separator idiom (see d-star's "G V · 1.000 M☉").
     n:(document.getElementById('sys-display')?.textContent||'Aftermath System').split(' — ')[0]+' · Aftermath',
     sm:primary.mass,
     st:primary.starType||'G',
@@ -794,13 +811,18 @@ function survivorsToSystemPayload(){
 }
 
 // Shown once the intruder has passed and at least one planet survived.
-// Called from the same throttled block updateData() already runs from.
+// Disabled, with the reason, when the integration is not trustworthy.
 function updateAftermathButton(){
   const btn=document.getElementById('btn-publish-aftermath');
   if(!btn)return;
-  const survivors=bodies.filter(b=>b.isPlanet&&!ejectedSet.has(b.name)).length;
+  const survivors=bodies.filter(b=>b.isPlanet&&!ejectedSet.has(b.name)&&!capturedSet.has(b.name)).length;
   const show=launched&&simTime>0&&survivors>0;
   SFSim.style(btn,'display',show?'':'none');
+  const blocked=show&&energyErr!=null&&energyErr>RP.PUBLISH_MAX_ENERGY_ERROR;
+  btn.disabled=!!blocked;
+  const note=$id('publish-note');
+  SFSim.style(note,'display',blocked?'':'none');
+  if(blocked)SFSim.text(note,'// ENERGY ERROR '+energyErr.toExponential(1)+' (LIMIT 1E-3). THIS RUN IS NOT ACCURATE ENOUGH TO PUBLISH. RESET, OR TRY A WIDER PASS.');
 }
 
 // Status badge. When the encounter CLASS changes (orbit → perturb → eject →
@@ -813,6 +835,9 @@ function setStatus(c,t){if(c!==lastStatusClass||t!==_statusText){const b=documen
 function launch(){
   const i=bodies.find(b=>b.isIntruder);if(i)i.active=true;
   launched=true;running=true;stateHistory=[];saveState();
+  // Energy reference at the moment the intruder joins (the force law
+  // changes then: planet–planet pairs and the intruder switch on).
+  E0=RP.totalEnergy(bodies,true,soft);energyErr=0;closest={au:Infinity,years:null};
   setStatus('orbit','● Intruder Approaching');
   document.getElementById('btn-go').style.display='none';
   document.getElementById('btn-rewind').style.display='';
@@ -823,7 +848,7 @@ function launch(){
 }
 function reset(){
   running=false;isRewinding=false;stateHistory=[];stepBudget.reset();rewindBudget.reset();snapshotClock=0;
-  initBodies();setStatus('wait','● Awaiting Launch');
+  initBodies();setStatus('wait','● Awaiting launch');
   document.getElementById('btn-go').style.display='';
   document.getElementById('btn-rewind').style.display='none';
   document.getElementById('btn-stepb').style.display='none';
@@ -875,11 +900,69 @@ function drawStars2(){
 
 function drawGrid(){if(!$id('chk-grid').checked)return;const vau=W/cam.zoom;let sp=1;if(vau>15)sp=2;if(vau>30)sp=5;if(vau>80)sp=10;if(vau>200)sp=25;if(vau>500)sp=50;if(vau<4)sp=.5;if(vau<1.5)sp=.25;if(vau<.5)sp=.1;if(vau<.15)sp=.02;if(vau<.05)sp=.005;const l=toW(0,0).wx,r=toW(W,0).wx,t=toW(0,0).wy,bt=toW(0,H).wy;ctx.strokeStyle='rgba(255,255,255,.02)';ctx.lineWidth=1;for(let x=Math.floor(l/sp)*sp;x<=r+sp;x+=sp){const s=toS(x,0);ctx.beginPath();ctx.moveTo(s.sx,0);ctx.lineTo(s.sx,H);ctx.stroke();}for(let y=Math.floor(bt/sp)*sp;y<=t+sp;y+=sp){const s=toS(0,y);ctx.beginPath();ctx.moveTo(0,s.sy);ctx.lineTo(W,s.sy);ctx.stroke();}}
 
-function drawOrbitalPaths(){if(!$id('chk-orbits').checked)return;const sys=getSystemDef();const _c=starCom();const cs=toS(_c.x,_c.y);(sys.planets||[]).forEach(pd=>{const rPx=pd.a*cam.zoom;if(rPx<2||rPx>10000)return;ctx.strokeStyle=hexRGBA(pd.color,.07);ctx.lineWidth=1;ctx.setLineDash([2,4]);ctx.beginPath();ctx.arc(cs.sx,cs.sy,rPx,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);});}
+function drawOrbitalPaths(){if(!$id('chk-orbits').checked)return;const sys=getSystemDef();const _c=starCom();const cs0=toS(_c.x,_c.y);const sA=bodies.find(b=>b.isStar&&b.name!=='Star B'),sB=bodies.find(b=>b.name==='Star B');(sys.planets||[]).forEach(pd=>{const h=pd.host==='A'?sA:pd.host==='B'?sB:null;const cs=h?toS(h.x,h.y):cs0;const rPx=pd.a*cam.zoom;if(rPx<2||rPx>10000)return;ctx.strokeStyle=hexRGBA(pd.color,.07);ctx.lineWidth=1;ctx.setLineDash([2,4]);ctx.beginPath();ctx.arc(cs.sx,cs.sy,rPx,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);});}
 
-function drawHabitableZone(){if(!$id('chk-habzone').checked)return;const sys=getSystemDef();if(!sys.habZone)return;const _c=starCom();const cs=toS(_c.x,_c.y);const inner=sys.habZone[0]*cam.zoom,outer=sys.habZone[1]*cam.zoom;if(inner<1)return;ctx.fillStyle='rgba(46,204,113,.03)';ctx.beginPath();ctx.arc(cs.sx,cs.sy,outer,0,Math.PI*2);ctx.arc(cs.sx,cs.sy,inner,0,Math.PI*2,true);ctx.fill();ctx.strokeStyle='rgba(46,204,113,.08)';ctx.lineWidth=1;ctx.setLineDash([3,5]);ctx.beginPath();ctx.arc(cs.sx,cs.sy,inner,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.arc(cs.sx,cs.sy,outer,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);}
+// Kopparapu 2014 conservative zone around each star (SFAstro.hz), centred
+// on the star itself: in a wide binary each star has its own zone.
+function drawHabitableZone(){
+  if(!$id('chk-habzone').checked)return;
+  const sys=getSystemDef();
+  const zones=[[bodies.find(b=>b.isStar&&b.name!=='Star B'),sys.habZone],[bodies.find(b=>b.name==='Star B'),sys.habZoneB]];
+  for(const [st,hz] of zones){
+    if(!st||!hz)continue;
+    const cs=toS(st.x,st.y),inner=hz[0]*cam.zoom,outer=hz[1]*cam.zoom;
+    if(outer<2)continue;
+    ctx.fillStyle='rgba(46,204,113,.04)';ctx.beginPath();ctx.arc(cs.sx,cs.sy,outer,0,Math.PI*2);ctx.arc(cs.sx,cs.sy,inner,0,Math.PI*2,true);ctx.fill();
+    ctx.strokeStyle='rgba(46,204,113,.18)';ctx.lineWidth=1;ctx.setLineDash([3,5]);
+    ctx.beginPath();ctx.arc(cs.sx,cs.sy,inner,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.arc(cs.sx,cs.sy,outer,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+  }
+}
 
-function drawTrails(){if(!$id('chk-trails').checked)return;for(const b of bodies){if((b.isIntruder&&!b.active)||b.isStar)continue;const t=trails[b.name];if(!t||t.count<2)continue;const len=t.count,step=Math.max(1,Math.floor(len/500));ctx.lineWidth=b.isIntruder?1.2:b.name==='Earth'?1.5:.8;ctx.beginPath();let started=false;for(let i=0;i<len;i+=step){const pt=t.get(i);const p=toS(pt.x,pt.y);if(!started){ctx.moveTo(p.sx,p.sy);started=true;}else ctx.lineTo(p.sx,p.sy);}ctx.strokeStyle=cachedHexRGBA(b.color,b.isIntruder?.2:.15);ctx.stroke();}}
+// (1.9, R5) Trails live on a cached offscreen layer. While the camera is
+// still, each frame strokes only the segments added since the last frame;
+// the layer is repainted in full when the camera moves, on rewind, and
+// every second (so points that fell off the ring buffer disappear). This
+// was the largest share of a 66 ms frame.
+const trailCache={canvas:null,ctx:null,cx:NaN,cy:NaN,cz:NaN,w:0,h:0,drawn:{},dirty:true,age:0,grew:false};
+function trailStroke(c,b,t,from){
+  const len=t.count;if(len-from<2)return;
+  const z=cam.zoom,ox=W/2-cam.x*z,oy=H/2+cam.y*z;
+  const step=from===0?Math.max(1,Math.floor(len/500)):1;
+  c.lineWidth=b.isIntruder?1.2:b.name==='Earth'?1.5:.8;
+  c.strokeStyle=cachedHexRGBA(b.color,b.isIntruder?.2:.15);
+  c.beginPath();
+  let pt=t.get(from);c.moveTo(ox+pt.x*z,oy-pt.y*z);
+  for(let i=from+step;i<len;i+=step){pt=t.get(i);c.lineTo(ox+pt.x*z,oy-pt.y*z);}
+  pt=t.get(len-1);c.lineTo(ox+pt.x*z,oy-pt.y*z);
+  c.stroke();
+}
+function drawTrails(){
+  if(!$id('chk-trails').checked)return;
+  const tc=trailCache;
+  if(!tc.canvas){tc.canvas=document.createElement('canvas');tc.ctx=tc.canvas.getContext('2d');}
+  if(tc.w!==W||tc.h!==H||tc.canvas.width!==Math.round(W*dpr)){tc.w=W;tc.h=H;tc.canvas.width=Math.round(W*dpr);tc.canvas.height=Math.round(H*dpr);tc.dirty=true;}
+  const moved=Math.abs(cam.zoom-tc.cz)>1e-9*cam.zoom||Math.abs((cam.x-tc.cx)*cam.zoom)>0.05||Math.abs((cam.y-tc.cy)*cam.zoom)>0.05;
+  tc.age+=frameDt;
+  const c=tc.ctx;
+  if(tc.dirty||moved||tc.age>1000){
+    c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,W,H);
+    for(const b of bodies){
+      if((b.isIntruder&&!b.active)||b.isStar)continue;
+      const t=trails[b.name];if(!t)continue;
+      trailStroke(c,b,t,0);tc.drawn[b.name]=t.total;
+    }
+    tc.cx=cam.x;tc.cy=cam.y;tc.cz=cam.zoom;tc.dirty=false;tc.age=0;
+  } else if(tc.grew){
+    for(const b of bodies){
+      if((b.isIntruder&&!b.active)||b.isStar)continue;
+      const t=trails[b.name];if(!t)continue;
+      const fresh=t.total-(tc.drawn[b.name]||0);
+      if(fresh>0){trailStroke(c,b,t,Math.max(0,t.count-fresh-1));tc.drawn[b.name]=t.total;}
+    }
+  }
+  tc.grew=false;
+  ctx.drawImage(tc.canvas,0,0,W,H);
+}
 
 function drawGravityLines(){if(!$id('chk-grav').checked)return;const planets=bodies.filter(b=>b.isPlanet);if(!planets.length)return;const target=planets.find(b=>b.name==='Earth')||planets[0];const es=toS(target.x,target.y);for(const b of bodies){if(b===target)continue;if(b.isIntruder&&!b.active)continue;if(!b.isStar&&!b.isIntruder)continue;const dx=b.x-target.x,dy=b.y-target.y,dist=Math.sqrt(dx*dx+dy*dy),force=G*b.mass/(dist*dist);const bs=toS(b.x,b.y),alpha=Math.min(.3,.02*b.mass/Math.max(.001,dist*dist));ctx.strokeStyle=hexRGBA(b.color,alpha);ctx.lineWidth=1;ctx.setLineDash([2,5]);ctx.beginPath();ctx.moveTo(es.sx,es.sy);ctx.lineTo(bs.sx,bs.sy);ctx.stroke();ctx.setLineDash([]);}}
 
@@ -940,7 +1023,14 @@ function drawStar(b){
   const g=makeGrad(s.sx,s.sy,0,r*5,[[0,hexRGBA(c,.2)],[.3,hexRGBA(c,.07)],[1,hexRGBA(c,0)]]);ctx.fillStyle=g;ctx.beginPath();ctx.arc(s.sx,s.sy,r*5,0,Math.PI*2);ctx.fill();
   const rayAlpha=hexRGBA(c,.06);for(let i=0;i<6;i++){const a=(i/6)*Math.PI*2+time*.08,len=r*(1.4+Math.sin(time*1.2+i)*.2);ctx.strokeStyle=rayAlpha;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(s.sx+Math.cos(a)*r,s.sy+Math.sin(a)*r);ctx.lineTo(s.sx+Math.cos(a)*len,s.sy+Math.sin(a)*len);ctx.stroke();}
   const cg=makeGrad(s.sx-r*.2,s.sy-r*.2,0,r,[[0,lighten(c,60)],[.4,c],[1,darken(c,40)]]);ctx.fillStyle=cg;ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.fill();
-  if(showLabels){ctx.fillStyle='#A7AAB0';ctx.font=`${labelFontPx()}px "DM Sans"`;ctx.textAlign='center';ctx.fillText(b.name.toUpperCase(),s.sx,s.sy+r+12);}
+  if(showLabels){ctx.fillStyle='#A7AAB0';const lf=labelFontPx();ctx.font=`${lf}px "DM Sans"`;ctx.textAlign='center';labelSlot(s.sx,s.sy+r+12,ctx.measureText(b.name).width,lf*1.15);ctx.fillText(b.name.toUpperCase(),s.sx,s.sy+r+12);}
+}
+const _labels=[];
+/** Reserve a label box (baseline-centred at x,y); false when it would overlap. */
+function labelSlot(x,y,w,h){
+  const bx=x-w/2-3,by=y-h*0.85,bw=w+6;
+  for(const r of _labels)if(bx<r.x+r.w&&bx+bw>r.x&&by<r.y+r.h&&by+h>r.y)return false;
+  _labels.push({x:bx,y:by,w:bw,h});return true;
 }
 
 function drawPlanet(b){
@@ -954,7 +1044,17 @@ function drawPlanet(b){
   // Rings for gas giants with size > 1
   if(b.ptype==='gas'&&b.size>1&&r>3){ctx.save();ctx.translate(s.sx,s.sy);ctx.scale(1,.3);ctx.strokeStyle=hexRGBA(b.color,ej?.15:.3);ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,r*1.8,0,Math.PI*2);ctx.stroke();ctx.restore();}
   if(ej){ctx.fillStyle='rgba(150,180,210,.25)';ctx.beginPath();ctx.arc(s.sx,s.sy,r,0,Math.PI*2);ctx.fill();}
-  if(showLabels){const lf=labelFontPx();ctx.fillStyle=ej?'#9799A0':'#A7AAB0';ctx.font=`${lf}px "DM Sans"`;ctx.textAlign='center';ctx.fillText((b.sym||'●')+' '+b.name.toUpperCase(),s.sx,s.sy+r+11);if(ej){ctx.fillStyle='#15C17B';ctx.fillText('EJECTED',s.sx,s.sy+r+11+lf*1.15);}}
+  if(showLabels){
+    // (R6) Skip a planet label that would overlap one already drawn this
+    // frame; zoom in and it returns.
+    const lf=labelFontPx(),cap=capturedSet.has(b.name);ctx.font=`${lf}px "DM Sans"`;ctx.textAlign='center';
+    const txt=(b.sym||'●')+' '+b.name.toUpperCase();
+    const lines=(ej||cap)?2:1;
+    if(labelSlot(s.sx,s.sy+r+11,ctx.measureText(txt).width,lf*1.15*lines)){
+      ctx.fillStyle=ej?'#9799A0':'#A7AAB0';ctx.fillText(txt,s.sx,s.sy+r+11);
+      if(ej||cap){ctx.fillStyle=ej?'#FF658B':'#FFB800';ctx.fillText(ej?'EJECTED':'CAPTURED',s.sx,s.sy+r+11+lf*1.15);}
+    }
+  }
 }
 
 function drawIntruder(b){
@@ -976,9 +1076,12 @@ function updateData(){
   SFSim.text($id('d-itype'),ITYPES[intruderType].name);SFSim.style($id('d-itype'),'color',ITYPES[intruderType].color);
   SFSim.text($id('d-imass'),getIntruderMass().display);SFSim.style($id('d-imass'),'color',ITYPES[intruderType].color);
   if(intruder&&intruder.active&&star0){const dx=intruder.x-star0.x,dy=intruder.y-star0.y;SFSim.text($id('d-isdist'),Math.sqrt(dx*dx+dy*dy).toFixed(2)+' AU');}else SFSim.text($id('d-isdist'),'—');
-  SFSim.text($id('d-pej'),ejectedSet.size+' / '+nPlanets);SFSim.style($id('d-pej'),'color',ejectedSet.size>0?'#2ecc71':'var(--t2)');
+  SFSim.text($id('d-pej'),ejectedSet.size+' / '+nPlanets);SFSim.style($id('d-pej'),'color',ejectedSet.size>0?'var(--sf-crimson-text)':'var(--t2)');
+  SFSim.text($id('d-pcap'),String(capturedSet.size));
+  SFSim.text($id('d-energy'),energyErr==null?'—':energyErr.toExponential(1));
+  SFSim.style($id('d-energy'),'color',energyErr!=null&&energyErr>RP.PUBLISH_MAX_ENERGY_ERROR?'var(--sf-crimson-text)':'var(--t1)');
   SFSim.text($id('d-time'),simTime.toFixed(2)+' yr');
-  let html='';for(const b of bodies){if(!b.isPlanet)continue;const ej=ejectedSet.has(b.name);html+=`<div class="dr"><span class="dl">${b.sym||'●'} ${b.name}</span><span class="dv" style="color:${ej?'#2ecc71':b.color}">${ej?'EJECTED':'orbiting'}</span></div>`;}
+  let html='';for(const b of bodies){if(!b.isPlanet)continue;const ej=ejectedSet.has(b.name);const cp=capturedSet.has(b.name);html+=`<div class="dr"><span class="dl">${b.sym||'●'} ${b.name}</span><span class="dv" style="color:${ej?'var(--sf-crimson-text)':cp?'var(--sf-amber-text)':'var(--t2)'}">${ej?'// ejected':cp?'captured':'orbiting'}</span></div>`;}
   SFSim.html($id('planet-status-list'),html);
 }
 
@@ -1008,23 +1111,31 @@ const stepBudget=SFSim.stepBudget();
 const rewindBudget=SFSim.stepBudget();
 let snapshotClock=0;
 const SNAPSHOT_MS=66.7; // one rewind snapshot per ~4 frames, as before, but on the clock
+// The step size is fixed per system (RoguePhysics.stepPlan) and never
+// enlarged. A time scale beyond the per-frame step cap runs at the cap,
+// and the time-scale readout says so (R3).
 function stepPlan(){
   const ts=parseFloat($id('sl-time').value);
-  const sc=getSystemScale();const dtScale=Math.min(1,sc.minOrb/.5);
-  const dt=dt_base*dtScale;
-  const compensation=Math.min(80,Math.max(1,1/dtScale));
-  const stepsNeeded=Math.floor(60*ts*compensation);
-  const perFrame=Math.max(1,Math.min(500,stepsNeeded));
-  // If we hit the cap, increase dt to compensate so high time scales still work
-  const dtMul=stepsNeeded>500?stepsNeeded/500:1;
-  return{perFrame,effDt:dt*dtMul};
+  const p=RP.stepPlan(getSystemDef(),ts);
+  return{perFrame:p.perFrame,effDt:p.dt,plan:p};
+}
+function updateTimeNote(){
+  const p=RP.stepPlan(getSystemDef(),parseFloat($id('sl-time').value));
+  const dps=p.yearsPerSecond*365.25;
+  const rate=dps>=365.25?(p.yearsPerSecond).toFixed(2)+' yr/s':(dps>=10?Math.round(dps):dps.toFixed(1))+' d/s';
+  SFSim.text($id('time-note'),p.capped
+    ?'Running at '+p.effectiveTs.toFixed(p.effectiveTs<1?2:1)+'× ('+rate+'): the step limit for this system. Faster would mean larger steps, and larger steps give wrong orbits.'
+    :rate+' simulated');
 }
 function animate(timestamp,dt){
   frameDt=dt;
   // Cache checkbox reads once per frame to avoid repeated DOM queries in draw functions
   showLabels=$id('chk-labels').checked;
   updateCam();drawStars2();drawGrid();drawHabitableZone();drawOrbitalPaths();drawTrails();drawGravityLines();
-  for(const b of bodies){if(b.isStar)drawStar(b);else if(b.isIntruder){if(b.active)drawIntruder(b);}else drawPlanet(b);}
+  _labels.length=0;
+  for(const b of bodies)if(b.isStar)drawStar(b);
+  for(const b of bodies)if(b.isIntruder&&b.active)drawIntruder(b);
+  for(const b of bodies)if(b.isPlanet)drawPlanet(b);
   drawVelocityVectors();drawGravityVectors();
 
   if(isRewinding&&launched){
@@ -1039,12 +1150,16 @@ function animate(timestamp,dt){
     // slows the simulation down instead of stalling the page.
     const steps=Math.min(stepBudget.take(dt,plan.perFrame*60),plan.perFrame*2);
     for(let i=0;i<steps;i++)step(plan.effDt);
-    if(steps>0)refreshStatus();
+    if(steps>0){refreshStatus();trailCache.grew=true;}
     snapshotClock+=dt;
     if(stateHistory.length===0||snapshotClock>=SNAPSHOT_MS){snapshotClock=0;saveState();}
   }
   // Throttle DOM updates to ~100ms (every ~6 frames at 60fps)
-  if(timestamp-lastDomUpdate>100){lastDomUpdate=timestamp;updateData();updateAftermathButton();}
+  if(timestamp-lastDomUpdate>100){
+    lastDomUpdate=timestamp;
+    if(launched&&E0!=null)energyErr=RP.energyError(RP.totalEnergy(bodies,true,soft),E0);
+    updateData();updateAftermathButton();updateTimeNote();
+  }
 }
 
 // === BUILDER ===
@@ -1106,7 +1221,7 @@ function applyCustomSystem(){
   const starType=starTypeEl.value==='auto'?starTypeFromMass(starMass):starTypeEl.value;
   const isBinary=document.getElementById('b-binary').checked;
   let binary=null;
-  if(isBinary){binary={mass:parseFloat(document.getElementById('b-star2-mass').value)||.9,type:starTypeFromMass(parseFloat(document.getElementById('b-star2-mass').value)||.9),separation:parseFloat(document.getElementById('b-sep').value)||23};}
+  if(isBinary){binary={mass:parseFloat(document.getElementById('b-star2-mass').value)||.9,type:starTypeFromMass(parseFloat(document.getElementById('b-star2-mass').value)||.9),separation:parseFloat(document.getElementById('b-sep').value)||23,e:0};}
 
   const planets=builderPlanets.map((p,i)=>{
     const massInSolar=p.type==='gas'?p.mass*MJ:p.mass*ME;
@@ -1115,11 +1230,8 @@ function applyCustomSystem(){
     return{name:p.name,a:p.dist,mass:massInSolar,type:p.type,color:c,size:sz,sym:p.name.slice(0,1).toLowerCase()};
   }).sort((a,b)=>a.a-b.a);
 
-  // Compute habitable zone (rough: sqrt(L) * Earth HZ, L ~ M^3.5 for main sequence)
-  const L=Math.pow(starMass,3.5);
-  const habZone=[0.95*Math.sqrt(L),1.37*Math.sqrt(L)];
-
-  customSystem={name,starMass,starType,binary,planets,habZone,defaultZoom:55,note:'Custom system'};
+  assignHosts(planets,binary);
+  customSystem=applyHabZones({name,starMass,starType,binary,planets,defaultZoom:55,note:'Custom system'});
   // Auto-zoom
   const maxA=planets.length?Math.max(...planets.map(p=>p.a)):5;
   customSystem.defaultZoom=Math.min(W,H)/(maxA*2.5);
@@ -1129,6 +1241,14 @@ function applyCustomSystem(){
   closeBuilder();
   reset();
   saveToURL();
+}
+
+// In a custom binary, a planet well inside the separation circles star A
+// (S-type); one outside it circles both (P-type). Before 1.9 every planet
+// circled the barycentre, which flung inner planets out at once.
+function assignHosts(planets,binary){
+  if(!binary)return;
+  planets.forEach(p=>{p.host=p.a<0.5*binary.separation?'A':null;});
 }
 
 function updateStarPreview(){
@@ -1163,9 +1283,9 @@ function loadFromURL(){
       const massInSolar=p.type==='gas'?p.mass*MJ:p.mass*ME;
       return{name:p.name,a:p.dist,mass:massInSolar,type:p.type,color:planetColor(p.type,i),size:PLANET_TYPES[p.type]?PLANET_TYPES[p.type].sizeRange[0]+.2:.5,sym:p.name.slice(0,1).toLowerCase()};
     }).sort((a,b)=>a.a-b.a);
-    const L=Math.pow(data.sm,3.5);
     const maxA=planets.length?Math.max(...planets.map(p=>p.a)):5;
-    customSystem={name:data.n,starMass:data.sm,starType,binary,planets,habZone:[.95*Math.sqrt(L),1.37*Math.sqrt(L)],defaultZoom:Math.min(W,H)/(maxA*2.5),note:'Shared custom system'};
+    assignHosts(planets,binary);
+    customSystem=applyHabZones({name:data.n,starMass:data.sm,starType,binary,planets,defaultZoom:Math.min(W,H)/(maxA*2.5),note:'Shared custom system'});
     currentSystem='custom';
     document.getElementById('sys-select').value='custom';
     return true;
@@ -1191,6 +1311,7 @@ canvas.addEventListener('touchend',()=>{isDrag=false;touchDist=0;});
 document.getElementById('btn-go').addEventListener('click',launch);
 document.getElementById('btn-reset').addEventListener('click',reset);
 document.getElementById('btn-publish-aftermath').addEventListener('click',()=>{
+  if(energyErr!=null&&energyErr>RP.PUBLISH_MAX_ENERGY_ERROR){updateAftermathButton();return;}
   const payload=survivorsToSystemPayload();
   if(!payload)return;
   // Reuses the exact STELLARFORGE_SAVE message the 0.7130 fix already made
@@ -1202,7 +1323,10 @@ document.getElementById('btn-publish-aftermath').addEventListener('click',()=>{
       name:payload.n,
       outputType:'system',
       parameters:payload,
-      results:{survivorCount:payload.p.length,encounterType:intruderType||'unknown'},
+      results:{survivorCount:payload.p.length,encounterType:intruderType||'unknown',
+        // Per-body outcomes and the encounter epoch (R4), for the
+        // Chronicle and for canon. Energy error says how far to trust it.
+        outcomes:bodyOrbitalReport(),epoch:encounterEpoch(),energyError:energyErr},
     },
   },'*');
 });
@@ -1323,12 +1447,19 @@ window.addEventListener('message', function(event) {
         // Brief S4: per-body orbital state so the parent app's consequence
         // flags can cite what the encounter actually did. `a0` is the
         // pre-encounter semi-major axis the body was built with; `a`/`e`
-        // are vis-viva elements from the live state against the primary
-        // (orbitalElementsFromState, the same function Publish Aftermath
-        // uses). `ejected` reads the live ejectedSet checkStatus() keeps.
+        // are the elements about the centre it is most bound to
+        // (RoguePhysics.outcome, the same function Publish Aftermath uses),
+        // with `outcome` retained | orbit_changed | captured | ejected.
         // Nothing here is recomputed on the parent side.
         habZone: ((getSystemDef() || {}).habZone || null),
-        bodies: bodyOrbitalReport()
+        bodies: bodyOrbitalReport(),
+        // 1.9 additions: the encounter epoch (years since launch) and the
+        // integration's relative energy error. Publishing is refused above
+        // publishMaxEnergyError.
+        epoch: encounterEpoch(),
+        energyError: energyErr,
+        publishMaxEnergyError: RP.PUBLISH_MAX_ENERGY_ERROR,
+        timeScale: { requested: parseFloat(document.getElementById('sl-time').value), effective: stepPlan().plan.effectiveTs }
       }
     };
     window.parent.postMessage({
