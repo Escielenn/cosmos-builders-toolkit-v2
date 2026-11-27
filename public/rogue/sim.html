@@ -65,7 +65,7 @@ canvas{display:block;position:absolute;top:0;left:0}
 #title .nav-links a:hover{color:var(--accent-cyan);border-color:rgba(21,193,123,.25);background:rgba(21,193,123,.06)}
 #title .nav-links a.science-link{color:rgba(21,193,123,.6);border-color:rgba(21,193,123,.2);background:rgba(21,193,123,.04)}
 #title .nav-links a.science-link:hover{color:var(--accent-cyan);border-color:rgba(21,193,123,.4);background:rgba(21,193,123,.1)}
-#badge{position:absolute;top:90px;left:18px;padding:6px 14px;font-size:9px;font-family:var(--font-display);font-weight:300;letter-spacing:2px;text-transform:uppercase;transition:all .5s;border-radius:0}
+#badge{position:absolute;top:104px;left:18px;padding:6px 14px;font-size:9px;font-family:var(--font-display);font-weight:300;letter-spacing:2px;text-transform:uppercase;transition:all .5s;border-radius:0}
 .st-orbit{background:rgba(21,193,123,.08);border:1px solid rgba(21,193,123,.2);color:var(--accent-cyan)}
 .st-perturb{background:rgba(255,165,0,.08);border:1px solid rgba(255,165,0,.2);color:#ffa500}
 .st-eject{background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.2);color:#2ecc71;animation:pulse 2s infinite}
@@ -73,7 +73,7 @@ canvas{display:block;position:absolute;top:0;left:0}
 .st-wait{background:rgba(0,229,160,.03);border:1px solid rgba(0,229,160,.08);color:rgba(0,229,160,.4)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.65}}
 
-#ctrl{position:absolute;top:130px;left:18px;padding:14px 18px;width:260px;max-height:calc(100vh - 210px);overflow-y:auto}
+#ctrl{position:absolute;top:144px;left:18px;padding:14px 18px;width:260px;max-height:calc(100vh - 224px);overflow-y:auto}
 #ctrl::-webkit-scrollbar{width:3px}#ctrl::-webkit-scrollbar-track{background:transparent}#ctrl::-webkit-scrollbar-thumb{background:rgba(0,229,160,.12)}
 .sh{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2.5px;text-transform:uppercase;color:rgba(0,229,160,.55);margin-top:14px;margin-bottom:6px;padding-bottom:3px;border-bottom:1px solid rgba(0,229,160,.1)}
 .sh:first-child{margin-top:0}
@@ -155,7 +155,24 @@ select option{background:#0F0F10;color:#c8c8c8}
 #kb-help .kh-desc{font-family:var(--font-body);font-size:13px;color:var(--text-secondary);text-align:right}
 @media(max-width:1024px){#ctrl{width:260px;top:160px;left:10px;max-height:calc(100vh - 240px)}#data{width:220px;font-size:11px;right:10px;max-height:calc(100vh - 140px)}}
 @media(max-width:768px){#title h1{font-size:20px}#badge{top:120px}#title .nav-links{gap:6px}#title .nav-links a{font-size:9px;padding:2px 6px}#builder{padding:20px}.b-row3{grid-template-columns:1.5fr 1fr 1fr 1fr 26px;gap:4px}}
-@media(max-width:480px){#data{display:none}#ctrl{width:calc(100vw - 20px)}#zoom-info{min-width:0;padding:6px 10px}#zoom-info .zh{display:none}.b-row3{grid-template-columns:1fr 1fr;gap:4px}.b-row3 button{grid-column:span 2}}
+@media(max-width:480px){#zoom-info{min-width:0;padding:6px 10px}#zoom-info .zh{display:none}.b-row3{grid-template-columns:1fr 1fr;gap:4px}.b-row3 button{grid-column:span 2}}
+/* Below 1024px (and on a phone on its side) the two panels left no sky to
+   watch: #ctrl covered the left of the canvas and #data the right, and on a
+   phone #data was simply hidden, so its readouts were unreachable. Both now
+   sit behind toggle buttons in the bottom-left dock, the pattern the other
+   sims use (sizes and spacing in sim-mobile.css), and open one at a time
+   above the dock. */
+#mobile-toggle-controls,#mobile-toggle-data{display:none;position:fixed;z-index:25;border-radius:0;font-size:16px;text-align:center;padding:0;background:var(--surface-base);border:1px solid var(--border-subtle);color:var(--text-secondary);cursor:pointer;pointer-events:all}
+@media(max-width:1024px),(max-height:500px){
+  #ctrl,#data{display:none}
+  #ctrl.mobile-visible,#data.mobile-visible{display:block}
+  #mobile-toggle-controls,#mobile-toggle-data{display:block}
+  #ctrl,#data{top:auto;bottom:var(--sim-dock-clear);left:12px;right:12px;width:auto;max-height:calc(100% - var(--sim-dock-clear) - 110px)}
+}
+@media(max-width:640px),(max-height:500px){
+  #transport-dock{left:calc(116px + env(safe-area-inset-left));transform:none;bottom:var(--sim-dock-bottom);padding:0 6px}
+  #zoom-info{bottom:var(--sim-dock-bottom);right:12px}
+}
 </style>
 
   <link rel="stylesheet" href="/tools/_shared/sim-mobile.css">
@@ -265,6 +282,9 @@ select option{background:#0F0F10;color:#c8c8c8}
     <div id="planet-status-list"></div>
   </div>
 
+  <button id="mobile-toggle-controls" onclick="toggleMobilePanel('ctrl')" title="Toggle controls panel" aria-label="Toggle controls panel" aria-expanded="false" aria-controls="ctrl">☰</button>
+  <button id="mobile-toggle-data" onclick="toggleMobilePanel('data')" title="Toggle data readout panel" aria-label="Toggle data readout panel" aria-expanded="false" aria-controls="data">▤</button>
+
   <div id="zoom-info" class="p">
     <span class="zv" id="zv-text">—</span>
     <span class="zh">scroll · drag · space to launch · <span style="cursor:pointer;color:var(--accent-cyan)" onclick="document.getElementById('kb-help').classList.toggle('open')">?</span></span>
@@ -341,6 +361,17 @@ select option{background:#0F0F10;color:#c8c8c8}
 </div>
 
 <script>
+// Bottom-left drawer dock (below 1024px): one panel open at a time, and
+// each toggle reports its panel's state.
+function toggleMobilePanel(id){
+  const pairs={ctrl:'mobile-toggle-controls',data:'mobile-toggle-data'};
+  for(const [panelId,btnId] of Object.entries(pairs)){
+    const panel=document.getElementById(panelId);
+    const open=panelId===id?!panel.classList.contains('mobile-visible'):false;
+    panel.classList.toggle('mobile-visible',open);
+    document.getElementById(btnId).setAttribute('aria-expanded',String(open));
+  }
+}
 // ============================================================================
 // ROGUE — N-Body Gravitational Encounter Simulator
 // © 2026 Jason D. Batt, Ph.D. / Dreamside Studios

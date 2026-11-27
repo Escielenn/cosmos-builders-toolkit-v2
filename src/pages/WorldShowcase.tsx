@@ -155,9 +155,9 @@ function CascadeCoverageBar({ entities }: { entities: Entity[] }) {
   }, [entities]);
 
   return (
-    <div className="flex items-center gap-1 w-full">
+    <div className="grid grid-cols-2 min-[480px]:grid-cols-3 md:grid-cols-6 gap-x-1 gap-y-3 w-full">
       {CASCADE_STAGES.map((stage, i) => (
-        <div key={stage} className="flex-1 flex flex-col items-center gap-1.5">
+        <div key={stage} className="min-w-0 flex flex-col items-center gap-1.5">
           <div
             className="w-full h-2 transition-all duration-slow"
             style={{

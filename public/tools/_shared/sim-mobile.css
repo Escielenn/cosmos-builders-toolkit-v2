@@ -21,7 +21,10 @@
    editing four inline stylesheets and keeping them in step by hand.
    ========================================================================== */
 
-@media (max-width: 640px) {
+/* The phone floor also covers a phone on its side (844px wide is not a
+   desktop when it is 390px tall and driven by a thumb) and any touch-first
+   screen, such as a tablet, whatever its width. */
+@media (max-width: 640px), (max-height: 500px), (pointer: coarse) {
   /* ---- 1. Touch targets ------------------------------------------------ */
 
   button,
@@ -189,5 +192,64 @@
     white-space: normal !important;
     max-width: 92vw !important;
     text-align: center;
+  }
+}
+
+/* ==========================================================================
+   5. The drawer dock (tablet, phone, phone on its side).
+
+   Below 1024px each sim hides its side panels behind toggle buttons in the
+   bottom-left corner (Tidelock's pattern, copied into ExoForge, Solaris and
+   Rogue). The buttons were 36px, under the touch minimum, and spaced for
+   36px, so the phone floor above (which makes every button 44px) pushed
+   them into each other. One size and one spacing for all of them here; a
+   sim positions its own drawers and any other bottom chrome against
+   --sim-dock-clear, the height the dock takes from the bottom edge.
+   ========================================================================== */
+
+:root {
+  --sim-dock-bottom: calc(14px + env(safe-area-inset-bottom));
+  --sim-dock-clear: calc(14px + 44px + 12px + env(safe-area-inset-bottom));
+}
+
+@media (max-width: 1024px), (max-height: 500px) {
+  #mobile-toggle-controls,
+  #mobile-toggle-data,
+  #mobile-toggle-main,
+  #mobile-toggle-search {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    line-height: 44px !important;
+    bottom: var(--sim-dock-bottom) !important;
+  }
+  #mobile-toggle-controls,
+  #mobile-toggle-main {
+    left: calc(12px + env(safe-area-inset-left)) !important;
+  }
+  #mobile-toggle-data {
+    left: calc(64px + env(safe-area-inset-left)) !important;
+  }
+  #mobile-toggle-search {
+    left: calc(116px + env(safe-area-inset-left)) !important;
+  }
+  /* The open drawer's toggle reads as pressed (colour and border, not
+     opacity). */
+  #mobile-toggle-controls[aria-expanded="true"],
+  #mobile-toggle-data[aria-expanded="true"],
+  #mobile-toggle-main[aria-expanded="true"],
+  #mobile-toggle-search[aria-expanded="true"] {
+    border-color: var(--sf-accent, #15C17B) !important;
+    color: #FAFAFA !important;
+  }
+}
+
+@media (max-width: 640px), (max-height: 500px) {
+  /* Mouse instructions ("drag to orbit, scroll to zoom", keyboard help)
+     describe a desk, not a phone, and on a phone they landed on top of the
+     dock and the title. Touch works without them. */
+  #drag-hint,
+  #kb-help {
+    display: none !important;
   }
 }

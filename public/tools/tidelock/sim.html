@@ -156,6 +156,17 @@ button.active{background:rgba(21,193,123,0.1);border-color:var(--sf-accent);colo
 #temp-graph{position:fixed;bottom:40px;right:18px;z-index:10;background:#0E0E0F;border:1px solid #41454D;padding:8px;pointer-events:none}
 #temp-graph .tg-title{font-family:var(--font-display);font-weight:300;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(0,229,160,0.55);margin-bottom:6px;text-align:center}
 @media(max-width:1024px){#biome-legend{display:none !important}#kb-help{display:none !important}#temp-graph{display:none !important}}
+/* Drawers open above the dock (sim-mobile.css), not on top of it. On a
+   phone the scale note moves up beside the zoom readout, left-aligned,
+   instead of wrapping across the dock at the bottom edge. */
+@media(max-width:1024px),(max-height:500px){
+  #controls,#readout{bottom:var(--sim-dock-clear)}
+}
+@media(max-width:640px),(max-height:500px){
+  #controls,#readout{left:12px;right:12px;max-height:calc(100% - var(--sim-dock-clear) - 110px)}
+  #scale-note{left:12px;right:12px;bottom:var(--sim-dock-clear);transform:none;max-width:none !important;text-align:left !important;white-space:normal}
+  #zoom-info{bottom:var(--sim-dock-bottom)}
+}
 </style>
 
   <link rel="stylesheet" href="../_shared/sim-mobile.css">
@@ -266,8 +277,8 @@ button.active{background:rgba(21,193,123,0.1);border-color:var(--sf-accent);colo
 <div id="drag-hint">DRAG TO ORBIT IN 3D · SCROLL TO ZOOM · ZOOM OUT FOR ORBITAL VIEW</div>
 <div id="scale-note">⚠ Orbital distances and star size are shown at approximate scale for visualization. All physics calculations use true values.</div>
 <div id="tooltip"></div>
-<button id="mobile-toggle-controls" onclick="toggleMobilePanel('controls')" title="Toggle controls panel" aria-label="Toggle controls panel">☰</button>
-<button id="mobile-toggle-data" onclick="toggleMobilePanel('readout')" title="Toggle data readout panel" aria-label="Toggle data readout panel">📊</button>
+<button id="mobile-toggle-controls" onclick="toggleMobilePanel('controls')" title="Toggle controls panel" aria-label="Toggle controls panel" aria-expanded="false" aria-controls="controls">☰</button>
+<button id="mobile-toggle-data" onclick="toggleMobilePanel('readout')" title="Toggle data readout panel" aria-label="Toggle data readout panel" aria-expanded="false" aria-controls="readout">▤</button>
 
 <div id="modal-overlay" onclick="if(event.target===this)this.classList.remove('visible')">
   <div id="modal">
@@ -1408,6 +1419,9 @@ function toggleMobilePanel(id){
   const other=id==='controls'?'readout':'controls';
   document.getElementById(other).classList.remove('mobile-visible');
   el.classList.toggle('mobile-visible');
+  // Each toggle reports its drawer's state (styled in sim-mobile.css).
+  document.getElementById('mobile-toggle-controls').setAttribute('aria-expanded',String(document.getElementById('controls').classList.contains('mobile-visible')));
+  document.getElementById('mobile-toggle-data').setAttribute('aria-expanded',String(document.getElementById('readout').classList.contains('mobile-visible')));
 }
 
 // ── Presets with Lerp ──

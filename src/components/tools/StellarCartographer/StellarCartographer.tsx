@@ -6,6 +6,7 @@
 
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { SlidersHorizontal, List } from 'lucide-react';
 import PublishToWorldDialog from '@/components/simulators/PublishToWorldDialog';
 import { useWorldLayoutContext } from '@/contexts/WorldLayoutContext';
 import type { SimulatorPayload } from '@/hooks/use-simulation-save';
@@ -93,6 +94,8 @@ const cellKey = (cx: number, cy: number) => (cx + 4096) * 8192 + (cy + 4096);
 const StellarCartographer: React.FC = () => {
   // Refs
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  /** CSS size of the map and the pixel ratio of its backing store (resizeCanvas). */
+  const canvasViewRef = useRef({ w: 1, h: 1, dpr: 1 });
   const minimapRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>();
@@ -111,6 +114,8 @@ const StellarCartographer: React.FC = () => {
   // State
   const [galaxyName, setGalaxyName] = useState('Unnamed Galaxy');
   const [config, setConfig] = useState<GalaxyConfig>(DEFAULT_CONFIG);
+  /** Below 1024px the side panels are drawers behind the dock; which is open. */
+  const [mobilePanel, setMobilePanel] = useState<'controls' | 'data' | null>(null);
   const [view, setViewState] = useState<ViewConfig>(DEFAULT_VIEW);
   const [display, setDisplay] = useState<DisplayConfig>(DEFAULT_DISPLAY);
   /**
@@ -301,8 +306,8 @@ const StellarCartographer: React.FC = () => {
     const projected = project3D(wx, wy, wz);
     return {
       ...projected,
-      screenX: (projected.x - camera.x) * camera.zoom + canvas.width / 2,
-      screenY: (projected.y - camera.y) * camera.zoom + canvas.height / 2
+      screenX: (projected.x - camera.x) * camera.zoom + canvasViewRef.current.w / 2,
+      screenY: (projected.y - camera.y) * camera.zoom + canvasViewRef.current.h / 2
     };
   }, [project3D]);
 
@@ -623,8 +628,10 @@ const StellarCartographer: React.FC = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const w = canvas.width;
-    const h = canvas.height;
+    // Draw in CSS pixels; the backing store is that times the pixel ratio
+    // (see resizeCanvas), so the map stays sharp on high-density screens.
+    const { w, h, dpr } = canvasViewRef.current;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const camera = cameraRef.current;
     const zoom = camera.zoom;
 
@@ -1333,9 +1340,12 @@ const StellarCartographer: React.FC = () => {
       const w = container.clientWidth;
       const h = container.clientHeight;
       if (w === 0 || h === 0) return;
-      if (canvas.width !== w || canvas.height !== h) {
-        canvas.width = w;
-        canvas.height = h;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const bw = Math.round(w * dpr), bh = Math.round(h * dpr);
+      canvasViewRef.current = { w, h, dpr };
+      if (canvas.width !== bw || canvas.height !== bh) {
+        canvas.width = bw;
+        canvas.height = bh;
         needsDrawRef.current = true;
       }
     };
@@ -1596,8 +1606,8 @@ const StellarCartographer: React.FC = () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
       const camera = cameraRef.current;
-      const worldX = (coords.x - canvas.width / 2) / camera.zoom + camera.x;
-      const worldY = (coords.y - canvas.height / 2) / camera.zoom + camera.y;
+      const worldX = (coords.x - canvasViewRef.current.w / 2) / camera.zoom + camera.x;
+      const worldY = (coords.y - canvasViewRef.current.h / 2) / camera.zoom + camera.y;
       setTargetCamera(prev => ({ x: worldX, y: worldY, zoom: Math.min(MAX_ZOOM, prev.zoom * 2) }));
     }
   };
@@ -1618,10 +1628,10 @@ const StellarCartographer: React.FC = () => {
       setTargetCamera(prev => {
         const newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, prev.zoom * factor));
         // Convert mouse position to world coords, then adjust camera so that point stays under cursor
-        const worldX = (mouseX - canvas.width / 2) / prev.zoom + prev.x;
-        const worldY = (mouseY - canvas.height / 2) / prev.zoom + prev.y;
-        const newX = worldX - (mouseX - canvas.width / 2) / newZoom;
-        const newY = worldY - (mouseY - canvas.height / 2) / newZoom;
+        const worldX = (mouseX - canvasViewRef.current.w / 2) / prev.zoom + prev.x;
+        const worldY = (mouseY - canvasViewRef.current.h / 2) / prev.zoom + prev.y;
+        const newX = worldX - (mouseX - canvasViewRef.current.w / 2) / newZoom;
+        const newY = worldY - (mouseY - canvasViewRef.current.h / 2) / newZoom;
         return { x: newX, y: newY, zoom: newZoom };
       });
     };
@@ -1943,7 +1953,7 @@ const StellarCartographer: React.FC = () => {
       </div>
 
       {/* ═══════════════════ CONTROL PANEL ═══════════════════ */}
-      <div className={styles.controlPanel}>
+      <div id="sc-controls" className={`${styles.controlPanel} ${mobilePanel === 'controls' ? styles.mobileOpen : ''}`}>
 
         {/* Galaxy Identity */}
         <div className={styles.sectionHeader}>Galaxy Identity</div>
@@ -2307,8 +2317,8 @@ const StellarCartographer: React.FC = () => {
             const canvas = canvasRef.current;
             if (!canvas) return;
             exportSVG({
-              width: canvas.width,
-              height: canvas.height,
+              width: canvasViewRef.current.w,
+              height: canvasViewRef.current.h,
               galaxyName,
               stars,
               backgroundStars,
@@ -2347,7 +2357,7 @@ const StellarCartographer: React.FC = () => {
       </div>
 
       {/* ═══════════════════ DATA PANEL ═══════════════════ */}
-      <div className={styles.dataPanel}>
+      <div id="sc-data" className={`${styles.dataPanel} ${mobilePanel === 'data' ? styles.mobileOpen : ''}`}>
         <div className={styles.sectionHeader}>Selected Star</div>
         {selectedStar ? (
           <div className={styles.selectedStar}>
@@ -2442,6 +2452,35 @@ const StellarCartographer: React.FC = () => {
             Selected
           </div>
         </div>
+      </div>
+
+      {/* ═══════════════════ DRAWER DOCK (below 1024px) ═══════════════════ */}
+      {/* The side panels left no map to look at on a tablet or phone, and
+          below 768px / 480px they were hidden outright, so their controls
+          were unreachable. They open one at a time from here instead. */}
+      <div className={styles.dock}>
+        <button
+          type="button"
+          className={styles.dockBtn}
+          onClick={() => setMobilePanel((p) => (p === 'controls' ? null : 'controls'))}
+          aria-expanded={mobilePanel === 'controls'}
+          aria-controls="sc-controls"
+          aria-label="Toggle controls panel"
+          title="Toggle controls panel"
+        >
+          <SlidersHorizontal className="w-4 h-4" aria-hidden />
+        </button>
+        <button
+          type="button"
+          className={styles.dockBtn}
+          onClick={() => setMobilePanel((p) => (p === 'data' ? null : 'data'))}
+          aria-expanded={mobilePanel === 'data'}
+          aria-controls="sc-data"
+          aria-label="Toggle data readout panel"
+          title="Toggle data readout panel"
+        >
+          <List className="w-4 h-4" aria-hidden />
+        </button>
       </div>
 
       {/* ═══════════════════ ZOOM PANEL ═══════════════════ */}

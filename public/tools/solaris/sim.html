@@ -47,7 +47,7 @@ canvas{display:block;position:fixed;top:0;left:0;width:100vw;height:100vh}
 .tool-sub{font-family:'MD Nichrome Test','DM Sans',sans-serif;font-size:10px;font-weight:300;letter-spacing:3px;text-transform:uppercase;color:rgba(0,229,160,0.35);margin-top:5px}
 .tool-ctx{font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(21,193,123,0.65);margin-top:6px;min-height:14px}
 .credit{font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:1px;color:rgba(255,255,255,0.12);margin-top:8px;text-transform:uppercase;pointer-events:none}
-#badge{position:fixed;top:128px;left:18px;padding:5px 14px;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;border-radius:0;transition:all 0.5s;z-index:20;background:rgba(21,193,123,0.03);border:1px solid #50555E;color:rgba(21,193,123,0.4)}
+#badge{position:fixed;top:136px;left:18px;padding:5px 14px;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;border-radius:0;transition:all 0.5s;z-index:20;background:rgba(21,193,123,0.03);border:1px solid #50555E;color:rgba(21,193,123,0.4)}
 #badge.active{background:rgba(21,193,123,0.08);border-color:#8C909A;color:var(--sf-accent)}
 #badge.gen{background:rgba(255,165,0,0.08);border-color:rgb(255,165,0);color:#FFA500;animation:pulse 1.2s infinite}
 #badge.ok{background:rgba(46,204,113,0.08);border-color:rgb(46,204,113);color:#2ECC71;animation:pulse 2s infinite}
@@ -158,6 +158,24 @@ input[type=text]:focus{border-color:var(--sf-accent)}
 #zoom-ind{position:fixed;bottom:16px;right:16px;text-align:right;z-index:20;pointer-events:none}
 #z-val{font-family:'DM Sans',sans-serif;font-weight:300;font-size:15px;color:rgba(21,193,123,0.5);line-height:1}
 #z-lbl{font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.18)}
+/* The drawer opens above the dock (sim-mobile.css). On a phone the
+   transport takes the rest of the bottom row beside the dock button instead
+   of centring over it, and the zoom readout and physics note move up out of
+   its way. */
+@media(max-width:1024px),(max-height:500px){
+  #main-panel{bottom:var(--sim-dock-clear)}
+}
+@media(max-width:640px),(max-height:500px){
+  #transport{left:calc(64px + env(safe-area-inset-left));right:auto;max-width:calc(100% - 76px - env(safe-area-inset-left) - env(safe-area-inset-right));bottom:var(--sim-dock-bottom);transform:none;justify-content:center;gap:4px;padding:0 6px;overflow-x:auto;scrollbar-width:thin}
+  #transport .t-div{display:none}
+  #spd-disp{padding:0 4px}
+  #zoom-ind,#phys-note{bottom:var(--sim-dock-clear)}
+  #zoom-ind{right:12px}
+  /* The Show Your Work button is 44px tall here (touch floor), which
+     pushes the title block down onto the status badge. */
+  #badge{top:158px}
+  #main-panel{left:12px;right:12px;max-height:calc(100% - var(--sim-dock-clear) - 120px);z-index:30}
+}
 #hz-leg{position:fixed;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:14px;align-items:center;z-index:20;background:#0D0D0F;border:1px solid #41454D;border-radius:0;padding:6px 16px;opacity:0;transition:opacity 0.5s;pointer-events:none}
 #hz-leg.vis{opacity:1}
 .leg-i{display:flex;align-items:center;gap:5px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.35)}
@@ -408,7 +426,7 @@ input[type=text]:focus{border-color:var(--sf-accent)}
 <div id="zoom-ind"><div id="z-val">1.0×</div><div id="z-lbl">Zoom</div></div>
 <div id="phys-note"></div>
 <div id="empty-hint"><p>Generate a system to begin</p><p>or drag planets from Palette</p></div>
-<button id="mobile-toggle-main" onclick="document.getElementById('main-panel').classList.toggle('mobile-visible')" title="Toggle controls panel" aria-label="Toggle controls panel">☰</button>
+<button id="mobile-toggle-main" onclick="this.setAttribute('aria-expanded',String(document.getElementById('main-panel').classList.toggle('mobile-visible')))" title="Toggle controls panel" aria-label="Toggle controls panel" aria-expanded="false" aria-controls="main-panel">☰</button>
 
 <script>
 // ═══════════════════════════════════════════════════════════════════════

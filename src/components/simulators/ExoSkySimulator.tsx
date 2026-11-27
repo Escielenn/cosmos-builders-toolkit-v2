@@ -609,16 +609,28 @@ export default function ExoSkyV2({
    * height-capped positions below keep them apart if the writer opens both.
    */
   const isMobile = useIsMobile();
+  /** Pixel ratio of the canvas backing store (set by the canvas setup). */
+  const canvasDprRef = useRef(1);
+  // A phone on its side is wide enough for the desktop layout but only
+  // ~250px of sky tall, so it starts with the panels collapsed too.
+  const [isShort, setIsShort] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia("(max-height: 500px)");
+    const onChange = () => setIsShort(mql.matches);
+    onChange();
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
   const [panelOpen, setPanelOpen] = useState(true);
   const [dataOpen, setDataOpen] = useState(true);
   const mobileDefaultsApplied = useRef(false);
   useEffect(() => {
-    if (isMobile && !mobileDefaultsApplied.current) {
+    if ((isMobile || isShort) && !mobileDefaultsApplied.current) {
       mobileDefaultsApplied.current = true;
       setPanelOpen(false);
       setDataOpen(false);
     }
-  }, [isMobile]);
+  }, [isMobile, isShort]);
   const [mwReady, setMwReady] = useState(false);
 
   // ── Refs for view during drag (avoids re-renders per mousemove) ──
@@ -1129,7 +1141,11 @@ export default function ExoSkyV2({
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
-    const W = canvas.width, H = canvas.height;
+    // The backing store is the canvas's CSS size times the pixel ratio (see
+    // the canvas setup below); everything is drawn in CSS pixels.
+    const dpr = canvasDprRef.current;
+    const W = canvas.width / dpr, H = canvas.height / dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const t = time * 0.001;
 
     // Read all values from refs (avoids dependency on state for render loop)
@@ -1816,21 +1832,25 @@ export default function ExoSkyV2({
     ctx.font = '16px "MD Nichrome", "Jura", sans-serif';
     ctx.fillStyle = withAlpha(tokens.sim.accent, 0.3);
     ctx.textAlign = "right";
-    ctx.fillText(`${Math.round(_fov)}°`, W-18, H-30);
+    // On a phone the credit line spans the bottom edge, so the readout
+    // sits above it instead of on top of it.
+    const hudLift = W < 480 ? 40 : 0;
+    ctx.fillText(`${Math.round(_fov)}°`, W-18, H-30-hudLift);
     ctx.font = '11px "DM Sans", sans-serif';
     ctx.fillStyle = "rgba(255,255,255,0.15)";
-    ctx.fillText("FIELD OF VIEW", W-18, H-18);
+    ctx.fillText("FIELD OF VIEW", W-18, H-18-hudLift);
 
     ctx.textAlign = "left";
     ctx.font = '11px "MD Nichrome", "Jura", sans-serif';
     ctx.fillStyle = "rgba(255,255,255,0.12)";
-    ctx.fillText(`${count} STARS IN VIEW`, 18, H-18);
+    // Above the credit line (the DOM footer at bottom:14), not under it.
+    ctx.fillText(`${count} STARS IN VIEW`, 18, H-44);
 
     if (_showMilkyWay && !_mwReady) {
       ctx.font = '12px "MD Nichrome", "Jura", sans-serif';
       ctx.fillStyle = "rgba(255,165,0,0.5)";
       ctx.textAlign = "center";
-      ctx.fillText("COMPUTING GALACTIC STRUCTURE...", W/2, H-18);
+      ctx.fillText("COMPUTING GALACTIC STRUCTURE...", W/2, H-44-hudLift);
     }
 
     // `stage` is a useCallback with an empty dep list, so it is stable for the
@@ -1846,8 +1866,18 @@ export default function ExoSkyV2({
     // Assigning canvas.width clears and reallocates the canvas even when
     // the value is unchanged, so only do it when the size really changed,
     // and at most once per burst of resize events.
+    //
+    // Sized to the canvas's own box, not the window: the sky sits under the
+    // header (and under the docked toolbar on phones), so a window-sized
+    // backing store was stretched to fit and the sky was squashed. The
+    // backing store follows devicePixelRatio (capped at 2, as the WebGL sims
+    // do) so stars and labels are sharp on high-density screens.
     const resize = () => {
-      const w = window.innerWidth, h = window.innerHeight;
+      const rect = canvas.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = Math.round(rect.width * dpr), h = Math.round(rect.height * dpr);
+      canvasDprRef.current = dpr;
       if (canvas.width !== w) canvas.width = w;
       if (canvas.height !== h) canvas.height = h;
     };
@@ -1858,6 +1888,10 @@ export default function ExoSkyV2({
       resizeTimer = setTimeout(resize, 80);
     };
     window.addEventListener("resize", onResize);
+    // The box also changes without a window resize (the toolbar docking
+    // above the sky on a phone, the bridge opening beside it).
+    const boxObserver = typeof ResizeObserver !== "undefined" ? new ResizeObserver(onResize) : null;
+    boxObserver?.observe(canvas);
     // (1.7) One loop from the shared helper: it parks while the tab is
     // hidden or the canvas is off screen, and hands back a clamped dt, which
     // is what the zoom easing below runs on.
@@ -1875,6 +1909,7 @@ export default function ExoSkyV2({
     return () => {
       loop.stop();
       window.removeEventListener("resize", onResize);
+      boxObserver?.disconnect();
       if (resizeTimer) clearTimeout(resizeTimer);
       if (fovPublishTimer.current) clearTimeout(fovPublishTimer.current);
     };
@@ -1910,8 +1945,9 @@ export default function ExoSkyV2({
     activePointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (activePointers.current.size === 1) {
       isDragging.current = true;
-      lastMouse.current = {x:e.clientX,y:e.clientY};
-      pointerDownPos.current = {x:e.clientX,y:e.clientY};
+      const box = e.currentTarget.getBoundingClientRect();
+      lastMouse.current = {x:e.clientX - box.left,y:e.clientY - box.top};
+      pointerDownPos.current = {x:e.clientX - box.left,y:e.clientY - box.top};
     } else if (activePointers.current.size === 2) {
       isDragging.current = false; // Cancel drag when pinching
       lastPinchDist.current = getPinchDist();
@@ -1919,7 +1955,9 @@ export default function ExoSkyV2({
   };
   const onMove = e => {
     activePointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    const mx = e.clientX, my = e.clientY;
+    // Canvas-local, the space the star positions are recorded in.
+    const box = e.currentTarget.getBoundingClientRect();
+    const mx = e.clientX - box.left, my = e.clientY - box.top;
 
     // Pinch-to-zoom with two active pointers
     if (activePointers.current.size >= 2) {
@@ -1964,7 +2002,8 @@ export default function ExoSkyV2({
     activePointers.current.delete(e.pointerId);
     if (activePointers.current.size < 2) lastPinchDist.current = 0;
 
-    const mx = e.clientX, my = e.clientY;
+    const box = e.currentTarget.getBoundingClientRect();
+    const mx = e.clientX - box.left, my = e.clientY - box.top;
     const totalDist = Math.sqrt((mx-pointerDownPos.current.x)**2 + (my-pointerDownPos.current.y)**2);
 
     // Sync ref values back to state on pointer up (single batched update)
