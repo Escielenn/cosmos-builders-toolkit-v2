@@ -43,8 +43,8 @@ export const CROP_AREA_NOTE =
 // ─── Spin gravity ───────────────────────────────────────────────────────
 
 export const G0 = 9.80665; // m/s²
-/** Rotation rate most people tolerate without adaptation (Hall 1997; Globus & Hall 2017). */
-export const RPM_COMFORT = 2;
+/** One comfort threshold, owned by Gravitas (1.9 F-18). */
+export { RPM_COMFORT } from "@/lib/gravitas/data";
 /** Above this, most crews need long adaptation and some never adapt. */
 export const RPM_ADAPTABLE = 4;
 export const WALKING_SPEED_MS = 1.4;

@@ -28,6 +28,9 @@ import {
   LOCAL_STORAGE_KEY,
 } from "@/lib/tool-worksheets/gravitas";
 import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
+import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
+import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
+import { manifest as gravitasManifest } from "@/tools/gravitas/manifest";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -158,8 +161,18 @@ const Gravitas = () => {
     localKey: LOCAL_STORAGE_KEY,
     loadedToast: true,
     onDraftCreated: (id, title) => entityMatch.check(id, title),
+    // 1.9 F-04: the hull's radius and spin rate, and the spin gravity they
+    // give, go to canon (Vessel and the Ark read them).
+    onSaved: (saved, { worksheetId: savedId }) =>
+      canonEmit.emit(saved, {
+        subjectId: canonSubjectId,
+        worksheetId: savedId,
+        inputs: { "vessel.radius": saved.spin.radius_m, "vessel.spin_rate": saved.spin.rotation_rpm },
+      }),
   });
   const { state: formState, setState: setFormState, worldId } = worksheet;
+  const canonSubjectId = useToolSubject(worksheet.worksheetId);
+  const canonEmit = useCanonEmit(gravitasManifest, worldId);
   const currentWorksheetId = worksheet.worksheetId;
   const currentWorksheetTitle = worksheet.worksheetTitle;
   const worksheetId = worksheet.worksheetId;
@@ -1197,6 +1210,7 @@ const Gravitas = () => {
       />
 
       <EntityMatchDialog {...entityMatch.dialogProps} />
+      <CanonConflictPrompt {...canonEmit} />
     </ToolPageLayout>
   );
 };

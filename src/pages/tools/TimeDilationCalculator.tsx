@@ -118,6 +118,17 @@ function velocityToSlider(velocity: number, maxV: number): number {
 
 // ─── Component ───────────────────────────────────────────────────────
 
+/** The active mode's results as canon values (years; γ unitless). */
+function paradoxOverrides(r: ReturnType<typeof calculateTimeDilation>): Record<string, number> {
+  if (!r.valid) return {};
+  const yr = 365.25 * 86400;
+  const out: Record<string, number> = {};
+  if (Number.isFinite(r.lorentzFactor) && r.lorentzFactor >= 1) out["route.dilation_factor"] = Number(r.lorentzFactor.toPrecision(6));
+  if (r.shipTimeSeconds > 0) out["route.proper_time"] = Number((r.shipTimeSeconds / yr).toPrecision(6));
+  if (r.observerTimeSeconds > 0) out["route.coordinate_time"] = Number((r.observerTimeSeconds / yr).toPrecision(6));
+  return out;
+}
+
 const TimeDilationCalculator = () => {
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const { toast } = useToast();
@@ -134,6 +145,10 @@ const TimeDilationCalculator = () => {
         subjectId: canonSubjectId,
         worksheetId: savedId,
         inputs: { "propulsion.cruise_fraction_c": parseFloat(saved.velocityProfile.velocityFraction) },
+        // 1.9 F-05: what the ACTIVE mode computed (constant, accelerate or
+        // warp), not the constant-speed field, plus the two times a scene
+        // cites: years aboard and years at home.
+        overrides: paradoxOverrides(calculateTimeDilation(saved)),
       }),
   });
   const { state: formState, setState: setFormState, worldId } = worksheet;

@@ -273,8 +273,14 @@ const DEFS: PredicateDef[] = [
   ...domain("vessel", "culture", "vessel", [
     ["crew_size", "Crew size", "scalar", { aliases: ["crewSize"] }],
     ["life_support_type", "Life support", "text"],
-    ["radius", "Spin radius", "scalar", { unit: "m", aliases: ["spinRadius"] }],
-    ["spin_gravity", "Spin gravity", "scalar", { unit: "g", producer: "gravitas", aliases: ["targetGravity"] }],
+    // 1.9 (/sf-fact, F-04): Gravitas is where a hull's spin is decided, so it
+    // owns the radius and the new spin rate and DERIVES spin gravity from
+    // them. `targetGravity` no longer aliases spin_gravity: it is Gravitas'
+    // artificial-gravity REQUEST (artificial.desired_g), not a computed spin
+    // gravity, and it resolves to legacy.targetGravity until it earns one.
+    ["radius", "Spin radius", "scalar", { unit: "m", producer: "gravitas", aliases: ["spinRadius"] }],
+    ["spin_rate", "Spin rate", "scalar", { unit: "rpm", producer: "gravitas", aliases: ["rotationRpm"] }],
+    ["spin_gravity", "Spin gravity", "scalar", { unit: "g", producer: "gravitas" }],
     ["layout", "Layout", "text"],
     ["culture_aboard", "Culture aboard", "text"],
     ["closed_loop_efficiency", "Closed-loop efficiency", "scalar", { aliases: ["closedLoopEfficiency"] }],

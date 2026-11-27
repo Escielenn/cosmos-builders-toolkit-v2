@@ -31,10 +31,20 @@ export interface ManifestEntity {
 
 export interface ManifestProduces {
   predicate: string;
-  /** `field:<dot.path>` (worksheet) or `derive:<derivation id>`. */
+  /**
+   * `field:<dot.path>` (worksheet), `derive:<derivation id>`, or
+   * `computed:<what>`: the tool's own engine computes it at save time and
+   * passes it as an override (Paradox's active-mode times).
+   */
   from: string;
   unit?: Unit;
   kind?: FactValue["kind"];
+  /**
+   * Multiply a numeric field by this before asserting, for a field the form
+   * stores in another unit (Impulse's top speed is % of c; the predicate is a
+   * fraction of c, so scale 0.01).
+   */
+  scale?: number;
 }
 
 export type OnMissing = "prompt" | "derive" | "link" | "ignore";

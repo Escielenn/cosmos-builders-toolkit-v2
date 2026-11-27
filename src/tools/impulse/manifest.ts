@@ -24,7 +24,12 @@ export const manifest: ToolManifest = {
 
   entities: [],
 
-  produces: [{ predicate: "propulsion.type", from: "field:system.type", kind: "text" }],
+  produces: [
+    { predicate: "propulsion.type", from: "field:system.type", kind: "text" },
+    // 1.9 F-05: Paradox needs the cruise speed and nothing produced it. The
+    // field is "Maximum Velocity (% of light speed)", so it scales to a fraction.
+    { predicate: "propulsion.cruise_fraction_c", from: "field:system.maxVelocity", unit: "c", kind: "scalar", scale: 0.01 },
+  ],
 
   consumes: [
     { predicate: "vessel.crew_size", required: false, onMissing: "link", producer: "vessel" },
@@ -40,7 +45,16 @@ export const manifest: ToolManifest = {
     influences: ["scene.travel"],
     narrative: (facts) => {
       const t = String(facts["propulsion.type"] ?? "");
-      return t ? [`Ships run on ${t}. Every journey in the story costs what that drive costs.`] : [];
+      const b = Number(facts["propulsion.cruise_fraction_c"]);
+      const out = t ? [`Ships run on ${t}. Every journey in the story costs what that drive costs.`] : [];
+      if (Number.isFinite(b) && b > 0) {
+        out.push(
+          b < 0.01
+            ? `Cruise is ${(b * 100).toFixed(2)}% of light. The nearest star is a lifetime away; ships carry generations.`
+            : `Cruise is ${Math.round(b * 100)}% of light. Alpha Centauri is ${(4.37 / b).toFixed(0)} years out at home; letters arrive after the people who sent them.`,
+        );
+      }
+      return out;
     },
   },
 

@@ -16,6 +16,7 @@ import { manifest as vessel } from "@/tools/vessel/manifest";
 import { manifest as paradox } from "@/tools/paradox/manifest";
 import { manifest as axiom } from "@/tools/axiom/manifest";
 import { manifest as exodus } from "@/tools/exodus/manifest";
+import { manifest as gravitas } from "@/tools/gravitas/manifest";
 
 export const MANIFESTS: readonly ToolManifest[] = [
   genesis,
@@ -30,6 +31,8 @@ export const MANIFESTS: readonly ToolManifest[] = [
   paradox,
   axiom,
   exodus,
+  // 1.9 lane C wiring: Gravitas, Phylo, Sensorium, Mythos.
+  gravitas,
 ];
 
 const BY_ID = new Map(MANIFESTS.map((m) => [m.id, m]));

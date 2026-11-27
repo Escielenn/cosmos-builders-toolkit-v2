@@ -232,6 +232,9 @@ export function planEmit(manifest: ToolManifest, data: unknown, opts: EmitOption
       value = typeof o === "number" ? codec.read(o) : o ?? null;
     } else if (p.from.startsWith("field:")) {
       value = codec.read(getAtPath(data, p.from.slice("field:".length)));
+      if (value && value.kind === "scalar" && typeof p.scale === "number") {
+        value = { ...value, value: Number((value.value * p.scale).toPrecision(12)) };
+      }
     }
 
     if (!value) continue;
