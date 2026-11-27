@@ -11,6 +11,8 @@ import {
   condensationTemperature,
   equilibriumTemperature,
   escapeVelocityKms,
+  greenhouseMultiplier,
+  internalHeatTemperature,
   holmanWiegertPType,
   holmanWiegertSType,
   insolation,
@@ -132,6 +134,13 @@ describe("tidally locked profile", () => {
     expect(band.widthKm).toBeGreaterThan(0);
     expect(band.innerDeg).not.toBeNull();
     expect(liquidWaterBand({ sEarth: 0.65, albedo: 0.3, epsilon: 0.5, pressureBar: 0.001, radiusKm: 6600 }).widthKm).toBe(0);
+  });
+});
+
+describe("greenhouse and internal heat", () => {
+  it("τ ≈ 0.84 warms Earth from 255 K to 288 K; Earth's heat flow gives a 35 K floor", () => {
+    expect(Math.abs(equilibriumTemperature(1, 0.306) * greenhouseMultiplier(0.84) ** 0.25 - 288)).toBeLessThan(1.5);
+    expect(internalHeatTemperature()).toBeCloseTo(35.3, 0);
   });
 });
 

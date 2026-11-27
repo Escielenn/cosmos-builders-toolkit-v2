@@ -114,34 +114,71 @@ export function redistributionEfficiency(opts: {
 }
 
 /**
+ * Grey-atmosphere greenhouse warming of the surface, Eddington two-stream:
+ *   T_s⁴ = T_e⁴ · (1 + ¾τ)
+ * with τ the infrared optical depth (Catling & Kasting 2017, "Atmospheric
+ * Evolution on Inhabited and Lifeless Worlds", §2.5; Pierrehumbert 2010,
+ * "Principles of Planetary Climate", §4.3). Earth's 255 → 288 K needs τ ≈ 0.84.
+ * Returns the multiplier on T⁴.
+ */
+export function greenhouseMultiplier(tau: number): number {
+  return 1 + 0.75 * Math.max(tau, 0);
+}
+
+/**
+ * Night-side floor from internal heat: a geothermal flux F gives
+ * T = (F/σ)^¼. Earth's 0.087 W/m² (Davies & Davies 2010, Solid Earth 1:5)
+ * gives 35 K, the temperature an airless permanent night settles to.
+ */
+export const EARTH_INTERNAL_FLUX_WM2 = 0.087;
+export function internalHeatTemperature(fluxWm2: number = EARTH_INTERNAL_FLUX_WM2): number {
+  return (Math.max(fluxWm2, 0) / SIGMA_SB) ** 0.25;
+}
+
+/**
  * Local surface temperature on a synchronously rotating planet at angle θ
  * from the substellar point. A fraction ε of the absorbed starlight is
  * spread over the whole globe, the rest is re-emitted where it lands:
- *   σT(θ)⁴ = S·S⊕·(1−A) · [ (1−ε)·max(cos θ, 0) + ε/4 ]
- * Energy-conserving (global mean of σT⁴ = S(1−A)/4); ε = 0 gives the true
- * substellar T₀(1−A)^¼ at θ = 0, and the night side σT⁴ = ε·S(1−A)/4 is the
- * Cowan & Agol 2011 eq. 5 night-side temperature. Continuous across the
- * terminator, so day, terminator and night come from one profile.
+ *   σT(θ)⁴ = S·S⊕·(1−A) · [ (1−ε)·max(cos θ, 0) + ε/4 ] · (1 + ¾τ) + σT_int⁴
+ * Energy-conserving (global mean of the stellar term = S(1−A)/4); ε = 0,
+ * τ = 0 gives the true substellar T₀(1−A)^¼ at θ = 0, and the night side
+ * σT⁴ = ε·S(1−A)/4 is the Cowan & Agol 2011 eq. 5 night-side temperature.
+ * Continuous across the terminator, so day, terminator and night come from
+ * one profile. τ (greenhouse) and T_int (internal heat) default to 0.
  */
-export function lockedSurfaceTemperature(sEarth: number, albedo: number, epsilon: number, thetaDeg: number): number {
+export function lockedSurfaceTemperature(
+  sEarth: number,
+  albedo: number,
+  epsilon: number,
+  thetaDeg: number,
+  tau = 0,
+  internalK = 0,
+): number {
   const a = Math.min(Math.max(albedo, 0), 1);
   const e = Math.min(Math.max(epsilon, 0), 1);
   const mu = Math.max(Math.cos((thetaDeg * Math.PI) / 180), 0);
   const flux = Math.max(sEarth, 0) * S_EARTH_WM2 * (1 - a) * ((1 - e) * mu + e / 4);
-  return (flux / SIGMA_SB) ** 0.25;
+  return ((flux / SIGMA_SB) * greenhouseMultiplier(tau) + internalK ** 4) ** 0.25;
 }
 
 /** Day-side and night-side hemisphere temperatures (flux-weighted) for the profile above. */
-export function lockedHemispheres(sEarth: number, albedo: number, epsilon: number): { day: number; night: number; substellar: number; terminator: number } {
+export function lockedHemispheres(
+  sEarth: number,
+  albedo: number,
+  epsilon: number,
+  tau = 0,
+  internalK = 0,
+): { day: number; night: number; substellar: number; terminator: number } {
   const a = Math.min(Math.max(albedo, 0), 1);
   const e = Math.min(Math.max(epsilon, 0), 1);
-  const base = (Math.max(sEarth, 0) * S_EARTH_WM2 * (1 - a)) / SIGMA_SB;
+  const base = ((Math.max(sEarth, 0) * S_EARTH_WM2 * (1 - a)) / SIGMA_SB) * greenhouseMultiplier(tau);
+  const floor = internalK ** 4;
   // Hemisphere mean of max(cos θ, 0) over the day side is 1/2.
   return {
-    day: (base * ((1 - e) / 2 + e / 4)) ** 0.25,
-    night: (base * (e / 4)) ** 0.25,
-    substellar: lockedSurfaceTemperature(sEarth, albedo, epsilon, 0),
-    terminator: lockedSurfaceTemperature(sEarth, albedo, epsilon, 90),
+    day: (base * ((1 - e) / 2 + e / 4) + floor) ** 0.25,
+    night: (base * (e / 4) + floor) ** 0.25,
+    substellar: lockedSurfaceTemperature(sEarth, albedo, epsilon, 0, tau, internalK),
+    terminator: lockedSurfaceTemperature(sEarth, albedo, epsilon, 90, tau, internalK),
   };
 }
 
@@ -163,7 +200,8 @@ export function clausiusClapeyronT(pBar: number, tRefK: number, pRefBar: number,
  * Condensation (collapse) temperature of the bulk gas at surface pressure p.
  * Reference points (NIST Chemistry WebBook): N₂ boils at 77.36 K at 1.013
  * bar, ΔH_vap 5.57 kJ/mol; CO₂ sublimes at 194.7 K at 1.013 bar, ΔH_sub
- * 25.2 kJ/mol; H₂ boils at 20.3 K, 0.9 kJ/mol. Night sides colder than this
+ * 25.2 kJ/mol; H₂ boils at 20.3 K, 0.9 kJ/mol; CH₄ at 111.66 K, 8.19
+ * kJ/mol; SO₂ at 263.1 K, 24.9 kJ/mol. Night sides colder than this
  * freeze the atmosphere out (Joshi, Haberle & Reynolds 1997, Icarus 129:450;
  * Wordsworth 2015, ApJ 806:180).
  */
@@ -171,6 +209,8 @@ export const CONDENSABLE = {
   N2: { tRef: 77.36, pRef: 1.01325, latent: 5570 },
   CO2: { tRef: 194.7, pRef: 1.01325, latent: 25200 },
   H2: { tRef: 20.3, pRef: 1.01325, latent: 900 },
+  CH4: { tRef: 111.66, pRef: 1.01325, latent: 8190 },
+  SO2: { tRef: 263.1, pRef: 1.01325, latent: 24900 },
 } as const;
 export type Condensable = keyof typeof CONDENSABLE;
 
@@ -199,6 +239,8 @@ export function liquidWaterBand(opts: {
   epsilon: number;
   pressureBar: number;
   radiusKm: number;
+  tau?: number;
+  internalK?: number;
   stepDeg?: number;
 }): { widthDeg: number; widthKm: number; innerDeg: number | null; outerDeg: number | null } {
   const none = { widthDeg: 0, widthKm: 0, innerDeg: null, outerDeg: null };
@@ -208,7 +250,7 @@ export function liquidWaterBand(opts: {
   let inner: number | null = null;
   let outer: number | null = null;
   for (let th = 0; th <= 180 + 1e-9; th += step) {
-    const T = lockedSurfaceTemperature(opts.sEarth, opts.albedo, opts.epsilon, th);
+    const T = lockedSurfaceTemperature(opts.sEarth, opts.albedo, opts.epsilon, th, opts.tau ?? 0, opts.internalK ?? 0);
     if (T >= 273.15 && T <= tBoil) {
       if (inner === null) inner = th;
       outer = th;

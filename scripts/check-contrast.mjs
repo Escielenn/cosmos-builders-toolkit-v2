@@ -182,6 +182,7 @@ const RE = {
   twRounded: /(?<![\w-])(?:[\w\-\[\]&=:]+:)*rounded(?:-(?:t|r|b|l|tl|tr|bl|br|s|e|ss|se|es|ee))?(?:-(\[[^\]]+\]|[a-z0-9-]+))?(?![\w-])/g,
   cssRadius: /border(?:-(?:top|bottom|start|end)-(?:left|right|start|end))?-radius\s*:\s*([^;}]+)/g,
   jsRadius: /\bborder\w*Radius\s*:\s*([^,}\n]+)/g,
+  remoteFont: /fonts\.googleapis\.com|fonts\.gstatic\.com|fonts\.cdnfonts\.com|use\.typekit\.net|fonts\.bunny\.net/gi,
   bannedFont: /["'`]Inter["'`]|\bfont-inter\b|family=Inter\b|font-family\s*:[^;]*\bInter\b|Space[ +]Grotesk|space-grotesk/gi,
   serif: /(?<![\w-])(?:[\w\-\[\]&=:]+:)*font-serif(?![\w-])|fontFamily\s*:\s*["'`]{1,2}[^"`]*?\bLora\b/g,
   twFocusNone: /(?<![\w-])focus:outline-none(?![\w-])/,
@@ -385,6 +386,26 @@ export const RULES = [
     },
   },
   {
+    // 1.9 (X11): the static simulators are pages of their own and used to
+    // load DM Sans / JetBrains Mono from Google Fonts, MD Nichrome from a
+    // test CDN and (Solaris) the retired Space Grotesk. They self-host now
+    // (public/tools/_shared/sim-fonts.css). Any remote font host or banned
+    // family in public/tools/** or public/rogue/** counts; ratchet down to 0.
+    id: "sim-remote-font",
+    title: "SIM FONTS NOT SELF-HOSTED",
+    check: "type",
+    mode: "ratchet",
+    files: (rel) => isPublicSim(rel),
+    scan(rel, text) {
+      const hits = [];
+      text.split("\n").forEach((line, i) => {
+        for (const m of line.matchAll(RE.remoteFont)) hits.push({ line: i + 1, match: m[0] });
+        for (const m of line.matchAll(RE.bannedFont)) hits.push({ line: i + 1, match: m[0] });
+      });
+      return hits;
+    },
+  },
+  {
     id: "focus-suppressed",
     title: "MISSING FOCUS RINGS",
     check: "#6",
@@ -476,6 +497,22 @@ export function compare(results, baseline) {
   return { failures, drops };
 }
 
+/** The static simulator trees (X11): scanned only by sim-remote-font. */
+export const PUBLIC_SIM_DIRS = ["public/tools", "public/rogue"];
+export function isPublicSim(rel) {
+  return PUBLIC_SIM_DIRS.some((d) => rel.startsWith(d + "/")) && /\.(html|css|js)$/.test(rel);
+}
+
+function walkPublic(dir, out = []) {
+  if (!existsSync(dir)) return out;
+  for (const name of readdirSync(dir)) {
+    const p = join(dir, name);
+    if (statSync(p).isDirectory()) walkPublic(p, out);
+    else if (/\.(html|css|js)$/.test(name)) out.push(p);
+  }
+  return out;
+}
+
 function walk(dir, out = []) {
   for (const name of readdirSync(dir)) {
     const p = join(dir, name);
@@ -521,7 +558,12 @@ function main(argv) {
   const update = argv.includes("--update-baseline");
   const listIdx = argv.indexOf("--list");
   const listRule = listIdx >= 0 ? argv[listIdx + 1] : null;
-  const files = [...walk(join(ROOT, "src")), join(ROOT, "index.html"), join(ROOT, "tailwind.config.ts")];
+  const files = [
+    ...walk(join(ROOT, "src")),
+    join(ROOT, "index.html"),
+    join(ROOT, "tailwind.config.ts"),
+    ...PUBLIC_SIM_DIRS.flatMap((d) => walkPublic(join(ROOT, d))),
+  ];
   const ctx = {
     ownedTokens: ownedTokensFrom(
       ["src/styles/tokens.css", "src/styles/themes.css"].map((f) => readFileSync(join(ROOT, f), "utf8")),

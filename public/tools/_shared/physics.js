@@ -20,7 +20,7 @@
   var M_EARTH_KG = 5.9722e24, R_EARTH_M = 6.371e6, M_EARTH_IN_SUN = M_EARTH_KG / M_SUN_KG;
   var S_EARTH_WM2 = 1361, G_EARTH = 9.80665, RHO_EARTH = 5.514, V_ESC_EARTH_KMS = 11.186;
   var DAYS_PER_YEAR = 365.25, SECONDS_PER_YEAR = DAYS_PER_YEAR * 86400;
-  var MOLECULAR_MASS = { H2: 2.016, He: 4.003, CH4: 16.043, NH3: 17.031, H2O: 18.015, N2: 28.014, O2: 31.998, Ar: 39.948, CO2: 44.009 };
+  var MOLECULAR_MASS = { H2: 2.016, He: 4.003, CH4: 16.043, NH3: 17.031, H2O: 18.015, N2: 28.014, O2: 31.998, Ar: 39.948, CO2: 44.009, SO2: 64.066 };
   var R_GAS = 8.314462618;
 
   /* ── Main sequence (Pecaut & Mamajek 2013, Mamajek 2022; L by Stefan–Boltzmann) ── */
@@ -134,18 +134,23 @@
     var tauAdv = o.radiusM / u;
     return tauRad / (tauRad + tauAdv);
   }
-  /* σT(θ)⁴ = S(1−A)[(1−ε)max(cosθ,0) + ε/4]; energy-conserving, continuous. */
-  function lockedSurfaceTemperature(s, albedo, eps, thetaDeg) {
+  /* Grey greenhouse, Eddington: T_s⁴ = T_e⁴(1 + ¾τ). Internal heat floor (Davies & Davies 2010). */
+  function greenhouseMultiplier(tau) { return 1 + 0.75 * Math.max(tau, 0); }
+  var EARTH_INTERNAL_FLUX_WM2 = 0.087;
+  function internalHeatTemperature(f) { if (f === undefined) f = EARTH_INTERNAL_FLUX_WM2; return Math.pow(Math.max(f, 0) / SIGMA_SB, 0.25); }
+  /* σT(θ)⁴ = S(1−A)[(1−ε)max(cosθ,0) + ε/4](1+¾τ) + σT_int⁴; energy-conserving, continuous. */
+  function lockedSurfaceTemperature(s, albedo, eps, thetaDeg, tau, tInt) {
     var a = clamp01(albedo), e = clamp01(eps);
     var mu = Math.max(Math.cos((thetaDeg * Math.PI) / 180), 0);
     var flux = Math.max(s, 0) * S_EARTH_WM2 * (1 - a) * ((1 - e) * mu + e / 4);
-    return Math.pow(flux / SIGMA_SB, 0.25);
+    return Math.pow((flux / SIGMA_SB) * greenhouseMultiplier(tau || 0) + Math.pow(tInt || 0, 4), 0.25);
   }
-  function lockedHemispheres(s, albedo, eps) {
+  function lockedHemispheres(s, albedo, eps, tau, tInt) {
     var a = clamp01(albedo), e = clamp01(eps);
-    var base = (Math.max(s, 0) * S_EARTH_WM2 * (1 - a)) / SIGMA_SB;
-    return { day: Math.pow(base * ((1 - e) / 2 + e / 4), 0.25), night: Math.pow(base * (e / 4), 0.25),
-      substellar: lockedSurfaceTemperature(s, albedo, eps, 0), terminator: lockedSurfaceTemperature(s, albedo, eps, 90) };
+    var base = ((Math.max(s, 0) * S_EARTH_WM2 * (1 - a)) / SIGMA_SB) * greenhouseMultiplier(tau || 0);
+    var floor = Math.pow(tInt || 0, 4);
+    return { day: Math.pow(base * ((1 - e) / 2 + e / 4) + floor, 0.25), night: Math.pow(base * (e / 4) + floor, 0.25),
+      substellar: lockedSurfaceTemperature(s, albedo, eps, 0, tau, tInt), terminator: lockedSurfaceTemperature(s, albedo, eps, 90, tau, tInt) };
   }
 
   /* ── Phase boundaries (Clausius–Clapeyron; NIST WebBook reference points) ── */
@@ -153,7 +158,8 @@
     return 1 / (1 / tRef - (R_GAS / latent) * Math.log(Math.max(p, 1e-12) / pRef));
   }
   var CONDENSABLE = { N2: { tRef: 77.36, pRef: 1.01325, latent: 5570 },
-    CO2: { tRef: 194.7, pRef: 1.01325, latent: 25200 }, H2: { tRef: 20.3, pRef: 1.01325, latent: 900 } };
+    CO2: { tRef: 194.7, pRef: 1.01325, latent: 25200 }, H2: { tRef: 20.3, pRef: 1.01325, latent: 900 },
+    CH4: { tRef: 111.66, pRef: 1.01325, latent: 8190 }, SO2: { tRef: 263.1, pRef: 1.01325, latent: 24900 } };
   function condensationTemperature(gas, p) { var c = CONDENSABLE[gas]; return clausiusClapeyronT(p, c.tRef, c.pRef, c.latent); }
   var WATER_TRIPLE_BAR = 0.00611;
   function waterBoilingPoint(p) { return clausiusClapeyronT(p, 373.15, 1.01325, 40650); }
@@ -162,7 +168,7 @@
     if (o.pressureBar < WATER_TRIPLE_BAR) return none;
     var tBoil = waterBoilingPoint(o.pressureBar), step = o.stepDeg || 0.1, inner = null, outer = null;
     for (var th = 0; th <= 180 + 1e-9; th += step) {
-      var T = lockedSurfaceTemperature(o.sEarth, o.albedo, o.epsilon, th);
+      var T = lockedSurfaceTemperature(o.sEarth, o.albedo, o.epsilon, th, o.tau || 0, o.internalK || 0);
       if (T >= 273.15 && T <= tBoil) { if (inner === null) inner = th; outer = th; }
     }
     if (inner === null || outer === null) return none;
@@ -243,6 +249,8 @@
     irradiationTemperature: irradiationTemperature, equilibriumTemperature: equilibriumTemperature,
     substellarTemperature: substellarTemperature, redistributionEfficiency: redistributionEfficiency,
     lockedSurfaceTemperature: lockedSurfaceTemperature, lockedHemispheres: lockedHemispheres,
+    greenhouseMultiplier: greenhouseMultiplier, EARTH_INTERNAL_FLUX_WM2: EARTH_INTERNAL_FLUX_WM2,
+    internalHeatTemperature: internalHeatTemperature,
     clausiusClapeyronT: clausiusClapeyronT, CONDENSABLE: CONDENSABLE, condensationTemperature: condensationTemperature,
     WATER_TRIPLE_BAR: WATER_TRIPLE_BAR, waterBoilingPoint: waterBoilingPoint, liquidWaterBand: liquidWaterBand,
     surfaceGravity: surfaceGravity, surfaceGravityMs2: surfaceGravityMs2, bulkDensity: bulkDensity,

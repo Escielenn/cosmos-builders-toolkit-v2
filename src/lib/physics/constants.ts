@@ -41,5 +41,6 @@ export const MOLECULAR_MASS = {
   O2: 31.998,
   Ar: 39.948,
   CO2: 44.009,
+  SO2: 64.066,
 } as const;
 export type Molecule = keyof typeof MOLECULAR_MASS;

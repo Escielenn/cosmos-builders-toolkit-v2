@@ -1,0 +1,50 @@
+/* ==========================================================================
+   sim-a11y.css: focus, motion and screen-reader rules for every static
+   simulator (Tidelock, ExoForge, Solaris, Rogue, ExoSky). Link it after the
+   page's own <style> so these rules win (X10, X9).
+
+   - Every interactive element shows a visible :focus-visible ring. The sims
+     set `outline:none` on sliders and selects; the selectors here are more
+     specific and !important, so no page rule can suppress the ring.
+   - prefers-reduced-motion stops CSS animation and transition. Canvas and
+     WebGL motion is gated in script through SFSim.reducedMotion (see
+     sim-a11y.js, which also mirrors it as html.sf-reduced-motion).
+   - .sr-only hides text visually and keeps it for assistive tech.
+   ========================================================================== */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--sf-focus) !important;
+  outline-offset: 2px !important;
+}
+
+/* Range thumbs get the ring too, where the track alone is hard to see. */
+input[type=range]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 2px var(--sf-focus); }
+input[type=range]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 2px var(--sf-focus); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+html.sf-reduced-motion *, html.sf-reduced-motion *::before, html.sf-reduced-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}

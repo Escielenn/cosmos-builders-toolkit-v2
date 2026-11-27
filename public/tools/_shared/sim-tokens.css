@@ -39,6 +39,8 @@
   --sf-disabled-bg: #151B29;
   --sf-disabled-line: #575C65;
   --sf-disabled-text: #787B81;
+
+  --sf-focus: #3DFFCD;
 }
 
 /* Disabled controls: the disabled tokens, at full opacity. */

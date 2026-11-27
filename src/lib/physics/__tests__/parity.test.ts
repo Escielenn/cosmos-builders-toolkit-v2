@@ -30,7 +30,7 @@ const close = (a: unknown, b: unknown) => {
 
 describe("physics.js ↔ src/lib/physics parity", () => {
   it("constants", () => {
-    for (const k of ["G", "SIGMA_SB", "K_B", "AMU", "AU_M", "M_SUN_KG", "R_SUN_M", "L_SUN_W", "T_SUN_K", "M_EARTH_KG", "R_EARTH_M", "S_EARTH_WM2", "G_EARTH", "RHO_EARTH", "V_ESC_EARTH_KMS", "DAYS_PER_YEAR", "IRON_FLOOR_TOLERANCE", "WATER_TRIPLE_BAR"]) {
+    for (const k of ["G", "SIGMA_SB", "K_B", "AMU", "AU_M", "M_SUN_KG", "R_SUN_M", "L_SUN_W", "T_SUN_K", "M_EARTH_KG", "R_EARTH_M", "S_EARTH_WM2", "G_EARTH", "RHO_EARTH", "V_ESC_EARTH_KMS", "DAYS_PER_YEAR", "IRON_FLOOR_TOLERANCE", "WATER_TRIPLE_BAR", "EARTH_INTERNAL_FLUX_WM2"]) {
       expect(JS[k], k).toBe((TS as unknown as Api)[k]);
     }
     close(JS.MOLECULAR_MASS, TS.MOLECULAR_MASS);
@@ -48,6 +48,8 @@ describe("physics.js ↔ src/lib/physics parity", () => {
       close(fn("kopparapuEdges")(t, 0.5), TS.kopparapuEdges(t, 0.5));
       close(fn("kopparapuSeff")(t, "earlyMars"), TS.kopparapuSeff(t, "earlyMars"));
     }
+    close(fn("internalHeatTemperature")(), TS.internalHeatTemperature());
+    close(fn("greenhouseMultiplier")(0.84), TS.greenhouseMultiplier(0.84));
     close(fn("mainSequenceLifetimeGyr")(2, 16), TS.mainSequenceLifetimeGyr(2, 16));
   });
 
@@ -64,9 +66,15 @@ describe("physics.js ↔ src/lib/physics parity", () => {
       close(fn("substellarTemperature")(s, A), TS.substellarTemperature(s, A));
       for (const e of [0, 0.4, 1]) {
         close(fn("lockedHemispheres")(s, A, e), TS.lockedHemispheres(s, A, e));
-        for (const th of [0, 45, 89.9, 90, 135]) close(fn("lockedSurfaceTemperature")(s, A, e, th), TS.lockedSurfaceTemperature(s, A, e, th));
+        close(fn("lockedHemispheres")(s, A, e, 0.8, 35), TS.lockedHemispheres(s, A, e, 0.8, 35));
+        for (const th of [0, 45, 89.9, 90, 135]) {
+          close(fn("lockedSurfaceTemperature")(s, A, e, th), TS.lockedSurfaceTemperature(s, A, e, th));
+          close(fn("lockedSurfaceTemperature")(s, A, e, th, 1.2, 35), TS.lockedSurfaceTemperature(s, A, e, th, 1.2, 35));
+        }
         const band = { sEarth: s, albedo: A, epsilon: e, pressureBar: 1, radiusKm: 6371, stepDeg: 0.5 };
         close(fn("liquidWaterBand")(band), TS.liquidWaterBand(band));
+        const band2 = { ...band, tau: 0.84, internalK: 35 };
+        close(fn("liquidWaterBand")(band2), TS.liquidWaterBand(band2));
       }
     }
     for (const p of [0, 0.01, 1, 90]) {
@@ -74,7 +82,7 @@ describe("physics.js ↔ src/lib/physics parity", () => {
       close(fn("redistributionEfficiency")(o), TS.redistributionEfficiency(o));
       if (p > 0) {
         close(fn("condensationTemperature")("N2", p), TS.condensationTemperature("N2", p));
-        close(fn("condensationTemperature")("CO2", p), TS.condensationTemperature("CO2", p));
+        for (const gas of ["CO2", "CH4", "SO2", "H2"] as const) close(fn("condensationTemperature")(gas, p), TS.condensationTemperature(gas, p));
         close(fn("waterBoilingPoint")(p), TS.waterBoilingPoint(p));
       }
     }

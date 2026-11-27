@@ -6,6 +6,17 @@
     "radius": {
       "src/index.css": 1
     },
+    "sim-remote-font": {
+      "public/rogue/science.html": 3,
+      "public/rogue/sim.html": 2,
+      "public/tools/exoforge/science.html": 3,
+      "public/tools/exoforge/sim.html": 2,
+      "public/tools/exosky/science.html": 2,
+      "public/tools/solaris/science.html": 3,
+      "public/tools/solaris/sim.html": 3,
+      "public/tools/tidelock/science.html": 3,
+      "public/tools/tidelock/sim.html": 2
+    },
     "focus-suppressed": {
       "src/index.css": 1
     },
