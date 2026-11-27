@@ -73,6 +73,7 @@ import {
   buildCopyText,
   formatGravity,
   formatVelocity,
+  NON_THERMAL_CAVEAT,
 } from "@/lib/surface-gravity/calculations";
 
 import PlanetSizeComparison from "@/components/tools/PlanetSizeComparison";
@@ -760,7 +761,14 @@ const SurfaceGravityCalculator = () => {
               guidance={SECTION_HELPERS["atmospheric-retention"]}
             >
               {result.valid && (
-                <AtmosphericRetentionChart retentionData={result.gasRetention} />
+                <>
+                  <AtmosphericRetentionChart retentionData={result.gasRetention} />
+                  <p className="sf-measure mt-3 text-sf-body text-t2">
+                    Tested at an estimated exobase temperature of{" "}
+                    <span className="font-mono text-t1">{Math.round(result.exobaseTemp)} K</span>, where gas actually
+                    escapes (about 3.5 times the surface temperature, as on Earth). {NON_THERMAL_CAVEAT}
+                  </p>
+                </>
               )}
             </CollapsibleSection>
 

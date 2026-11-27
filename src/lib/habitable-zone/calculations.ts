@@ -119,7 +119,9 @@ export function luminosityFromMass(mass: number): number {
  *
  * Mass-radius exponents: Demircan & Kahraman 1991 (Ap&SS 181:313), normalised
  * so the Sun is exact. Proxima Cen (L 0.00155, M 0.122) gives ≈3100 K against
- * a measured 3042 K; an M3V (0.013 L☉, 0.33 M☉) ≈3200 K. Null for remnants and
+ * a measured 3042 K; an M3V (0.013 L☉, 0.33 M☉) ≈3200 K; Alpha Cen A (1.52 L☉,
+ * 1.1 M☉, slightly evolved) ≈6100 K against 5790 K, so within about 6%. A
+ * first-order estimate for a tool with no temperature field. Null for remnants and
  * nonsense input; callers fall back to the Sun's temperature and say so.
  */
 export function mainSequenceTeff(luminosityLsun: number, massMsun: number): number | null {
