@@ -12,17 +12,25 @@
   TIDELOCK — Locked-World Thermal & Atmospheric Simulator
   StellarForge.tools · © 2025–2026 Jason D. Batt, Ph.D.
 
-  PHYSICS (verified 2026-04-25):
-  • Equilibrium temperature T_eq = T_★ · √(R_★/2a) · (1−A)^¼ where T_★
-    is stellar effective temp, R_★ stellar radius, a orbital semi-major
-    axis, A bond albedo. Per-cell solution across the day/night
-    terminator with ε-greenhouse correction for atmospheres.
-  • Atmosphere retention via Jeans escape parameter λ = (G·M·m)/(k·T·R).
-    λ > 6 → bound; smaller → escape over geological time. Star type
-    M0V–K5V (mass 0.06–0.68 M☉) sets bolometric luminosity used in T_eq.
-  • Water phase boundaries computed per cell from local T (ice <273K,
-    liquid 273–373K, vapor >373K at 1 atm; pressure scaled by atmo).
-  • WebGL 3D rendering with thermal-radiative shaders.
+  PHYSICS (1.9 "True Numbers"; formulas live in /tools/_shared/physics.js,
+  the twin of src/lib/physics, with sources cited there):
+  • Stars: Pecaut & Mamajek 2013 mean dwarf table; L = R²(T/5772)⁴
+    (Stefan–Boltzmann), so every star is self-consistent.
+  • Insolation S = L/a²; period from Kepler III with the star's mass.
+  • Surface temperature at angle θ from the substellar point:
+      σT(θ)⁴ = S·S⊕(1−A)[(1−ε)max(cosθ,0) + (ε/4)(1+(1−ε)cosθ)](1+¾τ) + σT_int⁴
+    ε = day–night heat redistribution from τ_rad/(τ_rad+τ_adv)
+    (Showman & Guillot 2002; Cowan & Agol 2011; Koll & Abbot 2016), so the
+    night side depends on surface pressure. τ = grey IR optical depth
+    (Eddington). T_int = 35 K internal-heat floor. ε = 0, τ = 0 gives the
+    true airless substellar temperature T₀(1−A)^¼ (not the f=¼ average).
+  • Atmosphere collapse: night side below the bulk gas's condensation
+    point at the surface pressure (Clausius–Clapeyron; Joshi et al. 1997).
+  • Liquid-water band: 273.15 K to the pressure-dependent boiling point,
+    reported in degrees of arc and kilometres.
+  • Locking: Gladman et al. 1996 timescale compared with the system age.
+  • Retention: mean thermal speed of the lightest bulk gas at an assumed
+    exobase temperature vs escape velocity (≤ v_esc/6 retained).
 
   STELLARFORGE postMessage protocol: LOAD / REQUEST_STATE / SAVE / PUBLISH.
 -->
@@ -44,52 +52,53 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="TIDELOCK — Tidally Locked World Simulator">
 <meta name="twitter:description" content="Interactive 3D simulator for tidally locked exoplanets. A StellarForge.tools worldbuilding instrument.">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-<link href="https://fonts.cdnfonts.com/css/md-nichrome-test" rel="stylesheet">
+<link rel="stylesheet" href="/tools/_shared/sim-fonts.css">
 <style>
 :root{
   --sf-accent:#15C17B;
   --accent-green:#00E5A0;
-  --surface-base:#0F0F10;
+  --surface-base:var(--sf-sim-panel);
   --surface-elevated:rgba(15,15,16,0.98);
-  --border-subtle:#50555E; /* sf-line: solid, never alpha */
+  --border-subtle:var(--sf-line); /* solid, never alpha */
   --text-primary:var(--t1);
   --text-secondary:var(--t2);
   --text-muted:var(--t4);
-  --font-display:'MD Nichrome Test','MD Nichrome','Jura',sans-serif;
+  --font-display:'MD Nichrome','Jura',sans-serif;
   --font-body:'DM Sans',sans-serif;
   --font-mono:'JetBrains Mono',monospace;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-body{background:#09090B;color:#C8C8C8;font-family:var(--font-body);overflow:hidden;width:100vw;height:100vh;cursor:default;-webkit-user-select:none;user-select:none}
+body{background:var(--sf-sim-canvas);color:var(--t2);font-family:var(--font-body);overflow:hidden;width:100vw;height:100vh;cursor:default;-webkit-user-select:none;user-select:none}
 #renderer-container{position:fixed;top:0;left:0;width:100vw;height:100vh}
 #renderer-container canvas{display:block}
-::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(0,229,160,0.12);border-radius:0}
+::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{background:var(--sf-sim-panel)}::-webkit-scrollbar-thumb{background:var(--sf-line);border-radius:0}
+.panel{scrollbar-width:auto;scrollbar-color:var(--sf-line) var(--sf-sim-panel)}
 .panel{position:fixed;background:var(--surface-base);border:1px solid var(--border-subtle);border-radius:0;padding:14px 18px;z-index:10;overflow-y:auto;max-height:calc(100vh - 80px)}
 #title-block{position:fixed;top:18px;left:18px;z-index:20;pointer-events:none}
-#title-block h1{font-family:var(--font-display);font-weight:300;font-size:26px;letter-spacing:6px;text-transform:uppercase;color:#FAFAFA;line-height:1.1}
+#title-block h1{font-family:var(--font-display);font-weight:300;font-size:26px;letter-spacing:6px;text-transform:uppercase;color:var(--t1);line-height:1.1}
 #title-block .subtitle{font-family:var(--font-body);font-weight:400;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--sf-primary-text);margin-top:2px}
 #title-block .context-label{font-family:var(--font-body);font-weight:400;font-size:12px;color:var(--sf-primary-text);margin-top:4px}
 #title-block .credit{font-family:var(--font-body);font-weight:400;font-size:12px;letter-spacing:1px;color:var(--text-muted);margin-top:3px}
 #title-block .credit a{color:var(--sf-primary-text);text-decoration:none}
 #title-block .nav-links{display:flex;gap:10px;margin-top:7px;pointer-events:all}
 #title-block .nav-links a{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);text-decoration:none;padding:3px 8px;border:1px solid var(--border-subtle);border-radius:0;transition:all .2s}
-#title-block .nav-links a:hover{color:var(--sf-accent);border-color:#8C909A;background:rgba(21,193,123,.06)}
-#title-block .nav-links a.science-link{color:var(--sf-primary-text);border-color:#8C909A;background:rgba(21,193,123,.04)}
+#title-block .nav-links a:hover{color:var(--sf-accent);border-color:var(--sf-line-emphasis);background:rgba(21,193,123,.06)}
+#title-block .nav-links a.science-link{color:var(--sf-primary-text);border-color:var(--sf-line-emphasis);background:rgba(21,193,123,.04)}
 #title-block .nav-links a.science-link:hover{color:var(--sf-accent);border-color:var(--sf-accent);background:rgba(21,193,123,.1)}
 #handoff-note{margin-top:6px;font-family:var(--font-body);font-weight:400;font-size:12px;letter-spacing:0.3px;color:var(--sf-primary-text);max-width:260px;line-height:1.5;display:none}
 #badge{display:inline-block;padding:6px 14px;font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2px;text-transform:uppercase;border-radius:0;margin-top:10px;transition:all 0.5s;pointer-events:auto}
-.badge-waiting{background:rgba(0,229,160,.03);border:1px solid #50555E;color:var(--sf-primary-text)}
-.badge-success{background:rgba(46,204,113,.08);border:1px solid rgb(46,204,113);color:#2ECC71;animation:pulse 2s infinite}
-.badge-warning{background:rgba(255,165,0,.08);border:1px solid rgb(255,165,0);color:#FFA500}
-.badge-danger{background:rgba(231,76,60,.08);border:1px solid rgb(231,76,60);color:#E74C3C;animation:pulse 1.5s infinite}
-.badge-frozen{background:rgba(77,159,255,.06);border:1px solid #4D9FFF;color:#4D9FFF}
-.badge-gold{background:rgba(255,212,59,.08);border:1px solid rgb(255,212,59);color:#FFD43B}
+/* Status badges: colour AND words, never colour alone (CLAUDE.md). */
+.badge-waiting{background:transparent;border:1px solid var(--sf-line-interactive);color:var(--t3)}
+.badge-success{background:transparent;border:1px solid var(--sf-primary);color:var(--sf-primary-text)}
+.badge-warning{background:transparent;border:1px solid var(--sf-amber);color:var(--sf-amber-text)}
+.badge-danger{background:transparent;border:1px solid var(--sf-crimson);color:var(--sf-crimson-text);animation:pulse 1.5s infinite}
+.badge-frozen{background:transparent;border:1px solid var(--sf-azure);color:var(--sf-azure-text)}
+.badge-gold{background:transparent;border:1px solid var(--sf-amber);color:var(--sf-amber-text)}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 transparent}50%{box-shadow:0 0 12px 0 currentColor}} /* glow, not opacity: the badge text stays at full strength */
-#info-btn{pointer-events:auto;display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;font-family:var(--font-body);font-size:12px;font-weight:600;color:var(--t4);border:1px solid var(--border-subtle);border-radius:50%;background:rgba(255,255,255,0.03);cursor:pointer;transition:all 0.2s;margin-left:8px;vertical-align:middle}
-#info-btn:hover{background:rgba(0,229,160,0.06);border-color:#50555E;color:#fff}
-#controls{top:120px;left:18px;width:240px;max-height:calc(100vh - 280px)}
-.section-header{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2.5px;text-transform:uppercase;color:var(--sf-primary-text);margin-top:14px;margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid #50555E}
+#info-btn{pointer-events:auto;display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:0 10px;margin-left:8px;font-family:var(--font-body);font-size:12px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--t2);border:1px solid var(--border-subtle);border-radius:0;background:var(--sf-sim-panel);cursor:pointer}
+#info-btn:hover{border-color:var(--sf-line-emphasis);color:var(--t1)}
+#controls{top:132px;left:18px;width:250px;max-height:calc(100vh - 150px)}
+.section-header{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2.5px;text-transform:uppercase;color:var(--sf-primary-text);margin-top:14px;margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid var(--sf-line)}
 .section-header:first-child{margin-top:0}
 .control-row{margin-bottom:8px}
 .control-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
@@ -97,49 +106,52 @@ body{background:#09090B;color:#C8C8C8;font-family:var(--font-body);overflow:hidd
 .value-display{font-size:14px;font-family:var(--font-mono);color:var(--t1);font-weight:500}
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:14px;background:transparent;outline:none;cursor:pointer}
 input[type=range]::-webkit-slider-runnable-track{height:2px;background:rgba(255,255,255,0.08);border-radius:0}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:0;background:var(--sf-accent);cursor:pointer;border:2px solid #09090B;margin-top:-5px;transition:transform .15s,box-shadow .15s}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:0;background:var(--sf-accent);cursor:pointer;border:2px solid var(--sf-sim-canvas);margin-top:-5px;transition:transform .15s,box-shadow .15s}
 input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);box-shadow:0 0 6px rgba(21,193,123,.4)}
 input[type=range]::-webkit-slider-thumb:active{transform:scale(1.25);box-shadow:0 0 10px rgba(21,193,123,.6)}
 input[type=range]::-moz-range-track{height:2px;background:rgba(255,255,255,0.08);border:none;border-radius:0}
-input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:0;background:var(--sf-accent);cursor:pointer;border:2px solid #09090B}
-select{font-family:var(--font-body);font-size:12px;background:rgba(255,255,255,0.04);color:var(--t2);border:1px solid #50555E;padding:6px 8px;border-radius:0;outline:none;width:100%;cursor:pointer}
-select option{background:#0F0F10;color:#C8C8C8}
+input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:0;background:var(--sf-accent);cursor:pointer;border:2px solid var(--sf-sim-canvas)}
+select{font-family:var(--font-body);font-size:14px;min-height:44px;background:var(--sf-sim-panel);color:var(--t2);border:1px solid var(--sf-line-interactive);padding:6px 8px;border-radius:0;outline:none;width:100%;cursor:pointer}
+select option{background:var(--sf-sim-panel);color:var(--t2)}
 .checkbox-row{display:flex;align-items:center;gap:6px;margin-bottom:5px}
 .checkbox-row input[type=checkbox]{accent-color:var(--sf-accent);width:16px;height:16px;cursor:pointer}
 .checkbox-row label{font-family:var(--font-body);font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--t3);cursor:pointer}
-button{font-family:var(--font-body);font-size:12px;font-weight:300;letter-spacing:1.5px;text-transform:uppercase;padding:7px 12px;border:1px solid #50555E;background:rgba(255,255,255,0.03);color:var(--t2);cursor:pointer;border-radius:0;transition:all 0.2s}
-button:hover{background:rgba(0,229,160,0.06);border-color:#50555E;color:#fff}
+button{font-family:var(--font-body);font-size:13px;font-weight:500;letter-spacing:0;text-transform:none;min-height:44px;padding:7px 12px;border:1px solid var(--sf-line);background:var(--sf-sim-panel);color:var(--t2);cursor:pointer;border-radius:0;transition:border-color .18s,color .18s}
+button:hover{border-color:var(--sf-line-emphasis);color:var(--t1)}
 button.active{background:rgba(21,193,123,0.1);border-color:var(--sf-accent);color:var(--sf-accent)}
 .preset-grid{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
-.preset-grid button{flex:1 1 calc(50% - 2px);min-width:0;font-size:12px;padding:6px 4px;letter-spacing:1px;text-align:center}
+.preset-grid button{flex:1 1 calc(50% - 2px);min-width:0;font-size:13px;padding:6px 4px;text-align:center}
 .btn-group{display:flex;gap:3px;margin-top:4px}
-.btn-group button{flex:1;text-align:center;font-size:12px;padding:6px 4px}
+.btn-group button{flex:1;text-align:center;font-size:13px;padding:6px 4px}
 .display-row{display:flex;justify-content:space-between;line-height:1.8;font-size:12px}
 .display-row .dl{color:var(--t2);font-family:var(--font-body);font-weight:300}
 .display-row .dv{font-family:var(--font-mono);font-weight:500;font-size:14px;color:var(--t1)}
-#readout{top:18px;right:18px;width:250px;max-height:calc(100vh - 280px)}
-.data-section{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2.5px;text-transform:uppercase;color:var(--sf-primary-text);margin-top:10px;margin-bottom:2px;padding-bottom:2px;border-bottom:1px solid #50555E}
+#readout{top:18px;right:18px;width:300px;max-height:calc(100vh - 292px)}
+.nocase{text-transform:none !important;letter-spacing:0 !important}
+.data-section{font-size:12px;font-family:var(--font-display);font-weight:300;letter-spacing:2.5px;text-transform:uppercase;color:var(--sf-primary-text);margin-top:10px;margin-bottom:2px;padding-bottom:2px;border-bottom:1px solid var(--sf-line)}
 .data-section:first-child{margin-top:0}
-.data-row{display:flex;justify-content:space-between;line-height:1.9}
-.data-label{color:var(--t4);font-weight:300;font-family:var(--font-body);font-size:12px}
-.data-value{color:var(--t2);font-weight:500;font-family:var(--font-mono);font-size:14px}
+.data-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;line-height:1.9}
+.data-label{color:var(--t3);font-weight:400;font-family:var(--font-body);font-size:12px;flex:0 0 auto}
+.data-value{color:var(--t1);font-weight:500;font-family:var(--font-mono);font-size:13px;text-align:right;min-width:0}
+.data-note{color:var(--t4);font-family:var(--font-body);font-size:12px;line-height:1.5;margin:0 0 4px}
+.v-hot{color:var(--sf-amber-text)}.v-cold{color:var(--sf-azure-text)}.v-ok{color:var(--sf-emerald-text)}.v-warn{color:var(--sf-amber-text)}.v-bad{color:var(--sf-crimson-text)}
 #zoom-info{position:fixed;bottom:18px;right:18px;z-index:10;text-align:right}
 #zoom-info .zoom-val{font-size:16px;font-family:var(--font-display);font-weight:300;color:var(--sf-primary-text)}
 #zoom-info .zoom-label{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--t4)}
 #drag-hint{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:10;font-family:var(--font-body);font-size:12px;color:var(--t4);letter-spacing:0.5px;pointer-events:none;transition:opacity 2s}
 #scale-note{position:fixed;bottom:4px;left:50%;transform:translateX(-50%);z-index:10;font-family:var(--font-body);font-size:12px;color:var(--t4);letter-spacing:0.3px;pointer-events:none;white-space:nowrap}
-#tooltip{position:fixed;background:rgba(15,15,16,0.95);border:1px solid #50555E;border-radius:0;padding:8px 12px;font-family:var(--font-mono);font-size:12px;color:var(--t2);pointer-events:none;z-index:30;display:none;backdrop-filter:blur(10px);line-height:1.6;max-width:220px}
+#tooltip{position:fixed;background:var(--sf-sim-panel);border:1px solid var(--sf-line);border-radius:0;padding:8px 12px;font-family:var(--font-mono);font-size:12px;color:var(--t2);pointer-events:none;z-index:30;display:none;backdrop-filter:blur(10px);line-height:1.6;max-width:220px}
 #modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(9,9,11,0.94);z-index:100;display:none;justify-content:center;align-items:center;padding:20px}
 #modal-overlay.visible{display:flex}
-#modal{max-width:680px;width:100%;max-height:80vh;overflow-y:auto;padding:30px 36px;background:var(--surface-elevated);border:1px solid #50555E;border-radius:0;position:relative}
-#modal h2{font-family:var(--font-display);font-weight:300;font-size:22px;letter-spacing:4px;text-transform:uppercase;color:#FAFAFA;margin-bottom:16px}
+#modal{max-width:680px;width:100%;max-height:80vh;overflow-y:auto;padding:30px 36px;background:var(--surface-elevated);border:1px solid var(--sf-line);border-radius:0;position:relative}
+#modal h2{font-family:var(--font-display);font-weight:300;font-size:22px;letter-spacing:4px;text-transform:uppercase;color:var(--t1);margin-bottom:16px}
 #modal h3{font-family:var(--font-display);font-weight:300;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--sf-primary-text);margin-top:18px;margin-bottom:6px}
 #modal p,#modal li{font-family:var(--font-body);font-size:12px;line-height:1.7;color:var(--t2);margin-bottom:8px}
 #modal ul{padding-left:18px;margin-bottom:8px}
 #modal li{margin-bottom:4px}
 #modal em{color:var(--t3);font-style:italic}
-#modal .close-btn{position:absolute;top:16px;right:20px;font-size:20px;color:var(--t4);cursor:pointer;background:none;border:none;padding:4px}
-#modal .close-btn:hover{color:#fff;background:none}
+#modal .close-btn{position:absolute;top:12px;right:12px;min-width:44px;font-size:20px;color:var(--t3);cursor:pointer;background:none;border:none;padding:4px}
+#modal .close-btn:hover{color:var(--t1);background:none}
 #mobile-toggle-controls,#mobile-toggle-data{display:none;position:fixed;z-index:15;width:36px;height:36px;border-radius:0;font-size:16px;line-height:36px;text-align:center;padding:0;background:var(--surface-base);border:1px solid var(--border-subtle);color:var(--t2);cursor:pointer;backdrop-filter:blur(16px)}
 #mobile-toggle-controls{bottom:18px;left:18px}
 #mobile-toggle-data{bottom:18px;left:62px}
@@ -151,12 +163,14 @@ button.active{background:rgba(21,193,123,0.1);border-color:var(--sf-accent);colo
   #readout{top:auto;bottom:64px;left:18px;right:18px;width:auto;max-height:50vh}
 }
 @media(max-width:768px){#title-block h1{font-size:20px;letter-spacing:4px}}
-#kb-help{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:50;background:rgba(15,15,16,0.95);border:1px solid #50555E;padding:12px 18px;font-family:var(--font-mono);font-size:12px;color:var(--t2);letter-spacing:0.5px;display:none;gap:16px;flex-wrap:wrap;backdrop-filter:blur(16px);pointer-events:none}
+#kb-help{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:50;background:var(--sf-sim-panel);border:1px solid var(--sf-line);padding:12px 18px;font-family:var(--font-mono);font-size:12px;color:var(--t2);letter-spacing:0.5px;display:none;gap:16px;flex-wrap:wrap;backdrop-filter:blur(16px);pointer-events:none}
 #kb-help.visible{display:flex}
-#biome-legend{position:fixed;bottom:40px;left:18px;z-index:10;background:#0E0E0F;border:1px solid #41454D;padding:10px 14px;font-family:var(--font-mono);font-size:12px;pointer-events:none;display:flex;flex-direction:column;gap:4px}
-#temp-graph{position:fixed;bottom:40px;right:18px;z-index:10;background:#0E0E0F;border:1px solid #41454D;padding:8px;pointer-events:none}
+#biome-legend{position:fixed;bottom:40px;left:290px;z-index:10;background:var(--sf-sim-panel);border:1px solid var(--sf-line-hairline);padding:10px 14px;font-family:var(--font-mono);font-size:12px;pointer-events:none;display:flex;flex-direction:column;gap:4px}
+#temp-graph{position:fixed;bottom:40px;right:18px;z-index:10;background:var(--sf-sim-panel);border:1px solid var(--sf-line-hairline);padding:8px;pointer-events:none;width:316px}
+#temp-graph canvas{display:block;width:300px;height:170px}
 #temp-graph .tg-title{font-family:var(--font-display);font-weight:300;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--sf-primary-text);margin-bottom:6px;text-align:center}
-@media(max-width:1024px){#biome-legend{display:none !important}#kb-help{display:none !important}#temp-graph{display:none !important}}
+@media(max-width:1279px){#biome-legend{display:none !important}}
+@media(max-width:1024px){#kb-help{display:none !important}#temp-graph{display:none !important}}
 /* Drawers open above the dock (sim-mobile.css), not on top of it. On a
    phone the scale note moves up beside the zoom readout, left-aligned,
    instead of wrapping across the dock at the bottom edge. */
@@ -173,7 +187,10 @@ button.active{background:rgba(21,193,123,0.1);border-color:var(--sf-accent);colo
   <link rel="stylesheet" href="../_shared/sim-mobile.css">
   <link rel="stylesheet" href="../_shared/sim-title.css">
   <link rel="stylesheet" href="../_shared/sim-perf.css">
+  <link rel="stylesheet" href="../_shared/sim-a11y.css">
   <script src="../_shared/sim-loop.js"></script>
+  <script src="../_shared/sim-a11y.js"></script>
+  <script src="../_shared/physics.js"></script>
 </head>
 <body>
 <div id="renderer-container"></div>
@@ -182,52 +199,54 @@ button.active{background:rgba(21,193,123,0.1);border-color:var(--sf-accent);colo
   <h1>TIDELOCK</h1>
   <div class="context-label">Tidally Locked World Simulator</div>
   <div style="margin-top:10px;display:flex;align-items:center;pointer-events:all;">
-    <div id="badge" class="badge-waiting">CONFIGURING</div>
-    <span id="info-btn" title="About TIDELOCK">ℹ</span>
+    <div id="badge" class="badge-waiting" role="status" aria-live="polite">CONFIGURING</div>
+    <button type="button" id="info-btn" aria-haspopup="dialog" aria-controls="modal-overlay">About</button>
   </div>
   <div id="handoff-note"></div>
 </div>
 
 <div id="controls" class="panel">
   <div class="section-header">Star</div>
-  <div class="control-row"><div class="control-label"><span>Star Type</span></div><select id="starType"></select></div>
+  <div class="control-row"><div class="control-label"><label for="starType"><span>Star type</span></label></div><select id="starType"></select></div>
   <div class="display-row"><span class="dl">Mass</span><span class="dv" id="starMassDisp">—</span></div>
+  <div class="display-row"><span class="dl">Radius</span><span class="dv" id="starRadDisp">—</span></div>
   <div class="display-row"><span class="dl">Luminosity</span><span class="dv" id="starLumDisp">—</span></div>
   <div class="display-row"><span class="dl">Temperature</span><span class="dv" id="starTempDisp">—</span></div>
+  <div class="control-row" style="margin-top:6px"><div class="control-label"><span>System age</span><span class="value-display" id="ageGyrVal">5.0 Gyr</span></div><input type="range" id="ageGyr" min="0.1" max="13" step="0.1" value="5" aria-label="System age in billions of years"></div>
 
   <div class="section-header">Planet</div>
-  <div class="control-row"><div class="control-label"><span>Planet Mass</span><span class="value-display" id="planetMassVal">1.00 M⊕</span></div><input type="range" id="planetMass" min="0.5" max="5" step="0.05" value="1"></div>
-  <div class="control-row"><div class="control-label"><span>Planet Radius</span><span class="value-display" id="planetRadiusVal">1.00 R⊕</span></div><input type="range" id="planetRadius" min="0.8" max="2" step="0.05" value="1"></div>
-  <div class="control-row"><div class="control-label"><span>Orbital Distance</span><span class="value-display" id="orbDistVal">0.074 AU</span></div><input type="range" id="orbDist" min="0.01" max="0.5" step="0.001" value="0.074"></div>
-  <div class="checkbox-row"><input type="checkbox" id="lockHZ" checked><label for="lockHZ">Lock to Habitable Zone</label></div>
+  <div class="control-row"><div class="control-label"><span>Planet mass</span><span class="value-display" id="planetMassVal">1.00 M⊕</span></div><input type="range" id="planetMass" min="0.5" max="5" step="0.05" value="1"></div>
+  <div class="control-row"><div class="control-label"><span>Planet radius</span><span class="value-display" id="planetRadiusVal">1.00 R⊕</span></div><input type="range" id="planetRadius" min="0.8" max="2" step="0.05" value="1"></div>
+  <div class="control-row"><div class="control-label"><span>Orbital distance</span><span class="value-display" id="orbDistVal">0.074 AU</span></div><input type="range" id="orbDist" min="0.005" max="3" step="0.0005" value="0.074"></div>
+  <div class="checkbox-row"><input type="checkbox" id="lockHZ" checked><label for="lockHZ">Keep in habitable zone</label></div>
 
   <div class="section-header">Atmosphere</div>
-  <div class="control-row"><div class="control-label"><span>Atm. Density</span><span class="value-display" id="atmDensVal">1.00 atm</span></div><input type="range" id="atmDens" min="0" max="5" step="0.05" value="1"></div>
-  <div class="control-row"><div class="control-label"><span>Greenhouse Factor</span><span class="value-display" id="ghFactorVal">0.30</span></div><input type="range" id="ghFactor" min="0" max="3" step="0.05" value="0.3"></div>
-  <div class="control-row"><div class="control-label"><span>Composition</span></div><select id="composition"><option value="N2O2">N₂/O₂</option><option value="CO2">CO₂-rich</option><option value="H2He">H₂/He</option><option value="CH4">CH₄-rich</option><option value="SO2">SO₂-rich</option></select></div>
+  <div class="control-row"><div class="control-label"><span>Surface pressure</span><span class="value-display" id="atmDensVal">1.00 atm</span></div><input type="range" id="atmDens" min="0" max="5" step="0.05" value="1"></div>
+  <div class="control-row"><div class="control-label"><span>Greenhouse (IR depth <span class="nocase">τ</span>)</span><span class="value-display" id="ghFactorVal">0.84</span></div><input type="range" id="ghFactor" min="0" max="3" step="0.02" value="0.84"></div>
+  <div class="control-row"><div class="control-label"><label for="composition"><span>Composition</span></label></div><select id="composition"><option value="N2O2">N₂/O₂</option><option value="CO2">CO₂-rich</option><option value="H2He">H₂/He</option><option value="CH4">CH₄-rich</option><option value="SO2">SO₂-rich</option></select></div>
 
   <div class="section-header">Surface</div>
-  <div class="control-row"><div class="control-label"><span>Ocean Coverage</span><span class="value-display" id="oceanVal">60%</span></div><input type="range" id="ocean" min="0" max="100" step="1" value="60"></div>
+  <div class="control-row"><div class="control-label"><span>Ocean coverage</span><span class="value-display" id="oceanVal">60%</span></div><input type="range" id="ocean" min="0" max="100" step="1" value="60"></div>
   <div class="control-row"><div class="control-label"><span>Albedo</span><span class="value-display" id="albedoVal">0.30</span></div><input type="range" id="albedo" min="0.05" max="0.8" step="0.01" value="0.3"></div>
 
   <div class="section-header">Moons</div>
-  <div class="control-row"><div class="control-label"><span>Moon Count</span><span class="value-display" id="moonCountVal">0</span></div><input type="range" id="moonCount" min="0" max="3" step="1" value="0"></div>
+  <div class="control-row"><div class="control-label"><span>Moons</span><span class="value-display" id="moonCountVal">0</span></div><input type="range" id="moonCount" min="0" max="3" step="1" value="0"></div>
 
   <div class="section-header">Display</div>
-  <div class="checkbox-row"><input type="checkbox" id="showClouds" checked><label for="showClouds">Cloud Layer</label></div>
-  <div class="checkbox-row"><input type="checkbox" id="showHab" checked><label for="showHab">Habitable Band Marker</label></div>
-  <div class="checkbox-row"><input type="checkbox" id="showGrid"><label for="showGrid">Grid Overlay</label></div>
-  <div class="control-label" style="margin-top:6px"><span>Color Scale</span></div>
+  <div class="checkbox-row"><input type="checkbox" id="showClouds" checked><label for="showClouds">Cloud layer</label></div>
+  <div class="checkbox-row"><input type="checkbox" id="showHab" checked><label for="showHab">Liquid-water band marker</label></div>
+  <div class="checkbox-row"><input type="checkbox" id="showGrid"><label for="showGrid">Grid overlay</label></div>
+  <div class="control-label" style="margin-top:6px"><span>Colour scale</span></div>
   <div class="btn-group">
     <button id="csTherm" class="active" onclick="setColorScale(0)">Thermal</button>
     <button id="csBiome" onclick="setColorScale(1)">Biome</button>
     <button id="csRaw" onclick="setColorScale(2)">Raw</button>
   </div>
-  <div style="margin-top:10px"><button onclick="regenerateTerrain()" style="width:100%">⟳ NEW TERRAIN SEED</button></div>
+  <div style="margin-top:10px"><button onclick="regenerateTerrain()" style="width:100%">New terrain</button></div>
 
   <div class="section-header">Animation</div>
-  <div class="checkbox-row"><input type="checkbox" id="orbPause"><label for="orbPause">Pause Orbit</label></div>
-  <div class="control-row"><div class="control-label"><span>Orbit Speed</span><span class="value-display" id="orbSpeedVal">1.0×</span></div><input type="range" id="orbSpeed" min="0" max="5" step="0.1" value="1"></div>
+  <div class="checkbox-row"><input type="checkbox" id="orbPause"><label for="orbPause">Pause orbit</label></div>
+  <div class="control-row"><div class="control-label"><span>Orbit speed</span><span class="value-display" id="orbSpeedVal">1.0×</span></div><input type="range" id="orbSpeed" min="0" max="5" step="0.1" value="1"></div>
 
   <div class="section-header">Presets</div>
   <div class="preset-grid">
@@ -237,46 +256,50 @@ button.active{background:rgba(21,193,123,0.1);border-color:var(--sf-accent);colo
     <button onclick="applyPreset('supervenus')">Super Venus</button>
     <button onclick="applyPreset('snowball')">Snowball</button>
     <button onclick="applyPreset('ribbon')">Ribbon World</button>
-    <button onclick="applyPreset('custom')">Custom</button>
   </div>
 </div>
 
-<div id="readout" class="panel">
+<div id="readout" class="panel" aria-label="Readout">
   <div class="data-section">Temperatures</div>
-  <div class="data-row"><span class="data-label">Substellar Point</span><span class="data-value" id="dTssp" style="color:#FFD43B">—</span></div>
-  <div class="data-row"><span class="data-label">Antistellar Point</span><span class="data-value" id="dTasp" style="color:#4D9FFF">—</span></div>
-  <div class="data-row"><span class="data-label">Terminator Avg</span><span class="data-value" id="dTterm" style="color:#2ECC71">—</span></div>
-  <div class="data-row"><span class="data-label">Day Hemisphere</span><span class="data-value" id="dTday" style="color:#FFA500">—</span></div>
-  <div class="data-row"><span class="data-label">Night Hemisphere</span><span class="data-value" id="dTnight" style="color:rgb(100,160,255)">—</span></div>
+  <div class="data-row"><span class="data-label">Substellar, bare rock</span><span class="data-value v-hot" id="dTairless">—</span></div>
+  <div class="data-row"><span class="data-label">Substellar surface</span><span class="data-value v-hot" id="dTssp">—</span></div>
+  <div class="data-row"><span class="data-label">Terminator</span><span class="data-value" id="dTterm">—</span></div>
+  <div class="data-row"><span class="data-label">Night side</span><span class="data-value v-cold" id="dTasp">—</span></div>
+  <div class="data-row"><span class="data-label">Day hemisphere mean</span><span class="data-value" id="dTday">—</span></div>
+  <div class="data-row"><span class="data-label">Night hemisphere mean</span><span class="data-value" id="dTnight">—</span></div>
   <div class="data-section">Habitability</div>
-  <div class="data-row"><span class="data-label">SSP Surface</span><span class="data-value" id="dSSPstatus" style="color:#FFA500">—</span></div>
-  <div class="data-row"><span class="data-label">Habitable Band</span><span class="data-value" id="dHabWidth" style="color:#2ECC71">—</span></div>
-  <div class="data-row"><span class="data-label">Habitable Surface</span><span class="data-value" id="dHabPct" style="color:#2ECC71">—</span></div>
+  <div class="data-row"><span class="data-label">Liquid-water band</span><span class="data-value" id="dHabWidth">—</span></div>
+  <div class="data-row"><span class="data-label">Of the surface</span><span class="data-value" id="dHabPct">—</span></div>
   <div class="data-row"><span class="data-label">Status</span><span class="data-value" id="dHabStatus">—</span></div>
-  <div class="data-row"><span class="data-label">Liquid Water</span><span class="data-value" id="dLiquid">—</span></div>
+  <div class="data-row"><span class="data-label">Liquid water</span><span class="data-value" id="dLiquid">—</span></div>
+  <div class="data-row"><span class="data-label">Night-side frost point</span><span class="data-value" id="dFrost">—</span></div>
   <div class="data-section">Atmosphere</div>
-  <div class="data-row"><span class="data-label">Surface Pressure</span><span class="data-value" id="dPressure">—</span></div>
-  <div class="data-row"><span class="data-label">Scale Height</span><span class="data-value" id="dScaleH">—</span></div>
-  <div class="data-row"><span class="data-label">Max Wind Speed</span><span class="data-value" id="dWind">—</span></div>
-  <div class="data-row"><span class="data-label">Heat Transport</span><span class="data-value" id="dTransport">—</span></div>
-  <div class="data-row"><span class="data-label">Day-Night ΔT</span><span class="data-value" id="dDeltaT">—</span></div>
-  <div class="data-section">Orbital &amp; Physical</div>
-  <div class="data-row"><span class="data-label">Orbital Period</span><span class="data-value" id="dPeriod">—</span></div>
-  <div class="data-row"><span class="data-label">Orbital Distance</span><span class="data-value" id="dOrbDist">—</span></div>
-  <div class="data-row"><span class="data-label">Surface Gravity</span><span class="data-value" id="dGrav">—</span></div>
-  <div class="data-row"><span class="data-label">Escape Velocity</span><span class="data-value" id="dEscVel">—</span></div>
-  <div class="data-row"><span class="data-label">Bulk Density</span><span class="data-value" id="dDensity">—</span></div>
-  <div class="data-row"><span class="data-label">Atm. Retention</span><span class="data-value" id="dAtmRetain">—</span></div>
-  <div class="data-row"><span class="data-label">Tidal Lock</span><span class="data-value" id="dTidalLock">—</span></div>
+  <div class="data-row"><span class="data-label">Surface pressure</span><span class="data-value" id="dPressure">—</span></div>
+  <div class="data-row"><span class="data-label">Heat transport ε</span><span class="data-value" id="dTransport">—</span></div>
+  <div class="data-row"><span class="data-label">Day–night ΔT</span><span class="data-value" id="dDeltaT">—</span></div>
+  <div class="data-row"><span class="data-label">Scale height</span><span class="data-value" id="dScaleH">—</span></div>
+  <div class="data-row"><span class="data-label">Gas retention</span><span class="data-value" id="dAtmRetain">—</span></div>
+  <p class="data-note" id="dRetainNote"></p>
+  <div class="data-section">Orbit and planet</div>
+  <div class="data-row"><span class="data-label">Insolation</span><span class="data-value" id="dInsol">—</span></div>
+  <div class="data-row"><span class="data-label">Equilibrium temp (global)</span><span class="data-value" id="dTeq">—</span></div>
+  <div class="data-row"><span class="data-label">Year (and day)</span><span class="data-value" id="dPeriod">—</span></div>
+  <div class="data-row"><span class="data-label">Orbital distance</span><span class="data-value" id="dOrbDist">—</span></div>
+  <div class="data-row"><span class="data-label">Surface gravity</span><span class="data-value" id="dGrav">—</span></div>
+  <div class="data-row"><span class="data-label">Escape velocity</span><span class="data-value" id="dEscVel">—</span></div>
+  <div class="data-row"><span class="data-label">Bulk density</span><span class="data-value" id="dDensity">—</span></div>
+  <div class="data-row"><span class="data-label">Time to lock</span><span class="data-value" id="dLockTime">—</span></div>
+  <div class="data-row"><span class="data-label">Tidal lock</span><span class="data-value" id="dTidalLock">—</span></div>
+  <div class="data-row"><span class="data-label">Star's main-sequence life</span><span class="data-value" id="dStarLife">—</span></div>
   <div class="data-row"><span class="data-label">Moons</span><span class="data-value" id="dMoons">—</span></div>
 </div>
 
 <div id="zoom-info">
   <div class="zoom-val" id="zoomVal">1.0×</div>
-  <div class="zoom-label">ZOOM · SCROLL TO ADJUST</div>
+  <div class="zoom-label">Zoom · scroll to adjust</div>
 </div>
-<div id="drag-hint">DRAG TO ORBIT IN 3D · SCROLL TO ZOOM · ZOOM OUT FOR ORBITAL VIEW</div>
-<div id="scale-note">⚠ Orbital distances and star size are shown at approximate scale for visualization. All physics calculations use true values.</div>
+<div id="drag-hint">Drag to orbit · scroll to zoom · zoom out for the orbital view</div>
+<div id="scale-note">Distances and star size are drawn at an approximate scale. The physics uses true values.</div>
 <div id="tooltip"></div>
 <button id="mobile-toggle-controls" onclick="toggleMobilePanel('controls')" title="Toggle controls panel" aria-label="Toggle controls panel" aria-expanded="false" aria-controls="controls">☰</button>
 <button id="mobile-toggle-data" onclick="toggleMobilePanel('readout')" title="Toggle data readout panel" aria-label="Toggle data readout panel" aria-expanded="false" aria-controls="readout">▤</button>
@@ -286,7 +309,7 @@ button.active{background:rgba(21,193,123,0.1);border-color:var(--sf-accent);colo
     <button class="close-btn" onclick="document.getElementById('modal-overlay').classList.remove('visible')" title="Close" aria-label="Close">✕</button>
     <h2>TIDELOCK</h2>
     <p>Most potentially habitable exoplanets orbit red dwarf stars — and most of those are tidally locked, with one face permanently baking in starlight and the other in eternal darkness.</p>
-    <p>The substellar point — directly beneath the star — is scorched rock, a barren Mercury-like wasteland. The antistellar point is frozen white ice, colder than any place on Earth. Between these extremes lies the <em>terminator band</em>: a ring of permanent twilight where liquid water, breathable air, and life itself might exist.</p>
+    <p>The substellar point, directly beneath the star, gets the full force of the light. The antistellar point never sees it. Whether the night side freezes, or the atmosphere carries enough heat round to keep it mild, depends on how thick that atmosphere is: thin air leaves a scorched day and a frozen night, thick air evens them out. Somewhere on the surface, water can be liquid; Tidelock finds that band and measures it in kilometres.</p>
     <p>Drag to orbit the planet in 3D. Scroll to zoom — zoom far out to see the full orbital system with habitable zone. Add moons to see eclipse shadows sweep across the surface.</p>
     <h3>What the Colors Mean</h3>
     <ul>
@@ -295,15 +318,19 @@ button.active{background:rgba(21,193,123,0.1);border-color:var(--sf-accent);colo
       <li><strong style="color:#5577AA">Blue:</strong> Oceans — liquid water in low-elevation habitable areas</li>
       <li><strong style="color:#D0D5E0">White:</strong> Nightside ice — permanently frozen</li>
     </ul>
-    <h3>Tectonics</h3>
-    <p>Tidal locking creates predictable geology: a volcanic caldera at the substellar point, massive mountain ranges along the terminator where thermal expansion meets cold contraction, and smooth ancient ice plains on the nightside. Mountains trap moisture, creating rivers and lakes in the habitable band.</p>
-    <h3>Key Insight for Writers</h3>
-    <p>The habitable band isn't a thin line — with a decent atmosphere, it can be <em>thousands of kilometers wide</em>. Civilizations here live in permanent twilight, in ribbon-shaped nations stretched along the terminator. The star is forever on one horizon, the stars forever on the other.</p>
+    <h3>Terrain</h3>
+    <p>The terrain is procedural decoration, not a geological model: rougher near the terminator, smoother ice on the night side. The temperatures, band and flags come from the physics, not the terrain.</p>
+    <h3>Key insight for writers</h3>
+    <p>With a thin atmosphere the liquid-water band is a narrow ring near the terminator. With a thick one it can widen to cover most of the day side, and it need not sit at the terminator at all. Check the band width and the night-side frost point before placing a civilization. If the night side is below the frost point of the air, the air itself freezes out there.</p>
     <h3>Scientific References</h3>
     <ul>
       <li>Pierrehumbert (2011) — "A Palette of Climates for Tidally Locked Terrestrial Exoplanets"</li>
       <li>Yang et al. (2013) — Stabilizing cloud feedback on tidally locked planets</li>
       <li>Kopparapu et al. (2016) — Inner edge of HZ for tidally locked planets</li>
+      <li>Cowan &amp; Agol (2011) — Day and night temperatures, heat redistribution</li>
+      <li>Koll &amp; Abbot (2016) — Day–night heat transport on rocky tidally locked planets</li>
+      <li>Joshi, Haberle &amp; Reynolds (1997) — Atmospheric collapse on synchronously rotating planets</li>
+      <li>Gladman et al. (1996) — Tidal despinning timescale</li>
       <li>Turbet et al. (2018) — TRAPPIST-1 climate modeling</li>
     </ul>
     <h3>SF References</h3>
@@ -351,38 +378,70 @@ button.active{background:rgba(21,193,123,0.1);border-color:var(--sf-accent);colo
 // ============================================================
 
 // ── Star Catalog ──
-const STARS=[
-  {type:'M9V',mass:0.08,lum:0.0001,temp:2400,color:[1,.27,.0],hex:'#FF4500',hz:0.010},
-  {type:'M8V',mass:0.09,lum:0.0004,temp:2500,color:[1,.34,.13],hex:'#FF5722',hz:0.020},
-  {type:'M7V',mass:0.10,lum:0.0009,temp:2600,color:[1,.42,.21],hex:'#FF6B35',hz:0.030},
-  {type:'M6V',mass:0.12,lum:0.0016,temp:2800,color:[1,.44,.26],hex:'#FF7043',hz:0.040},
-  {type:'M5.5V',mass:0.14,lum:0.0023,temp:2900,color:[1,.48,.31],hex:'#FF7A50',hz:0.048},
-  {type:'M5V',mass:0.16,lum:0.003,temp:3000,color:[1,.54,.40],hex:'#FF8A65',hz:0.055},
-  {type:'M4V',mass:0.25,lum:0.0055,temp:3100,color:[1,.62,.50],hex:'#FF9E80',hz:0.074},
-  {type:'M3V',mass:0.33,lum:0.013,temp:3250,color:[1,.70,.60],hex:'#FFB399',hz:0.114},
-  {type:'M2V',mass:0.40,lum:0.023,temp:3400,color:[1,.67,.57],hex:'#FFAB91',hz:0.152},
-  {type:'M1V',mass:0.47,lum:0.04,temp:3600,color:[1,.80,.74],hex:'#FFCCBC',hz:0.200},
-  {type:'M0V',mass:0.51,lum:0.063,temp:3800,color:[1,.88,.70],hex:'#FFE0B2',hz:0.250},
-  {type:'K7V',mass:0.60,lum:0.10,temp:4000,color:[1,.91,.80],hex:'#FFE8CC',hz:0.320},
-  {type:'K5V',mass:0.68,lum:0.16,temp:4400,color:[1,.94,.86],hex:'#FFF0DB',hz:0.400},
-  {type:'K3V',mass:0.75,lum:0.28,temp:4700,color:[1,.95,.88],hex:'#FFF3E0',hz:0.530},
-  {type:'K0V',mass:0.82,lum:0.40,temp:5100,color:[1,.97,.91],hex:'#FFF8E7',hz:0.630},
-  {type:'G5V',mass:0.92,lum:0.70,temp:5500,color:[1,.98,.94],hex:'#FFFBF0',hz:0.840},
-  {type:'G2V',mass:1.00,lum:1.00,temp:5800,color:[1,.97,.94],hex:'#FFF8F0',hz:1.000},
-  {type:'G0V',mass:1.06,lum:1.20,temp:5900,color:[1,1,.94],hex:'#FFFFF0',hz:1.100},
-  {type:'F5V',mass:1.30,lum:2.50,temp:6500,color:[.94,.94,1],hex:'#F0F0FF',hz:1.580},
-  {type:'F0V',mass:1.60,lum:6.50,temp:7200,color:[.82,.82,1],hex:'#D0D0FF',hz:2.550}
-];
+// One table for every sim: the shared main-sequence sequence (SFPhysics,
+// Pecaut & Mamajek 2013) from M8V to F0V, luminosity by Stefan–Boltzmann,
+// habitable-zone edges by Kopparapu et al. 2014 with the Teff correction.
+// Plus one measured star: Proxima Centauri, Teff 3042 K (Boyajian et al.
+// 2012), M 0.1221 M☉, R 0.1542 R☉ (Kervella, Thévenin & Lovis 2017).
+const P=window.SFPhysics;
+// Blackbody colour for rendering only (Helland's fit to the CIE blackbody
+// locus, 1000–40000 K). Not a palette: it is a function of temperature.
+function teffToRGB(T){
+  const t=T/100;let r,g,b;
+  if(t<=66){r=255;g=99.4708025861*Math.log(t)-161.1195681661;b=t<=19?0:138.5177312231*Math.log(t-10)-305.0447927307;}
+  else{r=329.698727446*Math.pow(t-60,-0.1332047592);g=288.1221695283*Math.pow(t-60,-0.0755148492);b=255;}
+  const c=v=>Math.min(Math.max(v,0),255)/255;
+  return [c(r),c(g),c(b)];
+}
+function makeStar(type,label,teff,mass,radius){
+  const lum=P.luminosityFromRadiusTeff(radius,teff);
+  const hz=P.kopparapuEdges(teff,lum);
+  // "Keep in habitable zone": 0.9 × the runaway-greenhouse insolation, just
+  // inside the conservative inner edge (Kopparapu et al. 2014). Locked
+  // planets with substellar clouds stay temperate there and well inside it
+  // (Yang, Cowan & Abbot 2013, ApJL 771:L45).
+  const sHZ=0.9*P.kopparapuSeff(teff,'runawayGreenhouse');
+  return {type,label,teff,temp:teff,mass,radius,lum,hzInner:hz.runawayGreenhouse,hzOuter:hz.maxGreenhouse,
+    hz:P.distanceForInsolation(lum,sHZ),color:teffToRGB(teff),lifeGyr:P.mainSequenceLifetimeGyr(mass,lum)};
+}
+const STAR_NOTES={M8V:' · TRAPPIST-1',G2V:' · Sun'};
+const STARS=P.MAIN_SEQUENCE.filter(r=>r.teff<=7220)
+  .map(r=>makeStar(r.spt,r.spt+(STAR_NOTES[r.spt]||''),r.teff,r.mass,r.radius))
+  .concat([makeStar('PROXIMA','Proxima Centauri (M5.5V)',3042,0.1221,0.1542)]);
+function starIndexOf(type){const i=STARS.findIndex(s=>s.type===type);return i<0?STARS.findIndex(s=>s.type==='M4V'):i;}
+// Saved states before 1.9 stored an index into the old 20-row table.
+const LEGACY_STAR_TYPES=['M9V','M8V','M7V','M6V','M5.5V','M5V','M4V','M3V','M2V','M1V','M0V','K7V','K5V','K3V','K0V','G5V','G2V','G0V','F5V','F0V'];
+const LEGACY_ALIAS={'M9V':'M8V','M5.5V':'PROXIMA'};
+function legacyStarIndex(i){const t=LEGACY_STAR_TYPES[i]||'M4V';return starIndexOf(LEGACY_ALIAS[t]||t);}
 const starSel=document.getElementById('starType');
-STARS.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent=s.type;if(s.type==='M4V')o.selected=true;starSel.appendChild(o);});
+STARS.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent=s.label;starSel.appendChild(o);});
+const DEFAULT_STAR=starIndexOf('M4V');
+starSel.value=DEFAULT_STAR;
+
+// Composition data. cp at ~300 K (NIST Chemistry WebBook); mean molecular
+// mass for scale height; the lightest bulk gas for the retention test; the
+// gas that condenses first for collapse; an assumed exobase temperature:
+// ~1000 K for an Earth-like thermosphere (Banks & Kockarts 1973), ~300 K
+// where CO₂/SO₂ 15 µm cooling holds it down (Venus, Mars: Bougher et al.
+// 2015). Real exobases vary with stellar EUV; this is stated in the readout.
+const COMPOSITIONS={
+  N2O2:{label:'N₂/O₂',cp:1005,mu:28.97,lightGas:'N2',lightLabel:'N₂',cond:'N2',condLabel:'N₂',exoK:1000},
+  CO2:{label:'CO₂',cp:846,mu:44.01,lightGas:'CO2',lightLabel:'CO₂',cond:'CO2',condLabel:'CO₂',exoK:300},
+  H2He:{label:'H₂/He',cp:12000,mu:2.3,lightGas:'H2',lightLabel:'H₂',cond:'H2',condLabel:'H₂',exoK:1000},
+  CH4:{label:'CH₄',cp:2220,mu:16.04,lightGas:'CH4',lightLabel:'CH₄',cond:'CH4',condLabel:'CH₄',exoK:1000},
+  SO2:{label:'SO₂',cp:640,mu:64.07,lightGas:'SO2',lightLabel:'SO₂',cond:'SO2',condLabel:'SO₂',exoK:300}
+};
+const ATM_TO_BAR=1.01325;
+const T_INTERNAL=P.internalHeatTemperature(); // 35 K, Earth's heat flow
 
 // ── Simulation State ──
-const S={starIdx:6,planetMass:1.0,planetRadius:1.0,orbDist:0.074,lockHZ:true,
-  atmDens:1.0,ghFactor:0.3,composition:'N2O2',ocean:60,albedo:0.3,
+const S={starIdx:DEFAULT_STAR,planetMass:1.0,planetRadius:1.0,orbDist:0.074,lockHZ:true,ageGyr:5,
+  atmDens:1.0,ghFactor:0.84,composition:'N2O2',ocean:60,albedo:0.3,
   moonCount:0,showClouds:true,showHab:true,showGrid:false,colorScale:0,noiseSeed:42.0};
-const D={tSSP:0,tASP:0,tTerm:0,tDayAvg:0,tNightAvg:0,habIn:0,habOut:0,habDeg:0,habPct:0,
-  deltaT:0,pressure:0,surfGrav:0,escVel:0,bulkDensity:0,atmRetention:'',scaleH:0,maxWind:0,transport:'',orbPeriod:0,
-  tidalLock:'',habStatus:'',liquidWater:'',redistN:0.7,atmN:0.33};
+const D={tAirless:0,tSSP:0,tASP:0,tTerm:0,tDayAvg:0,tNightAvg:0,habIn:0,habOut:0,habDeg:0,habKm:0,habPct:0,
+  deltaT:0,pressure:0,surfGrav:0,escVel:0,bulkDensity:0,atmRetention:'',retainRatio:0,scaleH:0,eps:0,transport:'',
+  orbPeriod:0,insol:0,teq:0,tidalLock:'',lockYr:0,habStatus:'',liquidWater:'',tBoil:373.15,
+  collapse:false,condK:0,tBase4:0};
 
 // ── Performance: dirty flag for render skipping ──
 let renderDirty=true;
@@ -538,7 +597,8 @@ varying vec3 vLocalPos;
 uniform vec3 starDir;      // local-space (always 1,0,0 for tidal lock) — used for temp/terrain
 uniform vec3 starDirWorld; // world-space direction to star — used for lighting
 uniform vec3 starColor;
-uniform float tSSP,tASP,redistN,atmN,atmDens;
+uniform float tSSP,tASP,atmDens;
+uniform float tBase4,epsR,tInt4,tBoil;
 uniform float oceanCoverage,noiseSeed;
 uniform float habIn,habOut;
 uniform int showHab,colorScale;
@@ -547,14 +607,11 @@ uniform float moonRad[3];
 uniform int moonCount;
 uniform float time;
 
+// Same profile as SFPhysics.lockedSurfaceTemperature: tBase4 is
+// S·S⊕(1−A)(1+¾τ)/σ in K⁴, epsR the redistribution efficiency.
 float getTemp(float theta){
   float c=cos(theta);
-  if(c<=0.0){
-    float nf=min(-c,1.0);
-    float tEdge=tASP+(tSSP-tASP)*0.001;
-    return tASP+(tEdge-tASP)*pow(1.0-nf,0.5+atmN*1.5);
-  }
-  return tASP+(tSSP-tASP)*pow(c,redistN);
+  return pow(tBase4*((1.0-epsR)*max(c,0.0)+epsR*0.25*(1.0+(1.0-epsR)*c))+tInt4,0.25);
 }
 
 float getElev(vec3 p,float theta){
@@ -579,7 +636,7 @@ float getElev(vec3 p,float theta){
 }
 
 float getMoisture(float temp,float elev,float theta){
-  if(temp<273.0||temp>373.0) return 0.0;
+  if(temp<273.0||temp>tBoil) return 0.0;
   // Low elevation + habitable temp = water
   float wetness=(1.0-smoothstep(-0.15,0.25,elev))*oceanCoverage;
   // More moisture at terminator (condensation zone)
@@ -609,8 +666,8 @@ vec3 getTerrainColor(float temp,float elev,float moist,float theta){
     c+=vec3(rockN,rockN*0.7,rockN*0.4);
     return c;
   }
-  if(temp>373.0){
-    float f=(temp-373.0)/127.0;
+  if(temp>tBoil){
+    float f=(temp-tBoil)/127.0;
     vec3 tan1=isBiome?vec3(0.72,0.58,0.38):vec3(0.76,0.63,0.45);
     vec3 rust=isBiome?vec3(0.60,0.35,0.20):vec3(0.58,0.38,0.22);
     vec3 c=mix(tan1,rust,f);
@@ -634,7 +691,7 @@ vec3 getTerrainColor(float temp,float elev,float moist,float theta){
     // Aridity: 1.0 at hot edge, fades to 0 by 35% into the zone
     float aridity=1.0-smoothstep(0.0,0.35,habFrac);
     // Very hot end of habitable range is drier
-    float heatDry=smoothstep(345.0,370.0,temp)*0.5;
+    float heatDry=smoothstep(tBoil-28.0,tBoil-3.0,temp)*0.5;
     aridity=max(aridity,heatDry);
 
     // Desert color for arid regions
@@ -728,7 +785,7 @@ void main(){
 
   // Specular for water
   float spec=0.0;
-  if(moist>0.4&&temp>=273.0&&temp<=373.0){
+  if(moist>0.4&&temp>=273.0&&temp<=tBoil){
     vec3 V=normalize(cameraPosition-vWorldPos);
     vec3 H=normalize(starDirWorld+V);
     spec=pow(max(dot(bumpN,H),0.0),64.0)*0.45*moist;
@@ -881,7 +938,8 @@ const planetUniforms={
   starDir:{value:starDirVec},
   starDirWorld:{value:new THREE.Vector3(1,0,0)},
   starColor:{value:new THREE.Vector3(1,0.62,0.5)},
-  tSSP:{value:350},tASP:{value:80},redistN:{value:0.7},atmN:{value:0.33},atmDens:{value:1.0},
+  tSSP:{value:350},tASP:{value:80},atmDens:{value:1.0},
+  tBase4:{value:1e10},epsR:{value:0.5},tInt4:{value:1.5e6},tBoil:{value:373.15},
   oceanCoverage:{value:0.6},noiseSeed:{value:42.0},
   habIn:{value:0.5},habOut:{value:2.0},showHab:{value:1},colorScale:{value:0},
   moonPos:{value:[new THREE.Vector3(),new THREE.Vector3(),new THREE.Vector3()]},
@@ -1009,7 +1067,7 @@ function updateHabRings(){
     ring.scale.set(r,r,r);
     ring.position.set(offset,0,0);
     ring.rotation.set(0,0,Math.PI/2);
-    ring.visible=S.showHab&&D.habDeg>0.5;
+    ring.visible=S.showHab&&D.habDeg>0.5&&D.habOut>0;
   });
 }
 
@@ -1043,86 +1101,67 @@ for(let lon=0;lon<12;lon++){
 planetGroup.add(gridLines);
 
 // ── Physics ──
+// Every number here comes from SFPhysics (public/tools/_shared/physics.js),
+// the twin of src/lib/physics; sources are cited there.
+function surfaceT(thetaDeg){
+  return P.lockedSurfaceTemperature(D.insol,S.albedo,D.eps,thetaDeg,S.atmDens>0?S.ghFactor:0,T_INTERNAL);
+}
 function recalcPhysics(){
   const star=STARS[S.starIdx];
+  const comp=COMPOSITIONS[S.composition]||COMPOSITIONS.N2O2;
   if(S.lockHZ){
-    S.orbDist=star.hz;
+    S.orbDist=Math.min(Math.max(star.hz,0.005),3);
     document.getElementById('orbDist').value=S.orbDist;
-    document.getElementById('orbDistVal').textContent=S.orbDist.toFixed(3)+' AU';
+    document.getElementById('orbDistVal').textContent=fmtAU(S.orbDist);
   }
-  const Lsun=3.828e26,AU=1.496e11,sigma=5.67e-8;
-  const d=S.orbDist*AU;
-  const flux=(star.lum*Lsun*(1-S.albedo))/(16*Math.PI*sigma*d*d);
-  let tSSP=Math.pow(flux,0.25)*(1+S.ghFactor*0.55);
-  tSSP=Math.min(tSSP,2500);
-  const atmN=Math.min(S.atmDens/3.0,1.0);
-  const redistN=1.0-0.7*atmN;
-  let tASP=tSSP*(0.1+0.4*atmN);
-  if(S.atmDens<=0.01)tASP=Math.max(tASP,2.7);
-  tASP=Math.max(tASP,2.7);
-
-  function tempAt(theta){
-    const c=Math.cos(theta);
-    if(c<=0){const nf=Math.min(-c,1);const tEdge=tASP+(tSSP-tASP)*0.001;return tASP+(tEdge-tASP)*Math.pow(1-nf,0.5+atmN*1.5);}
-    return tASP+(tSSP-tASP)*Math.pow(c,redistN);
-  }
-  const tTerm=tempAt(Math.PI/2);
-  let dayS=0,dayW=0,nightS=0,nightW=0;
-  for(let i=0;i<=180;i++){
-    const th=i/180*Math.PI,t=tempAt(th),w=Math.sin(th);
-    if(th<=Math.PI/2){dayS+=t*w;dayW+=w;}else{nightS+=t*w;nightW+=w;}
-  }
-  // Binary search for habitable zone boundaries (tempAt is monotonically decreasing)
-  // habIn: theta where temp first drops to 373K; habOut: theta where temp drops to 273K
-  function bsearchTheta(targetTemp){
-    // tempAt(0) is hottest (tSSP), tempAt(PI) is coldest
-    // Find smallest theta where tempAt(theta) <= targetTemp
-    if(tempAt(0)<=targetTemp) return 0;
-    if(tempAt(Math.PI)>targetTemp) return -1;
-    let lo=0,hi=Math.PI;
-    for(let i=0;i<24;i++){
-      const mid=(lo+hi)*0.5;
-      if(tempAt(mid)>targetTemp) lo=mid; else hi=mid;
-    }
-    return hi;
-  }
-  let habIn=bsearchTheta(373);
-  let habOut=bsearchTheta(273);
-  if(habIn<0)habIn=0;
-  if(habOut<0)habOut=Math.PI;
-  const oceanMod=1+0.15*S.ocean/100;
-  const habDeg=(habOut-habIn)*180/Math.PI*oceanMod;
-  const habPct=Math.min(Math.abs(Math.cos(habIn)-Math.cos(habOut))*100*oceanMod,100);
-  const g=(S.planetMass/(S.planetRadius*S.planetRadius))*9.81;
-  const mm=S.composition==='H2He'?4e-3:S.composition==='CO2'?44e-3:29e-3;
-  // Escape velocity: v_esc = sqrt(2GM/R), scaled to Earth
-  const escVel=11.186*Math.sqrt(S.planetMass/S.planetRadius); // km/s (Earth = 11.186)
-  // Bulk density relative to Earth (Earth = 5.51 g/cm³)
-  const bulkDensity=5.51*S.planetMass/(S.planetRadius*S.planetRadius*S.planetRadius);
-  // Atmosphere retention: compare thermal velocity of lightest molecule to escape velocity
-  // Jeans escape parameter: lambda = (v_esc / v_thermal)^2, need lambda > 6 for retention
-  const vThermal=Math.sqrt(3*1.38e-23*tSSP/(mm/6.022e23))/1000; // km/s at hottest point
-  const jeansParam=(escVel/Math.max(vThermal,0.01))**2;
-  const atmRetention=jeansParam>25?'Strong':jeansParam>10?'Moderate':jeansParam>6?'Marginal':'Losing';
-
-  D.tSSP=tSSP;D.tASP=tASP;D.tTerm=tTerm;
-  D.tDayAvg=dayW>0?dayS/dayW:tSSP;
-  D.tNightAvg=nightW>0?nightS/nightW:tASP;
-  D.habIn=habIn;D.habOut=Math.min(habOut*oceanMod,Math.PI);
-  D.habDeg=habDeg;D.habPct=habPct;D.deltaT=tSSP-tASP;
-  D.pressure=S.atmDens;D.surfGrav=g/9.81;
-  D.escVel=escVel;D.bulkDensity=bulkDensity;D.atmRetention=atmRetention;
-  D.scaleH=(1.38e-23*tTerm)/((mm/6.022e23)*g)/1000;
-  D.maxWind=Math.min(Math.sqrt(D.deltaT)*15*Math.sqrt(S.atmDens+0.1),500);
-  D.transport=S.atmDens<0.2?'Minimal':S.atmDens<1?'Moderate':S.atmDens<3?'Strong':'Extreme';
-  D.orbPeriod=Math.sqrt(Math.pow(S.orbDist,3)/star.mass)*365.25;
-  D.redistN=redistN;D.atmN=atmN;
-  const st=star.type;
-  D.tidalLock=st[0]==='M'?'Confirmed':(st[0]==='K'&&parseFloat(st.slice(1))>=5)?'Likely':'Unlikely';
-  if(habDeg>30){D.habStatus='Habitable';D.liquidWater='Stable';}
-  else if(habDeg>5){D.habStatus='Marginal';D.liquidWater=tSSP>373&&tASP<273?'Unstable':'Stable';}
-  else if(tSSP<273){D.habStatus='Frozen';D.liquidWater='None';}
-  else{D.habStatus='Uninhabitable';D.liquidWater=tSSP>600?'None':'Unstable';}
+  const pBar=S.atmDens*ATM_TO_BAR;
+  const tau=pBar>0?S.ghFactor:0;
+  const insol=P.insolation(star.lum,S.orbDist);
+  const gMs2=P.surfaceGravityMs2(S.planetMass,S.planetRadius);
+  const radiusKm=S.planetRadius*P.R_EARTH_M/1000;
+  const teq=P.equilibriumTemperature(insol,S.albedo);
+  const eps=P.redistributionEfficiency({pressureBar:pBar,gravityMs2:gMs2,radiusM:radiusKm*1000,temperatureK:teq,cpJkgK:comp.cp});
+  D.insol=insol;D.teq=teq;D.eps=eps;
+  const h=P.lockedHemispheres(insol,S.albedo,eps,tau,T_INTERNAL);
+  D.tAirless=P.substellarTemperature(insol,S.albedo);
+  D.tSSP=h.substellar;D.tASP=surfaceT(180);D.tTerm=h.terminator;
+  D.tDayAvg=h.day;D.tNightAvg=h.night;D.deltaT=D.tSSP-D.tASP;
+  D.tBase4=insol*P.S_EARTH_WM2*(1-Math.min(Math.max(S.albedo,0),1))/P.SIGMA_SB*P.greenhouseMultiplier(tau);
+  // Liquid water: 273.15 K to the boiling point at this pressure; none below
+  // the triple point.
+  D.tBoil=pBar>=P.WATER_TRIPLE_BAR?P.waterBoilingPoint(pBar):273.15;
+  const band=P.liquidWaterBand({sEarth:insol,albedo:S.albedo,epsilon:eps,pressureBar:pBar,radiusKm,tau,internalK:T_INTERNAL,stepDeg:0.1});
+  D.habDeg=band.widthDeg;D.habKm=band.widthKm;
+  D.habIn=band.innerDeg===null?0:band.innerDeg*Math.PI/180;
+  D.habOut=band.outerDeg===null?0:band.outerDeg*Math.PI/180;
+  // Area fraction of a sphere between polar angles θ1 and θ2: (cosθ1 − cosθ2)/2.
+  D.habPct=band.innerDeg===null?0:(Math.cos(D.habIn)-Math.cos(D.habOut))/2*100;
+  // Collapse: the night side colder than the bulk gas's condensation point.
+  D.condK=pBar>0?P.condensationTemperature(comp.cond,pBar):0;
+  D.collapse=pBar>0&&D.tASP<D.condK;
+  // Bulk planet
+  D.pressure=S.atmDens;D.surfGrav=P.surfaceGravity(S.planetMass,S.planetRadius);
+  D.escVel=P.escapeVelocityKms(S.planetMass,S.planetRadius);
+  D.bulkDensity=P.bulkDensity(S.planetMass,S.planetRadius);
+  const ret=P.retention(D.escVel,comp.exoK,P.MOLECULAR_MASS[comp.lightGas]);
+  D.retainRatio=ret.ratio;
+  D.atmRetention=pBar>0?(ret.verdict==='retained'?'Retained':ret.verdict==='marginal'?'Marginal':'Lost'):'No atmosphere';
+  // Scale height H = kT/(μ m_u g) at the terminator temperature.
+  D.scaleH=pBar>0?(P.K_B*D.tTerm)/(comp.mu*P.AMU*gMs2)/1000:NaN;
+  D.transport=pBar<=0?'None':eps<0.05?'Negligible':eps<0.3?'Weak':eps<0.7?'Moderate':'Efficient';
+  D.orbPeriod=P.orbitalPeriodDays(S.orbDist,star.mass,S.planetMass);
+  // Locking: Gladman et al. 1996 timescale against the system age. Within a
+  // tenth of the age: locked. Within the age: likely (Q is uncertain by ~10×).
+  D.lockYr=P.tidalLockTimescaleYears({aAU:S.orbDist,starMassMsun:star.mass,planetMassEarth:S.planetMass,planetRadiusEarth:S.planetRadius});
+  const ageYr=S.ageGyr*1e9;
+  D.tidalLock=D.lockYr<=ageYr*0.1?'Locked':D.lockYr<=ageYr?'Likely locked':'Not locked';
+  // Status
+  if(D.collapse){D.habStatus='Uninhabitable';D.liquidWater=band.widthDeg>0?'Unstable':'None';}
+  else if(band.widthDeg>30){D.habStatus='Habitable';D.liquidWater='Stable';}
+  else if(band.widthDeg>5){D.habStatus='Marginal';D.liquidWater='Stable';}
+  else if(band.widthDeg>0){D.habStatus='Marginal';D.liquidWater='Narrow band';}
+  else if(D.tSSP<273.15){D.habStatus='Frozen';D.liquidWater='None';}
+  else{D.habStatus='Uninhabitable';D.liquidWater='None';}
 }
 
 // ── Sync Uniforms ──
@@ -1130,8 +1169,10 @@ function syncUniforms(){
   const star=STARS[S.starIdx];
   planetUniforms.tSSP.value=D.tSSP;
   planetUniforms.tASP.value=D.tASP;
-  planetUniforms.redistN.value=D.redistN;
-  planetUniforms.atmN.value=D.atmN;
+  planetUniforms.tBase4.value=D.tBase4;
+  planetUniforms.epsR.value=D.eps;
+  planetUniforms.tInt4.value=Math.pow(T_INTERNAL,4);
+  planetUniforms.tBoil.value=D.tBoil;
   planetUniforms.atmDens.value=S.atmDens;
   planetUniforms.oceanCoverage.value=S.ocean/100;
   planetUniforms.noiseSeed.value=S.noiseSeed;
@@ -1161,8 +1202,8 @@ function syncUniforms(){
     0.5+star.color[1]*0.5,
     0.5+star.color[2]*0.5
   );
-  // Scale star by relative size (roughly radius ~ lum^0.5 for main sequence)
-  const starScale=0.5+Math.pow(star.lum,0.3)*0.8;
+  // Star drawn by its real radius (compressed for display).
+  const starScale=0.5+Math.pow(star.radius,0.6)*0.8;
   starMesh.scale.set(starScale,starScale,starScale);
   // Star glow size by luminosity
   const glowSize=5+Math.log10(Math.max(star.lum,0.0001)+1)*4;
@@ -1176,156 +1217,132 @@ function syncUniforms(){
 }
 
 // ── Temperature Cross-Section Graph ──
+// The same profile as the readout and the planet, sampled every 3°. Axis
+// labels sit inside the canvas (the old one cut both ends off).
+function cssVar(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
 function drawTempGraph(){
-  var cv=document.getElementById('tempCanvas');
+  const cv=document.getElementById('tempCanvas');
   if(!cv)return;
-  var ctx=cv.getContext('2d');
-  var W=cv.width,H=cv.height;
-  var PL=36,PR=10,PT=10,PB=24;
-  var pw=W-PL-PR,ph=H-PT-PB;
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  const W=300,H=170;
+  if(cv.width!==W*dpr){cv.width=W*dpr;cv.height=H*dpr;}
+  const ctx=cv.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const PL=46,PR=46,PT=10,PB=34;
+  const pw=W-PL-PR,ph=H-PT-PB;
   ctx.clearRect(0,0,W,H);
-
-  // Compute temperature curve from D
-  var tMax=Math.max(D.tSSP,500);
-  var tMin=Math.max(D.tASP-50,0);
-  var range=Math.max(tMax-tMin,10);
-
-  function tAt(th){
-    var c=Math.cos(th);
-    if(c<=0){var nf=Math.min(-c,1);var tE=D.tASP+(D.tSSP-D.tASP)*0.001;return D.tASP+(tE-D.tASP)*Math.pow(1-nf,0.5+D.atmN*1.5);}
-    return D.tASP+(D.tSSP-D.tASP)*Math.pow(c,D.redistN);
+  const t1=cssVar('--t1'),t3=cssVar('--t3'),line=cssVar('--sf-line'),hair=cssVar('--sf-line-hairline');
+  const amber=cssVar('--sf-amber-text'),azure=cssVar('--sf-azure-text'),emerald=cssVar('--sf-emerald-text');
+  const samples=[];for(let d=0;d<=180;d+=3)samples.push(surfaceT(d));
+  const tMax=Math.max(...samples,D.tBoil)+10;
+  const tMin=Math.max(Math.min(...samples,D.condK||Infinity,273)-15,0);
+  const range=Math.max(tMax-tMin,10);
+  const xP=d=>PL+(d/180)*pw;
+  const yP=t=>PT+ph-(t-tMin)/range*ph;
+  // Liquid-water temperature band
+  const yB=yP(D.tBoil),yF=yP(273.15);
+  ctx.globalAlpha=0.12;ctx.fillStyle=emerald;
+  ctx.fillRect(PL,Math.max(yB,PT),pw,Math.max(Math.min(yF,PT+ph)-Math.max(yB,PT),0));
+  ctx.globalAlpha=1;
+  ctx.font='12px "JetBrains Mono",monospace';ctx.textBaseline='middle';
+  function hline(t,colour,label){
+    const y=yP(t);if(y<PT||y>PT+ph)return;
+    ctx.strokeStyle=colour;ctx.lineWidth=1;ctx.setLineDash([3,3]);
+    ctx.beginPath();ctx.moveTo(PL,y);ctx.lineTo(PL+pw,y);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle=colour;ctx.textAlign='left';ctx.fillText(label,PL+pw+4,y);
   }
-
-  var xP=function(th){return PL+(th/Math.PI)*pw;};
-  var yP=function(t){return PT+ph-(t-tMin)/range*ph;};
-
-  // Habitable zone band (273–373 K)
-  var y373=yP(373),y273=yP(273);
-  if(y373>PT&&y273<PT+ph){
-    ctx.fillStyle='rgba(46,204,113,0.08)';
-    ctx.fillRect(PL,Math.max(y373,PT),pw,Math.min(y273,PT+ph)-Math.max(y373,PT));
-  }
-
-  // Horizontal reference lines at 273K and 373K
-  ctx.strokeStyle='rgba(255,255,255,0.08)';
-  ctx.lineWidth=1;
-  ctx.setLineDash([2,3]);
-  if(y273>PT&&y273<PT+ph){ctx.beginPath();ctx.moveTo(PL,y273);ctx.lineTo(PL+pw,y273);ctx.stroke();}
-  if(y373>PT&&y373<PT+ph){ctx.beginPath();ctx.moveTo(PL,y373);ctx.lineTo(PL+pw,y373);ctx.stroke();}
-  ctx.setLineDash([]);
-
-  // Temperature curve
+  hline(273.15,emerald,'273K');
+  hline(D.tBoil,emerald,Math.round(D.tBoil)+'K');
+  if(D.condK>0)hline(D.condK,azure,'frost');
+  // Curve
   ctx.beginPath();
-  var N=60;
-  for(var i=0;i<=N;i++){
-    var th=i/N*Math.PI;
-    var t=tAt(th);
-    var x=xP(th),y=yP(t);
-    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
-  }
-  ctx.strokeStyle='rgba(255,165,0,0.7)';
-  ctx.lineWidth=1.5;
-  ctx.stroke();
-
-  // Fill under curve
-  ctx.lineTo(xP(Math.PI),PT+ph);
-  ctx.lineTo(PL,PT+ph);
-  ctx.closePath();
-  ctx.fillStyle='rgba(255,165,0,0.04)';
-  ctx.fill();
-
+  samples.forEach((t,i)=>{const x=xP(i*3),y=yP(t);if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);});
+  ctx.strokeStyle=amber;ctx.lineWidth=1.5;ctx.stroke();
   // Axes
-  ctx.strokeStyle='rgba(255,255,255,0.12)';
-  ctx.lineWidth=1;
-  ctx.beginPath();
-  ctx.moveTo(PL,PT);ctx.lineTo(PL,PT+ph);ctx.lineTo(PL+pw,PT+ph);
-  ctx.stroke();
-
-  // Labels
-  ctx.fillStyle='#C9CDD3';
-  ctx.font='12px JetBrains Mono,monospace';
-  ctx.textAlign='center';
-  ctx.fillText('Substellar',PL+8,H-4);
-  ctx.fillText('Terminator',PL+pw/2,H-4);
-  ctx.fillText('Antistellar',PL+pw-8,H-4);
-
-  ctx.textAlign='right';
-  ctx.fillText(Math.round(tMax)+'K',PL-3,PT+9);
-  ctx.fillText(Math.round(tMin)+'K',PL-3,PT+ph);
-
-  // Habitable zone labels
-  ctx.fillStyle='#15C17B';
-  ctx.textAlign='left';
-  ctx.font='12px JetBrains Mono,monospace';
-  if(y273>PT+10&&y273<PT+ph-5)ctx.fillText('273K',PL+pw+2,y273+3);
-  if(y373>PT+5&&y373<PT+ph-10)ctx.fillText('373K',PL+pw+2,y373+3);
-
-  // Key temperature markers
-  ctx.fillStyle='rgba(255,212,59,0.7)';
-  ctx.beginPath();ctx.arc(xP(0),yP(D.tSSP),3,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='rgba(21,193,123,0.7)';
-  ctx.beginPath();ctx.arc(xP(Math.PI),yP(D.tASP),3,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='rgba(255,255,255,0.4)';
-  ctx.beginPath();ctx.arc(xP(Math.PI/2),yP(D.tTerm),2.5,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle=line;ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(PL,PT);ctx.lineTo(PL,PT+ph);ctx.lineTo(PL+pw,PT+ph);ctx.stroke();
+  ctx.strokeStyle=hair;ctx.beginPath();ctx.moveTo(xP(90),PT);ctx.lineTo(xP(90),PT+ph);ctx.stroke();
+  ctx.fillStyle=t3;ctx.textAlign='right';
+  ctx.fillText(Math.round(tMax)+'K',PL-4,PT+6);
+  ctx.fillText(Math.round(tMin)+'K',PL-4,PT+ph-4);
+  ctx.textBaseline='alphabetic';
+  ctx.textAlign='left';ctx.fillText('Day 0°',PL,H-16);
+  ctx.textAlign='center';ctx.fillText('90°',xP(90),H-16);
+  ctx.textAlign='right';ctx.fillText('180° Night',PL+pw,H-16);
+  ctx.fillStyle=t3;ctx.textAlign='center';ctx.fillText('Angle from the substellar point',PL+pw/2,H-2);
+  ctx.fillStyle=t1;
 }
 
 // ── Update Readout ──
+function fmtAU(a){return (a<0.01?a.toFixed(4):a.toFixed(3))+' AU';}
+function fmtK(t){return Math.round(t)+' K ('+Math.round(t-273.15)+' °C)';}
+function fmtYears(y){
+  if(!isFinite(y))return '—';
+  if(y<1e3)return Math.round(y)+' yr';
+  if(y<1e6)return (y/1e3).toPrecision(2)+' kyr';
+  if(y<1e9)return (y/1e6).toPrecision(2)+' Myr';
+  return (y/1e9).toPrecision(2)+' Gyr';
+}
+function setVal(id,text,cls){
+  const el=document.getElementById(id);
+  SFSim.text(el,text);
+  el.classList.remove('v-hot','v-cold','v-ok','v-warn','v-bad');
+  if(cls)el.classList.add(cls);
+}
+let lastBadge='';
 function updateReadout(){
   const star=STARS[S.starIdx];
-  document.getElementById('starMassDisp').textContent=star.mass.toFixed(2)+' M☉';
-  document.getElementById('starLumDisp').textContent=star.lum<0.01?star.lum.toFixed(4)+' L☉':star.lum.toFixed(3)+' L☉';
-  document.getElementById('starTempDisp').textContent=star.temp+' K';
-  const fmt=t=>Math.round(t)+' K ('+Math.round(t-273)+'°C)';
-  document.getElementById('dTssp').textContent=fmt(D.tSSP);
-  document.getElementById('dTasp').textContent=fmt(D.tASP);
-  document.getElementById('dTterm').textContent=fmt(D.tTerm);
-  document.getElementById('dTday').textContent=fmt(D.tDayAvg);
-  document.getElementById('dTnight').textContent=fmt(D.tNightAvg);
-  // SSP status
-  const sspEl=document.getElementById('dSSPstatus');
-  if(D.tSSP>600){sspEl.textContent='Lethal ('+Math.round(D.tSSP-273)+'°C)';sspEl.style.color='#E74C3C';}
-  else if(D.tSSP>373){sspEl.textContent='Scorching ('+Math.round(D.tSSP-273)+'°C)';sspEl.style.color='#FFA500';}
-  else if(D.tSSP>=273){sspEl.textContent='Hot but Survivable';sspEl.style.color='#FFD43B';}
-  else{sspEl.textContent='Frozen';sspEl.style.color='#4D9FFF';}
-  document.getElementById('dHabWidth').textContent=D.habDeg.toFixed(1)+'°';
-  document.getElementById('dHabPct').textContent=D.habPct.toFixed(1)+'%';
-  const hEl=document.getElementById('dHabStatus');
-  hEl.textContent=D.habStatus;
-  hEl.style.color=D.habStatus==='Habitable'?'#2ECC71':D.habStatus==='Marginal'?'#FFA500':'#E74C3C';
-  const lEl=document.getElementById('dLiquid');
-  lEl.textContent=D.liquidWater;
-  lEl.style.color=D.liquidWater==='Stable'?'#2ECC71':D.liquidWater==='Unstable'?'#FFA500':'#E74C3C';
-  document.getElementById('dPressure').textContent=D.pressure.toFixed(2)+' atm';
-  document.getElementById('dScaleH').textContent=isFinite(D.scaleH)?D.scaleH.toFixed(1)+' km':'—';
-  document.getElementById('dWind').textContent=Math.round(D.maxWind)+' km/h';
-  const tEl=document.getElementById('dTransport');
-  tEl.textContent=D.transport;
-  tEl.style.color=D.transport==='Minimal'?'var(--t2)':D.transport==='Moderate'?'#FFA500':D.transport==='Strong'?'#2ECC71':'var(--sf-accent)';
-  document.getElementById('dDeltaT').textContent=Math.round(D.deltaT)+' K';
-  document.getElementById('dPeriod').textContent=D.orbPeriod.toFixed(2)+' days';
-  document.getElementById('dOrbDist').textContent=S.orbDist.toFixed(3)+' AU';
-  document.getElementById('dGrav').textContent=D.surfGrav.toFixed(2)+' g';
-  document.getElementById('dEscVel').textContent=D.escVel.toFixed(1)+' km/s';
-  document.getElementById('dDensity').textContent=D.bulkDensity.toFixed(2)+' g/cm³';
-  const arEl=document.getElementById('dAtmRetain');
-  arEl.textContent=D.atmRetention;
-  arEl.style.color=D.atmRetention==='Strong'?'#2ECC71':D.atmRetention==='Moderate'?'#FFA500':D.atmRetention==='Marginal'?'#FFD43B':'#E74C3C';
-  const tlEl=document.getElementById('dTidalLock');
-  tlEl.textContent=D.tidalLock;
-  tlEl.style.color=D.tidalLock==='Confirmed'?'#2ECC71':D.tidalLock==='Likely'?'#FFA500':'#E74C3C';
-  document.getElementById('dMoons').textContent=S.moonCount===0?'None':S.moonCount+'';
-  document.getElementById('zoomVal').textContent=(3.8/camDist).toFixed(1)+'×';
+  const comp=COMPOSITIONS[S.composition]||COMPOSITIONS.N2O2;
+  SFSim.text(document.getElementById('starMassDisp'),star.mass.toFixed(star.mass<0.2?3:2)+' M☉');
+  SFSim.text(document.getElementById('starRadDisp'),star.radius.toFixed(star.radius<0.2?3:2)+' R☉');
+  SFSim.text(document.getElementById('starLumDisp'),star.lum<0.01?star.lum.toExponential(2)+' L☉':star.lum.toFixed(3)+' L☉');
+  SFSim.text(document.getElementById('starTempDisp'),Math.round(star.teff)+' K');
+  setVal('dTairless',fmtK(D.tAirless),'v-hot');
+  setVal('dTssp',fmtK(D.tSSP),'v-hot');
+  setVal('dTterm',fmtK(D.tTerm));
+  setVal('dTasp',fmtK(D.tASP),'v-cold');
+  setVal('dTday',fmtK(D.tDayAvg));
+  setVal('dTnight',fmtK(D.tNightAvg));
+  setVal('dHabWidth',D.habDeg>0?Math.round(D.habKm).toLocaleString('en-US')+' km · '+D.habDeg.toFixed(1)+'°':'None',D.habDeg>5?'v-ok':D.habDeg>0?'v-warn':'v-bad');
+  setVal('dHabPct',D.habPct.toFixed(1)+'%');
+  setVal('dHabStatus',D.habStatus,D.habStatus==='Habitable'?'v-ok':D.habStatus==='Marginal'?'v-warn':D.habStatus==='Frozen'?'v-cold':'v-bad');
+  setVal('dLiquid',D.liquidWater,D.liquidWater==='Stable'?'v-ok':D.liquidWater==='None'?'v-bad':'v-warn');
+  if(S.atmDens>0)setVal('dFrost',Math.round(D.condK)+' K '+comp.condLabel+(D.collapse?' · // collapse':' · holds'),D.collapse?'v-bad':'v-ok');
+  else setVal('dFrost','No atmosphere');
+  setVal('dPressure',D.pressure.toFixed(2)+' atm');
+  setVal('dTransport',S.atmDens>0?D.eps.toFixed(2)+' · '+D.transport.toLowerCase():'None');
+  setVal('dDeltaT',Math.round(D.deltaT)+' K');
+  setVal('dScaleH',isFinite(D.scaleH)?D.scaleH.toFixed(1)+' km':'—');
+  setVal('dAtmRetain',S.atmDens>0?D.atmRetention+' · '+comp.lightLabel:'No atmosphere',D.atmRetention==='Retained'?'v-ok':D.atmRetention==='Marginal'?'v-warn':D.atmRetention==='Lost'?'v-bad':null);
+  SFSim.text(document.getElementById('dRetainNote'),S.atmDens>0?'Thermal escape of '+comp.lightLabel+' at an assumed '+comp.exoK+' K exobase. Stellar wind and EUV can strip more.':'');
+  setVal('dInsol',D.insol.toFixed(D.insol<0.1?3:2)+' × Earth');
+  setVal('dTeq',fmtK(D.teq));
+  setVal('dPeriod',D.orbPeriod.toFixed(2)+' days');
+  setVal('dOrbDist',fmtAU(S.orbDist));
+  setVal('dGrav',D.surfGrav.toFixed(2)+' g');
+  setVal('dEscVel',D.escVel.toFixed(1)+' km/s');
+  setVal('dDensity',D.bulkDensity.toFixed(2)+' g/cm³');
+  setVal('dLockTime',fmtYears(D.lockYr)+' vs '+S.ageGyr.toFixed(1)+' Gyr');
+  setVal('dTidalLock',D.tidalLock,D.tidalLock==='Locked'?'v-ok':D.tidalLock==='Likely locked'?'v-warn':'v-bad');
+  setVal('dStarLife',fmtYears(star.lifeGyr*1e9),S.ageGyr>star.lifeGyr?'v-bad':null);
+  setVal('dMoons',S.moonCount===0?'None':String(S.moonCount));
+  SFSim.text(document.getElementById('zoomVal'),(3.8/camDist).toFixed(1)+'×');
   drawTempGraph();
-  // Badge
+  // Badge: status words plus colour.
   const badge=document.getElementById('badge');
-  badge.className='';
-  if(D.habStatus==='Habitable'){
-    if(S.atmDens<0.5&&S.ocean>60){badge.textContent='EYEBALL WORLD';badge.classList.add('badge-gold');}
-    else{badge.textContent='HABITABLE WORLD';badge.classList.add('badge-success');}
-  }else if(D.habStatus==='Marginal'){badge.textContent='MARGINALLY HABITABLE';badge.classList.add('badge-warning');}
-  else if(D.habStatus==='Frozen'){badge.textContent='FROZEN WORLD';badge.classList.add('badge-frozen');}
-  else if(D.tSSP>600&&S.ghFactor>1.5){badge.textContent='RUNAWAY GREENHOUSE';badge.classList.add('badge-danger');}
-  else{badge.textContent='UNINHABITABLE';badge.classList.add('badge-danger');}
+  let text,cls;
+  if(D.collapse){text='ATMOSPHERE COLLAPSE';cls='badge-danger';}
+  else if(D.tidalLock==='Not locked'){text='NOT TIDALLY LOCKED';cls='badge-warning';}
+  else if(D.habStatus==='Habitable'){
+    if(S.atmDens<0.5&&S.ocean>60){text='EYEBALL WORLD';cls='badge-gold';}
+    else{text='HABITABLE WORLD';cls='badge-success';}
+  }else if(D.habStatus==='Marginal'){text='MARGINALLY HABITABLE';cls='badge-warning';}
+  else if(D.habStatus==='Frozen'){text='FROZEN WORLD';cls='badge-frozen';}
+  else if(D.tSSP>600&&S.ghFactor>1.5){text='RUNAWAY GREENHOUSE';cls='badge-danger';}
+  else{text='UNINHABITABLE';cls='badge-danger';}
+  badge.className=cls;
+  SFSim.text(badge,text);
+  if(text!==lastBadge){lastBadge=text;if(window.SFA11y)SFA11y.announce(text);}
 }
 
 // ── Control Bindings ──
@@ -1349,19 +1366,20 @@ bindSlider('planetMass','planetMass','planetMassVal',v=>v.toFixed(2)+' M⊕');
 bindSlider('planetRadius','planetRadius','planetRadiusVal',v=>v.toFixed(2)+' R⊕');
 bindSlider('atmDens','atmDens','atmDensVal',v=>v.toFixed(2)+' atm');
 bindSlider('ghFactor','ghFactor','ghFactorVal',v=>v.toFixed(2));
+bindSlider('ageGyr','ageGyr','ageGyrVal',v=>v.toFixed(1)+' Gyr');
 bindSlider('ocean','ocean','oceanVal',v=>Math.round(v)+'%');
 bindSlider('albedo','albedo','albedoVal',v=>v.toFixed(2));
 {
   const orbDistEl=document.getElementById('orbDist');
   orbDistEl.addEventListener('input',function(){
     S.orbDist=parseFloat(this.value);
-    document.getElementById('orbDistVal').textContent=S.orbDist.toFixed(3)+' AU';
+    document.getElementById('orbDistVal').textContent=fmtAU(S.orbDist);
     if(S.lockHZ){S.lockHZ=false;document.getElementById('lockHZ').checked=false;}
     throttledPhysicsUpdate();
   });
   orbDistEl.addEventListener('change',function(){
     S.orbDist=parseFloat(this.value);
-    document.getElementById('orbDistVal').textContent=S.orbDist.toFixed(3)+' AU';
+    document.getElementById('orbDistVal').textContent=fmtAU(S.orbDist);
     if(S.lockHZ){S.lockHZ=false;document.getElementById('lockHZ').checked=false;}
     recalcPhysics();syncUniforms();updateReadout();markDirty();
   });
@@ -1426,24 +1444,27 @@ function toggleMobilePanel(id){
 }
 
 // ── Presets with Lerp ──
+// Presets name their star by type, so the table can change without
+// breaking them. TRAPPIST-1e: Agol et al. 2021. Proxima b: Anglada-Escudé
+// et al. 2016 (minimum mass 1.07 M⊕; radius from Chen & Kipping 2017).
 const PRESETS={
-  trappist1e:{starIdx:1,planetMass:0.92,planetRadius:0.92,orbDist:0.029,lockHZ:false,atmDens:1.0,ghFactor:0.3,composition:'N2O2',ocean:60,albedo:0.3},
-  proximab:{starIdx:4,planetMass:1.27,planetRadius:1.1,orbDist:0.0485,lockHZ:false,atmDens:1.2,ghFactor:0.35,composition:'N2O2',ocean:50,albedo:0.25},
-  eyeball:{starIdx:6,planetMass:1.0,planetRadius:1.0,orbDist:-1,lockHZ:true,atmDens:0.3,ghFactor:0.1,composition:'N2O2',ocean:80,albedo:0.35},
-  supervenus:{starIdx:7,planetMass:2.0,planetRadius:1.3,orbDist:STARS[7].hz*0.8,lockHZ:false,atmDens:4.5,ghFactor:2.8,composition:'CO2',ocean:0,albedo:0.7},
-  snowball:{starIdx:3,planetMass:0.8,planetRadius:0.9,orbDist:STARS[3].hz*1.3,lockHZ:false,atmDens:0.2,ghFactor:0.05,composition:'N2O2',ocean:30,albedo:0.7},
-  ribbon:{starIdx:6,planetMass:1.5,planetRadius:1.1,orbDist:-1,lockHZ:true,atmDens:0.8,ghFactor:0.2,composition:'N2O2',ocean:15,albedo:0.25},
-  custom:null
+  trappist1e:{star:'M8V',planetMass:0.692,planetRadius:0.92,orbDist:0.02925,lockHZ:false,atmDens:1.0,ghFactor:0.84,composition:'N2O2',ocean:60,albedo:0.3},
+  proximab:{star:'PROXIMA',planetMass:1.07,planetRadius:1.03,orbDist:0.0485,lockHZ:false,atmDens:1.0,ghFactor:0.84,composition:'N2O2',ocean:50,albedo:0.3},
+  eyeball:{star:'M4V',planetMass:1.0,planetRadius:1.0,orbDist:-1,lockHZ:true,atmDens:0.1,ghFactor:0.2,composition:'N2O2',ocean:80,albedo:0.35},
+  supervenus:{star:'M3V',planetMass:2.0,planetRadius:1.22,orbDist:-0.6,lockHZ:false,atmDens:5,ghFactor:3,composition:'CO2',ocean:0,albedo:0.7},
+  snowball:{star:'M6V',planetMass:0.8,planetRadius:0.94,orbDist:-1.6,lockHZ:false,atmDens:0.3,ghFactor:0.2,composition:'N2O2',ocean:30,albedo:0.6},
+  ribbon:{star:'M4V',planetMass:1.5,planetRadius:1.12,orbDist:-1.25,lockHZ:false,atmDens:0.25,ghFactor:0.5,composition:'N2O2',ocean:15,albedo:0.25}
 };
 let lerpTarget=null,lerpStart=null,lerpT=0;
 function applyPreset(name){
-  if(name==='custom'){lerpTarget=null;return;}
   const p=PRESETS[name];if(!p)return;
+  const idx=starIndexOf(p.star);
   lerpStart={planetMass:S.planetMass,planetRadius:S.planetRadius,orbDist:S.orbDist,atmDens:S.atmDens,ghFactor:S.ghFactor,ocean:S.ocean,albedo:S.albedo};
   lerpTarget={...p};
-  if(lerpTarget.orbDist<0)lerpTarget.orbDist=STARS[p.starIdx].hz;
+  // A negative distance means "this multiple of the star's HZ distance".
+  if(lerpTarget.orbDist<0)lerpTarget.orbDist=STARS[idx].hz*-lerpTarget.orbDist;
   lerpT=0;
-  S.starIdx=p.starIdx;starSel.value=p.starIdx;
+  S.starIdx=idx;starSel.value=idx;
   S.lockHZ=p.lockHZ;document.getElementById('lockHZ').checked=p.lockHZ;
   S.composition=p.composition;document.getElementById('composition').value=p.composition;
 }
@@ -1466,7 +1487,7 @@ function updateLerp(dt){
   });
   document.getElementById('planetMassVal').textContent=S.planetMass.toFixed(2)+' M⊕';
   document.getElementById('planetRadiusVal').textContent=S.planetRadius.toFixed(2)+' R⊕';
-  document.getElementById('orbDistVal').textContent=S.orbDist.toFixed(3)+' AU';
+  document.getElementById('orbDistVal').textContent=fmtAU(S.orbDist);
   document.getElementById('atmDensVal').textContent=S.atmDens.toFixed(2)+' atm';
   document.getElementById('ghFactorVal').textContent=S.ghFactor.toFixed(2);
   document.getElementById('oceanVal').textContent=Math.round(S.ocean)+'%';
@@ -1559,16 +1580,14 @@ function updateTooltipCore(mx,my){
     const localPt=planetMesh.worldToLocal(pt.clone());
     const P=localPt.normalize();
     const theta=Math.acos(Math.max(-1,Math.min(1,P.dot(starDirVec))));
-    // Compute temp
-    const c=Math.cos(theta);
-    let temp;
-    if(c<=0){const nf=Math.min(-c,1);const tEdge=D.tASP+(D.tSSP-D.tASP)*0.001;temp=D.tASP+(tEdge-D.tASP)*Math.pow(1-nf,0.5+D.atmN*1.5);}
-    else{temp=D.tASP+(D.tSSP-D.tASP)*Math.pow(c,D.redistN);}
-    const status=temp>=273&&temp<=373?'Habitable':temp<273?'Frozen':'Too Hot';
-    const col=status==='Habitable'?'#2ECC71':status==='Frozen'?'#4D9FFF':'#FFA500';
+    const deg=theta*180/Math.PI;
+    const temp=surfaceT(deg);
+    const liquid=S.atmDens*ATM_TO_BAR>=P.WATER_TRIPLE_BAR&&temp>=273.15&&temp<=D.tBoil;
+    const status=liquid?'Liquid water possible':temp<273.15?'Below freezing':'Above boiling';
+    const cls=liquid?'v-ok':temp<273.15?'v-cold':'v-hot';
     tip.style.display='block';
     tip.style.left=(mx+14)+'px';tip.style.top=(my-10)+'px';
-    tip.innerHTML=`<span style="color:${col}">${Math.round(temp)} K</span> (${Math.round(temp-273)}°C)<br>θ: ${(theta*180/Math.PI).toFixed(0)}° from SSP<br><span style="color:${col}">${status}</span>`;
+    tip.innerHTML='<span class="'+cls+'">'+Math.round(temp)+' K</span> ('+Math.round(temp-273.15)+' °C)<br>'+deg.toFixed(0)+'° from the substellar point<br><span class="'+cls+'">'+status+'</span>';
   }else{tip.style.display='none';}
 }
 canvas3d.addEventListener('mouseleave',()=>document.getElementById('tooltip').style.display='none');
@@ -1584,16 +1603,18 @@ const _unitX=new THREE.Vector3(1,0,0);
 // is 0 on the first frame back from a hidden tab, and the loop parks while
 // the simulator is hidden or scrolled off screen.
 let renderedLastFrame=false;
+let animClock=0;
 function animate(ts,dt){
   lastTime=ts;
 
   // Determine if anything is animating this frame
   const isZooming=Math.abs(targetDist-camDist)>0.01;
-  const isOrbiting=!orbPaused&&orbSpeedMult>0;
+  const reduced=window.SFA11y?SFA11y.reducedMotion():false;
+  const isOrbiting=!orbPaused&&orbSpeedMult>0&&!reduced;
   const isLerping=!!lerpTarget;
-  const hasMoons=S.moonCount>0;
+  const hasMoons=S.moonCount>0&&!reduced;
   const isVisDistLerping=Math.abs(getVisDist(S.orbDist)-curVisDist)>0.01;
-  const hasClouds=cloudMesh.visible;
+  const hasClouds=cloudMesh.visible&&!reduced;
 
   // If truly static, skip the entire frame
   if(!renderDirty&&!isZooming&&!isOrbiting&&!isLerping&&!hasMoons&&!isVisDistLerping&&!hasClouds){
@@ -1610,8 +1631,11 @@ function animate(ts,dt){
   // Lerp presets
   updateLerp(dt);
 
-  // Time
-  const t=ts*0.001;
+  // Decorative clock: cloud drift, moons and the orbit animation stop when
+  // the user asks for reduced motion (X9). Physics never depends on it.
+  const ddt=window.SFA11y?SFA11y.decorative(dt):dt;
+  animClock+=ddt;
+  const t=animClock*0.001;
   planetUniforms.time.value=t;
   cloudMat.uniforms.time.value=t;
 
@@ -1624,7 +1648,7 @@ function animate(ts,dt){
   const hzVis=getHZVisDist();
   hzRing.scale.set(hzVis,hzVis,1);
 
-  orbAngle+=(orbPaused?0:dt*0.001*ORB_SPEED*orbSpeedMult)/Math.max(Math.pow(S.orbDist,0.75),0.05);
+  orbAngle+=(orbPaused?0:ddt*0.001*ORB_SPEED*orbSpeedMult)/Math.max(Math.pow(S.orbDist,0.75),0.05);
   planetGroup.position.set(
     Math.cos(orbAngle)*curVisDist,
     0,
@@ -1685,92 +1709,83 @@ updateCamera();
 SFSim.loop(animate,{maxDt:50}).start();
 
 // ─── PostMessage bridge for StellarForge save/load ───
+// Only the embedding StellarForge page may drive this sim (X14): the message
+// must come from our parent window and from this origin.
+function fromHost(event){
+  return event.source===window.parent&&window.parent!==window&&event.origin===window.location.origin;
+}
+function setSlider(id,key,val,disp){
+  S[key]=val;const el=document.getElementById(id);if(el)el.value=val;
+  const d=document.getElementById(id+'Val');if(d&&disp)d.textContent=disp(val);
+}
 window.addEventListener('message', function(event) {
+  if (!fromHost(event)) return;
   if (!event.data || !event.data.type) return;
 
   if (event.data.type === 'STELLARFORGE_LOAD') {
     var payload = event.data.payload;
     if (!payload) return;
-    // A cross-simulator handoff carries only `handoffSeed`, no `parameters`
-    // (it is not a full saved state). Default to an empty object so the
-    // restore blocks below simply have nothing to apply. Safe to default
-    // broadly like this because every restore block below already guards
-    // its own field individually (`if (p.starIdx != null)` etc.), so an
-    // empty object just means none of them fire, not that anything reads
-    // a bad value.
+    // A cross-simulator handoff carries only `handoffSeed`, no `parameters`.
+    // Every restore block below guards its own field.
     var p = payload.parameters || {};
 
-    // Restore star type
-    if (p.starIdx != null) {
-      S.starIdx = parseInt(p.starIdx);
-      document.getElementById('starType').value = S.starIdx;
-    }
+    // Star: 1.9 saves carry starType; older saves an index into the old
+    // 20-row table (mapped by name).
+    if (typeof p.starType === 'string') S.starIdx = starIndexOf(p.starType);
+    else if (p.starIdx != null) S.starIdx = legacyStarIndex(parseInt(p.starIdx, 10));
+    starSel.value = S.starIdx;
 
-    // Restore planet parameters
-    if (p.planetMass != null) { S.planetMass = p.planetMass; document.getElementById('planetMass').value = S.planetMass; document.getElementById('planetMassVal').textContent = S.planetMass.toFixed(2) + ' M\u2295'; }
-    if (p.planetRadius != null) { S.planetRadius = p.planetRadius; document.getElementById('planetRadius').value = S.planetRadius; document.getElementById('planetRadiusVal').textContent = S.planetRadius.toFixed(2) + ' R\u2295'; }
-    if (p.orbDist != null) { S.orbDist = p.orbDist; document.getElementById('orbDist').value = S.orbDist; document.getElementById('orbDistVal').textContent = S.orbDist.toFixed(3) + ' AU'; }
+    if (p.planetMass != null) setSlider('planetMass','planetMass',+p.planetMass,function(v){return v.toFixed(2)+' M⊕';});
+    if (p.planetRadius != null) setSlider('planetRadius','planetRadius',+p.planetRadius,function(v){return v.toFixed(2)+' R⊕';});
+    if (p.orbDist != null) setSlider('orbDist','orbDist',+p.orbDist,fmtAU);
     if (p.lockHZ != null) { S.lockHZ = !!p.lockHZ; document.getElementById('lockHZ').checked = S.lockHZ; }
-
-    // Restore atmosphere
-    if (p.atmDens != null) { S.atmDens = p.atmDens; document.getElementById('atmDens').value = S.atmDens; document.getElementById('atmDensVal').textContent = S.atmDens.toFixed(2) + ' atm'; }
-    if (p.ghFactor != null) { S.ghFactor = p.ghFactor; document.getElementById('ghFactor').value = S.ghFactor; document.getElementById('ghFactorVal').textContent = S.ghFactor.toFixed(2); }
-    if (p.composition && typeof p.composition === 'string') { S.composition = p.composition; document.getElementById('composition').value = S.composition; }
-
-    // Restore surface
-    if (p.ocean != null) { S.ocean = p.ocean; document.getElementById('ocean').value = S.ocean; document.getElementById('oceanVal').textContent = Math.round(S.ocean) + '%'; }
-    if (p.albedo != null) { S.albedo = p.albedo; document.getElementById('albedo').value = S.albedo; document.getElementById('albedoVal').textContent = S.albedo.toFixed(2); }
-
-    // Restore moons
-    if (p.moonCount != null) { S.moonCount = parseInt(p.moonCount); document.getElementById('moonCount').value = S.moonCount; document.getElementById('moonCountVal').textContent = S.moonCount; }
-
-    // Restore display settings
+    if (p.ageGyr != null) setSlider('ageGyr','ageGyr',+p.ageGyr,function(v){return v.toFixed(1)+' Gyr';});
+    if (p.atmDens != null) setSlider('atmDens','atmDens',+p.atmDens,function(v){return v.toFixed(2)+' atm';});
+    if (p.ghFactor != null) setSlider('ghFactor','ghFactor',+p.ghFactor,function(v){return v.toFixed(2);});
+    if (p.composition && typeof p.composition === 'string' && COMPOSITIONS[p.composition]) { S.composition = p.composition; document.getElementById('composition').value = S.composition; }
+    if (p.ocean != null) setSlider('ocean','ocean',+p.ocean,function(v){return Math.round(v)+'%';});
+    if (p.albedo != null) setSlider('albedo','albedo',+p.albedo,function(v){return v.toFixed(2);});
+    if (p.moonCount != null) setSlider('moonCount','moonCount',parseInt(p.moonCount,10),function(v){return String(v);});
     if (p.showClouds != null) { S.showClouds = !!p.showClouds; document.getElementById('showClouds').checked = S.showClouds; }
     if (p.showHab != null) { S.showHab = !!p.showHab; document.getElementById('showHab').checked = S.showHab; }
     if (p.showGrid != null) { S.showGrid = !!p.showGrid; document.getElementById('showGrid').checked = S.showGrid; }
-    if (p.colorScale != null) { S.colorScale = parseInt(p.colorScale); }
+    if (p.colorScale != null) { S.colorScale = parseInt(p.colorScale, 10); }
 
-    // A Solaris handoff: star + a habitable-zone-relative orbital distance,
-    // applied the same way a saved state's own fields are, before the first
-    // render. Matched by nearest luminosity rather than by name, since
-    // Solaris's star vocabulary (blue/white/yellow/orange/red) and this
-    // sim's spectral types (M9V..F0V) do not share keys.
+    // A seed from another tool (Solaris handoff or a published planet).
+    // Preferred: absolute star values plus the planet's distance, so the
+    // INSOLATION is conserved on arrival (X4): pick the nearest star here by
+    // Teff (else by luminosity), then place the planet where it receives
+    // the same flux. Fallback for old seeds: auFraction of the HZ distance.
     if (payload.handoffSeed) {
       var hs = payload.handoffSeed;
-      var hsClamped = false;
-      if (hs.starLuminosity != null) {
-        var bestIdx = 0, bestDiff = Infinity;
+      var note = 'Seeded from another tool.';
+      var bestIdx = S.starIdx;
+      if (hs.starTeff != null || hs.starLuminosity != null) {
+        var bestDiff = Infinity;
         for (var si = 0; si < STARS.length; si++) {
-          var diff = Math.abs(STARS[si].lum - hs.starLuminosity);
+          var diff = hs.starTeff != null ? Math.abs(STARS[si].teff - hs.starTeff)
+            : Math.abs(Math.log(STARS[si].lum / Math.max(hs.starLuminosity, 1e-9)));
           if (diff < bestDiff) { bestDiff = diff; bestIdx = si; }
         }
-        S.starIdx = bestIdx;
-        document.getElementById('starType').value = S.starIdx;
+        S.starIdx = bestIdx; starSel.value = bestIdx;
       }
-      if (hs.auFraction != null) {
-        // Locking to the habitable zone would immediately overwrite the
-        // seeded distance in recalcPhysics(); a handoff's whole point is a
-        // specific distance, not necessarily the HZ.
-        S.lockHZ = false;
-        document.getElementById('lockHZ').checked = false;
-        var hsRawOrbDist = STARS[S.starIdx].hz * hs.auFraction;
-        S.orbDist = Math.max(0.01, Math.min(0.5, hsRawOrbDist));
-        hsClamped = Math.abs(hsRawOrbDist - S.orbDist) > 1e-9;
-        document.getElementById('orbDist').value = S.orbDist;
-        document.getElementById('orbDistVal').textContent = S.orbDist.toFixed(3) + ' AU';
+      var target = null;
+      if (hs.insolation != null) target = P.distanceForInsolation(STARS[bestIdx].lum, +hs.insolation);
+      else if (hs.starLuminosity != null && hs.aAU != null) target = P.distanceForInsolation(STARS[bestIdx].lum, P.insolation(+hs.starLuminosity, +hs.aAU));
+      else if (hs.auFraction != null) target = STARS[bestIdx].hz * hs.auFraction;
+      if (hs.planetMass != null) setSlider('planetMass','planetMass',+hs.planetMass,function(v){return v.toFixed(2)+' M⊕';});
+      if (hs.planetRadius != null) setSlider('planetRadius','planetRadius',+hs.planetRadius,function(v){return v.toFixed(2)+' R⊕';});
+      if (target != null && isFinite(target)) {
+        S.lockHZ = false; document.getElementById('lockHZ').checked = false;
+        var clamped = Math.max(0.005, Math.min(3, target));
+        setSlider('orbDist','orbDist',clamped,fmtAU);
+        note = (hs.insolation != null || hs.aAU != null)
+          ? 'Seeded from another tool. Star matched to ' + STARS[bestIdx].label + '; distance set so the planet gets the same starlight.'
+          : 'Seeded from another tool.';
+        if (Math.abs(clamped - target) > 1e-9) note += " Distance clamped to this tool's 0.005 to 3 AU range.";
       }
-      // Nothing else on screen says a handoff seed was applied. Without this
-      // a writer sees the star and distance sliders move with no
-      // explanation, and gets no indication at all when the handed-off
-      // planet's actual distance fell outside this tool's 0.01-0.5 AU range
-      // and was silently clamped to fit.
       var hnEl = document.getElementById('handoff-note');
-      if (hnEl) {
-        hnEl.textContent = hsClamped
-          ? "Seeded from a Solaris handoff. Distance adjusted to fit this tool's 0.01 to 0.5 AU range."
-          : 'Seeded from a Solaris handoff.';
-        hnEl.style.display = 'block';
-      }
+      if (hnEl) { hnEl.textContent = note; hnEl.style.display = 'block'; }
     }
 
     recalcPhysics();
@@ -1781,13 +1796,16 @@ window.addEventListener('message', function(event) {
 
   if (event.data.type === 'STELLARFORGE_REQUEST_STATE') {
     var star = STARS[S.starIdx] || {};
+    var comp = COMPOSITIONS[S.composition] || COMPOSITIONS.N2O2;
     var state = {
       parameters: {
         starIdx: S.starIdx,
+        starType: star.type,
         planetMass: S.planetMass,
         planetRadius: S.planetRadius,
         orbDist: S.orbDist,
         lockHZ: S.lockHZ,
+        ageGyr: S.ageGyr,
         atmDens: S.atmDens,
         ghFactor: S.ghFactor,
         composition: S.composition,
@@ -1799,6 +1817,8 @@ window.addEventListener('message', function(event) {
         showGrid: S.showGrid,
         colorScale: S.colorScale
       },
+      // Existing keys keep their names. Temperatures in K, distances in AU,
+      // orbPeriod in DAYS, habPct in percent 0–100, escVel km/s, surfGrav g.
       results: {
         starType: star.type || '',
         tSSP: D.tSSP,
@@ -1811,13 +1831,48 @@ window.addEventListener('message', function(event) {
         atmRetention: D.atmRetention || '',
         liquidWater: D.liquidWater || '',
         tidalLock: D.tidalLock || '',
-        orbPeriod: D.orbPeriod
+        orbPeriod: D.orbPeriod,
+        // 1.9 additions
+        units: { tSSP: 'K', tASP: 'K', tTerm: 'K', tDay: 'K', tNight: 'K', tSubstellarAirless: 'K', teq: 'K', orbPeriod: 'd', orbDistAU: 'AU', habPct: '%', bandWidthKm: 'km', bandWidthDeg: 'deg', insolation: 'S_earth', escVel: 'km/s', surfGrav: 'g', bulkDensity: 'g/cm3', scaleHeightKm: 'km', lockTimescaleYr: 'yr', systemAgeGyr: 'Gyr', pressureAtm: 'atm', pressureBar: 'bar' },
+        starLabel: star.label || '',
+        starMass: star.mass,
+        starRadius: star.radius,
+        starLum: star.lum,
+        starTeff: star.teff,
+        orbDistAU: S.orbDist,
+        insolation: D.insol,
+        teq: D.teq,
+        tSubstellarAirless: D.tAirless,
+        tDay: D.tDayAvg,
+        tNight: D.tNightAvg,
+        epsilon: D.eps,
+        heatTransport: D.transport,
+        pressureAtm: S.atmDens,
+        pressureBar: S.atmDens * ATM_TO_BAR,
+        greenhouseTau: S.atmDens > 0 ? S.ghFactor : 0,
+        albedo: S.albedo,
+        bandWidthDeg: D.habDeg,
+        bandWidthKm: D.habKm,
+        bandInnerDeg: D.habDeg > 0 ? D.habIn * 180 / Math.PI : null,
+        bandOuterDeg: D.habDeg > 0 ? D.habOut * 180 / Math.PI : null,
+        boilingK: D.tBoil,
+        collapse: D.collapse,
+        condensingGas: comp.condLabel,
+        condensationK: D.condK,
+        retentionGas: comp.lightLabel,
+        retentionRatio: D.retainRatio,
+        exobaseK: comp.exoK,
+        bulkDensity: D.bulkDensity,
+        scaleHeightKm: isFinite(D.scaleH) ? D.scaleH : null,
+        lockTimescaleYr: D.lockYr,
+        systemAgeGyr: S.ageGyr,
+        starLifetimeGyr: star.lifeGyr
       }
     };
     window.parent.postMessage({
       type: 'STELLARFORGE_SAVE',
       payload: state
-    }, '*');
+    }, window.location.origin);
   }
 });
 </script>

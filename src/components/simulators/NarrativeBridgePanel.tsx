@@ -68,7 +68,7 @@ export default function NarrativeBridgePanel({
     return (
       <button
         onClick={() => onOpenChange(true)}
-        className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 z-30 bg-sf-primary/[0.08] border border-sf-primary border-r-0 px-2.5 py-5 hover:bg-sf-primary/[0.16] transition-colors duration-base ease-sf-out group shadow-sf-glow-teal"
+        className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 z-30 w-10 bg-sf-primary/[0.08] border border-sf-primary border-r-0 px-0 py-5 hover:bg-sf-primary/[0.16] transition-colors duration-base ease-sf-out group shadow-sf-glow-teal"
         title="Open Narrative Bridge"
         aria-label="Open Narrative Bridge"
       >

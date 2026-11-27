@@ -34,7 +34,14 @@ export const SIM_TOOLBAR =
 /** The consequence-flag strip under the toolbar. */
 export const SIM_FLAGS = "border-b border-sf-line bg-sf-surface px-3 py-2 lg:max-w-sm lg:border";
 
-/** Style for the stage: how far the open narrative bridge pushes it (lg+). */
+/**
+ * Width the closed narrative-bridge tab occupies at the right edge (lg+).
+ * The tab is `w-10` in NarrativeBridgePanel; the stage stops short of it so
+ * the tab never sits on a simulator's readout panel (1.9, X12).
+ */
+export const BRIDGE_TAB_PX = 40;
+
+/** Style for the stage: how far the narrative bridge (open panel or closed tab) pushes it (lg+). */
 export function simStageStyle(bridgeOpen: boolean): CSSProperties {
-  return { "--sf-bridge-offset": bridgeOpen ? "340px" : "0px" } as CSSProperties;
+  return { "--sf-bridge-offset": bridgeOpen ? "340px" : `${BRIDGE_TAB_PX}px` } as CSSProperties;
 }

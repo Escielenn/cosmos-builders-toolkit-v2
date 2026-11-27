@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { Globe, Save as SaveIcon } from "lucide-react";
+import { isTrustedSimMessage, simMessageSource } from "@/hooks/use-sim-messages";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -80,6 +81,7 @@ export function SimulatorWorldEntityPicker({
   useEffect(() => {
     if (!savingForEntityId) return;
     const handler = (event: MessageEvent) => {
+      if (!isTrustedSimMessage(event, simMessageSource(iframeRef))) return;
       if (event.data?.type !== "STELLARFORGE_SAVE") return;
       const entity = filtered.find((e) => e.id === savingForEntityId);
       if (!entity) {
@@ -112,7 +114,7 @@ export function SimulatorWorldEntityPicker({
     };
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
-  }, [savingForEntityId, filtered, simulatorType, updateEntity, toast]);
+  }, [savingForEntityId, filtered, simulatorType, updateEntity, toast, iframeRef]);
 
   if (!worldId) return null;
 

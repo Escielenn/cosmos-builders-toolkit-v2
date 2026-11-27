@@ -138,18 +138,19 @@
   function greenhouseMultiplier(tau) { return 1 + 0.75 * Math.max(tau, 0); }
   var EARTH_INTERNAL_FLUX_WM2 = 0.087;
   function internalHeatTemperature(f) { if (f === undefined) f = EARTH_INTERNAL_FLUX_WM2; return Math.pow(Math.max(f, 0) / SIGMA_SB, 0.25); }
-  /* σT(θ)⁴ = S(1−A)[(1−ε)max(cosθ,0) + ε/4](1+¾τ) + σT_int⁴; energy-conserving, continuous. */
+  /* σT(θ)⁴ = S(1−A)[(1−ε)max(cosθ,0) + (ε/4)(1+(1−ε)cosθ)](1+¾τ) + σT_int⁴;
+     energy-conserving, continuous; the (1−ε)cosθ tilt is a StellarForge interpolation. */
   function lockedSurfaceTemperature(s, albedo, eps, thetaDeg, tau, tInt) {
     var a = clamp01(albedo), e = clamp01(eps);
-    var mu = Math.max(Math.cos((thetaDeg * Math.PI) / 180), 0);
-    var flux = Math.max(s, 0) * S_EARTH_WM2 * (1 - a) * ((1 - e) * mu + e / 4);
+    var c = Math.cos((thetaDeg * Math.PI) / 180);
+    var flux = Math.max(s, 0) * S_EARTH_WM2 * (1 - a) * ((1 - e) * Math.max(c, 0) + (e / 4) * (1 + (1 - e) * c));
     return Math.pow((flux / SIGMA_SB) * greenhouseMultiplier(tau || 0) + Math.pow(tInt || 0, 4), 0.25);
   }
   function lockedHemispheres(s, albedo, eps, tau, tInt) {
     var a = clamp01(albedo), e = clamp01(eps);
     var base = ((Math.max(s, 0) * S_EARTH_WM2 * (1 - a)) / SIGMA_SB) * greenhouseMultiplier(tau || 0);
-    var floor = Math.pow(tInt || 0, 4);
-    return { day: Math.pow(base * ((1 - e) / 2 + e / 4) + floor, 0.25), night: Math.pow(base * (e / 4) + floor, 0.25),
+    var floor = Math.pow(tInt || 0, 4), k = 1 - e;
+    return { day: Math.pow(base * ((1 - e) / 2 + (e / 4) * (1 + k / 2)) + floor, 0.25), night: Math.pow(base * (e / 4) * (1 - k / 2) + floor, 0.25),
       substellar: lockedSurfaceTemperature(s, albedo, eps, 0, tau, tInt), terminator: lockedSurfaceTemperature(s, albedo, eps, 90, tau, tInt) };
   }
 

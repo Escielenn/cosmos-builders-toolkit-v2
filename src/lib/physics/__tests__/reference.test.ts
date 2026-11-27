@@ -101,6 +101,24 @@ describe("Kepler, insolation, temperatures", () => {
 });
 
 describe("tidally locked profile", () => {
+  it("night side cools away from the terminator unless transport is perfect", () => {
+    expect(lockedSurfaceTemperature(1, 0.3, 0.4, 90)).toBeGreaterThan(lockedSurfaceTemperature(1, 0.3, 0.4, 180));
+    expect(lockedSurfaceTemperature(1, 0.3, 1, 90)).toBeCloseTo(lockedSurfaceTemperature(1, 0.3, 1, 180), 9);
+  });
+  it("hemisphere means match the profile's flux-weighted averages", () => {
+    const eps = 0.45;
+    let day = 0, night = 0;
+    const n = 20000;
+    for (let i = 0; i < n; i++) {
+      const th = ((i + 0.5) / n) * 180;
+      const w = Math.sin((th * Math.PI) / 180) * (Math.PI / n);
+      const f = lockedSurfaceTemperature(1, 0.3, eps, th) ** 4 * w;
+      if (th < 90) day += f; else night += f;
+    }
+    const h = lockedHemispheres(1, 0.3, eps);
+    expect(rel(day, h.day ** 4)).toBeLessThan(2e-3);
+    expect(rel(night, h.night ** 4)).toBeLessThan(2e-3);
+  });
   it("airless limit: substellar T₀(1−A)^¼, night 0 K", () => {
     const h = lockedHemispheres(1, 0.1, 0);
     expect(h.substellar).toBeCloseTo(substellarTemperature(1, 0.1), 6);

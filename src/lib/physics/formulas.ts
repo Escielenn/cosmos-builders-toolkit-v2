@@ -138,13 +138,19 @@ export function internalHeatTemperature(fluxWm2: number = EARTH_INTERNAL_FLUX_WM
 /**
  * Local surface temperature on a synchronously rotating planet at angle θ
  * from the substellar point. A fraction ε of the absorbed starlight is
- * spread over the whole globe, the rest is re-emitted where it lands:
- *   σT(θ)⁴ = S·S⊕·(1−A) · [ (1−ε)·max(cos θ, 0) + ε/4 ] · (1 + ¾τ) + σT_int⁴
- * Energy-conserving (global mean of the stellar term = S(1−A)/4); ε = 0,
- * τ = 0 gives the true substellar T₀(1−A)^¼ at θ = 0, and the night side
- * σT⁴ = ε·S(1−A)/4 is the Cowan & Agol 2011 eq. 5 night-side temperature.
- * Continuous across the terminator, so day, terminator and night come from
- * one profile. τ (greenhouse) and T_int (internal heat) default to 0.
+ * carried by the atmosphere; the rest is re-emitted where it lands:
+ *   σT(θ)⁴ = S·S⊕·(1−A)·[ (1−ε)·max(cos θ, 0) + (ε/4)·(1 + k·cos θ) ]·(1 + ¾τ) + σT_int⁴
+ * with k = 1 − ε. The carried share is uniform when transport is perfect
+ * (ε = 1) and tilts toward the day side as transport weakens, so advected
+ * heat fades across the night side to a cold antistellar point, as tidally
+ * locked GCMs show (Yang, Cowan & Abbot 2013; Koll & Abbot 2016). The tilt
+ * is a StellarForge interpolation, not a published fit; it integrates to
+ * zero over the sphere, so the profile stays energy-conserving (global mean
+ * of the stellar term = S(1−A)/4). ε = 0, τ = 0 gives the true substellar
+ * T₀(1−A)^¼; the night-hemisphere mean reduces to Cowan & Agol 2011's
+ * ε-dependent night side when k = 0. Continuous everywhere, so day,
+ * terminator and night come from one profile. τ (greenhouse) and T_int
+ * (internal heat) default to 0.
  */
 export function lockedSurfaceTemperature(
   sEarth: number,
@@ -156,8 +162,8 @@ export function lockedSurfaceTemperature(
 ): number {
   const a = Math.min(Math.max(albedo, 0), 1);
   const e = Math.min(Math.max(epsilon, 0), 1);
-  const mu = Math.max(Math.cos((thetaDeg * Math.PI) / 180), 0);
-  const flux = Math.max(sEarth, 0) * S_EARTH_WM2 * (1 - a) * ((1 - e) * mu + e / 4);
+  const c = Math.cos((thetaDeg * Math.PI) / 180);
+  const flux = Math.max(sEarth, 0) * S_EARTH_WM2 * (1 - a) * ((1 - e) * Math.max(c, 0) + (e / 4) * (1 + (1 - e) * c));
   return ((flux / SIGMA_SB) * greenhouseMultiplier(tau) + internalK ** 4) ** 0.25;
 }
 
@@ -173,10 +179,11 @@ export function lockedHemispheres(
   const e = Math.min(Math.max(epsilon, 0), 1);
   const base = ((Math.max(sEarth, 0) * S_EARTH_WM2 * (1 - a)) / SIGMA_SB) * greenhouseMultiplier(tau);
   const floor = internalK ** 4;
-  // Hemisphere mean of max(cos θ, 0) over the day side is 1/2.
+  // Hemisphere means: cos θ averages +1/2 over the day side, −1/2 over the night.
+  const k = 1 - e;
   return {
-    day: (base * ((1 - e) / 2 + e / 4) + floor) ** 0.25,
-    night: (base * (e / 4) + floor) ** 0.25,
+    day: (base * ((1 - e) / 2 + (e / 4) * (1 + k / 2)) + floor) ** 0.25,
+    night: (base * (e / 4) * (1 - k / 2) + floor) ** 0.25,
     substellar: lockedSurfaceTemperature(sEarth, albedo, epsilon, 0, tau, internalK),
     terminator: lockedSurfaceTemperature(sEarth, albedo, epsilon, 90, tau, internalK),
   };

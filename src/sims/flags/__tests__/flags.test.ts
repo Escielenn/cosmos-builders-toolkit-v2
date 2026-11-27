@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { evaluateTidelockFlags } from "../tidelock";
+import { evaluateTidelockFlags, tidelockOutputFromResults } from "../tidelock";
 import { evaluateExoForgeFlags } from "../exoforge";
 import { evaluateExoSkyFlags } from "../exosky";
 import { evaluateGravitasFlags } from "../gravitas";
@@ -7,47 +7,68 @@ import { evaluateSolarisStabilityFlags, evaluateSolarisFlareFlags, evaluateSolar
 import { evaluateRogueEjectionFlags, evaluateRogueEncounterFlags, evaluateRogueRunFlags } from "../rogue";
 
 describe("Tidelock", () => {
-  const calm = { tSSP: 300, tASP: 250, tTerm: 275, habPct: 40, escVel: 11.2 };
+  const calm = {
+    tSSP: 300, tASP: 250, tTerm: 275, habPct: 40, escVel: 11.2,
+    bandWidthDeg: 60, bandWidthKm: 6700, collapse: false, condensationK: 77, condensingGas: "N₂",
+    epsilon: 0.9, atmRetention: "Retained", tidalLock: "Locked", lockTimescaleYr: 8e5, systemAgeGyr: 5, starLifetimeGyr: 300,
+  };
 
   it("stays quiet on an unremarkable configuration", () => {
     expect(evaluateTidelockFlags(calm)).toEqual([]);
   });
 
-  it("flags a narrow habitable band", () => {
-    const flags = evaluateTidelockFlags({ ...calm, habPct: 4.1 });
-    expect(flags.map((f) => f.id)).toContain("tidelock.narrow-habitable-band");
-    expect(flags[0].title).toContain("4.1");
+  it("flags a narrow band in degrees and km, never a percent with a degree sign", () => {
+    const flags = evaluateTidelockFlags({ ...calm, bandWidthDeg: 4.1, bandWidthKm: 456 });
+    const f = flags.find((x) => x.id === "tidelock.narrow-habitable-band")!;
+    expect(f.title).toBe("LIQUID-WATER BAND: 4.1° (456 KM)");
+    expect(f.cites).toEqual({ bandWidthDeg: 4.1, bandWidthKm: 456 });
+    expect(f.title).not.toContain("%");
   });
 
-  it("does not flag a habitable band of exactly 0 (no atmosphere data)", () => {
-    expect(evaluateTidelockFlags({ ...calm, habPct: 0 })).toEqual([]);
+  it("does not flag a band of exactly 0 (no band, or a pre-1.9 save)", () => {
+    expect(evaluateTidelockFlags({ ...calm, bandWidthDeg: 0 })).toEqual([]);
+    const { bandWidthDeg: _d, bandWidthKm: _k, ...old } = calm;
+    expect(evaluateTidelockFlags(old)).toEqual([]);
   });
 
-  it("flags no heat transport on a huge day/night gradient", () => {
-    const flags = evaluateTidelockFlags({ ...calm, tSSP: 480, tASP: 90 });
+  it("flags no heat transport from ε, with the temperatures cited", () => {
+    const flags = evaluateTidelockFlags({ ...calm, tSSP: 480, tASP: 90, epsilon: 0.02 });
     const flag = flags.find((f) => f.id === "tidelock.no-heat-transport");
-    expect(flag).toBeDefined();
-    expect(flag!.title).toContain("480");
-    expect(flag!.title).toContain("90");
+    expect(flag!.title).toBe("DAYSIDE 480K, NIGHTSIDE 90K");
+    expect(flag!.cites).toEqual({ tSSP: 480, tASP: 90, epsilon: 0.02 });
   });
 
   it("does not flag heat transport on a modest gradient", () => {
-    expect(evaluateTidelockFlags({ ...calm, tSSP: 320, tASP: 200 })).toEqual([]);
+    expect(evaluateTidelockFlags({ ...calm, tSSP: 320, tASP: 200, epsilon: 0.5 })).toEqual([]);
   });
 
-  it("flags a weak escape velocity", () => {
-    const flags = evaluateTidelockFlags({ ...calm, escVel: 3.2 });
-    expect(flags.map((f) => f.id)).toContain("tidelock.weak-escape-velocity");
+  it("flags atmosphere collapse", () => {
+    const flags = evaluateTidelockFlags({ ...calm, tASP: 52, collapse: true, condensationK: 63, pressureAtm: 0.1 });
+    const f = flags.find((x) => x.id === "tidelock.atmosphere-collapse")!;
+    expect(f.title).toBe("NIGHTSIDE 52K. N₂ FREEZES BELOW 63K.");
   });
 
-  it("flags an inverted thermal gradient", () => {
-    const flags = evaluateTidelockFlags({ ...calm, tSSP: 300, tTerm: 310 });
-    expect(flags.map((f) => f.id)).toContain("tidelock.inverted-thermal-gradient");
+  it("flags a lost atmosphere from the sim's retention test", () => {
+    const flags = evaluateTidelockFlags({ ...calm, atmRetention: "Lost", retentionGas: "H₂", escVel: 6.1, exobaseK: 1000 });
+    expect(flags.map((f) => f.id)).toContain("tidelock.atmosphere-escapes");
   });
 
-  it("cites the values that triggered each flag", () => {
-    const flags = evaluateTidelockFlags({ ...calm, habPct: 2 });
-    expect(flags[0].cites).toEqual({ habPct: 2 });
+  it("flags a world that is not locked within the system's age", () => {
+    const flags = evaluateTidelockFlags({ ...calm, tidalLock: "Not locked", lockTimescaleYr: 3e11, systemAgeGyr: 5 });
+    const f = flags.find((x) => x.id === "tidelock.not-locked")!;
+    expect(f.title).toBe("LOCKING TAKES 300 GYR. THE SYSTEM IS 5.0 GYR OLD.");
+  });
+
+  it("flags a star past its main-sequence life", () => {
+    const flags = evaluateTidelockFlags({ ...calm, systemAgeGyr: 5, starLifetimeGyr: 2.2 });
+    expect(flags.map((f) => f.id)).toContain("tidelock.star-past-main-sequence");
+  });
+
+  it("reads its input from a payload results block", () => {
+    const o = tidelockOutputFromResults({ tSSP: 300, collapse: true, tidalLock: "Locked", bogus: "x" });
+    expect(o.tSSP).toBe(300);
+    expect(o.collapse).toBe(true);
+    expect(o.bandWidthDeg).toBeUndefined();
   });
 });
 
