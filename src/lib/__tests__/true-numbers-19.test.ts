@@ -91,3 +91,15 @@ describe("F-04 / F-18 spin gravity", () => {
     }
   });
 });
+
+describe("Genesis temperature text into canon kelvin", async () => {
+  const { parseTemperatureK } = await import("@/canon/field");
+  it("reads °C (the form's unit), K and °F", () => {
+    expect(parseTemperatureK("15°C (Earth)")).toBe(288.15);
+    expect(parseTemperatureK("15")).toBe(288.15);
+    expect(parseTemperatureK("288 K")).toBe(288);
+    expect(parseTemperatureK("59°F")).toBe(288.15);
+    expect(parseTemperatureK("-300 C")).toBeNull();
+    expect(parseTemperatureK("warm")).toBeNull();
+  });
+});

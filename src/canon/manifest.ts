@@ -45,6 +45,12 @@ export interface ManifestProduces {
    * fraction of c, so scale 0.01).
    */
   scale?: number;
+  /**
+   * How to read a free-text field before asserting: `temperature_k` reads
+   * "15°C", "288 K" or "59°F" (a bare number is °C, as the forms ask) into
+   * kelvin; `join` turns a list field into one comma-separated text.
+   */
+  parse?: "temperature_k" | "join";
 }
 
 export type OnMissing = "prompt" | "derive" | "link" | "ignore";

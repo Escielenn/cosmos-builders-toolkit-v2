@@ -243,18 +243,25 @@ const RadioGroupField = ({
       onValueChange={onChange}
       className={`grid gap-2 md:grid-cols-${columns}`}
     >
-      {options.map((option) => (
-        <div
-          key={option.id}
-          className="flex items-start gap-2 px-3 py-2 rounded-none border border-sf-line hover:border-sf-primary transition-colors"
-        >
-          <RadioGroupItem value={option.id} id={`radio-${option.id}`} className="mt-0.5" />
-          <Label htmlFor={`radio-${option.id}`} className="cursor-pointer text-sm">
-            <span className="font-medium">{option.name}</span>
-            <span className="text-t2 block text-xs">{option.description}</span>
-          </Label>
-        </div>
-      ))}
+      {options.map((option) => {
+        // 1.9 F-13/F-14: the whole row is the label, so the 16px dot is not
+        // the only target; ids are scoped to the group so two groups sharing
+        // an option id no longer label each other's radios.
+        const id = `radio-${label.replace(/\W+/g, "-")}-${option.id}`;
+        return (
+          <label
+            key={option.id}
+            htmlFor={id}
+            className="flex min-h-hit cursor-pointer items-start gap-2 px-3 py-2 rounded-none border border-sf-line hover:border-sf-primary transition-colors"
+          >
+            <RadioGroupItem value={option.id} id={id} className="mt-0.5" />
+            <span className="text-sm">
+              <span className="font-medium">{option.name}</span>
+              <span className="text-t2 block text-[13px]">{option.description}</span>
+            </span>
+          </label>
+        );
+      })}
       {allowOther && (
         <div
           className={`flex items-start gap-2 p-2 rounded-none border transition-colors ${

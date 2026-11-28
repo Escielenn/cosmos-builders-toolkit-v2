@@ -28,9 +28,11 @@ export const manifest: ToolManifest = {
   ],
 
   consumes: [
-    { predicate: "planet.sky.constellations[]", required: false, onMissing: "link", producer: "exosky" },
+    // ExoSky (lane E) produces the sky; until its manifest merges this is a
+    // prompt, not a link to a tool that is not wired yet.
+    { predicate: "planet.sky.constellations[]", required: false, onMissing: "prompt", prompt: "NO SKY COMPUTED. OPEN EXOSKY FROM THIS WORLD." },
     { predicate: "star.spectral_class", required: false, onMissing: "link", producer: "orrery" },
-    { predicate: "orbit.tidally_locked", required: false, onMissing: "link", producer: "orrery" },
+    { predicate: "orbit.tidally_locked", required: false, onMissing: "prompt", prompt: "LOCKING NOT SET. TIDELOCK CAN PUBLISH IT." },
     { predicate: "species.senses[]", required: false, onMissing: "link", producer: "sensorium" },
     { predicate: "species.body_plan", required: false, onMissing: "link", producer: "phylo" },
   ],

@@ -207,6 +207,26 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
       type: "number",
       worksheetPaths: { "planetary-profile": "physicalCharacteristics.axialTilt" },
     },
+    // 1.9: Genesis' climate fields, as the writer typed them (°C text, atm,
+    // gas list). Canon gets them typed through the Genesis manifest.
+    {
+      label: "Average Surface Temperature",
+      key: "averageSurfaceTemp",
+      type: "text",
+      worksheetPaths: { "planetary-profile": "temperatureProfile.averageSurfaceTemp" },
+    },
+    {
+      label: "Atmospheric Pressure",
+      key: "atmosphericPressure",
+      type: "text",
+      worksheetPaths: { "planetary-profile": "atmosphericComposition.atmosphericPressure" },
+    },
+    {
+      label: "Primary Gases",
+      key: "primaryGases",
+      type: "text",
+      worksheetPaths: { "planetary-profile": "atmosphericComposition.primaryGases" },
+    },
   ],
 
   star_system: [
