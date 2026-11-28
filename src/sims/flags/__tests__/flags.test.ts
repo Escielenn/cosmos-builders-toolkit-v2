@@ -90,6 +90,27 @@ describe("ExoSky", () => {
   it("does not flag right at the threshold", () => {
     expect(evaluateExoSkyFlags({ visibleCount: 20 })).toEqual([]);
   });
+
+  it("stays quiet where the catalogue thins (far from the Sun), rather than lie", () => {
+    expect(evaluateExoSkyFlags({ visibleCount: 3, catalogueComplete: false })).toEqual([]);
+  });
+
+  it("flags sky drift once the pole has moved past the threshold, citing the planet's own precession", () => {
+    const flags = evaluateExoSkyFlags({
+      visibleCount: 3000,
+      constellations: [{ name: "The Founding Compass", epochYears: 0 }],
+      epochYears: 2000,
+      driftDeg: { "The Founding Compass": 14.2 },
+      precessionYears: 25772,
+    });
+    const drift = flags.find((f) => f.id === "exosky.sky-drift");
+    expect(drift?.title).toContain("14.2°");
+    expect(drift?.cites).toMatchObject({ drawnAtEpoch: 0, viewedAtEpoch: 2000, precessionYears: 25772 });
+  });
+
+  it("does not flag drift under 2°", () => {
+    expect(evaluateExoSkyFlags({ visibleCount: 3000, constellations: [{ name: "A", epochYears: 0 }], epochYears: 10, driftDeg: { A: 0.1 } })).toEqual([]);
+  });
 });
 
 describe("Gravitas", () => {

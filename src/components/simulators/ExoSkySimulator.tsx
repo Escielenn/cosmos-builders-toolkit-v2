@@ -135,7 +135,7 @@ const PRESET_GROUPS: ReadonlyArray<{ label: string; filter: (v: VantagePreset) =
 
 const SOURCE_LABEL: Record<Source, string> = {
   canon: "canon",
-  preset: "catalogue of known planets",
+  preset: "published values",
   handoff: "Solaris",
   catalogue: "HYG catalogue",
   writer: "set here",
@@ -685,6 +685,15 @@ export default function ExoSkyV2({
     const pos = positions.current;
     pos.length = 0;
     let drawn = 0;
+    // Labels claim a box; a later (fainter) label that would overlap is skipped.
+    const placed: number[] = [];
+    const claim = (x: number, y: number, w: number, h: number) => {
+      for (let k = 0; k < placed.length; k += 4) {
+        if (x < placed[k] + placed[k + 2] && x + w > placed[k] && y < placed[k + 1] + placed[k + 3] && y + h > placed[k + 1]) return false;
+      }
+      placed.push(x, y, w, h);
+      return true;
+    };
     if (o && S.catalogue) {
       const zoomBoost = clamp(Math.log10(Math.max(1, 30 / Math.max(0.5, v.fov))) * 1.2, 0, 2.5);
       const effLimit = limit + zoomBoost;
@@ -702,12 +711,12 @@ export default function ExoSkyV2({
         if (!projectInto(cam, sx, sy, sz, 20)) continue;
         const st = S.catalogue[i];
         const [r, g, b] = bvToRGB(st.bv);
-        let alpha = clamp((effLimit + 0.6 - eMag) / 2.6, 0.18, 1);
+        let alpha = clamp((effLimit + 0.8 - eMag) / 2.4, 0.32, 1);
         if (hasAir && !S.reducedMotion) {
           const xm = Math.min(6, airmass(Math.max(0, Math.asin(clamp(sx * zen[0] + sy * zen[1] + sz * zen[2], -1, 1)) * RAD)));
           alpha *= 1 - 0.06 * (xm - 1) * (0.5 + 0.5 * Math.sin(t * 7 + i * 1.7));
         }
-        const rad = clamp(3.4 - 0.5 * (eMag - zoomBoost), 0.55, 5.5);
+        const rad = clamp(3.4 - 0.5 * (eMag - zoomBoost), 0.7, 5.5);
         if (rad < 1.3) {
           const qa = Math.round(alpha * 10) / 10;
           const style = `rgba(${(r >> 4) << 4},${(g >> 4) << 4},${(b >> 4) << 4},${qa})`;
@@ -730,8 +739,11 @@ export default function ExoSkyV2({
         }
         if (eMag < 6.5 && pos.length < 24000) pos.push(i, cam.x, cam.y);
         if (S.showStarNames && st.name && st.name !== "Sol" && eMag < (v.fov < 25 ? 4.8 : v.fov < 60 ? 3.2 : 2.2)) {
-          ctx.fillStyle = tk.t2;
-          ctx.fillText(st.name, cam.x + rad + 4, cam.y + 4);
+          const lw = ctx.measureText(st.name).width;
+          if (claim(cam.x + rad + 3, cam.y - 8, lw + 2, 14)) {
+            ctx.fillStyle = tk.t2;
+            ctx.fillText(st.name, cam.x + rad + 4, cam.y + 4);
+          }
         }
         drawn++;
       }
@@ -1611,7 +1623,7 @@ export default function ExoSkyV2({
       <DR l="Star" v={resolved.hostName} />
       {hostBody && <>
         <DR l="Magnitude" v={hostBody.mag.toFixed(1)} />
-        <DR l="Disc" v={`${hostBody.sizeDeg.toFixed(hostBody.sizeDeg < 1 ? 3 : 1)}° (${(hostBody.sizeDeg / 0.533).toFixed(2)}× the Sun from Earth)`} />
+        <DR l="Disc" v={`${hostBody.sizeDeg.toFixed(hostBody.sizeDeg < 1 ? 3 : 1)}° · ${(hostBody.sizeDeg / 0.533).toFixed(2)}× our Sun`} />
       </>}
       {mode === "stand" && <DR l="Altitude" v={`${hostAltAz.alt.toFixed(1)}°`} />}
       <DR l="Orbit" v={`${resolved.planet.au.value.toFixed(resolved.planet.au.value < 0.1 ? 4 : 2)} AU`} />
@@ -1620,17 +1632,19 @@ export default function ExoSkyV2({
       {bodies.some((b) => b.kind !== "host") && (
         <>
           <h3 style={{ ...SH, marginTop: 14 }}>Planets and moons</h3>
+          <p style={{ ...NOTE, color: "var(--t4)", marginBottom: 4 }}>Magnitude · lit fraction · size</p>
           {bodies.filter((b) => b.kind !== "host").map((b: SkyBody) => (
-            <DR key={b.id} l={b.name} v={`mag ${b.mag.toFixed(1)} · ${Math.round(b.phase * 100)}% lit${b.sizeDeg > 0.01 ? ` · ${b.sizeDeg.toFixed(2)}°` : ""}`} />
+            <DR key={b.id} l={b.name} v={`${b.mag.toFixed(1)} · ${Math.round(b.phase * 100)}%${b.sizeDeg > 0.01 ? ` · ${b.sizeDeg.toFixed(2)}°` : ""}`} />
           ))}
           <p style={{ ...NOTE, color: "var(--t4)" }}>{resolved.isEarth ? "Circular orbits in Earth's plane from J2000 mean longitudes: positions good to a few degrees." : "Circular orbits; starting phases are not known, so each body is placed by its id."}</p>
         </>
       )}
 
       <h3 style={{ ...SH, marginTop: 14 }}>Navigation and calendar</h3>
+      {resolved.planet.pole.source === "default" && <p style={{ ...WARN_TITLE, marginTop: 6 }}>// POLE NOT SET. USING EARTH'S AXIS DIRECTION.</p>}
       <DR l="Pole star (north)" v={poleStar && catalogue ? `${starLabel(catalogue[poleStar.index])}, ${poleStar.separationDeg.toFixed(1)}°` : "None"} />
       <DR l="Pole star (south)" v={southPoleStar && catalogue ? `${starLabel(catalogue[southPoleStar.index])}, ${southPoleStar.separationDeg.toFixed(1)}°` : "None"} />
-      {circ && <DR l="Never sets here" v={`${Math.round(circ.skyFraction * 100)}% of the sky · ${Math.round(circ.starFraction * 100)}% of stars`} />}
+      {circ && <DR l="Never sets here" v={`${Math.round(circ.skyFraction * 100)}% sky · ${Math.round(circ.starFraction * 100)}% stars`} />}
       <DR l="Solar day" v={fmtHours(geometry.solarDayHours)} />
       <DR l="Sidereal day" v={locked ? `${(orbitDays).toFixed(2)} days` : fmtHours(resolved.planet.rotationHours.value)} />
       <DR l="Year" v={locked ? `${orbitDays.toFixed(2)} days` : `${((orbitDays * 24) / geometry.solarDayHours).toFixed(1)} local days`} />
@@ -1808,7 +1822,7 @@ export default function ExoSkyV2({
       )}
 
       <div style={{ position: "absolute", bottom: isMobile ? 60 : 12, left: 18, zIndex: 9, fontSize: 12, color: "var(--t4)", maxWidth: isMobile ? "60%" : 520, lineHeight: 1.5 }}>
-        © 2025–2026 Jason D. Batt, Ph.D. · {CATALOGUE_CREDIT.replace("Star catalogue: ", "Stars: ")} · <a href="/tools/exosky/science" style={{ color: "var(--sf-primary-text)" }}>The science</a>
+        © 2025–2026 Jason D. Batt, Ph.D. · {isMobile ? "Stars: HYG v4.1, CC BY-SA 4.0" : CATALOGUE_CREDIT.replace("Star catalogue: ", "Stars: ")} · <a href="/tools/exosky/science" style={{ color: "var(--sf-primary-text)" }}>The science</a>
       </div>
 
       <style>{`

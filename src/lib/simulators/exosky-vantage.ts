@@ -283,7 +283,8 @@ export function resolveVantage(input: VantageInput): Resolved {
     [preset?.atmo, "preset"],
   ) ?? { value: "none" as AtmoKey, source: "default", note: "not set" };
 
-  const siblings = canon?.siblings?.length ? canon.siblings : isEarth ? [...SOLAR_SYSTEM] : [];
+  const presetSiblings = (preset?.siblings ?? []).filter((b) => Math.abs(b.au - au.value) > 1e-6);
+  const siblings = canon?.siblings?.length ? canon.siblings : isEarth ? [...SOLAR_SYSTEM] : presetSiblings;
   const moons = canon?.moons?.length ? canon.moons : isEarth ? [MOON] : [];
 
   const label = canon?.label ?? (handoff ? handoff.planetName : preset?.planet ?? "Custom location");

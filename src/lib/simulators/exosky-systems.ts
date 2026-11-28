@@ -106,7 +106,18 @@ export interface VantagePreset {
   atmo: AtmoKey;
   note: string;
   source: string;
+  /** Other planets of the same star (the observer's own planet is skipped by distance). */
+  siblings?: readonly OrbitingBody[];
 }
+
+/** TRAPPIST-1 b-h, Agol et al. 2021 (PSJ 2, 1): a, period, radius. Phases unknown; placed by id. */
+const TRAPPIST_SIBLINGS: readonly OrbitingBody[] = (
+  [["b", 0.01154, 1.51088, 1.116], ["c", 0.0158, 2.42180, 1.097], ["d", 0.02227, 4.04980, 0.788], ["e", 0.02925, 6.09965, 0.920],
+   ["f", 0.03849, 9.20654, 1.045], ["g", 0.04683, 12.35294, 1.129], ["h", 0.06189, 18.77287, 0.755]] as const
+).map(([k, au, p, r], n) => ({
+  id: `trappist-1${k}`, name: `TRAPPIST-1${k}`, au, periodDays: p, radiusKm: r * 6371, albedo: 0.3,
+  longitude0: (n * 137.508) % 360, source: "Agol et al. 2021; orbital phases not known, spread by the golden angle; albedo assumed 0.3.",
+}));
 
 const P = (au: number, orbitDays: number, opts: Partial<PlanetData> = {}): PlanetData => ({
   au,
@@ -140,7 +151,7 @@ export const VANTAGES: readonly VantagePreset[] = [
     hostData: { absMag: 18.3, teffK: 2566, lumSolar: 0.000553, massSolar: 0.0898 },
     planetData: P(0.02925, 6.0996, { ...LOCKED, radiusEarth: 0.92 }),
     atmo: "earth_like", note: "Habitable zone of an ultracool dwarf. Siblings hang in the sky larger than our Moon.",
-    source: "Agol et al. 2021 (orbits, radius); Gillon et al. 2017.",
+    source: "Agol et al. 2021 (orbits, radius); Gillon et al. 2017.", siblings: TRAPPIST_SIBLINGS,
   },
   {
     key: "trappist-1f", planet: "TRAPPIST-1f", host: "TRAPPIST-1", status: "confirmed",
@@ -148,7 +159,7 @@ export const VANTAGES: readonly VantagePreset[] = [
     hostData: { absMag: 18.3, teffK: 2566, lumSolar: 0.000553, massSolar: 0.0898 },
     planetData: P(0.03849, 9.2067, { ...LOCKED, radiusEarth: 1.05 }),
     atmo: "thick_co2", note: "Outer habitable zone. A dimmer, redder sun.",
-    source: "Agol et al. 2021.",
+    source: "Agol et al. 2021.", siblings: TRAPPIST_SIBLINGS,
   },
   {
     key: "tau-ceti-e", planet: "Tau Ceti e", host: "Tau Ceti", status: "candidate", hostId: "HIP 8102",
