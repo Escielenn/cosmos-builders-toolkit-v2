@@ -363,6 +363,48 @@ export function calculateBrachistochrone(
   };
 }
 
+// ─── Thrust profiles without a velocity cap ─────────────────────────
+// 1.9 F-10: one relativistic travel engine. These two lived inside Gravitas;
+// Paradox, Gravitas, Impulse and the Ark now all read trips from this file.
+// Hyperbolic motion under constant proper acceleration a (Rindler; Baez &
+// Gibbs, "The Relativistic Rocket"):
+//   x = (c²/a)(cosh(aτ/c) − 1),  t = (c/a) sinh(aτ/c),  v = c tanh(aτ/c).
+
+export interface ThrustTrip {
+  observerTimeSeconds: number;
+  shipTimeSeconds: number;
+  peakVelocityFraction: number;
+  /** Proper time spent under thrust (Δv = a·τ_burn). */
+  burnProperSeconds: number;
+}
+
+/** Accelerate from rest for the whole distance (a flyby at the destination). */
+export function calculateConstantThrust(distanceMeters: number, gForce: number): ThrustTrip {
+  const a = gForce * G_ACCEL;
+  const ratio = (distanceMeters * a) / (C * C) + 1;
+  const observer = (C / a) * Math.sqrt(ratio * ratio - 1);
+  const ship = (C / a) * Math.acosh(ratio);
+  return { observerTimeSeconds: observer, shipTimeSeconds: ship, peakVelocityFraction: Math.tanh((a * ship) / C), burnProperSeconds: ship };
+}
+
+/** Burn for `burnProperSeconds` of ship time at each end, coast between. */
+export function calculateCoastFlip(distanceMeters: number, gForce: number, burnProperSeconds: number): ThrustTrip {
+  const a = gForce * G_ACCEL;
+  const rapidity = (a * burnProperSeconds) / C;
+  const burnDist = ((C * C) / a) * (Math.cosh(rapidity) - 1);
+  const burnCoord = (C / a) * Math.sinh(rapidity);
+  const peak = Math.tanh(rapidity);
+  const coastV = peak * C;
+  const coastDist = Math.max(0, distanceMeters - 2 * burnDist);
+  const coastCoord = coastV > 0 ? coastDist / coastV : 0;
+  return {
+    observerTimeSeconds: 2 * burnCoord + coastCoord,
+    shipTimeSeconds: 2 * burnProperSeconds + coastCoord / Math.cosh(rapidity),
+    peakVelocityFraction: peak,
+    burnProperSeconds: 2 * burnProperSeconds,
+  };
+}
+
 // ─── Main Entry Point ────────────────────────────────────────────────
 
 export function calculateTimeDilation(formState: FormStateForCalc): TimeDilationResult {

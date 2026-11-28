@@ -14,6 +14,7 @@
 // ---------------------------------------------------------------------------
 
 import { ENTITY_MASTER_FIELDS } from "@/lib/entity-config";
+import { itemLabel } from "@/canon/codecs";
 import { getNestedValue } from "@/lib/entity-prepopulate";
 import { extractTimelineFacts } from "@/lib/timeline-facts";
 import { extractSurfaceMapFacts } from "@/lib/surface-cartographer/facts";
@@ -72,7 +73,8 @@ function isEmpty(raw: unknown): boolean {
 
 function toDisplay(raw: unknown): string {
   if (Array.isArray(raw)) {
-    return raw.filter((v) => !isEmpty(v)).map(String).join(", ");
+    // Lists of records (Mythos' deities) show their names, not "[object Object]".
+    return raw.map(itemLabel).filter(Boolean).join(", ");
   }
   return String(raw);
 }

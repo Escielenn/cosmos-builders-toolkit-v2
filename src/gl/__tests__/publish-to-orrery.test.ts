@@ -189,10 +189,13 @@ describe("no new predicate arrives unnoticed", () => {
     // this fails, add the predicate here and check that whatever reads that
     // fact asks for the same spelling — or add an alias.
     expect(solarisPlanetPublishFacts(PAYLOAD).map((f) => f.predicate).sort()).toEqual([
+      // 1.9: canonical star.luminosity (old entries still read through the
+      // alias), and the insolation the luminosity and distance give.
       "orbit.semi_major_axis",
+      "planet.insolation",
       "planet.name",
       "planet.type",
-      "star.luminosity_lsun",
+      "star.luminosity",
       "star.spectral_class",
       "system.name",
     ]);

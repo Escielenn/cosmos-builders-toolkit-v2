@@ -138,6 +138,8 @@ const TidelockSimulator = () => {
           handoffSeed: {
             starLuminosity: handoff.starMassLum,
             aAU: handoff.planetAU,
+            // Lane C: a star's Teff when Solaris sends one (sim.html matches by it first).
+            ...(handoff.starTeffK ? { starTeff: handoff.starTeffK } : {}),
           },
         },
       },

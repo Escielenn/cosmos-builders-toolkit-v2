@@ -18,23 +18,13 @@ import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions
 import { decodeHandoff, type HandoffPayload } from "@/lib/simulators/handoff";
 import { getEntry } from "@/services/world-entries";
 import { reconstructSolarisHandoff } from "@/lib/simulators/published-facts";
-import { useSubjectEntityId } from "@/hooks/use-subject-entity";
+import { useSubjectEntityId, useSubjectEpoch } from "@/hooks/use-subject-entity";
 import SimSubjectChip from "@/components/simulators/SimSubjectChip";
 
-/**
- * A Solaris planet has an orbital distance in AU but no galactic position;
- * ExoSky's "custom coordinates" vantage needs a galactic l/b/distance. This
- * spreads different AU values across different patches of sky (so two
- * handoffs don't collide) rather than claiming a real placement Solaris
- * never had. Distance is a flat 10 pc placeholder for the same reason: the
- * handoff carries no distance-from-Earth, so this view says so on screen.
- */
-function deriveExoskySeed(planetAU: number, starMassLum: number) {
-  const galL = ((planetAU * 40) % 360 + 360) % 360;
-  const galB = Math.max(-60, Math.min(60, (starMassLum - 1) * 25));
-  const distPc = 10;
-  return { galL, galB, distPc };
-}
+// 1.9 (E10): a Solaris handoff carries a star and an orbit but no place in
+// the galaxy. 1.8 invented one (AU x 40 degrees of longitude, a flat 10 pc);
+// now ExoSky opens the planet unplaced and asks the writer to place it, which
+// writes star.galactic_position to canon.
 
 const ExoSkyV2 = lazy(() => import("@/components/simulators/ExoSkySimulator"));
 
@@ -57,6 +47,7 @@ const ExoskySimulator = () => {
   // reconstructSolarisHandoff's doc comment for why that's reuse, not a new
   // tool-to-tool coupling.
   const entityId = useSubjectEntityId();
+  const subjectEpoch = useSubjectEpoch();
   const [entityHandoffPayload, setEntityHandoffPayload] = useState<HandoffPayload | null>(null);
   useEffect(() => {
     if (!entityId) {
@@ -79,7 +70,7 @@ const ExoskySimulator = () => {
   const initialHandoff = useMemo(() => {
     const payload = handoffPayload ?? entityHandoffPayload;
     if (!payload) return null;
-    return { payload, ...deriveExoskySeed(payload.planetAU, payload.starMassLum) };
+    return { payload };
   }, [handoffPayload, entityHandoffPayload]);
   // Called by ExoSkyV2 once it has actually applied initialHandoff to its own
   // state, not before: stripping the param earlier risks this wrapper
@@ -91,7 +82,6 @@ const ExoskySimulator = () => {
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
       next.delete("handoff");
-      next.delete("entity");
       return next;
     }, { replace: true });
   }, [setSearchParams]);
@@ -141,6 +131,8 @@ const ExoskySimulator = () => {
               narrativeBridgeOpen={narrativeBridge.panelProps.open}
               worldId={worldId}
               initialHandoff={initialHandoff}
+              subjectEntityId={entityId}
+              subjectEpoch={subjectEpoch}
               onHandoffConsumed={clearHandoffParam}
             />
           </Suspense>

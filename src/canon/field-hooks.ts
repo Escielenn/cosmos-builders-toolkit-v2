@@ -165,7 +165,7 @@ export function useCanonEmit(manifest: ToolManifest, worldId: string | null | un
       const self = { id: manifest.id, tool: manifest.tool };
       const canonInputs: Record<string, FactValue | null> = {};
       for (const d of manifest.derives) {
-        for (const input of d.inputs) {
+        for (const input of [...d.inputs, ...(d.optionalInputs ?? [])]) {
           canonInputs[input] = pickCanonField((facts ?? []) as CanonFact[], input, ctx.subjectId, self).value;
         }
       }

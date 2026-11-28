@@ -41,6 +41,8 @@ export const UNITS = {
   deg: "°",
   individuals: "individuals",
   fraction: "",
+  /** Revolutions per minute (spin habitats). Added 1.9 for vessel.spin_rate. */
+  rpm: "rpm",
   kg_C_m2_yr: "kg C/m²/yr",
 } as const;
 

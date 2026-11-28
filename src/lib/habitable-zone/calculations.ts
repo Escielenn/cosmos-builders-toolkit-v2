@@ -2,6 +2,7 @@
 // No React dependencies, importable by both page components and PDF templates
 
 import type { MoodboardImage } from "@/hooks/use-moodboard";
+import { mainSequenceStar } from "@/lib/physics";
 import {
   ZONE_NAMES,
   ZONE_DESCRIPTIONS,
@@ -105,6 +106,26 @@ export function luminosityFromMass(mass: number): number {
   if (M < 2) return Math.pow(M, 4);
   if (M < 55) return 1.4 * Math.pow(M, 3.5);
   return 32000 * M;
+}
+
+// ─── Main-sequence effective temperature ───────────────────────────
+
+/**
+ * Teff of a main-sequence star from its luminosity (L☉) and mass (M☉), for
+ * tools that record L and M but not a temperature (Orrery).
+ *
+ * The radius comes from the shared main-sequence table (src/lib/physics
+ * mainSequenceStar, interpolated by mass); Teff then follows from the
+ * writer's own luminosity by Stefan-Boltzmann, Teff = 5772 K · (L / R²)^¼
+ * (IAU 2015 nominal T☉). The Sun is exact; Proxima Cen (L 0.00155, M 0.122)
+ * and Alpha Cen A (1.52 L☉, 1.1 M☉, slightly evolved) land within about 6%
+ * of their measured 3042 K and 5790 K. Null for nonsense input; callers fall
+ * back to the Sun's temperature and say so.
+ */
+export function mainSequenceTeff(luminosityLsun: number, massMsun: number): number | null {
+  if (!(luminosityLsun > 0) || !(massMsun > 0) || !Number.isFinite(luminosityLsun) || !Number.isFinite(massMsun)) return null;
+  const r = mainSequenceStar(massMsun).radius;
+  return 5772 * Math.pow(luminosityLsun / (r * r), 0.25);
 }
 
 // ─── Equilibrium Temperature ────────────────────────────────────────

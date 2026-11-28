@@ -14,7 +14,7 @@ export type SolarisStarType = "blue" | "white" | "yellow" | "orange" | "red";
 export interface HandoffPayload {
   from: "solaris";
   starType: SolarisStarType;
-  /** Solaris's own `lum` value for the star, e.g. 0.42 for an orange star. */
+  /** The star's luminosity in L☉ (Solaris's `lum`). Absolute, not a class. */
   starMassLum: number;
   /** Orbital distance in AU. */
   planetAU: number;
@@ -22,27 +22,44 @@ export interface HandoffPayload {
   planetType: string;
   /** Present on STELLARFORGE_PUBLISH_PLANET messages; absent from the URL handoff. */
   systemName?: string;
+  /**
+   * 1.9 X4: absolute star numbers, so the receiver never has to guess a star
+   * from a colour word. Optional: Solaris (lane S) adds them; older links
+   * without them still decode.
+   */
+  starTeffK?: number;
+  starMassMsun?: number;
 }
 
 /**
- * Solaris's five habitable-zone bounds (public/tools/solaris/sim.html's
- * STARS.hz, lines ~407-412), duplicated here only as far as needed to turn a
- * planet's `planetAU` into a zone-relative fraction. Shared by Tidelock's
- * ?handoff= consumer and by open-on hydration (published-facts.ts) so the
- * two paths can never quietly compute a different fraction for the same star
- * type.
+ * Where to put a handed-off planet in a tool whose star is not the sender's,
+ * so it receives the SAME starlight (1.9 audit X4).
+ *
+ * Insolation S = L / a² (L☉, AU; Earth = 1). Keeping S fixed around a star of
+ * luminosity L' gives a' = √(L' / S) = √L' · (a / √L). So the number to send
+ * is a / √L, the planet's "Earth-equivalent distance": 1.0 means Earth's
+ * sunlight. Tidelock multiplies it by its star table's `hz` column, which is
+ * √L to the table's precision (M3V 0.013 L☉ → 0.114, F0V 6.5 L☉ → 2.55), so
+ * the received planet keeps its insolation whichever star Tidelock picks.
+ *
+ * This replaces SOLARIS_HZ_MID, a five-row table of habitable-zone midpoints
+ * that disagreed with Solaris's own Kopparapu zone (yellow 1.6 to 3.0 AU
+ * against 0.95 to 1.68): a 1.3 AU world arrived at 0.5 AU and 419 K.
  */
-export const SOLARIS_HZ_MID: Record<SolarisStarType, number> = {
-  blue: (3.5 + 7.0) / 2,
-  white: (2.4 + 4.5) / 2,
-  yellow: (1.6 + 3.0) / 2,
-  orange: (0.8 + 1.7) / 2,
-  red: (0.2 + 0.7) / 2,
-};
+export function insolationEquivalentAU(planetAU: number, luminosityLsun: number): number | null {
+  if (!(planetAU > 0) || !(luminosityLsun > 0) || !Number.isFinite(planetAU) || !Number.isFinite(luminosityLsun)) return null;
+  return planetAU / Math.sqrt(luminosityLsun);
+}
+
+/** Insolation in Earth units, S = L / a². */
+export function insolationOf(planetAU: number, luminosityLsun: number): number | null {
+  const d = insolationEquivalentAU(planetAU, luminosityLsun);
+  return d === null ? null : 1 / (d * d);
+}
 
 const STAR_TYPES: readonly SolarisStarType[] = ["blue", "white", "yellow", "orange", "red"];
 
-function isSolarisStarType(v: unknown): v is SolarisStarType {
+export function isSolarisStarType(v: unknown): v is SolarisStarType {
   return typeof v === "string" && (STAR_TYPES as readonly string[]).includes(v);
 }
 
@@ -78,6 +95,9 @@ export function isHandoffPayload(data: unknown): data is HandoffPayload {
   if (typeof d.planetName !== "string" || !d.planetName) return false;
   if (typeof d.planetType !== "string" || !d.planetType) return false;
   if (d.systemName !== undefined && typeof d.systemName !== "string") return false;
+  for (const k of ["starTeffK", "starMassMsun"] as const) {
+    if (d[k] !== undefined && (typeof d[k] !== "number" || !Number.isFinite(d[k] as number) || (d[k] as number) <= 0)) return false;
+  }
   return true;
 }
 

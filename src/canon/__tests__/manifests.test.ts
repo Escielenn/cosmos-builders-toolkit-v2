@@ -27,6 +27,8 @@ describe("manifest registry", () => {
     const seen = new Map<string, string>();
     for (const m of MANIFESTS) {
       for (const p of m.produces) {
+        // Simulators promote through the owner (08); they are not producers.
+        if (p.from.startsWith("sim:")) continue;
         expect(seen.get(p.predicate), p.predicate).toBeUndefined();
         seen.set(p.predicate, m.id);
       }

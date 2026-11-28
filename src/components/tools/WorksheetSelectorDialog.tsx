@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Plus, FileText, Calendar } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
 import {
@@ -65,11 +65,11 @@ const WorksheetSelectorDialog = ({
   };
 
   const handleCreate = async () => {
-    if (!newWorksheetName.trim()) return;
-
     setIsCreating(true);
     try {
-      const newId = await onCreate(newWorksheetName.trim());
+      // 1.9 F-12: a name is optional. A blank name becomes a dated draft
+      // title the writer can rename whenever they like.
+      const newId = await onCreate(newWorksheetName.trim() || autoDraftTitle(toolDisplayName));
       onSelect(newId);
       handleClose();
     } finally {
@@ -87,6 +87,31 @@ const WorksheetSelectorDialog = ({
   // If no worksheets exist, show create form by default
   const shouldShowCreateForm = showCreateForm || worksheets.length === 0;
 
+  // 1.9 F-12: the first visit to a tool in a world used to stop on a naming
+  // dialog ("New Paradox / e.g., My Paradox") before a single input. With no
+  // sheets to choose from there is nothing to decide, so a titled draft is
+  // created at once and the writer lands on the tool.
+  const autoCreated = useRef(false);
+  useEffect(() => {
+    if (!open) {
+      autoCreated.current = false;
+      return;
+    }
+    if (isLoading || worksheets.length > 0 || autoCreated.current) return;
+    autoCreated.current = true;
+    void (async () => {
+      setIsCreating(true);
+      try {
+        const id = await onCreate(autoDraftTitle(toolDisplayName));
+        onSelect(id);
+        onOpenChange(false);
+      } finally {
+        setIsCreating(false);
+      }
+    })();
+  }, [open, isLoading, worksheets.length, onCreate, onSelect, onOpenChange, toolDisplayName]);
+  if (open && !isLoading && worksheets.length === 0 && !showCreateForm) return null;
+
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
@@ -101,7 +126,7 @@ const WorksheetSelectorDialog = ({
             )}
             {worldName && " · "}
             {shouldShowCreateForm
-              ? `Enter a name for your new ${toolDisplayName.toLowerCase()}.`
+              ? `Name it now or later. Left blank, it is saved as a dated draft.`
               : `You have ${worksheets.length} ${toolDisplayName.toLowerCase()}${worksheets.length !== 1 ? "s" : ""} in this world.`}
           </DialogDescription>
         </DialogHeader>
@@ -113,15 +138,15 @@ const WorksheetSelectorDialog = ({
         ) : shouldShowCreateForm ? (
           <div className="mt-4 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="worksheetName">Name (required)</Label>
+              <Label htmlFor="worksheetName">Name (optional)</Label>
               <Input
                 id="worksheetName"
                 value={newWorksheetName}
                 onChange={(e) => setNewWorksheetName(e.target.value)}
-                placeholder={`e.g., ${getPlaceholderName(toolDisplayName)}`}
+                placeholder={autoDraftTitle(toolDisplayName)}
                 autoFocus
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" && newWorksheetName.trim()) {
+                  if (e.key === "Enter") {
                     handleCreate();
                   }
                 }}
@@ -135,12 +160,12 @@ const WorksheetSelectorDialog = ({
                   disabled={isCreating}
                   className="flex-1"
                 >
-                  RETURN TO LIST
+                  Back to list
                 </Button>
               )}
               <Button
                 onClick={handleCreate}
-                disabled={!newWorksheetName.trim() || isCreating}
+                disabled={isCreating}
                 className="flex-1"
               >
                 {isCreating ? (
@@ -211,7 +236,7 @@ const WorksheetSelectorDialog = ({
                 disabled={!selectedWorksheetId}
                 className="flex-1"
               >
-                Open Selected
+                Open selected
               </Button>
             </div>
           </div>
@@ -221,20 +246,10 @@ const WorksheetSelectorDialog = ({
   );
 };
 
-// Helper to generate placeholder names based on tool type
-function getPlaceholderName(toolDisplayName: string): string {
-  const placeholders: Record<string, string> = {
-    "Planetary Profile": "Kepler-442b",
-    "Environmental Chain Reaction": "Desert World Ecosystem",
-    "Spacecraft Designer": "ISV Aurora",
-    "Propulsion Consequences Map": "Alcubierre Drive Analysis",
-    "Drake Equation Calculator": "Optimistic Galaxy Scenario",
-    "Xenomythology Framework": "The Crystalline Singers",
-    "Evolutionary Biology": "The Silicate Swimmers",
-    "Physics Declaration: The One Big Lie": "The Epstein Drive",
-    "Time Dilation Calculator": "Earth to Alpha Centauri at 0.9c",
-  };
-  return placeholders[toolDisplayName] || "My " + toolDisplayName;
-}
-
 export default WorksheetSelectorDialog;
+
+/** "Paradox draft, 27 Nov": a title nobody has to think of. */
+export function autoDraftTitle(toolDisplayName: string, now: Date = new Date()): string {
+  const month = now.toLocaleString("en-GB", { month: "short" });
+  return `${toolDisplayName} draft, ${now.getDate()} ${month}`;
+}

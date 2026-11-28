@@ -90,6 +90,10 @@ import {
   SECTION_GUIDANCE,
 } from "@/lib/xenomythology-data";
 import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
+import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
+import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
+import { manifest as mythosManifest } from "@/tools/mythos/manifest";
+import { SkyFromCanon } from "@/components/canon/SkyFromCanon";
 import {
   codec as mythosCodec,
   type FormState,
@@ -239,18 +243,25 @@ const RadioGroupField = ({
       onValueChange={onChange}
       className={`grid gap-2 md:grid-cols-${columns}`}
     >
-      {options.map((option) => (
-        <div
-          key={option.id}
-          className="flex items-start gap-2 px-3 py-2 rounded-none border border-sf-line hover:border-sf-primary transition-colors"
-        >
-          <RadioGroupItem value={option.id} id={`radio-${option.id}`} className="mt-0.5" />
-          <Label htmlFor={`radio-${option.id}`} className="cursor-pointer text-sm">
-            <span className="font-medium">{option.name}</span>
-            <span className="text-t2 block text-xs">{option.description}</span>
-          </Label>
-        </div>
-      ))}
+      {options.map((option) => {
+        // 1.9 F-13/F-14: the whole row is the label, so the 16px dot is not
+        // the only target; ids are scoped to the group so two groups sharing
+        // an option id no longer label each other's radios.
+        const id = `radio-${label.replace(/\W+/g, "-")}-${option.id}`;
+        return (
+          <label
+            key={option.id}
+            htmlFor={id}
+            className="flex min-h-hit cursor-pointer items-start gap-2 px-3 py-2 rounded-none border border-sf-line hover:border-sf-primary transition-colors"
+          >
+            <RadioGroupItem value={option.id} id={id} className="mt-0.5" />
+            <span className="text-sm">
+              <span className="font-medium">{option.name}</span>
+              <span className="text-t2 block text-[13px]">{option.description}</span>
+            </span>
+          </label>
+        );
+      })}
       {allowOther && (
         <div
           className={`flex items-start gap-2 p-2 rounded-none border transition-colors ${
@@ -290,8 +301,13 @@ const XenomythologyFrameworkBuilder = () => {
     localKey: LOCAL_STORAGE_KEY,
     loadedToast: true,
     onDraftCreated: (id, title) => entityMatch.check(id, title),
+    // 1.9 lane C wiring: this sheet's facts reach canon on save.
+    onSaved: (saved, { worksheetId: savedId }) =>
+      canonEmit.emit(saved, { subjectId: canonSubjectId, worksheetId: savedId }),
   });
   const { state: formState, setState: setFormState, worldId } = worksheet;
+  const canonSubjectId = useToolSubject(worksheet.worksheetId);
+  const canonEmit = useCanonEmit(mythosManifest, worldId);
   const currentWorksheetId = worksheet.worksheetId;
   const currentWorksheetTitle = worksheet.worksheetTitle;
   const worksheetId = worksheet.worksheetId;
@@ -1279,6 +1295,7 @@ const XenomythologyFrameworkBuilder = () => {
                   value={formState.planetaryConditions.skyAppearance}
                   onChange={(value) => updateField("planetaryConditions", "skyAppearance", value)}
                 />
+                <SkyFromCanon worldId={worldId} />
 
                 <div className="grid gap-6 md:grid-cols-2">
                   <RadioGroupField
@@ -2361,6 +2378,7 @@ const XenomythologyFrameworkBuilder = () => {
       )}
 
       <EntityMatchDialog {...entityMatch.dialogProps} />
+      <CanonConflictPrompt {...canonEmit} />
     </ToolPageLayout>
   );
 };

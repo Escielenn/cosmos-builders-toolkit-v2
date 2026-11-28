@@ -102,7 +102,7 @@ const ToolActionBar = ({
                 <Save className="w-4 h-4 mr-2" />
               )}
               {isSaving ? "SAVING..." : isCloudEnabled ? "Save" : (
-                <span>Save<span className="hidden sm:inline"> Draft</span></span>
+                <span>Save<span className="hidden sm:inline"> draft</span></span>
               )}
               {isCloudEnabled ? (
                 <Cloud className="w-3 h-3 ml-1.5 text-sf-primary-text" aria-label="Cloud sync enabled" />
@@ -218,6 +218,9 @@ const ToolActionBar = ({
 
         {railTrigger && <div className="ml-auto">{railTrigger}</div>}
       </div>
+      {/* 1.9 F-20: on a phone the row scrolls sideways; a fade at the right
+          edge says there is more. Decoration only, below sm. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-sf-void to-transparent sm:hidden" />
     </div>
     </>
   );

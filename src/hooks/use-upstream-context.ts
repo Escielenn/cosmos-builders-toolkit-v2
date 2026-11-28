@@ -16,6 +16,7 @@ import {
   getLayerForTool,
   LAYER_ORDER,
   LAYER_TOOL_MAP,
+  LAYER_LABELS as WORLD_LAYER_LABELS,
   type CascadeLayer,
 } from "@/services/world-data";
 import {
@@ -522,15 +523,8 @@ function genericCallouts(
   const upstreamLayers = Array.from(layerCounts.entries())
     .sort(([a], [b]) => LAYER_ORDER.indexOf(b) - LAYER_ORDER.indexOf(a)); // closest first
 
-  const LAYER_LABELS: Record<string, string> = {
-    environment: "Environment",
-    biology: "Biology",
-    psychology: "Psychology",
-    culture: "Culture",
-    mythology: "Mythology",
-    technology: "Technology",
-    narrative: "Narrative",
-  };
+  // One set of layer names (1.9 F-07).
+  const LAYER_LABELS: Record<string, string> = WORLD_LAYER_LABELS;
 
   for (const [layer, count] of upstreamLayers.slice(0, 2)) {
     callouts.push({

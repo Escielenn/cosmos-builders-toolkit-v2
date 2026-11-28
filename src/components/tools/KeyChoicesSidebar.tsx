@@ -30,6 +30,15 @@ interface KeyChoicesSidebarProps {
 
 export const NO_READOUT_LINE = "// NOTHING YET. FILL A SECTION TO SEE READOUTS.";
 
+/**
+ * 1.9 F-16: section titles carry their own "1." numbers, and empty sections
+ * are hidden, so the readout showed gaps (Phylo 2 → 4) and doubled numbers
+ * beside the rail's own. The readout names sections; it does not number them.
+ */
+export function plainTitle(title: string): string {
+  return title.replace(/^\s*\d+\.\s*/, "");
+}
+
 function filled(choice: KeyChoice): boolean {
   if (!choice.value) return false;
   if (Array.isArray(choice.value)) return choice.value.length > 0;
@@ -53,9 +62,9 @@ export function ReadoutContent({ sections }: { sections: KeyChoicesSection[] }) 
   return (
     <div className="space-y-4">
       {groups.map((group) => (
-        <section key={group.id} aria-label={group.title} className="px-2">
+        <section key={group.id} aria-label={plainTitle(group.title)} className="px-2">
           <h4 className="mb-1.5 border-b border-sf-line-hairline pb-1 font-heading text-sf-eyebrow uppercase text-t4">
-            {group.title}
+            {plainTitle(group.title)}
           </h4>
           <div className="space-y-1">
             {group.choices.map((choice, idx) =>

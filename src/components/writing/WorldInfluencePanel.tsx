@@ -22,6 +22,7 @@ import {
   type InfluenceRow,
 } from "@/lib/writing/world-influence";
 import { accentTextClass } from "@/lib/tool-accents";
+import { ManifestNarratives } from "@/components/canon/ManifestNarratives";
 
 const CATEGORY_DOT: Record<string, string> = {
   gravity: "bg-sf-amber",
@@ -76,6 +77,8 @@ export function WorldInfluencePanel({
           )}
         </div>
       )}
+      {/* 1.9 F-02: each tool's own sentence of consequence over canon. */}
+      <ManifestNarratives worldId={worldId} />
       <CascadeParameters worldId={worldId} content={content} folded={rows.length > 0} />
     </div>
   );

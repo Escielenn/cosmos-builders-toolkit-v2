@@ -25,7 +25,9 @@ import { extractRogueFacts } from "@/lib/simulators/rogue-save";
 import {
   extractTidelockFacts,
   extractExoforgeFacts,
+  formatDays,
 } from "@/lib/simulators/iframe-sim-facts";
+import { findSf2System, periodDays } from "@/lib/simulators/sim-canon";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -70,9 +72,10 @@ export function extractSolarisFacts(raw: unknown): WorksheetFact[] {
 
   const facts: WorksheetFact[] = [];
   const params = obj(payload.parameters) ?? {};
-  const system = obj(params.sf2System);
+  // Lane S (1.9) may post sf2System under parameters or results; read either.
+  const system = findSf2System(payload);
 
-  const systemName = str(system?.name) || str(payload.name);
+  const systemName = str(system?.name) || str(params.systemName) || str(payload.name);
   if (systemName) {
     facts.push({ key: "system.name", label: "Star system", value: systemName });
   }
@@ -136,19 +139,15 @@ export function extractSolarisFacts(raw: unknown): WorksheetFact[] {
       const name = str(p.name);
       if (!name) continue;
 
-      const au = fin(p.semiMajorAxisAU);
-      const period = fin(p.orbitalPeriodYears);
+      const au = fin(p.semiMajorAxisAU) ?? fin(p.au);
+      const period = periodDays(p);
       const type = str(p.type).replace(/-/g, " ");
 
       const detail = [
         type,
         au !== null ? `${tidy(au)} AU` : "",
         // Years under one are far more legible as days.
-        period !== null
-          ? period < 1
-            ? `${Math.round(period * 365.25)} day year`
-            : `${tidy(period)} year orbit`
-          : "",
+        period !== null ? `${formatDays(period)} orbit` : "",
         p.inHabitableZone === true ? "in the habitable zone" : "",
       ]
         .filter(Boolean)
@@ -249,7 +248,8 @@ const CONTINUITY_EQUIVALENTS: Record<
   // ExoForge builds a single world; its numbers are that world's numbers.
   "forged.gravity": { key: "surfaceGravity", label: "Surface Gravity (g)" },
   "forged.temperature": { key: "surfaceTemperature", label: "Surface Temperature (K)" },
-  "forged.rotation": { key: "dayLength", label: "Day Length (hours)" },
+  // forged.rotation is gone: ExoForge's `rotation` is a visual spin
+  // multiplier, not a day length (1.9 audit X2).
 
   // Tidelock: the terminator, not the day side. A tidally locked world's
   // habitable band is where a story happens, and it is the temperature a writer

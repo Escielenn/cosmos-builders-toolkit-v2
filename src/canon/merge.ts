@@ -131,6 +131,15 @@ export function projectedToCanonFact(p: ProjectedInput, worldId: string): CanonF
   };
 }
 
+/**
+ * True when an upstream fact changed after this one was computed and the
+ * writer has not yet accepted the recomputation (canon.markStale).
+ */
+export function isStaleFact(fact: Pick<CanonFact, "provenance">): boolean {
+  const ref = fact.provenance.ref as { stale?: unknown };
+  return !!ref && typeof ref.stale === "object" && ref.stale !== null;
+}
+
 export function sourceKindLabel(kind: string): string {
   switch (kind) {
     case "tool":

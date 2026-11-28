@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { plainTitle } from "@/components/tools/KeyChoicesSidebar";
 import { createPortal } from "react-dom";
 import { ArrowUp, ArrowDown } from "lucide-react";
 import { GlassPanel } from "@/components/ui/glass-panel";
@@ -76,7 +77,7 @@ function SectionList({
         {sections.map((section, idx) => (
           <li key={section.id} className={cn("sf-instrument-nav-item", section.level === 2 && "pl-6")}>
             <span className="sf-instrument-nav-number">{String(idx + 1).padStart(2, "0")}</span>
-            {section.title}
+            {plainTitle(section.title)}
           </li>
         ))}
       </ol>
@@ -99,7 +100,7 @@ function SectionList({
             className={cn("sf-instrument-nav-item block w-full text-left", section.level === 2 && "pl-6")}
           >
             <span className="sf-instrument-nav-number">{String(idx + 1).padStart(2, "0")}</span>
-            {section.title}
+            {plainTitle(section.title)}
           </button>
         ))}
       </nav>

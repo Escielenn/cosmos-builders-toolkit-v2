@@ -174,6 +174,22 @@ export interface EmitOptions {
  * on this sheet disagree with canon is withheld rather than asserted, so
  * canon gravity never derives from a mass canon does not hold.
  */
+/**
+ * A free-text temperature in kelvin: "15°C", "15 C", "288 K", "59°F". A bare
+ * number is read as °C because the forms that use this ask in Celsius.
+ * Null for anything without a number or below absolute zero.
+ */
+export function parseTemperatureK(raw: unknown): number | null {
+  if (typeof raw === "number") return Number.isFinite(raw) ? raw + 273.15 : null;
+  if (typeof raw !== "string") return null;
+  const m = raw.trim().match(/^(-?\d+(?:\.\d+)?)\s*(°?\s*[CFK])?/i);
+  if (!m) return null;
+  const n = Number(m[1]);
+  const u = (m[2] ?? "C").replace(/[°\s]/g, "").toUpperCase();
+  const k = u === "K" ? n : u === "F" ? ((n - 32) * 5) / 9 + 273.15 : n + 273.15;
+  return k >= 0 ? Number(k.toFixed(2)) : null;
+}
+
 export function planEmit(manifest: ToolManifest, data: unknown, opts: EmitOptions = {}): {
   asserts: PlannedAssert[];
   withheld: WithheldAssert[];
@@ -200,7 +216,13 @@ export function planEmit(manifest: ToolManifest, data: unknown, opts: EmitOption
         else vals[input] = v;
       }
       if (!complete) continue;
-      const diverged = d.inputs.filter((input) => {
+      // Optional inputs refine the result when the sheet has them (F-01:
+      // Goldilocks' Teff); the derivation states its own default otherwise.
+      for (const input of d.optionalInputs ?? []) {
+        const v = opts.inputs?.[input];
+        if (typeof v === "number" && Number.isFinite(v)) vals[input] = v;
+      }
+      const diverged = Object.keys(vals).filter((input) => {
         const canonV = opts.canonInputs?.[input];
         return canonV ? !valuesAgree({ kind: "scalar", value: vals[input] }, canonV) : false;
       });
@@ -225,7 +247,23 @@ export function planEmit(manifest: ToolManifest, data: unknown, opts: EmitOption
       const o = overrides[p.predicate];
       value = typeof o === "number" ? codec.read(o) : o ?? null;
     } else if (p.from.startsWith("field:")) {
-      value = codec.read(getAtPath(data, p.from.slice("field:".length)));
+      const raw = getAtPath(data, p.from.slice("field:".length));
+      value = p.parse === "temperature_k"
+        ? (() => {
+            const k = parseTemperatureK(raw);
+            return k === null ? null : ({ kind: "scalar", value: k, unit: "K" } as FactValue);
+          })()
+        : p.parse === "count"
+          ? (Array.isArray(raw) && raw.length > 0 ? ({ kind: "scalar", value: raw.length } as FactValue) : null)
+        : p.parse === "join"
+          ? (() => {
+              const t = Array.isArray(raw) ? raw.map((x) => String(x).trim()).filter(Boolean).join(", ") : typeof raw === "string" ? raw.trim() : "";
+              return t ? ({ kind: "text", value: t } as FactValue) : null;
+            })()
+          : codec.read(raw);
+      if (value && value.kind === "scalar" && typeof p.scale === "number") {
+        value = { ...value, value: Number((value.value * p.scale).toPrecision(12)) };
+      }
     }
 
     if (!value) continue;

@@ -270,7 +270,7 @@ describe("extractSolarisFacts", () => {
     expect(byKey["system.planet.tenehm"].value).toContain("1.12 AU");
     expect(byKey["system.planet.tenehm"].value).toContain("in the habitable zone");
     // 0.09 years reads as nothing; 33 days reads as a year.
-    expect(byKey["system.planet.ashfall"].value).toContain("33 day year");
+    expect(byKey["system.planet.ashfall"].value).toContain("32.9 days orbit");
   });
 
   it("inserts a planet's name rather than its orbital detail", () => {

@@ -1,5 +1,6 @@
 /** K-Scale (kardashev-scale) worksheet shape and codec. */
 import type { MoodboardImage } from "@/hooks/use-moodboard";
+import { calcKardashevNumber } from "@/lib/kardashev/calculations";
 import type { Json } from "@/integrations/supabase/types";
 import { BUDGET_CATEGORIES, type GrowthRateKey } from "@/lib/kardashev/data";
 import type { ToolWorksheetCodec } from "@/lib/tool-worksheet";
@@ -69,5 +70,7 @@ export const codec: ToolWorksheetCodec<FormState> = {
       moodboard: d.moodboard || defaults.moodboard,
     };
   },
-  serialize: (state) => ({ ...state }) as unknown as Json,
+  // 1.9 F-08: the rating itself travels (Sagan's K = (log₁₀P − 6) / 10).
+  serialize: (state) =>
+    ({ ...state, derived: { kardashev: Number(calcKardashevNumber(state.totalPowerWatts).toFixed(2)) } }) as unknown as Json,
 };
