@@ -13,6 +13,22 @@
 
 import { AdditiveBlending, BackSide, Color, ShaderMaterial } from "three";
 import type { StarBinding } from "../bind";
+import { STAR_CORE_MAX } from "./blackbody";
+
+export interface StarSurfaceOptions {
+  /**
+   * HDR gain for the core, through starCoreRadiance's hue-preserving soft
+   * clip (blackbody.ts). Omit for the original LDR look the System and
+   * Galaxy scenes were tuned against.
+   */
+  hdrGain?: number;
+  /**
+   * Apply the renderer's tone curve and sRGB transfer in this shader. True
+   * for scenes that render through the colour-managed pipeline (PlanetScene);
+   * the older scenes write linear values straight through.
+   */
+  colourManaged?: boolean;
+}
 
 const NOISE_GLSL = /* glsl */ `
   // Simplex-ish value noise. Cheap, tileable enough for a corona that is
@@ -51,13 +67,20 @@ const NOISE_GLSL = /* glsl */ `
 `;
 
 /** The photosphere. Limb-darkened so the core keeps its colour under bloom. */
-export function createStarSurfaceMaterial(binding: StarBinding): ShaderMaterial {
+export function createStarSurfaceMaterial(
+  binding: StarBinding,
+  options: StarSurfaceOptions = {},
+): ShaderMaterial {
+  const managed = options.colourManaged === true;
   return new ShaderMaterial({
+    toneMapped: managed,
     uniforms: {
       uColour: { value: new Color(binding.colour.r, binding.colour.g, binding.colour.b) },
       uLimb: { value: binding.limbDarkening },
       uTime: { value: 0 },
       uActivity: { value: binding.coronaAmplitude.value },
+      uGain: { value: options.hdrGain ?? 0 },
+      uCoreMax: { value: STAR_CORE_MAX },
     },
     vertexShader: /* glsl */ `
       varying vec3 vNormal;
@@ -90,7 +113,9 @@ export function createStarSurfaceMaterial(binding: StarBinding): ShaderMaterial 
         float granule = fbm(vPosition * 6.0 + uTime * 0.05) * 0.12 * (0.4 + uActivity);
 
         vec3 colour = uColour * (darken + granule);
+        if (uGain > 0.0) colour = coreRadiance(uColour, uGain * (darken + granule));
         gl_FragColor = vec4(colour, 1.0);
+        ${managed ? "#include <tonemapping_fragment>\n        #include <colorspace_fragment>" : ""}
       }
     `,
   });

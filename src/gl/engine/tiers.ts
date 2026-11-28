@@ -33,6 +33,18 @@ export interface TierSettings {
   shadows: boolean;
   /** Points in the ambient star field. */
   starCount: number;
+  /**
+   * Output transform. `agx` on the lit tiers: it rolls saturated highlights
+   * off toward white far more gracefully than ACES, which skews saturated
+   * orange toward yellow (Sobotka, "AgX", 2023; adopted as three.js
+   * AgXToneMapping in r160). That skew is exactly the error that would turn
+   * a K-dwarf's light G-coloured. `none` on chart: a drafted plate is drawn
+   * in solved tokens, and a tone curve would move them off their contrast
+   * targets.
+   */
+  toneMapping: "agx" | "none";
+  /** Equirectangular width of CPU-generated planet maps (height = width / 2). */
+  surfaceResolution: number;
 }
 
 export const TIER_SETTINGS: Record<QualityTier, TierSettings> = {
@@ -43,6 +55,8 @@ export const TIER_SETTINGS: Record<QualityTier, TierSettings> = {
     grain: true,
     shadows: false,
     starCount: 6000,
+    toneMapping: "agx",
+    surfaceResolution: 1024,
   },
   standard: {
     maxPixelRatio: 1.5,
@@ -51,6 +65,8 @@ export const TIER_SETTINGS: Record<QualityTier, TierSettings> = {
     grain: true,
     shadows: false,
     starCount: 2500,
+    toneMapping: "agx",
+    surfaceResolution: 512,
   },
   chart: {
     maxPixelRatio: 1,
@@ -59,6 +75,8 @@ export const TIER_SETTINGS: Record<QualityTier, TierSettings> = {
     grain: false,
     shadows: false,
     starCount: 800,
+    toneMapping: "none",
+    surfaceResolution: 512,
   },
 };
 
