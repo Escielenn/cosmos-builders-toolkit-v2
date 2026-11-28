@@ -1883,7 +1883,7 @@ function DR({ l, v }: { l: ReactNode; v: ReactNode }) {
 
 function tagStyle(status: string) {
   const hue = status === "confirmed" || status === "home" || status === "yours" ? "emerald" : status === "candidate" || status === "disputed" ? "amber" : status === "refuted" ? "crimson" : "stellar";
-  return { display: "inline-block", padding: "2px 8px", fontSize: 12, fontWeight: 500, borderRadius: 2, border: `1px solid var(--sf-${hue})`, background: `rgb(var(--sf-${hue}-rgb) / 0.06)`, color: `var(--sf-${hue}-text)` } as const;
+  return { display: "inline-block", padding: "2px 8px", fontSize: 12, fontWeight: 500, borderRadius: 0, border: `1px solid var(--sf-${hue})`, background: `rgb(var(--sf-${hue}-rgb) / 0.06)`, color: `var(--sf-${hue}-text)` } as const;
 }
 
 // ── Style tokens ────────────────────────────────────────────────────
