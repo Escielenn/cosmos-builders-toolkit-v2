@@ -1199,9 +1199,14 @@ export default function ExoSkyV2({
   const canWrite = !!worldId && !!worldEntity;
   const writeFacts = useCallback(async (asserts: ExoskyAssert[], supersede = false) => {
     const conflicted: ExoskyAssert[] = [];
-    for (const a of asserts) {
-      const r = await assertFact.mutateAsync({ ...a, supersede });
-      if ("status" in r && r.status === "conflict") conflicted.push(a);
+    try {
+      for (const a of asserts) {
+        const r = await assertFact.mutateAsync({ ...a, supersede });
+        if ("status" in r && r.status === "conflict") conflicted.push(a);
+      }
+    } catch {
+      // useAssertFact already showed the mapped error; stop here.
+      return;
     }
     setConflicts(conflicted);
     toast({ title: conflicted.length ? `${asserts.length - conflicted.length} FACTS WRITTEN. ${conflicted.length} HELD BY CANON.` : "CANON UPDATED." });
@@ -1227,7 +1232,12 @@ export default function ExoSkyV2({
   };
   const addConstellationToCanon = async (c: DrawnConstellation) => {
     if (!worldEntity || c.starIds.length < 2) return;
-    const created = await createEntity.mutateAsync(constellationEntityInput({ name: c.name, starIds: c.starIds, epochYears: c.epochYears }, worldEntity));
+    let created: { id: string };
+    try {
+      created = await createEntity.mutateAsync(constellationEntityInput({ name: c.name, starIds: c.starIds, epochYears: c.epochYears }, worldEntity));
+    } catch {
+      return; // useCreateEntity already showed the mapped error.
+    }
     const names = [...(canonSky?.constellations ?? []).map((x) => x.entity.name), c.name];
     await writeFacts(constellationFacts(created.id, { name: c.name, starIds: c.starIds, epochYears: c.epochYears }, worldEntity.id, names));
     setCustomConstellations((prev) => prev.map((x) => (x.id === c.id ? { ...x, entityId: created.id } : x)));
@@ -1901,7 +1911,7 @@ const CK = { accentColor: "var(--sf-primary)", width: 16, height: 16 } as const;
 const LIST = { listStyle: "none", padding: 0, margin: "6px 0 0" } as const;
 const LIST_BTN = { display: "block", width: "100%", textAlign: "left", fontFamily: FONT_SANS, fontSize: 14, background: "none", border: "none", borderBottom: "1px solid var(--sf-line-hairline)", padding: "8px 4px", minHeight: "var(--hit-min)", color: "var(--t1)", cursor: "pointer" } as const;
 const CARD = { border: "1px solid var(--sf-line)", background: "var(--sf-surface-elevated)", padding: "8px 12px" } as const;
-const WARN = { borderLeft: "2px solid var(--sf-amber)", background: "rgb(var(--sf-amber-rgb) / 0.06)", padding: "8px 10px", margin: "8px 0" } as const;
+const WARN = { border: "1px solid var(--sf-amber)", background: "rgb(var(--sf-amber-rgb) / 0.06)", padding: "8px 10px", margin: "8px 0" } as const;
 const WARN_TITLE = { fontFamily: FONT_MONO, fontSize: 12, letterSpacing: "0.10em", textTransform: "uppercase", color: "var(--sf-amber-text)", marginBottom: 4 } as const;
 const SUMMARY = { fontSize: 14, color: "var(--t1)", minHeight: "var(--hit-min)", display: "flex", alignItems: "center" } as const;
 function swatchStyle(hex: string, selected: boolean) {
