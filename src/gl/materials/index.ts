@@ -5,7 +5,16 @@ export {
   kelvinToRGB,
   limbDarkening,
   spectralClassKelvin,
+  STAR_CORE_MAX,
+  starCoreRadiance,
+  blackbodyHue,
+  adaptedLight,
+  CHROMATIC_ADAPTATION_D,
 } from "./blackbody";
+export { scattering, parseGasMix, earthRayleighTau } from "./scattering";
+export type { Scattering, GasMix } from "./scattering";
+export { paintSurface, heightField, vegetationReflectance } from "./terrain";
+export type { SurfaceMaps, HeightField } from "./terrain";
 export {
   AIRLESS_ATMOSPHERE,
   atmosphereUniforms,

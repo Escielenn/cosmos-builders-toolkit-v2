@@ -358,7 +358,7 @@ export default function PlanetPreview() {
               <Readout label="Equilibrium" value={fmt(b.temperature.equilibrium)} unit="K" />
               <Readout
                 label="Surface"
-                value={b.kind === "rocky" ? `${fmt(b.temperature.min)}–${fmt(b.temperature.max)}` : fmt(b.temperature.mean)}
+                value={b.kind === "rocky" && b.temperature.max - b.temperature.min >= 1 ? `${fmt(b.temperature.min)}–${fmt(b.temperature.max)}` : fmt(b.temperature.mean)}
                 unit="K"
               />
               <Readout label="Rotation" value={b.tidallyLocked ? "Locked" : fmt(b.rotationHours, 1)} unit={b.tidallyLocked ? undefined : "h"} />

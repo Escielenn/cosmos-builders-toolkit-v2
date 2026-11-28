@@ -45,8 +45,9 @@ async function settle(page: Page) {
   const scene = page.getByTestId("planet-scene");
   await expect(scene).toBeVisible({ timeout: 25_000 });
   await expect(scene.locator("canvas")).toBeVisible();
-  // Let the camera flight finish and a few frames land.
-  await page.waitForTimeout(1600);
+  // Let the camera flight finish and a few frames land. FRAME_WAIT_MS lets a
+  // perf run wait long enough for the probe's 60-frame median.
+  await page.waitForTimeout(Number(process.env.FRAME_WAIT_MS ?? 1600));
 }
 
 async function shoot(page: Page, name: string) {
@@ -74,7 +75,21 @@ test.describe("planet preview", () => {
       await page.goto(`/simulators/planet-preview?preset=${id}`);
       await settle(page);
       await expect(page.getByRole("region", { name: "Readout" })).toBeVisible();
-      const ms = await page.getByTestId("planet-scene").getAttribute("data-frame-ms");
+      // Mean rAF interval over 3 s: the page's real frame time with the
+      // scene drawing (headless Chromium renders WebGL in software).
+      const ms = await page.evaluate(
+        () =>
+          new Promise<string>((resolve) => {
+            let n = 0;
+            const t0 = performance.now();
+            const tick = () => {
+              n++;
+              if (performance.now() - t0 < 3000) requestAnimationFrame(tick);
+              else resolve(((performance.now() - t0) / n).toFixed(1));
+            };
+            requestAnimationFrame(tick);
+          }),
+      );
       console.info(`[frame] ${id} ${await page.getByTestId("planet-scene").getAttribute("data-tier")} ${ms ?? "n/a"} ms`);
       await shoot(page, `1440-${id}`);
       if (SHOTS) {

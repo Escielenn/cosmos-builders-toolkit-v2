@@ -228,3 +228,24 @@ describe("terrain", () => {
     expect(cold).toBeLessThan(4000);
   });
 });
+
+describe("clouds", () => {
+  it("keep the stated cover on a locked world; the substellar deck moves cloud, it does not add it", () => {
+    const b = bind("kellis-prime");
+    const W = 128;
+    const maps = paintSurface(b, W);
+    let covered = 0;
+    let day = 0;
+    let night = 0;
+    for (let k = 0; k < W * (W / 2); k++) {
+      const a = maps.clouds[k * 4] / 255;
+      covered += a > 0.5 ? 1 : 0;
+      const i = k % W;
+      const lon = -180 + (360 * (i + 0.5)) / W;
+      if (Math.abs(lon) < 60) day += a;
+      if (Math.abs(lon) > 120) night += a;
+    }
+    expect(covered / (W * (W / 2))).toBeLessThan(b.clouds.coverage + 0.12);
+    expect(day).toBeGreaterThan(night);
+  });
+});

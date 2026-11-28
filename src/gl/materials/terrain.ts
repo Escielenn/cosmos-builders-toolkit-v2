@@ -249,8 +249,8 @@ export const DRAPER_POINT_K = 798;
 export const CITY_LIGHT_K = 2700;
 /** Tropospheric lapse rate, K per km (US Standard Atmosphere 1976). */
 const LAPSE_K_PER_KM = 6.5;
-/** Relief from the deepest basin to the highest range, km. Earth: ~20. */
-const RELIEF_KM = 14;
+/** Height of the highest peaks above sea level, km. Earth: 8.8. */
+const PEAK_KM = 9;
 
 /**
  * Plant reflectance under a star of this temperature (Kiang et al. 2007):
@@ -305,8 +305,24 @@ export function paintSurface(b: PlanetSceneBinding, width: number): SurfaceMaps 
   const rowT = new Float32Array(height);
   if (!b.tidallyLocked) for (let j = 0; j < height; j++) rowT[j] = b.temperature.at(texelLatLon(0, j, width, height)[0], 0);
 
-  // Cloud threshold for the requested cover.
-  const cloudCut = quantile(field.cloudsSorted, 1 - b.clouds.coverage);
+  // Cloud field and threshold for the requested cover. A locked world's deck
+  // piles up over the substellar point (Yang, Cowan & Abbot 2013, ApJL
+  // 771:L45); the threshold is taken AFTER that bias, so the cover stays the
+  // stated fraction of the globe and only its placement moves.
+  let cloudField = field.clouds;
+  let cloudSorted = field.cloudsSorted;
+  if (b.clouds.substellarDeck && b.clouds.coverage > 0 && b.clouds.coverage < 0.999) {
+    cloudField = new Float32Array(n);
+    for (let j = 0; j < height; j++) {
+      for (let i = 0; i < width; i++) {
+        const [lat, lon] = texelLatLon(i, j, width, height);
+        const cosTheta = Math.cos((lat * Math.PI) / 180) * Math.cos((lon * Math.PI) / 180);
+        cloudField[j * width + i] = field.clouds[j * width + i] + 0.22 * cosTheta;
+      }
+    }
+    cloudSorted = Float32Array.from(cloudField).sort();
+  }
+  const cloudCut = quantile(cloudSorted, 1 - b.clouds.coverage);
 
   for (let j = 0; j < height; j++) {
     for (let i = 0; i < width; i++) {
@@ -327,7 +343,11 @@ export function paintSurface(b: PlanetSceneBinding, width: number): SurfaceMaps 
         colour = mixC(zone, belt, (0.5 + 0.5 * s) * contrast + (1 - contrast) * 0.3);
       } else {
         const below = h < sea;
-        const elevKm = ((h - Math.max(sea, 0)) / Math.max(hiH - Math.max(sea, 0), 1e-3)) * RELIEF_KM * 0.6;
+        // Hypsometry: most land is low, a little is very high. rel³ puts the
+        // median land surface near 1 km and the peaks at 9 km, close to
+        // Earth's (mean land elevation 0.84 km; Everest 8.8 km).
+        const rel = Math.max(0, (h - Math.max(sea, loH)) / Math.max(hiH - Math.max(sea, loH), 1e-3));
+        const elevKm = rel * rel * rel * PEAK_KM;
         if (below) {
           const depth = (sea - h) / Math.max(sea, 1e-3);
           if (!b.water.liquidPossible || T >= b.water.boilK) {
@@ -375,7 +395,7 @@ export function paintSurface(b: PlanetSceneBinding, width: number): SurfaceMaps 
             }
           }
           // High ground is paler rock.
-          ground = mixC(ground, mixC(P.regolith, P.evaporite, 0.4), smooth(3, 8, elevKm) * 0.5);
+          ground = mixC(ground, mixC(P.regolith, P.evaporite, 0.4), smooth(1.5, 5, elevKm) * 0.5);
           colour = ground;
           // Snow: where the air above a range is colder than the ice line,
           // and only if the world has water to make snow from.
@@ -427,13 +447,7 @@ export function paintSurface(b: PlanetSceneBinding, width: number): SurfaceMaps 
         // streaks so the disc is not a flat plate.
         cloud = 0.9 + 0.1 * field.clouds[k];
       } else if (b.clouds.coverage > 0) {
-        let c = field.clouds[k];
-        if (b.clouds.substellarDeck) {
-          // Locked worlds build a thick convective deck over the substellar
-          // point (Yang, Cowan & Abbot 2013, ApJL 771:L45).
-          const cosTheta = Math.cos((lat * Math.PI) / 180) * Math.cos((lon * Math.PI) / 180);
-          c += 0.22 * cosTheta;
-        }
+        const c = cloudField[k];
         // Soft edges and thin cirrus: opacity ramps over a band rather than
         // switching on at the threshold.
         cloud = smooth(cloudCut - 0.03, cloudCut + 0.1, c) * (0.55 + 0.45 * smooth(cloudCut, cloudCut + 0.18, c));
