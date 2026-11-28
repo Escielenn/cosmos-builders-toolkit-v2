@@ -1,4 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
+import { toolsByLayer } from "@/canon/tool-layers";
+import { SIMULATOR_TOOL_IDS } from "@/lib/tools-config";
 import { Json } from "@/integrations/supabase/types";
 import { TOOL_DISPLAY_NAMES } from "@/lib/worksheet-links-config";
 
@@ -7,6 +9,7 @@ import { TOOL_DISPLAY_NAMES } from "@/lib/worksheet-links-config";
 // ---------------------------------------------------------------------------
 
 export type CascadeLayer =
+  | "physics"
   | "environment"
   | "biology"
   | "psychology"
@@ -88,48 +91,53 @@ export interface WorldDataSummary {
 // Layer configuration
 // ---------------------------------------------------------------------------
 
+// 1.9 F-07: the sidebar's layers follow the one cascade scheme
+// (canon/tool-layers, sourced from manifests). Physics joins the front.
+// "technology" and "narrative" stay as layer keys because world_entries.layer
+// rows already carry them; no tool is filed under "technology" any more, and
+// "narrative" now holds the Integration tools.
 export const LAYER_ORDER: CascadeLayer[] = [
+  "physics",
   "environment",
   "biology",
   "psychology",
-  "culture",
   "mythology",
+  "culture",
   "technology",
   "narrative",
 ];
 
 export const LAYER_LABELS: Record<CascadeLayer, string> = {
+  physics: "Physics",
   environment: "Environment",
   biology: "Biology",
   psychology: "Psychology",
   culture: "Culture",
   mythology: "Mythology",
   technology: "Technology",
-  narrative: "Narrative",
+  narrative: "Integration",
 };
 
-export const LAYER_TOOL_MAP: Record<CascadeLayer, string[]> = {
-  environment: [
-    "star-system-builder",
-    "planetary-profile",
-    "environmental-chain-reaction",
-    "habitable-zone-calculator",
-    "one-big-lie",
-    "surface-gravity-calculator",
-  ],
-  biology: ["evolutionary-biology", "sensorium", "species-interaction-matrix"],
-  psychology: ["dossier"], // Dossier: characters inherit the layers above
-  culture: ["empire-designer", "lexdrift", "space-expansion-modeler"],
-  mythology: ["xenomythology-framework-builder"],
-  technology: [
-    "technology-consequences",
-    "propulsion-consequences-map",
-    "spacecraft-designer",
-    "time-dilation",
-    "gravitas",
-  ],
-  narrative: ["timeline", "drake-equation-calculator"],
+/** canon layer → sidebar layer key. */
+const SIDEBAR_LAYER: Record<string, CascadeLayer> = {
+  physics: "physics",
+  environment: "environment",
+  biology: "biology",
+  psychology: "psychology",
+  mythology: "mythology",
+  culture: "culture",
+  integration: "narrative",
 };
+
+export const LAYER_TOOL_MAP: Record<CascadeLayer, string[]> = (() => {
+  const out = Object.fromEntries(LAYER_ORDER.map((l) => [l, [] as string[]])) as Record<CascadeLayer, string[]>;
+  for (const [layer, tools] of Object.entries(toolsByLayer())) {
+    // Simulators live in their own section of the sidebar, not the layer tree.
+    const instruments = tools.filter((t) => !(SIMULATOR_TOOL_IDS as readonly string[]).includes(t));
+    out[SIDEBAR_LAYER[layer]].push(...instruments);
+  }
+  return out;
+})();
 
 /** Reverse lookup: tool → layer */
 const TOOL_TO_LAYER: Record<string, CascadeLayer> = {};
@@ -250,6 +258,7 @@ export async function getWorldData(worldId: string): Promise<WorldDataSummary> {
 
   // Group worksheets by cascade layer
   const layerWorksheets: Record<CascadeLayer, WorldElement[]> = {
+    physics: [],
     environment: [],
     biology: [],
     psychology: [],
@@ -525,6 +534,7 @@ export async function getCodexData(worldId: string): Promise<CodexData> {
 
   // Build cascade sections
   const sectionElements: Record<CascadeLayer, CodexElement[]> = {
+    physics: [],
     environment: [],
     biology: [],
     psychology: [],

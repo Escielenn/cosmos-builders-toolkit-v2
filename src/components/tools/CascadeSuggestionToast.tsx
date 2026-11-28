@@ -12,7 +12,30 @@ import { useNavigate } from "react-router-dom";
 import { ChevronRight, X } from "lucide-react";
 import { getToolRoute } from "@/lib/tools-config";
 import { Button } from "@/components/ui/button";
-import { getDownstreamSuggestions, getToolLayer } from "@/lib/cascade-guidance";
+import { getDownstreamSuggestions } from "@/lib/cascade-guidance";
+import { manifestById, manifestForTool } from "@/canon/manifests";
+import { predicateLabel } from "@/canon/vocabulary";
+
+/**
+ * 1.9 F-02: the next step comes from the manifests when the tool has one: the
+ * first downstream tool that reads something this tool just produced, named
+ * by what it reads. Layer guidance is the fallback for unwired tools.
+ */
+export function manifestSuggestion(toolType: string): { toolType: string; brandName: string; prompt: string } | null {
+  const self = manifestForTool(toolType);
+  if (!self) return null;
+  const produced = new Set(self.produces.map((p) => p.predicate));
+  for (const id of self.downstream) {
+    const next = manifestById(id);
+    if (!next) continue;
+    const reads = next.consumes.filter((c) => produced.has(c.predicate)).map((c) => predicateLabel(c.predicate).toLowerCase());
+    if (reads.length === 0) continue;
+    const brand = next.name.split(":")[0];
+    const list = reads.length > 1 ? `${reads.slice(0, -1).join(", ")} and ${reads[reads.length - 1]}` : reads[0];
+    return { toolType: next.tool, brandName: brand, prompt: `${brand} reads the ${list} you just saved. Open it to see what follows from them.` };
+  }
+  return null;
+}
 
 const DISMISS_PREFIX = "sf-cascade-dismiss-";
 const DISMISS_DURATION_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
@@ -54,8 +77,7 @@ export default function CascadeSuggestionToast({
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
 
-  const suggestions = getDownstreamSuggestions(toolType);
-  const suggestion = suggestions[0]; // Show the primary suggestion
+  const suggestion = manifestSuggestion(toolType) ?? getDownstreamSuggestions(toolType)[0];
 
   useEffect(() => {
     if (visible && suggestion && !isDismissed(toolType)) {
@@ -91,10 +113,10 @@ export default function CascadeSuggestionToast({
 
         <div className="flex items-start gap-3">
           <div className="flex-1 min-w-0">
-            <p className="font-heading text-[12px] uppercase tracking-[0.12em] text-sf-primary-text mb-1">
-              Cascade Suggestion
+            <p className="font-heading text-sf-eyebrow uppercase text-sf-primary-text mb-1">
+              Next in the cascade
             </p>
-            <p className="text-xs text-t2 leading-relaxed">
+            <p className="text-[13px] text-t2 leading-relaxed">
               {suggestion.prompt}
             </p>
           </div>
@@ -104,9 +126,9 @@ export default function CascadeSuggestionToast({
               variant="ghost"
               size="sm"
               onClick={handleNavigate}
-              className="text-sf-primary-text hover:text-t1 text-[12px] uppercase tracking-wider h-7 px-2"
+              className="min-h-hit text-sf-primary-text hover:text-t1 text-[13px] px-2"
             >
-              {suggestion.brandName}
+              Open {suggestion.brandName}
               <ChevronRight className="w-3 h-3 ml-0.5" />
             </Button>
             <button

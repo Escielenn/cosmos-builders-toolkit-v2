@@ -13,47 +13,20 @@
  * Maps tool slug → accent token name.
  */
 
+import { CASCADE_LAYER_NAME, LAYER_ACCENT, toolLayer, toolsByLayer } from "@/canon/tool-layers";
+
 export type ToolAccent = "amber" | "azure" | "emerald" | "violet" | "stellar" | "teal" | "crimson" | "magenta";
 
-export const TOOL_ACCENTS: Record<string, ToolAccent> = {
-  // Physics / Stars & Systems, amber
-  "drake-equation-calculator": "amber",
-  "star-system-builder": "amber",
-  "habitable-zone-calculator": "amber",
-  "time-dilation": "amber",
-  "kardashev-scale": "amber",
-  "surface-gravity-calculator": "amber",
-  "gravitas": "amber",
-
-  // Worlds / environment, azure
-  "planetary-profile": "azure",
-  "environmental-chain-reaction": "azure",
-  "sensorium": "azure",
-  "surface-cartographer": "azure",
-
-  // Life / biology, emerald
-  "evolutionary-biology": "emerald",
-  "species-interaction-matrix": "emerald",
-
-  // Civilizations, violet
-  "empire-designer": "violet",
-  "technology-consequences": "violet",
-  "space-expansion-modeler": "violet",
-  "one-big-lie": "violet",
-  "lexdrift": "violet",
-
-  // Psychology, magenta
-  "dossier": "magenta",
-
-  // Mythology, stellar
-  "xenomythology-framework-builder": "stellar",
-
-  // Integration / vehicles / time, teal
-  "propulsion-consequences-map": "teal",
-  "spacecraft-designer": "teal",
-  "generation-ship": "teal",
-  "timeline": "teal",
-};
+/**
+ * 1.9 F-07: no hand-kept table any more. A tool's accent is its cascade
+ * layer's colour, and its layer comes from its manifest (canon/tool-layers).
+ * Kept as a record for existing readers.
+ */
+export const TOOL_ACCENTS: Record<string, ToolAccent> = Object.fromEntries(
+  Object.values(toolsByLayer())
+    .flat()
+    .map((slug) => [slug, LAYER_ACCENT[toolLayer(slug)] as ToolAccent]),
+);
 
 /**
  * The cascade layer each accent stands for (CLAUDE.md: colour is a cascade
@@ -73,12 +46,12 @@ export const CASCADE_LAYER_LABEL: Record<ToolAccent, string> = {
 
 /** The cascade layer name for a tool (e.g. "Physics" for Orrery). */
 export function getToolLayerLabel(toolType: string): string {
-  return CASCADE_LAYER_LABEL[getToolAccent(toolType)];
+  return CASCADE_LAYER_NAME[toolLayer(toolType)];
 }
 
-/** Fallback: teal for any unmapped tool. */
+/** The tool's layer colour; teal (Integration) for any unknown tool. */
 export function getToolAccent(toolType: string): ToolAccent {
-  return TOOL_ACCENTS[toolType] ?? "teal";
+  return LAYER_ACCENT[toolLayer(toolType)] as ToolAccent;
 }
 
 // Static class maps, Tailwind's JIT detects concrete class strings; dynamic

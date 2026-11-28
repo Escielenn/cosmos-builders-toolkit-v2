@@ -1,4 +1,6 @@
 import { DEFAULT_COMPOSITION_COLOUR } from "@/lib/palettes/planets";
+import { ReadoutNarrative } from "@/components/canon/ManifestNarratives";
+import { surfaceGravity as surfaceGravityDerivation, density as densityDerivation } from "@/tools/atlas/manifest";
 import { useState, useEffect, useMemo, useRef, useCallback, lazy, Suspense } from "react";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
@@ -672,6 +674,11 @@ const SurfaceGravityCalculator = () => {
                       )}
                     </div>
                   </div>
+
+                  {/* 1.9 F-02: the consequence beside the number, from the
+                      derivations this tool registers in its manifest. */}
+                  <ReadoutNarrative text={surfaceGravityDerivation.narrative(result.gravity, {})} />
+                  <ReadoutNarrative text={densityDerivation.narrative(result.meanDensity, {})} className="mt-1" />
 
                   {/* Data grid, StatGrid primitive */}
                   <StatGrid cols={4}>
