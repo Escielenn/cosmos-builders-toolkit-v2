@@ -323,7 +323,7 @@ const HabitableZoneCalculator = () => {
           <p className="text-t2">
             Define your host star and place your planet. You will see where it falls relative to the
             habitable zone, and what that means for climate, biology, psychology, mythology, and culture.
-            All calculations use Kopparapu et al. (2013) habitable zone boundaries.
+            All calculations use Kopparapu et al. (2014) habitable zone boundaries, corrected for your star's temperature.
           </p>
         </GlassPanel>
 

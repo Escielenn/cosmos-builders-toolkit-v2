@@ -106,12 +106,12 @@ export default function CascadeSuggestionToast({
   if (!show || !suggestion) return null;
 
   return (
-    <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-4 duration-slow">
-      <div className="bg-sf-surface/95 backdrop-blur-xl border border-sf-primary px-4 py-3 max-w-md shadow-lg shadow-black/40">
+    <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 w-[calc(100vw-2rem)] max-w-md animate-in slide-in-from-bottom-4 duration-slow">
+      <div className="relative bg-sf-surface/95 backdrop-blur-xl border border-sf-primary px-4 py-3 shadow-lg shadow-black/40">
         {/* Light arc glow */}
         <div className="absolute bottom-0 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-sf-primary-bright/25 to-transparent" />
 
-        <div className="flex items-start gap-3">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:gap-3">
           <div className="flex-1 min-w-0">
             <p className="font-heading text-sf-eyebrow uppercase text-sf-primary-text mb-1">
               Next in the cascade

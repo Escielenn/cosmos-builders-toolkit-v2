@@ -653,13 +653,17 @@ export async function getCodexData(worldId: string): Promise<CodexData> {
     allCodexElements.push(el);
   }
 
-  const cascadeSections: CodexSection[] = LAYER_ORDER.map((key, idx) => ({
-    key,
-    label: LAYER_LABELS[key],
-    order: idx + 1,
-    elements: sectionElements[key],
-    isExpanded: sectionElements[key].length > 0,
-  }));
+  const cascadeSections: CodexSection[] = LAYER_ORDER
+    // "technology" is a legacy layer key with no tools (1.9 F-07): shown only
+    // while old entries still live there.
+    .filter((key) => key !== "technology" || sectionElements[key].length > 0)
+    .map((key, idx) => ({
+      key,
+      label: LAYER_LABELS[key],
+      order: idx + 1,
+      elements: sectionElements[key],
+      isExpanded: sectionElements[key].length > 0,
+    }));
 
   // Custom entries: entries with NO tool_source, build as tree
   const customRaw = entries.filter((e) => !e.tool_source);
