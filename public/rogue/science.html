@@ -5,9 +5,8 @@
 <link rel="stylesheet" href="/tools/_shared/sim-tokens.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ROGUE — The Science | StellarForge</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-<link href="https://fonts.cdnfonts.com/css/md-nichrome-test" rel="stylesheet">
+<link rel="stylesheet" href="/tools/_shared/sim-fonts.css">
+<link href="/fonts/md-nichrome/md-nichrome.css" rel="stylesheet">
 <style>
 :root{
   --accent-cyan:#15C17B;
@@ -192,7 +191,7 @@ body{
   <span class="eq">1. Half-kick: v += a · dt/2<br>2. Drift: x += v · dt<br>3. Recompute forces at new positions<br>4. Half-kick: v += a_new · dt/2</span>
   <p>Symplectic integrators are preferred for orbital mechanics because they don't artificially inject or drain energy from the system over long timescales—orbits stay stable for thousands of revolutions rather than spiraling inward or outward.</p>
   <div class="src">Leapfrog integration: Hut, P., Makino, J., &amp; McMillan, S. (1995). "Building a better leapfrog." <em>The Astrophysical Journal</em>, 443, L93–L96. <a href="https://ui.adsabs.harvard.edu/abs/1995ApJ...443L..93H" target="_blank">ADS</a></div>
-  <p>A <strong>gravitational softening</strong> parameter <code>ε² = 5×10⁻⁵ AU²</code> prevents numerical singularities during very close encounters, replacing <code>1/r²</code> with <code>1/(r² + ε²)</code>. This is standard practice in N-body simulation and represents the fact that real bodies have finite size.</p>
+  <p>A <strong>gravitational softening</strong> length ε prevents numerical singularities during very close encounters, replacing <code>1/r²</code> with <code>1/(r² + ε²)</code>. It is scaled to each system: ε is 0.5% of the innermost planet's orbit for ordinary pairs (a force change of about 4 × 10⁻⁵ there) and 5% for pairs that include the intruder, so a grazing pass stays integrable. Before 1.9 a fixed ε of 0.007 AU was 62% of TRAPPIST-1b's orbit and bent every compact system. The energy readout uses the same softening as the force.</p>
   <div class="src">Softening in N-body simulations: Dehnen, W. (2001). "Towards optimal softening in three-dimensional N-body codes." <em>Monthly Notices of the Royal Astronomical Society</em>, 324(2), 273–291. <a href="https://doi.org/10.1046/j.1365-8711.2001.04237.x" target="_blank">DOI</a></div>
 
   <!-- ── CONDITIONAL N-BODY ──────────────────────── -->
@@ -203,11 +202,12 @@ body{
   <div class="src">TRAPPIST-1 resonance chain: Luger, R. et al. (2017). "A seven-planet resonant chain in TRAPPIST-1." <em>Nature Astronomy</em>, 1, 0129. <a href="https://doi.org/10.1038/s41550-017-0129" target="_blank">DOI</a></div>
 
   <!-- ── ADAPTIVE TIMESTEP ───────────────────────── -->
-  <div class="sci-section">Adaptive Timestep</div>
-  <p>Different systems require vastly different temporal resolution. TRAPPIST-1's innermost planet orbits in 1.5 Earth days; Neptune takes 165 years. A single timestep size cannot serve both.</p>
-  <p>The timestep scales with the <strong>innermost orbital radius</strong> of the active system:</p>
-  <span class="eq">dt = dt_base × min(1, r_min / 0.5 AU)<br>steps/frame = 60 × timeScale × min(80, 1/dtScale)</span>
-  <p>This ensures compact systems get finer temporal resolution while wall-clock simulation speed remains visually consistent. The step count per frame is capped at 8,000 to prevent browser freezes.</p>
+  <div class="sci-section">Timestep, Speed Limit &amp; Energy</div>
+  <p>Different systems require vastly different temporal resolution. TRAPPIST-1's innermost planet orbits in 1.5 Earth days; Neptune takes 165 years. The step is set by the <strong>innermost orbit</strong> and never made larger:</p>
+  <span class="eq">dt = dt_base × min(1, r_min / 0.5 AU)<br>steps/frame = min(1500, 60 × timeScale × min(80, 1/dtScale))</span>
+  <p>A higher time scale runs more steps per frame, up to 1,500. Beyond that the simulation runs slower than asked, and the time-scale readout says how fast it is really going. (Before 1.9 the excess was folded into a larger step: TRAPPIST-1 at 100× took about four steps per orbit of planet b and threw it out.)</p>
+  <p>During a close pass the step is subdivided, never enlarged, to 1% of the shortest intruder-pair dynamical time <code>√(r³ / G(m₁+m₂))</code>.</p>
+  <p><strong>Energy error.</strong> The data panel shows <code>|E − E₀| / |E₀|</code> since launch. Quiet systems hold it near 10⁻¹⁰. Above 10⁻³ the run is not accurate enough to publish, and Publish says so.</p>
 
   <!-- ── STELLAR & PLANETARY DATA ────────────────── -->
   <div class="sci-section">Stellar &amp; Planetary Data</div>
@@ -241,13 +241,13 @@ body{
     </tr>
     <tr>
       <td>Alpha Centauri AB</td>
-      <td><code>1.1 + 0.907 M☉</code></td>
+      <td><code>1.1055 + 0.9373 M☉</code></td>
       <td>2 (hypothetical*)</td>
-      <td>Kervella et al. 2017, <em>A&amp;A</em></td>
+      <td>Kervella et al. 2016, <em>A&amp;A</em>; e = 0.52, Pourbaix &amp; Boffin 2016</td>
     </tr>
   </table>
 
-  <div class="note">Alpha Centauri AB planets are marked with asterisks (*) in the simulator because no confirmed planets have been detected in the system as of early 2025. Their parameters represent plausible habitable-zone candidates based on orbital stability analyses.</div>
+  <div class="note">Alpha Centauri AB planets are marked with asterisks (*) in the simulator because no confirmed planets have been detected in the system as of early 2025. One circles each star (S-type), inside the Holman &amp; Wiegert 1999 limit for this eccentric pair (about 2.7 AU around A and 2.5 AU around B). The pair is eccentric (e = 0.52), so the stars swing between 11 and 36 AU apart.</div>
 
   <div class="src"><strong>Solar System:</strong> Williams, D.R. (2024). "NASA Planetary Fact Sheet." NASA Goddard Space Flight Center. <a href="https://nssdc.gsfc.nasa.gov/planetary/factsheet/" target="_blank">GSFC</a></div>
   <div class="src"><strong>TRAPPIST-1:</strong> Agol, E. et al. (2021). "Refining the transit-timing and photometric analysis of TRAPPIST-1." <em>Planetary Science Journal</em>, 2(1), 1. <a href="https://doi.org/10.3847/PSJ/abd022" target="_blank">DOI</a></div>
@@ -257,10 +257,10 @@ body{
 
   <!-- ── HABITABLE ZONES ─────────────────────────── -->
   <div class="sci-section">Habitable Zones</div>
-  <p>The green habitable zone overlay shows the <strong>conservative habitable zone</strong>—the range of distances where liquid water could exist on a rocky planet's surface, assuming an Earth-like atmosphere. These boundaries are computed from stellar luminosity using the models of Kopparapu et al. (2013):</p>
+  <p>The green habitable zone overlay shows the <strong>conservative habitable zone</strong>—the range of distances where liquid water could exist on a rocky planet's surface, assuming an Earth-like atmosphere. These boundaries are computed from stellar luminosity using the models of Kopparapu et al. (2014), around each star separately (in a wide binary each star has its own zone):</p>
   <span class="eq">HZ_inner = √(L / S_eff,inner)&emsp;&emsp;HZ_outer = √(L / S_eff,outer)</span>
-  <p>Where <code>L</code> is stellar luminosity and <code>S_eff</code> is the effective stellar flux at each boundary. For main-sequence stars, luminosity scales approximately as <code>L ∝ M^3.5</code>.</p>
-  <div class="src">Kopparapu, R.K. et al. (2013). "Habitable zones around main-sequence stars: New estimates." <em>The Astrophysical Journal</em>, 765(2), 131. <a href="https://doi.org/10.1088/0004-637X/765/2/131" target="_blank">DOI</a></div>
+  <p>Where <code>L</code> is stellar luminosity and <code>S_eff</code> is the effective stellar flux at each boundary, which depends on the star's temperature. The presets use published luminosities and temperatures; a custom star takes the main-sequence values for its mass (Mamajek 2022). The same function draws Solaris's zones, so the two simulators agree.</p>
+  <div class="src">Kopparapu, R.K. et al. (2014). "Habitable zones around main-sequence stars: Dependence on planetary mass." <em>The Astrophysical Journal Letters</em>, 787, L29. <a href="https://doi.org/10.1088/2041-8205/787/2/L29" target="_blank">DOI</a></div>
 
   <!-- ── INTRUDER OBJECTS ────────────────────────── -->
   <div class="sci-section">Intruder Objects</div>
@@ -292,7 +292,10 @@ body{
   <span class="eq">1 AU/yr ≈ 4.7405 km/s</span>
   <p>Orbital velocities for circular orbits are initialized using the vis-viva equation at zero eccentricity:</p>
   <span class="eq">v = √(G · M_central / a)</span>
-  <p>Where <code>a</code> is the semi-major axis and <code>M_central</code> is the total mass interior to the orbit (star + binary companion if applicable).</p>
+  <p>Where <code>a</code> is the semi-major axis and <code>M_central</code> is the mass the planet circles: its own star for an S-type planet in a binary, or both stars for a circumbinary one.</p>
+
+  <div class="sci-section">What Publish Aftermath Records</div>
+  <p>Each planet's outcome: <strong>retained</strong>, <strong>orbit changed</strong> (semi-major axis off by more than 10% or eccentricity above 0.1), <strong>captured</strong> (now orbiting the intruder) or <strong>ejected</strong> (bound to nothing). A body belongs to whatever it is bound to and inside the Hill sphere of, <code>r_H = D (m / 3M)^⅓</code>. Semi-major axis and eccentricity are reported exactly, with the date of the encounter in years since launch.</p>
 
   <!-- ── VISUAL SIZING ───────────────────────────── -->
   <div class="sci-section">Visual Sizing</div>

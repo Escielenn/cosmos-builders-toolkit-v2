@@ -234,6 +234,15 @@ describe("Solaris — system-level wiring over sim.html's results.planets[]", ()
     // @ts-expect-error — the iframe boundary is untyped; junk must not throw
     expect(evaluateSolarisSystemFlags([null, 3, "x"])).toEqual([]);
   });
+  it("flags an ejected planet with the year it left (1.9: never respawned)", () => {
+    const flags = evaluateSolarisSystemFlags([
+      { name: "Lost", au: 9, band: "outer", stabCls: "unstable", inHabitableZone: false, ejected: true, ejectedAtYears: 12.345 },
+    ]);
+    expect(flags).toHaveLength(1);
+    expect(flags[0].id).toBe("solaris.planet-ejected");
+    expect(flags[0].title).toBe("LOST: EJECTED AT YEAR 12.3");
+    expect(flags[0].cites).toMatchObject({ planet: "Lost", ejected_at_yr: 12.35 });
+  });
 });
 
 describe("Rogue — run-level wiring over sim.html's results.bodies[] + habZone", () => {

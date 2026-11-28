@@ -145,6 +145,11 @@ const DEFS: PredicateDef[] = [
     ["atmo_pressure", "Atmospheric pressure", "scalar", { unit: "bar" }],
     ["atmo_composition", "Atmospheric composition", "text"],
     ["temp_mean", "Mean surface temperature", "scalar", { unit: "K", aliases: ["surfaceTemperature"] }],
+    // Added 2026-11-26 (/sf-fact, 1.9 Solaris "True Numbers"): what a star
+    // delivers to a world, kept apart from temp_mean, which a greenhouse
+    // atmosphere raises above the equilibrium value.
+    ["insolation", "Insolation", "scalar", { unit: "earth_flux" }],
+    ["temp_equilibrium", "Equilibrium temperature", "scalar", { unit: "K" }],
     ["temp_gradient[]", "Temperature gradient", "range[]", { unit: "K", producer: "tidelock" }],
     ["hydrosphere_fraction", "Hydrosphere fraction", "scalar", { unit: "fraction" }],
     ["albedo", "Albedo", "scalar", { unit: "fraction" }],

@@ -110,6 +110,8 @@ Enough to run Phases 0–5. Extend via `/sf-fact`.
 | `planet.atmo_pressure` | scalar | `bar` | Genesis |
 | `planet.atmo_composition` | text | — | Genesis |
 | `planet.temp_mean` | scalar | `K` | derived |
+| `planet.temp_equilibrium` | scalar | `K` | derived from `planet.insolation` and `planet.albedo` (full redistribution); added 2026-11-26 (1.9, Solaris) |
+| `planet.insolation` | scalar | `earth_flux` (S⊕, Earth = 1) | derived: ΣL/d²; added 2026-11-26 (1.9, Solaris) |
 | `planet.temp_gradient[]` | range[] | `K` | Tidelock |
 | `planet.hydrosphere_fraction` | scalar | `0–1` | Genesis |
 | `planet.albedo` | scalar | `0–1` | Genesis |
@@ -208,7 +210,7 @@ type FactValue =
 
 One registry, `src/canon/units.ts`. Conversions live there, nowhere else.
 
-`earth_radii · earth_masses · solar_masses · solar_lum · au · ly · pc · K · C · bar · g · m_s2 · km_s · c · hours · days · local_days · local_years · yr · kyr · myr · gyr · kg · m · km · km2 · W · individuals · fraction`
+`earth_radii · earth_masses · solar_masses · solar_lum · au · ly · pc · K · C · bar · g · m_s2 · km_s · c · hours · days · earth_flux · local_days · local_years · yr · kyr · myr · gyr · kg · m · km · km2 · W · individuals · fraction`
 
 Display formatting is a separate concern from storage. Store SI-ish canonical units; format for humans at the edge, in mono, per the design system.
 
