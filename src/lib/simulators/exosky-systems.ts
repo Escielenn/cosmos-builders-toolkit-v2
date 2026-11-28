@@ -60,6 +60,15 @@ export const ATMO_MODELS: Record<AtmoKey, AtmoModel> = {
   exotic: { name: "Silicate vapour", k: 1.2, tint: "exotic", desc: "Ruddy haze over a lava world. Most stars invisible." },
 };
 
+/**
+ * Host photometry. For catalogue hosts the catalogue's measured V magnitude
+ * wins over absMag here; luminosity, temperature and mass come from here,
+ * because a luminosity worked out from V alone misses most of a red dwarf's
+ * light (it is infrared) and most of a blue giant's (ultraviolet). Values are
+ * the standard published ones (NASA Exoplanet Archive host parameters for
+ * planet hosts; for bright stars, the values summarised in the papers named
+ * per row and standard references).
+ */
 export interface HostData {
   /** Absolute V magnitude. */
   absMag: number;
@@ -115,13 +124,13 @@ const LOCKED = { tidallyLocked: true, obliquityDeg: 0 } as const;
 export const VANTAGES: readonly VantagePreset[] = [
   {
     key: "earth", planet: "Earth", host: "Sun", status: "home", hostId: "HYG 0",
-    planetData: P(1, 365.256, { rotationHours: 23.9345, obliquityDeg: 23.4393, radiusEarth: 1 }),
+    hostData: { absMag: 4.83, teffK: 5772, lumSolar: 1, massSolar: 1 }, planetData: P(1, 365.256, { rotationHours: 23.9345, obliquityDeg: 23.4393, radiusEarth: 1 }),
     atmo: "earth_like", note: "The reference sky. Check any other vantage against it.",
     source: "IAU 2006 (obliquity), IERS (sidereal day).",
   },
   {
     key: "proxima-b", planet: "Proxima Centauri b", host: "Proxima Centauri", status: "confirmed", hostId: "HIP 70890",
-    planetData: P(0.04857, 11.1868, { ...LOCKED, radiusEarth: 1.07 }),
+    hostData: { absMag: 15.45, teffK: 3042, lumSolar: 0.00155, massSolar: 0.122 }, planetData: P(0.04857, 11.1868, { ...LOCKED, radiusEarth: 1.07 }),
     atmo: "thin_co2", note: "Nearest exoplanet. Alpha Centauri A and B shine as a pair of brilliant stars.",
     source: "Anglada-Escudé et al. 2016; Faria et al. 2022.",
   },
@@ -143,19 +152,19 @@ export const VANTAGES: readonly VantagePreset[] = [
   },
   {
     key: "tau-ceti-e", planet: "Tau Ceti e", host: "Tau Ceti", status: "candidate", hostId: "HIP 8102",
-    planetData: P(0.538, 162.87),
+    hostData: { absMag: 5.69, teffK: 5344, lumSolar: 0.52, massSolar: 0.78 }, planetData: P(0.538, 162.87),
     atmo: "earth_like", note: "Sun-like host. Signal never independently confirmed.",
     source: "Feng et al. 2017.",
   },
   {
     key: "ross-128-b", planet: "Ross 128 b", host: "Ross 128", status: "confirmed", hostId: "HIP 57548",
-    planetData: P(0.0496, 9.8658, { ...LOCKED, radiusEarth: 1.1 }),
+    hostData: { absMag: 13.5, teffK: 3192, lumSolar: 0.00362, massSolar: 0.168 }, planetData: P(0.0496, 9.8658, { ...LOCKED, radiusEarth: 1.1 }),
     atmo: "thin_n2", note: "Quiet red dwarf, low flare activity.",
     source: "Bonfils et al. 2018.",
   },
   {
     key: "luyten-b", planet: "Luyten b (GJ 273 b)", host: "Luyten's Star", status: "confirmed", hostId: "HIP 36208",
-    planetData: P(0.0911, 18.65, { ...LOCKED }),
+    hostData: { absMag: 11.9, teffK: 3382, lumSolar: 0.0088, massSolar: 0.29 }, planetData: P(0.0911, 18.65, { ...LOCKED }),
     atmo: "earth_like", note: "Red dwarf, 12 light years from the Sun.",
     source: "Astudillo-Defru et al. 2017.",
   },
@@ -177,13 +186,13 @@ export const VANTAGES: readonly VantagePreset[] = [
   },
   {
     key: "kapteyn", planet: "Kapteyn's Star (hypothetical world)", host: "Kapteyn's Star", status: "refuted", hostId: "HIP 24186",
-    planetData: P(0.168, 48.6, { ...LOCKED }),
+    hostData: { absMag: 10.9, teffK: 3550, lumSolar: 0.012, massSolar: 0.27 }, planetData: P(0.168, 48.6, { ...LOCKED }),
     atmo: "thin_co2", note: "Kapteyn b was refuted as stellar activity; this is the sky an imagined planet there would see. An 11-billion-year-old halo star.",
     source: "NASA Exoplanet Archive: false positive (Robertson et al. 2015).",
   },
   {
     key: "wolf-1061-c", planet: "Wolf 1061 c", host: "Wolf 1061", status: "confirmed", hostId: "HIP 80824",
-    planetData: P(0.089, 17.87, { ...LOCKED }),
+    hostData: { absMag: 10.0, teffK: 3342, lumSolar: 0.0098, massSolar: 0.294 }, planetData: P(0.089, 17.87, { ...LOCKED }),
     atmo: "thick_co2", note: "Possibly a runaway greenhouse.",
     source: "Wright et al. 2016.",
   },
@@ -197,49 +206,49 @@ export const VANTAGES: readonly VantagePreset[] = [
   },
   {
     key: "hd-40307-g", planet: "HD 40307 g", host: "HD 40307", status: "candidate", hostId: "HIP 27887",
-    planetData: P(0.6, 197.8),
+    hostData: { absMag: 6.6, teffK: 4977, lumSolar: 0.23, massSolar: 0.77 }, planetData: P(0.6, 197.8),
     atmo: "thick_n2", note: "K dwarf, warm orange sun. Signal unconfirmed.",
     source: "Tuomi et al. 2013.",
   },
   {
     key: "55-cnc-e", planet: "55 Cancri e", host: "55 Cancri A", status: "confirmed", hostId: "HIP 43587",
-    planetData: P(0.01544, 0.7365, { ...LOCKED, radiusEarth: 1.88 }),
+    hostData: { absMag: 5.5, teffK: 5196, lumSolar: 0.582, massSolar: 0.905 }, planetData: P(0.01544, 0.7365, { ...LOCKED, radiusEarth: 1.88 }),
     atmo: "exotic", note: "Lava world 17 hours from its sun. The sun fills a patch of sky 30 times the Moon's width.",
     source: "Bourrier et al. 2018.",
   },
   {
     key: "eps-eri-b", planet: "Epsilon Eridani b (from a moon)", host: "Epsilon Eridani", status: "confirmed", hostId: "HIP 16537",
-    planetData: P(3.52, 2692),
+    hostData: { absMag: 6.2, teffK: 5084, lumSolar: 0.32, massSolar: 0.82 }, planetData: P(3.52, 2692),
     atmo: "gas_giant", note: "Young system with debris belts. The Sun is a modest star here.",
     source: "Mawet et al. 2019.",
   },
   {
     key: "barnard-b", planet: "Barnard b", host: "Barnard's Star", status: "confirmed", hostId: "HIP 87937",
-    planetData: P(0.0229, 3.1542, { ...LOCKED }),
+    hostData: { absMag: 13.2, teffK: 3195, lumSolar: 0.0035, massSolar: 0.16 }, planetData: P(0.0229, 3.1542, { ...LOCKED }),
     atmo: "none", note: "One of four sub-Earths, none in the habitable zone. Too hot for an atmosphere to be likely.",
     source: "González Hernández et al. 2024; Basant et al. 2025.",
   },
   {
     key: "pollux-b", planet: "Pollux b (Thestias), from a moon", host: "Pollux", status: "confirmed", hostId: "HIP 37826",
-    planetData: P(1.64, 589.6),
+    hostData: { absMag: 1.1, teffK: 4586, lumSolar: 32.7, massSolar: 1.91 }, planetData: P(1.64, 589.6),
     atmo: "gas_giant", note: "Orange giant host, 34 light years from the Sun.",
     source: "Hatzes et al. 2006.",
   },
   {
     key: "51-peg-b", planet: "51 Pegasi b (Dimidium)", host: "51 Pegasi", status: "confirmed", hostId: "HIP 113357",
-    planetData: P(0.0527, 4.2308, { ...LOCKED }),
+    hostData: { absMag: 4.5, teffK: 5768, lumSolar: 1.36, massSolar: 1.11 }, planetData: P(0.0527, 4.2308, { ...LOCKED }),
     atmo: "gas_giant", note: "The first exoplanet found around a Sun-like star (1995).",
     source: "Mayor & Queloz 1995.",
   },
   {
     key: "beta-pic-b", planet: "Beta Pictoris b (from a moon)", host: "Beta Pictoris", status: "confirmed", hostId: "HIP 27321",
-    planetData: P(10.0, 8600),
+    hostData: { absMag: 2.4, teffK: 8052, lumSolar: 8.7, massSolar: 1.75 }, planetData: P(10.0, 8600),
     atmo: "gas_giant", note: "Young giant inside a debris disc.",
     source: "Lagrange et al. 2010; Nowak et al. 2020.",
   },
   {
     key: "hr-8799-e", planet: "HR 8799 e (from a moon)", host: "HR 8799", status: "confirmed", hostId: "HIP 114189",
-    planetData: P(16.4, 16400),
+    hostData: { absMag: 2.9, teffK: 7430, lumSolar: 5.0, massSolar: 1.47 }, planetData: P(16.4, 16400),
     atmo: "gas_giant", note: "One of four directly imaged giants.",
     source: "Marois et al. 2010.",
   },
@@ -268,18 +277,18 @@ export const VANTAGES: readonly VantagePreset[] = [
     source: "Jenkins et al. 2015; disputed by Mullally et al. 2018.",
   },
   // Famous stars with a hypothetical Earth-insolation planet (a = √L AU).
-  { key: "alpha-cen-a", planet: "Alpha Centauri A (hypothetical world)", host: "Alpha Centauri A", status: "hypothetical", hostId: "HIP 71683", planetData: P(NaN, NaN), atmo: "earth_like", note: "Closest Sun-like star. Our constellations, barely moved; the Sun is a bright star in Cassiopeia.", source: "HYG v4.1." },
-  { key: "sirius", planet: "Sirius (hypothetical world)", host: "Sirius A", status: "hypothetical", hostId: "HIP 32349", planetData: P(NaN, NaN), atmo: "none", note: "Brightest star in Earth's sky. The Sun is a modest star in Aquila from here.", source: "HYG v4.1." },
-  { key: "vega", planet: "Vega (hypothetical world)", host: "Vega", status: "hypothetical", hostId: "HIP 91262", planetData: P(NaN, NaN), atmo: "none", note: "Young A star, 25 light years away.", source: "HYG v4.1." },
-  { key: "fomalhaut", planet: "Fomalhaut (hypothetical world)", host: "Fomalhaut", status: "hypothetical", hostId: "HIP 113368", planetData: P(NaN, NaN), atmo: "none", note: "Young A star with a debris ring.", source: "HYG v4.1." },
-  { key: "arcturus", planet: "Arcturus (hypothetical world)", host: "Arcturus", status: "hypothetical", hostId: "HIP 69673", planetData: P(NaN, NaN), atmo: "none", note: "Orange giant on a halo-like orbit through the disc.", source: "HYG v4.1." },
-  { key: "aldebaran", planet: "Aldebaran (hypothetical world)", host: "Aldebaran", status: "hypothetical", hostId: "HIP 21421", planetData: P(NaN, NaN), atmo: "none", note: "Orange giant in front of the Hyades.", source: "HYG v4.1." },
-  { key: "spica", planet: "Spica (hypothetical world)", host: "Spica", status: "hypothetical", hostId: "HIP 65474", planetData: P(NaN, NaN), atmo: "none", note: "Close binary of hot blue stars.", source: "HYG v4.1." },
-  { key: "canopus", planet: "Canopus (hypothetical world)", host: "Canopus", status: "hypothetical", hostId: "HIP 30438", planetData: P(NaN, NaN), atmo: "none", note: "Bright giant about 95 pc away.", source: "HYG v4.1." },
-  { key: "antares", planet: "Antares (hypothetical world)", host: "Antares", status: "hypothetical", hostId: "HIP 80763", planetData: P(NaN, NaN), atmo: "none", note: "Red supergiant in Scorpius.", source: "HYG v4.1." },
-  { key: "betelgeuse", planet: "Betelgeuse (hypothetical world)", host: "Betelgeuse", status: "hypothetical", hostId: "HIP 27989", planetData: P(NaN, NaN), atmo: "none", note: "Red supergiant, 168 pc away (Joyce et al. 2020). Orion is gone.", source: "Joyce et al. 2020, ApJ 902, 63." },
-  { key: "rigel", planet: "Rigel (hypothetical world)", host: "Rigel", status: "hypothetical", hostId: "HIP 24436", planetData: P(NaN, NaN), atmo: "none", note: "Blue supergiant. Hipparcos distance carries large errors.", source: "HYG v4.1." },
-  { key: "deneb", planet: "Deneb (hypothetical world)", host: "Deneb", status: "hypothetical", hostId: "HIP 102098", planetData: P(NaN, NaN), atmo: "none", note: "Blue supergiant, very uncertain distance. The catalogue thins out this far from the Sun.", source: "HYG v4.1." },
+  { key: "alpha-cen-a", planet: "Alpha Centauri A (hypothetical world)", host: "Alpha Centauri A", status: "hypothetical", hostId: "HIP 71683", hostData: { absMag: 4.38, teffK: 5790, lumSolar: 1.519, massSolar: 1.08 }, planetData: P(NaN, NaN), atmo: "earth_like", note: "Closest Sun-like star. Our constellations, barely moved; the Sun is a bright star in Cassiopeia.", source: "HYG v4.1." },
+  { key: "sirius", planet: "Sirius (hypothetical world)", host: "Sirius A", status: "hypothetical", hostId: "HIP 32349", hostData: { absMag: 1.45, teffK: 9940, lumSolar: 25.4, massSolar: 2.06 }, planetData: P(NaN, NaN), atmo: "none", note: "Brightest star in Earth's sky. The Sun is a modest star in Aquila from here.", source: "HYG v4.1." },
+  { key: "vega", planet: "Vega (hypothetical world)", host: "Vega", status: "hypothetical", hostId: "HIP 91262", hostData: { absMag: 0.58, teffK: 9602, lumSolar: 40.1, massSolar: 2.14 }, planetData: P(NaN, NaN), atmo: "none", note: "Young A star, 25 light years away.", source: "HYG v4.1." },
+  { key: "fomalhaut", planet: "Fomalhaut (hypothetical world)", host: "Fomalhaut", status: "hypothetical", hostId: "HIP 113368", hostData: { absMag: 1.72, teffK: 8590, lumSolar: 16.6, massSolar: 1.92 }, planetData: P(NaN, NaN), atmo: "none", note: "Young A star with a debris ring.", source: "HYG v4.1." },
+  { key: "arcturus", planet: "Arcturus (hypothetical world)", host: "Arcturus", status: "hypothetical", hostId: "HIP 69673", hostData: { absMag: -0.3, teffK: 4286, lumSolar: 170, massSolar: 1.08 }, planetData: P(NaN, NaN), atmo: "none", note: "Orange giant on a halo-like orbit through the disc.", source: "HYG v4.1." },
+  { key: "aldebaran", planet: "Aldebaran (hypothetical world)", host: "Aldebaran", status: "hypothetical", hostId: "HIP 21421", hostData: { absMag: -0.6, teffK: 3910, lumSolar: 439, massSolar: 1.16 }, planetData: P(NaN, NaN), atmo: "none", note: "Orange giant in front of the Hyades.", source: "HYG v4.1." },
+  { key: "spica", planet: "Spica (hypothetical world)", host: "Spica", status: "hypothetical", hostId: "HIP 65474", hostData: { absMag: -3.5, teffK: 25300, lumSolar: 20500, massSolar: 11.4 }, planetData: P(NaN, NaN), atmo: "none", note: "Close binary of hot blue stars.", source: "HYG v4.1." },
+  { key: "canopus", planet: "Canopus (hypothetical world)", host: "Canopus", status: "hypothetical", hostId: "HIP 30438", hostData: { absMag: -5.6, teffK: 7400, lumSolar: 10700, massSolar: 8.0 }, planetData: P(NaN, NaN), atmo: "none", note: "Bright giant about 95 pc away.", source: "HYG v4.1." },
+  { key: "antares", planet: "Antares (hypothetical world)", host: "Antares", status: "hypothetical", hostId: "HIP 80763", hostData: { absMag: -5.3, teffK: 3570, lumSolar: 75900, massSolar: 13 }, planetData: P(NaN, NaN), atmo: "none", note: "Red supergiant in Scorpius.", source: "HYG v4.1." },
+  { key: "betelgeuse", planet: "Betelgeuse (hypothetical world)", host: "Betelgeuse", status: "hypothetical", hostId: "HIP 27989", hostData: { absMag: -5.8, teffK: 3600, lumSolar: 100000, massSolar: 18 }, planetData: P(NaN, NaN), atmo: "none", note: "Red supergiant, 168 pc away (Joyce et al. 2020). Orion is gone.", source: "Joyce et al. 2020, ApJ 902, 63." },
+  { key: "rigel", planet: "Rigel (hypothetical world)", host: "Rigel", status: "hypothetical", hostId: "HIP 24436", hostData: { absMag: -7.0, teffK: 12100, lumSolar: 120000, massSolar: 21 }, planetData: P(NaN, NaN), atmo: "none", note: "Blue supergiant. Hipparcos distance carries large errors.", source: "HYG v4.1." },
+  { key: "deneb", planet: "Deneb (hypothetical world)", host: "Deneb", status: "hypothetical", hostId: "HIP 102098", hostData: { absMag: -8.4, teffK: 8525, lumSolar: 196000, massSolar: 19 }, planetData: P(NaN, NaN), atmo: "none", note: "Blue supergiant, very uncertain distance. The catalogue thins out this far from the Sun.", source: "HYG v4.1." },
 ];
 
 /**

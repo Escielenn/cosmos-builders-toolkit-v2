@@ -27,6 +27,8 @@ import type { WorksheetFact } from "@/lib/worksheet-facts";
 
 /** One star as it appears from the chosen vantage point, not from Earth. */
 export interface ExoskyStarRef {
+  /** Catalogue id ("HIP 32349"); 1.9+. Ids, not names, are the truth. */
+  id?: string | null;
   name: string;
   /** Right ascension in degrees, recomputed for the vantage point. */
   ra: number;
@@ -46,10 +48,28 @@ export interface ExoskyConstellation {
   centDec: number;
   /** The vantage this was drawn from; a constellation only exists from there. */
   fromPlanet: string;
+  /** 1.9+: member star catalogue ids, in drawing order. */
+  starIds?: string[];
+  /** 1.9+: years from J2000 of the sky it was drawn in. */
+  epochYears?: number;
+  /** 1.9+: the vantage key it belongs to ("proxima-b", "world:<uuid>", "custom"). */
+  vantageKey?: string | null;
+  /** 1.9+: the canon entity, once added to canon. */
+  entityId?: string | null;
+}
+
+/** 1.9+: how the writer is standing on the planet. */
+export interface ExoskyStand {
+  mode: "stand" | "space";
+  latitude: number;
+  timeOfDay: number;
+  substellarLongitude: number;
+  dayNumber: number;
+  overrides: Record<string, number | boolean | string>;
 }
 
 export interface ExoskySave {
-  version: 1;
+  version: 1 | 2;
   vantage: {
     mode: "catalog" | "custom" | "entity";
     /** Host star name, e.g. "Tau Ceti". Empty for a custom coordinate. */
@@ -67,7 +87,14 @@ export interface ExoskySave {
      *  derived, and inverting them back to l/b on load would lose distance. */
     galacticL: number | null;
     galacticB: number | null;
+    /** 1.9+: the preset key or "world:<uuid>"; restores entity mode (E16). */
+    key?: string | null;
+    entityId?: string | null;
   };
+  /** 1.9+. */
+  stand?: ExoskyStand;
+  /** 1.9+: derived readouts at save time. */
+  readouts?: { nakedEye: number | null; poleStar: string | null };
   view: {
     ra: number;
     dec: number;
@@ -99,6 +126,10 @@ export interface ExoskyStateInput {
   atmoDesc?: unknown;
   galacticL?: unknown;
   galacticB?: unknown;
+  vantageKey?: unknown;
+  entityId?: unknown;
+  stand?: unknown;
+  readouts?: unknown;
   viewRa?: unknown;
   viewDec?: unknown;
   fov?: unknown;
@@ -152,6 +183,7 @@ function normaliseStar(raw: unknown): ExoskyStarRef | null {
   if (!Number.isFinite(ra) || !Number.isFinite(dec)) return null;
   const mag = num(s.appMag, NaN);
   return {
+    id: str(s.id) || null,
     name: str(s.name) || "Unnamed star",
     ra: round(ra),
     dec: round(dec),
@@ -183,13 +215,19 @@ function normaliseConstellation(
     ? num(c.centDec, 0)
     : stars.reduce((t, s) => t + s.dec, 0) / stars.length;
 
+  const ids = Array.isArray(c.starIds) ? c.starIds.map(str).filter(Boolean) : stars.map((s) => s.id ?? "").filter(Boolean);
+  const epoch = num(c.epochYears, NaN);
   return {
     name,
     color: str(c.color) || DEFAULT_CONSTELLATION_COLOUR,
     stars,
     centRa: round(centRa),
     centDec: round(centDec),
-    fromPlanet: str(c.planetName) || fallbackPlanet,
+    fromPlanet: str(c.planetName) || str(c.fromPlanet) || fallbackPlanet,
+    starIds: ids,
+    epochYears: Number.isFinite(epoch) ? round(epoch, 0) : 0,
+    vantageKey: str(c.vantageKey) || null,
+    entityId: str(c.entityId) || null,
   };
 }
 
@@ -200,8 +238,36 @@ function normaliseConstellation(
 export function toExoskySave(state: ExoskyStateInput): ExoskySave {
   const planetName = str(state.planetName) || "Unnamed vantage";
 
+  const standRaw = state.stand && typeof state.stand === "object" ? (state.stand as Record<string, unknown>) : null;
+  const readRaw = state.readouts && typeof state.readouts === "object" ? (state.readouts as Record<string, unknown>) : null;
+  const overrides: Record<string, number | boolean | string> = {};
+  if (standRaw?.overrides && typeof standRaw.overrides === "object") {
+    for (const [k, v] of Object.entries(standRaw.overrides as Record<string, unknown>)) {
+      if ((typeof v === "number" && Number.isFinite(v)) || typeof v === "boolean" || typeof v === "string") overrides[k] = v;
+    }
+  }
   return {
-    version: 1,
+    version: 2,
+    ...(standRaw
+      ? {
+          stand: {
+            mode: standRaw.mode === "space" ? "space" : "stand",
+            latitude: round(num(standRaw.latitude, 30), 2),
+            timeOfDay: round(num(standRaw.timeOfDay, 0), 4),
+            substellarLongitude: round(num(standRaw.substellarLongitude, 150), 2),
+            dayNumber: round(num(standRaw.dayNumber, 0), 2),
+            overrides,
+          },
+        }
+      : {}),
+    ...(readRaw
+      ? {
+          readouts: {
+            nakedEye: Number.isFinite(num(readRaw.nakedEye, NaN)) ? num(readRaw.nakedEye, 0) : null,
+            poleStar: str(readRaw.poleStar) || null,
+          },
+        }
+      : {}),
     vantage: {
       mode: state.mode ?? "catalog",
       starName: str(state.starName),
@@ -215,6 +281,8 @@ export function toExoskySave(state: ExoskyStateInput): ExoskySave {
       galacticB: Number.isFinite(num(state.galacticB, NaN))
         ? round(num(state.galacticB, 0))
         : null,
+      key: str(state.vantageKey) || null,
+      entityId: str(state.entityId) || null,
     },
     view: {
       ra: round(num(state.viewRa, 180)),
@@ -264,6 +332,8 @@ export function toExoskyPayload(state: ExoskyStateInput): {
       distancePc: save.vantage.distPc,
       constellationCount: named.length,
       constellationNames: named,
+      nakedEyeCount: save.readouts?.nakedEye ?? null,
+      poleStar: save.readouts?.poleStar ?? null,
     },
   };
 }
@@ -318,6 +388,10 @@ export function fromExoskySave(raw: unknown): ExoskySave | null {
     atmoDesc: vantageRaw.atmoDesc,
     galacticL: vantageRaw.galacticL,
     galacticB: vantageRaw.galacticB,
+    vantageKey: vantageRaw.key,
+    entityId: vantageRaw.entityId,
+    stand: p.stand,
+    readouts: p.readouts,
     viewRa: viewRaw.ra,
     viewDec: viewRaw.dec,
     fov: viewRaw.fov,

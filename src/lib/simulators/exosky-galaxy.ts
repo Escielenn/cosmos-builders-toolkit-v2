@@ -92,6 +92,8 @@ function armTraces(): ArmTrace[] {
   traces = REID_2019_ARMS.map((arm) => {
     const lo = arm.betaMin - ARM_EXTRAPOLATE_DEG;
     const hi = arm.betaMax + ARM_EXTRAPOLATE_DEG;
+    // 1° of azimuth is ≤ 150 pc of arm even at 8 kpc: fine enough for a
+    // nearest-arm readout, and the grid below samples it coarser still.
     const n = Math.ceil(hi - lo) + 1;
     const pts = new Float64Array(n * 2);
     const measured = new Uint8Array(n);
@@ -121,10 +123,16 @@ export interface NearestArm {
 /** The arm whose centreline passes closest to a galactocentric point. */
 export function nearestArm(gcX: number, gcY: number): NearestArm {
   let best: NearestArm = { name: "Inter-arm region", distancePc: Infinity, halfWidthPc: 0, inArm: false, measured: false };
+  let bestSq = Infinity;
   for (const t of armTraces()) {
+    const p = t.pts;
     for (let k = 0; k < t.measured.length; k++) {
-      const d = Math.hypot(t.pts[2 * k] - gcX, t.pts[2 * k + 1] - gcY);
-      if (d < best.distancePc) {
+      const dx = p[2 * k] - gcX, dy = p[2 * k + 1] - gcY;
+      const dsq = dx * dx + dy * dy;
+      if (dsq >= bestSq) continue;
+      bestSq = dsq;
+      const d = Math.sqrt(dsq);
+      {
         const half = (t.arm.widthKpc * 1000 * SCALE) / 2;
         best = { name: t.arm.name, distancePc: d, halfWidthPc: half, inArm: d <= half, measured: t.measured[k] === 1 };
       }
@@ -181,25 +189,42 @@ export interface MilkyWayMap {
 }
 
 /**
+ * Arm enhancement sampled once on a 250 pc grid over ±20 kpc and looked up
+ * bilinearly: the ray march asks for it millions of times, and the exact
+ * nearest-arm search costs ~1,000 distance checks per call.
+ */
+const GRID_N = 161;
+const GRID_HALF = 20000;
+const GRID_STEP = (2 * GRID_HALF) / (GRID_N - 1);
+let armGrid: Float32Array | null = null;
+function armGridAt(x: number, y: number): number {
+  if (!armGrid) {
+    armGrid = new Float32Array(GRID_N * GRID_N);
+    for (let j = 0; j < GRID_N; j++) {
+      for (let i = 0; i < GRID_N; i++) {
+        armGrid[j * GRID_N + i] = armEnhancement(-GRID_HALF + i * GRID_STEP, -GRID_HALF + j * GRID_STEP);
+      }
+    }
+  }
+  const fx = (x + GRID_HALF) / GRID_STEP, fy = (y + GRID_HALF) / GRID_STEP;
+  if (fx < 0 || fy < 0 || fx >= GRID_N - 1 || fy >= GRID_N - 1) return 1;
+  const i = Math.floor(fx), j = Math.floor(fy), tx = fx - i, ty = fy - j;
+  const g = armGrid;
+  return (
+    g[j * GRID_N + i] * (1 - tx) * (1 - ty) + g[j * GRID_N + i + 1] * tx * (1 - ty) +
+    g[(j + 1) * GRID_N + i] * (1 - tx) * ty + g[(j + 1) * GRID_N + i + 1] * tx * ty
+  );
+}
+
+/**
  * Ray-march the band from an observer at galactocentric (x, y, z), for every
- * galactic (l, b) on a 1° grid. Index: li * B_STEPS + bi, l = li°, b = bi - 90 + 0.5.
- *
- * The arm lookup is cached per ray step on a coarse grid so the march stays
- * inside a worker's budget.
+ * galactic (l, b) on a 1° grid. Index: li * B_STEPS + bi, l = li + 0.5°,
+ * b = bi - 90 + 0.5°.
  */
 export function computeMilkyWayMap(ox: number, oy: number, oz: number): MilkyWayMap {
   const brightness = new Float32Array(L_STEPS * B_STEPS);
   const dust = new Float32Array(L_STEPS * B_STEPS);
-  const armCache = new Map<number, number>();
-  const armAt = (x: number, y: number) => {
-    const key = Math.round(x / 100) * 100003 + Math.round(y / 100);
-    let v = armCache.get(key);
-    if (v === undefined) {
-      v = armEnhancement(Math.round(x / 100) * 100, Math.round(y / 100) * 100);
-      armCache.set(key, v);
-    }
-    return v;
-  };
+  const armAt = armGridAt;
   const dt = RAY_MAX / RAY_STEPS;
   for (let li = 0; li < L_STEPS; li++) {
     const l = (li + 0.5) * DEG;

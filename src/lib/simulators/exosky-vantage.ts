@@ -205,8 +205,8 @@ export function resolveVantage(input: VantageInput): Resolved {
   const lum = pick<number>(
     [num(sf["star.luminosity"]), "canon"],
     [handoffLum, "handoff"],
-    [catHost?.lumSolar, "catalogue"],
     [preset?.hostData?.lumSolar, "preset"],
+    [catHost?.lumSolar, "catalogue", "from V, no bolometric correction"],
   ) ?? { value: 1, source: "default", note: "Sun-like (not set)" };
   const absMag = pick<number>(
     [num(sf["star.luminosity"]) !== undefined || handoffLum !== undefined ? 4.83 - 2.5 * Math.log10(lum.value) : undefined, lum.source === "canon" ? "canon" : "handoff", "from luminosity"],
@@ -215,8 +215,8 @@ export function resolveVantage(input: VantageInput): Resolved {
   ) ?? { value: 4.83, source: "default", note: "Sun-like (not set)" };
   const teff = pick<number>(
     [num(sf["star.temp_effective"]), "canon"],
-    [catHost?.teffK, "catalogue", "from B-V"],
     [preset?.hostData?.teffK, "preset"],
+    [catHost?.teffK, "catalogue", "from B-V"],
   ) ?? { value: 5772, source: "default", note: "Sun-like (not set)" };
   const mass = pick<number>(
     [num(sf["star.mass"]), "canon"],
@@ -264,7 +264,9 @@ export function resolveVantage(input: VantageInput): Resolved {
       : isEarth
         ? { value: { ra: 0, dec: 90 }, source: "preset" }
         : { value: { ra: 0, dec: 90 }, source: "default", note: "not set: parallel to Earth's axis" };
-  const precession = pick<number>(
+  const precession = locked.value
+    ? { value: Infinity, source: "derived" as Source, note: "locked: the axis stays on the orbit normal" }
+    : pick<number>(
     [ov.precessionYears, "writer"],
     [num(pf["planet.precession_period"]), "canon"],
   ) ?? {
