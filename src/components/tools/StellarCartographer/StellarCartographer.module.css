@@ -184,11 +184,23 @@
 
 .controlPanel {
   composes: panel;
-  top: 210px;
+  /* Below the title panel, measured into --sc-title-h (C1). */
+  top: calc(20px + var(--sc-title-h, 200px) + 12px);
   left: 20px;
   width: 240px;
-  max-height: calc(100vh - 230px);
+  max-height: calc(100% - var(--sc-title-h, 200px) - 64px);
   overflow-y: auto;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.titleRow .badge,
+.titleRow .navLinks {
+  margin-top: 0;
 }
 
 /* Custom scrollbar */
@@ -287,21 +299,41 @@
    SLIDERS
    ═══════════════════════════════════════════════════════════════════════════ */
 
+/* (1.9, C1) The global field style (tokens.css: recessed well, frame,
+   44px) was boxing every range input. A slider is a thin track in a 44px
+   hit area: no frame, no well; the track carries the 3:1 boundary. */
 .slider {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.08);
+  height: 24px;
+  min-height: 24px;
+  padding: 0;
+  background: transparent;
+  border: none;
   border-radius: 0;
   cursor: pointer;
+}
+.slider:hover {
+  border: none;
+}
+.slider::-webkit-slider-runnable-track {
+  height: 2px;
+  background: var(--sf-line-interactive);
+}
+.slider::-moz-range-track {
+  height: 2px;
+  background: var(--sf-line-interactive);
+}
+.slider::-webkit-slider-thumb {
+  margin-top: -6px;
 }
 
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 11px;
-  height: 11px;
+  width: 14px;
+  height: 14px;
   border-radius: 0;
   background: hsl(var(--sf-primary-hsl));
   cursor: pointer;
@@ -314,8 +346,8 @@
 }
 
 .slider::-moz-range-thumb {
-  width: 11px;
-  height: 11px;
+  width: 14px;
+  height: 14px;
   border-radius: 0;
   background: hsl(var(--sf-primary-hsl));
   cursor: pointer;
@@ -990,7 +1022,8 @@
 
 .minimap {
   position: absolute;
-  bottom: 60px;
+  /* Above the zoom panel (value, label, hint), not under it (C1). */
+  bottom: 140px;
   right: 20px;
   border: 1px solid var(--sf-line);
   border-radius: 0;
