@@ -30,6 +30,7 @@ import {
   AgXToneMapping,
   NoToneMapping,
   Vector2,
+  type ToneMapping,
   type Camera,
   type Scene,
   type WebGLRenderer,
@@ -53,7 +54,7 @@ export function bloomStrength(ambient: number): number {
 }
 
 /** The three.js constant for a tier's output transform. */
-export function toneMappingFor(settings: TierSettings): number {
+export function toneMappingFor(settings: TierSettings): ToneMapping {
   return settings.toneMapping === "agx" ? AgXToneMapping : NoToneMapping;
 }
 

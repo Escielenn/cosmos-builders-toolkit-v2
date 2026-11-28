@@ -146,3 +146,31 @@ export function blackbodyHue(kelvin: number): RGB {
   const m = Math.max(c.r, c.g, c.b, 1e-9);
   return { r: c.r / m, g: c.g / m, b: c.b / m };
 }
+
+/**
+ * The star's light as an adapted observer sees it: von Kries chromatic
+ * adaptation of degree D toward the illuminant,
+ *   c' = c / (D·c + 1 − D),  then renormalised (max channel 1).
+ *
+ * A camera white-balanced for the Sun would show an M-dwarf world as uniform
+ * orange, and ice, ocean and rock would stop being distinguishable, which is
+ * not what anyone standing there would see: the eye adapts most of the way
+ * to its illuminant. D = 0.8 is CIECAM02's degree of adaptation for an
+ * average surround under a bright adapting field (CIE 159:2004; Fairchild,
+ * "Color Appearance Models", 3rd ed., §9). The residual tint is the star's
+ * class, still visible: warm under K and M, cool under F and A.
+ *
+ * Used for REFLECTED and SCATTERED light. The photosphere itself keeps its
+ * true black-body colour.
+ */
+export const CHROMATIC_ADAPTATION_D = 0.8;
+
+export function adaptedLight(hue: RGB, d: number = CHROMATIC_ADAPTATION_D): RGB {
+  const k = Math.min(1, Math.max(0, d));
+  const f = (c: number) => c / (k * c + 1 - k);
+  const r = f(hue.r);
+  const g = f(hue.g);
+  const b = f(hue.b);
+  const m = Math.max(r, g, b, 1e-9);
+  return { r: r / m, g: g / m, b: b / m };
+}

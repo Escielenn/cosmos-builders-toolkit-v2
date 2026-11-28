@@ -58,7 +58,7 @@ import {
   tidalLockTimescaleYears,
   waterBoilingPoint,
 } from "@/lib/physics";
-import { blackbodyHue, limbDarkening, spectralClassKelvin } from "../materials/blackbody";
+import { adaptedLight, blackbodyHue, limbDarkening, spectralClassKelvin } from "../materials/blackbody";
 import { rimThickness, terminatorSoftness } from "../materials/atmosphere";
 import { parseGasMix, scattering, type Scattering } from "../materials/scattering";
 import type { RGB } from "../engine/theme-uniforms";
@@ -144,8 +144,10 @@ export interface PlanetSceneBinding {
     radiusRsun: number;
     massMsun: number;
     spectralClass: string | null;
-    /** Black-body hue, max channel 1, linear. Lights the planet. */
+    /** Black-body hue, max channel 1, linear. The photosphere's own colour. */
     hue: RGB;
+    /** The hue as an adapted eye sees its light on a surface (adaptedLight). Lights the planet. */
+    light: RGB;
     limbDarkening: number;
     /** Angular radius seen from the planet, radians: R★ / a. */
     angularRadius: number;
@@ -448,7 +450,8 @@ export function bindPlanetScene(f: PlanetSceneFacts): PlanetSceneBinding {
 
   // -- Scattering ----------------------------------------------------------
   const hue = blackbodyHue(teff);
-  const sc = scattering({ composition, pressureBar: planetKind === "rocky" ? pressure : Math.min(pressure, 5), gravityMs2: g, starColour: hue });
+  const light = adaptedLight(hue);
+  const sc = scattering({ composition, pressureBar: planetKind === "rocky" ? pressure : Math.min(pressure, 5), gravityMs2: g, starColour: light });
   if (pressure > 0 && f.composition === null && planetKind === "rocky") {
     note("No composition set; the sky is coloured as nitrogen–oxygen air.");
   }
@@ -468,9 +471,22 @@ export function bindPlanetScene(f: PlanetSceneFacts): PlanetSceneBinding {
   } else if (finite(f.cloudCover)) {
     coverage = clamp(f.cloudCover, 0, 1);
   } else if (anyLiquid && pressure > 0.05) {
-    // Earth: ~0.67 cover over a 0.71 ocean (King et al. 2013).
-    coverage = clamp(0.2 + 0.65 * hydro, 0, 0.85);
-    note("Cloud cover estimated from the open ocean.");
+    // Cloud comes from evaporation, so it scales with OPEN water: the ocean
+    // fraction times the share of the surface warm enough to keep it liquid
+    // (area-weighted: dA ∝ d(sin lat), or ∝ d(cos θ) from the substellar
+    // point). Earth: 0.2 + 0.65 × ~0.6 ≈ 0.6 against an observed ~0.67
+    // (King et al. 2013, IEEE TGRS 51:3826). An eyeball world, open only
+    // under its star, stays mostly clear.
+    let warm = 0;
+    const N = 90;
+    for (let i = 0; i < N; i++) {
+      const u = -1 + (2 * (i + 0.5)) / N; // sin(lat), or cos(θ) when locked
+      const deg = (Math.asin(u) * 180) / Math.PI;
+      const T = locked ? at(0, 90 - deg) : at(deg, 0);
+      if (T >= 263 && T < boilK) warm += 1 / N;
+    }
+    coverage = clamp(0.2 + 0.65 * hydro * warm, 0, 0.85);
+    note("Cloud cover estimated from the area of open water.");
   } else coverage = 0;
   if (venusDeck && finite(f.cloudCover)) coverage = Math.max(coverage, clamp(f.cloudCover, 0, 1));
 
@@ -493,6 +509,7 @@ export function bindPlanetScene(f: PlanetSceneFacts): PlanetSceneBinding {
       massMsun: mStar,
       spectralClass: f.spectralClass ?? row?.spt ?? fromMass?.spt ?? null,
       hue,
+      light,
       limbDarkening: limbDarkening(teff),
       angularRadius: (rStar * R_SUN_M) / (a * AU_M),
     },

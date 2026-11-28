@@ -123,6 +123,9 @@ const ExoskySimulator = lazy(() => import("./pages/simulators/ExoskySimulator"))
 const ExoskyScience = lazy(() => import("./pages/simulators/ExoskyScience"));
 const ExoforgeSimulator = lazy(() => import("./pages/simulators/ExoforgeSimulator"));
 const ExoforgeScience = lazy(() => import("./pages/simulators/ExoforgeScience"));
+// 2.0 G: PlanetScene on forge-gl, beside the Tidelock and ExoForge iframes it
+// will replace once it reads canon through bind/ and the owner has seen it.
+const PlanetPreview = lazy(() => import("./pages/simulators/PlanetPreview"));
 const SolarisSimulator = lazy(() => import("./pages/simulators/SolarisSimulator"));
 const SolarisScience = lazy(() => import("./pages/simulators/SolarisScience"));
 
@@ -483,6 +486,14 @@ const App = () => (
                   }
                 />
                 <Route path="/tools/exoforge/science" element={<ExoforgeScience />} />
+                <Route
+                  path="/simulators/planet-preview"
+                  element={
+                    <ProToolGuard toolId="exoforge">
+                      <PlanetPreview />
+                    </ProToolGuard>
+                  }
+                />
                 <Route
                   path="/tools/solaris"
                   element={

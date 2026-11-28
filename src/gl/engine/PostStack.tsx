@@ -21,9 +21,11 @@ interface PostStackProps {
   settings: TierSettings;
   /** --sf-ambient, 0..1. */
   ambient: number;
+  /** Display exposure, applied after bloom by the tone curve. Default 1. */
+  exposure?: number;
 }
 
-export function PostStack({ settings, ambient }: PostStackProps) {
+export function PostStack({ settings, ambient, exposure = 1 }: PostStackProps) {
   const gl = useThree((s) => s.gl);
   const scene = useThree((s) => s.scene);
   const camera = useThree((s) => s.camera);
@@ -33,9 +35,10 @@ export function PostStack({ settings, ambient }: PostStackProps) {
   // The tone curve is the tier's whether or not there is a composer: with
   // one, OutputPass applies it; without, the renderer does on the way out.
   useEffect(() => {
-    gl.toneMapping = toneMappingFor(settings) as typeof gl.toneMapping;
-    gl.toneMappingExposure = 1;
-  }, [gl, settings]);
+    gl.toneMapping = toneMappingFor(settings);
+    // The chart tier draws solved tokens: no exposure may move them.
+    gl.toneMappingExposure = settings.toneMapping === "none" ? 1 : exposure;
+  }, [gl, settings, exposure]);
 
   const stack = useMemo(() => {
     if (!enabled) return null;

@@ -110,6 +110,58 @@ export interface HeightField {
   /** Second, independent field for clouds. */
   clouds: Float32Array;
   cloudsSorted: Float32Array;
+  /** Impact relief, −1..1 (bowl negative, rim positive). Scaled by erosion when painted. */
+  craters: Float32Array;
+}
+
+/**
+ * Impact craters with a power-law size distribution, N(>D) ∝ D^−2 (the
+ * lunar highlands' cumulative slope; Neukum, Ivanov & Hartmann 2001, Space
+ * Sci. Rev. 96:55), each a bowl with a raised rim (simple-crater profile,
+ * Melosh 1989 "Impact Cratering", ch. 8). Built once per seed; how much of
+ * it survives is decided at paint time by the atmosphere and water that
+ * would have eroded it.
+ */
+function craterField(seed: number, width: number, height: number): Float32Array {
+  const out = new Float32Array(width * height);
+  let a = (seed * 2654435761) >>> 0;
+  const rand = () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  const COUNT = 420;
+  const R_MIN = 0.012; // radians
+  const R_MAX = 0.22;
+  for (let c = 0; c < COUNT; c++) {
+    // Inverse-CDF of N(>r) ∝ r^−2 between R_MIN and R_MAX.
+    const u = rand();
+    const r = R_MIN / Math.sqrt(1 - u * (1 - (R_MIN / R_MAX) ** 2));
+    const z = rand() * 2 - 1;
+    const phi = rand() * Math.PI * 2;
+    const cx = Math.sqrt(1 - z * z) * Math.cos(phi);
+    const cy = z;
+    const cz = Math.sqrt(1 - z * z) * Math.sin(phi);
+    const latC = (Math.asin(cy) * 180) / Math.PI;
+    const span = r * 1.6;
+    const j0 = Math.max(0, Math.floor(((latC - (span * 180) / Math.PI + 90) / 180) * height));
+    const j1 = Math.min(height - 1, Math.ceil(((latC + (span * 180) / Math.PI + 90) / 180) * height));
+    const depth = Math.min(1, r / 0.06);
+    for (let j = j0; j <= j1; j++) {
+      for (let i = 0; i < width; i++) {
+        const [lat, lon] = texelLatLon(i, j, width, height);
+        const [x, y, zz] = dir(lat, lon);
+        const d = Math.acos(Math.min(1, Math.max(-1, x * cx + y * cy + zz * cz))) / r;
+        if (d > 1.6) continue;
+        // Bowl to d = 1, rim peaking just outside, ejecta fading by 1.6.
+        const v = d < 1 ? (d * d - 1) * 0.9 + 0.25 * d ** 6 : 0.25 * Math.exp(-(((d - 1) / 0.22) ** 2));
+        out[j * width + i] += v * depth;
+      }
+    }
+  }
+  return out;
 }
 
 const fieldCache = new Map<string, HeightField>();
@@ -131,14 +183,19 @@ export function heightField(seed: number, width: number): HeightField {
       const base = fbm(x * 1.7 + 11.3, y * 1.7 - 4.1, z * 1.7 + 7.7, seed, 6);
       const ridge = 1 - Math.abs(2 * fbm(x * 5 + 3.1, y * 5 + 9.2, z * 5 - 1.7, seed + 101, 3) - 1);
       data[j * width + i] = base * 0.82 + ridge * ridge * 0.18 * base;
-      // Clouds: stretched along latitude circles, so turning worlds read as
-      // zonal flow rather than cotton wool.
-      clouds[j * width + i] = fbm(x * 2.6 + 5.5, y * 6.5 - 2.2, z * 2.6 + 1.3, seed + 977, 5);
+      // Clouds: domain-warped and stretched along latitude circles, so
+      // turning worlds read as zonal flow and frontal swirls rather than
+      // cotton wool; a fine octave set breaks the edges.
+      const warp = fbm(x * 1.4 - 3.3, y * 1.4 + 6.1, z * 1.4 + 2.2, seed + 433, 3) - 0.5;
+      const broad = fbm((x + warp) * 2.6 + 5.5, (y + warp * 0.6) * 6.5 - 2.2, (z - warp) * 2.6 + 1.3, seed + 977, 5);
+      const fine = fbm(x * 11 + 1.1, y * 14 - 4.4, z * 11 + 8.8, seed + 1499, 3);
+      clouds[j * width + i] = broad * 0.72 + fine * 0.28;
     }
   }
   const sorted = Float32Array.from(data).sort();
   const cloudsSorted = Float32Array.from(clouds).sort();
-  const field = { width, height, data, sorted, clouds, cloudsSorted };
+  const craters = craterField(seed, width, height);
+  const field = { width, height, data, sorted, clouds, cloudsSorted, craters };
   fieldCache.set(key, field);
   if (fieldCache.size > MAX_CACHED) fieldCache.delete(fieldCache.keys().next().value as string);
   return field;
@@ -209,14 +266,24 @@ export function vegetationReflectance(teffK: number): LinearRGB {
 
 export function paintSurface(b: PlanetSceneBinding, width: number): SurfaceMaps {
   const field = heightField(b.seed, width);
-  const { height, data } = field;
+  const { height } = field;
+  // Craters survive where nothing erodes them: they fade with atmosphere
+  // (wind, weathering) and vanish under oceans and active water. Mars at
+  // 0.006 bar keeps most; Earth keeps almost none.
+  const erosion = b.kind !== "rocky" ? 0 : Math.exp(-b.pressureBar * 6) * (b.water.fraction > 0.05 ? 0.15 : 1);
+  const data =
+    erosion > 0.01
+      ? field.data.map((h, k) => h + field.craters[k] * 0.07 * erosion)
+      : field.data;
+  const sortedH = erosion > 0.01 ? Float32Array.from(data).sort() : field.sorted;
   const n = width * height;
   const albedo = new Uint8Array(n * 4);
   const props = new Uint8Array(n * 4);
   const emission = new Uint8Array(n * 4);
   const clouds = new Uint8Array(n * 4);
-  const sea = b.water.fraction > 0 ? quantile(field.sorted, b.water.fraction) : -1;
-  const hiH = field.sorted[field.sorted.length - 1] || 1;
+  const sea = b.water.fraction > 0 ? quantile(sortedH, b.water.fraction) : -1;
+  const hiH = sortedH[sortedH.length - 1] || 1;
+  const loH = sortedH[0] || 0;
   const P = SURFACE_REFLECTANCE;
   const veg = b.life ? vegetationReflectance(b.star.teffK) : null;
   const cityHue = blackbodyHue(CITY_LIGHT_K);
@@ -287,7 +354,17 @@ export function paintSurface(b: PlanetSceneBinding, width: number): SurfaceMaps 
           const dry = !anyWater;
           let ground: LinearRGB;
           if (T > 1000) ground = P.scorched;
-          else if (dry) ground = thinAir || T < 230 ? P.regolith : mixC(P.regolith, P.desert, smooth(230, 300, T));
+          else if (dry) {
+            ground = thinAir || T < 230 ? P.regolith : mixC(P.regolith, P.desert, smooth(230, 300, T));
+            // Airless plains: low basins flooded by dark basalt, bright
+            // anorthositic highlands (the Moon's maria 0.07 vs highlands
+            // 0.15; Lucey et al. 2006, Rev. Mineral. Geochem. 60:83).
+            if (thinAir) {
+              const rel = (h - loH) / Math.max(hiH - loH, 1e-3);
+              const k = 0.55 + 0.75 * smooth(0.25, 0.6, rel);
+              ground = { r: ground.r * k, g: ground.g * k, b: ground.b * k };
+            }
+          }
           else {
             // Warm, wet lowlands are soil; hot ones dry toward desert.
             ground = mixC(P.soil, P.desert, smooth(305, 340, T));
@@ -311,11 +388,13 @@ export function paintSurface(b: PlanetSceneBinding, width: number): SurfaceMaps 
           // Cities: only where canon says someone lives, on habitable land,
           // clustered and drawn to coasts.
           if (b.cityLights && T > 268 && T < 315 && ice < 0.5) {
-            const coast = sea > 0 ? 1 - smooth(0, 0.06, h - sea) : 0.4;
-            const cluster = fbm(lat * 0.5 + 9, lon * 0.25 + 4, 1.7, b.seed + 313, 3);
-            const density = smooth(0.58, 0.72, cluster + coast * 0.18);
-            if (density > 0) {
-              emit = { r: cityHue.r * density * 0.75, g: cityHue.g * density * 0.75, b: cityHue.b * density * 0.75 };
+            const coast = sea > 0 ? 1 - smooth(0, 0.05, h - sea) : 0.4;
+            const [x, y, z] = dir(lat, lon);
+            const region = fbm(x * 3 + 9, y * 3 + 4, z * 3 + 1.7, b.seed + 313, 3);
+            const town = fbm(x * 38 + 2, y * 38 - 7, z * 38 + 5, b.seed + 719, 2);
+            const density = smooth(0.5, 0.62, region + coast * 0.15) * smooth(0.52, 0.7, town);
+            if (density > 0.02) {
+              emit = { r: cityHue.r * density * 0.8, g: cityHue.g * density * 0.8, b: cityHue.b * density * 0.8 };
               litCount++;
             }
           }
@@ -355,7 +434,9 @@ export function paintSurface(b: PlanetSceneBinding, width: number): SurfaceMaps 
           const cosTheta = Math.cos((lat * Math.PI) / 180) * Math.cos((lon * Math.PI) / 180);
           c += 0.22 * cosTheta;
         }
-        cloud = smooth(cloudCut, cloudCut + 0.07, c);
+        // Soft edges and thin cirrus: opacity ramps over a band rather than
+        // switching on at the threshold.
+        cloud = smooth(cloudCut - 0.03, cloudCut + 0.1, c) * (0.55 + 0.45 * smooth(cloudCut, cloudCut + 0.18, c));
       }
       clouds[o] = Math.round(cloud * 255);
       clouds[o + 3] = 255;
