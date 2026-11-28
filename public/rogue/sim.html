@@ -1016,7 +1016,7 @@ function drawGravityVectors(){
 function labelFontPx(){return Math.max(12,Math.min(20,cam.zoom*.025+9));}
 
 function drawStar(b){
-  const s=toS(b.x,b.y),time=Date.now()*.001,c=b.color;
+  const s=toS(b.x,b.y),time=SFA11y.reducedMotion()?0:Date.now()*.001,c=b.color;
   // Size: base from zoom, scaled by stellar radius (approx R ~ M^0.8 for main seq)
   const starR=Math.pow(Math.max(.08,b.mass),.8);
   const r=Math.max(6,Math.min(28,cam.zoom*.04*starR+4));
@@ -1058,7 +1058,7 @@ function drawPlanet(b){
 }
 
 function drawIntruder(b){
-  const s=toS(b.x,b.y),time=Date.now()*.001;
+  const s=toS(b.x,b.y),time=SFA11y.reducedMotion()?0:Date.now()*.001;
   // Size intruder proportionally to system
   const sys=getSystemDef();const starM=sys.starMass||1;const starR=Math.pow(Math.max(.08,starM),.8);
   const starPx=Math.max(6,Math.min(28,cam.zoom*.04*starR+4));

@@ -153,7 +153,7 @@ describe("nbody.ts twin", () => {
   });
   it("subdivides, never enlarges, near the intruder", () => {
     const b = buildBodies(SYSTEMS.solar);
-    b.push({ name: "Intruder", x: 1.001, y: 0.001, vx: 0, vy: 0, mass: 10, isIntruder: true, active: true });
+    b.push({ name: "Intruder", x: 1.001, y: 0.001, vx: 0, vy: 0, mass: 10, isIntruder: true, active: true, color: "", size: 1 });
     expect(advance(b, 0.001, true)).toBeGreaterThan(1);
   });
 });

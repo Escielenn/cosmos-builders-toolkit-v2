@@ -40,7 +40,7 @@ export const manifest: ToolManifest = {
   entities: [{ type: "planet", from: "field:results.outcomes" }],
 
   produces: [
-    { predicate: "system.perturbation_events[]", from: "sim:results.epoch+results.outcomes", kind: "struct[]" },
+    { predicate: "system.perturbation_events[]", from: "sim:results.epoch+results.outcomes", kind: "struct" },
     { predicate: "orbit.semi_major_axis", from: "sim:results.outcomes[].a", unit: "au", kind: "scalar" },
     { predicate: "orbit.eccentricity", from: "sim:results.outcomes[].e", kind: "scalar" },
     { predicate: "system.body_count", from: "sim:parameters.p.length", kind: "scalar" },

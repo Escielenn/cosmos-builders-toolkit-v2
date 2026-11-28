@@ -123,6 +123,9 @@ input[type=text]:focus{border-color:var(--sf-accent)}
 #info-panel.visible{display:block}
 .planet-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px;position:relative;overflow:visible}
 #icon-canvas{width:36px;height:36px;border-radius:50%;flex-shrink:0}
+/* The page-wide canvas rule pins canvases full-screen; the two icons are
+   inline (they used to float at the page's top-left corner). */
+#icon-canvas,#moon-icon{position:static;width:36px;height:36px}
 .planet-hdr>div{min-width:0;flex:1;padding-right:24px}
 .p-name-input{font-family:'DM Sans',sans-serif;font-weight:300;font-size:15px;letter-spacing:2px;text-transform:uppercase;color:#FAFAFA;background:transparent;border:none;border-bottom:1px solid transparent;width:100%;transition:border-color 0.2s;cursor:pointer;padding:0}
 .p-name-input:focus{border-bottom-color:var(--sf-accent);cursor:text}
@@ -168,7 +171,7 @@ input[type=text]:focus{border-color:var(--sf-accent)}
 #transport{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:6px;align-items:center;z-index:20;background:#0D0D0F;border:1px solid #50555E;border-radius:0;padding:8px 14px}
 .tbtn{padding:6px 10px;font-size:12px;letter-spacing:0;min-width:32px;text-align:center}
 .tbtn.playing{background:rgba(21,193,123,0.08);border-color:#8C909A;color:var(--sf-accent)}
-#spd-disp{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t3);padding:0 8px;min-width:38px;text-align:center}
+#spd-disp{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t3);padding:0 8px;min-width:38px;text-align:center;white-space:nowrap}
 .t-div{width:1px;height:16px;background:rgba(255,255,255,0.1);margin:0 4px}
 #zoom-ind{position:fixed;bottom:16px;right:16px;text-align:right;z-index:20;pointer-events:none}
 #z-val{font-family:'DM Sans',sans-serif;font-weight:300;font-size:15px;color:var(--sf-primary-text);line-height:1}
@@ -184,6 +187,7 @@ input[type=text]:focus{border-color:var(--sf-accent)}
   #transport{left:calc(64px + env(safe-area-inset-left));right:auto;max-width:calc(100% - 76px - env(safe-area-inset-left) - env(safe-area-inset-right));bottom:var(--sim-dock-bottom);transform:none;justify-content:center;gap:4px;padding:0 6px;overflow-x:auto;scrollbar-width:thin}
   #transport .t-div{display:none}
   #spd-disp{padding:0 4px}
+  #sim-clock{display:none}
   #zoom-ind,#phys-note{bottom:var(--sim-dock-clear)}
   #zoom-ind{right:12px}
   /* The Show Your Work button is 44px tall here (touch floor), which
@@ -682,7 +686,10 @@ function toggleCond(c){
   conds[c]=!conds[c];
   document.getElementById('btn-'+c).classList.toggle('active',conds[c]);
 }
-function setBadge(cls,txt){const b=document.getElementById('badge');b.className=cls;b.textContent=txt}
+let _badgeGen=0;
+function setBadge(cls,txt){_badgeGen++;const b=document.getElementById('badge');b.className=cls;b.textContent=txt}
+// A delayed reset that yields to any newer status set in the meantime.
+function badgeLater(cls,txt,ms){const g=_badgeGen;setTimeout(()=>{if(g===_badgeGen)setBadge(cls,txt);},ms);}
 function setCam(mode,btn){camMode=mode;document.querySelectorAll('[id^="cam-"]').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active')}
 function updateSysName(){if(system)system.name=document.getElementById('star-name').value||system.name}
 function togglePlay(){playing=!playing;const b=document.getElementById('play-btn');b.textContent=playing?'⏸':'▶';b.setAttribute('aria-label',playing?'Pause':'Play');b.classList.toggle('playing',playing)}
@@ -787,13 +794,16 @@ function doGen(seed){
 
   const planets=[];
   const usedAU=[];
-  if(!noRoom)bands.forEach((band,i)=>{
-    const br=bandRanges[band];
+  if(!noRoom)bands.forEach((wanted,i)=>{
+    const br=bandRanges[wanted];let band=wanted;
     let au,tries=0;
     // Keep neighbours apart by 15% in radius (a crude spacing rule, not a
     // stability claim; the info panel reports stability per planet).
     do{au=Math.exp(sr(Math.log(br.min),Math.log(br.max)));tries++}while(usedAU.some(u=>Math.abs(u-au)<0.15*Math.max(u,au))&&tries<30);
     usedAU.push(au);
+    // The archetype follows where the planet actually is: when the stable
+    // range has pushed a band elsewhere, the type is drawn for the real band.
+    band=au<hzInAU?'inner':au<=hzOutAU?'habitable':au<3.3*hzOutAU?'outer':'remote';
     let pool=[...BAND_POOL[band]];
     if(conds.tidal&&band==='habitable')pool=['tidallocked'];
     if(conds.rogue&&i===bands.length-1)pool=['rogue'];
@@ -833,8 +843,10 @@ function doGen(seed){
   document.getElementById('star-name').value=sName;
   document.getElementById('empty-hint').style.display='none';
   selPlanet=null;closeInfo();trailData.clear();
+  const hzOutside=hzInAU>=outerOK||hzOutAU<=innerOK;
   if(noRoom){setBadge('edit','// NO STABLE ORBITS FOR THIS ARRANGEMENT');}
-  else{setBadge('ok',sName+' · '+planets.length+' bodies');setTimeout(()=>setBadge('active','Orbits active'),2500);}
+  else if(hzOutside){setBadge('edit','// HABITABLE ZONE '+hzInAU.toFixed(1)+'–'+hzOutAU.toFixed(1)+' AU LIES OUTSIDE THE STABLE ORBITS');}
+  else{setBadge('ok',sName+' · '+planets.length+' bodies');badgeLater('active','Orbits active',2500);}
   renderPlanetList();
   updateMathBtn();
   if(document.getElementById('chk-hz').checked)document.getElementById('hz-leg').classList.add('vis');
@@ -878,7 +890,7 @@ function placeStars(t){
 // OORT CLOUD
 // ═══════════════════════════════════════════════════════════════════════
 function generateOort(){
-  if(!system){setBadge('edit','Generate a system first');setTimeout(()=>setBadge('active','Ready'),1500);return}
+  if(!system){setBadge('edit','Generate a system first');badgeLater('active','Ready',1500);return}
   const count=parseInt(document.getElementById('oort-count').value);
   const density=parseInt(document.getElementById('oort-density').value)/10;
   const szMult=parseInt(document.getElementById('oort-sz').value)/5;
@@ -923,12 +935,12 @@ function generateOort(){
   }
   system.oort={pts,comets,hillsMax,outerMax};
   setBadge('ok','Oort Cloud Applied — zoom out to see');
-  setTimeout(()=>setBadge('active','Orbits active'),3000);
+  badgeLater('active','Orbits active',3000);
   // Auto-zoom to show inner hills band
   const fz=Math.min(W,H)/(hillsMax*2.4);
   tcam.zoom=Math.max(0.004,Math.min(fz,tcam.zoom)); // only zoom out, never in
 }
-function clearOort(){if(system)system.oort=null;setBadge('edit','Oort Cleared');setTimeout(()=>setBadge('active','Orbits active'),1200)}
+function clearOort(){if(system)system.oort=null;setBadge('edit','Oort Cleared');badgeLater('active','Orbits active',1200)}
 
 function fitSys(){
   if(!system)return;
@@ -974,7 +986,7 @@ function openInfo(p){
     ['Year',     periodStr,'cyan'],
     ['Insolation',fmt(m.insolation,m.insolation<10?2:0)+' S⊕',''],
     ['Equilibrium temp', fmt(m.teqK,0)+' K',''],
-    ['Habitable zone', SFAstro.HZ_STATUS_LABEL[m.hzStatus].split(':')[0], hzCls],
+    ['Habitable zone', HZ_SHORT[m.hzStatus], hzCls],
     ['Stability', st.label, st.sf==='stable'?'':st.sf==='marginal'?'gold':'red'],
     ['Moons',    p.moons.length+'',''],
     ['Rotation', p.tidalLock?'Tidal lock':p.retrograde?'Retrograde':'Prograde',''],
@@ -995,6 +1007,7 @@ function openInfo(p){
   renderPlanetList();
 }
 
+const HZ_SHORT={hot:'Too hot','warm-edge':'Inner edge',habitable:'Inside',"cold-edge":'Outer edge',cold:'Too cold'};
 /** Real-unit metrics for one planet at its current distance from the host. */
 function planetMetricsFor(p){
   return SolarisCore.planetMetrics(system,p.orbitPx/Math.max(system.AU,1),p.albedo);
@@ -1096,7 +1109,7 @@ function removePlanet(){
   system.planets=system.planets.filter(p=>p!==selPlanet);
   system.planets.sort((a,b)=>a.orbitPx-b.orbitPx);
   system.planets.forEach((p,i)=>{p.index=i;p.name=system.name+'-'+toRoman(i+1)});
-  closeInfo();setBadge('edit','PLANET REMOVED.');setTimeout(()=>setBadge('active','Orbits active'),1500);
+  closeInfo();setBadge('edit','PLANET REMOVED.');badgeLater('active','Orbits active',1500);
 }
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -1145,7 +1158,7 @@ function dropPlanet(cx,cy,typeKey){
   system.planets.push(planet);
   system.planets.sort((a,b)=>a.orbitPx-b.orbitPx);
   system.planets.forEach((p,i)=>{p.index=i;p.name=system.name+'-'+toRoman(i+1)});
-  openInfo(planet);setBadge('edit','PLANET ADDED.');setTimeout(()=>setBadge('active','Orbits active'),1500);
+  openInfo(planet);setBadge('edit','PLANET ADDED.');badgeLater('active','Orbits active',1500);
 }
 // Keyboard alternative to dragging: place the type in the middle of its
 // band (the habitable zone for habitable types), at a random bearing.
@@ -1158,7 +1171,7 @@ function addPlanetInBand(typeKey){
   system.planets.push(planet);
   system.planets.sort((a,b)=>a.orbitPx-b.orbitPx);
   system.planets.forEach((p,i)=>{p.index=i;p.name=system.name+'-'+toRoman(i+1)});
-  openInfo(planet);setBadge('edit','PLANET ADDED.');setTimeout(()=>setBadge('active','Orbits active'),1500);
+  openInfo(planet);setBadge('edit','PLANET ADDED.');badgeLater('active','Orbits active',1500);
 }
 function initEmptySystem(){
   const sName=document.getElementById('star-name').value||pick(SYS_NAMES);
@@ -1181,7 +1194,7 @@ function persistSavedSystems(){
   try{localStorage.setItem('solaris_systems',JSON.stringify(savedSystems))}catch(e){console.warn('Storage full',e)}
 }
 function saveSystem(){
-  if(!system){setBadge('edit','NO SYSTEM TO SAVE.');setTimeout(()=>setBadge('active','Ready'),1500);return}
+  if(!system){setBadge('edit','NO SYSTEM TO SAVE.');badgeLater('active','Ready',1500);return}
   const rawName=document.getElementById('save-name-input').value.trim();
   const saveName=(rawName||system.name).toUpperCase();
   // The whole system, exactly: stars, separations and phases, the clock,
@@ -1194,7 +1207,7 @@ function saveSystem(){
   persistSavedSystems();
   renderSaveList();
   setBadge('ok',saveName+' SAVED.');
-  setTimeout(()=>setBadge('active','Orbits active'),2000);
+  badgeLater('active','Orbits active',2000);
 }
 /** Replace the live system with a snapshot, exactly as it was saved. */
 function restoreSnapshot(snapshot,label){
@@ -1210,7 +1223,7 @@ function restoreSnapshot(snapshot,label){
   document.getElementById('empty-hint').style.display='none';
   selPlanet=null;closeInfo();trailData.clear();
   renderPlanetList();updateMathBtn();
-  if(label){setBadge('ok',label+' LOADED.');setTimeout(()=>setBadge('active','Orbits active'),2000);}
+  if(label){setBadge('ok',label+' LOADED.');badgeLater('active','Orbits active',2000);}
   fitSys();
   return true;
 }
@@ -2340,7 +2353,7 @@ window.addEventListener('message', function(event) {
     // seed when there is one (same seed + settings = same system).
     if (p.solarisSnapshot && restoreSnapshot(p.solarisSnapshot, null)) {
       setBadge('ok', 'SYSTEM RESTORED.');
-      setTimeout(function(){ setBadge('active','Orbits active'); }, 2000);
+      badgeLater('active','Orbits active',2000);
     } else {
       doGen(typeof p.seed === 'number' ? p.seed : undefined);
       if (typeof p.seed !== 'number') setBadge('edit', '// OLD SAVE. SETTINGS RESTORED; SYSTEM REGENERATED.');
