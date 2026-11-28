@@ -1,5 +1,43 @@
 # StellarForge Changelog
 
+## 1.9000 · True Numbers
+Every number a writer can quote is now right, records where it came from,
+and reaches the page. The simulators do what they say.
+- Canon: simulator values enter canon in the right units (a 14.7-day year is
+  no longer "14.71 years"; ocean cover is no longer "7000%"), through the canon
+  layer with provenance. A value that differs from canon asks before it
+  replaces anything. Goldilocks saves habitable-zone edges corrected for the
+  star's temperature. Manifests 9 to 18, produced predicates 17 to 66, Studio
+  blocks shown 0 to 18.
+- ExoSky: the sky is no longer mirror-reversed. 30,004 real HYG stars
+  (Alpha Centauri included). Stand here: real horizon, latitude, time of day,
+  seasons, and a fixed sun on tidally locked worlds. The world's sun, sibling
+  planets and moons with magnitude and phase. Constellations become canon,
+  sky drift, navigation and calendar readouts, a cited scene brief, place this
+  system, and a printable star chart.
+- Solaris: Save keeps the exact system. Real years, sunlight and temperature
+  per planet, a real main-sequence star table, and correct Holman and Wiegert
+  stability for single, binary and circumbinary orbits.
+- Rogue: Alpha Centauri's planets stay bound. Energy drift on TRAPPIST-1 down
+  from about 10% to about 1e-9; runs above 1e-3 refuse to publish. Outcomes
+  carry dates for the Chronicle.
+- Tidelock: true substellar temperature, one continuous day to night profile
+  that depends on pressure, an atmosphere-collapse check, the liquid-water band
+  in km, and a real tidal-locking time. "Describe this scene" is now a cited
+  conditions brief.
+- ExoForge: period and temperature are derived, not sliders. Impossible
+  densities are flagged.
+- Shared physics: one module for the app and the simulators, kept identical by
+  a parity test.
+- Tools: Orrery, Gravitas, Phylo, Sensorium and Mythos wired to canon. Each
+  tool's own sentence about the world shows in the Studio. Relativistic travel
+  times everywhere (Sol to Alpha Centauri at 1 g: about 6.0 years at home, 3.6
+  aboard). Ballast tests gas loss at the exobase. Drafts start without a naming
+  dialog. Copied links show when their source changed. One cascade-layer scheme.
+- Accessibility and privacy: visible focus, reduced motion and screen-reader
+  status in every simulator; fonts self-hosted; colour and font checks extended
+  to the simulators.
+
 ## 1.8001 · Article type
 - Learn articles, the Drake tool explainer, Compile previews and the Join page
   get their typography back: headings, spacing, lists, quotes, code and
