@@ -16,7 +16,8 @@ import NarrativeBridgePanel, { NarrativeBridgeToggle, useNarrativeBridge } from 
 import { SIM_FLAGS, SIM_MAIN, SIM_STAGE, SIM_TOOLBAR, SIM_TOOLBAR_WRAP, simStageStyle } from "@/components/simulators/sim-chrome";
 import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions";
 import { SimulatorWorldEntityPicker } from "@/components/simulators/SimulatorWorldEntityPicker";
-import { evaluateExoForgeFlags } from "@/sims/flags";
+import { evaluateExoForgeFlags, exoforgeOutputFromPayload } from "@/sims/flags";
+import { useSimMessages } from "@/hooks/use-sim-messages";
 import { SimFlagStrip } from "@/components/simulators/SimFlagStrip";
 import { useDismissedFlags } from "@/hooks/use-dismissed-flags";
 import SimSubjectChip from "@/components/simulators/SimSubjectChip";
@@ -54,26 +55,22 @@ const ExoforgeSimulator = () => {
   const simFlags = useMemo(
     () =>
       pendingPayload?.results
-        ? evaluateExoForgeFlags({
-            density: Number(pendingPayload.results.density) || 0,
-            temp: Number(pendingPayload.parameters.temp) || 0,
-          })
+        ? evaluateExoForgeFlags(
+            exoforgeOutputFromPayload(
+              pendingPayload as { parameters?: Record<string, unknown>; results?: Record<string, unknown> },
+            ),
+          )
         : [],
     [pendingPayload],
   );
 
-  useEffect(() => {
-    const handler = (event: MessageEvent) => {
-      if (event.data?.type === "STELLARFORGE_PUBLISH") {
-        // Ask for the live state first. Without this the dialog opened on a
-        // null payload and published a bare name into the world.
-        refreshPayload();
-        setPublishDialogOpen(true);
-      }
-    };
-    window.addEventListener("message", handler);
-    return () => window.removeEventListener("message", handler);
-  }, [refreshPayload]);
+  // Only messages from this page's own simulator iframe, same origin (X14).
+  useSimMessages((data) => {
+    if (data.type === "STELLARFORGE_PUBLISH") {
+      refreshPayload();
+      setPublishDialogOpen(true);
+    }
+  }, iframeRef);
 
   // So the consequence-flag strip has something to say on load rather than
   // staying empty until the first Save — same reasoning as Tidelock's

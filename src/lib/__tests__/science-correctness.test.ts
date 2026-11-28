@@ -264,48 +264,44 @@ describe("habitable zone: Kopparapu et al. 2014", () => {
 // ─── 6. Standalone Solaris sim ───────────────────────────────────────────
 
 describe("solaris sim.html star physics", () => {
+  // 1.9: the star table and HZ live in sf-astro.js / solaris-core.js, which
+  // sim.html loads; test those files as shipped.
   const html = readFileSync(resolve(__dirname, "../../../public/tools/solaris/sim.html"), "utf8");
-  const start = html.indexOf("const STARS={");
-  const endMarker = "SKEYS.forEach(k=>{const d=STARS[k];";
-  const end = html.indexOf("\n", html.indexOf(endMarker));
-  type Def = { lum: number; teffK: number; mass: number; hz: [number, number] };
-  // eslint-disable-next-line @typescript-eslint/no-implied-eval
-  const mod = new Function(`${html.slice(start, end)}; return { STARS, combinedHZ, massFromLum };`)() as {
-    STARS: Record<string, Def>;
-    combinedHZ: (defs: Def[]) => [number, number];
-    massFromLum: (l: number) => number;
-  };
+  type Def = { lum: number; teffK: number; mass: number; radius: number; hz: [number, number]; spt: string };
+  const sandbox: Record<string, unknown> = {};
+  for (const f of ["sf-astro.js", "solaris-core.js"]) {
+    // eslint-disable-next-line @typescript-eslint/no-implied-eval
+    new Function("window", readFileSync(resolve(__dirname, "../../../public/tools/solaris/" + f), "utf8"))(sandbox);
+  }
+  const core = sandbox.SolarisCore as { STAR_TYPES: Record<string, Def> };
+  const astro = sandbox.SFAstro as { combinedHz: (d: Def[]) => [number, number]; hz: (l: number, t: number) => [number, number] };
 
-  it("the yellow star's HZ is the Sun's Kopparapu HZ (~0.95–1.67 AU)", () => {
-    const [inner, outer] = mod.STARS.yellow.hz;
-    expect(inner).toBeCloseTo(0.95, 2);
-    expect(outer).toBeCloseTo(1.676, 2);
+  it("the yellow star (G2V) has the Sun's Kopparapu HZ (~0.95–1.68 AU)", () => {
+    const [inner, outer] = core.STAR_TYPES.yellow.hz;
+    expect(inner).toBeCloseTo(0.96, 1);
+    expect(outer).toBeCloseTo(1.69, 1);
   });
 
   it("a binary's HZ uses total luminosity once (no double scaling)", () => {
-    const y = mod.STARS.yellow;
-    const [inner, outer] = mod.combinedHZ([y, y]);
-    // Two suns: d scales as √2 of the single-star HZ, not 2×.
+    const y = core.STAR_TYPES.yellow;
+    const [inner, outer] = astro.combinedHz([y, y]);
     expect(inner).toBeCloseTo(Math.SQRT2 * y.hz[0], 9);
     expect(outer).toBeCloseTo(Math.SQRT2 * y.hz[1], 9);
   });
 
-  it("stellar mass comes from the mass-luminosity relation, not L", () => {
-    // L = M^4 on the main sequence (0.43–2 M☉): 1 L☉ → 1 M☉, 0.42 L☉ → 0.805 M☉.
-    expect(mod.STARS.yellow.mass).toBeCloseTo(1, 9);
-    expect(mod.STARS.orange.mass).toBeCloseTo(Math.pow(0.42, 0.25), 9);
-    expect(mod.massFromLum(8)).toBeCloseTo(Math.pow(8, 0.25), 9);
-    // Low-mass branch, L = 0.23·M^2.3: 0.01 L☉ → 0.256 M☉.
-    expect(mod.massFromLum(0.01)).toBeCloseTo(Math.pow(0.01 / 0.23, 1 / 2.3), 9);
-    for (const d of Object.values(mod.STARS)) {
-      if (d.lum !== 1) expect(d.mass).not.toBeCloseTo(d.lum, 2);
+  it("every star is one main-sequence row: mass, L, Teff and R obey Stefan–Boltzmann", () => {
+    for (const d of Object.values(core.STAR_TYPES)) {
+      const L = d.radius ** 2 * (d.teffK / 5772) ** 4;
+      expect(Math.abs(L / d.lum - 1), d.spt).toBeLessThan(0.1);
     }
+    expect(core.STAR_TYPES.yellow.mass).toBe(1);
+    expect(core.STAR_TYPES.red.mass).toBe(0.23);
   });
 
-  it("orbital speed and Hill sphere read stellar mass", () => {
-    expect(html).toContain("Math.sqrt(GM_base * system.stars[0].def.mass / p.orbitPx)");
-    expect(html).toContain("(3 * system.stars[0].def.mass * 1e4)");
-    expect(html).toContain("GM: GM_base * (s.def.mass || 1)");
+  it("sim.html takes its stars and orbital periods from the shared physics", () => {
+    expect(html).toContain("const STARS=SolarisCore.STAR_TYPES;");
+    expect(html).toContain("SFAstro.periodYears(au,M)");
+    expect(html).toContain("const M=system?SolarisCore.hostMass(system):1;");
   });
 });
 

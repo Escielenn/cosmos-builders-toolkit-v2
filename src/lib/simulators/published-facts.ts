@@ -294,9 +294,10 @@ export function readPublishedFact(
 export function readTidelockSeed(entry: WorldEntry | null | undefined): {
   auFraction: number;
   starLuminosity: number;
-  planetAU: number;
+  /** The planet's real distance, AU (sim.html conserves insolation with it). */
+  aAU: number;
   insolation: number;
-  starTeffK?: number;
+  starTeff?: number;
   starMassMsun?: number;
 } | null {
   const orbitalAU = readPublishedFact(entry, "orbit.semi_major_axis");
@@ -310,9 +311,9 @@ export function readTidelockSeed(entry: WorldEntry | null | undefined): {
   return {
     auFraction,
     starLuminosity: luminosity.value,
-    planetAU: orbitalAU.value,
+    aAU: orbitalAU.value,
     insolation: 1 / (auFraction * auFraction),
-    ...(fin(teff) ? { starTeffK: teff } : {}),
+    ...(fin(teff) ? { starTeff: teff } : {}),
     ...(fin(mass) ? { starMassMsun: mass } : {}),
   };
 }

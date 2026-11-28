@@ -128,7 +128,7 @@ describe("readTidelockSeed", () => {
     // 0.55 / √0.42 = 0.8487; S = 1 / 0.8487² = 1.388
     expect(seed!.auFraction).toBeCloseTo(0.8487, 4);
     expect(seed!.insolation).toBeCloseTo(1.388, 3);
-    expect(seed!.planetAU).toBe(0.55);
+    expect(seed!.aAU).toBe(0.55);
     expect(seed!.starLuminosity).toBe(0.42);
   });
 

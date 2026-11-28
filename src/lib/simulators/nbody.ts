@@ -38,14 +38,35 @@ export const M_EARTH = 3.003e-6;
 export const DT_BASE = 0.00008;
 
 /**
- * Plummer softening added to r^2, in AU^2.
- *
- * Without it a close pass divides by something near zero and flings a body to
- * infinity in one step. It is the difference between a grazing encounter and a
- * numerical explosion, and it is why the original could survive a black hole
- * passing through a planetary system.
+ * The pre-1.9 fixed Plummer softening (AU^2, epsilon = 0.0071 AU). Kept only as
+ * the fallback for a body list with no planets. It was 62% of TRAPPIST-1b's
+ * orbit and bent every compact system (1.9 audit R2); softening is now scaled
+ * to the system, see softeningFor().
  */
 export const SOFTENING = 0.00005;
+
+/** Softening length as a fraction of the innermost planetary orbit. */
+export const SOFT_FRAC = 0.005;
+/** Wider softening for pairs that include the intruder, so a grazing pass stays integrable. */
+export const SOFT_FRAC_INTRUDER = 0.05;
+
+/** Softening lengths squared (AU^2): ordinary pairs, and pairs with the intruder. */
+export interface Softening {
+  eps2: number;
+  eps2I: number;
+}
+
+/**
+ * Softening scaled to the system: 0.5% of the innermost planet's starting
+ * orbit for ordinary pairs (a 4e-5 relative force change there), 5% for pairs
+ * with the intruder. Twin of RoguePhysics.softening in public/rogue/rogue-physics.js.
+ */
+export function softeningFor(bodies: readonly Body[]): Softening {
+  const orbits = bodies.filter((b) => b.isPlanet && typeof b.a === "number" && b.a > 0).map((b) => b.a as number);
+  if (orbits.length === 0) return { eps2: SOFTENING, eps2I: SOFTENING };
+  const m = Math.min(...orbits);
+  return { eps2: (SOFT_FRAC * m) ** 2, eps2I: (SOFT_FRAC_INTRUDER * m) ** 2 };
+}
 
 // ---------------------------------------------------------------------------
 // Types
@@ -98,7 +119,11 @@ const pool: Accelerations = { ax: new Float64Array(32), ay: new Float64Array(32)
  * Returns pooled arrays, valid only until the next call. Copy if you need to
  * keep them.
  */
-export function computeAccelerations(bodies: Body[], fullNBody: boolean): Accelerations {
+export function computeAccelerations(
+  bodies: Body[],
+  fullNBody: boolean,
+  soft: Softening = softeningFor(bodies),
+): Accelerations {
   const n = bodies.length;
   if (pool.ax.length < n) {
     pool.ax = new Float64Array(n);
@@ -119,7 +144,7 @@ export function computeAccelerations(bodies: Body[], fullNBody: boolean): Accele
 
       const dx = bj.x - bi.x;
       const dy = bj.y - bi.y;
-      const r2 = dx * dx + dy * dy + SOFTENING;
+      const r2 = dx * dx + dy * dy + (bi.isIntruder || bj.isIntruder ? soft.eps2I : soft.eps2);
       const r = Math.sqrt(r2);
       // f is the acceleration per unit mass at this separation; multiplying by
       // the *other* body's mass gives each side its own acceleration.
@@ -151,12 +176,12 @@ export function computeAccelerations(bodies: Body[], fullNBody: boolean): Accele
  *
  * Mutates `bodies` in place, as the renderer reads the same objects each frame.
  */
-export function step(bodies: Body[], dt: number, fullNBody: boolean): void {
+export function step(bodies: Body[], dt: number, fullNBody: boolean, soft: Softening = softeningFor(bodies)): void {
   const n = bodies.length;
   const moving = (b: Body) => !(b.isIntruder && !b.active);
 
   // Half kick.
-  let acc = computeAccelerations(bodies, fullNBody);
+  let acc = computeAccelerations(bodies, fullNBody, soft);
   for (let i = 0; i < n; i++) {
     if (!moving(bodies[i])) continue;
     bodies[i].vx += acc.ax[i] * dt * 0.5;
@@ -172,12 +197,39 @@ export function step(bodies: Body[], dt: number, fullNBody: boolean): void {
 
   // Second half kick, against forces at the new positions. Recomputing here is
   // what makes the scheme second-order rather than plain Euler.
-  acc = computeAccelerations(bodies, fullNBody);
+  acc = computeAccelerations(bodies, fullNBody, soft);
   for (let i = 0; i < n; i++) {
     if (!moving(bodies[i])) continue;
     bodies[i].vx += acc.ax[i] * dt * 0.5;
     bodies[i].vy += acc.ay[i] * dt * 0.5;
   }
+}
+
+/** Fraction of the shortest intruder-pair dynamical time one substep may span. */
+export const ADVANCE_ETA = 0.01;
+export const ADVANCE_MAX_SUBSTEPS = 512;
+
+/**
+ * Advance by dt, subdividing (never enlarging) the step near the intruder:
+ * pieces of at most ADVANCE_ETA times the shortest intruder-pair dynamical
+ * time sqrt(r^3 / G(m1 + m2)). Twin of RoguePhysics.advance. Returns the
+ * number of substeps used.
+ */
+export function advance(bodies: Body[], dt: number, fullNBody: boolean, soft: Softening = softeningFor(bodies)): number {
+  const intruder = bodies.find((b) => b.isIntruder && b.active);
+  let tmin = Infinity;
+  if (intruder) {
+    for (const b of bodies) {
+      if (b === intruder) continue;
+      const dx = b.x - intruder.x;
+      const dy = b.y - intruder.y;
+      const r2 = dx * dx + dy * dy + soft.eps2I;
+      tmin = Math.min(tmin, Math.sqrt((r2 * Math.sqrt(r2)) / (G * (b.mass + intruder.mass))));
+    }
+  }
+  const k = Number.isFinite(tmin) ? Math.min(ADVANCE_MAX_SUBSTEPS, Math.max(1, Math.ceil(dt / (ADVANCE_ETA * tmin)))) : 1;
+  for (let i = 0; i < k; i++) step(bodies, dt / k, fullNBody, soft);
+  return k;
 }
 
 // ---------------------------------------------------------------------------
@@ -232,19 +284,25 @@ export function specificOrbitalEnergy(body: Body, centre: Barycenter): number {
  * Two conditions, both required. Positive energy alone is not enough: a planet
  * at periapsis on a wildly perturbed orbit can read as unbound for a moment
  * while still firmly attached, so it must also have travelled well beyond where
- * it started. That is what `a * 1.5` is doing.
+ * it started. That is what `a * 1.5` is doing. "Unbound" means from every star
+ * and from the pair's barycentre.
  */
 export function ejectedBodies(bodies: Body[]): Set<string> {
   const centre = stellarBarycenter(bodies);
   const ejected = new Set<string>();
   if (centre.mass === 0) return ejected;
+  // An S-type planet is bound to its own star while it may read as unbound
+  // from the pair's centre, so a body counts as ejected only when it is
+  // bound to no star and not to the pair either (1.9, Alpha Cen S-type).
+  const stars = bodies.filter((b) => b.isStar).map((s) => barycenter([s]));
 
   for (const b of bodies) {
     if (b.isStar || b.isIntruder) continue;
     const r = Math.hypot(b.x - centre.x, b.y - centre.y);
-    if (specificOrbitalEnergy(b, centre) > 0 && r > (b.a ?? 1) * 1.5) {
-      ejected.add(b.name);
-    }
+    if (r <= (b.a ?? 1) * 1.5) continue;
+    if (specificOrbitalEnergy(b, centre) <= 0) continue;
+    if (stars.some((s) => specificOrbitalEnergy(b, s) < 0)) continue;
+    ejected.add(b.name);
   }
   return ejected;
 }
@@ -306,11 +364,11 @@ export function classifyEncounter(
 /**
  * Total energy of the system, kinetic plus potential.
  *
- * Uses the same softening as the force calculation. Mixing softened forces with
+ * Uses the same pair set and per-pair softening as the force calculation. Mixing softened forces with
  * unsoftened potential would show a spurious energy drift and send anyone
  * debugging the integrator on a long detour.
  */
-export function totalEnergy(bodies: Body[]): number {
+export function totalEnergy(bodies: Body[], fullNBody = true, soft: Softening = softeningFor(bodies)): number {
   const active = bodies.filter((b) => !(b.isIntruder && !b.active));
   let kinetic = 0;
   for (const b of active) kinetic += 0.5 * b.mass * (b.vx * b.vx + b.vy * b.vy);
@@ -318,9 +376,11 @@ export function totalEnergy(bodies: Body[]): number {
   let potential = 0;
   for (let i = 0; i < active.length; i++) {
     for (let j = i + 1; j < active.length; j++) {
+      if (!fullNBody && active[i].isPlanet && active[j].isPlanet) continue;
       const dx = active[j].x - active[i].x;
       const dy = active[j].y - active[i].y;
-      const r = Math.sqrt(dx * dx + dy * dy + SOFTENING);
+      const pairSoft = active[i].isIntruder || active[j].isIntruder ? soft.eps2I : soft.eps2;
+      const r = Math.sqrt(dx * dx + dy * dy + pairSoft);
       potential -= (G * active[i].mass * active[j].mass) / r;
     }
   }

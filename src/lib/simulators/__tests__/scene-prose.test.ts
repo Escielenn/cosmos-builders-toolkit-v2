@@ -1,84 +1,63 @@
 import { describe, it, expect } from "vitest";
-import { generateSceneProse } from "@/lib/simulators/scene-prose";
-import type { WorksheetFact } from "@/lib/worksheet-facts";
+import { buildConditionsBrief, CONDITIONS_BRIEF_LABEL } from "@/lib/simulators/scene-prose";
 
-const tidelockFacts = (over: Partial<Record<string, string>> = {}): WorksheetFact[] => {
-  const defaults: Record<string, string> = {
-    "locked.daySide": "391 K (118°C), scorching",
-    "locked.nightSide": "168 K (-105°C), frozen",
-    "locked.terminator": "279 K (6°C), temperate",
-    "locked.habitableBand": "12.4% of the surface (marginal)",
-    "locked.gravity": "1.03 g",
-    "locked.tidalState": "Locked",
-  };
-  const merged = { ...defaults, ...over };
-  return Object.entries(merged).map(([key, value]) => ({
-    key, label: key, value,
-  }));
+// A 1.9 Tidelock default payload's results block (M4V, 1 atm N₂/O₂).
+const results = {
+  starType: "M4V", tSSP: 296.2, tASP: 262.4, tTerm: 268.1, habStatus: "Habitable", habPct: 42.5,
+  surfGrav: 1, escVel: 11.19, atmRetention: "Retained", liquidWater: "Stable", tidalLock: "Locked",
+  orbPeriod: 21.07, starTeff: 3210, insolation: 0.833, tSubstellarAirless: 344, collapse: false,
+  condensationK: 77.4, condensingGas: "N₂", bandWidthDeg: 81.4, bandWidthKm: 9051, bandInnerDeg: 0,
+  bandOuterDeg: 81.4, pressureAtm: 1, scaleHeightKm: 7.9, lockTimescaleYr: 8.1e5, systemAgeGyr: 5,
 };
 
-describe("generateSceneProse", () => {
-  it("produces non-empty prose from a full Tidelock fact set", () => {
-    const prose = generateSceneProse(tidelockFacts());
-    expect(prose.length).toBeGreaterThan(40);
+describe("conditions brief (doc 11 §3)", () => {
+  it("carries the required label", () => {
+    expect(CONDITIONS_BRIEF_LABEL).toBe("// CONDITIONS BRIEF · DERIVED · NOT CANON, NOT PROSE");
   });
 
-  it("mentions the terminator band, the setting the tool exists to describe", () => {
-    const prose = generateSceneProse(tidelockFacts());
-    expect(prose.toLowerCase()).toContain("terminator");
+  it("cites a value on every line", () => {
+    const lines = buildConditionsBrief("tidelock", results);
+    expect(lines.length).toBeGreaterThan(6);
+    for (const l of lines) {
+      expect(l.cites.length, l.id).toBeGreaterThan(0);
+      for (const c of l.cites) expect(c.value, l.id).not.toBe("");
+    }
   });
 
-  it("reflects a wide habitable band differently than a narrow one", () => {
-    const wide = generateSceneProse(tidelockFacts({ "locked.habitableBand": "40% of the surface (habitable)" }));
-    const narrow = generateSceneProse(tidelockFacts({ "locked.habitableBand": "1.2% of the surface (uninhabitable)" }));
-    expect(wide).not.toBe(narrow);
+  it("is impersonal: no second-person POV, no characters, no interior states", () => {
+    const text = buildConditionsBrief("tidelock", results).map((l) => l.text).join(" ");
+    expect(text).not.toMatch(/\byou\b|\byour\b|\bI\b|\bshe\b|\bhe\b|\bfeel/i);
+    expect(text).not.toMatch(/the only strip of this world where the air does not immediately try to kill you/);
   });
 
-  it("returns an honest empty-input message rather than a hallucinated scene", () => {
-    expect(generateSceneProse([])).toBe("");
+  it("states the cited numbers it rests on", () => {
+    const lines = buildConditionsBrief("tidelock", results);
+    const night = lines.find((l) => l.id === "night")!;
+    expect(night.text).toContain("262 K");
+    const band = lines.find((l) => l.id === "band")!;
+    expect(band.text).toContain("9,051 km");
   });
 
-  it("does not fabricate a fact it was not given", () => {
-    // Facts missing gravity should not produce a sentence claiming a gravity value.
-    const withoutGravity = tidelockFacts();
-    const filtered = withoutGravity.filter(f => f.key !== "locked.gravity");
-    const prose = generateSceneProse(filtered);
-    expect(prose).not.toMatch(/\d+(\.\d+)?\s*g\b/);
+  it("never claims people live at the terminator", () => {
+    const text = buildConditionsBrief("tidelock", { ...results, tTerm: 70 }).map((l) => l.text).join(" ");
+    expect(text).not.toMatch(/\b(live|lives|living|settle\w*|civiliz\w*|inhabit\w*)\b/i);
   });
 
-  // The test above uses the brief's given default of "1.03 g", which sits
-  // inside the neutral 0.7-1.3 range that never emits a gravity sentence
-  // either way, so it does not actually exercise present-vs-absent contrast.
-  // This uses "1.5 g" instead, which crosses the g > 1.3 branch in
-  // generateTidelockProse, so removing the fact provably removes the sentence.
-  it("states a gravity fact when given and omits it when the fact is absent", () => {
-    const withGravity = generateSceneProse(tidelockFacts({ "locked.gravity": "1.5 g" }));
-    expect(withGravity).toMatch(/1\.50\s*g\b/);
-
-    const facts = tidelockFacts({ "locked.gravity": "1.5 g" });
-    const withoutGravity = generateSceneProse(facts.filter(f => f.key !== "locked.gravity"));
-    expect(withoutGravity).not.toMatch(/\d+(\.\d+)?\s*g\b/);
+  it("names atmosphere collapse when the sim reports it", () => {
+    const lines = buildConditionsBrief("tidelock", { ...results, tASP: 52, collapse: true, condensationK: 63 });
+    expect(lines.find((l) => l.id === "night")!.text).toContain("frost point of 63 K");
   });
 
-  // extractTidelockFacts's real values (public/tools/tidelock/sim.html:1089)
-  // are "Confirmed", "Likely", or "Unlikely", never the word "locked" itself.
-  // The brief's own test fixture uses the synthetic value "Locked", which
-  // never appears from a live simulator run, so it alone cannot catch a
-  // regression that reverts or narrows the match down to that literal word.
-  // These three pin the real-world behavior directly.
-  it("states the star never moves when tidal lock is Confirmed", () => {
-    const prose = generateSceneProse(tidelockFacts({ "locked.tidalState": "Confirmed" }));
-    expect(prose.toLowerCase()).toContain("the star does not move");
+  it("says when the world is not locked, and drops the locked-only lines", () => {
+    const lines = buildConditionsBrief("tidelock", { ...results, tidalLock: "Not locked", lockTimescaleYr: 3e11 });
+    expect(lines[0].id).toBe("not-locked");
+    expect(lines.find((l) => l.id === "year")).toBeUndefined();
   });
 
-  it("does not assert the star never moves when tidal lock is only Likely", () => {
-    // "Likely" has not earned the certainty that sentence asserts.
-    const prose = generateSceneProse(tidelockFacts({ "locked.tidalState": "Likely" }));
-    expect(prose.toLowerCase()).not.toContain("the star does not move");
-  });
-
-  it("does not assert the star never moves when tidal lock is Unlikely", () => {
-    const prose = generateSceneProse(tidelockFacts({ "locked.tidalState": "Unlikely" }));
-    expect(prose.toLowerCase()).not.toContain("the star does not move");
+  it("skips a line whose inputs are missing, and is empty for unknown sims", () => {
+    const lines = buildConditionsBrief("tidelock", { tSSP: 300 });
+    expect(lines.map((l) => l.id)).toEqual(["substellar"]);
+    expect(buildConditionsBrief("solaris", results)).toEqual([]);
+    expect(buildConditionsBrief("tidelock", null)).toEqual([]);
   });
 });

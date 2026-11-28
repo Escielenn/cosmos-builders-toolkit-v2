@@ -1,0 +1,18 @@
+{
+  "_comment": "Per-file raw hex counts for the static simulators (public/tools/**, public/rogue/**), rule 3 of scripts/check-raw-hex.mjs. Counts and the total may only go down. Colours belong in public/tools/_shared/sim-tokens.css.",
+  "total": 329,
+  "files": {
+    "public/rogue/science.html": 4,
+    "public/rogue/sim.html": 102,
+    "public/tools/_shared/sim-mobile.css": 2,
+    "public/tools/_shared/sim-perf.css": 3,
+    "public/tools/_shared/sim-title.css": 3,
+    "public/tools/exoforge/science.html": 2,
+    "public/tools/exoforge/sim.html": 8,
+    "public/tools/exosky/science.html": 26,
+    "public/tools/solaris/science.html": 10,
+    "public/tools/solaris/sim.html": 149,
+    "public/tools/tidelock/science.html": 2,
+    "public/tools/tidelock/sim.html": 18
+  }
+}

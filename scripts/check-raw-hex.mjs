@@ -20,6 +20,12 @@
  *  2. TOTAL RATCHET. The sum is also written to .github/sf2-hex-baseline.txt
  *     (the number the old CI grep used); it may only go down.
  *
+ * 3. PUBLIC SIMS (1.9, X13). The static simulators in public/tools/** and
+ *    public/rogue/** (.html, .js, .css) get the same per-file ratchet against
+ *    scripts/raw-hex-public-baseline.json, with its own total. Their one
+ *    colour home is public/tools/_shared/sim-tokens.css (the mirror of the
+ *    default theme the iframes read); everything else should take a var().
+ *
  * Run:  node scripts/check-raw-hex.mjs                  (exit 1 on violations)
  *       node scripts/check-raw-hex.mjs --update-baseline  (after removing hex)
  *       node scripts/check-raw-hex.mjs --list             (print every literal)
@@ -35,6 +41,12 @@ const ROOT = SELF ? join(dirname(SELF), "..") : process.cwd();
 const SRC = join(ROOT, "src");
 const BASELINE_JSON = join(ROOT, "scripts", "raw-hex-baseline.json");
 const BASELINE_TXT = join(ROOT, ".github", "sf2-hex-baseline.txt");
+const PUBLIC_BASELINE_JSON = join(ROOT, "scripts", "raw-hex-public-baseline.json");
+/** Static simulator trees scanned by rule 3. */
+export const PUBLIC_SIM_DIRS = ["public/tools", "public/rogue"];
+/** The colour homes inside the public sim trees. */
+export const PUBLIC_ALLOWED_FILES = new Set(["public/tools/_shared/sim-tokens.css"]);
+const PUBLIC_EXTENSIONS = /\.(html|js|css)$/;
 
 const EXTENSIONS = /\.(ts|tsx|css|js|jsx)$/;
 
@@ -67,16 +79,36 @@ export function countHex(text) {
   return m ? m.length : 0;
 }
 
-function walk(dir, out = []) {
+function walk(dir, out = [], ext = EXTENSIONS) {
   for (const name of readdirSync(dir)) {
     const p = join(dir, name);
     const st = statSync(p);
     if (st.isDirectory()) {
       if (name === "node_modules") continue;
-      walk(p, out);
-    } else if (EXTENSIONS.test(name)) out.push(p);
+      walk(p, out, ext);
+    } else if (ext.test(name)) out.push(p);
   }
   return out;
+}
+
+/** Rule 3: per-file hex counts in the static simulator trees. */
+export function scanPublic(root = ROOT) {
+  const counts = {};
+  for (const dir of PUBLIC_SIM_DIRS) {
+    let files = [];
+    try {
+      files = walk(join(root, dir), [], PUBLIC_EXTENSIONS);
+    } catch {
+      continue;
+    }
+    for (const file of files) {
+      const rel = relative(root, file).split(sep).join("/");
+      if (PUBLIC_ALLOWED_FILES.has(rel)) continue;
+      const n = countHex(readFileSync(file, "utf8"));
+      if (n > 0) counts[rel] = n;
+    }
+  }
+  return counts;
 }
 
 export function scan(srcDir = SRC, root = ROOT) {
@@ -126,6 +158,22 @@ function main() {
       ) + "\n",
     );
     writeFileSync(BASELINE_TXT, `${total}\n`);
+    const pub = scanPublic();
+    const pubTotal = Object.values(pub).reduce((a, b) => a + b, 0);
+    writeFileSync(
+      PUBLIC_BASELINE_JSON,
+      JSON.stringify(
+        {
+          _comment:
+            "Per-file raw hex counts for the static simulators (public/tools/**, public/rogue/**), rule 3 of scripts/check-raw-hex.mjs. Counts and the total may only go down. Colours belong in public/tools/_shared/sim-tokens.css.",
+          total: pubTotal,
+          files: sorted(pub),
+        },
+        null,
+        2,
+      ) + "\n",
+    );
+    console.log(`[raw-hex] public sims baseline updated: ${pubTotal} literal(s) in ${Object.keys(pub).length} file(s).`);
     console.log(`[raw-hex] baseline updated: ${total} literal(s) in ${Object.keys(counts).length} file(s); ${tsxTotal} in .tsx.`);
     return;
   }
@@ -146,6 +194,22 @@ function main() {
   const txt = Number(readFileSync(BASELINE_TXT, "utf8").trim());
   if (total > txt) problems.push(`total ${total} exceeds .github/sf2-hex-baseline.txt (${txt}).`);
 
+  const pub = scanPublic();
+  const pubTotal = Object.values(pub).reduce((a, b) => a + b, 0);
+  const pubBaseline = JSON.parse(readFileSync(PUBLIC_BASELINE_JSON, "utf8"));
+  for (const [file, n] of Object.entries(pub)) {
+    const cap = pubBaseline.files?.[file] ?? 0;
+    if (n > cap) {
+      problems.push(
+        cap === 0
+          ? `${file}: ${n} raw hex literal(s). Static sims take colours from public/tools/_shared/sim-tokens.css (var(--sf-*), var(--t1..t4)).`
+          : `${file}: ${n} raw hex literal(s), baseline ${cap}. This file may not gain hex.`,
+      );
+    }
+  }
+  if (pubTotal > pubBaseline.total) problems.push(`public sims total ${pubTotal} exceeds scripts/raw-hex-public-baseline.json (${pubBaseline.total}).`);
+  console.log(`[raw-hex] public sims: ${pubTotal} literal(s) (baseline ${pubBaseline.total}).`);
+
   console.log(
     `[raw-hex] ${total} literal(s) outside the allowed homes (baseline ${baseline.total}); ${tsxTotal} in .tsx across ${tsx.length} file(s).`,
   );
@@ -155,7 +219,7 @@ function main() {
     process.exit(1);
   }
   const lowered = Object.entries(allowed).filter(([f, cap]) => (counts[f] ?? 0) < cap);
-  if (lowered.length || total < baseline.total) {
+  if (lowered.length || total < baseline.total || pubTotal < pubBaseline.total) {
     console.log(
       `[raw-hex] count dropped (${lowered.length} file(s)). Lock it in: npm run check:hex -- --update-baseline`,
     );

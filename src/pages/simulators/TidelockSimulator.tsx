@@ -16,12 +16,13 @@ import NarrativeBridgePanel, { NarrativeBridgeToggle, useNarrativeBridge } from 
 import { SIM_FLAGS, SIM_MAIN, SIM_STAGE, SIM_TOOLBAR, SIM_TOOLBAR_WRAP, simStageStyle } from "@/components/simulators/sim-chrome";
 import { SIMULATOR_NARRATIVE_CONFIGS } from "@/lib/simulator-narrative-questions";
 import { SimulatorWorldEntityPicker } from "@/components/simulators/SimulatorWorldEntityPicker";
-import { decodeHandoff, insolationEquivalentAU } from "@/lib/simulators/handoff";
-import { evaluateTidelockFlags } from "@/sims/flags";
+import { decodeHandoff } from "@/lib/simulators/handoff";
+import { evaluateTidelockFlags, tidelockOutputFromResults } from "@/sims/flags";
 import { SimFlagStrip } from "@/components/simulators/SimFlagStrip";
 import { useDismissedFlags } from "@/hooks/use-dismissed-flags";
-import { extractSimulationFacts } from "@/lib/simulation-facts";
-import { SceneProseButton } from "@/components/simulators/SceneProseButton";
+import { buildConditionsBrief } from "@/lib/simulators/scene-prose";
+import { ConditionsBriefPanel, ConditionsBriefToggle } from "@/components/simulators/ConditionsBrief";
+import { useSimMessages } from "@/hooks/use-sim-messages";
 import { readTidelockSeed } from "@/lib/simulators/published-facts";
 import { getEntry } from "@/services/world-entries";
 import { useSubjectEntityId } from "@/hooks/use-subject-entity";
@@ -53,18 +54,15 @@ const TidelockSimulator = () => {
     iframeRef,
   });
 
-  useEffect(() => {
-    const handler = (event: MessageEvent) => {
-      if (event.data?.type === "STELLARFORGE_PUBLISH") {
-        // Ask for the live state first. Without this the dialog opened on a
-        // null payload and published a bare name into the world.
-        refreshPayload();
-        setPublishDialogOpen(true);
-      }
-    };
-    window.addEventListener("message", handler);
-    return () => window.removeEventListener("message", handler);
-  }, [refreshPayload]);
+  // Only messages from this page's own simulator iframe, same origin (X14).
+  useSimMessages((data) => {
+    if (data.type === "STELLARFORGE_PUBLISH") {
+      // Ask for the live state first. Without this the dialog opened on a
+      // null payload and published a bare name into the world.
+      refreshPayload();
+      setPublishDialogOpen(true);
+    }
+  }, iframeRef);
 
   // Plausibility notes read the same `pendingPayload.results` that Save and
   // Publish already populate. sim.html only ever answers a state request:
@@ -93,24 +91,17 @@ const TidelockSimulator = () => {
   const simFlags = useMemo(
     () =>
       pendingPayload?.results
-        ? evaluateTidelockFlags({
-            tSSP: Number(pendingPayload.results.tSSP) || 0,
-            tASP: Number(pendingPayload.results.tASP) || 0,
-            tTerm: Number(pendingPayload.results.tTerm) || 0,
-            habPct: Number(pendingPayload.results.habPct) || 0,
-            escVel: Number(pendingPayload.results.escVel) || 0,
-          })
+        ? evaluateTidelockFlags(tidelockOutputFromResults(pendingPayload.results as Record<string, unknown>))
         : [],
     [pendingPayload],
   );
 
-  // Same pendingPayload the plausibility strip above already reads, run
-  // through the same fact extractor ContinuityPanel and the Refs panel use
-  // (extractTidelockFacts under the "tidelock" dispatch), so the prose
-  // button describes the exact configuration a writer is about to Save or
-  // Publish, not a stale or separately-derived snapshot of it.
-  const sceneFacts = useMemo(
-    () => (pendingPayload ? extractSimulationFacts("tidelock", pendingPayload) : []),
+  // Conditions brief (doc 11 §3): from the same pendingPayload the flags
+  // read, so it describes the configuration a writer is about to Save or
+  // Publish. Opening it asks the simulator for its live state first.
+  const [briefOpen, setBriefOpen] = useState(false);
+  const briefLines = useMemo(
+    () => buildConditionsBrief("tidelock", pendingPayload?.results),
     [pendingPayload],
   );
 
@@ -136,28 +127,23 @@ const TidelockSimulator = () => {
     const iframe = iframeRef.current;
     if (!iframe?.contentWindow) return;
     handoffSent.current = true;
-    // 1.9 X4 (lane C): the Earth-equivalent distance a/√L, so the planet keeps
-    // its insolation around whichever Tidelock star is nearest in luminosity.
-    const auFraction = insolationEquivalentAU(handoff.planetAU, handoff.starMassLum) ?? 1;
+    // 1.9 (X4): send the absolute star luminosity and the planet's real
+    // distance. sim.html matches the nearest star it has and places the
+    // planet where it receives the SAME insolation (L/a²), instead of
+    // scaling by a stale per-colour HZ table.
     iframe.contentWindow.postMessage(
       {
         type: "STELLARFORGE_LOAD",
         payload: {
           handoffSeed: {
-            // starType is not read on the Tidelock side (sim.html matches by
-            // nearest luminosity, via starLuminosity below, since Solaris's
-            // blue/white/yellow/orange/red vocabulary and Tidelock's M9V..F0V
-            // spectral types share no keys). Left out rather than sent dead.
             starLuminosity: handoff.starMassLum,
-            auFraction,
-            // Absolute numbers for when Tidelock reads them (lane T).
-            planetAU: handoff.planetAU,
-            ...(handoff.starTeffK ? { starTeffK: handoff.starTeffK } : {}),
-            ...(handoff.starMassMsun ? { starMassMsun: handoff.starMassMsun } : {}),
+            aAU: handoff.planetAU,
+            // Lane C: a star's Teff when Solaris sends one (sim.html matches by it first).
+            ...(handoff.starTeffK ? { starTeff: handoff.starTeffK } : {}),
           },
         },
       },
-      "*",
+      window.location.origin,
     );
     refreshPayload();
     // The seed has been applied (or is about to be, per the ordering above);
@@ -188,20 +174,12 @@ const TidelockSimulator = () => {
       .then((entry) => {
         const seed = readTidelockSeed(entry);
         if (!seed || !iframe.contentWindow) return;
+        // Pass every field the seed has: sim.html prefers absolute values
+        // (starTeff, starLuminosity + aAU, insolation) and falls back to
+        // auFraction.
         iframe.contentWindow.postMessage(
-          {
-            type: "STELLARFORGE_LOAD",
-            payload: {
-              handoffSeed: {
-                starLuminosity: seed.starLuminosity,
-                auFraction: seed.auFraction,
-                planetAU: seed.planetAU,
-                ...(seed.starTeffK ? { starTeffK: seed.starTeffK } : {}),
-                ...(seed.starMassMsun ? { starMassMsun: seed.starMassMsun } : {}),
-              },
-            },
-          },
-          "*",
+          { type: "STELLARFORGE_LOAD", payload: { handoffSeed: { ...seed } } },
+          window.location.origin,
         );
         refreshPayload();
       })
@@ -295,11 +273,13 @@ const TidelockSimulator = () => {
                 {/* Brief S1: the writer can see what this run is ON. */}
                 <SimSubjectChip worldId={worldId} />
                 <NarrativeBridgeToggle {...narrativeBridge.panelProps} />
-                {/* Below lg the scene button joins the docked strip rather
-                    than adding a second strip of chrome above the sim. */}
-                <div className="lg:hidden">
-                  <SceneProseButton facts={sceneFacts} simulatorType="tidelock" />
-                </div>
+                <ConditionsBriefToggle
+                  open={briefOpen}
+                  onOpenChange={(open) => {
+                    if (open) refreshPayload();
+                    setBriefOpen(open);
+                  }}
+                />
                 {/* Browses a world's own entities, so it genuinely needs one.
                     Save and Publish do not: they ask which world instead. */}
                 {worldId && (
@@ -316,13 +296,12 @@ const TidelockSimulator = () => {
                   <SimFlagStrip flags={simFlags} dismissedIds={dismissedIds} onDismiss={dismissFlag} />
                 </div>
               )}
-              {/* Same floating chrome as the plausibility strip above, for the
-                  same reason: Tidelock has no React-rendered data panel of its
-                  own to sit beneath, so this sits in the chrome that exists
-                  rather than a panel that doesn't. */}
-              <div className={`hidden lg:block ${SIM_FLAGS}`}>
-                <SceneProseButton facts={sceneFacts} simulatorType="tidelock" />
-              </div>
+              {/* Closed by default, so nothing covers the planet until asked. */}
+              {briefOpen && (
+                <div className={SIM_FLAGS}>
+                  <ConditionsBriefPanel lines={briefLines} />
+                </div>
+              )}
             </div>
           )}
           <NarrativeBridgePanel

@@ -58,13 +58,16 @@ export interface PlanetDef {
   size: number;
   /** Short glyph for compact camera buttons. */
   sym: string;
+  /** S-type host in a binary ('A' or 'B'); absent = circles the barycentre. */
+  host?: "A" | "B";
 }
 
 export interface SystemDef {
   name: string;
   starMass: number;
   starType: StarType;
-  binary: { mass: number; type: StarType; separation: number } | null;
+  /** Separation is the semi-major axis in AU; e the orbital eccentricity (0 if absent). */
+  binary: { mass: number; type: StarType; separation: number; e?: number } | null;
   planets: PlanetDef[];
   /** Habitable zone bounds in AU, for the overlay. */
   habZone: [number, number];
@@ -144,17 +147,21 @@ export const SYSTEMS: Record<string, SystemDef> = {
     note: "The nearest star, 4.24 light-years away. Proxima b sits in the habitable zone.",
   },
   alphacen: {
+    // Kervella et al. 2016 (A&A 594, A107): 1.1055 + 0.9373 Msun, a = 23.64 AU;
+    // e = 0.5208 (Pourbaix & Boffin 2016). Planets hypothetical, one S-type
+    // orbit per star, inside Holman & Wiegert 1999 eq. 1 (A: 2.7 AU, B: 2.5 AU).
     name: "Alpha Centauri AB",
-    starMass: 1.1,
+    starMass: 1.1055,
     starType: "G",
-    binary: { mass: 0.907, type: "K", separation: 23 },
+    binary: { mass: 0.9373, type: "K", separation: 23.64, e: 0.5208 },
     planets: [
-      { name: "α Cen Ab*", a: 1.1, mass: 1.5 * M_EARTH, type: "rocky", color: ROGUE_PLANET_COLOURS["α Cen Ab*"], size: 0.45, sym: "b" },
-      { name: "α Cen Ac*", a: 2.0, mass: 5 * M_EARTH, type: "rocky", color: ROGUE_PLANET_COLOURS["α Cen Ac*"], size: 0.5, sym: "c" },
+      { name: "α Cen Bb*", a: 0.7, mass: 5 * M_EARTH, type: "rocky", color: ROGUE_PLANET_COLOURS["α Cen Bb*"], size: 0.5, sym: "B", host: "B" },
+      { name: "α Cen Ab*", a: 1.1, mass: 1.5 * M_EARTH, type: "rocky", color: ROGUE_PLANET_COLOURS["α Cen Ab*"], size: 0.45, sym: "A", host: "A" },
     ],
-    habZone: [1.0, 1.6],
+    // Kopparapu 2014 conservative zone of star A (1.519 Lsun, 5790 K).
+    habZone: [1.17, 2.06],
     defaultZoom: 10,
-    note: "A binary pair 4.37 light-years away. The planets are hypothetical. Separation about 23 AU.",
+    note: "A binary pair 4.37 light-years away. The planets are hypothetical, one around each star. Separation 11 to 36 AU.",
   },
 };
 
@@ -294,9 +301,10 @@ export interface RogueBody extends Body {
  * Placing a companion without also offsetting the primary would leave the pair
  * lurching around a point that is not their centre of mass.
  *
- * Planets in a binary orbit the barycentre using the combined mass, which is the
- * circumbinary approximation the original chose for stability. It is not exact
- * for a wide pair, and it keeps orbits from tearing apart on the first pass.
+ * A planet with a `host` circles that star (S-type, the only stable option
+ * inside a wide pair: the 1.9 audit found Alpha Cen's planets placed about the
+ * barycentre at circumbinary speed and ejected in 3.3 years). Without a host
+ * it circles the barycentre with the combined mass (P-type).
  */
 export function buildBodies(sys: SystemDef, intruder?: IntruderConfig): RogueBody[] {
   const bodies: RogueBody[] = [];
@@ -316,11 +324,14 @@ export function buildBodies(sys: SystemDef, intruder?: IntruderConfig): RogueBod
   bodies.push(primary);
 
   if (sys.binary) {
-    const sep = sys.binary.separation;
+    // Start at apoastron, r = a(1 + e), relative speed from vis-viva
+    // v² = GM(1 − e)/(a(1 + e)). e = 0 gives the circular case.
+    const e = sys.binary.e ?? 0;
+    const sep = sys.binary.separation * (1 + e);
     const total = sys.starMass + sys.binary.mass;
     const rA = (sep * sys.binary.mass) / total;
     const rB = (sep * sys.starMass) / total;
-    const vOrbit = Math.sqrt((G * total) / sep);
+    const vOrbit = Math.sqrt((G * total * (1 - e)) / (sys.binary.separation * (1 + e)));
 
     primary.x = -rA;
     primary.vy = -vOrbit * (sys.binary.mass / total);
@@ -342,15 +353,20 @@ export function buildBodies(sys: SystemDef, intruder?: IntruderConfig): RogueBod
   const centralMass = sys.binary ? sys.starMass + sys.binary.mass : sys.starMass;
   sys.planets.forEach((pd, i) => {
     const angle = orbitalPhase(i);
-    const v = Math.sqrt((G * centralMass) / pd.a);
+    // S-type: circle the host star, moving with it. Otherwise circle the
+    // barycentre with the combined mass (P-type).
+    const host = pd.host === "B" && bodies[1]?.isStar ? bodies[1] : pd.host === "A" ? primary : null;
+    const cx = host ? host.x : 0;
+    const cy = host ? host.y : 0;
+    const v = Math.sqrt((G * (host ? host.mass : centralMass)) / pd.a);
     bodies.push({
       name: pd.name,
-      x: pd.a * Math.cos(angle),
-      y: pd.a * Math.sin(angle),
+      x: cx + pd.a * Math.cos(angle),
+      y: cy + pd.a * Math.sin(angle),
       // Perpendicular to the radius, which is what makes the orbit circular
       // rather than a plunge toward the star.
-      vx: -v * Math.sin(angle),
-      vy: v * Math.cos(angle),
+      vx: (host ? host.vx : 0) - v * Math.sin(angle),
+      vy: (host ? host.vy : 0) + v * Math.cos(angle),
       mass: pd.mass,
       color: pd.color,
       size: pd.size,

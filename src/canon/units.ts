@@ -34,6 +34,8 @@ export const UNITS = {
   km: "km",
   km2: "km²",
   W: "W",
+  /** Stellar flux in units of Earth's (1361 W/m²). Added 2026-11-26, 1.9 Solaris. */
+  earth_flux: "S⊕",
   w_kg: "W/kg",
   g_cm3: "g/cm³",
   deg: "°",
@@ -41,8 +43,6 @@ export const UNITS = {
   fraction: "",
   /** Revolutions per minute (spin habitats). Added 1.9 for vessel.spin_rate. */
   rpm: "rpm",
-  /** Stellar flux relative to Earth's (1361 W/m²). Added 1.9 for planet.insolation. */
-  earth_flux: "S⊕",
   kg_C_m2_yr: "kg C/m²/yr",
 } as const;
 

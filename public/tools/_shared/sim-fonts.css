@@ -1,0 +1,19 @@
+/* ==========================================================================
+   sim-fonts.css: self-hosted fonts for the static simulators.
+
+   The static sims used to pull DM Sans and JetBrains Mono from Google Fonts
+   and MD Nichrome from a third-party test CDN (X11). Everything now loads
+   from this origin. Licences: DM Sans (OFL-1.1, via Fontsource 5.3.0,
+   public/fonts/dm-sans/OFL.txt), JetBrains Mono (OFL-1.1, webfonts from the JetBrains/JetBrainsMono repository,
+   public/fonts/jetbrains-mono/OFL.txt), MD Nichrome (licensed, already
+   self-hosted for the app). Jura is not loaded here: in the sims it only
+   ever appeared as a fallback behind MD Nichrome.
+   ========================================================================== */
+@import url('/fonts/md-nichrome/md-nichrome.css');
+
+@font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 300; font-display: swap; src: url('/fonts/dm-sans/dm-sans-latin-300-normal.woff2') format('woff2'); }
+@font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/dm-sans/dm-sans-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/dm-sans/dm-sans-latin-500-normal.woff2') format('woff2'); }
+@font-face { font-family: 'DM Sans'; font-style: italic; font-weight: 400; font-display: swap; src: url('/fonts/dm-sans/dm-sans-latin-400-italic.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/jetbrains-mono/JetBrainsMono-Regular.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/jetbrains-mono/JetBrainsMono-Medium.woff2') format('woff2'); }

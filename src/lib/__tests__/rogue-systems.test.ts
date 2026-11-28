@@ -213,8 +213,12 @@ describe("body layout", () => {
     for (const key of systemKeys) {
       const bodies = buildBodies(SYSTEMS[key]);
       const centre = stellarBarycenter(bodies);
+      const stars = bodies.filter((x) => x.isStar);
       for (const b of bodies.filter((x) => x.isPlanet)) {
-        expect(specificOrbitalEnergy(b, centre), `${key} ${b.name}`).toBeLessThan(0);
+        // An S-type planet is bound to its own star, not to the pair's centre.
+        const host = SYSTEMS[key].planets.find((p) => p.name === b.name)?.host;
+        const ref = host === "A" ? barycenter([stars[0]]) : host === "B" ? barycenter([stars[1]]) : centre;
+        expect(specificOrbitalEnergy(b, ref), `${key} ${b.name}`).toBeLessThan(0);
       }
       expect(ejectedBodies(bodies).size, key).toBe(0);
     }
@@ -237,9 +241,10 @@ describe("binary layout", () => {
     expect(c.y).toBeCloseTo(0, 9);
   });
 
-  it("separates them by the published distance", () => {
+  it("starts the eccentric pair at apoastron, a(1 + e)", () => {
     const sep = Math.hypot(stars[0].x - stars[1].x, stars[0].y - stars[1].y);
-    expect(sep).toBeCloseTo(SYSTEMS.alphacen.binary!.separation, 6);
+    const { separation, e = 0 } = SYSTEMS.alphacen.binary!;
+    expect(sep).toBeCloseTo(separation * (1 + e), 6);
   });
 
   it("gives the pair zero net momentum, so the system does not drift", () => {
@@ -266,8 +271,13 @@ describe("binary layout", () => {
         seps.push(Math.hypot(s[0].x - s[1].x, s[0].y - s[1].y));
       }
     }
-    // A circular binary should keep a near-constant separation.
-    for (const s of seps) expect(s).toBeCloseTo(SYSTEMS.alphacen.binary!.separation, 0);
+    // An eccentric binary swings between periastron a(1 - e) and apoastron
+    // a(1 + e) and never leaves that range.
+    const { separation, e = 0 } = SYSTEMS.alphacen.binary!;
+    for (const s of seps) {
+      expect(s).toBeGreaterThan(separation * (1 - e) * 0.99);
+      expect(s).toBeLessThan(separation * (1 + e) * 1.01);
+    }
   });
 });
 

@@ -10,9 +10,8 @@
 <link rel="stylesheet" href="/tools/_shared/sim-tokens.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SOLARIS — The Science | StellarForge</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-<link href="https://fonts.cdnfonts.com/css/md-nichrome-test" rel="stylesheet">
+<link rel="stylesheet" href="/tools/_shared/sim-fonts.css">
+<link href="/fonts/md-nichrome/md-nichrome.css" rel="stylesheet">
 <style>
 :root{
   --sf-accent:#15C17B;
@@ -174,62 +173,69 @@ body{
 
   <!-- ── ORBITAL MECHANICS ───────────────────────── -->
   <div class="sci-section">Orbital Mechanics</div>
-  <p>Single-star systems use <strong>analytic Keplerian orbits</strong>, solved exactly rather than simulated step by step. The eccentric anomaly is found by Newton-Raphson iteration (5 passes) on Kepler's equation, and the true anomaly follows from it:</p>
-  <span class="eq">M = E − e·sin(E)<br>r = a(1 − e·cos E)</span>
-  <p>Orbital period follows Kepler's third law, calibrated so that <strong>1 AU around a 1 L☉ star completes one orbit in 14 simulation-seconds</strong>:</p>
-  <span class="eq">T² ∝ a³<br>T = 14 × a^1.5&nbsp; [sim-s, a in AU]</span>
-  <p>A planet twice as far from its star takes 2<sup>1.5</sup> ≈ 2.83× longer to complete one orbit — distance and time are inseparable. At 0.1 AU a year is 0.44 sim-seconds; at 10 AU it's 442.</p>
-  <p>Circular velocity comes from the shell theorem: only the mass interior to a planet's orbit sets its speed.</p>
-  <span class="eq">v_circ = √(GM_interior / r)</span>
-  <p>A distant companion star perturbs an orbit but doesn't set its baseline speed, because it sits outside the orbit and contributes nothing to the interior mass. Planets themselves are treated as massless test particles: the Sun outweighs Earth by a factor of roughly 333,000, so planet-planet gravity is under 0.03% of stellar gravity even at closest approach — below any threshold that would visibly matter.</p>
+  <p>Single-star systems use <strong>circular Keplerian orbits</strong>, solved exactly rather than simulated step by step. The period follows Kepler's third law with the star's real mass:</p>
+  <span class="eq">P = √(a³ / M) years &nbsp; [a in AU, M in M☉]</span>
+  <p>Earth at 1 AU around 1 M☉: 365 days. Proxima b at 0.0486 AU around 0.122 M☉: 11.2 days. In multi-star systems <code>M</code> is the mass the planet circles: one star, or the whole inner pair for a circumbinary world.</p>
+  <p><strong>Time scale.</strong> One simulated year takes 14 seconds at 1×: about 26 days pass per second, roughly 2.3 × 10⁶ × real time. The transport bar shows the speed and the simulated year.</p>
+  <p>Circular speed is <code>v = √(GM / r)</code> with <code>M</code> the host mass. Planets are massless test particles: the Sun outweighs Earth by about 333,000, so planet–planet gravity is under 0.03% of stellar gravity even at closest approach.</p>
+
+  <!-- ── INSOLATION AND TEMPERATURE ──────────────── -->
+  <div class="sci-section">Insolation &amp; Temperature</div>
+  <p>Every planet reports the starlight it receives and the temperature that light alone would give it:</p>
+  <span class="eq">S = Σ L_i / d_i² &nbsp; [Earth = 1]<br>T_eq = 278.3 K × S^¼ × (1 − A)^¼</span>
+  <p>Every star contributes. For a planet circling a moving pair the flux is averaged over the orbit, ⟨1/d²⟩ = 1/(a² − r²) for a star on a path of radius <code>r</code>. <code>T_eq</code> assumes full heat redistribution and a Bond albedo <code>A</code> of 0.30 (0.34 for giants). Earth's is 254 K; its atmosphere adds 34 K more, so the surface can be much warmer than <code>T_eq</code>.</p>
 
   <!-- ── HABITABLE ZONE ──────────────────────────── -->
   <div class="sci-section">Habitable Zone</div>
-  <p>The habitable zone is the band of orbital distances where liquid water could stand on a rocky surface, given the star's flux. SOLARIS places its inner edge at the point where a runaway greenhouse effect would bake the surface (Venus's fate) and its outer edge at the point where CO₂ freezes out and can no longer hold heat in (early Mars's fate).</p>
-  <span class="eq">HZ ∝ √L_total<br>inner ≈ 0.95 AU, outer ≈ 1.67 AU (at 1 L☉)</span>
-  <p>For a multi-star system, SOLARIS sums every star's luminosity and scales the single-star HZ by the square root of that total. A G+K binary radiating 1.7 L☉ combined pushes its habitable zone out by a factor of √1.7 ≈ 1.30 compared to either star alone.</p>
-  <div class="note">The habitable zone is probabilistic, not a guarantee. Atmospheric composition, albedo, and tidal heating can all push a real world into or out of habitability regardless of where it falls in this band — SOLARIS models the stellar-flux boundary, not the planet's own atmosphere.</div>
-  <div class="src">Kopparapu, R.K. et al. (2013). "Habitable Zones Around Main-sequence Stars: New Estimates." <em>The Astrophysical Journal</em>, 765(2), 131. <a href="https://doi.org/10.1088/0004-637X/765/2/131" target="_blank">DOI</a></div>
+  <p>The habitable zone is the band of orbital distances where liquid water could stand on a rocky surface, given the star's flux. Its inner edge is the runaway greenhouse (Venus's fate) and its outer edge the maximum greenhouse, where more CO₂ stops warming and starts reflecting light (early Mars's fate).</p>
+  <span class="eq">d = √( L_total / S_eff(Teff) )<br>Sun: 0.95–1.68 AU (conservative)</span>
+  <p><code>S_eff</code> depends on the star's temperature: redder light warms a planet more per watt. For several stars SOLARIS uses the total luminosity once, at the luminosity-weighted temperature, and each planet's own status uses the flux it actually receives. Planets between the conservative and optimistic limits (recent Venus, early Mars) are marked as on an edge.</p>
+  <p>Kopparapu fitted <code>S_eff</code> for 2,600–7,200 K. The Blue (B8V) and White (A5V) stars are hotter, so their zones are extrapolations, and SOLARIS says so.</p>
+  <div class="note">The habitable zone is probabilistic, not a guarantee. Atmospheric composition, albedo, and tidal heating can all push a real world into or out of habitability regardless of where it falls in this band. SOLARIS models the stellar-flux boundary, not the planet's own atmosphere.</div>
+  <div class="src">Kopparapu, R.K. et al. (2014). "Habitable Zones around Main-sequence Stars: Dependence on Planetary Mass." <em>The Astrophysical Journal Letters</em>, 787, L29. <a href="https://doi.org/10.1088/2041-8205/787/2/L29" target="_blank">DOI</a></div>
 
   <!-- ── STAR TYPES ───────────────────────────────── -->
   <div class="sci-section">Star Types</div>
-  <p>SOLARIS offers five stellar classes, spanning the range a habitable-zone story is likely to need — from the dim red dwarfs where tidal locking is the norm to the hot blue giants whose habitable zones sit dangerously close to a short stellar lifespan:</p>
+  <p>SOLARIS offers five main-sequence stars, each one row of a published table, so mass, luminosity, temperature and radius agree with each other (Stefan–Boltzmann):</p>
   <table class="sys-table">
-    <tr><th>Class</th><th>Approx. Mass</th><th>Surface Temp</th><th>Luminosity (L☉)</th><th>HZ (AU)</th></tr>
-    <tr><td>Blue Star</td><td><code>~16 M☉</code></td><td>25,000–50,000 K</td><td><code>4.5</code></td><td><code>3.5–7.0</code></td></tr>
-    <tr><td>White Star</td><td><code>~2.1 M☉</code></td><td>7,500–10,000 K</td><td><code>2.2</code></td><td><code>2.4–4.5</code></td></tr>
-    <tr><td>Yellow Star</td><td><code>~1.0 M☉</code></td><td>5,300–6,000 K</td><td><code>1.0</code></td><td><code>1.6–3.0</code></td></tr>
-    <tr><td>Orange Star</td><td><code>~0.7 M☉</code></td><td>3,700–5,200 K</td><td><code>0.42</code></td><td><code>0.8–1.7</code></td></tr>
-    <tr><td>Red Dwarf</td><td><code>~0.3 M☉</code></td><td>2,400–3,700 K</td><td><code>0.08</code></td><td><code>0.2–0.7</code></td></tr>
+    <tr><th>Star</th><th>Type</th><th>Mass</th><th>Temp</th><th>Luminosity (L☉)</th><th>Radius</th><th>HZ (AU)</th></tr>
+    <tr><td>Blue Star</td><td>B8V</td><td><code>3.38 M☉</code></td><td>12,300 K</td><td><code>155</code></td><td><code>2.86 R☉</code></td><td><code>~10–19*</code></td></tr>
+    <tr><td>White Star</td><td>A5V</td><td><code>1.88 M☉</code></td><td>8,100 K</td><td><code>12.3</code></td><td><code>1.79 R☉</code></td><td><code>~3.0–5.5*</code></td></tr>
+    <tr><td>Yellow Star</td><td>G2V</td><td><code>1.00 M☉</code></td><td>5,770 K</td><td><code>1.02</code></td><td><code>1.01 R☉</code></td><td><code>0.96–1.69</code></td></tr>
+    <tr><td>Orange Star</td><td>K5V</td><td><code>0.70 M☉</code></td><td>4,440 K</td><td><code>0.174</code></td><td><code>0.70 R☉</code></td><td><code>0.42–0.79</code></td></tr>
+    <tr><td>Red Dwarf</td><td>M4V</td><td><code>0.23 M☉</code></td><td>3,210 K</td><td><code>0.0072</code></td><td><code>0.27 R☉</code></td><td><code>0.09–0.17</code></td></tr>
   </table>
-  <p>Each star's gravitational parameter (GM) scales directly with its luminosity value above, which is what lets a single formula handle circular velocity around any star or combination of stars in the system.</p>
+  <p>* Outside the temperature range the habitable-zone fit covers; extrapolated.</p>
+  <div class="src">Mamajek, E. (2022). "A Modern Mean Dwarf Stellar Color and Effective Temperature Sequence," after Pecaut, M.J. &amp; Mamajek, E.E. (2013), <em>ApJS</em>, 208, 9. <a href="https://www.pas.rochester.edu/~emamajek/EEM_dwarf_UBVIJHK_colors_Teff.txt" target="_blank">Table</a></div>
 
   <!-- ── MULTI-STAR ARCHITECTURES ────────────────── -->
   <div class="sci-section">Multi-Star Architectures</div>
-  <p>Real stars are frequently not alone. SOLARIS models four hierarchical configurations, each based on an architecture observed in nature:</p>
+  <p>Real stars are frequently not alone. SOLARIS models five hierarchical configurations, each based on an architecture observed in nature:</p>
   <table class="sys-table">
-    <tr><th>Architecture</th><th>Layout</th><th>Modeled On</th></tr>
-    <tr><td>Circumbinary (P-type)</td><td>Planets orbit both stars together</td><td>Kepler-16 ("Tatooine")</td></tr>
-    <tr><td>3+1 Hierarchical</td><td>Inner binary + distant companion</td><td>Alpha Centauri + Proxima</td></tr>
-    <tr><td>2+1 (S-type + wide)</td><td>Planet orbits one star; third companion is distant</td><td>Wide hierarchical trinaries</td></tr>
-    <tr><td>2+2 Double Binary</td><td>Two close binary pairs orbiting each other</td><td>30 Ari, ε Lyrae</td></tr>
-    <tr><td>3+1 Inner Triple</td><td>Packed inner triple + distant fourth star</td><td>TIC 120362137 (2026)</td></tr>
+    <tr><th>Architecture</th><th>Planets orbit</th><th>Modeled On</th></tr>
+    <tr><td>Circumbinary (P-type)</td><td>Both stars together</td><td>Kepler-16 ("Tatooine")</td></tr>
+    <tr><td>3+1 Hierarchical</td><td>The inner pair; a third star perturbs from outside</td><td>Alpha Centauri + Proxima</td></tr>
+    <tr><td>2+1 (S-type + wide)</td><td>Star A alone, inside a wide pair, with a third star further out</td><td>Wide hierarchical trinaries</td></tr>
+    <tr><td>2+2 Double Binary</td><td>One pair; the other pair perturbs from outside</td><td>30 Ari, ε Lyrae</td></tr>
+    <tr><td>3+1 Inner Triple</td><td>The packed inner triple; a fourth star perturbs</td><td>TIC 120362137 (2026)</td></tr>
   </table>
-  <p>Only P-type (circumbinary) orbits are modeled — the planet orbits the binary as a whole from outside it. S-type orbits, where a planet circles just one star inside a binary, are not currently simulated.</p>
-  <p>Stability in these systems is bounded on both sides. A circumbinary planet must stay far enough out that the binary looks like a single point mass, and — if a third star is present — close enough in that its gravity doesn't get overwhelmed by the distant companion's tidal pull:</p>
-  <span class="eq">a_min ≈ 3.5 × a_AB &nbsp; (inner clearance)<br>a_max ≈ 0.30 × a_C &nbsp; (outer stability limit)</span>
-  <p>The 0.30 factor is a conservative choice from a published empirical range of 0.30 to 0.38, which depends on the exact mass ratio and orbital eccentricity involved. Inside the clearance zone, orbital resonances with the binary create chaos; beyond the stability limit, the third star's tidal perturbation overwhelms whatever is holding the planet in place.</p>
+  <p>Stability is bounded on both sides, from Holman &amp; Wiegert's fits to orbits that survive 10⁴ binary periods. A circumbinary (P-type) planet must stay outside eq. 3; a planet with a companion outside it (S-type) must stay inside eq. 1. <code>μ = m₂/(m₁+m₂)</code>, <code>e</code> the stars' eccentricity (0 in SOLARIS):</p>
+  <span class="eq">S-type (eq. 1): a_c/a_b = 0.464 − 0.380μ − 0.631e + 0.586μe + 0.150e² − 0.198μe²<br>P-type (eq. 3): a_c/a_b = 1.60 + 5.10e − 2.22e² + 4.12μ − 4.27eμ − 5.09μ² + 4.61e²μ²</span>
+  <p>For two equal stars on circles that is a circumbinary planet outside 2.39 × their separation, and an S-type planet inside 0.27 × it. A 3+1 triple only has room for planets when the third star is roughly ten or more times further out than the inner pair, which is why SOLARIS widens it when it must. If the habitable zone falls outside the stable range, SOLARIS says so.</p>
   <div class="src">Holman, M.J. &amp; Wiegert, P.A. (1999). "Long-Term Stability of Planets in Binary Systems." <em>The Astronomical Journal</em>, 117(1), 621. <a href="https://doi.org/10.1086/300695" target="_blank">DOI</a></div>
-  <div class="note">Multi-star systems have compressed habitable regions compared to a single star of the same total light output. The fewer stable orbits available, the more precious — and more strategically important — each habitable world becomes to a story set there.</div>
+  <div class="note">Multi-star systems have compressed habitable regions compared to a single star of the same total light output. The fewer stable orbits available, the more precious, and more strategically important, each habitable world becomes to a story set there.</div>
 
   <!-- ── N-BODY INTEGRATION ──────────────────────── -->
   <div class="sci-section">N-Body Physics &amp; the Integrator</div>
-  <p>Once a system has more than one star, planetary orbits are no longer solved analytically — they're integrated forward in time using <strong>Velocity Verlet</strong>, a second-order symplectic method chosen because it conserves energy over long runs rather than letting orbits slowly drift, which is the standard failure mode of naive integrators:</p>
+  <p>Once a system has more than one star, planetary orbits are integrated forward in time using <strong>Velocity Verlet</strong>, a second-order symplectic method chosen because it conserves energy over long runs:</p>
   <span class="eq">x(t+Δt) = x + vΔt + ½aΔt²<br>v(t+Δt) = v + ½(a₀ + a₁)Δt</span>
-  <p>At each step, position updates from the current velocity and acceleration; velocity then updates from the average of the old and new acceleration. Each frame is subdivided so no individual substep exceeds 0.025 sim-seconds — at 10× speed that's up to 8 sub-steps per rendered frame, which is what keeps the integrator stable even when the simulation is running fast.</p>
-  <p>Gravity is computed pairwise between every body, with the shell theorem applied so an object's orbital velocity only sees interior mass. <strong>Stars themselves follow prescribed Keplerian orbits</strong> around the system barycenter rather than true N-body motion — accurate for the hierarchical configurations SOLARIS models, where stellar separations stay well-defined rather than chaotic. Planets, by contrast, feel gravity from every star in the system simultaneously.</p>
-  <p>A safety valve exists for the integrator's own edge cases: if a planet's kinetic energy exceeds 2.5× its escape velocity — which can happen from a close stellar encounter in an unstable configuration — it's respawned at its last stable orbital radius. This is a simulation-artifact protection, not a physical event, and it's visible in the in-app "This System" data panel if it fires.</p>
-  <div class="note">Velocity Verlet conserves energy to O(Δt²), meaning small energy drift can accumulate over thousands of orbits at very high simulation speed. Run at low speed if you need to trust the fine structure of a long-term orbit. The reward for watching a trinary system at low speed: Kozai-Lidov-like oscillations, where a distant companion gradually pumps eccentricity into an inner planet's orbit over time — a real astrophysical phenomenon, visible directly.</div>
+  <p><strong>Stars</strong> move on circular Kepler orbits about the barycentre of the pair they belong to, with their real masses, and their positions are computed afresh for every substep. <strong>Planets</strong> feel every star, in the frame of the group they orbit, minus that frame's own acceleration, so a distant companion raises tides on them instead of dragging them along. Each substep is at most 0.025 s of simulation time and at most 1/200 of the shortest orbit in the system.</p>
+  <p><strong>Ejection.</strong> A planet that becomes unbound (positive orbital energy) and leaves its starting orbit is flagged as ejected, with the simulated year it happened. It is never put back; the flag is the information.</p>
+  <div class="note">Watch a trinary at low speed and you can see Kozai-Lidov-like behaviour: a distant companion slowly pumps eccentricity into an inner planet's orbit. Readouts use each planet's current distance.</div>
+
+  <!-- ── SAVING ───────────────────────────────────── -->
+  <div class="sci-section">Saving a System</div>
+  <p>Generation is seeded. Saving keeps the seed and the whole system as it is now: stars, separations, every planet with its name and edits, moons, belt, Oort cloud, live orbits and the clock. Loading restores exactly that.</p>
 
   <!-- ── TIDAL LOCKING ────────────────────────────── -->
   <div class="sci-section">Tidal Locking</div>

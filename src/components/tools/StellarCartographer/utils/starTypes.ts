@@ -10,7 +10,10 @@ export const STAR_TYPES: Record<SpectralClass, StarTypeData> = {
     temp: '30,000K+',
     mass: '16-150 M☉',
     rarity: 0.00003,
-    habitable: 0.02,
+    // O and B stars leave the main sequence in ~3-400 Myr: too soon for a
+    // habitable zone to stay put or for life to start (Kasting, Whitmire &
+    // Reynolds 1993, Icarus 101:108). 1.9 (C2): zero, not 2-5%.
+    habitable: 0,
     size: 5,
     luminosity: [0.9, 1.0]
   },
@@ -19,7 +22,7 @@ export const STAR_TYPES: Record<SpectralClass, StarTypeData> = {
     temp: '10,000-30,000K',
     mass: '2.1-16 M☉',
     rarity: 0.0013,
-    habitable: 0.05,
+    habitable: 0,
     size: 4,
     luminosity: [0.85, 1.0]
   },

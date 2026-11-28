@@ -49,6 +49,7 @@ export const ROGUE_PLANET_COLOURS: Record<string, string> = {
   "Prox c": "#7799bb",
   "α Cen Ab*": "#5588cc",
   "α Cen Ac*": "#88aacc",
+  "α Cen Bb*": "#88aacc",
 };
 
 /** Intruders: black hole, brown dwarf, rogue planet. */
