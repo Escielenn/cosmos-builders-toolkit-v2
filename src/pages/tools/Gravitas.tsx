@@ -30,7 +30,8 @@ import {
 import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
 import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
 import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
-import { manifest as gravitasManifest } from "@/tools/gravitas/manifest";
+import { manifest as gravitasManifest, spinGravity } from "@/tools/gravitas/manifest";
+import { ReadoutNarrative } from "@/components/canon/ManifestNarratives";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -741,6 +742,13 @@ const Gravitas = () => {
                 <p className="text-xs uppercase tracking-wider text-t2 mb-1">Effective Gravity</p>
                 <p className={`font-mono text-4xl font-light ${statusColor}`}>{formatG(effectiveG)}</p>
                 <p className={`text-sm mt-1 ${statusColor}`}>{gravityLabel}</p>
+                {/* 1.9 F-02: the spin gravity Gravitas puts in canon, narrated. */}
+                {formState.activeMode === "spin" && (
+                  <ReadoutNarrative
+                    className="mx-auto"
+                    text={spinGravity.narrative(spinResult.floor_g, { "vessel.spin_rate": formState.spin.rotation_rpm })}
+                  />
+                )}
               </div>
 
               {/* Mode-specific results */}

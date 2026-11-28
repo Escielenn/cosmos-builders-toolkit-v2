@@ -71,7 +71,8 @@ import {
   LOCAL_STORAGE_KEY,
   TOOL_TYPE,
 } from "@/lib/tool-worksheets/goldilocks";
-import { manifest as goldilocksManifest } from "@/tools/goldilocks/manifest";
+import { manifest as goldilocksManifest, hzInner, hzOuter } from "@/tools/goldilocks/manifest";
+import { ReadoutNarrative } from "@/components/canon/ManifestNarratives";
 import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
 import { spectralLetter } from "@/canon/codecs";
 import { CanonProvenance } from "@/components/canon/CanonProvenance";
@@ -584,6 +585,13 @@ const HabitableZoneCalculator = () => {
                   knownPlanets={allKnownPlanets.length > 0 ? allKnownPlanets : undefined}
                   className="h-[350px] md:h-[450px] lg:h-[500px]"
                 />
+                {/* 1.9 F-02: what the two saved edges mean, from the manifest. */}
+                {result.valid && (
+                  <>
+                    <ReadoutNarrative text={hzInner.narrative(result.hz.runawayGreenhouse, {})} />
+                    <ReadoutNarrative text={hzOuter.narrative(result.hz.maxGreenhouse, {})} className="mt-1" />
+                  </>
+                )}
                 {/* Planet distance slider under diagram */}
                 <div className="mt-4 space-y-2">
                   <div className="flex items-center justify-between">
