@@ -59,12 +59,10 @@ describe("F-01 Teff-corrected habitable zone in canon", () => {
 });
 
 describe("main-sequence Teff (Orrery derivation)", () => {
-  it("Sun 5772 K, Proxima ≈3100 K (measured 3042), Alpha Cen A ≈6100 K (measured 5790; within 6%)", () => {
+  it("Sun 5772 K; Proxima and Alpha Cen A within 6% of measured 3042 K and 5790 K", () => {
     expect(mainSequenceTeff(1, 1)).toBeCloseTo(5772, 0);
-    expect(mainSequenceTeff(0.00155, 0.122)!).toBeGreaterThan(2950);
-    expect(mainSequenceTeff(0.00155, 0.122)!).toBeLessThan(3250);
-    expect(mainSequenceTeff(1.519, 1.1)!).toBeGreaterThan(5650);
-    expect(mainSequenceTeff(1.519, 1.1)!).toBeLessThan(6200);
+    expect(Math.abs(mainSequenceTeff(0.00155, 0.122)! / 3042 - 1)).toBeLessThan(0.06);
+    expect(Math.abs(mainSequenceTeff(1.519, 1.1)! / 5790 - 1)).toBeLessThan(0.06);
   });
   it("chains: L + M → Teff → HZ edges, each with a narrative", () => {
     const out = deriveAll({ "star.luminosity": 0.013, "star.mass": 0.33 });

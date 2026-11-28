@@ -7,12 +7,15 @@
  * writer to describe the sky in free text and never showed what ExoSky had
  * already decided. This reads the world's sky facts through canon: stored
  * planet.sky.* facts (lane E's predicates) and, until those exist, the sky.*
- * facts projected from ExoSky saves. Read-only here; ExoSky is where the sky
+ * facts projected from ExoSky saves, plus the constellation entities ExoSky
+ * creates (metadata.kind "constellation", lane E N4). Read-only here; ExoSky is where the sky
  * is edited, one click away (Law III). The writer's text is never touched.
  */
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useCanonFacts } from "@/canon/hooks";
+import { useEntities } from "@/hooks/use-entity-graph";
+import { isConstellationEntity } from "@/lib/simulators/exosky-canon";
 import type { CanonFact } from "@/canon/types";
 
 function isSkyFact(f: CanonFact): boolean {
@@ -25,13 +28,15 @@ function isConstellation(f: CanonFact): boolean {
 
 export function SkyFromCanon({ worldId }: { worldId: string | null | undefined }): JSX.Element | null {
   const { data: facts } = useCanonFacts(worldId ?? undefined);
+  const { data: entities } = useEntities(worldId ?? undefined);
   const { sky, constellations } = useMemo(() => {
     const all = (facts ?? []).filter(isSkyFact);
     return { sky: all.filter((f) => !isConstellation(f)), constellations: all.filter(isConstellation) };
   }, [facts]);
+  const drawn = useMemo(() => (entities ?? []).filter(isConstellationEntity), [entities]);
   if (!worldId) return null;
 
-  if (sky.length === 0 && constellations.length === 0) {
+  if (sky.length === 0 && constellations.length === 0 && drawn.length === 0) {
     return (
       <p className="sf-measure mt-2 text-[13px] text-t3">
         No sky computed for this world yet.{" "}
@@ -68,6 +73,18 @@ export function SkyFromCanon({ worldId }: { worldId: string | null | undefined }
             {constellations.map((f) => (
               <li key={f.id} className="py-0.5 text-[13px] text-t2">
                 {f.predicate.startsWith("legacy.") ? `${f.label.replace(/^Constellation\s*"?/i, "").replace(/"$/, "")}: ${f.valueText}` : f.valueText}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      {drawn.length > 0 && (
+        <>
+          <p className="mt-2 font-mono text-[12px] uppercase text-t4">Drawn in ExoSky ({drawn.length})</p>
+          <ul className="mt-1">
+            {drawn.map((e) => (
+              <li key={e.id} className="py-0.5 text-[13px] text-t2">
+                {e.name}
               </li>
             ))}
           </ul>

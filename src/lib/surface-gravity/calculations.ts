@@ -2,6 +2,7 @@
 // No React dependencies, importable from PDF templates
 
 import { hueVar, type HueName } from "@/styles/hue";
+import { meanThermalSpeedKms, retention } from "@/lib/physics";
 import { GAS_DATA, DELTA_V_VERDICTS, COMPOSITION_PRESETS, getGravityRegimeInfo } from "./data";
 import type { GravityRegime, DeltaVVerdict } from "./data";
 
@@ -187,42 +188,29 @@ export const NON_THERMAL_CAVEAT =
   "Thermal (Jeans) escape only. Small worlds without a magnetic field also lose gas to the solar wind and to sunlight splitting water: Mars lost most of its water that way.";
 
 /**
- * Which gases stay over geological time: retained when escape velocity is at
- * least 6× the gas's rms thermal speed at the EXOBASE temperature, marginal
- * from 4× (the usual rule of thumb; e.g. Seager 2010, Exoplanet Atmospheres,
- * ch. 6). Earth keeps N₂, O₂ and water and loses hydrogen and helium.
+ * Which gases stay over geological time, from the shared physics module
+ * (src/lib/physics retention(): mean thermal speed at most 1/6 of escape
+ * velocity is retained, up to 1/5 marginal, above that lost; Seager 2010).
+ * λ = v_esc / v̄, so the chart's λ = 6 line is the same rule. Tested at the
+ * EXOBASE temperature (F-06). Earth keeps N₂, O₂ and water and loses
+ * hydrogen and helium.
  */
 export function calcAtmosphericRetention(
   escapeVelocityKms: number,
   tempK: number
 ): GasRetention[] {
-  const escapeMs = escapeVelocityKms * 1000;
-
   return GAS_DATA.map((gas) => {
-    const thermalV = calcThermalVelocity(gas.molecularWeight, tempK);
-    const param = escapeMs / thermalV;
-
-    let status: "retained" | "marginal" | "escapes";
-    let statusHue: HueName;
-
-    if (param >= 6) {
-      status = "retained";
-      statusHue = "emerald";
-    } else if (param >= 4) {
-      status = "marginal";
-      statusHue = "amber";
-    } else {
-      status = "escapes";
-      statusHue = "crimson";
-    }
-
+    const r = retention(escapeVelocityKms, tempK, gas.molecularWeight);
+    const thermalV = meanThermalSpeedKms(tempK, gas.molecularWeight) * 1000;
+    const status: "retained" | "marginal" | "escapes" = r.verdict === "lost" ? "escapes" : r.verdict;
+    const statusHue: HueName = status === "retained" ? "emerald" : status === "marginal" ? "amber" : "crimson";
     return {
       id: gas.id,
       name: gas.name,
       formula: gas.formula,
       molecularWeight: gas.molecularWeight,
       thermalVelocity: thermalV,
-      escapeParameter: param,
+      escapeParameter: 1 / r.ratio,
       status,
       color: gas.color,
       statusHue,
