@@ -93,6 +93,7 @@ import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
 import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
 import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
 import { manifest as mythosManifest } from "@/tools/mythos/manifest";
+import { SkyFromCanon } from "@/components/canon/SkyFromCanon";
 import {
   codec as mythosCodec,
   type FormState,
@@ -1287,6 +1288,7 @@ const XenomythologyFrameworkBuilder = () => {
                   value={formState.planetaryConditions.skyAppearance}
                   onChange={(value) => updateField("planetaryConditions", "skyAppearance", value)}
                 />
+                <SkyFromCanon worldId={worldId} />
 
                 <div className="grid gap-6 md:grid-cols-2">
                   <RadioGroupField
