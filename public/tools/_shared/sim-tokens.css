@@ -21,6 +21,16 @@
    ========================================================================== */
 
 :root {
+  /* Star display colours (1.9). Data palette, not theme: approximate sRGB of
+     each spectral class's blackbody (Mitchell Charity, "What color are the
+     stars?"), slightly saturated for legibility on the canvas. Read by
+     solaris-core.js; keep in step with src/lib/palettes/. */
+  --sf-star-b8v: #9BB8FF;
+  --sf-star-a5v: #FFFDE7;
+  --sf-star-g2v: #FFD700;
+  --sf-star-k5v: #FF8C42;
+  --sf-star-m4v: #FF5555;
+
   --t1: #FAFAFA;
   --t2: #C9CDD3;
   --t3: #A7AAB0;

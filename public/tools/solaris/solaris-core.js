@@ -30,12 +30,20 @@
 
   // Palette key → main-sequence spectral type. Visual fields (colour, glow,
   // drawn radius in px) are display only and never reach canon.
+  /* Star colours live in /tools/_shared/sim-tokens.css (--sf-star-*), the
+     public sims' one colour home. Outside a browser (tests) they read ''. */
+  function starTok(spt) {
+    try {
+      if (typeof document === 'undefined' || !document.documentElement) return '';
+      return getComputedStyle(document.documentElement).getPropertyValue('--sf-star-' + spt).trim();
+    } catch (e) { return ''; }
+  }
   var STAR_TYPES = {
-    blue:   { spt: 'B8V', name: 'Blue Star',   color: '#9BB8FF', glow: 'rgba(155,184,255,', r: 24 },
-    white:  { spt: 'A5V', name: 'White Star',  color: '#FFFDE7', glow: 'rgba(255,253,231,', r: 20 },
-    yellow: { spt: 'G2V', name: 'Yellow Star', color: '#FFD700', glow: 'rgba(255,215,0,',   r: 19 },
-    orange: { spt: 'K5V', name: 'Orange Star', color: '#FF8C42', glow: 'rgba(255,140,66,',  r: 16 },
-    red:    { spt: 'M4V', name: 'Red Dwarf',   color: '#FF5555', glow: 'rgba(255,85,85,',   r: 13 }
+    blue:   { spt: 'B8V', name: 'Blue Star',   color: starTok('b8v'), glow: 'rgba(155,184,255,', r: 24 },
+    white:  { spt: 'A5V', name: 'White Star',  color: starTok('a5v'), glow: 'rgba(255,253,231,', r: 20 },
+    yellow: { spt: 'G2V', name: 'Yellow Star', color: starTok('g2v'), glow: 'rgba(255,215,0,',   r: 19 },
+    orange: { spt: 'K5V', name: 'Orange Star', color: starTok('k5v'), glow: 'rgba(255,140,66,',  r: 16 },
+    red:    { spt: 'M4V', name: 'Red Dwarf',   color: starTok('m4v'), glow: 'rgba(255,85,85,',   r: 13 }
   };
   var STAR_KEYS = ['blue', 'white', 'yellow', 'orange', 'red'];
   STAR_KEYS.forEach(function (k) {
