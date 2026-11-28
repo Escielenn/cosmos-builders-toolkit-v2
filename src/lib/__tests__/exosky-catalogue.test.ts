@@ -5,7 +5,7 @@ import { parseCatalogue, indexById, searchCatalogue, prettyDesignation, starLabe
 import { VANTAGES } from "@/lib/simulators/exosky-systems";
 import { applyCatalogueOverrides, resolveVantage } from "@/lib/simulators/exosky-vantage";
 import { observeCatalogue, catalogueReach, findPoleStar, NAKED_EYE_LIMIT } from "@/lib/simulators/exosky-sky";
-import { xyzToRaDec, EARTH_POLE } from "@/lib/simulators/astro";
+import { xyzToRaDec, EARTH_POLE, altAz } from "@/lib/simulators/astro";
 
 let stars: CatalogueStar[];
 let byId: Map<string, CatalogueStar>;
@@ -84,5 +84,25 @@ describe("the sky from here (E2 / E6)", () => {
     const v = resolveVantage({ preset: VANTAGES[0], catalogue: stars, catalogueById: byId });
     expect(v.isEarth).toBe(true);
     expect(v.hostId).toBe("HYG 0");
+  });
+});
+
+import { skyBodies, planetGeometry } from "@/lib/simulators/exosky-sky";
+
+describe("the Solar System from Earth (N2 reference case)", () => {
+  it("has the Moon full on 21 January 2000 (the night of a total lunar eclipse)", () => {
+    const v = resolveVantage({ preset: VANTAGES[0], catalogue: stars, catalogueById: byId });
+    // J2000 is 1 Jan 2000 12h TT; 21 Jan 04:40 UT is ~19.7 days later.
+    const c = { latitude: 40, timeOfDay: 0, substellarLongitude: 0, dayNumber: 19.7, epochYears: 0 };
+    const g = planetGeometry(v, c);
+    const moon = skyBodies(v, g, c, 1).find((b) => b.id === "moon")!;
+    expect(moon.phase).toBeGreaterThan(0.97);
+    expect(moon.sizeDeg).toBeCloseTo(0.52, 1);
+  });
+  it("puts the June-solstice noon sun 73° up from 40°N (90 - 40 + 23.4)", () => {
+    const v = resolveVantage({ preset: VANTAGES[0], catalogue: stars, catalogueById: byId });
+    const g = planetGeometry(v, { latitude: 40, timeOfDay: 0.5, substellarLongitude: 0, dayNumber: 171.3, epochYears: 0 });
+    expect(g.hostRaDec.dec).toBeGreaterThan(23.3);
+    expect(altAz(g.horizon, g.hostDir).alt).toBeCloseTo(73.4, 0);
   });
 });

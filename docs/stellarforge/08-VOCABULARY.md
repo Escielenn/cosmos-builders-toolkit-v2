@@ -122,6 +122,19 @@ Enough to run Phases 0–5. Extend via `/sf-fact`.
 | `planet.sky.visible_stars[]` | ref[] | — | Exosky |
 | `planet.sky.constellations[]` | text[] | — | Exosky → **Mythos** |
 | `planet.sky.daylight_colour` | text | — | derived from `star.temp_effective` |
+| `planet.pole_ra` / `planet.pole_dec` | scalar | `deg` (J2000) | Exosky (1.9, Stand here) |
+| `planet.precession_period` | scalar | `yr` | Exosky (derivation `exosky.precession_period`, writer may set) |
+| `planet.sky.pole_star` | text | — | Exosky |
+| `planet.sky.naked_eye_count` | scalar | — | Exosky |
+
+Added 1.9 (/sf-fact): `star.galactic_position` (struct schema `galactic_position`:
+`{ l_deg, b_deg, distance_pc, catalogue_id? }`, producer Exosky), and the
+`constellation.*` domain (layer mythology, producer Exosky):
+`constellation.stars[]` (text[] of catalogue ids, "HIP 32349"),
+`constellation.epoch` (scalar, yr from J2000), `constellation.seen_from` (ref
+to the planet). A constellation is a `custom` entity with
+`custom_type_label: "Constellation"` and `metadata.kind: "constellation"`;
+Mythos reads these and `planet.sky.constellations[]`.
 
 ### `ecology.*`
 
