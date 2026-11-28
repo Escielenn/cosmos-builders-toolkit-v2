@@ -39,6 +39,10 @@ describe("F-07 one cascade-layer scheme", () => {
   it("every manifest's accent is its layer's colour", () => {
     for (const m of MANIFESTS) expect(m.accent, m.id).toBe(LAYER_ACCENT[m.layer]);
   });
+  it("the entry-bundle mirror lists exactly the manifests' layers", async () => {
+    const { MANIFEST_TOOL_LAYERS } = await import("@/canon/tool-layers");
+    expect(MANIFEST_TOOL_LAYERS).toEqual(Object.fromEntries(MANIFESTS.map((m) => [m.tool, m.layer])));
+  });
   it("accents, sidebar and manifests agree for every wired tool", () => {
     for (const m of MANIFESTS) {
       expect(getToolAccent(m.tool), m.id).toBe(m.accent);

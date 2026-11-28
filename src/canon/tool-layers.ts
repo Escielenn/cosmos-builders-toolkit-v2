@@ -5,15 +5,17 @@
 // had no Physics and filed Paradox and Gravitas under "Technology" and Drake
 // under "Narrative"; tool-accents painted Paradox amber and Vessel teal; the
 // manifests said Culture for both. The manifest is the source of truth
-// (03-TOOL-CHARTER: `layer`). A tool without a manifest yet is listed in
-// UNMANIFESTED below, once, and leaves this table the day it is wired.
+// (03-TOOL-CHARTER: `layer`). MANIFEST_TOOL_LAYERS mirrors each manifest's
+// `layer` so this file can sit in the entry bundle without importing every
+// manifest (and the physics they pull in); src/canon/__tests__/narrate.test.ts
+// fails if the mirror and the manifests ever disagree. A tool without a
+// manifest yet is listed in UNMANIFESTED, once, and moves the day it is wired.
 //
 // Colour follows the layer and never moves (CLAUDE.md): amber Physics, azure
 // Environment, emerald Biology, magenta Psychology, stellar Mythology, violet
 // Culture, teal Integration.
 // ---------------------------------------------------------------------------
 
-import { MANIFESTS } from "@/canon/manifests";
 import type { CascadeLayer } from "@/canon/vocabulary";
 import type { ManifestAccent } from "@/canon/manifest";
 
@@ -70,7 +72,24 @@ export const UNMANIFESTED_TOOL_LAYERS: Readonly<Record<string, CascadeLayer>> = 
   exosky: "environment",
 };
 
-const FROM_MANIFESTS: Readonly<Record<string, CascadeLayer>> = Object.fromEntries(MANIFESTS.map((m) => [m.tool, m.layer]));
+/** Each wired tool's manifest `layer` (checked against the manifests in tests). */
+export const MANIFEST_TOOL_LAYERS: Readonly<Record<string, CascadeLayer>> = {
+  "planetary-profile": "environment", // genesis
+  "surface-gravity-calculator": "physics", // atlas (Ballast)
+  "star-system-builder": "physics", // orrery
+  "habitable-zone-calculator": "physics", // goldilocks
+  "propulsion-consequences-map": "culture", // impulse
+  "spacecraft-designer": "culture", // vessel
+  "time-dilation": "culture", // paradox
+  "one-big-lie": "integration", // axiom
+  "space-expansion-modeler": "culture", // exodus
+  gravitas: "culture",
+  "evolutionary-biology": "biology", // phylo
+  sensorium: "biology",
+  "xenomythology-framework-builder": "mythology", // mythos
+};
+
+const FROM_MANIFESTS = MANIFEST_TOOL_LAYERS;
 
 /** The cascade layer of a tool slug; Integration for anything unknown. */
 export function toolLayer(toolSlug: string): CascadeLayer {
