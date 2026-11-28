@@ -37,7 +37,17 @@ export const manifest: ToolManifest = {
 
   entities: [],
 
-  produces: [{ predicate: "route.dilation_factor", from: `derive:${dilationFactor.id}`, kind: "scalar" }],
+  // 1.9 F-05: the calculator's own engine (lib/time-dilation, the one
+  // relativistic travel engine, F-10) computes these for whichever mode is
+  // active, so they are `computed:` at save time rather than derived from
+  // the constant-speed field alone. dilationFactor stays registered: it is
+  // the narrative and the derivation canon/derive runs when only a cruise
+  // speed is known.
+  produces: [
+    { predicate: "route.dilation_factor", from: "computed:active-mode", kind: "scalar" },
+    { predicate: "route.proper_time", from: "computed:active-mode", unit: "yr", kind: "scalar" },
+    { predicate: "route.coordinate_time", from: "computed:active-mode", unit: "yr", kind: "scalar" },
+  ],
 
   consumes: [
     { predicate: "propulsion.type", required: false, onMissing: "link", producer: "impulse" },
@@ -46,6 +56,7 @@ export const manifest: ToolManifest = {
       required: true,
       onMissing: "prompt",
       prompt: "NO CRUISE SPEED SET. SET IT HERE.",
+      producer: "impulse",
     },
     { predicate: "route.distance_ly", required: false, onMissing: "prompt", prompt: "NO ROUTE SET. PICK A JOURNEY." },
   ],
@@ -59,7 +70,13 @@ export const manifest: ToolManifest = {
     influences: ["scene.travel"],
     narrative: (facts) => {
       const g = Number(facts["route.dilation_factor"]);
-      return Number.isFinite(g) && g >= 1 ? [dilationFactor.narrative(g, {})] : [];
+      const ship = Number(facts["route.proper_time"]);
+      const home = Number(facts["route.coordinate_time"]);
+      const out = Number.isFinite(g) && g >= 1 ? [dilationFactor.narrative(g, {})] : [];
+      if (Number.isFinite(ship) && Number.isFinite(home) && ship > 0 && home > 0) {
+        out.push(`${ship.toFixed(1)} years pass aboard; ${home.toFixed(1)} pass at home.`);
+      }
+      return out;
     },
   },
 

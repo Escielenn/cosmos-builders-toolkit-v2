@@ -55,7 +55,9 @@ describe("solarisPlanetPublishFacts", () => {
     expect(facts.find((f) => f.predicate === "planet.name")?.value).toBe("Kepler-442b");
     expect(facts.find((f) => f.predicate === "orbit.semi_major_axis")?.value).toBe(0.55);
     expect(facts.find((f) => f.predicate === "star.spectral_class")?.value).toBe("orange");
-    expect(facts.find((f) => f.predicate === "star.luminosity_lsun")?.value).toBe(0.42);
+    expect(facts.find((f) => f.predicate === "star.luminosity")?.value).toBe(0.42);
+    // S = 0.42 / 0.55² = 1.39 S⊕
+    expect(facts.find((f) => f.predicate === "planet.insolation")?.value).toBeCloseTo(1.39, 2);
     expect(facts.find((f) => f.predicate === "system.name")?.value).toBe("Kepler-442");
   });
 
@@ -119,17 +121,25 @@ describe("read round-trip", () => {
 });
 
 describe("readTidelockSeed", () => {
-  it("computes auFraction from the star's habitable-zone midpoint", () => {
+  it("sends the Earth-equivalent distance a/√L, so insolation is conserved (X4)", () => {
     const entry = entryWithFacts(solarisPlanetPublishFacts(payload));
     const seed = readTidelockSeed(entry);
     expect(seed).not.toBeNull();
-    // orange HZ mid = (0.8+1.7)/2 = 1.25; 0.55/1.25 = 0.44
-    expect(seed!.auFraction).toBeCloseTo(0.44, 5);
+    // 0.55 / √0.42 = 0.8487; S = 1 / 0.8487² = 1.388
+    expect(seed!.auFraction).toBeCloseTo(0.8487, 4);
+    expect(seed!.insolation).toBeCloseTo(1.388, 3);
+    expect(seed!.aAU).toBe(0.55);
     expect(seed!.starLuminosity).toBe(0.42);
   });
 
+  it("puts a 1.3 AU world around a Sun-like star at 1.3 AU in Tidelock's G2V, not 0.5 AU (X4)", () => {
+    const sunlike = entryWithFacts(solarisPlanetPublishFacts({ ...payload, starType: "yellow", starMassLum: 1, planetAU: 1.3 }));
+    // Tidelock: orbDist = STARS[G2V].hz (1.000) × auFraction.
+    expect(1.0 * readTidelockSeed(sunlike)!.auFraction).toBeCloseTo(1.3, 6);
+  });
+
   it("returns null when a required predicate is missing", () => {
-    const partial = solarisPlanetPublishFacts(payload).filter((f) => f.predicate !== "star.luminosity_lsun");
+    const partial = solarisPlanetPublishFacts(payload).filter((f) => f.predicate !== "star.luminosity");
     expect(readTidelockSeed(entryWithFacts(partial))).toBeNull();
   });
 
@@ -163,7 +173,7 @@ describe("reconstructSolarisHandoff", () => {
     );
     const entry = entryWithFacts(legacy);
     expect(reconstructSolarisHandoff(entry)?.planetAU).toBe(0.55);
-    expect(readTidelockSeed(entry)?.auFraction).toBeCloseTo(0.44, 5);
+    expect(readTidelockSeed(entry)?.auFraction).toBeCloseTo(0.8487, 4);
     expect(readPublishedFact(entry, "orbit.semi_major_axis")?.value).toBe(0.55);
   });
 

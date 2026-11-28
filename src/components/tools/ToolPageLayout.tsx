@@ -233,13 +233,17 @@ export default function ToolPageLayout({
   // Track save completion to show cascade suggestions
   const [showCascadeSuggestion, setShowCascadeSuggestion] = useState(false);
   const prevSaving = useRef(false);
+  // Only a save of the writer's own changes suggests the next tool; the
+  // auto-created draft on first open (F-12) is not a moment to interrupt.
+  const savingDirty = useRef(false);
   useEffect(() => {
+    if (isSaving && !prevSaving.current) savingDirty.current = !!hasUnsavedChanges;
     // Detect save completion: isSaving went from true → false
-    if (prevSaving.current && !isSaving) {
+    if (prevSaving.current && !isSaving && savingDirty.current) {
       setShowCascadeSuggestion(true);
     }
     prevSaving.current = !!isSaving;
-  }, [isSaving]);
+  }, [isSaving, hasUnsavedChanges]);
 
   const showAside = readOnly || rail.hasRail;
 

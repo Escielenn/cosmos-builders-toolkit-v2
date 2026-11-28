@@ -75,15 +75,15 @@ describe("simulator narrative questions", () => {
 
 describe("cascade guidance layers", () => {
   it("maps tools to their guidance layer", () => {
-    expect(getToolLayer("star-system-builder")).toBe("stars_and_systems");
-    expect(getToolLayer("sensorium")).toBe("life");
+    expect(getToolLayer("star-system-builder")).toBe("physics");
+    expect(getToolLayer("sensorium")).toBe("biology");
     expect(getToolLayer("not-a-tool")).toBeNull();
     expect(getDownstreamSuggestions("planetary-profile")[0]?.toolType).toBe("evolutionary-biology");
   });
 
   it("reports progress in cascade order", () => {
     const layers = getCascadeProgress(["sensorium"]).map((l) => l.layer);
-    expect(layers).toEqual(["stars_and_systems", "worlds", "life", "civilizations", "mythology", "narrative"]);
-    expect(getCascadeProgress(["sensorium"]).find((l) => l.layer === "life")?.status).toBe("partial");
+    expect(layers).toEqual(["physics", "environment", "biology", "psychology", "mythology", "culture", "integration"]);
+    expect(getCascadeProgress(["sensorium"]).find((l) => l.layer === "biology")?.status).toBe("partial");
   });
 });

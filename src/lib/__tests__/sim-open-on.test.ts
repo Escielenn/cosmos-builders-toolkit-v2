@@ -61,8 +61,12 @@ describe("buildSimSeed", () => {
           { predicate: "planet.radius", value: 1.02 },
           { predicate: "planet.mass", value: 1.47 },
           { predicate: "planet.temp_mean", value: 288 },
-          { predicate: "planet.rotation_period", value: 1.03 },
-          { predicate: "planet.hydrosphere_fraction", value: 71 },
+          // X3: ExoForge's period is the ORBITAL period in days; a day
+          // length must never land on it.
+          { predicate: "planet.rotation_period", value: 24 },
+          { predicate: "orbit.period", value: 365.25 },
+          // X3: 0 to 1 in canon, 0 to 100 on the slider.
+          { predicate: "planet.hydrosphere_fraction", value: 0.71 },
           { predicate: "planet.atmo_pressure", value: 1.0 },
           { predicate: "star.temp_effective", value: 5778 },
         ]),
@@ -71,7 +75,7 @@ describe("buildSimSeed", () => {
         radius: 1.02,
         mass: 1.47,
         temp: 288,
-        period: 1.03,
+        period: 365.25,
         ocean: 71,
         atmo: 1.0,
         starTemp: 5778,

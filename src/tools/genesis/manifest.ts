@@ -28,6 +28,11 @@ export const manifest: ToolManifest = {
   // `from` paths are the same paths entity-config's worksheetPaths map, so
   // the manifest and the computed-on-read projection cannot drift (tested).
   produces: [
+    // 1.9 (audit per-tool: "Genesis add atmosphere/temp"): what Phylo,
+    // Sensorium and the Studio need from the planet. Pressure is asked in atm.
+    { predicate: "planet.temp_mean", from: "field:temperatureProfile.averageSurfaceTemp", unit: "K", kind: "scalar", parse: "temperature_k" },
+    { predicate: "planet.atmo_pressure", from: "field:atmosphericComposition.atmosphericPressure", unit: "bar", kind: "scalar", scale: 1.01325 },
+    { predicate: "planet.atmo_composition", from: "field:atmosphericComposition.primaryGases", kind: "text", parse: "join" },
     { predicate: "planet.mass", from: "field:physicalCharacteristics.planetaryMass", unit: "earth_masses", kind: "scalar" },
     { predicate: "planet.radius", from: "field:physicalCharacteristics.planetaryRadius", unit: "earth_radii", kind: "scalar" },
     { predicate: "planet.rotation_period", from: "field:physicalCharacteristics.dayLength", unit: "hours", kind: "scalar" },

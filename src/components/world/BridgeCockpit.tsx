@@ -35,10 +35,11 @@ import RecentActivity from "@/components/world/RecentActivity";
 import { cn } from "@/lib/utils";
 
 /**
- * The six cascade layers the Codex groups by, in its order. Narrative is the
+ * The cascade layers the Codex groups by (Physics joined in 1.9, F-07), in its order. Narrative is the
  * Codex's catch-all, not a cascade layer, so it is not counted here.
  */
 const COCKPIT_LAYERS: CascadeLayer[] = [
+  "physics",
   "environment",
   "biology",
   "psychology",
@@ -49,6 +50,7 @@ const COCKPIT_LAYERS: CascadeLayer[] = [
 
 /** Cascade colour is a meaning (CLAUDE.md): one fill per layer, never moved. */
 const LAYER_FILL: Record<string, string> = {
+  physics: "bg-sf-amber border-sf-amber",
   environment: "bg-sf-azure border-sf-azure",
   biology: "bg-sf-emerald border-sf-emerald",
   psychology: "bg-sf-magenta border-sf-magenta",

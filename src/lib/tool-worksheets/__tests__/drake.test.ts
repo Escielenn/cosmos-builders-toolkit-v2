@@ -4,7 +4,8 @@ import { expectDefaultsRoundTrip, expectRoundTrip, fillLeaves, withMoodboard } f
 
 describe("Drake worksheet codec", () => {
   it("round-trips a saved worksheet unchanged", () => {
-    expectRoundTrip(codec, withMoodboard(fillLeaves(codec.defaults)));
+    // 1.9 F-08: rows carry a derived snapshot, so round-trip a serialized row.
+    expectRoundTrip(codec, codec.serialize(withMoodboard(fillLeaves(codec.defaults))));
   });
 
   it("round-trips its defaults", () => expectDefaultsRoundTrip(codec));

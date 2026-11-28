@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import OrbitalDiagram from "./OrbitalDiagram";
-import { calcHZBoundaries, luminosityFromMass } from "@/lib/habitable-zone/calculations";
+import { calcHZBoundaries, luminosityFromMass, mainSequenceTeff } from "@/lib/habitable-zone/calculations";
 import { SPECTRAL_CLASS_NUMERIC_DEFAULTS } from "@/lib/star-system-data";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Orbit, Info } from "lucide-react";
@@ -44,7 +44,8 @@ export default function StarSystemDiagram({
     const mass = (!isNaN(parsedMass) && parsedMass > 0) ? parsedMass : defaults.mass;
 
     // Skip HZ for neutron stars (luminosity=0)
-    const hz = luminosity > 0 ? calcHZBoundaries(luminosity) : null;
+    // F-01: Teff-corrected, the same zone Goldilocks draws and saves.
+    const hz = luminosity > 0 ? calcHZBoundaries(luminosity, mainSequenceTeff(luminosity, mass) ?? undefined) : null;
 
     // Parse planet distances
     const planets = bodies

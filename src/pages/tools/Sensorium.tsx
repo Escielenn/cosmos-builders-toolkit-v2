@@ -76,6 +76,9 @@ import {
 import { recordSensoriumInsights } from "@/lib/sensorium/push-to-worksheet";
 import { mapError } from "@/lib/ship-voice";
 import { useToolWorksheet } from "@/hooks/use-tool-worksheet";
+import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
+import { CanonConflictPrompt } from "@/components/canon/CanonConflictPrompt";
+import { manifest as sensoriumManifest } from "@/tools/sensorium/manifest";
 import { codec as sensoriumCodec, LOCAL_STORAGE_KEY, TOOL_TYPE } from "@/lib/tool-worksheets/sensorium";
 import { generatePerceptualNarrative } from "@/lib/sensorium/perceptual-narrative";
 import {
@@ -140,8 +143,13 @@ const Sensorium = () => {
     displayName: "Untitled Sensorium",
     localKey: LOCAL_STORAGE_KEY,
     onDraftCreated: (id, title) => entityMatch.check(id, title),
+    // 1.9 lane C wiring: this sheet's facts reach canon on save.
+    onSaved: (saved, { worksheetId: savedId }) =>
+      canonEmit.emit(saved, { subjectId: canonSubjectId, worksheetId: savedId }),
   });
   const { state: formState, setState: setFormState, worldId } = worksheet;
+  const canonSubjectId = useToolSubject(worksheet.worksheetId);
+  const canonEmit = useCanonEmit(sensoriumManifest, worldId);
   const currentWorksheetId = worksheet.worksheetId;
   const currentWorksheetTitle = worksheet.worksheetTitle;
   const worksheetId = worksheet.worksheetId;
@@ -602,6 +610,7 @@ const Sensorium = () => {
                       <Label>Magnetic Field</Label>
                       <Switch
                         checked={formState.environment.magneticField.present}
+                        aria-label="Magnetic field present"
                         onCheckedChange={(v) => updateEnvironment("magneticField.present", v)}
                       />
                     </div>
@@ -650,6 +659,7 @@ const Sensorium = () => {
                         <span className="text-sm">Day/Night Cycle</span>
                         <Switch
                           checked={formState.environment.lighting.dayNightCycle}
+                        aria-label="Day/night cycle"
                           onCheckedChange={(v) => updateEnvironment("lighting.dayNightCycle", v)}
                         />
                       </div>
@@ -657,6 +667,7 @@ const Sensorium = () => {
                         <span className="text-sm">Tidally Locked</span>
                         <Switch
                           checked={formState.environment.lighting.tidallyLocked}
+                        aria-label="Tidally locked"
                           onCheckedChange={(v) => updateEnvironment("lighting.tidallyLocked", v)}
                         />
                       </div>
@@ -1490,6 +1501,7 @@ const Sensorium = () => {
       />
 
       <EntityMatchDialog {...entityMatch.dialogProps} />
+      <CanonConflictPrompt {...canonEmit} />
     </ToolPageLayout>
   );
 };

@@ -14,7 +14,7 @@
 // ---------------------------------------------------------------------------
 
 import { MANIFESTS, manifestById } from "@/canon/manifests";
-import { resolvePredicate } from "@/canon/vocabulary";
+import { predicateDef, resolvePredicate } from "@/canon/vocabulary";
 import type { ToolManifest } from "@/canon/manifest";
 import { getToolDisplayName, getToolRoute } from "@/lib/tools-config";
 
@@ -91,15 +91,34 @@ export function singleHome(predicate: string): SingleHome | undefined {
   return SINGLE_HOME.find((h) => h.predicate === p);
 }
 
-/** predicate → every wired manifest id that produces it. One entry each, or it is Parallel Truth. */
+/**
+ * predicate → every wired manifest id that produces it. One entry each, or it
+ * is Parallel Truth.
+ *
+ * 08: "Simulators are never second producers." A simulator's `sim:` produces
+ * are promotes that write through the domain owner, so they count only for a
+ * predicate no tool produces (planet.sky.*, planet.temp_gradient[]), where
+ * the simulator IS the owner.
+ */
 export function producersByPredicate(manifests: readonly ToolManifest[] = MANIFESTS): Map<string, string[]> {
   const out = new Map<string, string[]>();
+  const simOnly = new Map<string, string[]>();
   for (const m of manifests) {
     for (const p of m.produces) {
-      const ids = out.get(p.predicate) ?? [];
+      const target = p.from.startsWith("sim:") ? simOnly : out;
+      const ids = target.get(p.predicate) ?? [];
       if (!ids.includes(m.id)) ids.push(m.id);
-      out.set(p.predicate, ids);
+      target.set(p.predicate, ids);
     }
+  }
+  for (const [predicate, ids] of simOnly) {
+    if (out.has(predicate)) continue;
+    // Several simulators promoting the same predicate write through its
+    // vocabulary owner (08 domain table): orbit.* through Orrery even before
+    // Orrery has a field for it. A simulator that IS the owner stays owner.
+    const owner = predicateDef(predicate)?.producer;
+    if (ids.length > 1 && owner) out.set(predicate, ids.includes(owner) ? [owner] : manifests.some((m) => m.id === owner) ? [owner] : ids);
+    else out.set(predicate, ids);
   }
   return out;
 }

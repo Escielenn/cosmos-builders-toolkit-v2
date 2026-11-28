@@ -31,10 +31,27 @@ export interface ManifestEntity {
 
 export interface ManifestProduces {
   predicate: string;
-  /** `field:<dot.path>` (worksheet) or `derive:<derivation id>`. */
+  /**
+   * `field:<dot.path>` (worksheet), `derive:<derivation id>`, or
+   * `computed:<what>`: the tool's own engine computes it at save time and
+   * passes it as an override (Paradox's active-mode times).
+   */
   from: string;
   unit?: Unit;
   kind?: FactValue["kind"];
+  /**
+   * Multiply a numeric field by this before asserting, for a field the form
+   * stores in another unit (Impulse's top speed is % of c; the predicate is a
+   * fraction of c, so scale 0.01).
+   */
+  scale?: number;
+  /**
+   * How to read a free-text field before asserting: `temperature_k` reads
+   * "15°C", "288 K" or "59°F" (a bare number is °C, as the forms ask) into
+   * kelvin; `join` turns a list field into one comma-separated text;
+   * `count` asserts how many items a list field holds.
+   */
+  parse?: "temperature_k" | "join" | "count";
 }
 
 export type OnMissing = "prompt" | "derive" | "link" | "ignore";
@@ -54,6 +71,12 @@ export interface Derivation {
   id: string;
   label: string;
   inputs: readonly string[];
+  /**
+   * Inputs that refine the result when present and fall back to a stated
+   * default when absent (Goldilocks' star.temp_effective: the Sun's 5780 K).
+   * Still inputs for staleness: changing one marks the output stale.
+   */
+  optionalInputs?: readonly string[];
   output: string;
   fn: (inputs: Record<string, number>) => number | null;
   invalidates: "always" | "on_input_change";
@@ -122,7 +145,7 @@ export function validateManifest(m: ToolManifest): ManifestIssue[] {
   for (const d of m.derives) {
     if (typeof d.narrative !== "function") issue("no-narrative", `derivation ${d.id} has no narrative.`);
     if (!d.id.startsWith(`${m.id}.`)) issue("derivation-id", `derivation ${d.id} must carry the tool id.`);
-    for (const p of [...d.inputs, d.output]) {
+    for (const p of [...d.inputs, ...(d.optionalInputs ?? []), d.output]) {
       if (resolvePredicate(p).via !== "exact") issue("unknown-predicate", `derivation ${d.id} uses ${p}, not a canonical predicate.`);
     }
   }

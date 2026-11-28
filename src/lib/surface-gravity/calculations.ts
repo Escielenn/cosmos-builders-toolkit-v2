@@ -2,6 +2,7 @@
 // No React dependencies, importable from PDF templates
 
 import { hueVar, type HueName } from "@/styles/hue";
+import { meanThermalSpeedKms, retention } from "@/lib/physics";
 import { GAS_DATA, DELTA_V_VERDICTS, COMPOSITION_PRESETS, getGravityRegimeInfo } from "./data";
 import type { GravityRegime, DeltaVVerdict } from "./data";
 
@@ -85,8 +86,9 @@ export interface SurfaceGravityResult {
   jumpHeight: number; // meters (scaled from 2m Earth high jump)
   terminalVelocity: number; // km/h (rough estimate)
 
-  // Atmospheric retention
+  // Atmospheric retention (tested at the exobase temperature, F-06)
   gasRetention: GasRetention[];
+  exobaseTemp: number;
 
   // Delta-v
   deltaV: DeltaVResult;
@@ -166,37 +168,49 @@ export function calcThermalVelocity(molecularWeightGmol: number, tempK: number):
   return Math.sqrt((3 * BOLTZMANN * tempK) / massKg);
 }
 
+/**
+ * Exobase (escape-level) temperature estimated from the surface temperature.
+ *
+ * 1.9 F-06: retention was tested at the SURFACE temperature, so Earth (288 K)
+ * kept helium, which it does not. Gas escapes from the exobase, where EUV
+ * heating makes the thermosphere far hotter: ~1000 K on Earth (Catling &
+ * Kasting 2017, Atmospheric Evolution on Inhabited and Lifeless Worlds, ch. 5;
+ * range 700 to 1400 K with the solar cycle). Scaling by Earth's ratio
+ * (1000 / 288 ≈ 3.5) is a first-order estimate, labelled as one in the UI.
+ */
+export const EXOBASE_TO_SURFACE = 3.5;
+export function exobaseTemperature(surfaceTempK: number): number {
+  return Math.max(surfaceTempK, Math.min(2500, surfaceTempK * EXOBASE_TO_SURFACE));
+}
+
+/** Shown under the retention chart: what a thermal model cannot see. */
+export const NON_THERMAL_CAVEAT =
+  "Thermal (Jeans) escape only. Small worlds without a magnetic field also lose gas to the solar wind and to sunlight splitting water: Mars lost most of its water that way.";
+
+/**
+ * Which gases stay over geological time, from the shared physics module
+ * (src/lib/physics retention(): mean thermal speed at most 1/6 of escape
+ * velocity is retained, up to 1/5 marginal, above that lost; Seager 2010).
+ * λ = v_esc / v̄, so the chart's λ = 6 line is the same rule. Tested at the
+ * EXOBASE temperature (F-06). Earth keeps N₂, O₂ and water and loses
+ * hydrogen and helium.
+ */
 export function calcAtmosphericRetention(
   escapeVelocityKms: number,
   tempK: number
 ): GasRetention[] {
-  const escapeMs = escapeVelocityKms * 1000;
-
   return GAS_DATA.map((gas) => {
-    const thermalV = calcThermalVelocity(gas.molecularWeight, tempK);
-    const param = escapeMs / thermalV;
-
-    let status: "retained" | "marginal" | "escapes";
-    let statusHue: HueName;
-
-    if (param >= 6) {
-      status = "retained";
-      statusHue = "emerald";
-    } else if (param >= 4) {
-      status = "marginal";
-      statusHue = "amber";
-    } else {
-      status = "escapes";
-      statusHue = "crimson";
-    }
-
+    const r = retention(escapeVelocityKms, tempK, gas.molecularWeight);
+    const thermalV = meanThermalSpeedKms(tempK, gas.molecularWeight) * 1000;
+    const status: "retained" | "marginal" | "escapes" = r.verdict === "lost" ? "escapes" : r.verdict;
+    const statusHue: HueName = status === "retained" ? "emerald" : status === "marginal" ? "amber" : "crimson";
     return {
       id: gas.id,
       name: gas.name,
       formula: gas.formula,
       molecularWeight: gas.molecularWeight,
       thermalVelocity: thermalV,
-      escapeParameter: param,
+      escapeParameter: 1 / r.ratio,
       status,
       color: gas.color,
       statusHue,
@@ -276,7 +290,7 @@ export function calculateSurfaceGravity(formState: FormStateForCalc): SurfaceGra
       gravityRegime: "earthlike", regimeLabel: "Invalid", regimeColor: "text-muted-foreground",
       humanWeight: { earthWeight: 0, planetWeight: 0, earthWeightKg: 70, planetWeightKg: 0 },
       dropTime: 0, dropSpeed: 0, jumpHeight: 0, terminalVelocity: 0,
-      gasRetention: [], deltaV: {
+      gasRetention: [], exobaseTemp: 0, deltaV: {
         orbitalVelocity: 0, deltaVToOrbit: 0, earthComparison: 0,
         massRatio: 0, verdict: DELTA_V_VERDICTS[0], gravityLocked: false,
       },
@@ -296,7 +310,8 @@ export function calculateSurfaceGravity(formState: FormStateForCalc): SurfaceGra
   const jumpH = calcJumpHeight(gRatio, 2);
   const termV = calcTerminalVelocity(gRatio);
 
-  const gasRetention = calcAtmosphericRetention(escapeV, surfaceTemp);
+  const exobaseTemp = exobaseTemperature(surfaceTemp);
+  const gasRetention = calcAtmosphericRetention(escapeV, exobaseTemp);
   const deltaV = calcDeltaV(mass, radius);
 
   return {
@@ -318,6 +333,7 @@ export function calculateSurfaceGravity(formState: FormStateForCalc): SurfaceGra
     terminalVelocity: termV,
 
     gasRetention,
+    exobaseTemp,
     deltaV,
 
     massKg: mass * EARTH_MASS,

@@ -16,6 +16,15 @@ import { manifest as vessel } from "@/tools/vessel/manifest";
 import { manifest as paradox } from "@/tools/paradox/manifest";
 import { manifest as axiom } from "@/tools/axiom/manifest";
 import { manifest as exodus } from "@/tools/exodus/manifest";
+import { manifest as gravitas } from "@/tools/gravitas/manifest";
+import { manifest as phylo } from "@/tools/phylo/manifest";
+import { manifest as sensorium } from "@/tools/sensorium/manifest";
+import { manifest as mythos } from "@/tools/mythos/manifest";
+import { manifest as exosky } from "@/tools/exosky/manifest";
+import { manifest as solaris } from "@/tools/solaris/manifest";
+import { manifest as rogue } from "@/tools/rogue/manifest";
+import { manifest as tidelock } from "@/tools/tidelock/manifest";
+import { manifest as exoforge } from "@/tools/exoforge/manifest";
 
 export const MANIFESTS: readonly ToolManifest[] = [
   genesis,
@@ -30,6 +39,17 @@ export const MANIFESTS: readonly ToolManifest[] = [
   paradox,
   axiom,
   exodus,
+  // 1.9 lane C wiring: Gravitas, Phylo, Sensorium, Mythos.
+  gravitas,
+  phylo,
+  sensorium,
+  mythos,
+  // 1.9 simulators (manifests by lanes E, S, T; registered by lane C).
+  exosky,
+  solaris,
+  rogue,
+  tidelock,
+  exoforge,
 ];
 
 const BY_ID = new Map(MANIFESTS.map((m) => [m.id, m]));
@@ -46,5 +66,9 @@ export function manifestForTool(slug: string): ToolManifest | undefined {
 
 /** The manifest that produces `predicate`, if any wired tool does. */
 export function producerOf(predicate: string): ToolManifest | undefined {
-  return MANIFESTS.find((m) => m.produces.some((p) => p.predicate === predicate));
+  // A tool's own produce wins over a simulator's promote (08).
+  return (
+    MANIFESTS.find((m) => m.produces.some((p) => p.predicate === predicate && !p.from.startsWith("sim:"))) ??
+    MANIFESTS.find((m) => m.produces.some((p) => p.predicate === predicate))
+  );
 }

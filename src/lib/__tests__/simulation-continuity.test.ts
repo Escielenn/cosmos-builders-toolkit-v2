@@ -42,10 +42,10 @@ describe("re-keying simulator facts for the continuity engine", () => {
     expect(g?.label).toBe("Surface Gravity (g)");
   });
 
-  it("maps temperature and day length as well", () => {
+  it("maps temperature, and never ExoForge's visual spin as a day length (1.9 X2)", () => {
     const byKey = Object.fromEntries(factsFor("exoforge", exoforgeSave()).map((f) => [f.key, f.value]));
     expect(byKey.surfaceTemperature).toBe("288");
-    expect(byKey.dayLength).toBe("26.5");
+    expect(byKey.dayLength).toBeUndefined();
   });
 
   it("takes Tidelock's terminator, not its day side", () => {

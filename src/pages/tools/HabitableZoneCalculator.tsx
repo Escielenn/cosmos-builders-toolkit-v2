@@ -71,7 +71,8 @@ import {
   LOCAL_STORAGE_KEY,
   TOOL_TYPE,
 } from "@/lib/tool-worksheets/goldilocks";
-import { manifest as goldilocksManifest } from "@/tools/goldilocks/manifest";
+import { manifest as goldilocksManifest, hzInner, hzOuter } from "@/tools/goldilocks/manifest";
+import { ReadoutNarrative } from "@/components/canon/ManifestNarratives";
 import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
 import { spectralLetter } from "@/canon/codecs";
 import { CanonProvenance } from "@/components/canon/CanonProvenance";
@@ -126,7 +127,8 @@ const HabitableZoneCalculator = () => {
       canonEmit.emit(saved, {
         subjectId: canonSubjectId,
         worksheetId: savedId,
-        inputs: { "star.luminosity": saved.star.luminosity },
+        // F-01: the saved edges use the same Teff the screen draws with.
+        inputs: { "star.luminosity": saved.star.luminosity, "star.temp_effective": saved.star.temperature },
       }),
   });
   const { state: formState, setState: setFormState, worldId } = worksheet;
@@ -321,7 +323,7 @@ const HabitableZoneCalculator = () => {
           <p className="text-t2">
             Define your host star and place your planet. You will see where it falls relative to the
             habitable zone, and what that means for climate, biology, psychology, mythology, and culture.
-            All calculations use Kopparapu et al. (2013) habitable zone boundaries.
+            All calculations use Kopparapu et al. (2014) habitable zone boundaries, corrected for your star's temperature.
           </p>
         </GlassPanel>
 
@@ -510,6 +512,7 @@ const HabitableZoneCalculator = () => {
                     <label className="flex items-center gap-2 text-xs text-t4 cursor-pointer">
                       <Switch
                         checked={formState.star.autoLuminosity}
+                        aria-label="Work out luminosity from mass"
                         onCheckedChange={(checked) => updateStar({ autoLuminosity: checked })}
                       />
                       Auto from mass
@@ -583,6 +586,13 @@ const HabitableZoneCalculator = () => {
                   knownPlanets={allKnownPlanets.length > 0 ? allKnownPlanets : undefined}
                   className="h-[350px] md:h-[450px] lg:h-[500px]"
                 />
+                {/* 1.9 F-02: what the two saved edges mean, from the manifest. */}
+                {result.valid && (
+                  <>
+                    <ReadoutNarrative text={hzInner.narrative(result.hz.runawayGreenhouse, {})} />
+                    <ReadoutNarrative text={hzOuter.narrative(result.hz.maxGreenhouse, {})} className="mt-1" />
+                  </>
+                )}
                 {/* Planet distance slider under diagram */}
                 <div className="mt-4 space-y-2">
                   <div className="flex items-center justify-between">

@@ -25,9 +25,12 @@ import {
   TECHNOBABBLE,
   PHYSICS_VIOLATIONS,
   TILT_TABLE,
+  RPM_COMFORT,
 } from "./data";
 import {
   calculateBrachistochrone,
+  calculateConstantThrust,
+  calculateCoastFlip,
   G_ACCEL as TD_G_ACCEL,
 } from "@/lib/time-dilation/calculations";
 
@@ -77,7 +80,7 @@ export function calculateSpinGravity(input: SpinGravityInput): SpinGravityOutput
     tangential_velocity_ms,
     coriolis_parameter,
     coriolis_intensity,
-    is_comfortable: rotation_rpm <= 2,
+    is_comfortable: rotation_rpm <= RPM_COMFORT,
     period_s,
   };
 }
@@ -173,23 +176,19 @@ function relativisticThrust(
     burn_proper_s = ship_s; // thrusting the whole way (accelerate, then decelerate)
   } else if (propulsion_mode === "constant") {
     // Accelerate the entire distance from rest (flyby at the destination).
-    const ratio = (distance_m * accel_ms2) / (C * C) + 1;
-    earth_s = (C / accel_ms2) * Math.sqrt(ratio * ratio - 1);
-    ship_s = (C / accel_ms2) * Math.acosh(ratio);
-    peak_c = Math.tanh((accel_ms2 * ship_s) / C);
-    burn_proper_s = ship_s;
+    // 1.9 F-10: the same engine as Paradox and Impulse.
+    const r = calculateConstantThrust(distance_m, accel_ms2 / TD_G_ACCEL);
+    earth_s = r.observerTimeSeconds;
+    ship_s = r.shipTimeSeconds;
+    peak_c = r.peakVelocityFraction;
+    burn_proper_s = r.burnProperSeconds;
   } else {
     // One-week burns (ship time) at each end, coast between.
-    const rapidity = (accel_ms2 * COAST_BURN_S) / C;
-    const burn_dist = ((C * C) / accel_ms2) * (Math.cosh(rapidity) - 1);
-    const burn_coord = (C / accel_ms2) * Math.sinh(rapidity);
-    peak_c = Math.tanh(rapidity);
-    const coast_v = peak_c * C;
-    const coast_dist = Math.max(0, distance_m - 2 * burn_dist);
-    const coast_coord = coast_v > 0 ? coast_dist / coast_v : 0;
-    earth_s = 2 * burn_coord + coast_coord;
-    ship_s = 2 * COAST_BURN_S + coast_coord / Math.cosh(rapidity);
-    burn_proper_s = 2 * COAST_BURN_S;
+    const r = calculateCoastFlip(distance_m, accel_ms2 / TD_G_ACCEL, COAST_BURN_S);
+    earth_s = r.observerTimeSeconds;
+    ship_s = r.shipTimeSeconds;
+    peak_c = r.peakVelocityFraction;
+    burn_proper_s = r.burnProperSeconds;
   }
 
   const gamma = 1 / Math.sqrt(1 - Math.min(peak_c * peak_c, 1 - 1e-15));

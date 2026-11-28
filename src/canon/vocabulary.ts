@@ -28,7 +28,11 @@
 //     would assert a FactValue shape the data does not have.
 //   - simulator display strings (sky.*, encounter.*, system.stars...). 08
 //     ("What that audit also found") says these are formatted strings, not
-//     facts, until raw values travel with them.
+//     facts, until raw values travel with them. 1.9: the ExoForge/Tidelock
+//     keys whose meaning is exactly one predicate (forged.gravity,
+//     locked.period...) now alias it; their raw numbers travel through
+//     src/lib/simulators/sim-canon.ts on publish. Keys with no exact
+//     predicate (locked.daySide, forged.cloud) stay legacy.*.
 // ---------------------------------------------------------------------------
 
 import type { Unit } from "@/canon/units";
@@ -105,16 +109,16 @@ const DEFS: PredicateDef[] = [
     ["epoch_label", "Epoch label", "text"],
   ]),
   ...domain("galaxy", "physics", "signal", [
-    ["civ_count", "Civilizations in the galaxy", "scalar"],
+    ["civ_count", "Civilizations in the galaxy", "scalar", { aliases: ["communicatingCivilizations"] }],
     ["contact_probability", "Contact probability", "scalar", { unit: "fraction" }],
     ["density_class", "Galactic density", "enum"],
   ]),
   ...domain("star", "physics", "orrery", [
     ["spectral_class", "Spectral class", "enum", { aliases: ["starType", "primaryStarClass"] }],
-    ["mass", "Stellar mass", "scalar", { unit: "solar_masses" }],
+    ["mass", "Stellar mass", "scalar", { unit: "solar_masses", aliases: ["starMass"] }],
     ["luminosity", "Stellar luminosity", "scalar", { unit: "solar_lum", aliases: ["stellarLuminosity"] }],
     ["temp_effective", "Effective temperature", "scalar", { unit: "K" }],
-    ["age", "Stellar age", "scalar", { unit: "gyr" }],
+    ["age", "Stellar age", "scalar", { unit: "gyr", aliases: ["starAge"] }],
     ["flare_activity", "Flare activity", "enum"],
     // Added 2026-11-26 (/sf-fact, 1.9 N8): where the system sits in the
     // galaxy. struct schema "galactic_position":
@@ -135,30 +139,31 @@ const DEFS: PredicateDef[] = [
   ...domain("orbit", "physics", "orrery", [
     ["semi_major_axis", "Orbital distance", "scalar", { unit: "au", aliases: ["orbitalDistance"] }],
     ["eccentricity", "Eccentricity", "scalar"],
-    ["period", "Orbital period", "scalar", { unit: "days" }],
+    ["period", "Orbital period", "scalar", { unit: "days", aliases: ["forged.period", "locked.period"] }],
     ["inclination", "Inclination", "scalar", { unit: "deg" }],
     ["tidally_locked", "Tidally locked", "bool"],
     ["resonance", "Resonance", "text"],
   ]),
   ...domain("planet", "environment", "genesis", [
-    ["radius", "Radius", "scalar", { unit: "earth_radii", aliases: ["radius"] }],
-    ["mass", "Mass", "scalar", { unit: "earth_masses", aliases: ["mass"] }],
-    ["density", "Density", "scalar", { unit: "g_cm3", producer: "atlas" }],
-    ["surface_gravity", "Surface gravity", "scalar", { unit: "g", producer: "atlas", aliases: ["surfaceGravity"] }],
-    ["escape_velocity", "Escape velocity", "scalar", { unit: "km_s", producer: "atlas" }],
+    ["radius", "Radius", "scalar", { unit: "earth_radii", aliases: ["radius", "forged.radius"] }],
+    ["mass", "Mass", "scalar", { unit: "earth_masses", aliases: ["mass", "forged.mass"] }],
+    ["density", "Density", "scalar", { unit: "g_cm3", producer: "atlas", aliases: ["forged.density"] }],
+    ["surface_gravity", "Surface gravity", "scalar", { unit: "g", producer: "atlas", aliases: ["surfaceGravity", "forged.gravity", "locked.gravity"] }],
+    ["escape_velocity", "Escape velocity", "scalar", { unit: "km_s", producer: "atlas", aliases: ["forged.escape", "locked.escape"] }],
     ["rotation_period", "Day length", "scalar", { unit: "hours", aliases: ["dayLength"] }],
     ["obliquity", "Axial tilt", "scalar", { unit: "deg", aliases: ["axialTilt"] }],
     ["year_length", "Year length", "scalar", { unit: "local_days" }],
     ["atmo_pressure", "Atmospheric pressure", "scalar", { unit: "bar" }],
     ["atmo_composition", "Atmospheric composition", "text"],
-    ["temp_mean", "Mean surface temperature", "scalar", { unit: "K", aliases: ["surfaceTemperature"] }],
+    ["temp_mean", "Mean surface temperature", "scalar", { unit: "K", aliases: ["surfaceTemperature", "forged.temperature"] }],
     // Added 2026-11-26 (/sf-fact, 1.9 Solaris "True Numbers"): what a star
     // delivers to a world, kept apart from temp_mean, which a greenhouse
     // atmosphere raises above the equilibrium value.
+    // (Lane C added the same two independently; one definition kept.)
     ["insolation", "Insolation", "scalar", { unit: "earth_flux" }],
     ["temp_equilibrium", "Equilibrium temperature", "scalar", { unit: "K" }],
     ["temp_gradient[]", "Temperature gradient", "range[]", { unit: "K", producer: "tidelock" }],
-    ["hydrosphere_fraction", "Hydrosphere fraction", "scalar", { unit: "fraction" }],
+    ["hydrosphere_fraction", "Hydrosphere fraction", "scalar", { unit: "fraction", aliases: ["forged.ocean"] }],
     ["albedo", "Albedo", "scalar", { unit: "fraction" }],
     ["magnetosphere", "Magnetosphere", "enum"],
     ["terminator_band_width", "Terminator band width", "scalar", { unit: "km", producer: "tidelock" }],
@@ -213,10 +218,14 @@ const DEFS: PredicateDef[] = [
     ["height_typical", "Typical height", "scalar", { unit: "m" }],
     ["lifespan", "Lifespan", "scalar", { unit: "local_years" }],
     ["metabolic_rate", "Metabolic rate", "scalar", { unit: "w_kg" }],
-    ["reproduction_mode", "Reproduction", "enum"],
-    ["social_structure", "Social structure", "enum"],
+    ["reproduction_mode", "Reproduction", "enum", { aliases: ["reproductionMode"] }],
+    ["social_structure", "Social structure", "enum", { aliases: ["socialStructure"] }],
     ["cognition_profile", "Cognition", "text", { aliases: ["cognitionType"] }],
-    ["senses[]", "Senses", "struct[]", { producer: "sensorium" }],
+    // 1.9: text[] (sense ids), not struct[]. Nothing had ever written it; its
+    // first producer, Sensorium, stores the writer's accepted modality list.
+    ["senses[]", "Senses", "text[]", { producer: "sensorium", aliases: ["senseModalities"] }],
+    // Added 1.9 (/sf-fact, Sensorium wiring): the one sense a POV leans on.
+    ["dominant_sense", "Dominant sense", "text", { producer: "sensorium", aliases: ["dominantSense"] }],
     ["absent_modalities[]", "Absent senses", "enum[]", { producer: "sensorium" }],
     ["g_tolerance", "Gravity tolerance", "range", { unit: "g" }],
   ]),
@@ -239,10 +248,10 @@ const DEFS: PredicateDef[] = [
     ["mutual_intelligibility[]", "Mutual intelligibility", "struct[]"],
   ]),
   ...domain("culture", "mythology", "mythos", [
-    ["cosmology", "Cosmology", "text"],
-    ["deities[]", "Deities", "text[]"],
-    ["taboos[]", "Taboos", "text[]"],
-    ["death_rites", "Death rites", "text"],
+    ["cosmology", "Cosmology", "text", { aliases: ["cosmology"] }],
+    ["deities[]", "Deities", "text[]", { aliases: ["deities"] }],
+    ["taboos[]", "Taboos", "text[]", { aliases: ["taboos"] }],
+    ["death_rites", "Death rites", "text", { aliases: ["deathRites"] }],
     ["calendar", "Calendar", "text"],
     ["oath_forms[]", "Oath forms", "text[]"],
     ["has_solar_deity", "Has a solar deity", "bool"],
@@ -262,7 +271,7 @@ const DEFS: PredicateDef[] = [
     ["legitimacy_source", "Legitimacy", "text"],
     ["cohesion_radius", "Cohesion radius", "scalar", { unit: "ly" }],
     ["energy_budget", "Energy budget", "scalar", { unit: "W", producer: "k-scale", aliases: ["energyOutput"] }],
-    ["kardashev", "Kardashev rating", "scalar", { producer: "k-scale" }],
+    ["kardashev", "Kardashev rating", "scalar", { producer: "k-scale", aliases: ["kardashevRating"] }],
     ["territory[]", "Territory", "ref[]"],
     ["has_spaceflight", "Has spaceflight", "bool"],
   ]),
@@ -295,8 +304,14 @@ const DEFS: PredicateDef[] = [
   ...domain("vessel", "culture", "vessel", [
     ["crew_size", "Crew size", "scalar", { aliases: ["crewSize"] }],
     ["life_support_type", "Life support", "text"],
-    ["radius", "Spin radius", "scalar", { unit: "m", aliases: ["spinRadius"] }],
-    ["spin_gravity", "Spin gravity", "scalar", { unit: "g", producer: "gravitas", aliases: ["targetGravity"] }],
+    // 1.9 (/sf-fact, F-04): Gravitas is where a hull's spin is decided, so it
+    // owns the radius and the new spin rate and DERIVES spin gravity from
+    // them. `targetGravity` no longer aliases spin_gravity: it is Gravitas'
+    // artificial-gravity REQUEST (artificial.desired_g), not a computed spin
+    // gravity, and it resolves to legacy.targetGravity until it earns one.
+    ["radius", "Spin radius", "scalar", { unit: "m", producer: "gravitas", aliases: ["spinRadius"] }],
+    ["spin_rate", "Spin rate", "scalar", { unit: "rpm", producer: "gravitas", aliases: ["rotationRpm"] }],
+    ["spin_gravity", "Spin gravity", "scalar", { unit: "g", producer: "gravitas" }],
     ["layout", "Layout", "text"],
     ["culture_aboard", "Culture aboard", "text"],
     ["closed_loop_efficiency", "Closed-loop efficiency", "scalar", { aliases: ["closedLoopEfficiency"] }],

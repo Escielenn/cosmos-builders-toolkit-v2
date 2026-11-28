@@ -23,6 +23,18 @@ import {
 } from "@/lib/worksheet-links-config";
 import { formatDistanceToNow } from "date-fns";
 
+/**
+ * True when the source worksheet was saved after its values were copied here
+ * (more than a second later, so the copy's own save never counts). The
+ * banner offers to resync; it never resyncs silently.
+ */
+export function isLinkStale(syncedAt: string | null | undefined, sourceUpdatedAt: string | null | undefined): boolean {
+  if (!syncedAt || !sourceUpdatedAt) return false;
+  const a = Date.parse(syncedAt);
+  const b = Date.parse(sourceUpdatedAt);
+  return Number.isFinite(a) && Number.isFinite(b) && b > a + 1000;
+}
+
 interface WorksheetLinkSelectorProps {
   worldId: string;
   targetToolType: string;
@@ -130,6 +142,8 @@ const WorksheetLinkSelector = ({
   }
 
   const linkedTitle = value?.syncedData?.title as string | undefined;
+  // 1.9 F-09: a copied link used never to notice its source changing.
+  const sourceRevised = isLinkStale(value?.syncedAt, (linkedWorksheet as { updated_at?: string } | null | undefined)?.updated_at);
   const syncedAt = value?.syncedAt
     ? formatDistanceToNow(new Date(value.syncedAt), { addSuffix: true })
     : null;
@@ -184,7 +198,7 @@ const WorksheetLinkSelector = ({
                   size="icon"
                   onClick={handleRefresh}
                   disabled={isRefreshing || disabled}
-                  className="h-10 w-10"
+                  className="min-h-hit min-w-hit"
                   aria-label="Refresh synced data"
                 >
                   <RefreshCw
@@ -209,7 +223,7 @@ const WorksheetLinkSelector = ({
                   size="icon"
                   onClick={handleUnlink}
                   disabled={disabled}
-                  className="h-10 w-10"
+                  className="min-h-hit min-w-hit"
                   aria-label="Unlink worksheet"
                 >
                   <Unlink className="w-4 h-4" />
@@ -220,6 +234,17 @@ const WorksheetLinkSelector = ({
           </>
         )}
       </div>
+
+      {sourceRevised && (
+        <div role="status" className="flex flex-wrap items-center justify-between gap-2 border border-sf-amber bg-sf-amber/[0.06] px-3 py-2">
+          <p className="text-[13px] text-sf-amber-text">
+            // SOURCE REVISED. "{linkedTitle ?? getToolDisplayName(targetToolType)}" changed after these values were copied.
+          </p>
+          <Button variant="sf-ghost" size="sm" onClick={handleRefresh} disabled={isRefreshing || disabled} className="min-h-hit">
+            Update from source
+          </Button>
+        </div>
+      )}
 
       {/* Show synced data preview */}
       {value?.syncedData && Object.keys(value.syncedData).length > 1 && (

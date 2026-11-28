@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, useRef, lazy, Suspense } from "react";
+import { AU_IN_METERS, calculateBrachistochrone, calculateConstantVelocity } from "@/lib/time-dilation/calculations";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
 import { useSearchParams } from "react-router-dom";
@@ -145,9 +146,6 @@ const BENCHMARK_ROUTES: {
   { key: "solProximaB", label: "Sol → Proxima b", minAU: 268132, maxAU: 268132, distanceLabel: "4.24 ly" },
 ];
 
-const AU_TO_KM = 149_597_870.7;
-const C_KM_S = 299_792.458;
-const G_TO_KM_S2 = 9.81e-3;
 
 function parseNumericValue(text: string): number | null {
   if (!text) return null;
@@ -157,28 +155,26 @@ function parseNumericValue(text: string): number | null {
   return isNaN(num) || num <= 0 ? null : num;
 }
 
-function calcTravelTimeSeconds(
+/**
+ * Earth (coordinate) and ship (proper) travel time for a benchmark, from the
+ * one relativistic travel engine (Paradox, lib/time-dilation). 1.9 F-10:
+ * Impulse used Newtonian kinematics here, so Sol to Alpha Centauri at 1 g
+ * read 5.4 years against the relativistic 6.0, and no ship time existed.
+ * With an acceleration: accelerate to the cruise cap or the midpoint, coast,
+ * decelerate (calculateBrachistochrone). Without one: constant cruise.
+ */
+function calcTravelTimes(
   distanceAU: number,
   velocityPercentC: number,
-  accelerationG: number | null
-): number {
-  const d = distanceAU * AU_TO_KM;
-  const vMax = (velocityPercentC / 100) * C_KM_S;
-
-  if (accelerationG && accelerationG > 0) {
-    const a = accelerationG * G_TO_KM_S2;
-    const tAccel = vMax / a;
-    const dAccel = 0.5 * a * tAccel * tAccel;
-    if (2 * dAccel >= d) {
-      // Pure brachistochrone, never reaches max velocity
-      return 2 * Math.sqrt(d / a);
-    }
-    // Accelerate, cruise, decelerate
-    return 2 * tAccel + (d - 2 * dAccel) / vMax;
-  }
-
-  // Constant cruise velocity
-  return d / vMax;
+  accelerationG: number | null,
+): { earthSeconds: number; shipSeconds: number } {
+  const meters = distanceAU * AU_IN_METERS;
+  const beta = Math.min(velocityPercentC / 100, 1 - 1e-12);
+  const r =
+    accelerationG && accelerationG > 0
+      ? calculateBrachistochrone(meters, accelerationG, beta, false)
+      : calculateConstantVelocity(meters, beta, false);
+  return r.valid ? { earthSeconds: r.observerTimeSeconds, shipSeconds: r.shipTimeSeconds } : { earthSeconds: NaN, shipSeconds: NaN };
 }
 
 function formatDuration(seconds: number): string {
@@ -205,12 +201,17 @@ function computeBenchmarkRange(
   velocityPercentC: number,
   accelerationG: number | null
 ): string {
-  const tMin = calcTravelTimeSeconds(minAU, velocityPercentC, accelerationG);
-  const tMax = calcTravelTimeSeconds(maxAU, velocityPercentC, accelerationG);
-  const fMin = formatDuration(tMin);
-  const fMax = formatDuration(tMax);
-  if (minAU === maxAU || fMin === fMax) return fMin;
-  return `${fMin} – ${fMax}`;
+  const tMin = calcTravelTimes(minAU, velocityPercentC, accelerationG);
+  const tMax = calcTravelTimes(maxAU, velocityPercentC, accelerationG);
+  const fMin = formatDuration(tMin.earthSeconds);
+  const fMax = formatDuration(tMax.earthSeconds);
+  const range = minAU === maxAU || fMin === fMax ? fMin : `${fMin} – ${fMax}`;
+  // Ship time only where it differs enough to matter in a story (over 1%).
+  const ship = tMax.shipSeconds;
+  if (Number.isFinite(ship) && ship < tMax.earthSeconds * 0.99) {
+    return `${range} (${formatDuration(ship).replace("~", "")} aboard)`;
+  }
+  return range;
 }
 
 // --- Propulsion-specific economic cost guidance ---
