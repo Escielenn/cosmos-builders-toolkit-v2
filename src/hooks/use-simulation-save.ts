@@ -9,6 +9,7 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { isTrustedSimMessage, simMessageSource } from "@/hooks/use-sim-messages";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -192,6 +193,9 @@ export function useSimulationSave({
   // ── Listen for SAVE messages from the simulator ──────────────────
   useEffect(() => {
     const handler = (event: MessageEvent) => {
+      // Only this page's simulator (its iframe, or this window for the
+      // component sims) may hand us a payload to save or publish (X14).
+      if (!isTrustedSimMessage(event, simMessageSource(iframeRef))) return;
       if (event.data?.type === "STELLARFORGE_SAVE") {
         const payload = event.data.payload as SimulatorPayload;
         // Always record it. Only the Save button should open the save dialog.
@@ -203,7 +207,7 @@ export function useSimulationSave({
 
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
-  }, []);
+  }, [iframeRef]);
 
   /** Ask the simulator for its current state. Iframe sims: postMessage.
    *  Component sims (ExoSky, native Rogue/Solaris): window event. */

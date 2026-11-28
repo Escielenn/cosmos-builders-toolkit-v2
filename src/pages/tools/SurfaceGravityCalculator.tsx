@@ -1,4 +1,6 @@
 import { DEFAULT_COMPOSITION_COLOUR } from "@/lib/palettes/planets";
+import { ReadoutNarrative } from "@/components/canon/ManifestNarratives";
+import { surfaceGravity as surfaceGravityDerivation, density as densityDerivation } from "@/tools/atlas/manifest";
 import { useState, useEffect, useMemo, useRef, useCallback, lazy, Suspense } from "react";
 
 const RichTextEditor = lazy(() => import("@/components/ui/rich-text-editor"));
@@ -73,6 +75,7 @@ import {
   buildCopyText,
   formatGravity,
   formatVelocity,
+  NON_THERMAL_CAVEAT,
 } from "@/lib/surface-gravity/calculations";
 
 import PlanetSizeComparison from "@/components/tools/PlanetSizeComparison";
@@ -672,6 +675,11 @@ const SurfaceGravityCalculator = () => {
                     </div>
                   </div>
 
+                  {/* 1.9 F-02: the consequence beside the number, from the
+                      derivations this tool registers in its manifest. */}
+                  <ReadoutNarrative text={surfaceGravityDerivation.narrative(result.gravity, {})} />
+                  <ReadoutNarrative text={densityDerivation.narrative(result.meanDensity, {})} className="mt-1" />
+
                   {/* Data grid, StatGrid primitive */}
                   <StatGrid cols={4}>
                     <StatGrid.Cell
@@ -760,7 +768,14 @@ const SurfaceGravityCalculator = () => {
               guidance={SECTION_HELPERS["atmospheric-retention"]}
             >
               {result.valid && (
-                <AtmosphericRetentionChart retentionData={result.gasRetention} />
+                <>
+                  <AtmosphericRetentionChart retentionData={result.gasRetention} />
+                  <p className="sf-measure mt-3 text-sf-body text-t2">
+                    Tested at an estimated exobase temperature of{" "}
+                    <span className="font-mono text-t1">{Math.round(result.exobaseTemp)} K</span>, where gas actually
+                    escapes (about 3.5 times the surface temperature, as on Earth). {NON_THERMAL_CAVEAT}
+                  </p>
+                </>
               )}
             </CollapsibleSection>
 

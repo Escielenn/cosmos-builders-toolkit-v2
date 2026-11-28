@@ -1,4 +1,5 @@
 // Worksheet Links Configuration
+import { TOOL_DISPLAY_NAMES as FULL_TOOL_NAMES } from "@/lib/tools-config";
 // Defines which tools can link to which, and what fields to sync
 
 export interface LinkedWorksheetRef {
@@ -434,29 +435,13 @@ export function extractSyncedData(
 }
 
 // Tool display names for UI
-export const TOOL_DISPLAY_NAMES: Record<string, string> = {
-  "planetary-profile": "Genesis",
-  "environmental-chain-reaction": "Cascade",
-  "evolutionary-biology": "Phylo",
-  "xenomythology-framework-builder": "Mythos",
-  "spacecraft-designer": "Vessel",
-  "propulsion-consequences-map": "Impulse",
-  "drake-equation-calculator": "Signal",
-  "star-system-builder": "Orrery",
-  "empire-designer": "Dominion",
-  "technology-consequences": "Paradigm",
-  "species-interaction-matrix": "Symbiosis",
-  "one-big-lie": "Axiom",
-  "time-dilation": "Paradox",
-  "space-expansion-modeler": "Exodus",
-  "habitable-zone-calculator": "Goldilocks",
-  "lexdrift": "Lexdrift",
-  "surface-gravity-calculator": "Ballast",
-  "timeline": "Timeline",
-  "gravitas": "Gravitas",
-  "sensorium": "Sensorium",
-  "dossier": "Dossier",
-};
+/**
+ * Brand names, derived from the one display-name table in tools-config
+ * (1.9 F-17: there were two, and they disagreed on Epoch/Timeline).
+ */
+export const TOOL_DISPLAY_NAMES: Record<string, string> = Object.fromEntries(
+  Object.entries(FULL_TOOL_NAMES).map(([slug, full]) => [slug, full.split(":")[0].trim()]),
+);
 
 // Get display name for a tool type
 export function getToolDisplayName(toolType: string): string {

@@ -269,6 +269,36 @@ export function createCanon(store: CanonStore, projector?: Projector) {
       });
     },
 
+    /**
+     * Mark live stored facts stale (Constitution: "Recompute marks stale and
+     * offers. It never silently recalculates."). Writes source_ref.stale with
+     * the reason and the upstream predicate; the value and tier are untouched,
+     * so the writer still sees the number they adopted, flagged, until they
+     * accept the recomputation. Returns the rows marked.
+     */
+    markStale(
+      worldId: string,
+      subjectId: string | null,
+      predicates: readonly string[],
+      reason: { because: string; source?: Record<string, unknown> },
+    ): Promise<CanonFactRow[]> {
+      return guard(async () => {
+        if (predicates.length === 0) return [];
+        const spellings = predicates.flatMap((p) => predicateSpellingsFor(p));
+        const rows = await store.listLive(worldId, { subjectId, predicates: spellings });
+        const marked: CanonFactRow[] = [];
+        for (const row of rows) {
+          const ref = row.source_ref ?? {};
+          marked.push(
+            await store.update(row.id, {
+              source_ref: { ...ref, stale: { since: nowIso(), because: reason.because, ...(reason.source ? { source: reason.source } : {}) } },
+            }),
+          );
+        }
+        return marked;
+      });
+    },
+
     /** Withdraw a fact. Kept with superseded_at set, so provenance survives. */
     retract(id: string): Promise<CanonFactRow> {
       return guard(async () => {

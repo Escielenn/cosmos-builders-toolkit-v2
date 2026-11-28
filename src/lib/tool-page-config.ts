@@ -37,7 +37,8 @@ function config(
     fullName,
     subtitle,
     isPro: isProTool(toolType),
-    exportLabel: `Export ${brandName}`,
+    // 1.9 F-16: the button exports this sheet; the tool name is in the header.
+    exportLabel: "Export",
     introKey: introKeyOverride ?? toolType,
   };
 }

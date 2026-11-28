@@ -13,6 +13,13 @@
 */
 
 @layer base {
+  /* 1.9 F-15: the browser default for <strong>/<b> is 700, which the design
+     system forbids. Emphasis is 500, like every other emphasis. */
+  strong,
+  b {
+    font-weight: 500;
+  }
+
   /* StellarForge is DARK-ONLY: index.html hard-sets <html class="dark">.
      The old light-theme palette that lived here was dead code and was
      removed (SF-II cleanup, 2026-07-09). tokens.css supplies the

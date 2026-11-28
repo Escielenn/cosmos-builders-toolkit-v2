@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { Save, FolderOpen, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useMetaTags } from "@/hooks/use-meta-tags";
@@ -75,18 +75,54 @@ const RogueSimulator = () => {
     return () => window.removeEventListener("message", handler);
   }, [refreshPayload]);
 
+  // 1.9 (R3): a run whose integration drifted is not published. The sim
+  // posts results.energyError (|E - E0| / |E0| since launch) and the limit;
+  // Publish asks for fresh state, then opens the dialog only if the run is
+  // within it. Otherwise it says why, in place.
+  const [publishBlocked, setPublishBlocked] = useState<string | null>(null);
+  const publishWaitRef = useRef<{ from: unknown; at: number } | null>(null);
+  const [publishTick, setPublishTick] = useState(0);
+  const requestPublish = useCallback(() => {
+    // Ask for the live state first. Without this the dialog opened on a
+    // null payload and published a bare name into the world.
+    publishWaitRef.current = { from: pendingPayload, at: Date.now() };
+    setPublishTick((n) => n + 1);
+    refreshPayload();
+  }, [pendingPayload, refreshPayload]);
+  useEffect(() => {
+    const wait = publishWaitRef.current;
+    if (!wait) return;
+    const fresh = pendingPayload !== wait.from;
+    const decide = () => {
+      publishWaitRef.current = null;
+      const r = pendingPayload?.results as Record<string, unknown> | undefined;
+      const err = typeof r?.energyError === "number" ? r.energyError : null;
+      const max = typeof r?.publishMaxEnergyError === "number" ? r.publishMaxEnergyError : 1e-3;
+      if (err !== null && err > max) {
+        setPublishBlocked(
+          `// ENERGY ERROR ${err.toExponential(1)}, ABOVE ${max.toExponential(0)}. RUN NOT PUBLISHED. Reset, or try a wider or slower pass.`,
+        );
+        return;
+      }
+      setPublishBlocked(null);
+      setPublishDialogOpen(true);
+    };
+    if (fresh) {
+      decide();
+      return;
+    }
+    // No answer yet: decide on what we have after a short wait.
+    const t = window.setTimeout(decide, 600);
+    return () => window.clearTimeout(t);
+  }, [pendingPayload, publishTick]);
+
   useEffect(() => {
     const handler = (event: MessageEvent) => {
-      if (event.data?.type === "STELLARFORGE_PUBLISH") {
-        // Ask for the live state first. Without this the dialog opened on a
-        // null payload and published a bare name into the world.
-        refreshPayload();
-        setPublishDialogOpen(true);
-      }
+      if (event.data?.type === "STELLARFORGE_PUBLISH") requestPublish();
     };
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
-  }, [refreshPayload]);
+  }, [requestPublish]);
 
   return (
     <>
@@ -124,12 +160,7 @@ const RogueSimulator = () => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => {
-                  // Read the simulator now. Publishing used to send whatever
-                  // the last Save left behind, which was usually nothing.
-                  refreshPayload();
-                  setPublishDialogOpen(true);
-                }}
+                onClick={requestPublish}
                 className="bg-sf-primary/[0.06] border-sf-primary text-sf-primary-text hover:bg-sf-primary/[0.12] hover:text-t1 text-[13px] min-h-hit px-3"
               >
                 <Rocket className="w-3 h-3 mr-1" />
@@ -177,6 +208,16 @@ const RogueSimulator = () => {
               {simFlags.length > 0 && (
                 <div className={SIM_FLAGS}>
                   <SimFlagStrip flags={simFlags} dismissedIds={dismissedIds} onDismiss={dismissFlag} />
+                </div>
+              )}
+              {publishBlocked && (
+                <div className={SIM_FLAGS}>
+                  <p
+                    role="status"
+                    className="rounded-none border border-sf-crimson bg-sf-crimson/[0.06] px-3 py-2 font-sans text-[13px] text-sf-crimson-text"
+                  >
+                    {publishBlocked}
+                  </p>
                 </div>
               )}
             </div>

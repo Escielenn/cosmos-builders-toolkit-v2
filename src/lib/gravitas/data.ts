@@ -17,14 +17,23 @@ export const AU_M = 1.496e11; // Astronomical Unit (meters)
 export const EARTH_G = 9.81; // Earth surface gravity (m/s²)
 export const LY_M = 9.461e15; // Light-year (meters)
 
+/**
+ * Rotation rate most people tolerate without adaptation (Hall 1997; Globus &
+ * Hall 2017). One threshold for every tool that spins a hull: Gravitas owns
+ * it, the Ark reads it (1.9 F-18).
+ */
+export const RPM_COMFORT = 2;
+
 // ─── Spin Presets ───────────────────────────────────────────────────
 
 export const SPIN_PRESETS: SpinPreset[] = [
   {
     id: "oneill",
     name: "O'Neill Cylinder",
-    description: "3.2 km radius, 0.5 RPM, ~1g",
-    values: { radius_m: 3200, rotation_rpm: 0.5, human_height_m: 1.8 },
+    // 1.9 F-18: 0.5 rpm at 3.2 km gives 0.89 g, not "~1g". O'Neill's Island
+    // Three spun at 0.53 rpm: ω²r = (2π·0.53/60)²·3200 = 9.86 m/s².
+    description: "3.2 km radius, 0.53 RPM, 1g",
+    values: { radius_m: 3200, rotation_rpm: 0.53, human_height_m: 1.8 },
   },
   {
     id: "stanford",
@@ -35,7 +44,7 @@ export const SPIN_PRESETS: SpinPreset[] = [
   {
     id: "babylon5",
     name: "Babylon 5 Station",
-    description: "400m radius, ~1.4 RPM, ~0.8g",
+    description: "400m radius, ~1.4 RPM, ~0.9g",
     values: { radius_m: 400, rotation_rpm: 1.4, human_height_m: 1.8 },
   },
   {

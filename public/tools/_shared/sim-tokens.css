@@ -21,6 +21,16 @@
    ========================================================================== */
 
 :root {
+  /* Star display colours (1.9). Data palette, not theme: approximate sRGB of
+     each spectral class's blackbody (Mitchell Charity, "What color are the
+     stars?"), slightly saturated for legibility on the canvas. Read by
+     solaris-core.js; keep in step with src/lib/palettes/. */
+  --sf-star-b8v: #9BB8FF;
+  --sf-star-a5v: #FFFDE7;
+  --sf-star-g2v: #FFD700;
+  --sf-star-k5v: #FF8C42;
+  --sf-star-m4v: #FF5555;
+
   --t1: #FAFAFA;
   --t2: #C9CDD3;
   --t3: #A7AAB0;
@@ -31,6 +41,24 @@
   --sf-amber-text: #FFB800;
   --sf-crimson-text: #FF658B;
 
+  /* Named hues are meanings (cascade layer or status) and never move.
+     Fills/borders take the bare name, readable text the -text stop. */
+  --sf-amber: #FFB800;
+  --sf-crimson: #FF3366;
+  --sf-azure: #4D9FFF;
+  --sf-azure-text: #4D9FFF;
+  --sf-emerald: #00FF88;
+  --sf-emerald-text: #00FF88;
+  --sf-stellar-text: #6698FC;
+
+  /* Planes, as in the app: void, surface, elevated. Simulator canvases sit
+     on the deeper sim canvas. */
+  --sf-void: #0A0E17;
+  --sf-surface: #1B2334;
+  --sf-surface-elevated: #273249;
+  --sf-sim-canvas: #09090B;
+  --sf-sim-panel: #0F0F10;
+
   --sf-line-hairline: #41454D;
   --sf-line: #50555E;
   --sf-line-interactive: #787D87;
@@ -39,6 +67,8 @@
   --sf-disabled-bg: #151B29;
   --sf-disabled-line: #575C65;
   --sf-disabled-text: #787B81;
+
+  --sf-focus: #3DFFCD;
 }
 
 /* Disabled controls: the disabled tokens, at full opacity. */

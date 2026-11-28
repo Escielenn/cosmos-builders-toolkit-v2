@@ -42,6 +42,12 @@ function temp(k: number): string {
  * How survivable a surface temperature is, in the same words the simulator's own
  * readout uses, so the writing surface and the tool agree.
  */
+/** A period in days, as a writer reads it: days under two years, years over. */
+export function formatDays(days: number): string {
+  if (days < 730) return `${days < 10 ? days.toFixed(2) : days.toFixed(1)} days`;
+  return `${(days / 365.25).toFixed(2)} years`;
+}
+
 function survivability(k: number): string {
   if (k > 600) return "lethal";
   if (k > 373) return "scorching";
@@ -98,15 +104,13 @@ export function extractTidelockFacts(raw: unknown): WorksheetFact[] {
   push("locked.atmosphere", "Atmosphere retention", str(r.atmRetention));
   push("locked.tidalState", "Tidal state", str(r.tidalLock));
 
+  // orbPeriod is in DAYS (tidelock/sim.html: sqrt(a³/M)·365.25). It used to be
+  // read as years, so a 14.7-day year became "14.71 years" (1.9 audit X1).
   const period = fin(r.orbPeriod);
   if (period !== null) {
     // A tidally locked world's day equals its year, which is the fact most often
     // got wrong in prose.
-    push(
-      "locked.period",
-      "Year (and day)",
-      period < 1 ? `${(period * 365.25).toFixed(1)} days` : `${period.toFixed(2)} years`,
-    );
+    push("locked.period", "Year (and day)", formatDays(period));
   }
 
   const moons = fin(p.moonCount);
@@ -160,26 +164,27 @@ export function extractExoforgeFacts(raw: unknown): WorksheetFact[] {
   const t = fin(p.temp);
   if (t !== null) push("forged.temperature", "Surface temperature", `${temp(t)}, ${survivability(t)}`);
 
+  // `period` is the orbital period slider, in DAYS (exoforge/sim.html: 0.5 to
+  // 10000, default 365.25). Read as years it published Earth as "365.25 years".
   const period = fin(p.period);
-  if (period !== null) {
-    push(
-      "forged.period",
-      "Orbital period",
-      period < 1 ? `${(period * 365.25).toFixed(1)} days` : `${period.toFixed(2)} years`,
-    );
-  }
+  if (period !== null) push("forged.period", "Orbital period", formatDays(period));
 
-  const rotation = fin(p.rotation);
-  if (rotation !== null && rotation !== 0) {
-    push("forged.rotation", "Day length", `${Math.abs(rotation).toFixed(1)} hours`);
-  }
+  // `rotation` is NOT a day length. It is the globe's visual spin multiplier
+  // (0 to 5, default 1.0) and is ephemeral (1.9 audit X2): publishing it as
+  // "1.0 hours" told the writer their world had a one-hour day.
 
+  // ocean and cloud are already percentages, 0 to 100. Multiplying by 100
+  // again published "7000%".
   const ocean = fin(p.ocean);
-  if (ocean !== null) push("forged.ocean", "Ocean coverage", `${Math.round(ocean * 100)}%`);
+  if (ocean !== null) push("forged.ocean", "Ocean coverage", `${Math.round(ocean)}%`);
   const cloud = fin(p.cloud);
-  if (cloud !== null) push("forged.cloud", "Cloud cover", `${Math.round(cloud * 100)}%`);
+  if (cloud !== null) push("forged.cloud", "Cloud cover", `${Math.round(cloud)}%`);
 
-  push("forged.composition", "Composition", str(p.composition));
+  // composition is a number in the live sim (0 pure rock, 100 pure gas); old
+  // saves may carry a string.
+  const comp = fin(p.composition);
+  if (comp !== null) push("forged.composition", "Composition", `${Math.round(comp)}% gas envelope by volume`);
+  else push("forged.composition", "Composition", str(p.composition));
 
   const ringOpacity = fin(p.ringOpacity);
   if (ringOpacity !== null && ringOpacity > 0.02) {

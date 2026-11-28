@@ -103,3 +103,24 @@ describe("describeHandoffPlanet", () => {
     expect(describeHandoffPlanet(orangeStar)).toBe("tidal lock planet, 0.88 AU from an orange star.");
   });
 });
+
+describe("insolation-conserving handoff (1.9 X4)", () => {
+  it("Earth around the Sun is Earth-equivalent distance 1, insolation 1", async () => {
+    const { insolationEquivalentAU, insolationOf } = await import("../handoff");
+    expect(insolationEquivalentAU(1, 1)).toBe(1);
+    expect(insolationOf(1, 1)).toBe(1);
+  });
+  it("Proxima b (0.0485 AU, 0.00155 L☉) gets 0.65 S⊕", async () => {
+    const { insolationOf } = await import("../handoff");
+    expect(insolationOf(0.0485, 0.00155)).toBeCloseTo(0.659, 2);
+  });
+  it("TRAPPIST-1e (0.02925 AU, 0.000553 L☉) gets 0.65 S⊕", async () => {
+    const { insolationOf } = await import("../handoff");
+    expect(insolationOf(0.02925, 0.000553)).toBeCloseTo(0.646, 2);
+  });
+  it("rejects nonsense rather than inventing a distance", async () => {
+    const { insolationEquivalentAU } = await import("../handoff");
+    expect(insolationEquivalentAU(0, 1)).toBeNull();
+    expect(insolationEquivalentAU(1, -1)).toBeNull();
+  });
+});

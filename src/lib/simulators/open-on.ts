@@ -97,8 +97,13 @@ function exoforgeSeed(entry: WorldEntry): SimSeed {
       readNumber(entry, "planet.mass_earths"),
   );
   put(seed, "temp", readNumber(entry, "planet.temp_mean", "surfaceTemperature"));
-  put(seed, "period", readNumber(entry, "planet.rotation_period", "dayLength"));
-  put(seed, "ocean", readNumber(entry, "planet.hydrosphere_fraction"));
+  // ExoForge's `period` is the ORBITAL period in days (0.5 to 10000). It used
+  // to be fed planet.rotation_period (hours), so a 24 h day became a 24-day
+  // year (1.9 audit X3).
+  put(seed, "period", readNumber(entry, "orbit.period"));
+  // hydrosphere_fraction is 0 to 1; ExoForge's ocean slider is 0 to 100.
+  const hydro = readNumber(entry, "planet.hydrosphere_fraction");
+  put(seed, "ocean", hydro === null ? null : Math.round(Math.min(1, Math.max(0, hydro)) * 100));
   put(seed, "atmo", readNumber(entry, "planet.atmo_pressure"));
   put(seed, "starTemp", readNumber(entry, "star.temp_effective"));
   put(seed, "composition", readText(entry, "planet.composition", "composition"));

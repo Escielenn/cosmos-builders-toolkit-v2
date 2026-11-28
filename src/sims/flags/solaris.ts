@@ -29,6 +29,14 @@ export interface SolarisStabilityOutput {
   /** True when the unstable body's orbit crosses the system's habitable zone. */
   inHabitableZone: boolean;
   planetName: string;
+  /** Orbit in AU, cited when present. */
+  au?: number;
+}
+
+/** A planet the integration found unbound (1.9: flagged, never respawned). */
+export interface SolarisEjectionOutput {
+  planetName: string;
+  ejectedAtYears: number;
 }
 
 export interface SolarisFlareOutput {
@@ -46,8 +54,10 @@ const unstableOrbitInHZ: SimFlagRule<SolarisStabilityOutput> = (o) => {
     sim: "solaris",
     severity: "tension",
     title: `${o.planetName.toUpperCase()}: ORBIT UNSTABLE`,
-    body: "Unstable on 10⁵-year timescales, and it's inside the habitable zone. Evolution needs a stable climate for longer than this orbit will hold one.",
-    cites: { planet: o.planetName, stability: o.stabCls },
+    // Holman & Wiegert 1999 fit orbits that survive 10⁴ binary periods; the
+    // old "10⁵-year" figure was not theirs.
+    body: "Outside the Holman & Wiegert stable range (orbits that last 10⁴ binary periods), and inside the habitable zone. Evolution needs a stable climate for longer than this orbit will hold one.",
+    cites: { planet: o.planetName, stability: o.stabCls, ...(o.au !== undefined ? { orbit_AU: o.au } : {}) },
   };
 };
 
@@ -63,8 +73,21 @@ const atmosphereStrippedByFlares: SimFlagRule<SolarisFlareOutput> = (o) => {
   };
 };
 
+const planetEjected: SimFlagRule<SolarisEjectionOutput> = (o) => {
+  if (!Number.isFinite(o.ejectedAtYears)) return null;
+  return {
+    id: "solaris.planet-ejected",
+    sim: "solaris",
+    severity: "tension",
+    title: `${o.planetName.toUpperCase()}: EJECTED AT YEAR ${o.ejectedAtYears.toFixed(1)}`,
+    body: "The companion stars pulled it loose and it left the system. As built, this arrangement cannot keep that world; anyone living there is now on a starless world.",
+    cites: { planet: o.planetName, ejected_at_yr: Number(o.ejectedAtYears.toFixed(2)) },
+  };
+};
+
 export const SOLARIS_RULES = {
   unstableOrbitInHZ,
+  planetEjected,
   atmosphereStrippedByFlares,
 };
 
@@ -80,6 +103,13 @@ export interface SolarisPlanetResult {
   band: string;
   stabCls: "stable" | "marginal" | "unstable";
   inHabitableZone: boolean;
+  /** 1.9 additions, present in payloads from 1.9 on. */
+  periodDays?: number;
+  insolation?: number;
+  teqK?: number;
+  hzStatus?: string;
+  ejected?: boolean;
+  ejectedAtYears?: number | null;
 }
 
 /** Evaluate the stability rule across every planet the simulator posted. */
@@ -88,10 +118,17 @@ export function evaluateSolarisSystemFlags(planets: readonly SolarisPlanetResult
   const out: SimFlag[] = [];
   for (const pl of planets) {
     if (!pl || typeof pl !== "object") continue;
+    const name = String(pl.name ?? "Planet");
+    if (pl.ejected === true && typeof pl.ejectedAtYears === "number") {
+      const e = planetEjected({ planetName: name, ejectedAtYears: pl.ejectedAtYears });
+      if (e) out.push(e);
+      continue;
+    }
     const f = unstableOrbitInHZ({
-      planetName: String(pl.name ?? "Planet"),
+      planetName: name,
       stabCls: pl.stabCls === "unstable" || pl.stabCls === "marginal" ? pl.stabCls : "stable",
       inHabitableZone: !!pl.inHabitableZone,
+      au: typeof pl.au === "number" ? pl.au : undefined,
     });
     if (f) out.push(f);
   }

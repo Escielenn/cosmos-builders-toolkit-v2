@@ -7,14 +7,17 @@ interface CodexCollapsedProps {
 }
 
 // Layer colors for the dot indicators
+// 1.9 F-07: the one cascade scheme. Colour is the layer's meaning and never
+// moves (CLAUDE.md); "technology" and "narrative" are legacy layer keys.
 const LAYER_DOT_COLORS: Record<string, string> = {
-  environment: "bg-primary/50",
-  biology: "bg-sf-emerald/50",
-  psychology: "bg-sf-amber/50",
-  culture: "bg-sf-azure/50",
-  mythology: "bg-sf-violet/50",
-  technology: "bg-sf-crimson/50",
-  narrative: "bg-sf-amber-warm/50",
+  physics: "bg-sf-amber",
+  environment: "bg-sf-azure",
+  biology: "bg-sf-emerald",
+  psychology: "bg-sf-magenta",
+  culture: "bg-sf-violet",
+  mythology: "bg-sf-stellar",
+  technology: "bg-sf-violet",
+  narrative: "bg-sf-teal",
 };
 
 const CodexCollapsed = ({ sections, onExpand }: CodexCollapsedProps) => {

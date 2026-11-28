@@ -4,7 +4,8 @@ import { expectDefaultsRoundTrip, expectRoundTrip } from "./roundtrip";
 
 describe("K-Scale worksheet codec", () => {
   it("round-trips a saved worksheet unchanged", () => {
-    expectRoundTrip(codec, {
+    // 1.9 F-08: rows carry derived.kardashev; serialize first so it is present.
+    expectRoundTrip(codec, codec.serialize({
       totalPowerWatts: 3.8e26,
       powerLog10: 26.58,
       growthRate: "fast",
@@ -14,7 +15,7 @@ describe("K-Scale worksheet codec", () => {
       storyNotes: { energySources: "Dyson swarm", limitations: "", conflicts: "", dailyLife: "Quiet" },
       generalNotes: "",
       moodboard: [],
-    });
+    } as never));
   });
 
   it("fills sections an older sheet lacks from the defaults", () => {

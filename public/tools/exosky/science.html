@@ -1,858 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>
-/* Theme bridge: legacy cyan is retired. When embedded same-origin, adopt the
-   host page's --sf-primary role colour; standalone, keep the default teal. */
-(function(){try{var h=window.parent!==window?window.parent.document.documentElement:null;if(!h)return;var cs=getComputedStyle(h);var p=cs.getPropertyValue('--sf-primary').trim();var b=cs.getPropertyValue('--sf-primary-bright').trim();var r=document.documentElement.style;if(p)r.setProperty('--sf-accent',p);if(b)r.setProperty('--sf-accent-bright',b);}catch(e){}})();
-</script>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="/tools/_shared/sim-tokens.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EXOSKY — Showing Our Work | StellarForge.tools</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-<link href="https://fonts.cdnfonts.com/css/md-nichrome-test" rel="stylesheet">
+<title>ExoSky: the science | StellarForge.tools</title>
+<link rel="stylesheet" href="/tools/_shared/sim-tokens.css">
+<link rel="stylesheet" href="/fonts/md-nichrome/md-nichrome.css">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg-deep: #09090B;
-    --bg-panel: rgba(15,15,16,0.92);
-    --sf-accent: #15C17B;
-    --cyan-dim: var(--sf-primary-text);
-    --cyan-border: #50555E;
-    --gold: #FFD43B;
-    --green: #2ECC71;
-    --accent-green: #00E5A0;
-    --orange: #FFA500;
-    --red: #E74C3C;
-    --text-primary: var(--t1);
-    --text-secondary: var(--t2);
-    --text-muted: var(--t4);
-    --text-ghost: var(--t4);
-    --border: #50555E;
-    --font-display: 'MD Nichrome Test', 'MD Nichrome','Jura', sans-serif;
-    --font-body: 'DM Sans', sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
-  }
-
+  /* 1.9: rewritten so every claim matches the code (E23). No external font
+     requests; no decorative animation; tokens from sim-tokens.css only. */
+  *, *::before, *::after { box-sizing: border-box; }
   body {
-    background: var(--bg-deep);
-    color: var(--text-secondary);
-    font-family: var(--font-body);
-    font-size: 14px;
-    line-height: 1.75;
-    overflow-x: hidden;
-  }
-
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: rgba(0,229,160,0.12); border-radius: 0; }
-
-  /* ── STAR FIELD BACKGROUND ── */
-  .starfield {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  .container {
-    position: relative;
-    z-index: 1;
-    max-width: 840px;
-    margin: 0 auto;
-    padding: 60px 28px 100px;
-  }
-
-  /* ── HEADER ── */
-  .header {
-    margin-bottom: 56px;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 32px;
-  }
-  .header .tool-name {
-    font-family: var(--font-display);
-    font-weight: 300;
-    font-size: 36px;
-    letter-spacing: 8px;
-    text-transform: uppercase;
-    color: var(--text-primary);
-  }
-  .header .tool-name span {
-    color: var(--sf-accent);
-    font-weight: 300;
-  }
-  .header .subtitle {
-    font-family: var(--font-body);
-    font-size: 12px;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    color: var(--sf-primary-text);
-    margin-top: 4px;
-  }
-  .header .subtitle a {
-    color: var(--sf-primary-text);
-    text-decoration: none;
-  }
-  .header h1 {
-    font-family: var(--font-display);
-    font-weight: 300;
-    font-size: 22px;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--cyan-dim);
-    margin-top: 20px;
-  }
-  .header .intro {
-    margin-top: 16px;
-    font-size: 13px;
-    color: var(--t3);
-    max-width: 640px;
-    line-height: 1.85;
-  }
-
-  /* ── SECTION ── */
-  .section {
-    margin-top: 52px;
-  }
-  .section-header {
-    font-family: var(--font-display);
-    font-weight: 300;
-    font-size: 12px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--cyan-dim);
-    border-bottom: 1px solid var(--cyan-border);
-    padding-bottom: 6px;
-    margin-bottom: 20px;
-  }
-  .section-title {
-    font-family: var(--font-display);
-    font-weight: 300;
-    font-size: 18px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--text-primary);
-    margin-bottom: 12px;
-  }
-  .section p {
-    margin-bottom: 14px;
+    margin: 0;
+    /* sim-tokens.css carries no plane colour yet; the fallback mirrors tokens.css --sf-void. */
+    background: var(--sf-void, rgb(10 14 23));
     color: var(--t2);
-    line-height: 1.8;
-    font-size: 13.5px;
+    font-family: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
   }
-  .section p strong {
-    color: var(--t1);
-    font-weight: 500;
-  }
-
-  /* ── DATA CARDS ── */
-  .data-card {
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
-    border-radius: 0;
-    padding: 18px 22px;
-    margin: 18px 0;
-    backdrop-filter: blur(16px);
-  }
-  .data-card .card-header {
-    font-family: var(--font-display);
-    font-weight: 300;
-    font-size: 12px;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    color: var(--cyan-dim);
-    margin-bottom: 10px;
-  }
-  .data-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    line-height: 2;
-  }
-  .data-label {
-    font-family: var(--font-body);
-    font-size: 12px;
-    color: var(--text-muted);
-    font-weight: 400;
-    letter-spacing: 0.5px;
-  }
-  .data-value {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--t2);
-    font-weight: 400;
-  }
-  .data-value.highlight { color: var(--gold); }
-  .data-value.cyan { color: var(--sf-accent); }
-  .data-value.green { color: var(--green); }
-
-  /* ── CODE / EQUATION BLOCKS ── */
-  .equation-block {
-    background: rgba(255,255,255,0.02);
-    border: 1px solid #41454D;
-    border-radius: 0;
-    padding: 16px 20px;
-    margin: 16px 0;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--sf-primary-text);
-    line-height: 1.9;
-    overflow-x: auto;
-  }
-  .equation-block .comment {
-    color: var(--t4);
-  }
-  .equation-block .keyword {
-    color: var(--orange);
-  }
-  .equation-block .value {
-    color: var(--gold);
-  }
-
-  /* ── SOURCE REFERENCES ── */
-  .source-list {
-    list-style: none;
-    margin: 12px 0;
-  }
-  .source-list li {
-    padding: 10px 0;
-    border-bottom: 1px solid #41454D;
-    display: flex;
-    gap: 14px;
-    align-items: flex-start;
-    font-size: 12px;
-    color: var(--t3);
-    line-height: 1.7;
-  }
-  .source-list li:last-child { border-bottom: none; }
-  .source-tag {
-    font-family: var(--font-display);
-    font-size: 12px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: 0;
-    flex-shrink: 0;
-    margin-top: 2px;
-    font-weight: 300;
-  }
-  .source-tag.catalog { background: rgba(21,193,123,0.08); color: var(--sf-accent); border: 1px solid #50555E; }
-  .source-tag.model { background: rgba(255,165,0,0.08); color: var(--orange); border: 1px solid rgb(255,165,0); }
-  .source-tag.standard { background: rgba(46,204,113,0.08); color: var(--green); border: 1px solid rgb(46,204,113); }
-  .source-tag.paper { background: rgba(155,89,182,0.08); color: #9B59B6; border: 1px solid #50555E; }
-
-  .source-list .source-title {
-    color: var(--t2);
-    font-weight: 500;
-  }
-  .source-list .source-url {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--sf-primary-text);
-    word-break: break-all;
-  }
-
-  /* ── DIAGRAM PANELS ── */
-  .diagram {
-    background: rgba(255,255,255,0.015);
-    border: 1px solid #41454D;
-    border-radius: 0;
-    padding: 20px;
-    margin: 20px 0;
-    text-align: center;
-  }
-  .diagram canvas {
-    display: block;
-    margin: 0 auto;
-  }
-  .diagram .caption {
-    font-family: var(--font-body);
-    font-size: 12px;
-    color: var(--text-ghost);
-    margin-top: 10px;
-    letter-spacing: 0.5px;
-  }
-
-  /* ── INLINE HIGHLIGHTS ── */
-  .val {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--sf-primary-text);
-    background: rgba(21,193,123,0.04);
-    padding: 1px 6px;
-    border-radius: 0;
-  }
-
-  /* ── FOOTER ── */
-  .footer {
-    margin-top: 80px;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
-    font-size: 12px;
-    letter-spacing: 1.5px;
-    color: var(--text-ghost);
-    text-align: center;
-  }
-  .footer a { color: var(--sf-primary-text); text-decoration: none; }
-
-  /* ── FLOW DIAGRAM ── */
-  .flow {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    margin: 20px 0;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .flow-node {
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
-    border-radius: 0;
-    padding: 10px 16px;
-    font-family: var(--font-display);
-    font-size: 12px;
-    font-weight: 300;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--t2);
-    text-align: center;
-    backdrop-filter: blur(8px);
-  }
-  .flow-node.primary {
-    border-color: #8C909A;
-    color: var(--sf-accent);
-  }
-  .flow-arrow {
-    font-size: 14px;
-    color: var(--t4);
-    padding: 0 6px;
-  }
-
-  /* ── TABLE ── */
-  .data-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 16px 0;
-    font-size: 12px;
-  }
-  .data-table th {
-    font-family: var(--font-display);
-    font-size: 12px;
-    font-weight: 300;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--cyan-dim);
-    text-align: left;
-    padding: 8px 12px;
-    border-bottom: 1px solid var(--cyan-border);
-  }
-  .data-table td {
-    padding: 7px 12px;
-    border-bottom: 1px solid #41454D;
-    color: var(--t2);
-  }
-  .data-table td:first-child { color: var(--t2); font-weight: 500; }
-  .data-table .mono {
-    font-family: var(--font-mono);
-    font-size: 12px;
-  }
-
-  @media (max-width: 640px) {
-    .container { padding: 36px 18px 60px; }
-    .header .tool-name { font-size: 24px; letter-spacing: 5px; }
-    .section-title { font-size: 15px; }
-    .flow { gap: 4px; }
-    .flow-node { font-size: 12px; padding: 6px 10px; }
-  }
+  main { max-width: 68ch; margin: 0 auto; padding: 48px 24px 96px; }
+  header { border-bottom: 1px solid var(--sf-line); padding-bottom: 24px; margin-bottom: 32px; }
+  .tool { font-family: "MD Nichrome", "Jura", sans-serif; font-weight: 300; font-size: 40px; letter-spacing: 0.06em; color: var(--t1); margin: 0; }
+  .eyebrow, h2 { font-family: "Jura", "DM Sans", sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--t4); }
+  h2 { margin: 48px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--sf-line-hairline); }
+  h3 { font-size: 20px; font-weight: 400; color: var(--t1); margin: 8px 0 12px; }
+  p, li { color: var(--t2); }
+  a { color: var(--sf-primary-text); }
+  code, .eq { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 14px; color: var(--t1); }
+  .eq { display: block; padding: 10px 14px; margin: 12px 0; border: 1px solid var(--sf-line); overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; display: block; overflow-x: auto; }
+  th, td { text-align: left; padding: 6px 10px 6px 0; border-bottom: 1px solid var(--sf-line-hairline); vertical-align: top; }
+  th { font-weight: 500; color: var(--t3); font-size: 13px; }
+  td.n { font-family: "JetBrains Mono", ui-monospace, monospace; color: var(--t1); white-space: nowrap; }
+  .note { border: 1px solid var(--sf-line); padding: 8px 12px; margin: 16px 0; }
+  .note strong { color: var(--sf-amber-text); font-weight: 500; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 13px; letter-spacing: 0.10em; }
+  ul { padding-left: 20px; }
+  footer { margin-top: 56px; font-size: 13px; color: var(--t4); border-top: 1px solid var(--sf-line-hairline); padding-top: 16px; }
 </style>
 <link rel="stylesheet" href="/tools/_shared/science-floor.css">
 <script src="/tools/_shared/science-embed.js"></script>
 </head>
 <body>
-
-<canvas class="starfield" id="stars"></canvas>
-
-<div class="container">
-
-  <!-- ════ HEADER ════ -->
-  <header class="header">
-    <div class="tool-name">EXOSKY <span>v2</span></div>
-    <div class="subtitle"><a href="https://stellarforge.tools">STELLARFORGE.TOOLS</a></div>
-    <h1>Showing Our Work</h1>
-    <p class="intro">
-      Every star, every twist of the Milky Way, and every atmospheric hue in EXOSKY is computed from real astrophysical data and peer-reviewed models. This page shows how the sky is built, and where we are extrapolating beyond anything a human has seen.
-    </p>
+<main>
+  <header>
+    <p class="tool">ExoSky</p>
+    <p class="eyebrow">The science · version 1.9</p>
+    <p>ExoSky shows the night sky from another star, then from the surface of a planet you decide: where its pole points, how fast it turns, where you stand on it, what time it is. This page says how each part is computed, what it is checked against, and what it leaves out. Every number below is tested in the code.</p>
   </header>
 
-  <!-- ════ PHILOSOPHY ════ -->
-  <section class="section">
-    <div class="section-header">METHODOLOGY</div>
-    <div class="section-title">One Big Lie, Everything Else Earned</div>
-    <p>
-      Science fiction worldbuilding at StellarForge follows a single principle: <strong>break one law of physics if you must, then rigorously compute the consequences</strong>. EXOSKY's "lie" is modest — we're showing you a sky you can't yet visit. But the sky itself is honest. Every photon's journey from source star to alien retina follows the same physics it would in reality.
-    </p>
-    <p>
-      The simulation chains together five computational layers, each feeding the next:
-    </p>
+  <h2>The stars</h2>
+  <h3>30,004 real stars, each with an id</h3>
+  <p>The catalogue is a subset of the <a href="https://github.com/astronexus/HYG-Database">HYG database v4.1</a> (David Nash, astronexus; CC BY-SA 4.0), which merges Hipparcos, Yale Bright Star and Gliese. ExoSky keeps every star you can see with the naked eye from Earth (V ≤ 6.5, about 8,900 stars) plus every star within 100 parsecs of the Sun (about 24,700), loaded only when you open ExoSky.</p>
+  <p>Each star keeps its Hipparcos number (<code>HIP 32349</code> is Sirius) or, without one, its HYG number. Constellations you draw store these ids, not names or positions, so they still point at the same stars after a correction.</p>
+  <p>One distance is overridden: Betelgeuse sits at 168 pc (Joyce et al. 2020) rather than the Hipparcos 152 pc. The override moves the catalogue star itself, so the point in the sky and the vantage agree.</p>
+  <div class="note"><strong>// WHERE THE CATALOGUE THINS</strong><br>The catalogue is built from Earth. An observer d parsecs from the Sun sees every neighbour within (100 − d) pc; beyond that, only stars bright enough to have been seen from Earth. From Kepler-452 (552 pc) faint nearby stars are missing, so the naked-eye count reads as a lower bound and the empty-sky warning stays quiet rather than mislead.</div>
 
-    <div class="flow">
-      <div class="flow-node primary">STAR CATALOG</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-node">COORDINATE<br>TRANSFORM</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-node">GALACTIC<br>STRUCTURE</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-node">ATMOSPHERIC<br>OPTICS</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-node primary">ALIEN SKY</div>
-    </div>
-  </section>
+  <h2>Moving the observer</h2>
+  <p>Every star is translated by the observer's position and re-projected. Nothing is faked: a constellation changes shape because its stars sit at different distances.</p>
+  <span class="eq">direction = (star − observer) / |star − observer|<br>m = M + 5 log₁₀(d / 10 pc)</span>
+  <p>A star closer than 0.01 pc (about 2,000 AU) to the observer is the observer's own sun. It is drawn as a disc, not a point. (1.8 drew it as a phantom magnitude −26.7 point at right ascension 0°.)</p>
+  <p>Check: from Alpha Centauri A the Sun is a magnitude 0.4 star at right ascension 40°, declination +61°, in Cassiopeia, and Proxima Centauri is naked-eye. Both are in the tests.</p>
 
-  <!-- ════ LAYER 1: STAR CATALOG ════ -->
-  <section class="section">
-    <div class="section-header">LAYER 1</div>
-    <div class="section-title">The Star Catalog</div>
-    <p>
-      EXOSKY begins with <strong>~300 named stars</strong> drawn from the ESA Hipparcos astrometric catalog — the same dataset that underpins modern stellar astronomy. For each star, we carry five fundamental parameters:
-    </p>
+  <h2>The right way round</h2>
+  <p>We see the sky from inside the sphere. Facing south, east is on your left, as on every star chart. ExoSky's camera takes screen-right as the view direction crossed with up; the orientation test puts Betelgeuse upper-left of Rigel and Sirius to their lower left from 40° north. (1.8 had this mirrored.)</p>
+  <p>The projection is stereographic: it keeps shapes and stays usable out to a 180° field. Zoom runs from 0.5° to 180°, by a constant factor per step.</p>
 
-    <div class="data-card">
-      <div class="card-header">PER-STAR PARAMETERS</div>
-      <div class="data-row"><span class="data-label">Right Ascension (α)</span><span class="data-value">Equatorial J2000 coordinates (degrees)</span></div>
-      <div class="data-row"><span class="data-label">Declination (δ)</span><span class="data-value">Equatorial J2000 coordinates (degrees)</span></div>
-      <div class="data-row"><span class="data-label">Distance</span><span class="data-value">Hipparcos parallax → parsecs</span></div>
-      <div class="data-row"><span class="data-label">Absolute Magnitude (M)</span><span class="data-value">Intrinsic luminosity on magnitude scale</span></div>
-      <div class="data-row"><span class="data-label">B-V Color Index</span><span class="data-value">Spectral energy → surface temperature</span></div>
-    </div>
+  <h2>Standing on a planet</h2>
+  <h3>Pole, equator, horizon</h3>
+  <p>A planet's pole is a direction among the stars (right ascension and declination, J2000). Its equinox is where its orbit crosses its equator: pole × orbit normal. For Earth that is the March equinox exactly, which the tests check.</p>
+  <p>Obliquity fixes the angle between pole and orbit normal but not its direction. ExoSky uses a stated convention: the normal leans from the pole toward the north galactic pole. It decides which stars are behind the sun in which season, nothing else. A pole you have not set defaults to Earth's axis direction and is marked <code>// POLE NOT SET</code>.</p>
+  <span class="eq">zenith = cos φ (cos θ e₁ + sin θ e₂) + sin φ P</span>
+  <p>φ is your latitude and θ the local sidereal angle. The horizon is everything 90° from the zenith; altitude and azimuth follow.</p>
+  <h3>Days</h3>
+  <span class="eq">1 / solar day = 1 / sidereal day − 1 / year</span>
+  <p>Earth: 23.934 h sidereal gives a 24.000 h solar day. Venus, spinning backwards over 243.0 days, gets a 116.8-day solar day. Time of day sets where the sun stands: noon puts it on your meridian.</p>
+  <p>A tidally locked planet turns once per orbit, so its solar day is infinite. ExoSky pins the host star in the sky and replaces the time slider with your distance from the substellar point; moving through the orbit turns the stars instead.</p>
 
-    <p>
-      These are real, measured values — not artistic choices. Sirius sits at <span class="val">2.64 pc</span> with absolute magnitude <span class="val">−1.43</span> because that's what the parallax measurements say. Betelgeuse glows at B-V <span class="val">1.85</span> because its photosphere really is that red.
-    </p>
-    <p>
-      The B-V color index is converted to screen RGB using a physically-motivated piecewise function that maps the color-temperature relationship through five spectral regimes: hot blue (B-V &lt; 0), blue-white (0–0.4), white-yellow (0.4–0.8), orange (0.8–1.2), and deep red (>1.2).
-    </p>
-  </section>
+  <h2>The planet's own precession</h2>
+  <p>The epoch slider precesses <em>this</em> planet's pole, not Earth's. Earth's measured period is 25,772 years (IAU 2006, Capitaine et al. 2003). For another world with no stated value, ExoSky estimates the solar torque alone:</p>
+  <span class="eq">rate = (3/2) (n² / ω) H cos ε</span>
+  <p>n is the orbital rate, ω the spin, ε the obliquity, H the dynamical ellipticity, scaled from Earth's (0.00327) by spin squared, as for a fluid body (Williams 1994). For Earth this gives about 80,000 years, the Sun-only figure; Earth's Moon brings the real value to 25,772. Moons are not included in the estimate, and the readout says so. A tidally locked world, with its spin on its orbit normal, has no precession to speak of.</p>
+  <p>The pole slides along a cone of half-angle ε, so a turn Δφ moves it by 2 asin(sin ε sin(Δφ/2)). When a constellation you drew at one epoch is viewed at another and the pole has moved more than 2°, ExoSky raises a Sky Drift flag citing both epochs.</p>
+  <p>Stars' own motions across the sky (proper motion) are not modelled. Over tens of thousands of years that matters for nearby stars; the slider says so.</p>
 
-  <!-- ════ LAYER 2: PROCEDURAL STARS ════ -->
-  <section class="section">
-    <div class="section-header">LAYER 2</div>
-    <div class="section-title">Procedural Galactic Stars</div>
-    <p>
-      300 named stars don't fill a sky. The real Milky Way contains ~100–400 billion stars, and even from Earth, thousands are visible to the naked eye. EXOSKY generates <strong>~25,000 procedural stars</strong> that obey the same galactic structure as real ones.
-    </p>
-    <p>
-      Each procedural star is placed in 3D galactocentric coordinates using a multi-step process: random distance (3–8,000 pc, weighted toward nearby), random galactic longitude, and galactic latitude drawn from a Gaussian matching the thin disk's scale height of <span class="val">300 pc</span>. Stars are then tested against the spiral arm model — those falling between arms are stochastically rejected at higher rates, creating realistic density contrast.
-    </p>
+  <h2>The sun, the planets and the moons</h2>
+  <span class="eq">R = √L (5772 K / T)² R☉<br>m_star(a) = M_V + 5 log₁₀(a / 10 pc)<br>m_body = m_star(r) − 2.5 log₁₀(p Φ(α) R² / Δ²)<br>Φ(α) = (sin α + (π − α) cos α) / π</span>
+  <p>The host's disc follows from its luminosity and temperature (Stefan-Boltzmann); its brightness from its V magnitude at the orbit's distance. Planets and moons shine by reflected light with a Lambert phase function. Checks in the tests: the Sun from Earth is 0.533° and magnitude −26.7; Jupiter at opposition about −2.7 (Mallama et al. 2018); the full Moon about −12.7; from TRAPPIST-1e, TRAPPIST-1f at closest approach is wider than our Moon.</p>
+  <p>Orbits are circular and share the planet's orbital plane. For Earth, positions start from the J2000 mean longitudes (Standish 1992) and are good to a few degrees; on 21 January 2000 the Moon comes out full, as it was (a total lunar eclipse that night). For TRAPPIST-1 and for planets in your world, starting phases are not known, so each body is placed deterministically by its id and the panel says so.</p>
+  <p>Host temperatures, luminosities and masses come from published values for every preset. A luminosity worked out from V alone misses most of a red dwarf's light, so it is used only for a star you place that has no published values.</p>
 
-    <div class="data-card">
-      <div class="card-header">LUMINOSITY DISTRIBUTION</div>
-      <div class="data-row"><span class="data-label">Red dwarfs / dim main-sequence</span><span class="data-value highlight">40%</span></div>
-      <div class="data-row"><span class="data-label">Mid main-sequence (Sun-like)</span><span class="data-value">25%</span></div>
-      <div class="data-row"><span class="data-label">Bright main-sequence / subgiants</span><span class="data-value">20%</span></div>
-      <div class="data-row"><span class="data-label">Giants</span><span class="data-value">10%</span></div>
-      <div class="data-row"><span class="data-label">Supergiants / hypergiants</span><span class="data-value">5%</span></div>
-    </div>
+  <h2>Air and daylight</h2>
+  <span class="eq">X = 1 / (cos z + 0.50572 (96.07995° − z)^−1.6364)<br>Δm = k X</span>
+  <p>Air mass X is Kasten and Young (1989): 1 overhead, 2 at 30° altitude, about 38 at the horizon. Extinction is k magnitudes per air mass. Earth's clear sky is k = 0.20. The other atmospheres scale it by column (0.06 for thin nitrogen up to 1.2 for silicate vapour); these are illustrative, not radiative transfer.</p>
+  <p>Daylight hides stars by raising the faintest magnitude you can see: about 6.5 with the sun 18° down, 2.5 at the end of civil twilight, near −4 at noon. This is a piecewise working figure, not a sky-brightness model. Sky colours are illustrative too: Rayleigh blue for nitrogen and oxygen, butterscotch for thin dusty carbon dioxide, amber for dense carbon dioxide.</p>
 
-    <p>
-      A third layer — <strong>20,000 background field stars</strong> — adds the "powdered sugar" effect of unresolved stellar light. These are concentrated along the galactic plane (50% within ±8° galactic latitude, Gaussian distribution) with a density boost toward the galactic center, producing the characteristic brightening when you look toward Sagittarius.
-    </p>
-  </section>
+  <h2>The Milky Way</h2>
+  <p>The band is ray-marched from the observer through a model galaxy: an exponential disc (scale length 2.6 kpc, height 300 pc), a bulge, a dust layer, and the seven spiral arms fitted by Reid et al. (2019) to maser parallaxes, including the Local (Orion) Arm the Sun sits beside. Each arm is a log-periodic spiral with a kink, ln(R / R_kink) = −(β − β_kink) tan ψ. Reid measured each arm only over certain azimuths; ExoSky extends them 60° further and marks readouts that fall on an extrapolated stretch.</p>
+  <p>The "nearest arm" readout comes from the same model. The band is a model rendered for its structure and direction, not a photograph.</p>
 
-  <!-- ════ LAYER 3: COORDINATE TRANSFORMS ════ -->
-  <section class="section">
-    <div class="section-header">LAYER 3</div>
-    <div class="section-title">Coordinate Transforms</div>
-    <p>
-      This is where the alien perspective happens. To see the sky from Proxima Centauri b instead of Earth, we need to physically <strong>move the observer through 3D space</strong> and recompute every star's position.
-    </p>
+  <h2>Navigation and calendar</h2>
+  <ul>
+    <li><strong>Pole star.</strong> The brightest star brighter than magnitude 4.5 within 5° of the pole (Polaris is 0.7° from Earth's). "None" is an answer: nothing to steer by.</li>
+    <li><strong>Never sets.</strong> At latitude φ, the cap within |φ| of the visible pole: (1 − cos φ) / 2 of the sky.</li>
+    <li><strong>Months.</strong> A moon's month from new to new: 1 / (1/P_moon − 1/P_year). Earth: 29.53 days.</li>
+    <li><strong>Dawn rising.</strong> The first morning after its time lost in the sun's glare that the brightest star is seen rising. ExoSky uses a rule of thumb, labelled as such: the sun at least 10° below the horizon for a first-magnitude star, 1° more per magnitude fainter. Schaefer (1985, 1987) models this properly.</li>
+  </ul>
 
-    <div class="equation-block">
-      <span class="comment">// Step 1: Star's position in heliocentric equatorial XYZ</span><br>
-      x = d · cos(δ) · cos(α)<br>
-      y = d · cos(δ) · sin(α)<br>
-      z = d · sin(δ)<br><br>
-      <span class="comment">// Step 2: Observer's position in the same frame</span><br>
-      obs = raDecDistToXYZ(planet.ra, planet.dec, planet.dist)<br><br>
-      <span class="comment">// Step 3: New relative position</span><br>
-      Δx = star.x − obs.x,  Δy = star.y − obs.y,  Δz = star.z − obs.z<br><br>
-      <span class="comment">// Step 4: New RA, Dec, Distance from observer</span><br>
-      new_dist = √(Δx² + Δy² + Δz²)<br>
-      new_dec = arcsin(Δz / new_dist)<br>
-      new_ra = atan2(Δy, Δx)<br><br>
-      <span class="comment">// Step 5: Recalculate apparent magnitude from new distance</span><br>
-      m = M + 5 · log₁₀(new_dist / <span class="value">10</span>)
-    </div>
+  <h2>On the canon graph</h2>
+  <p>ExoSky reads the planet, its star, its sibling planets and its moons from your world, and shows where each value came from: canon, Solaris, published values, the catalogue, derived, or <code>not set</code>. A value you set in ExoSky wins for the session; nothing is written until you choose to.</p>
+  <p>It can write: the pole (<code>planet.pole_ra</code>, <code>planet.pole_dec</code>), the precession period, the pole star and naked-eye count, where the system sits in the galaxy (<code>star.galactic_position</code>), and constellations. A constellation becomes an entity with its member star ids (<code>constellation.stars[]</code>), the epoch it was drawn in, and the planet it is seen from; the planet lists the names in <code>planet.sky.constellations[]</code> for Mythos. A write never overwrites canon silently: a different value already in canon is shown, and you keep it or replace it.</p>
+  <p>A system opened from Solaris has a star and an orbit but no place in the galaxy. ExoSky no longer invents one; it shows the sky from the Sun's neighbourhood and asks you to place the system at a real star or at galactic coordinates.</p>
+  <p>The scene brief lists conditions with the number each comes from. It never narrates and has no insert button; copy what you need by hand.</p>
 
-    <p>
-      This is the <strong>distance modulus equation</strong> — the same formula astronomers use to convert between intrinsic brightness and observed brightness. A star that's magnitude 1 from Earth might be magnitude −2 (blazingly bright) from a planet 10× closer, or magnitude 8 (invisible to the naked eye) from a planet 100× farther.
-    </p>
-    <p>
-      The result is that familiar constellations <strong>distort</strong>. From Proxima Centauri (4.2 ly away), Orion is barely changed — those stars are hundreds of light-years distant, so a 4 ly shift barely matters. But from Kepler-442b (1,100 ly away), the entire sky is unrecognizable. The constellation drawer exists precisely for this: to name what you see from <em>there</em>.
-    </p>
-  </section>
+  <h2>Which planets are real</h2>
+  <table>
+    <thead><tr><th>Vantage</th><th>Status</th><th>Basis</th></tr></thead>
+    <tbody>
+      <tr><td>Proxima Centauri b, TRAPPIST-1e and f, Ross 128 b, Luyten b, Teegarden's Star b, GJ 1061 d, Wolf 1061 c, Gliese 667 Cc, 55 Cancri e, Epsilon Eridani b, Pollux b, 51 Pegasi b, Beta Pictoris b, HR 8799 e, Kepler-186f, Kepler-442b</td><td>Confirmed</td><td>NASA Exoplanet Archive; papers named in ExoSky</td></tr>
+      <tr><td>Barnard b</td><td>Confirmed</td><td>One of four sub-Earths, none in the habitable zone (Basant et al. 2025)</td></tr>
+      <tr><td>Tau Ceti e, HD 40307 g</td><td>Candidate</td><td>Never independently confirmed</td></tr>
+      <tr><td>Kepler-452b</td><td>Disputed</td><td>Mullally et al. 2018</td></tr>
+      <tr><td>Kapteyn's Star</td><td>Refuted</td><td>Kapteyn b is a false positive (Robertson et al. 2015); kept as an imagined world</td></tr>
+      <tr><td>Alpha Centauri A, Sirius, Vega, Fomalhaut, Arcturus, Aldebaran, Spica, Canopus, Antares, Betelgeuse, Rigel, Deneb</td><td>Imagined world</td><td>A planet placed at Earth-equivalent light, a = √L AU</td></tr>
+    </tbody>
+  </table>
 
-  <!-- ════ EQUATORIAL ↔ GALACTIC ════ -->
-  <section class="section">
-    <div class="section-header">LAYER 3B</div>
-    <div class="section-title">Equatorial ↔ Galactic Frame</div>
-    <p>
-      The Milky Way doesn't align with Earth's equator. Converting between the equatorial coordinate system (RA/Dec, oriented to Earth's spin axis) and the galactic system (oriented to the Milky Way's disk plane) requires a <strong>3×3 rotation matrix</strong> defined by the IAU 1958 galactic coordinate standard:
-    </p>
+  <h2>What ExoSky does not model</h2>
+  <ul>
+    <li>Proper motion: stars do not drift on the epoch slider.</li>
+    <li>Interstellar dust dimming individual stars (the band has dust; point stars do not).</li>
+    <li>Atmospheric refraction, light pollution, the observer's eyesight and dark adaptation.</li>
+    <li>Eccentric or inclined orbits, binary hosts' own orbits, star variability.</li>
+    <li>Moons' contribution to precession for any world but Earth.</li>
+  </ul>
 
-    <div class="data-card">
-      <div class="card-header">IAU GALACTIC COORDINATE SYSTEM</div>
-      <div class="data-row"><span class="data-label">North Galactic Pole (J2000)</span><span class="data-value cyan">α = 192.859°, δ = 27.128°</span></div>
-      <div class="data-row"><span class="data-label">Galactic Center direction</span><span class="data-value cyan">l = 0°, b = 0° → Sagittarius A*</span></div>
-      <div class="data-row"><span class="data-label">Ascending node (l of NCP)</span><span class="data-value">122.932°</span></div>
-    </div>
+  <h2>References</h2>
+  <ul>
+    <li>Agol, E. et al. 2021, PSJ 2, 1 (TRAPPIST-1 system).</li>
+    <li>Ballesteros, F. J. 2012, EPL 97, 34008 (B−V to temperature).</li>
+    <li>Basant, R. et al. 2025, ApJL 982, L1 (Barnard's Star planets); AAS Nova, 11 March 2025.</li>
+    <li>Capitaine, N. et al. 2003, A&amp;A 412, 567 (IAU 2006 precession).</li>
+    <li>Joyce, M. et al. 2020, ApJ 902, 63 (Betelgeuse distance).</li>
+    <li>Kasten, F. &amp; Young, A. T. 1989, Applied Optics 28, 4735 (air mass).</li>
+    <li>Mallama, A. et al. 2017, Icarus 282, 19; 2018 (planetary magnitudes and albedos).</li>
+    <li>Mullally, F. et al. 2018, AJ 155, 210 (Kepler-452b).</li>
+    <li>Nash, D. HYG database v4.1, CC BY-SA 4.0.</li>
+    <li>Reid, M. J. et al. 2019, ApJ 885, 131 (spiral arms).</li>
+    <li>Robertson, P. et al. 2015, ApJL 805, L22 (Kapteyn b).</li>
+    <li>Schaefer, B. E. 1985, 1987 (heliacal visibility).</li>
+    <li>Standish, E. M. 1992, JPL approximate planetary elements.</li>
+    <li>Williams, J. G. 1994, AJ 108, 711 (precession).</li>
+  </ul>
 
-    <p>
-      The observer's position is then converted to <strong>galactocentric coordinates</strong> by offsetting from the Sun's known position: <span class="val">R = 8,200 pc</span> from the galactic center, <span class="val">z = 25 pc</span> above the plane. This positions the observer correctly within the galaxy's structure for Milky Way rendering.
-    </p>
-  </section>
-
-  <!-- ════ LAYER 3C: AXIAL PRECESSION ════ -->
-  <section class="section">
-    <div class="section-header">LAYER 3C</div>
-    <div class="section-title">Axial Precession</div>
-    <p>
-      A planet's rotational axis does not point at a fixed spot among the stars forever. Gravity from a sun and moon tugs on the bulge of a spinning, tilted world, and the axis slowly traces a cone, once every roughly <strong>25,772 years</strong> for Earth. This is why Polaris was not the pole star when the pyramids were built (Thuban held that spot then), and why Vega will take over the job around 13,727 CE. The EPOCH slider lets you turn that same wheel for any of EXOSKY's observation points, up to a half-cycle in either direction.
-    </p>
-
-    <div class="equation-block">
-      <span class="comment">// Precession angle, one full cycle every 25,772 years</span><br>
-      θ = −2π · (yearsFromNow / <span class="value">25772</span>)<br><br>
-      <span class="comment">// Rotate into the ecliptic frame (tilted 23.4393° from the equator),</span><br>
-      <span class="comment">// spin by θ around the ecliptic pole, rotate back out</span><br>
-      v_epoch = R_ecliptic⁻¹ · R_z(θ) · R_ecliptic · v_now
-    </div>
-
-    <p>
-      This is applied as a single rotation matrix to every named and procedural star's observer-frame position before it's converted back to RA/Dec, and to the Milky Way band's own sight-line direction before its galactic-coordinate lookup, so the structured sky, stars and band together, turns as one, the way a real precessing sky does, rather than each star drifting independently. It is a pure rotation: distances and relative geometry between stars are unchanged, only which direction is "up" relative to the fixed stars. The unresolved 20,000-star background field (Layer 2's "powdered sugar" layer) is a separate, static procedural texture and does not yet share this rotation.
-    </p>
-  </section>
-
-  <!-- ════ LAYER 4: MILKY WAY ════ -->
-  <section class="section">
-    <div class="section-header">LAYER 4</div>
-    <div class="section-title">Milky Way Structure</div>
-    <p>
-      The Milky Way band is not a texture map or a photograph — it's <strong>volumetrically ray-marched</strong> from the observer's position through a 3D model of the galaxy. Each direction on the sky is traced through interstellar space, accumulating stellar density and dust extinction along the way.
-    </p>
-
-    <div class="data-card">
-      <div class="card-header">GALACTIC STRUCTURE MODEL</div>
-      <div class="data-row"><span class="data-label">Disk radial scale length</span><span class="data-value highlight">2,600 pc</span></div>
-      <div class="data-row"><span class="data-label">Thin disk scale height</span><span class="data-value highlight">300 pc</span></div>
-      <div class="data-row"><span class="data-label">Dust lane scale height</span><span class="data-value">120 pc</span></div>
-      <div class="data-row"><span class="data-label">Galactic bulge radius</span><span class="data-value">1,200 pc</span></div>
-      <div class="data-row"><span class="data-label">Spiral arm pitch angle</span><span class="data-value">12°</span></div>
-      <div class="data-row"><span class="data-label">Spiral arm Gaussian width</span><span class="data-value">500 pc</span></div>
-      <div class="data-row"><span class="data-label">Ray march distance</span><span class="data-value">15,000 pc (40 steps)</span></div>
-      <div class="data-row"><span class="data-label">Map resolution</span><span class="data-value cyan">360 × 180 (1° per cell)</span></div>
-    </div>
-
-    <p>
-      <strong>The density model</strong> combines three components: an exponential disk (density falls off with distance from center and height above plane), four logarithmic spiral arms following the Milky Way's observed structure, and a central bulge modeled as an oblate Gaussian.
-    </p>
-
-    <div class="equation-block">
-      <span class="comment">// Exponential disk</span><br>
-      ρ_disk = exp(−R / <span class="value">2600</span>) · exp(−|z| / <span class="value">300</span>)<br><br>
-      <span class="comment">// Spiral arm enhancement (4 logarithmic arms)</span><br>
-      θ_arm = θ₀ + ln(R / R_ref) / tan(<span class="value">12°</span>)<br>
-      arm_factor = 1 + 2.5 · exp(−d²_arm / 2σ²)<br><br>
-      <span class="comment">// Galactic bulge (oblate)</span><br>
-      r_bulge = √(R² + 4z²)<br>
-      ρ_bulge = 3.0 · exp(−r²_bulge / <span class="value">1200</span>²)<br><br>
-      <span class="comment">// Dust extinction along ray</span><br>
-      τ += ρ_dust · Δs · 0.0001<br>
-      attenuation = exp(−τ)
-    </div>
-
-    <div class="data-card">
-      <div class="card-header">SPIRAL ARM CATALOG</div>
-      <table class="data-table">
-        <thead>
-          <tr><th>Arm Name</th><th>Initial Angle</th><th>Brightness Boost</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Perseus</td><td class="mono">0°</td><td class="mono">1.0×</td></tr>
-          <tr><td>Sagittarius-Carina</td><td class="mono">90°</td><td class="mono">1.2×</td></tr>
-          <tr><td>Scutum-Centaurus</td><td class="mono">180°</td><td class="mono">1.1×</td></tr>
-          <tr><td>Norma-Outer</td><td class="mono">270°</td><td class="mono">0.8×</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <p>
-      <strong>Dust</strong> is critical. The dark lanes bisecting the Milky Way exist because interstellar dust absorbs and scatters light. Our dust model follows the same exponential disk with a thinner scale height (<span class="val">120 pc</span>), creating realistic obscuration of distant stars and the characteristic dark rift through Cygnus.
-    </p>
-    <p>
-      The MW brightness map is pre-computed as a <span class="val">360 × 180</span> grid on a background thread, then rendered using <strong>bilinear interpolation</strong> for smooth gradients. Each screen pixel is reverse-projected to galactic coordinates and sampled from this map, colored with a warm-to-cool gradient (warmer near the galactic center, cooler in the outer disk).
-    </p>
-  </section>
-
-  <!-- ════ LAYER 5: ATMOSPHERIC OPTICS ════ -->
-  <section class="section">
-    <div class="section-header">LAYER 5</div>
-    <div class="section-title">Atmospheric Optics</div>
-    <p>
-      An atmosphere transforms a sky. Rayleigh scattering makes Earth's sky blue. CO₂ scattering on Mars makes it butterscotch. EXOSKY models atmosphere effects using three physically-motivated parameters per atmospheric type:
-    </p>
-
-    <table class="data-table">
-      <thead>
-        <tr><th>Atmosphere</th><th>Sky Color</th><th>Extinction</th><th>Haze</th><th>Effect</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>No atmosphere</td><td class="mono">[0,0,0]</td><td class="mono">0.00</td><td class="mono">0.00</td><td>Raw starlight, vacuum</td></tr>
-        <tr><td>Thin N₂</td><td class="mono">[5,8,18]</td><td class="mono">0.08</td><td class="mono">0.05</td><td>Faint indigo wash</td></tr>
-        <tr><td>Thin CO₂</td><td class="mono">[18,10,5]</td><td class="mono">0.12</td><td class="mono">0.08</td><td>Pale butterscotch glow</td></tr>
-        <tr><td>Earth-like N₂/O₂</td><td class="mono">[8,14,32]</td><td class="mono">0.18</td><td class="mono">0.12</td><td>Deep blue Rayleigh scattering</td></tr>
-        <tr><td>Dense N₂</td><td class="mono">[10,18,42]</td><td class="mono">0.30</td><td class="mono">0.22</td><td>Deep azure, dim stars lost</td></tr>
-        <tr><td>Dense CO₂</td><td class="mono">[35,20,8]</td><td class="mono">0.35</td><td class="mono">0.28</td><td>Amber-orange haze</td></tr>
-        <tr><td>H₂/He (moon view)</td><td class="mono">[12,15,22]</td><td class="mono">0.10</td><td class="mono">0.06</td><td>Pale steel-blue</td></tr>
-        <tr><td>Exotic/Silicate</td><td class="mono">[30,12,15]</td><td class="mono">0.45</td><td class="mono">0.35</td><td>Ruddy volcanic haze</td></tr>
-      </tbody>
-    </table>
-
-    <p>
-      <strong>Extinction</strong> determines how many magnitudes of starlight the atmosphere absorbs, modulated by the density slider. At higher density, fainter stars disappear first — exactly as they do on a hazy night on Earth. <strong>Haze</strong> produces a horizon-hugging glow gradient that brightens where you look through the most atmosphere (lowest elevations), just as real atmospheric scattering works.
-    </p>
-    <p>
-      The atmospheric sky color is applied as a radial gradient (fainter at zenith, denser at horizon) plus a linear haze gradient concentrating near the ground plane. The density slider allows writers to explore the continuum from vacuum to soup, watching their sky evolve.
-    </p>
-  </section>
-
-  <!-- ════ EXOPLANET DATA ════ -->
-  <section class="section">
-    <div class="section-header">LAYER 6</div>
-    <div class="section-title">Exoplanet Systems</div>
-    <p>
-      Every observation point in EXOSKY is a <strong>real, confirmed exoplanet</strong>. Orbital parameters, distances, and host star properties come from the NASA Exoplanet Archive and associated discovery papers. The atmospheric compositions are informed by current modeling and theoretical constraints — marked as speculative where we're extrapolating.
-    </p>
-
-    <div class="data-card">
-      <div class="card-header">CONFIDENCE LEVELS</div>
-      <div class="data-row"><span class="data-label">Star position, distance, spectral type</span><span class="data-value green">MEASURED</span></div>
-      <div class="data-row"><span class="data-label">Planet orbital parameters</span><span class="data-value green">MEASURED</span></div>
-      <div class="data-row"><span class="data-label">Planet mass / radius</span><span class="data-value highlight">MEASURED (most)</span></div>
-      <div class="data-row"><span class="data-label">Atmospheric composition</span><span class="data-value" style="color:#FFA500">MODELED / SPECULATIVE</span></div>
-      <div class="data-row"><span class="data-label">Surface conditions</span><span class="data-value" style="color:#E74C3C">EXTRAPOLATED</span></div>
-    </div>
-
-    <p>
-      We are transparent about what's known and what's inferred. The star catalogs are rock-solid. The atmospheric models are our best scientific guesses — and the density slider lets you explore the full range of possibilities.
-    </p>
-  </section>
-
-  <!-- ════ PROJECTION ════ -->
-  <section class="section">
-    <div class="section-header">RENDERING</div>
-    <div class="section-title">Sky Projection</div>
-    <p>
-      Stars are projected onto the screen using a <strong>gnomonic (central) projection</strong> — the same projection used in planetarium software. This maps the celestial sphere onto a flat tangent plane, preserving straight great-circle arcs as straight lines (important for constellation drawing).
-    </p>
-    <p>
-      The projection is centered on the observer's current viewing direction (RA, Dec) with a configurable field of view from 10° (narrow telescope view) to 160° (ultra-wide). Star positions are projected through rotation and central projection, with angular wrapping checks to prevent artifacts at field edges.
-    </p>
-    <p>
-      Star rendering uses a <strong>three-tier system</strong>: bright catalog stars get full radial-gradient glow and diffraction spikes; mid-brightness stars get simple filled circles; faint stars use fast sub-pixel <span class="val">fillRect()</span> calls. This enables rendering ~20,000 simultaneous points at 60fps.
-    </p>
-  </section>
-
-  <!-- ════ WHAT WE DON'T MODEL ════ -->
-  <section class="section">
-    <div class="section-header">HONESTY</div>
-    <div class="section-title">What We Don't Model (Yet)</div>
-    <p>
-      Scientific integrity means saying what we <em>can't</em> do:
-    </p>
-
-    <div class="data-card">
-      <div class="card-header">CURRENT LIMITATIONS</div>
-      <div class="data-row"><span class="data-label">Interstellar reddening</span><span class="data-value" style="color:#FFA500">NOT APPLIED TO INDIVIDUAL STARS</span></div>
-      <div class="data-row"><span class="data-label">Axial precession (which star sits at the pole)</span><span class="data-value green">MODELED (EPOCH slider)</span></div>
-      <div class="data-row"><span class="data-label">Stellar proper motion (real star drift)</span><span class="data-value" style="color:#FFA500">NOT MODELED, NO PER-STAR DATA</span></div>
-      <div class="data-row"><span class="data-label">Binary star systems</span><span class="data-value" style="color:#FFA500">TREATED AS SINGLE POINTS</span></div>
-      <div class="data-row"><span class="data-label">Nebulae / star clusters</span><span class="data-value" style="color:#E74C3C">NOT RENDERED</span></div>
-      <div class="data-row"><span class="data-label">Host star in local sky</span><span class="data-value" style="color:#E74C3C">NOT RENDERED (sun position)</span></div>
-      <div class="data-row"><span class="data-label">Light pollution / surface illumination</span><span class="data-value" style="color:#E74C3C">NOT MODELED</span></div>
-      <div class="data-row"><span class="data-label">Zodiacal / galactic cirrus</span><span class="data-value" style="color:#E74C3C">NOT MODELED</span></div>
-    </div>
-
-    <p>
-      Individual stars do not have reddening applied based on distance and dust column, only the aggregate Milky Way band accounts for dust. The EPOCH slider (Layer 3C) rotates the named and procedural stars and the Milky Way band together the way real axial precession does, which changes which star sits near the pole over thousands of years, but it does not move any star relative to any other. It does not yet turn the 20,000-star background field, a separate static procedural texture rather than a set of individually tracked positions. Real stars also drift through space under their own proper motion, and that drift is not modeled here: this build has no per-star velocity data for the ~300 named stars or the exoplanet host stars, and fabricating motion vectors for real, named stars would be presenting invention as fact. The sky's shape (which stars are near which) is therefore a snapshot, even as the EPOCH slider turns which direction is "up."
-    </p>
-  </section>
-
-  <!-- ════ SOURCES ════ -->
-  <section class="section">
-    <div class="section-header">BIBLIOGRAPHY</div>
-    <div class="section-title">Data Sources & References</div>
-
-    <ul class="source-list">
-      <li>
-        <span class="source-tag catalog">CATALOG</span>
-        <div>
-          <div class="source-title">ESA Hipparcos Catalogue (1997, updated 2007)</div>
-          Astrometric positions, parallaxes, and photometry for ~118,000 stars. Source of our 300-star bright catalog with RA, Dec, distance, absolute magnitude, and B-V color index.
-          <div class="source-url">https://www.cosmos.esa.int/web/hipparcos</div>
-        </div>
-      </li>
-      <li>
-        <span class="source-tag catalog">CATALOG</span>
-        <div>
-          <div class="source-title">NASA Exoplanet Archive</div>
-          Confirmed exoplanet parameters: orbital elements, host star properties, detection methods. Source of all 17 observation point systems.
-          <div class="source-url">https://exoplanetarchive.ipac.caltech.edu</div>
-        </div>
-      </li>
-      <li>
-        <span class="source-tag model">MODEL</span>
-        <div>
-          <div class="source-title">Bland-Hawthorn & Gerhard (2016) — "The Galaxy in Context"</div>
-          Annual Review of Astronomy & Astrophysics 54:529–596. Galactic structural parameters: disk scale lengths, bulge radius, Sun's galactocentric distance (8.2 kpc), and height above plane (25 pc).
-          <div class="source-url">doi:10.1146/annurev-astro-081915-023441</div>
-        </div>
-      </li>
-      <li>
-        <span class="source-tag model">MODEL</span>
-        <div>
-          <div class="source-title">Vallée (2008) — "New Cataloguing of the Spiral Arms"</div>
-          Astronomical Journal 135:1301–1310. Four-arm logarithmic spiral model with 12° pitch angle. Basis for our spiral arm geometry.
-          <div class="source-url">doi:10.1088/0004-6256/135/4/1301</div>
-        </div>
-      </li>
-      <li>
-        <span class="source-tag model">MODEL</span>
-        <div>
-          <div class="source-title">Drimmel, Cabrera-Lavers & López-Corredoira (2003)</div>
-          Three-dimensional dust distribution model. Thin exponential dust disk with 120 pc scale height. Basis for our extinction model.
-          <div class="source-url">doi:10.1051/0004-6361:20021135</div>
-        </div>
-      </li>
-      <li>
-        <span class="source-tag standard">STANDARD</span>
-        <div>
-          <div class="source-title">IAU (1958) Galactic Coordinate System</div>
-          North Galactic Pole at (α, δ) = (192.859°, 27.128°), ascending node at l = 122.932°. Defines the equatorial ↔ galactic rotation matrix.
-          <div class="source-url">https://www.iau.org/</div>
-        </div>
-      </li>
-      <li>
-        <span class="source-tag standard">STANDARD</span>
-        <div>
-          <div class="source-title">Distance Modulus (standard photometric relation)</div>
-          m − M = 5 log₁₀(d/10 pc). Relates apparent magnitude, absolute magnitude, and distance. Fundamental to all magnitude calculations.
-        </div>
-      </li>
-      <li>
-        <span class="source-tag paper">PAPER</span>
-        <div>
-          <div class="source-title">Capitaine, N. et al. (2003): "Expressions for IAU 2000 Precession Quantities"</div>
-          Astronomy &amp; Astrophysics, 412, 567–586. General precession in longitude ≈ 50.29 arcsec/year, giving the ~25,772-year period used by the EPOCH slider's axial precession model.
-          <div class="source-url">doi:10.1051/0004-6361:20031539</div>
-        </div>
-      </li>
-      <li>
-        <span class="source-tag paper">PAPER</span>
-        <div>
-          <div class="source-title">Ballesteros (2012) — "B-V to RGB Conversion"</div>
-          Physically-motivated color temperature conversion for stellar B-V indices. Basis for our piecewise RGB mapping.
-          <div class="source-url">doi:10.1209/0295-5075/97/34008</div>
-        </div>
-      </li>
-      <li>
-        <span class="source-tag paper">PAPER</span>
-        <div>
-          <div class="source-title">Kopparapu et al. (2013) — Habitable Zone Boundaries</div>
-          Revised habitable zone estimates. Informs atmospheric model assignments for exoplanet observation points.
-          <div class="source-url">doi:10.1088/0004-637X/765/2/131</div>
-        </div>
-      </li>
-      <li>
-        <span class="source-tag paper">PAPER</span>
-        <div>
-          <div class="source-title">Turbet et al. (2020) — "Atmospheric Characterization of Proxima b"</div>
-          GCM modeling of possible atmospheric states for Proxima Centauri b. Informs our thin CO₂ atmosphere assignment.
-          <div class="source-url">doi:10.1051/0004-6361/201937151</div>
-        </div>
-      </li>
-    </ul>
-  </section>
-
-  <!-- ════ FOR WRITERS ════ -->
-  <section class="section">
-    <div class="section-header">FOR WRITERS</div>
-    <div class="section-title">Using EXOSKY in Your Fiction</div>
-    <p>
-      When you draw a constellation on an alien sky and name it, you're doing what every sapient species must do: finding patterns in what is really there. The stars your character sees from Kepler-442b are in the right places. The Milky Way is brighter and shifted because you're 1,100 light-years deeper into the Perseus Arm. The atmosphere dims and colors the sky because that's what CO₂ and N₂ actually do.
-    </p>
-    <p>
-      Your world's mythology can draw from a sky that's been <strong>honestly computed</strong>. The constellations your aliens name are the shapes real stellar geometry produces from that exact vantage point.
-    </p>
-    <p>
-      Every world exported from EXOSKY carries its provenance: the star coordinates, the viewing planet, the atmospheric model. Your world bible knows its own science.
-    </p>
-  </section>
-
-  <!-- ════ FOOTER ════ -->
-  <footer class="footer">
-    © 2025–2026 JASON D. BATT, PH.D. · <a href="https://stellarforge.tools">STELLARFORGE.TOOLS</a><br>
-    <span style="margin-top:6px;display:inline-block;color:var(--sf-primary-text)">These worlds exist in you. Waiting to be found.</span>
-  </footer>
-
-</div>
-
-<script>
-// ── Subtle animated star field background ──
-(function() {
-  const canvas = document.getElementById('stars');
-  const ctx = canvas.getContext('2d');
-  let W, H;
-  const stars = [];
-  const N = 300;
-
-  function resize() {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
-
-  for (let i = 0; i < N; i++) {
-    stars.push({
-      x: Math.random() * 2000,
-      y: Math.random() * 2000,
-      size: Math.random() * 1.2 + 0.3,
-      alpha: Math.random() * 0.15 + 0.03,
-      twinkleSpeed: Math.random() * 0.5 + 0.3,
-      twinkleOffset: Math.random() * Math.PI * 2,
-    });
-  }
-
-  function render() {
-    ctx.clearRect(0, 0, W, H);
-    const t = performance.now() / 1000;
-    const scrollY = window.scrollY * 0.05;
-
-    for (const s of stars) {
-      const y = ((s.y - scrollY) % (H + 40)) - 20;
-      if (y < -20 || y > H + 20) continue;
-      const twinkle = Math.sin(t * s.twinkleSpeed + s.twinkleOffset) * 0.4 + 0.6;
-      ctx.fillStyle = `rgba(200,210,255,${s.alpha * twinkle})`;
-      ctx.fillRect(s.x % W, y, s.size, s.size);
-    }
-
-    requestAnimationFrame(render);
-  }
-  render();
-})();
-</script>
-
+  <footer>© 2025–2026 Jason D. Batt, Ph.D. · StellarForge.tools · Star catalogue: HYG database v4.1, David Nash (astronexus), CC BY-SA 4.0.</footer>
+</main>
 </body>
 </html>

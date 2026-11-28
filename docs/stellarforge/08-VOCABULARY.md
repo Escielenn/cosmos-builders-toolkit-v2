@@ -110,6 +110,8 @@ Enough to run Phases 0–5. Extend via `/sf-fact`.
 | `planet.atmo_pressure` | scalar | `bar` | Genesis |
 | `planet.atmo_composition` | text | — | Genesis |
 | `planet.temp_mean` | scalar | `K` | derived |
+| `planet.temp_equilibrium` | scalar | `K` | derived from `planet.insolation` and `planet.albedo` (full redistribution); added 2026-11-26 (1.9, Solaris) |
+| `planet.insolation` | scalar | `earth_flux` (S⊕, Earth = 1) | derived: ΣL/d²; added 2026-11-26 (1.9, Solaris) |
 | `planet.temp_gradient[]` | range[] | `K` | Tidelock |
 | `planet.hydrosphere_fraction` | scalar | `0–1` | Genesis |
 | `planet.albedo` | scalar | `0–1` | Genesis |
@@ -122,6 +124,19 @@ Enough to run Phases 0–5. Extend via `/sf-fact`.
 | `planet.sky.visible_stars[]` | ref[] | — | Exosky |
 | `planet.sky.constellations[]` | text[] | — | Exosky → **Mythos** |
 | `planet.sky.daylight_colour` | text | — | derived from `star.temp_effective` |
+| `planet.pole_ra` / `planet.pole_dec` | scalar | `deg` (J2000) | Exosky (1.9, Stand here) |
+| `planet.precession_period` | scalar | `yr` | Exosky (derivation `exosky.precession_period`, writer may set) |
+| `planet.sky.pole_star` | text | — | Exosky |
+| `planet.sky.naked_eye_count` | scalar | — | Exosky |
+
+Added 1.9 (/sf-fact): `star.galactic_position` (struct schema `galactic_position`:
+`{ l_deg, b_deg, distance_pc, catalogue_id? }`, producer Exosky), and the
+`constellation.*` domain (layer mythology, producer Exosky):
+`constellation.stars[]` (text[] of catalogue ids, "HIP 32349"),
+`constellation.epoch` (scalar, yr from J2000), `constellation.seen_from` (ref
+to the planet). A constellation is a `custom` entity with
+`custom_type_label: "Constellation"` and `metadata.kind: "constellation"`;
+Mythos reads these and `planet.sky.constellations[]`.
 
 ### `ecology.*`
 
@@ -208,7 +223,7 @@ type FactValue =
 
 One registry, `src/canon/units.ts`. Conversions live there, nowhere else.
 
-`earth_radii · earth_masses · solar_masses · solar_lum · au · ly · pc · K · C · bar · g · m_s2 · km_s · c · hours · days · local_days · local_years · yr · kyr · myr · gyr · kg · m · km · km2 · W · individuals · fraction`
+`earth_radii · earth_masses · solar_masses · solar_lum · au · ly · pc · K · C · bar · g · m_s2 · km_s · c · hours · days · earth_flux · local_days · local_years · yr · kyr · myr · gyr · kg · m · km · km2 · W · individuals · fraction`
 
 Display formatting is a separate concern from storage. Store SI-ish canonical units; format for humans at the edge, in mono, per the design system.
 

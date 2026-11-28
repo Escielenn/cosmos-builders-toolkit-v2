@@ -35,6 +35,12 @@ import {
   buildPublishedMetadata,
 } from "@/lib/simulators/published-facts";
 import { mapError } from "@/lib/ship-voice";
+import { newRunId } from "@/lib/simulators/published-facts";
+import { planetPublishCanon } from "@/lib/simulators/sim-canon";
+import { publishSimRun } from "@/lib/simulators/sim-publish";
+import { canon } from "@/canon";
+import { canonKeys } from "@/canon/hooks";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface PublishPlanetDialogProps {
   open: boolean;
@@ -52,6 +58,7 @@ export default function PublishPlanetDialog({
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const qc = useQueryClient();
   const [chosenWorld, setChosenWorld] = useState<string | undefined>(worldId);
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishedId, setPublishedId] = useState<string | null>(null);
@@ -73,20 +80,33 @@ export default function PublishPlanetDialog({
     if (!payload || !targetWorld || !user) return;
     setIsPublishing(true);
     try {
+      const runId = newRunId();
       const entry = await createEntry(
         {
           worldId: targetWorld,
           title: payload.planetName,
           entryType: "planet",
           content: publishedFactsSummary(facts),
-          metadata: buildPublishedMetadata(facts, "solaris"),
+          // Cache for open-on; the facts themselves go through canon below.
+          metadata: buildPublishedMetadata(facts, { toolId: "solaris", runId }),
         },
         user.id,
       );
+      // 1.9 X6: through canon, with this run's provenance. A new entity has no
+      // canon to conflict with; derived values (HZ edges) are computed by
+      // their owner.
+      const out = await publishSimRun(
+        canon,
+        targetWorld,
+        planetPublishCanon(facts),
+        { root: entry.id, children: {} },
+        { toolId: "solaris", runId, seed: null, publishedAt: new Date().toISOString() },
+      );
+      await qc.invalidateQueries({ queryKey: canonKeys.all(targetWorld) });
       setPublishedId(entry.id);
       toast({
         title: "PROMOTED TO CANON.",
-        description: `"${payload.planetName}" is now in your Codex.`,
+        description: `"${payload.planetName}" is in your Codex. ${out.written + out.derived} values in canon.`,
       });
     } catch (error) {
       toast({
@@ -163,7 +183,7 @@ export default function PublishPlanetDialog({
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <Rocket className="h-4 w-4" />
-                Promote {facts.length} Values to Canon
+                Add {facts.length} values to canon
               </DialogTitle>
               <DialogDescription className="mt-2 text-t2">
                 {payload?.planetName ?? "This planet"} becomes a permanent entity in your world's Codex.

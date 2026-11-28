@@ -4,23 +4,20 @@
  * After completing a tool, suggests the next cascade step. Also provides
  * completion status per cascade layer for dashboard display.
  *
- * Cascade order: Stars & Systems → Worlds → Life → Civilizations → Mythology → Integration
+ * Cascade order: Physics → Environment → Biology → Psychology → Mythology → Culture → Integration
  *
  * Spec: StellarForge_Final_Remediation_Spec_v2, Issue 5
  */
 
+import type { CascadeLayer } from "@/canon/vocabulary";
+import { CASCADE_LAYER_NAME, CASCADE_LAYER_ORDER, isKnownToolLayer, toolLayer, toolsByLayer } from "@/canon/tool-layers";
+
 /**
- * The guidance layers. These are the tool-category ids this module has
- * always used; they are NOT the world-data `CascadeLayer` ids
- * (environment, biology, ...), which it used to import by mistake.
+ * 1.9 F-07: guidance uses the one cascade scheme (canon/tool-layers, from the
+ * manifests), not its own category list. Physics → Environment → Biology →
+ * Psychology → Mythology → Culture, then Integration.
  */
-export type GuidanceLayer =
-  | "stars_and_systems"
-  | "worlds"
-  | "life"
-  | "civilizations"
-  | "mythology"
-  | "narrative";
+export type GuidanceLayer = CascadeLayer;
 
 interface CascadeSuggestion {
   toolType: string;
@@ -29,89 +26,39 @@ interface CascadeSuggestion {
   prompt: string;
 }
 
-/** Cascade layer ordering (upstream → downstream) */
-const CASCADE_ORDER: GuidanceLayer[] = [
-  "stars_and_systems",
-  "worlds",
-  "life",
-  "civilizations",
-  "mythology",
-  "narrative",
-];
-
-/** Which tools belong to which cascade layer */
-const LAYER_TOOLS: Record<GuidanceLayer, string[]> = {
-  stars_and_systems: [
-    "star-system-builder",
-    "habitable-zone-calculator",
-    "time-dilation",
-    "drake-equation-calculator",
-  ],
-  worlds: [
-    "planetary-profile",
-    "surface-gravity-calculator",
-    "gravitas",
-    "surface-cartographer",
-  ],
-  life: [
-    "evolutionary-biology",
-    "sensorium",
-    "species-interaction-matrix",
-  ],
-  civilizations: [
-    "one-big-lie",
-    "empire-designer",
-    "technology-consequences",
-    "spacecraft-designer",
-    "propulsion-consequences-map",
-    "lexdrift",
-    "kardashev-scale",
-    "space-expansion-modeler",
-    "generation-ship",
-  ],
-  mythology: [
-    "xenomythology-framework-builder",
-  ],
-  narrative: [
-    "environmental-chain-reaction",
-    "timeline",
-    "dossier",
-  ],
-};
-
 /** Downstream suggestion after completing a tool in each layer */
 const DOWNSTREAM_SUGGESTIONS: Record<GuidanceLayer, CascadeSuggestion[]> = {
-  stars_and_systems: [
+  physics: [
     { toolType: "planetary-profile", brandName: "Genesis", fullName: "Planetary Profile", prompt: "Your star system defines the stage. Now define the world that inhabits it." },
     { toolType: "habitable-zone-calculator", brandName: "Goldilocks", fullName: "Habitable Zone Calculator", prompt: "Check where habitable planets can orbit in your system." },
   ],
-  worlds: [
+  environment: [
     { toolType: "evolutionary-biology", brandName: "Phylo", fullName: "Evolutionary Biology", prompt: "Your world's conditions shape what can live there. Design the biology." },
     { toolType: "sensorium", brandName: "Sensorium", fullName: "Alien Sensory Systems", prompt: "How would life perceive this world? Design the senses." },
   ],
-  life: [
-    { toolType: "empire-designer", brandName: "Dominion", fullName: "Empire Designer", prompt: "Species become civilizations. Define the political structures." },
-    { toolType: "technology-consequences", brandName: "Paradigm", fullName: "Technology Consequences", prompt: "What technologies arise from these biological capabilities?" },
+  biology: [
+    { toolType: "dossier", brandName: "Dossier", fullName: "Character Development", prompt: "The body is decided. Now meet someone who lives in it." },
+    { toolType: "xenomythology-framework-builder", brandName: "Mythos", fullName: "Xenomythology Framework", prompt: "Bodies and senses shape belief. What myths arise from this biology?" },
   ],
-  civilizations: [
-    { toolType: "xenomythology-framework-builder", brandName: "Mythos", fullName: "Xenomythology Framework", prompt: "Every civilization tells stories. What myths arise from this culture?" },
+  psychology: [
+    { toolType: "xenomythology-framework-builder", brandName: "Mythos", fullName: "Xenomythology Framework", prompt: "Minds make myths. What does this people believe?" },
   ],
   mythology: [
-    { toolType: "environmental-chain-reaction", brandName: "Cascade", fullName: "Environmental Chain Reaction", prompt: "Trace the full cascade from physics to culture. Verify internal consistency." },
-    { toolType: "timeline", brandName: "Epoch", fullName: "Timeline", prompt: "Plot how these elements play out across deep time." },
-    { toolType: "dossier", brandName: "Dossier", fullName: "Character Development", prompt: "The world is decided. Now meet someone who was born in it." },
+    { toolType: "empire-designer", brandName: "Dominion", fullName: "Empire Designer", prompt: "Belief becomes law. Define the political structures." },
+    { toolType: "technology-consequences", brandName: "Paradigm", fullName: "Technology Consequences", prompt: "What technologies does this culture allow, and forbid?" },
   ],
-  narrative: [],
+  culture: [
+    { toolType: "timeline", brandName: "Epoch", fullName: "Timeline", prompt: "Plot how these elements play out across deep time." },
+    { toolType: "environmental-chain-reaction", brandName: "Cascade", fullName: "Environmental Chain Reaction", prompt: "Trace the full cascade from physics to culture. Verify internal consistency." },
+  ],
+  integration: [],
 };
 
 /**
  * Get the cascade layer a tool belongs to.
  */
 export function getToolLayer(toolType: string): GuidanceLayer | null {
-  for (const layer of CASCADE_ORDER) {
-    if (LAYER_TOOLS[layer].includes(toolType)) return layer;
-  }
-  return null;
+  return isKnownToolLayer(toolType) ? toolLayer(toolType) : null;
 }
 
 /**
@@ -132,14 +79,7 @@ export interface CascadeLayerStatus {
 }
 
 /** Layer display labels */
-const LAYER_DISPLAY: Record<GuidanceLayer, string> = {
-  stars_and_systems: "Stars & Systems",
-  worlds: "Worlds",
-  life: "Life",
-  civilizations: "Civilizations",
-  mythology: "Mythology",
-  narrative: "Narrative",
-};
+const LAYER_DISPLAY: Record<GuidanceLayer, string> = CASCADE_LAYER_NAME;
 
 /**
  * Compute cascade completion status per layer for a given set of worksheets.
@@ -152,8 +92,9 @@ export function getCascadeProgress(
     typeCounts.set(tt, (typeCounts.get(tt) ?? 0) + 1);
   }
 
-  return CASCADE_ORDER.map((layer) => {
-    const tools = LAYER_TOOLS[layer] ?? [];
+  const byLayer = toolsByLayer();
+  return CASCADE_LAYER_ORDER.map((layer) => {
+    const tools = byLayer[layer] ?? [];
     let worksheetCount = 0;
     for (const t of tools) {
       worksheetCount += typeCounts.get(t) ?? 0;

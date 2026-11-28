@@ -71,7 +71,7 @@ import {
   HZ_MODIFIERS,
   SPECTRAL_CLASS_NUMERIC_DEFAULTS,
 } from "@/lib/star-system-data";
-import { calcHZBoundaries, luminosityFromMass } from "@/lib/habitable-zone/calculations";
+import { calcHZBoundaries, luminosityFromMass, mainSequenceTeff } from "@/lib/habitable-zone/calculations";
 import StarSystemDiagram from "@/components/tools/StarSystemDiagram";
 import { manifest as orreryManifest } from "@/tools/orrery/manifest";
 import { useCanonEmit, useToolSubject } from "@/canon/field-hooks";
@@ -93,6 +93,16 @@ const SECTIONS: Section[] = [
   { id: "section-synthesis", title: "Final Synthesis" },
 ];
 
+/** Typed inputs for Orrery's Teff derivation; only numbers the writer typed. */
+function orreryDerivationInputs(luminosityText: string, massText: string): Record<string, number> {
+  const out: Record<string, number> = {};
+  const l = parseFloat(luminosityText);
+  const m = parseFloat(massText);
+  if (Number.isFinite(l) && l > 0) out["star.luminosity"] = l;
+  if (Number.isFinite(m) && m > 0) out["star.mass"] = m;
+  return out;
+}
+
 const StarSystemBuilder = () => {
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
@@ -111,7 +121,12 @@ const StarSystemBuilder = () => {
     loadedToast: true,
     onDraftCreated: (id, title) => entityMatch.check(id, title),
     onSaved: (saved, { worksheetId: savedId }) =>
-      canonEmit.emit(saved, { subjectId: canonSubjectId, worksheetId: savedId }),
+      canonEmit.emit(saved, {
+        subjectId: canonSubjectId,
+        worksheetId: savedId,
+        // F-01/F-03: the derivation needs the star's numbers as numbers.
+        inputs: orreryDerivationInputs(saved.primaryStar.luminosity, saved.primaryStar.mass),
+      }),
   });
   const { state: formState, setState: setFormState, worldId } = worksheet;
   const currentWorksheetId = worksheet.worksheetId;
@@ -277,7 +292,10 @@ const StarSystemBuilder = () => {
       luminosity = defaults.luminosity;
     }
     if (luminosity <= 0) return null;
-    return calcHZBoundaries(luminosity);
+    // F-01: the diagram's zone uses the star's temperature, like Goldilocks.
+    // Orrery records L and M, so Teff comes from the main-sequence relation.
+    const mass = !isNaN(parsedM) && parsedM > 0 ? parsedM : defaults.mass;
+    return calcHZBoundaries(luminosity, mainSequenceTeff(luminosity, mass) ?? undefined);
   }, [formState.primaryStar.spectralClass, formState.primaryStar.luminosity, formState.primaryStar.mass]);
 
   const updateNarrative = (field: keyof NarrativeElements, value: string) => {

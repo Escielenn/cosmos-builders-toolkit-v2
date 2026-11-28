@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { countHex, isAllowedHome, scan } from "../check-raw-hex.mjs";
+import { countHex, isAllowedHome, scan, scanPublic } from "../check-raw-hex.mjs";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -39,5 +39,17 @@ describe("check-raw-hex", () => {
     for (const [file, n] of Object.entries(counts)) {
       expect(n, file).toBeLessThanOrEqual(baseline.files[file] ?? 0);
     }
+  });
+
+  it("the static simulators match their recorded baseline (rule 3)", () => {
+    const baseline = JSON.parse(readFileSync(join(process.cwd(), "scripts", "raw-hex-public-baseline.json"), "utf8"));
+    const counts = scanPublic();
+    let total = 0;
+    for (const [file, n] of Object.entries(counts)) {
+      total += n;
+      expect(n, file).toBeLessThanOrEqual(baseline.files[file] ?? 0);
+    }
+    expect(total).toBeLessThanOrEqual(baseline.total);
+    expect(counts["public/tools/_shared/sim-tokens.css"]).toBeUndefined();
   });
 });

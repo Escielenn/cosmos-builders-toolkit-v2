@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { TIDELOCK_DEFAULT, EXOFORGE_DEFAULT } from "@/lib/__tests__/fixtures/sim-payloads";
 import {
   extractTidelockFacts,
   extractExoforgeFacts,
@@ -24,7 +25,7 @@ const tidelockSave = () => ({
     planetRadius: 1.05,
     orbDist: 0.04,
     composition: "Silicate",
-    ocean: 0.4,
+    ocean: 40,
     moonCount: 2,
     showClouds: true,
   },
@@ -40,7 +41,7 @@ const tidelockSave = () => ({
     atmRetention: "Retained",
     liquidWater: "Stable",
     tidalLock: "1:1 locked",
-    orbPeriod: 0.031,
+    orbPeriod: 11.3, // DAYS, as the sim posts it
   },
 });
 
@@ -49,10 +50,10 @@ const exoforgeSave = () => ({
     radius: 1.4,
     mass: 2.6,
     temp: 288,
-    period: 1.2,
-    ocean: 0.62,
-    cloud: 0.45,
-    composition: "Iron-rich silicate",
+    period: 438.3, // DAYS
+    ocean: 62, // percent, as the sim posts it
+    cloud: 45,
+    composition: 22, // % gas
     ringOpacity: 0.3,
     starTemp: 5400,
     rotation: 26.5,
@@ -180,8 +181,12 @@ describe("ExoForge", () => {
     expect(byKey["forged.escape"]).toBe("15.2 km/s");
     expect(byKey["forged.temperature"]).toContain("288 K");
     expect(byKey["forged.ocean"]).toBe("62%");
+    expect(byKey["forged.cloud"]).toBe("45%");
+    expect(byKey["forged.period"]).toBe("438.3 days");
+    expect(byKey["forged.composition"]).toBe("22% gas envelope by volume");
     expect(byKey["forged.rings"]).toBe("Present");
-    expect(byKey["forged.rotation"]).toBe("26.5 hours");
+    // rotation is a visual spin multiplier, never a day length (X2).
+    expect(byKey["forged.rotation"]).toBeUndefined();
   });
 
   it("leaves rings out when there are none", () => {
@@ -224,5 +229,30 @@ describe("every simulator now reaches the writing surface", () => {
       const facts = extractSimulationFacts(sim, save);
       expect(new Set(facts.map((f) => f.key)).size, sim).toBe(facts.length);
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Golden payloads (1.9 X1/X2): each sim's real default state, captured from
+// the sim itself. These are the numbers a writer sees on first open.
+// ---------------------------------------------------------------------------
+
+describe("golden default payloads", () => {
+  it("Tidelock: the 21.1-day year reads as days, not years (X1)", () => {
+    const byKey = Object.fromEntries(extractTidelockFacts(TIDELOCK_DEFAULT).map((f) => [f.key, f.value]));
+    expect(byKey["locked.period"]).toBe("21.1 days");
+    expect(byKey["locked.star"]).toBe("M4V");
+    expect(byKey["locked.gravity"]).toBe("1.00 g");
+    expect(byKey["locked.habitableBand"]).toContain("42.5% of the surface");
+  });
+
+  it("ExoForge: Earth defaults publish as Earth (X1, X2)", () => {
+    const byKey = Object.fromEntries(extractExoforgeFacts(EXOFORGE_DEFAULT).map((f) => [f.key, f.value]));
+    expect(byKey["forged.period"]).toBe("365.2 days");
+    expect(byKey["forged.ocean"]).toBe("70%");
+    expect(byKey["forged.cloud"]).toBe("40%");
+    expect(byKey["forged.gravity"]).toBe("1.00 g");
+    expect(byKey["forged.rotation"]).toBeUndefined();
+    expect(byKey["forged.composition"]).toBe("0% gas envelope by volume");
   });
 });

@@ -84,6 +84,11 @@ import { EMPIRE_COLOURS, GALAXY_MARK } from '@/lib/palettes/galaxy-map';
 import { GALAXY_MAP_SPECTRAL_COLOURS } from '@/lib/palettes/spectral';
 
 const MINIMAP_SIZE = 120;
+/** Ambient-only redraw interval (C3): ~12 fps is smooth enough for slow arcs. */
+const AMBIENT_FRAME_MS = 80;
+function prefersReducedMotion(): boolean {
+  return typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+}
 
 /** A star plus its screen position, reused across frames; `src` is the star itself. */
 type PooledStar = ScreenStar & { src: Star };
@@ -97,6 +102,17 @@ const StellarCartographer: React.FC = () => {
   /** CSS size of the map and the pixel ratio of its backing store (resizeCanvas). */
   const canvasViewRef = useRef({ w: 1, h: 1, dpr: 1 });
   const minimapRef = useRef<HTMLCanvasElement>(null);
+  // (1.9, C1) The control panel starts below the title panel, whatever its
+  // height (long galaxy names wrap), instead of at a fixed 210px it overlapped.
+  const titlePanelRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = titlePanelRef.current;
+    const host = el?.parentElement;
+    if (!el || !host || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(() => host.style.setProperty('--sc-title-h', `${el.offsetHeight}px`));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   const containerRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>();
   const isDraggingRef = useRef(false);
@@ -1394,6 +1410,7 @@ const StellarCartographer: React.FC = () => {
     let mirroredView = viewRef.current;
     let lastViewSeen = viewRef.current;
     let lastViewChange = 0;
+    let lastAmbientDraw = -Infinity;
     needsDrawRef.current = true;
 
     const loop = createFrameLoop({
@@ -1463,8 +1480,16 @@ const StellarCartographer: React.FC = () => {
           setViewState(viewRef.current);
         }
 
-        if (!moving && !hasAmbientMotion && !needsDrawRef.current && !bgDirtyRef.current) return;
+        // (1.9, C3) Ambient motion (black-hole arcs, wormhole pulses) is
+        // decoration. Alone, it redraws at most every AMBIENT_FRAME_MS
+        // instead of every frame (a full redraw of every star), and not at
+        // all when the user asks for reduced motion. Camera moves, drags
+        // and edits still draw every frame.
+        const ambientDue =
+          hasAmbientMotion && !prefersReducedMotion() && time - lastAmbientDraw >= AMBIENT_FRAME_MS;
+        if (!moving && !ambientDue && !needsDrawRef.current && !bgDirtyRef.current) return;
         needsDrawRef.current = false;
+        lastAmbientDraw = time;
 
         render();
         renderMinimap();
@@ -1942,13 +1967,15 @@ const StellarCartographer: React.FC = () => {
       />
 
       {/* ═══════════════════ TITLE PANEL ═══════════════════ */}
-      <div className={styles.titlePanel}>
+      <div ref={titlePanelRef} className={styles.titlePanel}>
         <div className={styles.toolTitle}>STELLAR CARTOGRAPHER</div>
         <div className={styles.toolSubtitle}>STELLARFORGE.TOOLS</div>
         <div className={styles.galaxyNameDisplay}>{galaxyName}</div>
-        <div className={`${styles.badge} ${badgeClass}`}>{statusText}</div>
-        <div className={styles.navLinks}>
-          <Link to="/">← Tools</Link>
+        <div className={styles.titleRow}>
+          <div className={`${styles.badge} ${badgeClass}`} role="status" aria-live="polite">{statusText}</div>
+          <div className={styles.navLinks}>
+            <Link to="/">← Tools</Link>
+          </div>
         </div>
       </div>
 

@@ -1,5 +1,8 @@
 /** Drake Equation worksheet shape and codec (moved from DrakeEquationCalculator.tsx). */
 import { type MoodboardImage } from "@/hooks/use-moodboard";
+import { calculateDrakeN } from "@/lib/drake";
+import type { ToolWorksheetCodec } from "@/lib/tool-worksheet";
+import type { Json } from "@/integrations/supabase/types";
 import { castCodec } from "@/lib/tool-worksheet";
 
 // Form state interface
@@ -66,5 +69,12 @@ export const initialFormState: FormState = {
 export const TOOL_TYPE = "drake-equation-calculator";
 export const LOCAL_STORAGE_KEY = "drake-equation-calculator-v1";
 
-/** Rows store the form as-is. */
-export const codec = castCodec(initialFormState);
+/**
+ * Rows store the form plus a `derived` snapshot (1.9 F-08): N itself, the
+ * number a story quotes, recomputed on every save so it can reach canon.
+ */
+export const codec: ToolWorksheetCodec<FormState> = {
+  ...castCodec(initialFormState),
+  serialize: (f) =>
+    ({ ...f, derived: { N: Number(calculateDrakeN(f.values).toPrecision(4)) } }) as unknown as Json,
+};

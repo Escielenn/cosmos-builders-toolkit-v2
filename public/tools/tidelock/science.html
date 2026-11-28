@@ -10,21 +10,19 @@
 <link rel="stylesheet" href="/tools/_shared/sim-tokens.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TIDELOCK — The Science | StellarForge</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-<link href="https://fonts.cdnfonts.com/css/md-nichrome-test" rel="stylesheet">
+<link rel="stylesheet" href="/tools/_shared/sim-fonts.css">
 <style>
 :root{
   --sf-accent:#15C17B;
   --accent-green:#00E5A0;
-  --font-display:'MD Nichrome Test','MD Nichrome','Jura',sans-serif;
+  --font-display:'MD Nichrome','Jura',sans-serif;
   --font-body:'DM Sans',sans-serif;
   --font-mono:'JetBrains Mono',monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
-  background:#09090B;
+  background:var(--sf-sim-canvas);
   color:var(--t2);
   font-family:var(--font-body);
   min-height:100vh;
@@ -41,7 +39,7 @@ body{
 .science-page h1{
   font-family:var(--font-display);
   font-size:32px;font-weight:300;
-  color:#FAFAFA;
+  color:var(--t1);
   letter-spacing:5px;text-transform:uppercase;
   margin-bottom:6px;
 }
@@ -61,7 +59,7 @@ body{
   margin-top:40px;
   margin-bottom:12px;
   padding-bottom:5px;
-  border-bottom:1px solid #50555E;
+  border-bottom:1px solid var(--sf-line);
 }
 .sci-section:first-of-type{margin-top:0}
 .science-page p{
@@ -73,7 +71,7 @@ body{
 }
 .science-page p strong{
   color:var(--t1);
-  font-weight:600;
+  font-weight:500;
 }
 .science-page code{
   font-family:var(--font-mono);
@@ -88,7 +86,7 @@ body{
   font-size:12.5px;
   color:var(--sf-primary-text);
   background:rgba(21,193,123,.04);
-  border:1px solid #50555E;
+  border:1px solid var(--sf-line);
   border-radius:0;
   padding:14px 18px;
   margin:16px 0;
@@ -104,7 +102,7 @@ body{
   margin:5px 0;
   line-height:1.7;
   padding-left:12px;
-  border-left:2px solid #50555E;
+  border-left:2px solid var(--sf-line);
 }
 .src a{color:var(--sf-primary-text);text-decoration:none}
 .src a:hover{color:var(--accent-green);text-decoration:underline}
@@ -113,7 +111,7 @@ body{
   font-size:12px;
   font-style:italic;
   color:var(--t3);
-  border-left:2px solid #50555E;
+  border-left:2px solid var(--sf-line);
   padding:10px 16px;
   margin:16px 0;
   background:rgba(21,193,123,.015);
@@ -134,12 +132,12 @@ body{
   color:var(--sf-primary-text);
   text-align:left;
   padding:7px 10px;
-  border-bottom:1px solid #50555E;
+  border-bottom:1px solid var(--sf-line);
 }
 .sys-table td{
   color:var(--t2);
   padding:6px 10px;
-  border-bottom:1px solid #41454D;
+  border-bottom:1px solid var(--sf-line-hairline);
   line-height:1.6;
 }
 .sys-table td:first-child{
@@ -159,147 +157,105 @@ body{
 }
 </style>
 <link rel="stylesheet" href="/tools/_shared/science-floor.css">
+<link rel="stylesheet" href="/tools/_shared/sim-a11y.css">
 <script src="/tools/_shared/science-embed.js"></script>
 </head>
 <body>
 
 <main class="science-page">
   <h1>Showing Our Work</h1>
-  <div class="subtitle">The Physics &amp; Data Behind TIDELOCK</div>
+  <div class="subtitle">The physics and data behind Tidelock</div>
 
-  <!-- ── WHAT IS TIDAL LOCKING ───────────────────── -->
-  <div class="sci-section">What Is Tidal Locking?</div>
-  <p>A <strong>tidally locked planet</strong> keeps one face permanently aimed at its star—the same way the Moon always shows the same face to Earth. One hemisphere bakes in eternal day. The other freezes in eternal night. Between them runs a permanent twilight band called the <strong>terminator</strong>.</p>
-  <p>This isn't exotic. It's the expected state for rocky planets orbiting M-dwarf and late K-dwarf stars within their habitable zones. Tidal locking timescales are inversely proportional to the sixth power of orbital distance—close planets lock fast. Since M-dwarf habitable zones are extremely close to the star, most potentially habitable worlds around these stars are tidally locked.</p>
-  <div class="src">Pierrehumbert, R.T. (2011). "A Palette of Climates for Gliese 581g." <em>The Astrophysical Journal Letters</em>, 726(1), L8. <a href="https://doi.org/10.1088/2041-8205/726/1/L8" target="_blank">DOI</a></div>
+  <div class="sci-section">What is tidal locking?</div>
+  <p>A tidally locked planet keeps one face aimed at its star, the way the Moon keeps one face toward Earth. One hemisphere has permanent day, the other permanent night. Rocky planets close to small stars lock quickly: the despinning time scales with the sixth power of orbital distance.</p>
+  <p>Tidelock does not assume a world is locked. It computes the locking time and compares it with the age you set for the system (see <em>Locking</em> below). If the world would still be turning, Tidelock says so.</p>
+  <div class="src">Pierrehumbert, R.T. (2011). "A Palette of Climates for Gliese 581g." <em>ApJ Letters</em>, 726, L8.</div>
 
-  <!-- ── STAR CATALOG ────────────────────────────── -->
-  <div class="sci-section">Star Catalog</div>
-  <p>TIDELOCK includes <strong>20 main-sequence star types</strong> from M9V through F0V. Each star's mass, luminosity, effective temperature, and habitable zone distance are sourced from stellar models and observational data:</p>
+  <div class="sci-section">One set of formulas</div>
+  <p>Every number Tidelock shows comes from <code>/tools/_shared/physics.js</code>, the same module (twin of <code>src/lib/physics</code>) that the rest of StellarForge uses. A unit test loads both and fails if they ever disagree, and another checks them against Earth, Mars, Proxima b and TRAPPIST-1e.</p>
 
+  <div class="sci-section">Stars</div>
+  <p>The star list is the mean main-sequence dwarf sequence from M8V to F0V, plus Proxima Centauri. Effective temperature, mass and radius come from the table; luminosity is computed from radius and temperature by the Stefan–Boltzmann law, so every star is physically self-consistent:</p>
+  <span class="eq">L / L☉ = (R / R☉)² × (T_eff / 5772 K)⁴</span>
   <table class="sys-table">
-    <tr><th>Type</th><th>Mass (M☉)</th><th>Luminosity (L☉)</th><th>Temp (K)</th><th>HZ (AU)</th></tr>
-    <tr><td>M9V</td><td><code>0.08</code></td><td><code>0.0001</code></td><td>2400</td><td><code>0.010</code></td></tr>
-    <tr><td>M8V</td><td><code>0.09</code></td><td><code>0.0004</code></td><td>2500</td><td><code>0.020</code></td></tr>
-    <tr><td>M5V</td><td><code>0.16</code></td><td><code>0.003</code></td><td>3000</td><td><code>0.055</code></td></tr>
-    <tr><td>M4V</td><td><code>0.25</code></td><td><code>0.006</code></td><td>3100</td><td><code>0.074</code></td></tr>
-    <tr><td>M1V</td><td><code>0.47</code></td><td><code>0.04</code></td><td>3600</td><td><code>0.200</code></td></tr>
-    <tr><td>K5V</td><td><code>0.68</code></td><td><code>0.16</code></td><td>4400</td><td><code>0.400</code></td></tr>
-    <tr><td>K0V</td><td><code>0.82</code></td><td><code>0.40</code></td><td>5100</td><td><code>0.630</code></td></tr>
-    <tr><td>G2V (Sun)</td><td><code>1.00</code></td><td><code>1.00</code></td><td>5800</td><td><code>1.000</code></td></tr>
-    <tr><td>F0V</td><td><code>1.60</code></td><td><code>6.50</code></td><td>7200</td><td><code>2.550</code></td></tr>
+    <tr><th>Type</th><th>Mass (M☉)</th><th>Radius (R☉)</th><th>T_eff (K)</th><th>L (L☉)</th></tr>
+    <tr><td>M8V (TRAPPIST-1)</td><td>0.0898</td><td>0.119</td><td>2566</td><td>5.5 × 10⁻⁴</td></tr>
+    <tr><td>Proxima Cen</td><td>0.122</td><td>0.154</td><td>3042</td><td>1.8 × 10⁻³</td></tr>
+    <tr><td>M4V</td><td>0.23</td><td>0.27</td><td>3210</td><td>7.0 × 10⁻³</td></tr>
+    <tr><td>M0V</td><td>0.57</td><td>0.59</td><td>3850</td><td>0.069</td></tr>
+    <tr><td>K5V</td><td>0.70</td><td>0.68</td><td>4440</td><td>0.16</td></tr>
+    <tr><td>G2V (Sun)</td><td>1.00</td><td>1.00</td><td>5772</td><td>1.00</td></tr>
+    <tr><td>F0V</td><td>1.61</td><td>1.73</td><td>7220</td><td>7.3</td></tr>
   </table>
+  <p><strong>Keep in habitable zone</strong> places the planet at 0.9 × the runaway-greenhouse insolation of Kopparapu et al. (2014), whose polynomial includes the star's temperature. That sits just inside the conservative inner edge, where locked planets with substellar clouds stay temperate.</p>
+  <div class="src">Pecaut, M.J. &amp; Mamajek, E.E. (2013). <em>ApJS</em>, 208, 9; E. Mamajek, "A Modern Mean Dwarf Stellar Color and Effective Temperature Sequence" (2022). Agol, E. et al. (2021). <em>PSJ</em>, 2, 1 (TRAPPIST-1). Boyajian, T. et al. (2012), <em>ApJ</em> 757, 112; Kervella, P. et al. (2017), <em>A&amp;A</em> 598, L7 (Proxima).</div>
+  <div class="src">Kopparapu, R.K. et al. (2014). <em>ApJ Letters</em>, 787, L29. Yang, J., Cowan, N.B. &amp; Abbot, D.S. (2013). <em>ApJ Letters</em>, 771, L45.</div>
 
-  <div class="note">Habitable zone distances represent the center of the conservative HZ where liquid water is most likely stable. The full catalog includes 20 spectral types from M9V to F0V. Tidal locking is confirmed for M-dwarf stars and likely for late K-dwarfs (K5V and later).</div>
-  <div class="src">Pecaut, M.J. &amp; Mamajek, E.E. (2013). "Intrinsic Colors, Temperatures, and Bolometric Corrections of Pre-Main-Sequence Stars." <em>The Astrophysical Journal Supplement</em>, 208(1), 9. <a href="https://doi.org/10.1088/0067-0049/208/1/9" target="_blank">DOI</a></div>
+  <div class="sci-section">Light and orbit</div>
+  <span class="eq">S / S⊕ = (L / L☉) / a²&nbsp;&nbsp;&nbsp;&nbsp;P = 365.25 × √(a³ / (M★ + m_p)) days</span>
+  <p>Insolation <code>S</code> is in units of the sunlight Earth receives (1361 W/m²). The orbital period uses Kepler's third law with the star's mass. Locked, the planet turns once per orbit.</p>
 
-  <!-- ── TEMPERATURE MODEL ───────────────────────── -->
-  <div class="sci-section">Temperature Model</div>
-  <p>The surface temperature at any point on a tidally locked planet depends on its <strong>angular distance from the substellar point</strong> (the spot directly facing the star). TIDELOCK computes this using a modified Stefan-Boltzmann model with atmospheric redistribution:</p>
-  <span class="eq">T_SSP = (F_absorbed / σ)^0.25 × (1 + f_greenhouse × 0.55)</span>
-  <p>Where the absorbed flux is:</p>
-  <span class="eq">F = L★ × L☉ × (1 − albedo) / (16π × σ × d²)</span>
-  <p>The temperature gradient from substellar point (θ=0) to antistellar point (θ=π) follows:</p>
-  <span class="eq">Dayside: T(θ) = T_ASP + (T_SSP − T_ASP) × cos(θ)^n<br><br>where n = 1.0 − 0.7 × min(ρ_atm / 3, 1)</span>
-  <p>The exponent <code>n</code> controls how sharply temperature drops from the substellar point. A thicker atmosphere (higher <code>ρ_atm</code>) reduces <code>n</code>, spreading heat more evenly—modeling atmospheric heat transport from dayside to nightside.</p>
-  <p>The antistellar temperature is:</p>
-  <span class="eq">T_ASP = T_SSP × (0.1 + 0.4 × atm_normalized)</span>
-  <p>With no atmosphere, the nightside reaches near-absolute zero. With a dense atmosphere, heat redistribution raises the nightside temperature significantly—this is the key factor determining whether a tidally locked world can support a habitable terminator band.</p>
-  <div class="src">Yang, J. et al. (2013). "Stabilizing Cloud Feedback Dramatically Expands the Habitable Zone of Tidally Locked Planets." <em>The Astrophysical Journal Letters</em>, 771(2), L45. <a href="https://doi.org/10.1088/2041-8205/771/2/L45" target="_blank">DOI</a></div>
+  <div class="sci-section">Surface temperature</div>
+  <p>The temperature at an angle θ from the substellar point comes from one energy-balance profile:</p>
+  <span class="eq">σT(θ)⁴ = S·S⊕·(1 − A) · [ (1 − ε)·max(cos θ, 0) + (ε/4)·(1 + (1 − ε)·cos θ) ] · (1 + ¾τ) + σT_int⁴</span>
+  <p><strong>A</strong> is the Bond albedo. <strong>ε</strong> is the share of absorbed starlight the atmosphere carries away from where it lands (0 = none, 1 = perfectly even). <strong>τ</strong> is the infrared optical depth of a grey greenhouse (Eddington approximation): Earth's 255 K → 288 K needs τ ≈ 0.84. <strong>T_int</strong> = 35 K is the floor from internal heat at Earth's heat flow, which is what an airless permanent night settles to.</p>
+  <p>With no air (ε = 0, τ = 0) the substellar point reaches T₀(1 − A)^¼, where T₀ = (S·S⊕/σ)^¼ is 394 K at Earth's distance from the Sun. Tidelock 1.8 used the planet-average form (the 1/4 factor), which is √2 too cold for a bare day side. The readout shows both the bare-rock substellar temperature and the surface with your atmosphere.</p>
+  <p>The profile is continuous through the terminator, so the day side, the terminator and the night side come from the same equation. The (1 − ε)·cos θ term tilts the carried heat toward the day side when transport is weak, so the night side cools away from the terminator to a cold antistellar point, as tidally locked climate models show. That tilt is a StellarForge interpolation rather than a published fit; it integrates to zero over the sphere, so energy is conserved.</p>
+  <div class="src">Cowan, N.B. &amp; Agol, E. (2011). "The Statistics of Albedo and Heat Recirculation on Hot Exoplanets." <em>ApJ</em>, 729, 54. Catling, D.C. &amp; Kasting, J.F. (2017). <em>Atmospheric Evolution on Inhabited and Lifeless Worlds</em>, §2. Davies, J.H. &amp; Davies, D.R. (2010). <em>Solid Earth</em>, 1, 5.</div>
 
-  <!-- ── HABITABLE ZONE CALCULATION ──────────────── -->
-  <div class="sci-section">Habitable Zone Calculation</div>
-  <p>Unlike conventional habitable zones (which are annular regions around a star), the habitable zone on a tidally locked planet is a <strong>band on the planet's surface</strong>—a ring around the terminator where temperatures fall between 273 K and 373 K (0°C to 100°C).</p>
-  <p>TIDELOCK scans the temperature profile from substellar to antistellar point at 3,600 angular steps, identifying the inner and outer edges of the habitable band:</p>
-  <span class="eq">Inner edge: T(θ_in) = 373 K (too hot inward)<br>Outer edge: T(θ_out) = 273 K (too cold outward)<br><br>Habitable band = θ_out − θ_in (in degrees)<br>Surface fraction ≈ |cos(θ_in) − cos(θ_out)| × 100%</span>
-  <p>Ocean coverage modulates the effective habitable area by up to 15%, accounting for oceanic thermal buffering. Worlds with >30° of habitable band are classified as <strong>"Habitable"</strong>; 5–30° as <strong>"Marginal"</strong>; below 5° as <strong>"Uninhabitable"</strong>.</p>
-  <div class="src">Kopparapu, R.K. et al. (2016). "The Inner Edge of the Habitable Zone for Synchronously Rotating Planets around Low-mass Stars Using General Circulation Models." <em>The Astrophysical Journal</em>, 819(1), 84. <a href="https://doi.org/10.3847/0004-637X/819/1/84" target="_blank">DOI</a></div>
+  <div class="sci-section">Heat transport depends on pressure</div>
+  <p>How much heat reaches the night side depends on how thick the atmosphere is. Tidelock compares the time the air takes to radiate its heat away with the time winds take to carry it across the planet:</p>
+  <span class="eq">τ_rad = (p / g) · c_p / (4σT³)&nbsp;&nbsp;&nbsp;&nbsp;τ_adv = R_p / U&nbsp;&nbsp;&nbsp;&nbsp;ε = τ_rad / (τ_rad + τ_adv)</span>
+  <p><code>U</code> = 20 m/s, a typical terminator-crossing wind in rocky tidally locked climate models. An Earth-like 1 bar atmosphere gives ε ≈ 0.9 (mild night side); 0.01 bar gives ε ≈ 0.08 (scorched day, frozen night).</p>
+  <div class="src">Showman, A.P. &amp; Guillot, T. (2002). <em>A&amp;A</em>, 385, 166. Koll, D.D.B. &amp; Abbot, D.S. (2016). "Temperature Structure and Atmospheric Circulation of Dry Tidally Locked Rocky Exoplanets." <em>ApJ</em>, 825, 99.</div>
 
-  <!-- ── ATMOSPHERE & ESCAPE ─────────────────────── -->
-  <div class="sci-section">Atmosphere &amp; Jeans Escape</div>
-  <p>A tidally locked planet's ability to retain its atmosphere is critical—without atmospheric heat transport, the terminator band collapses. TIDELOCK computes atmospheric retention using the <strong>Jeans escape parameter</strong>:</p>
-  <span class="eq">λ = (v_esc / v_thermal)²<br><br>v_esc = 11.186 × √(M_planet / R_planet) km/s<br>v_thermal = √(3 k_B T_SSP / m_molecule) / 1000 km/s</span>
-  <p>The Jeans parameter measures how strongly gravity binds atmospheric molecules. Higher λ means stronger retention:</p>
+  <div class="sci-section">Atmosphere collapse</div>
+  <p>If the coldest point of the night side is below the temperature at which the main gas condenses at the surface pressure, the atmosphere freezes out onto the night side. Tidelock flags this, and says the temperatures shown assume an atmosphere that would not survive. Condensation points follow the Clausius–Clapeyron relation from NIST reference values: N₂ 77.4 K, CO₂ 194.7 K (sublimation), CH₄ 111.7 K, SO₂ 263.1 K, H₂ 20.3 K, each at 1 atm.</p>
+  <div class="src">Joshi, M.M., Haberle, R.M. &amp; Reynolds, R.T. (1997). "Simulations of the Atmospheres of Synchronously Rotating Terrestrial Planets Orbiting M Dwarfs." <em>Icarus</em>, 129, 450. Wordsworth, R. (2015). <em>ApJ</em>, 806, 180.</div>
+
+  <div class="sci-section">The liquid-water band</div>
+  <p>Water is liquid between 273.15 K and its boiling point, which falls with pressure (373 K at 1 atm, about 319 K at 0.1 bar). Below the triple point (0.006 bar) it cannot be liquid at all. Tidelock scans the profile in 0.1° steps and reports the band's inner and outer angles, its width in degrees of arc and in kilometres (arc × planet radius), and the fraction of the surface it covers, (cos θ_in − cos θ_out) / 2.</p>
+  <p>With thick air the band can cover most of the day side and need not sit at the terminator. With thin air it narrows to a ring near the substellar point or vanishes. Ocean coverage changes the picture's colours, not the band.</p>
+
+  <div class="sci-section">Locking</div>
+  <span class="eq">t_lock = ω a⁶ I Q / (3 G M★² k₂ R⁵)&nbsp;&nbsp;&nbsp;&nbsp;I = 0.4 m R²&nbsp;&nbsp;&nbsp;&nbsp;k₂ = 1.5 / (1 + 19μ / (2ρgR))</span>
+  <p>Initial spin 12 hours, tidal quality factor Q = 100, rigidity μ = 3 × 10¹⁰ N/m². Earth around the Sun would take ~10¹¹ years; Proxima b about 10⁴ to 10⁵. If the locking time is under a tenth of the system's age the world reads <em>Locked</em>; under the age, <em>Likely locked</em> (Q is uncertain by about a factor of ten); otherwise <em>Not locked</em>, and the tool says its day-and-night picture does not apply.</p>
+  <div class="src">Gladman, B. et al. (1996). "Synchronous Locking of Tidally Evolving Satellites." <em>Icarus</em>, 122, 166. Peale, S.J. (1977), in <em>Planetary Satellites</em>.</div>
+
+  <div class="sci-section">Gas retention</div>
+  <p>A gas stays for billions of years if its molecules' mean thermal speed is at most a sixth of the escape velocity, and leaks away fast above a fifth:</p>
+  <span class="eq">v̄ = √(8kT / πm)&nbsp;&nbsp;&nbsp;&nbsp;v_esc = 11.186 × √(M / R) km/s&nbsp;&nbsp;&nbsp;&nbsp;retained if v̄ ≤ v_esc / 6</span>
+  <p>Tidelock tests the lightest bulk gas of the chosen composition with its real molecular mass (H₂ 2.016, CH₄ 16.04, N₂ 28.01, CO₂ 44.01, SO₂ 64.07 g/mol) at the top of the atmosphere, where escape happens. That exobase temperature is assumed: 1000 K for Earth-like and hydrogen atmospheres, 300 K where CO₂ or SO₂ cools the upper air, as on Venus and Mars. Stellar winds and EUV, strong around M dwarfs, strip more than this thermal estimate.</p>
+  <div class="src">Seager, S. (2010). <em>Exoplanet Atmospheres</em>, Princeton, ch. 4. Bougher, S.W. et al. (2015), in <em>Mars Upper Atmosphere</em>.</div>
+
+  <div class="sci-section">Other readouts</div>
+  <span class="eq">g = M / R² (Earth units)&nbsp;&nbsp;&nbsp;&nbsp;ρ = 5.514 × M / R³ g/cm³&nbsp;&nbsp;&nbsp;&nbsp;H = kT / (μ m_u g)&nbsp;&nbsp;&nbsp;&nbsp;t_MS ≈ 10 Gyr × M / L</span>
+  <p>Scale height <code>H</code> uses the terminator temperature and the composition's mean molecular mass. The star's main-sequence lifetime is an order-of-magnitude estimate; if the system age exceeds it, a flag says the star would already have swollen into a giant.</p>
+
+  <div class="sci-section">Presets</div>
   <table class="sys-table">
-    <tr><th>Jeans Parameter</th><th>Retention</th><th>Implication</th></tr>
-    <tr><td><code>λ > 25</code></td><td>Strong</td><td>Atmosphere stable over billions of years</td></tr>
-    <tr><td><code>10 < λ ≤ 25</code></td><td>Moderate</td><td>Slow loss; atmosphere persists for gigayears</td></tr>
-    <tr><td><code>6 < λ ≤ 10</code></td><td>Marginal</td><td>Significant loss over geological time</td></tr>
-    <tr><td><code>λ ≤ 6</code></td><td>Losing</td><td>Rapid escape; atmosphere stripped in megayears</td></tr>
+    <tr><th>Preset</th><th>Star</th><th>Mass</th><th>Distance</th><th>Atmosphere</th></tr>
+    <tr><td>TRAPPIST-1e</td><td>M8V</td><td><code>0.692 M⊕, 0.92 R⊕</code></td><td><code>0.0293 AU</code></td><td>1 atm N₂/O₂ (assumed)</td></tr>
+    <tr><td>Proxima b</td><td>Proxima Cen</td><td><code>1.07 M⊕ (min.)</code></td><td><code>0.0485 AU</code></td><td>1 atm N₂/O₂ (assumed)</td></tr>
+    <tr><td>Eyeball Earth</td><td>M4V</td><td><code>1.0 M⊕</code></td><td>Habitable zone</td><td>0.1 atm, thin</td></tr>
+    <tr><td>Super Venus</td><td>M3V</td><td><code>2.0 M⊕</code></td><td>0.6 × HZ distance</td><td>5 atm CO₂</td></tr>
+    <tr><td>Snowball</td><td>M6V</td><td><code>0.8 M⊕</code></td><td>1.6 × HZ distance</td><td>0.3 atm</td></tr>
+    <tr><td>Ribbon World</td><td>M4V</td><td><code>1.5 M⊕</code></td><td>1.25 × HZ distance</td><td>0.25 atm</td></tr>
   </table>
-  <p>The simulator calculates retention for N₂/O₂ (MW 29), CO₂ (44), H₂/He (4), CH₄ (16), and SO₂ (64). Different atmospheric compositions have very different retention properties—heavy molecules like CO₂ and SO₂ are retained far more easily than light hydrogen.</p>
+  <div class="src">Anglada-Escudé, G. et al. (2016). <em>Nature</em>, 536, 437. Chen, J. &amp; Kipping, D. (2017). <em>ApJ</em>, 834, 17 (radius for a 1.07 M⊕ planet).</div>
 
-  <!-- ── WIND & TRANSPORT ────────────────────────── -->
-  <div class="sci-section">Wind &amp; Atmospheric Transport</div>
-  <p>The extreme temperature difference between the dayside and nightside drives powerful atmospheric circulation. TIDELOCK estimates maximum wind velocities using:</p>
-  <span class="eq">v_max = min(√ΔT × 15 × √(ρ_atm + 0.1), 500) m/s</span>
-  <p>Where <code>ΔT = T_SSP − T_ASP</code>. Atmospheric scale height—how rapidly pressure decreases with altitude—is computed from thermodynamic first principles:</p>
-  <span class="eq">H = k_B × T_term / (m_molecule × g) km</span>
-  <p>These values determine whether the atmosphere can effectively transport heat, maintain cloud systems, and sustain weather patterns at the terminator.</p>
-  <div class="src">Turbet, M. et al. (2018). "Modeling climate diversity, tidal dynamics and the fate of volatiles on TRAPPIST-1 planets." <em>Astronomy &amp; Astrophysics</em>, 612, A86. <a href="https://doi.org/10.1051/0004-6361/201731620" target="_blank">DOI</a></div>
+  <div class="sci-section">Terrain, clouds and moons</div>
+  <p>The terrain is procedural decoration (fractal noise), not a geological model, and the clouds are a drifting noise layer. Moons cast eclipse shadows but have no tidal effect on the planet. None of these change the numbers. Cloud drift, moons and the orbit animation stop when your system asks for reduced motion.</p>
 
-  <!-- ── ORBITAL MECHANICS ───────────────────────── -->
-  <div class="sci-section">Orbital Mechanics</div>
-  <p>Orbital periods follow <strong>Kepler's third law</strong> directly:</p>
-  <span class="eq">P = √(a³ / M★) years = √(a³ / M★) × 365.25 days</span>
-  <p>Where <code>a</code> is the semi-major axis in AU and <code>M★</code> is the stellar mass in solar masses. For a planet at M4V's habitable zone (0.074 AU), the orbital period is approximately 8.7 days—the planet's "year" is just over a week.</p>
-  <p>Tidal locking is enforced by maintaining the planet's local +X axis pointed toward the star at all times, using quaternion rotation. The terminator band remains perpendicular to the star direction as the planet orbits.</p>
+  <div class="sci-section">What this tool cannot do</div>
+  <p><strong>No climate model.</strong> The profile is an energy balance with one heat-transport number, not a general circulation model. Real atmospheres form jets, substellar cloud decks and cold traps that shift temperatures by tens of kelvin.</p>
+  <p><strong>No stellar activity.</strong> Flares, coronal mass ejections and XUV stripping, critical around M dwarfs, are outside the thermal retention test.</p>
+  <p><strong>No oceans or ice feedback.</strong> Ocean heat transport and ice-albedo feedback are not simulated; albedo is the value you set.</p>
+  <div class="note">Every formula above is in <code>public/tools/_shared/physics.js</code> with its source in a comment. Where Tidelock assumes a value (wind speed, exobase temperature, tidal Q), the readout or this page says so.</div>
 
-  <!-- ── TERRAIN & BIOMES ────────────────────────── -->
-  <div class="sci-section">Terrain &amp; Biome Rendering</div>
-  <p>Surface terrain is generated using <strong>fractal Brownian motion</strong> (fBM)—five octaves of 3D Simplex noise layered at decreasing amplitudes. The terrain responds to the tidal environment:</p>
-  <p><strong>Substellar region:</strong> Volcanic caldera features from intense stellar heating. Mountain amplitude is reduced—thermal expansion fractures prevent large mountain building.</p>
-  <p><strong>Terminator band:</strong> Enhanced mountain ridges from thermal stress at the day-night boundary. These ridges trap moisture from dayside evaporation, creating rivers and lakes in sheltered valleys.</p>
-  <p><strong>Nightside:</strong> Smooth, ancient ice plains. Reduced geological activity produces gently rolling terrain under permanent ice sheets.</p>
-  <p>Biomes are determined procedurally from local temperature, elevation, and moisture:</p>
-  <table class="sys-table">
-    <tr><th>Temperature</th><th>Biome</th><th>Description</th></tr>
-    <tr><td><code>> 700 K</code></td><td>Ultrahot Rock</td><td>Dark, cracked surface with molten fissures</td></tr>
-    <tr><td><code>500–700 K</code></td><td>Lava Desert</td><td>Dark rust rock, glowing cracks</td></tr>
-    <tr><td><code>373–500 K</code></td><td>Hot Desert</td><td>Tan to rust colored arid terrain</td></tr>
-    <tr><td><code>273–373 K</code></td><td>Habitable Band</td><td>Ocean, wetlands, forest, grassland (see below)</td></tr>
-    <tr><td><code>180–273 K</code></td><td>Tundra/Ice</td><td>Frozen ground transitioning to ice sheets</td></tr>
-    <tr><td><code>< 180 K</code></td><td>Deep Frozen</td><td>Permanent ice, near-zero atmospheric interaction</td></tr>
-  </table>
-  <p>Within the habitable band, sub-biomes are determined by moisture (derived from ocean coverage and terminator proximity) and elevation: <strong>deep ocean</strong>, <strong>coastal wetlands</strong>, <strong>forests</strong>, <strong>grasslands</strong>, and <strong>rocky highlands</strong> with snow-capped peaks above the snow line.</p>
-
-  <!-- ── PRESETS ──────────────────────────────────── -->
-  <div class="sci-section">Preset Configurations</div>
-  <table class="sys-table">
-    <tr><th>Preset</th><th>Star</th><th>Mass</th><th>Distance</th><th>Atmosphere</th><th>Concept</th></tr>
-    <tr><td>TRAPPIST-1e</td><td>M8V</td><td><code>0.92 M⊕</code></td><td><code>0.029 AU</code></td><td>1.0 atm, N₂/O₂</td><td>Real exoplanet candidate</td></tr>
-    <tr><td>Proxima b</td><td>M5V</td><td><code>1.27 M⊕</code></td><td><code>0.049 AU</code></td><td>1.2 atm, N₂/O₂</td><td>Nearest exoplanet</td></tr>
-    <tr><td>Eyeball Earth</td><td>M4V</td><td><code>1.0 M⊕</code></td><td>HZ locked</td><td>0.3 atm, thin</td><td>Ice world with liquid eye</td></tr>
-    <tr><td>Super Venus</td><td>M3V</td><td><code>2.0 M⊕</code></td><td>80% of HZ</td><td>4.5 atm, CO₂</td><td>Runaway greenhouse</td></tr>
-    <tr><td>Snowball</td><td>M6V</td><td><code>0.8 M⊕</code></td><td>130% of HZ</td><td>0.2 atm</td><td>Frozen world</td></tr>
-    <tr><td>Ribbon World</td><td>M4V</td><td><code>1.5 M⊕</code></td><td>HZ locked</td><td>0.8 atm</td><td>Narrow habitable terminator strip</td></tr>
-  </table>
-
-  <!-- ── CLOUD & MOON SYSTEMS ────────────────────── -->
-  <div class="sci-section">Cloud Layer &amp; Moon System</div>
-  <p><strong>Clouds</strong> are rendered as a procedural shell at 1.012× planet radius using animated fractal noise. Cloud density concentrates at the terminator—where warm dayside air meets cold nightside air, driving convection and precipitation. Cloud opacity scales with atmospheric density, capped at 35%.</p>
-  <p><strong>Moons</strong> (up to 3) orbit the planet with independent orbital distances and speeds. Moon eclipse shadows are computed in the fragment shader by projecting each moon's position along the star direction vector and applying a smooth falloff from full shadow at the moon center to no shadow at 1.3× moon radius.</p>
-
-  <!-- ── PLANET PHYSICS ──────────────────────────── -->
-  <div class="sci-section">Computed Planet Physics</div>
-  <p>The data readout panel calculates over 20 physical quantities in real-time from the input parameters:</p>
-  <span class="eq">Surface gravity: g = (M / R²) × 9.81 m/s²<br>Escape velocity: v_esc = 11.186 × √(M / R) km/s<br>Bulk density: ρ = 5.51 × (M / R³) g/cm³<br>Orbital period: P = √(a³ / M★) × 365.25 days</span>
-  <p>All values use Earth-normalized units: mass in <code>M⊕</code>, radius in <code>R⊕</code>, distance in AU. Reference constants: <code>g_Earth = 9.81 m/s²</code>, <code>v_esc_Earth = 11.186 km/s</code>, <code>ρ_Earth = 5.51 g/cm³</code>.</p>
-
-  <!-- ── LIMITATIONS ─────────────────────────────── -->
-  <div class="sci-section">What This Tool Cannot Do</div>
-  <p><strong>No atmospheric GCM.</strong> The temperature model uses an analytic gradient, not a full general circulation model. Real atmospheric dynamics involve Rossby waves, Hadley cells, and complex cloud feedback that require supercomputer simulations to resolve.</p>
-  <p><strong>No stellar activity.</strong> M-dwarf flares, coronal mass ejections, and XUV radiation—which can strip atmospheres and sterilize surfaces—are not modeled. These are critical habitability factors for real exoplanets.</p>
-  <p><strong>No ocean dynamics.</strong> Ocean heat transport, ice-albedo feedback, and subsurface ocean circulation are not simulated. Real tidally locked oceans would redistribute heat significantly.</p>
-  <p><strong>No plate tectonics.</strong> The terrain model is procedural, not geophysically driven. Real tidal heating and mantle convection patterns on tidally locked worlds would produce different geological features.</p>
-  <p><strong>No atmospheric chemistry.</strong> Photochemical reactions, ozone layers, and biosignature gases are not modeled.</p>
-  <div class="note">Despite these limitations, TIDELOCK produces physically grounded visualizations. The temperature profiles, habitable zone geometry, biome distributions, and atmospheric retention calculations follow established exoplanet science. When you build a world here, you're building on real physics.</div>
-
-  <!-- ── FOR WRITERS ─────────────────────────────── -->
-  <div class="sci-section">For Writers</div>
-  <p>TIDELOCK exists to help science fiction writers explore a specific question: <strong>what does the surface of a tidally locked world actually look like?</strong></p>
-  <p>The "eyeball Earth" concept—a frozen world with a single liquid ocean facing the star—is just one possibility. Adjust the atmosphere and you get a world with a wide habitable belt, permanent twilight civilizations along the terminator, and weather systems driven by eternal day-night temperature gradients. The scenarios TIDELOCK reveals—terminator forests, substellar deserts, nightside ice caps, ribbon cities along the habitable band—emerge from the physics, not from artistic license.</p>
-  <p>TIDELOCK is part of the <a href="https://stellarforge.tools" style="color:var(--sf-primary-text)">StellarForge</a> worldbuilding toolkit. The <strong>Star System Builder</strong> and <strong>Planetary Profile</strong> worksheets can help you develop the worlds you discover here into full settings—following the cascading principle that <em>environment shapes biology, biology shapes psychology, psychology shapes culture, and culture shapes mythology.</em></p>
+  <div class="sci-section">For writers</div>
+  <p>Read three numbers before placing anyone on a locked world: the liquid-water band in kilometres, the night-side frost point, and the time to lock. The <strong>Conditions brief</strong> button on the simulator page turns the current numbers into a short, cited list of what is physically true there. It is a field manual, not prose: it never writes into your manuscript.</p>
+  <p>Tidelock is part of the <a href="https://stellarforge.tools" style="color:var(--sf-primary-text)">StellarForge</a> toolkit. Publish a planet to your world and its band width, temperatures and lock state become facts the Studio can cite.</p>
 </main>
 
 </body>

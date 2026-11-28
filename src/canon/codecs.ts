@@ -190,6 +190,36 @@ export const propulsionCodec: FieldCodec = {
 
 // ── Registry ───────────────────────────────────────────────────────────
 
+/** A name-ish string from a list item: a string, or an object's name field. */
+export function itemLabel(item: unknown): string {
+  if (typeof item === "string") return stripHtml(item).trim();
+  if (typeof item === "number" && Number.isFinite(item)) return String(item);
+  if (item && typeof item === "object") {
+    const o = item as Record<string, unknown>;
+    for (const k of ["name", "archetypeName", "title", "label", "trait", "sense"]) {
+      if (typeof o[k] === "string" && (o[k] as string).trim()) return stripHtml(o[k] as string).trim();
+    }
+  }
+  return "";
+}
+
+/**
+ * text[] (1.9): an array field (Sensorium's chosen senses, Mythos' deities)
+ * or a free-text list ("no fire; no names of the dead") as a list of values.
+ */
+export const listCodec: FieldCodec = {
+  read(raw) {
+    const items = Array.isArray(raw)
+      ? raw.map(itemLabel)
+      : typeof raw === "string"
+        ? stripHtml(raw).split(/\n|;|•/).map((x) => x.trim())
+        : [];
+    const values = items.filter(Boolean);
+    return values.length ? { kind: "text[]", values } : null;
+  },
+  text: (v) => (v.kind === "text[]" ? v.values.join(", ") : v.kind === "text" ? v.value : ""),
+};
+
 const SPECIAL: Record<string, FieldCodec> = {
   "star.spectral_class": spectralCodec,
   "propulsion.type": propulsionCodec,
@@ -202,6 +232,7 @@ export function codecFor(predicate: string): FieldCodec {
   const def = predicateDef(predicate);
   if (def?.kind === "scalar") return scalarCodec(def.unit);
   if (def?.kind === "enum") return enumCodec((s) => s.trim().toLowerCase() || null);
+  if (def?.kind === "text[]") return listCodec;
   return textCodec;
 }
 
