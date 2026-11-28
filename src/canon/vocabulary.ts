@@ -116,6 +116,13 @@ const DEFS: PredicateDef[] = [
     ["temp_effective", "Effective temperature", "scalar", { unit: "K" }],
     ["age", "Stellar age", "scalar", { unit: "gyr" }],
     ["flare_activity", "Flare activity", "enum"],
+    // Added 2026-11-26 (/sf-fact, 1.9 N8): where the system sits in the
+    // galaxy. struct schema "galactic_position":
+    //   { l_deg, b_deg, distance_pc, catalogue_id? }  (heliocentric galactic)
+    // catalogue_id is a HYG/Hipparcos id ("HIP 8102") when the writer placed
+    // the system at a real star. Replaces the AU x 40 placeholder handoffs
+    // used to invent, and entity metadata.exoskyCoords (read as a fallback).
+    ["galactic_position", "Galactic position", "struct", { producer: "exosky" }],
   ]),
   ...domain("system", "physics", "orrery", [
     ["configuration", "Configuration", "enum", { aliases: ["configuration"] }],
@@ -162,6 +169,27 @@ const DEFS: PredicateDef[] = [
     ["sky.visible_stars[]", "Visible stars", "ref[]", { producer: "exosky" }],
     ["sky.constellations[]", "Constellations", "text[]", { producer: "exosky" }],
     ["sky.daylight_colour", "Daylight colour", "text"],
+    // Added 2026-11-26 (/sf-fact, 1.9 N1/N5/N6). Where the planet's spin axis
+    // points among the stars (J2000), and how long that axis takes to
+    // precess once. Decided in ExoSky's "Stand here" panel, so ExoSky is the
+    // producer; nothing else writes them.
+    ["pole_ra", "Pole right ascension", "scalar", { unit: "deg", producer: "exosky" }],
+    ["pole_dec", "Pole declination", "scalar", { unit: "deg", producer: "exosky" }],
+    ["precession_period", "Precession period", "scalar", { unit: "yr", producer: "exosky" }],
+    ["sky.pole_star", "Pole star", "text", { producer: "exosky" }],
+    ["sky.naked_eye_count", "Naked-eye stars", "scalar", { producer: "exosky" }],
+  ]),
+  // Added 2026-11-26 (/sf-fact, 1.9 N4). A constellation is an entity (type
+  // "custom", custom_type_label "Constellation", metadata.kind
+  // "constellation") the writer drew in ExoSky.
+  // Its stars are catalogue ids, never names or positions (ids are the only
+  // truth); its epoch is years from J2000, the sky it was drawn in; seen_from
+  // is the planet it belongs to. The planet's planet.sky.constellations[]
+  // lists the names. Mythos reads both (the Exosky -> Mythos edge, 03 Charter).
+  ...domain("constellation", "mythology", "exosky", [
+    ["stars[]", "Member stars", "text[]"],
+    ["epoch", "Epoch drawn", "scalar", { unit: "yr" }],
+    ["seen_from", "Seen from", "ref"],
   ]),
   ...domain("ecology", "biology", "symbiosis", [
     ["primary_productivity", "Primary productivity", "scalar", { unit: "kg_C_m2_yr" }],

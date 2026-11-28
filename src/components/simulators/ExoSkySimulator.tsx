@@ -1,1907 +1,948 @@
-import { useState, useRef, useEffect, useCallback, useMemo, type ReactNode } from "react";
-import { useEntities, useUpdateEntity } from "@/hooks/use-entity-graph";
+import { useState, useRef, useEffect, useCallback, useMemo, type ReactNode, type KeyboardEvent as ReactKeyboardEvent } from "react";
+import { useEntities, useCreateEntity } from "@/hooks/use-entity-graph";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useToast } from "@/hooks/use-toast";
+import { useAssertFact, useCanonFacts } from "@/canon/hooks";
 import { toExoskyPayload, fromExoskySave } from "@/lib/simulators/exosky-save";
 import { evaluateExoSkyFlags, flagDismissKey } from "@/sims/flags";
 import { useDismissedFlags } from "@/hooks/use-dismissed-flags";
-import { tokens, withAlpha } from "@/styles/tokens";
+import { tokens, getToken } from "@/styles/tokens";
 import { createFrameLoop, smoothingFor } from "@/lib/sim/frame-loop";
-
-// ═══════════════════════════════════════════════════════════════
-// EXOSKY v2, Alien Night Sky Simulator with Milky Way
-// StellarForge.tools · © 2025–2026 Jason D. Batt, Ph.D.
-//
-// MATH VALIDATION (verified 2026-04-25):
-// • IAU 1958 equatorial→galactic rotation matrix (NGP at α 192.859°,
-//   δ +27.128°; l_NCP = 122.932°). Standard reference.
-// • Heliocentric Cartesian conversion: (RA, Dec, dist) → (x,y,z) where
-//   x = r·cos(Dec)·cos(RA), y = r·cos(Dec)·sin(RA), z = r·sin(Dec).
-//   Right-handed equatorial frame.
-// • Observer-frame parallax: stars at fixed heliocentric (RA, Dec, dist)
-//   are translated by `pos - obs` and re-projected to (RA', Dec', dist').
-// • Distance modulus: m = M + 5·log₁₀(d/10pc). Standard.
-// • Gnomonic projection: x = (s·right)/(s·view), y = (s·up)/(s·view).
-// • Stellar catalog: 178 named real stars from Hipparcos (public/exosky-
-//   stars.json). Includes Sirius, Canopus, Arcturus, Vega, Polaris,
-//   Betelgeuse, Rigel, Aldebaran, Antares, Spica, Deneb, Sol, etc.
-//   Spot-checked: Sirius RA 101.287° / Dec −16.716° / 2.64 pc / Mv=−1.43
-//   matches Hipparcos HIP 32349 exactly.
-// • Proper motion (movement of stars over time) is NOT modeled, fine
-//   for present-epoch sky views, drifts slightly over centuries.
-// • Axial precession (the ~25,772-year wobble of an observer's rotational
-//   axis) IS modeled via the EPOCH slider, see astro.ts's precessionMatrix
-//   and applyPrecession. This changes which star sits near the pole; it
-//   does not move any star relative to any other, which is what proper
-//   motion (still unmodeled) would do.
-// ═══════════════════════════════════════════════════════════════
-
-const DEG = Math.PI / 180;
-// ── ASTRONOMY MATHS ───────────────────────────────────────────
-// Moved to lib/simulators/astro.ts and put under test. The header above claims
-// this maths was validated; it now actually is, against the north galactic
-// pole, Sagittarius A*, the distance modulus and known star separations.
-// The duplicate definitions that used to sit here are gone, so there is one
-// copy to be right rather than two to drift apart.
 import {
+  DEG,
   RAD,
-  R_SUN,
-  Z_SUN,
-  DISK_SCALE_H,
-  DISK_SCALE_Z,
-  DUST_SCALE_Z,
-  ARM_WIDTH,
-  ARM_PITCH,
-  BULGE_RADIUS,
-  eqToGal,
-  galToEq,
-  raDecDistToXYZ,
-  xyzToRaDec,
-  eqXYZtoGalactocentric,
-  apparentMag,
+  airmass,
+  altAz,
   bvToRGB,
-  precessionMatrix,
+  eqToGal,
+  eqXYZtoGalactocentric,
+  fromFrame,
+  lonLatOf,
+  planetRaDec,
+  toFrame,
+  unitFromRaDec,
+  xyzToRaDec,
+  type Frame3,
+  type Vec3,
 } from "@/lib/simulators/astro";
+import {
+  CATALOGUE_CREDIT,
+  indexById,
+  loadCatalogue,
+  searchCatalogue,
+  starLabel,
+  type CatalogueStar,
+} from "@/lib/simulators/exosky-catalogue";
+import {
+  ATMO_MODELS,
+  STATUS_LABEL,
+  VANTAGES,
+  hostRadiusSolar,
+  teffFromBV,
+  type AtmoKey,
+  type VantagePreset,
+} from "@/lib/simulators/exosky-systems";
+import {
+  NAKED_EYE_LIMIT,
+  catalogueReach,
+  circumpolar,
+  findPoleStar,
+  heliacalRising,
+  observeCatalogue,
+  planetGeometry,
+  poleDriftDeg,
+  skyBodies,
+  synodicMonthDays,
+  type ObservedStars,
+  type SkyBody,
+  type SkyControls,
+  type Source,
+} from "@/lib/simulators/exosky-sky";
+import {
+  applyCatalogueOverrides,
+  readGalacticPosition,
+  resolveVantage,
+  type Placement,
+  type WriterOverrides,
+} from "@/lib/simulators/exosky-vantage";
+import { armNote, computeMilkyWayMap, nearestArm, sampleMilkyWay, type MilkyWayMap } from "@/lib/simulators/exosky-galaxy";
+import { FOV_MAX, FOV_MIN, makeCamera, pixelsPerDegree, projectInto, unproject, zoomFov } from "@/lib/simulators/exosky-projection";
+import { buildStarChartSvg } from "@/lib/simulators/exosky-chart";
+import { briefAsText, skyConditionsBrief } from "@/lib/simulators/exosky-brief";
+import {
+  canonSkyContext,
+  constellationEntityInput,
+  constellationFacts,
+  galacticPositionFact,
+  poleFacts,
+  skyReadoutFacts,
+  type ExoskyAssert,
+} from "@/lib/simulators/exosky-canon";
+import {
+  CONSTELLATION_COLOURS,
+  GROUND_RGB,
+  MILKY_WAY_BULGE_RGB,
+  MILKY_WAY_DISC_RGB,
+  SKY_DAY_RGB,
+  SKY_TWILIGHT_RGB,
+  SOL_MARKER,
+} from "@/lib/palettes/exosky";
 import { describeHandoffPlanet, type HandoffPayload } from "@/lib/simulators/handoff";
 import { SimulatorTitle } from "@/components/simulators/SimulatorTitle";
 
-// ── STAR CATALOG (lazy-loaded from /exosky-stars.json) ────────
-// Format: [name, RA(°), Dec(°), dist(pc), absMag, B-V]
-// ~180 brightest stars from Hipparcos, loaded lazily to reduce bundle size
-// See public/exosky-stars.json (compact array format: [name,ra,dec,dist,absMag,bv])
-let _starCatalogCache: Array<{name:string;ra:number;dec:number;dist:number;absMag:number;bv:number;isCatalog:true}> | null = null;
-async function loadStarCatalog() {
-  if (_starCatalogCache) return _starCatalogCache;
-  const res = await fetch("/exosky-stars.json");
-  const rows: [string,number,number,number,number,number][] = await res.json();
-  _starCatalogCache = rows.map(([name,ra,dec,dist,absMag,bv]) => ({
-    name, ra, dec, dist: Math.max(dist, 0.001), absMag, bv, isCatalog: true as const,
-  }));
-  return _starCatalogCache;
-}
+// ═══════════════════════════════════════════════════════════════
+// EXOSKY 1.9 "True Numbers": the sky from any vantage, then the sky
+// over the writer's world.
+// StellarForge.tools · © 2025–2026 Jason D. Batt, Ph.D.
+//
+// What this draws, and where each part's maths lives (all tested):
+//   - 30,004 real stars from HYG v4.1, translated to the observer
+//     (exosky-catalogue.ts, exosky-sky.ts observeCatalogue).
+//   - The observer's own sun as a disc of the right size and brightness,
+//     sibling planets and moons with phase (exosky-sky.ts skyBodies).
+//   - A real horizon from the planet's pole, rotation and the observer's
+//     latitude; time of day, date and precession (astro.ts frames).
+//   - Extinction by airmass (Kasten & Young 1989), daylight that hides the
+//     stars, twilight.
+//   - The Milky Way ray-marched through Reid et al. (2019) spiral arms
+//     (exosky-galaxy.ts), in a worker.
+//   - Seen from inside the sphere: east on the left facing south
+//     (exosky-projection.ts; orientation test pins it).
+// ═══════════════════════════════════════════════════════════════
 
-// Removed inline RAW_STARS + EXTRA_STARS (was ~7KB of template literals)
-// ── SPIRAL ARM MODEL ──────────────────────────────────────────
-// 4 logarithmic spiral arms + local spur
-// Each arm defined by: initial angle (at reference radius), and color tint
-const SPIRAL_ARMS = [
-  { theta0: 0,      name: "Perseus",           boost: 1.0 },
-  { theta0: Math.PI * 0.5,  name: "Sagittarius-Carina", boost: 1.2 },
-  { theta0: Math.PI,       name: "Scutum-Centaurus",  boost: 1.1 },
-  { theta0: Math.PI * 1.5, name: "Norma-Outer",       boost: 0.8 },
-];
-const REF_RADIUS = 4000; // Reference radius for spiral definition (pc)
-
-function spiralArmAngle(R) {
-  // Logarithmic spiral: theta = theta0 + ln(R/R_ref) / tan(pitch)
-  return Math.log(Math.max(R, 100) / REF_RADIUS) / Math.tan(ARM_PITCH);
-}
-
-function nearestArmDistance(R, theta) {
-  let minDist = Infinity;
-  for (const arm of SPIRAL_ARMS) {
-    const armAngle = arm.theta0 + spiralArmAngle(R);
-    // Angular distance, wrapped
-    let dTheta = theta - armAngle;
-    dTheta = ((dTheta % (2 * Math.PI)) + 3 * Math.PI) % (2 * Math.PI) - Math.PI;
-    const arcDist = Math.abs(dTheta) * R; // Linear distance at this radius
-    const weighted = arcDist / arm.boost;
-    if (weighted < minDist) minDist = weighted;
-  }
-  return minDist;
-}
-
-// ── GALACTIC DENSITY MODEL ────────────────────────────────────
-function galacticDensity(gcX, gcY, gcZ) {
-  const R = Math.sqrt(gcX * gcX + gcY * gcY);
-  const z = gcZ;
-
-  // Base exponential disk
-  let density = Math.exp(-R / DISK_SCALE_H) * Math.exp(-Math.abs(z) / DISK_SCALE_Z);
-
-  // Spiral arm enhancement
-  const theta = Math.atan2(gcY, gcX);
-  const armDist = nearestArmDistance(R, theta);
-  const armFactor = 1.0 + 2.5 * Math.exp(-(armDist * armDist) / (ARM_WIDTH * ARM_WIDTH * 2));
-  density *= armFactor;
-
-  // Galactic bulge
-  const bulgeR = Math.sqrt(R * R + z * z * 4); // Oblate
-  density += 3.0 * Math.exp(-(bulgeR * bulgeR) / (BULGE_RADIUS * BULGE_RADIUS));
-
-  return density;
-}
-
-function dustExtinction(gcX, gcY, gcZ) {
-  const R = Math.sqrt(gcX * gcX + gcY * gcY);
-  const z = gcZ;
-  return Math.exp(-R / (DISK_SCALE_H * 1.2)) * Math.exp(-Math.abs(z) / DUST_SCALE_Z) * 0.5;
-}
-
-// ── MILKY WAY BRIGHTNESS MAP ──────────────────────────────────
-// Pre-compute brightness for each (l, b) direction from observer
-// Returns Float32Array indexed by [l_index * B_STEPS + b_index]
-const L_STEPS = 360; // 1° resolution in longitude
-const B_STEPS = 180;  // 1° resolution in latitude
-const RAY_STEPS = 40; // Integration steps per ray
-const RAY_MAX = 15000; // Max distance (pc)
-
-function computeMilkyWayMap(obsGCx, obsGCy, obsGCz) {
-  const map = new Float32Array(L_STEPS * B_STEPS);
-  const dustMap = new Float32Array(L_STEPS * B_STEPS);
-
-  for (let li = 0; li < L_STEPS; li++) {
-    const l = (li / L_STEPS) * 2 * Math.PI; // galactic longitude from observer
-    for (let bi = 0; bi < B_STEPS; bi++) {
-      const b = ((bi / B_STEPS) - 0.5) * Math.PI; // galactic latitude from observer
-
-      const cosB = Math.cos(b);
-      // Direction in galactocentric frame
-      // From observer, l=0 points toward galactic center (approximately)
-      // We need the actual direction. The observer's galactic longitude defines
-      // the offset from the GC center direction.
-      const obsR = Math.sqrt(obsGCx * obsGCx + obsGCy * obsGCy);
-      const obsTheta = Math.atan2(obsGCy, obsGCx);
-
-      // Direction in GC frame: l=0 should point toward GC center from observer
-      // Radial inward direction from observer
-      const dirTheta = obsTheta + Math.PI + l; // l=0 toward center, l increases CCW
-      const dx = cosB * Math.cos(dirTheta);
-      const dy = cosB * Math.sin(dirTheta);
-      const dz = Math.sin(b);
-
-      let brightness = 0;
-      let cumDust = 0;
-
-      for (let s = 1; s <= RAY_STEPS; s++) {
-        const t = (s / RAY_STEPS) * RAY_MAX;
-        const px = obsGCx + dx * t;
-        const py = obsGCy + dy * t;
-        const pz = obsGCz + dz * t;
-
-        const R = Math.sqrt(px*px + py*py);
-        if (R > 20000 || Math.abs(pz) > 5000) continue;
-
-        const d = galacticDensity(px, py, pz);
-        const dust = dustExtinction(px, py, pz);
-        cumDust += dust * (RAY_MAX / RAY_STEPS) * 0.0001;
-
-        const attenuation = Math.exp(-cumDust);
-        brightness += d * attenuation * (RAY_MAX / RAY_STEPS) * 0.00004;
-      }
-
-      map[li * B_STEPS + bi] = Math.min(brightness, 1.0);
-      dustMap[li * B_STEPS + bi] = Math.min(cumDust, 1.0);
-    }
-  }
-  return { brightness: map, dust: dustMap };
-}
-
-// Bilinear interpolation for smooth MW map sampling
-function sampleMWMap(map, l, b) {
-  // l in [0, 2π), b in [-π/2, π/2]
-  const lNorm = ((l % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-  const lf = (lNorm / (2 * Math.PI)) * L_STEPS;
-  const bf = ((b / Math.PI) + 0.5) * B_STEPS;
-
-  const l0 = Math.floor(lf) % L_STEPS;
-  const l1 = (l0 + 1) % L_STEPS;
-  const b0 = Math.max(0, Math.min(B_STEPS - 1, Math.floor(bf)));
-  const b1 = Math.min(B_STEPS - 1, b0 + 1);
-
-  const lt = lf - Math.floor(lf);
-  const bt = bf - Math.floor(bf);
-
-  const v00 = map[l0 * B_STEPS + b0];
-  const v10 = map[l1 * B_STEPS + b0];
-  const v01 = map[l0 * B_STEPS + b1];
-  const v11 = map[l1 * B_STEPS + b1];
-
-  return (v00 * (1 - lt) * (1 - bt) + v10 * lt * (1 - bt) +
-          v01 * (1 - lt) * bt + v11 * lt * bt);
-}
-
-// ── PROCEDURAL GALACTIC STARS ─────────────────────────────────
-function generateProceduralStars(count, seed) {
-  const stars = [];
-  let s = seed;
-  const rand = () => { s = (s * 16807 + 7) % 2147483647; return s / 2147483647; };
-
-  for (let i = 0; i < count; i++) {
-    // Generate in galactocentric coordinates with realistic distribution
-    const R = 1000 + rand() * 14000; // galactocentric radius
-    const theta = rand() * 2 * Math.PI;
-
-    // Prefer positions near spiral arms
-    const armDist = nearestArmDistance(R, theta);
-    const armProb = Math.exp(-(armDist * armDist) / (ARM_WIDTH * ARM_WIDTH * 4));
-    if (rand() > 0.45 + 0.55 * armProb) { i--; continue; } // Rejection sampling (relaxed)
-
-    const z = (rand() - 0.5) * 2 * DISK_SCALE_Z * (0.5 + rand()); // Vertical scatter
-    const gcX = R * Math.cos(theta);
-    const gcY = R * Math.sin(theta);
-    const gcZ = z;
-
-    // Convert to heliocentric equatorial
-    const helioGalX = R_SUN - gcX; // Sun-centered galactic x (toward GC)
-    const helioGalY = -gcY;
-    const helioGalZ = gcZ - Z_SUN;
-    const [eqX, eqY, eqZ] = galToEq(helioGalX, helioGalY, helioGalZ);
-
-    const dist = Math.sqrt(eqX*eqX + eqY*eqY + eqZ*eqZ);
-    if (dist < 3 || dist > 8000) continue; // Wider distance range
-
-    const { ra, dec } = xyzToRaDec(eqX, eqY, eqZ);
-
-    // Random stellar properties (weighted toward dimmer stars)
-    const magRoll = rand();
-    let absMag, bvColor;
-    if (magRoll < 0.01)      { absMag = -4 + rand() * 3; bvColor = -0.2 + rand() * 0.3; }  // Bright giants
-    else if (magRoll < 0.05) { absMag = -1 + rand() * 3; bvColor = -0.1 + rand() * 0.8; }  // Giants
-    else if (magRoll < 0.15) { absMag = 1 + rand() * 3;  bvColor = 0.0 + rand() * 1.0; }   // Bright MS
-    else if (magRoll < 0.40) { absMag = 3 + rand() * 3;  bvColor = 0.3 + rand() * 1.0; }   // Mid MS
-    else                     { absMag = 5 + rand() * 5;  bvColor = 0.6 + rand() * 1.2; }    // Dim MS / red dwarfs
-
-    const appMag = apparentMag(absMag, dist);
-    if (appMag > 8.5) continue; // Relaxed filter - let more faint stars through
-
-    stars.push({
-      name: null,
-      ra, dec, dist, absMag, bv: Math.min(2.0, bvColor),
-      isCatalog: false,
-    });
-  }
-  return stars;
-}
-
-// ── DENSE BACKGROUND STAR FIELD ───────────────────────────────
-// These are NOT individually resolved, they're the "powdered sugar"
-// of thousands of faint, distant stars that create sky density.
-// Concentrated heavily along galactic plane for MW band reinforcement.
-function generateBackgroundField(count, seed) {
-  const points = [];
-  let s = seed;
-  const rand = () => { s = (s * 16807 + 7) % 2147483647; return s / 2147483647; };
-
-  for (let i = 0; i < count; i++) {
-    // Generate in galactic coordinates, heavily concentrated on plane
-    // Galactic latitude: exponential concentration toward b=0
-    const u = rand();
-    // A former draft drew an unused latitude here (it compared the function
-    // Math.random to 0.5). The draw is kept so the seeded field is unchanged.
-    rand();
-    // Actually use a proper distribution:
-    const bSign = rand() < 0.5 ? 1 : -1;
-    // 70% within ±12° of plane, 20% within ±30°, 10% everywhere
-    const bRoll = rand();
-    let bDeg;
-    if (bRoll < 0.50) bDeg = bSign * rand() * 8;          // Dense plane core
-    else if (bRoll < 0.75) bDeg = bSign * (8 + rand() * 15); // Plane halo
-    else if (bRoll < 0.90) bDeg = bSign * (15 + rand() * 25); // Scattered
-    else bDeg = bSign * rand() * 85;                          // Everywhere (sparse)
-
-    const galL = rand() * 360; // Uniform in longitude
-
-    // Slight density boost toward galactic center (l ~ 0°)
-    const lRad = galL * DEG;
-    const centerBoost = 0.6 + 0.4 * Math.exp(-Math.pow(Math.min(galL, 360 - galL), 2) / (60 * 60));
-    if (rand() > centerBoost) { i--; continue; }
-
-    // Spiral arm boost for longitude: sample MW map if available
-    // (We'll apply this at render time instead for observer-relativity)
-
-    // Convert galactic (l, b) to equatorial (RA, Dec) for storage
-    const bRad = bDeg * DEG;
-    const cosB = Math.cos(bRad);
-    const gx = cosB * Math.cos(lRad);
-    const gy = cosB * Math.sin(lRad);
-    const gz = Math.sin(bRad);
-    const [eqX, eqY, eqZ] = galToEq(gx, gy, gz);
-    const dec = Math.asin(Math.max(-1, Math.min(1, eqZ))) * RAD;
-    let ra = Math.atan2(eqY, eqX) * RAD;
-    if (ra < 0) ra += 360;
-
-    // Brightness: mostly very faint, some moderate
-    const magRoll = rand();
-    let baseMag;
-    if (magRoll < 0.05) baseMag = 3.5 + rand() * 1.5;       // Moderately bright
-    else if (magRoll < 0.20) baseMag = 4.5 + rand() * 1.0;   // Faint-visible
-    else if (magRoll < 0.50) baseMag = 5.2 + rand() * 1.0;   // Barely visible
-    else baseMag = 5.8 + rand() * 1.5;                        // Sub-threshold shimmer
-
-    // Color: slight warm bias along plane (more distant red giants mixed in)
-    const bv = 0.2 + rand() * 1.3;
-
-    points.push({ ra, dec, galL, galB: bDeg, baseMag, bv });
-  }
-  return points;
-}
-
-// ── EXOPLANET SYSTEMS ─────────────────────────────────────────
-const EXOPLANET_SYSTEMS = [
-  // ── CONFIRMED EXOPLANETS (nearby) ─────────────────────
-  { star:"Proxima Centauri", planet:"Proxima Centauri b", ra:217.429, dec:-62.680, dist:1.301, atmoType:"thin_co2", atmoDesc:"Thin CO₂, possible N₂", note:"Nearest exoplanet. M-dwarf → red-tinted sky.", armNote:"Local Bubble / Orion Spur" },
-  { star:"TRAPPIST-1", planet:"TRAPPIST-1e", ra:346.622, dec:-5.041, dist:12.43, atmoType:"earth_like", atmoDesc:"Possible N₂/O₂/H₂O", note:"Habitable zone, ultra-cool dwarf host.", armNote:"Local Bubble" },
-  { star:"TRAPPIST-1", planet:"TRAPPIST-1f", ra:346.622, dec:-5.041, dist:12.43, atmoType:"thick_co2", atmoDesc:"Likely thicker CO₂-rich", note:"Outer HZ. Amber-hued skies.", armNote:"Local Bubble" },
-  { star:"Tau Ceti", planet:"Tau Ceti e", ra:26.017, dec:-15.937, dist:3.65, atmoType:"earth_like", atmoDesc:"N₂/CO₂ mix, possible H₂O vapor", note:"Sun-like host. Familiar constellations slightly shifted.", armNote:"Local Bubble" },
-  { star:"Ross 128", planet:"Ross 128 b", ra:176.937, dec:0.799, dist:3.37, atmoType:"thin_n2", atmoDesc:"Possibly thin N₂ envelope", note:"Quiet M-dwarf, low UV.", armNote:"Local Bubble" },
-  { star:"Luyten's Star", planet:"Luyten b", ra:109.998, dec:5.228, dist:3.72, atmoType:"earth_like", atmoDesc:"Possible temperate atmosphere", note:"Red dwarf, 12 ly.", armNote:"Local Bubble" },
-  { star:"Teegarden's Star", planet:"Teegarden b", ra:43.254, dec:16.878, dist:3.83, atmoType:"thin_co2", atmoDesc:"Possible thin CO₂/N₂ mix", note:"Ultracool dwarf. IR-dominated.", armNote:"Local Bubble" },
-  { star:"GJ 1061", planet:"GJ 1061 d", ra:53.374, dec:-44.511, dist:3.67, atmoType:"thin_n2", atmoDesc:"Speculative thin atmosphere", note:"Faint M-dwarf, 12 ly.", armNote:"Local Bubble" },
-  { star:"Kapteyn's Star", planet:"Kapteyn b", ra:77.898, dec:-44.960, dist:3.91, atmoType:"thin_co2", atmoDesc:"Ancient, minimal atmosphere", note:"~11 Gyr old system.", armNote:"Local Bubble" },
-  { star:"Wolf 1061", planet:"Wolf 1061 c", ra:248.412, dec:-12.661, dist:4.31, atmoType:"thick_co2", atmoDesc:"Possibly thick CO₂ (super-Venus)", note:"Dense, hazy world.", armNote:"Local Bubble" },
-  { star:"Gliese 667 C", planet:"Gliese 667 Cc", ra:259.755, dec:-34.995, dist:7.24, atmoType:"earth_like", atmoDesc:"Possible N₂/CO₂/H₂O mix", note:"Triple star system.", armNote:"Local Bubble" },
-  { star:"HD 40307", planet:"HD 40307 g", ra:89.496, dec:-60.022, dist:12.83, atmoType:"thick_n2", atmoDesc:"Super-Earth, dense N₂/H₂O", note:"K-dwarf. Warm orange sun.", armNote:"Local Bubble" },
-  { star:"55 Cancri", planet:"55 Cancri e", ra:133.149, dec:28.330, dist:12.34, atmoType:"exotic", atmoDesc:"Lava world, silicate vapor / Na", note:"Ultra-hot super-Earth.", armNote:"Local Bubble" },
-  { star:"Epsilon Eridani", planet:"Epsilon Eridani b", ra:53.233, dec:-9.458, dist:3.22, atmoType:"gas_giant", atmoDesc:"H₂/He, viewing from moon", note:"Young system, 10.5 ly. Sol is bright.", armNote:"Local Bubble" },
-  { star:"Barnard's Star", planet:"Barnard b (candidate)", ra:269.452, dec:4.693, dist:1.834, atmoType:"thin_n2", atmoDesc:"Speculative thin N₂", note:"Second-closest star system. 6 ly. High proper motion.", armNote:"Local Bubble" },
-  { star:"Pollux", planet:"Pollux b (Thestias)", ra:116.329, dec:28.026, dist:10.36, atmoType:"gas_giant", atmoDesc:"H₂/He, viewing from moon", note:"Giant star with confirmed planet. 34 ly. Orange sky.", armNote:"Local Bubble" },
-  { star:"51 Pegasi", planet:"51 Pegasi b (Dimidium)", ra:344.367, dec:20.769, dist:15.36, atmoType:"gas_giant", atmoDesc:"Hot Jupiter, viewing from orbit", note:"First confirmed exoplanet (1995). 50 ly.", armNote:"Local Bubble" },
-  { star:"Beta Pictoris", planet:"Beta Pictoris b", ra:86.821, dec:-51.066, dist:19.44, atmoType:"gas_giant", atmoDesc:"Young gas giant, from moon", note:"Young system with debris disk. 63 ly.", armNote:"Local Bubble" },
-  { star:"HR 8799", planet:"HR 8799 e", ra:346.870, dec:21.134, dist:39.4, atmoType:"gas_giant", atmoDesc:"Directly imaged giant, from moon", note:"4-planet system, directly imaged. 129 ly.", armNote:"Local Bubble" },
-  // ── DISTANT CONFIRMED PLANETS ─────────────────────────
-  { star:"Kepler-186", planet:"Kepler-186f", ra:295.015, dec:43.842, dist:178.5, atmoType:"earth_like", atmoDesc:"First Earth-sized HZ planet", note:"~580 ly. Constellations reshuffled.", armNote:"Orion Spur / Perseus edge" },
-  { star:"Kepler-442", planet:"Kepler-442b", ra:294.164, dec:39.247, dist:342, atmoType:"earth_like", atmoDesc:"Possible thick N₂/O₂", note:"~1,100 ly. Deep in Perseus Arm.", armNote:"Perseus Arm" },
-  { star:"Kepler-452", planet:"Kepler-452b", ra:286.803, dec:44.265, dist:556, atmoType:"thick_n2", atmoDesc:"Super-Earth, likely thick atmo", note:"\"Earth's cousin.\" 1,800 ly. Alien sky.", armNote:"Perseus Arm" },
-  // ── FAMOUS STARS (hypothetical moon/planet) ───────────
-  { star:"Canopus", planet:"Canopus (hypothetical)", ra:95.988, dec:-52.696, dist:95, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"F-type supergiant, 310 ly. Milky Way band shifted dramatically.", armNote:"Orion Spur" },
-  { star:"Vega", planet:"Vega (hypothetical)", ra:279.235, dec:38.784, dist:7.68, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"Young A-type star, 25 ly. Pole star ~12,000 AD from Earth.", armNote:"Local Bubble" },
-  { star:"Sirius", planet:"Sirius (hypothetical)", ra:101.287, dec:-16.716, dist:2.64, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"Brightest star from Earth, 8.6 ly. Sol still visible nearby.", armNote:"Local Bubble" },
-  { star:"Betelgeuse", planet:"Betelgeuse (hypothetical)", ra:88.793, dec:7.407, dist:197, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"Red supergiant, 643 ly. Deep in Orion Arm. Radically alien sky.", armNote:"Orion Arm" },
-  { star:"Alpha Centauri A", planet:"α Centauri (hypothetical)", ra:219.902, dec:-60.834, dist:1.34, atmoType:"earth_like", atmoDesc:"Hypothetical Earth-like", note:"Closest Sun-like star, 4.37 ly. Nearly identical constellations.", armNote:"Local Bubble" },
-  { star:"Fomalhaut", planet:"Fomalhaut (hypothetical)", ra:344.413, dec:-29.622, dist:7.70, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"Young A-type star with debris ring, 25 ly.", armNote:"Local Bubble" },
-  { star:"Deneb", planet:"Deneb (hypothetical)", ra:310.358, dec:45.280, dist:802, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"Blue supergiant, ~2,600 ly. Deep Perseus Arm. Unrecognizable constellations.", armNote:"Perseus Arm" },
-  { star:"Arcturus", planet:"Arcturus (hypothetical)", ra:213.915, dec:19.182, dist:11.26, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"Red giant, 37 ly. Halo star on different galactic orbit.", armNote:"Local Bubble" },
-  { star:"Antares", planet:"Antares (hypothetical)", ra:247.352, dec:-26.432, dist:169, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"Red supergiant, 550 ly. Heart of Scorpius. Milky Way center closer.", armNote:"Sagittarius Arm edge" },
-  { star:"Aldebaran", planet:"Aldebaran (hypothetical)", ra:68.980, dec:16.509, dist:20.43, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"Orange giant, 65 ly. In the Hyades stream. Subtle constellation shifts.", armNote:"Local Bubble" },
-  { star:"Rigel", planet:"Rigel (hypothetical)", ra:78.634, dec:-8.202, dist:264, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"Blue supergiant, 860 ly. Orion Arm interior. Dramatic parallax.", armNote:"Orion Arm" },
-  { star:"Spica", planet:"Spica (hypothetical)", ra:201.298, dec:-11.161, dist:77, atmoType:"none", atmoDesc:"No atmosphere, vacuum observation", note:"Binary blue giant, 250 ly. Virgo cluster foreground.", armNote:"Orion Spur" },
+/** Earth's IAU stick figures, by proper name in HYG v4.1 (resolved to ids on load). */
+const EARTH_FIGURES: ReadonlyArray<[string, string]> = [
+  ["Betelgeuse", "Bellatrix"], ["Betelgeuse", "Alnilam"], ["Bellatrix", "Alnilam"], ["Alnilam", "Alnitak"], ["Alnilam", "Mintaka"],
+  ["Alnitak", "Saiph"], ["Mintaka", "Rigel"], ["Betelgeuse", "Meissa"], ["Bellatrix", "Meissa"],
+  ["Dubhe", "Merak"], ["Merak", "Phecda"], ["Phecda", "Megrez"], ["Megrez", "Dubhe"], ["Megrez", "Alioth"], ["Alioth", "Mizar"], ["Mizar", "Alkaid"],
+  ["Antares", "Dschubba"], ["Antares", "Larawag"], ["Larawag", "Shaula"], ["Shaula", "Sargas"], ["Dschubba", "Acrab"],
+  ["Schedar", "Caph"], ["Schedar", "Ruchbah"], ["Ruchbah", "Segin"],
+  ["Regulus", "Denebola"], ["Regulus", "Algieba"], ["Algieba", "Zosma"], ["Zosma", "Denebola"],
+  ["Markab", "Scheat"], ["Scheat", "Alpheratz"], ["Alpheratz", "Algenib"], ["Algenib", "Markab"],
+  ["Vega", "Deneb"], ["Deneb", "Altair"], ["Altair", "Vega"],
+  ["Sirius", "Adhara"], ["Sirius", "Mirzam"], ["Adhara", "Wezen"], ["Wezen", "Aludra"],
+  ["Castor", "Pollux"], ["Castor", "Alhena"], ["Pollux", "Alhena"],
+  ["Acrux", "Gacrux"], ["Mimosa", "Imai"],
+  ["Aldebaran", "Elnath"], ["Capella", "Menkalinan"], ["Polaris", "Kochab"], ["Fomalhaut", "Diphda"], ["Spica", "Arcturus"],
 ];
 
-const ATMO_MODELS = {
-  none:       { name:"No Atmosphere",    skyColor:[0,0,0],     extinction:0,    haze:0,    desc:"Vacuum, raw starlight" },
-  thin_n2:    { name:"Thin N₂",          skyColor:[5,8,18],    extinction:0.08, haze:0.05, desc:"Faint indigo wash near horizon" },
-  thin_co2:   { name:"Thin CO₂",         skyColor:[18,10,5],   extinction:0.12, haze:0.08, desc:"Pale butterscotch horizon glow" },
-  earth_like: { name:"Earth-like N₂/O₂", skyColor:[8,14,32],   extinction:0.18, haze:0.12, desc:"Deep blue Rayleigh scattering" },
-  thick_n2:   { name:"Dense N₂",         skyColor:[10,18,42],  extinction:0.30, haze:0.22, desc:"Deep azure, many dim stars lost" },
-  thick_co2:  { name:"Dense CO₂",        skyColor:[35,20,8],   extinction:0.35, haze:0.28, desc:"Amber-orange haze, limited visibility" },
-  gas_giant:  { name:"H₂/He (moon)",     skyColor:[12,15,22],  extinction:0.10, haze:0.06, desc:"Pale steel-blue, hydrogen scattering" },
-  exotic:     { name:"Exotic/Silicate",   skyColor:[30,12,15],  extinction:0.45, haze:0.35, desc:"Ruddy haze, volcanic particulates" },
+const PRESET_GROUPS: ReadonlyArray<{ label: string; filter: (v: VantagePreset) => boolean }> = [
+  { label: "Home", filter: (v) => v.status === "home" },
+  { label: "Confirmed planets", filter: (v) => v.status === "confirmed" },
+  { label: "Candidates and disputed", filter: (v) => v.status === "candidate" || v.status === "disputed" },
+  { label: "Imagined worlds at real stars", filter: (v) => v.status === "hypothetical" || v.status === "refuted" },
+];
+
+const SOURCE_LABEL: Record<Source, string> = {
+  canon: "canon",
+  preset: "published values",
+  handoff: "Solaris",
+  catalogue: "HYG catalogue",
+  writer: "set here",
+  default: "not set",
+  derived: "derived",
 };
 
-// ── CONSTELLATION LINES ───────────────────────────────────────
-const CONSTELLATION_LINES = [
-  ["Betelgeuse","Bellatrix"],["Betelgeuse","Alnilam"],["Bellatrix","Alnilam"],
-  ["Alnilam","Alnitak"],["Alnilam","Mintaka"],["Alnitak","Saiph"],["Mintaka","Rigel"],
-  ["Rigel","Saiph"],["Betelgeuse","Saiph"],["Bellatrix","Rigel"],
-  ["Dubhe","Merak"],["Merak","Phecda"],["Phecda","Alioth"],
-  ["Alioth","Mizar"],["Mizar","Alkaid"],["Phecda","Dubhe"],
-  ["Antares","Dschubba"],["Antares","Larawag"],["Antares","Shaula"],["Shaula","Girtab"],["Dschubba","Girtab"],
-  ["Schedar","Ruchbah"],
-  ["Regulus","Denebola"],["Regulus","Zosma"],["Zosma","Denebola"],
-  ["Markab","Scheat"],["Scheat","Alpheratz"],["Alpheratz","Algenib"],["Algenib","Markab"],
-  ["Vega","Deneb"],["Deneb","Altair"],["Altair","Vega"],
-  ["Sirius","Adhara"],["Sirius","Mirzam"],["Adhara","Wezen"],
-  ["Castor","Pollux"],["Castor","Alhena"],["Pollux","Alhena"],
-  ["Acrux","Mimosa"],
-  ["Spica","Arcturus"],
-  ["Aldebaran","Elnath"],
-  ["Capella","Menkalinan"],
-  ["Polaris","Kochab"],
-  ["Fomalhaut","Diphda"],
-];
+const AZ_NAMES = ["north", "north-east", "east", "south-east", "south", "south-west", "west", "north-west"];
+const CARDINALS: ReadonlyArray<[string, number]> = [["N", 0], ["NE", 45], ["E", 90], ["SE", 135], ["S", 180], ["SW", 225], ["W", 270], ["NW", 315]];
 
-// ── PROJECTION ────────────────────────────────────────────────
-function projectStar(
-  ra: number, dec: number, viewRa: number, viewDec: number, fov: number,
-  W: number, H: number, margin?: number,
-): { x: number; y: number } | null {
-  const m = margin !== undefined ? margin : 80;
-  const sRa = ra * DEG, sDec = dec * DEG, vRa = viewRa * DEG, vDec = viewDec * DEG;
-  const sx = Math.cos(sDec)*Math.cos(sRa), sy = Math.cos(sDec)*Math.sin(sRa), sz = Math.sin(sDec);
-  const vx = Math.cos(vDec)*Math.cos(vRa), vy = Math.cos(vDec)*Math.sin(vRa), vz = Math.sin(vDec);
-  const cosA = sx*vx + sy*vy + sz*vz;
-  if (cosA < -0.05) return null;
-  const ux = -Math.sin(vDec)*Math.cos(vRa), uy = -Math.sin(vDec)*Math.sin(vRa), uz = Math.cos(vDec);
-  const rx = -Math.sin(vRa), ry = Math.cos(vRa), rz = 0;
-  const dx = sx-vx, dy = sy-vy, dz = sz-vz;
-  const lx = dx*rx + dy*ry + dz*rz;
-  const ly = dx*ux + dy*uy + dz*uz;
-  const scale = W / (2 * Math.tan(fov * DEG / 2));
-  const px = lx / cosA * scale, py = -ly / cosA * scale;
-  const screenX = W/2 + px, screenY = H/2 + py;
-  if (screenX < -m || screenX > W+m || screenY < -m || screenY > H+m) return null;
-  return { x: screenX, y: screenY };
+interface DrawnConstellation {
+  id: number;
+  name: string;
+  color: string;
+  visible: boolean;
+  starIds: string[];
+  /** Legacy (1.8) saves carry positions but no ids. */
+  legacyDirs?: Vec3[];
+  starNames: string[];
+  epochYears: number;
+  vantageKey: string | null;
+  planetName: string;
+  entityId: string | null;
 }
 
-/**
- * (1.7) The same projection as projectStar, for the two per-frame loops that
- * walk tens of thousands of stars.
- *
- * projectStar recomputes ten trig functions of the VIEW and four of the
- * star on every call and returns a fresh object. Called once per star per
- * frame that was ~15 trig calls and one allocation for each of ~45,000
- * stars. Here the view is solved once per frame, each star carries its own
- * unit vector (computed once, see unitOf), and the result is written to
- * `x` / `y` on the projector itself. Read them before the next call.
- */
-interface ViewProjector {
-  x: number;
-  y: number;
-  /** Project a unit vector; false when behind the view or off screen. */
-  unit(sx: number, sy: number, sz: number, margin: number): boolean;
-}
-
-function createViewProjector(viewRa: number, viewDec: number, fov: number, W: number, H: number): ViewProjector {
-  const vRa = viewRa * DEG, vDec = viewDec * DEG;
-  const cosDec = Math.cos(vDec), sinDec = Math.sin(vDec), cosRa = Math.cos(vRa), sinRa = Math.sin(vRa);
-  const vx = cosDec * cosRa, vy = cosDec * sinRa, vz = sinDec;
-  const ux = -sinDec * cosRa, uy = -sinDec * sinRa, uz = cosDec;
-  const rx = -sinRa, ry = cosRa;
-  const scale = W / (2 * Math.tan(fov * DEG / 2));
-  const hw = W / 2, hh = H / 2;
-  const proj: ViewProjector = {
-    x: 0,
-    y: 0,
-    unit(sx, sy, sz, m) {
-      const cosA = sx * vx + sy * vy + sz * vz;
-      if (cosA < -0.05) return false;
-      const dx = sx - vx, dy = sy - vy, dz = sz - vz;
-      const lx = dx * rx + dy * ry;
-      const ly = dx * ux + dy * uy + dz * uz;
-      const screenX = hw + (lx / cosA) * scale;
-      const screenY = hh - (ly / cosA) * scale;
-      if (screenX < -m || screenX > W + m || screenY < -m || screenY > H + m) return false;
-      proj.x = screenX;
-      proj.y = screenY;
-      return true;
-    },
-  };
-  return proj;
-}
-
-/** A star's unit vector for its (ra, dec) in degrees, cached on the star. */
-function unitOf(star: { _u?: [number, number, number, number, number] }, ra: number, dec: number): [number, number, number, number, number] {
-  let u = star._u;
-  if (!u || u[3] !== ra || u[4] !== dec) {
-    const sRa = ra * DEG, sDec = dec * DEG, c = Math.cos(sDec);
-    u = star._u = [c * Math.cos(sRa), c * Math.sin(sRa), Math.sin(sDec), ra, dec];
-  }
-  return u;
-}
-
-// ── BACKGROUND FIELD SPATIAL BUCKET CONSTANTS ─────────────────
-const BG_RA_BINS = 12;   // 30° per bin in RA
-const BG_DEC_BINS = 6;   // 30° per bin in Dec
-
-// ═══════════════════════════════════════════════════════════════
-// COMPONENT
-// ═══════════════════════════════════════════════════════════════
-/** A vantage seeded from a Solaris handoff: the wrapper has already turned
-    `planetAU` into a galactic l/b/distance (see ExoskySimulator.tsx's
-    deriveExoskySeed), so this component only has to apply it. */
+/** A vantage seeded from a Solaris handoff. It carries no galactic position. */
 interface ExoSkyInitialHandoff {
   payload: HandoffPayload;
-  galL: number;
-  galB: number;
-  distPc: number;
 }
 
 interface ExoSkyV2Props {
-  /** When true, the wrapper page's NarrativeBridgePanel is open and
-      occupies 320px of the right edge. The data readout slides left
-      to avoid the overlap. Defaults to false. */
+  /** The wrapper's NarrativeBridgePanel is open (320px on the right). */
   narrativeBridgeOpen?: boolean;
-  /** When the simulator is rendered inside a world context, planet/star/
-      moon entities from that world become selectable as observation
-      points (alongside the curated EXOPLANET_SYSTEMS list). */
+  /** World context: its planets, stars and moons become vantages, read through canon. */
   worldId?: string;
-  /** Present when the page was opened via `?handoff=` from Solaris. Seeds
-      the existing custom-coordinates vantage (the same one the "AUTHOR
-      COORDINATES" button turns on) on first mount, rather than adding a
-      second vantage mechanism next to it. */
+  /** Open-on subject (?entity=). Selected as the vantage when it is in the world. */
+  subjectEntityId?: string | null;
+  /** Open-on epoch (?epoch=), years from J2000. */
+  subjectEpoch?: number | null;
   initialHandoff?: ExoSkyInitialHandoff | null;
-  /** Called once the mount-time handoff seed above has actually been
-      applied to state. The wrapper uses this to strip `?handoff=` from the
-      URL only after the seed has landed, not before: clearing it earlier
-      risks the wrapper re-rendering with a null `initialHandoff` prop before
-      this (possibly still-loading, since it's lazy-imported) component ever
-      reads the original value. */
   onHandoffConsumed?: () => void;
+}
+
+const parseRgb = (hex: string): [number, number, number] => [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)];
+const clamp = (x: number, a: number, b: number) => Math.max(a, Math.min(b, x));
+
+/** B-V for a temperature, inverting Ballesteros (2012) by bisection. */
+function bvFromTeff(t: number): number {
+  let lo = -0.4, hi = 2.0;
+  for (let k = 0; k < 40; k++) {
+    const mid = (lo + hi) / 2;
+    if (teffFromBV(mid) > t) lo = mid; else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+/**
+ * Naked-eye limiting magnitude against the sky's own brightness, by the
+ * host star's altitude: ~6.5 under a dark sky (sun 18° down), ~2.5 at the
+ * end of civil twilight, about -4 at noon (only Venus-bright points).
+ * Piecewise linear; a working figure, not a sky-brightness model.
+ */
+function limitingMag(sunAlt: number, hasAir: boolean): number {
+  if (!hasAir) return NAKED_EYE_LIMIT;
+  if (sunAlt <= -18) return NAKED_EYE_LIMIT;
+  if (sunAlt <= -6) return 2.5 + ((-6 - sunAlt) / 12) * 4;
+  if (sunAlt <= 0) return -1 + ((0 - sunAlt) / 6) * 3.5;
+  return Math.max(-4.5, -1 - sunAlt * 0.35);
+}
+
+function fmtHours(h: number): string {
+  if (!Number.isFinite(h)) return "never (locked)";
+  if (h >= 48) return `${(h / 24).toFixed(1)} days`;
+  return `${h.toFixed(2)} h`;
+}
+
+function fmtYears(y: number): string {
+  if (!Number.isFinite(y)) return "none";
+  return `${Math.round(y).toLocaleString()} yr`;
 }
 
 export default function ExoSkyV2({
   narrativeBridgeOpen = false,
   initialHandoff = null,
   worldId,
+  subjectEntityId = null,
+  subjectEpoch = null,
   onHandoffConsumed,
 }: ExoSkyV2Props = {}) {
   const { toast } = useToast();
   const { data: worldEntities } = useEntities(worldId);
-  const updateEntity = useUpdateEntity(worldId);
-
-  // Filter to spatial entities (planet/star/moon), those are what an
-  // observer can stand on or near. Each entity may have galactic
-  // coordinates stashed in metadata.exoskyCoords; if missing we
-  // surface a "Set coordinates" prompt.
-  const worldObservationEntities = useMemo(() => {
-    if (!worldEntities) return [];
-    return worldEntities.filter(
-      (e) => e.entity_type === "planet" || e.entity_type === "star" || e.entity_type === "moon",
-    );
-  }, [worldEntities]);
-  const canvasRef = useRef(null);
-  const mwOffscreenRef = useRef(null); // Offscreen MW canvas for pre-rendered band
-  /**
-   * What the cached Milky Way bitmap was drawn for.
-   *
-   * Typed explicitly because the inferred shape came from the initial value and
-   * omitted every field the redraw check actually compares, so each one was a
-   * type error that the baseline simply carried.
-   */
-  const mwParamsRef = useRef<{
-    viewRa: number;
-    viewDec: number;
-    fov: number;
-    planetKey: string;
-    W?: number;
-    H?: number;
-    mwBrightness?: number;
-    showAtmosphere?: boolean;
-    atmoDensity?: number;
-    /** Sample-step multiplier, so settling from a drag triggers the fine pass. */
-    quality?: number;
-    /** Epoch, so the band actually redraws when the precession slider moves. */
-    epochYears?: number;
-  }>({ viewRa: -1, viewDec: -1, fov: -1, planetKey: "" });
-  const animRef = useRef(null);
-  const [selectedPlanet, setSelectedPlanet] = useState(0);
-  const [viewRa, setViewRa] = useState(180);
-  const [viewDec, setViewDec] = useState(10);
-  const [fov, setFov] = useState(90);
-  const [showConstellations, setShowConstellations] = useState(true);
-  const [showAtmosphere, setShowAtmosphere] = useState(true);
-  const [showGrid, setShowGrid] = useState(false);
-  const [showMilkyWay, setShowMilkyWay] = useState(true);
-  const [showStarNames, setShowStarNames] = useState(false);
-  const [showHorizon, setShowHorizon] = useState(true);
+  const createEntity = useCreateEntity(worldId);
+  const { data: canonFacts } = useCanonFacts(worldId);
+  const assertFact = useAssertFact(worldId);
   const { dismissedIds: dismissedFlagIds, dismiss: dismissFlag } = useDismissedFlags();
-  const [highlightSol, setHighlightSol] = useState(true);
-  const [hoveredStar, setHoveredStar] = useState(null);
-  const [atmoDensity, setAtmoDensity] = useState(1.0);
-  const [mwBrightness, setMwBrightness] = useState(1.0);
-  /**
-   * Years from J2000 (now), driving axial precession of the observer's own
-   * sky. Zero is "now" and must be a true no-op (see astro.ts's
-   * applyPrecession/precessionMatrix): the identity property is what keeps
-   * this slider from being a silent regression for every writer who never
-   * touches it. Range is a half-cycle either way (~25,772 yr full period),
-   * enough to visibly move the pole without claiming precision this model
-   * doesn't have at the tens-of-thousands-of-years scale.
-   */
-  const [epochYears, setEpochYears] = useState(0);
-  /**
-   * Two 272-320px panels, both defaulting open, were built for a wide screen.
-   * At 390px they don't fit side by side (18+272 overlaps 390-18-320) and
-   * together they measured covering 345% of the viewport by area, so the
-   * simulation they control was invisible while using them. Collapsed by
-   * default on mobile keeps the canvas visible on first load; the stacked,
-   * height-capped positions below keep them apart if the writer opens both.
-   */
   const isMobile = useIsMobile();
-  /** Pixel ratio of the canvas backing store (set by the canvas setup). */
-  const canvasDprRef = useRef(1);
-  // A phone on its side is wide enough for the desktop layout but only
-  // ~250px of sky tall, so it starts with the panels collapsed too.
-  const [isShort, setIsShort] = useState(false);
-  useEffect(() => {
-    const mql = window.matchMedia("(max-height: 500px)");
-    const onChange = () => setIsShort(mql.matches);
-    onChange();
-    mql.addEventListener("change", onChange);
-    return () => mql.removeEventListener("change", onChange);
+
+  const worldObservationEntities = useMemo(
+    () => (worldEntities ?? []).filter((e) => e.entity_type === "planet" || e.entity_type === "star" || e.entity_type === "moon"),
+    [worldEntities],
+  );
+
+  // ── Catalogue ────────────────────────────────────────────────────
+  const [catalogue, setCatalogue] = useState<CatalogueStar[] | null>(null);
+  const [catalogueError, setCatalogueError] = useState<string | null>(null);
+  const loadStars = useCallback(() => {
+    setCatalogueError(null);
+    loadCatalogue()
+      .then((s) => setCatalogue(applyCatalogueOverrides(s.map((x) => ({ ...x })))))
+      .catch((e: Error) => setCatalogueError(e.message));
   }, []);
-  const [panelOpen, setPanelOpen] = useState(true);
-  const [dataOpen, setDataOpen] = useState(true);
-  const mobileDefaultsApplied = useRef(false);
+  useEffect(() => { loadStars(); }, [loadStars]);
+  const catalogueById = useMemo(() => (catalogue ? indexById(catalogue) : null), [catalogue]);
+  const earthFigures = useMemo(() => {
+    if (!catalogue) return [] as Array<[number, number]>;
+    const byName = new Map<string, number>();
+    for (const s of catalogue) if (s.name && !byName.has(s.name)) byName.set(s.name, s.i);
+    return EARTH_FIGURES.map(([a, b]) => [byName.get(a), byName.get(b)] as [number | undefined, number | undefined])
+      .filter((p): p is [number, number] => p[0] !== undefined && p[1] !== undefined);
+  }, [catalogue]);
+  const solIndex = useMemo(() => catalogue?.find((s) => s.name === "Sol")?.i ?? -1, [catalogue]);
+
+  // ── Vantage ──────────────────────────────────────────────────────
+  // "proxima-b" (a preset key), "custom", "handoff" or "world:<uuid>".
+  const [vantageKey, setVantageKey] = useState<string>(() => (initialHandoff ? "handoff" : "proxima-b"));
+  const [handoffPayload, setHandoffPayload] = useState<HandoffPayload | null>(initialHandoff?.payload ?? null);
+  const [placementDraft, setPlacementDraft] = useState<Omit<Placement, "source"> | null>(null);
+  const [overrides, setOverrides] = useState<WriterOverrides>({});
   useEffect(() => {
-    if ((isMobile || isShort) && !mobileDefaultsApplied.current) {
-      mobileDefaultsApplied.current = true;
-      setPanelOpen(false);
-      setDataOpen(false);
+    if (initialHandoff) onHandoffConsumed?.();
+    // Mount-only: a handoff seeds the first view once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  // Open-on: once the world's entities arrive, the subject becomes the vantage.
+  const subjectApplied = useRef(false);
+  useEffect(() => {
+    if (subjectApplied.current || !subjectEntityId || !worldEntities) return;
+    if (worldEntities.some((e) => e.id === subjectEntityId)) {
+      subjectApplied.current = true;
+      setVantageKey(`world:${subjectEntityId}`);
     }
-  }, [isMobile, isShort]);
-  const [mwReady, setMwReady] = useState(false);
+  }, [subjectEntityId, worldEntities]);
 
-  // ── Refs for view during drag (avoids re-renders per mousemove) ──
-  const viewRaRef = useRef(180);
-  const viewDecRef = useRef(10);
-  const fovRef = useRef(90);
-  const fovTargetRef = useRef(90);
-  const fovPublishTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const syncedView = useRef({ ra: 180, dec: 10, fov: 90 });
+  const worldEntityId = vantageKey.startsWith("world:") ? vantageKey.slice(6) : null;
+  const worldEntity = useMemo(() => worldObservationEntities.find((e) => e.id === worldEntityId) ?? null, [worldObservationEntities, worldEntityId]);
+  const preset = useMemo(() => VANTAGES.find((v) => v.key === vantageKey) ?? null, [vantageKey]);
+  const canonSky = useMemo(
+    () => (worldEntityId && worldEntities ? canonSkyContext(worldEntities, canonFacts ?? [], worldEntityId) : null),
+    [worldEntityId, worldEntities, canonFacts],
+  );
 
-  // ── Refs for render toggle states (stabilises render callback) ──
-  const showConstellationsRef = useRef(true);
-  const showAtmosphereRef = useRef(true);
-  const showGridRef = useRef(false);
-  const showMilkyWayRef = useRef(true);
-  const showStarNamesRef = useRef(false);
-  const showHorizonRef = useRef(true);
-  const highlightSolRef = useRef(true);
-  const showCustomConstellationsRef = useRef(true);
-  const atmoDensityRef = useRef(1.0);
-  const mwBrightnessRef = useRef(1.0);
-  const drawModeRef = useRef(false);
-  const currentDrawingRef = useRef([]);
-  const customConstellationsRef = useRef([]);
-  const drawColorRef = useRef("#FFA500");
-  const hoveredStarRef = useRef(null);
-  const epochYearsRef = useRef(0);
+  /** Placement in canon (star.galactic_position), or the 1.8 metadata.exoskyCoords fallback. */
+  const canonPlacement = useMemo<Placement | null>(() => {
+    if (!canonSky) return null;
+    const fromFacts = readGalacticPosition(canonSky.starFacts["star.galactic_position"]) ?? readGalacticPosition(canonSky.planet["star.galactic_position"]);
+    if (fromFacts) return { ...fromFacts, source: "canon" };
+    for (const e of [canonSky.subject, canonSky.star]) {
+      const c = (e?.metadata as { exoskyCoords?: { ra?: number; dec?: number; distancePc?: number } } | null)?.exoskyCoords;
+      if (c && typeof c.ra === "number" && typeof c.dec === "number" && typeof c.distancePc === "number") {
+        const v = unitFromRaDec(c.ra, c.dec);
+        const g = eqToGal(v[0], v[1], v[2]);
+        return { l: ((Math.atan2(g[1], g[0]) * RAD) + 360) % 360, b: Math.asin(g[2]) * RAD, distPc: c.distancePc, source: "canon" };
+      }
+    }
+    return null;
+  }, [canonSky]);
 
-  // ── Constellation Drawing State ─────────────────────
-  const [drawMode, setDrawMode] = useState(false);
-  const [currentDrawing, setCurrentDrawing] = useState([]); // Stars in current constellation being drawn
-  const [customConstellations, setCustomConstellations] = useState([]); // Completed constellations
+  const placement: Placement | null = placementDraft
+    ? { ...placementDraft, source: "writer" }
+    : vantageKey === "custom"
+      ? { l: 0, b: 0, distPc: 100, source: "writer" }
+      : worldEntityId ? canonPlacement : null;
+
+  const resolved = useMemo(
+    () => resolveVantage({
+      preset: vantageKey === "custom" || vantageKey === "handoff" || worldEntityId ? null : preset,
+      catalogue,
+      catalogueById,
+      canon: canonSky ? { label: canonSky.label, planet: canonSky.planet, star: canonSky.starFacts, siblings: canonSky.siblings, moons: canonSky.moons } : null,
+      handoff: vantageKey === "handoff" ? handoffPayload : null,
+      placement,
+      overrides,
+    }),
+    // placement is rebuilt each render from stable inputs; key it by value.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [vantageKey, preset, catalogue, catalogueById, canonSky, handoffPayload, JSON.stringify(placement), overrides, worldEntityId],
+  );
+  const unplaced = resolved.position === null;
+  const observer: Vec3 = resolved.position?.value ?? [0, 0, 0];
+  const atmo = ATMO_MODELS[resolved.atmo.value];
+
+  // ── Controls ─────────────────────────────────────────────────────
+  const [mode, setMode] = useState<"stand" | "space">("stand");
+  const [latitude, setLatitude] = useState(30);
+  const [timeOfDay, setTimeOfDay] = useState(0);
+  const [substellarLongitude, setSubstellarLongitude] = useState(150);
+  const [dayNumber, setDayNumber] = useState(0);
+  const [epochYears, setEpochYears] = useState(subjectEpoch ?? 0);
+  const [atmoDensity, setAtmoDensity] = useState(1);
+  const [mwBrightness, setMwBrightness] = useState(1);
+  const [showMilkyWay, setShowMilkyWay] = useState(true);
+  const [showAtmosphere, setShowAtmosphere] = useState(true);
+  const [showHorizon, setShowHorizon] = useState(true);
+  const [showStarNames, setShowStarNames] = useState(true);
+  const [showConstellations, setShowConstellations] = useState(true);
+  const [showGrid, setShowGrid] = useState(false);
+  const [highlightSol, setHighlightSol] = useState(true);
   const [showCustomConstellations, setShowCustomConstellations] = useState(true);
-  const [drawColor, setDrawColor] = useState("#FFA500");
+  const controls: SkyControls = useMemo(
+    () => ({ latitude, timeOfDay, substellarLongitude, dayNumber, epochYears }),
+    [latitude, timeOfDay, substellarLongitude, dayNumber, epochYears],
+  );
+
+  // ── View (refs during gestures, state at rest) ──────────────────
+  const [view, setView] = useState({ lon: 180, lat: 25, fov: 100 });
+  const viewRef = useRef({ lon: 180, lat: 25, fov: 100 });
+  const fovTargetRef = useRef(100);
+  const syncedView = useRef(view);
+  if (syncedView.current !== view) {
+    syncedView.current = view;
+    viewRef.current.lon = view.lon;
+    viewRef.current.lat = view.lat;
+    fovTargetRef.current = view.fov;
+  }
+  const publishTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const publishView = useCallback(() => {
+    if (publishTimer.current) clearTimeout(publishTimer.current);
+    publishTimer.current = setTimeout(() => {
+      publishTimer.current = null;
+      const v = viewRef.current;
+      syncedView.current = { lon: v.lon, lat: v.lat, fov: fovTargetRef.current };
+      setView(syncedView.current);
+    }, 160);
+  }, []);
+  const changeMode = useCallback((m: "stand" | "space") => {
+    setMode(m);
+    setView(m === "stand" ? { lon: 180, lat: 25, fov: 100 } : { lon: 0, lat: 0, fov: 90 });
+  }, []);
+
+  const [reducedMotion, setReducedMotion] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const on = () => setReducedMotion(mql.matches);
+    on();
+    mql.addEventListener("change", on);
+    return () => mql.removeEventListener("change", on);
+  }, []);
+
+  // ── Derived sky ──────────────────────────────────────────────────
+  const obs: ObservedStars | null = useMemo(
+    () => (catalogue ? observeCatalogue(catalogue, observer) : null),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [catalogue, observer[0], observer[1], observer[2]],
+  );
+  const geometry = useMemo(() => planetGeometry(resolved, controls), [resolved, controls]);
+  const hostRadius = useMemo(
+    () => hostRadiusSolar({ absMag: resolved.host.absMag.value, teffK: resolved.host.teffK.value, lumSolar: resolved.host.lumSolar.value, massSolar: resolved.host.massSolar.value }),
+    [resolved],
+  );
+  const bodies = useMemo(() => skyBodies(resolved, geometry, controls, hostRadius), [resolved, geometry, controls, hostRadius]);
+  const hostBody = bodies.find((b) => b.kind === "host") ?? null;
+  const hostAltAz = useMemo(() => altAz(geometry.horizon, geometry.hostDir), [geometry]);
+  const kEff = showAtmosphere && mode === "stand" ? atmo.k * atmoDensity : 0;
+  const frame: Frame3 = mode === "stand" ? geometry.horizon : geometry.eqFrame;
+  const reach = catalogueReach(obs?.observerFromSunPc ?? 0);
+  const poleStar = useMemo(() => (obs ? findPoleStar(obs, geometry.pole) : null), [obs, geometry.pole]);
+  const southPoleStar = useMemo(() => (obs ? findPoleStar(obs, [-geometry.pole[0], -geometry.pole[1], -geometry.pole[2]]) : null), [obs, geometry.pole]);
+  const circ = useMemo(() => (obs ? circumpolar(obs, geometry.pole, latitude) : null), [obs, geometry.pole, latitude]);
+  const brightestStar = obs && obs.index.length ? obs.index[0] : -1;
+  // Depends on latitude and epoch, not on the time of day: a scan of a whole
+  // year should not rerun while the writer scrubs an hour.
+  const heliacal = useMemo(() => {
+    if (!obs || brightestStar < 0 || mode !== "stand") return null;
+    const i = brightestStar;
+    return heliacalRising(resolved, { latitude, epochYears, timeOfDay: 0, substellarLongitude: 0, dayNumber: 0 }, [obs.ux[i], obs.uy[i], obs.uz[i]], obs.mag[i]);
+  }, [obs, brightestStar, resolved, latitude, epochYears, mode]);
+  const solData = useMemo(() => {
+    if (!obs || solIndex < 0 || obs.ownStar === solIndex) return null;
+    return { mag: obs.mag[solIndex], dist: obs.dist[solIndex], dir: [obs.ux[solIndex], obs.uy[solIndex], obs.uz[solIndex]] as Vec3 };
+  }, [obs, solIndex]);
+  const gc = useMemo(() => eqXYZtoGalactocentric(observer[0], observer[1], observer[2]), [observer]);
+  const arm = useMemo(() => nearestArm(gc[0], gc[1]), [gc]);
+
+  // ── Milky Way map (worker) ──────────────────────────────────────
+  const mwMapRef = useRef<MilkyWayMap | null>(null);
+  const [mwVersion, setMwVersion] = useState(0);
+  const workerRef = useRef<Worker | null>(null);
+  const mwRequest = useRef(0);
+  useEffect(() => {
+    const id = ++mwRequest.current;
+    mwMapRef.current = null;
+    setMwVersion((v) => v + 1);
+    let fallback: ReturnType<typeof setTimeout> | null = null;
+    try {
+      if (!workerRef.current) workerRef.current = new Worker(new URL("../../lib/simulators/exosky-mw.worker.ts", import.meta.url), { type: "module" });
+      workerRef.current.onmessage = (e: MessageEvent<{ id: number; brightness: Float32Array; dust: Float32Array }>) => {
+        if (e.data.id !== mwRequest.current) return;
+        mwMapRef.current = { brightness: e.data.brightness, dust: e.data.dust };
+        setMwVersion((v) => v + 1);
+      };
+      workerRef.current.postMessage({ id, gc: [gc[0], gc[1], gc[2]] });
+    } catch {
+      fallback = setTimeout(() => {
+        if (id !== mwRequest.current) return;
+        mwMapRef.current = computeMilkyWayMap(gc[0], gc[1], gc[2]);
+        setMwVersion((v) => v + 1);
+      }, 30);
+    }
+    return () => { if (fallback) clearTimeout(fallback); };
+  }, [gc]);
+  useEffect(() => () => { workerRef.current?.terminate(); workerRef.current = null; }, []);
+  const mwReady = mwMapRef.current !== null;
+
+  // ── Constellations ───────────────────────────────────────────────
+  const [drawMode, setDrawMode] = useState(false);
+  const [currentDrawing, setCurrentDrawing] = useState<number[]>([]);
+  const [customConstellations, setCustomConstellations] = useState<DrawnConstellation[]>([]);
+  const [drawColor, setDrawColor] = useState(CONSTELLATION_COLOURS[0].hex);
   const [namingMode, setNamingMode] = useState(false);
   const [constellationName, setConstellationName] = useState("");
   const [consManagerOpen, setConsManagerOpen] = useState(false);
+  /** A constellation belongs to the vantage it was drawn from (E14). */
+  const vantageConstellations = useMemo(
+    () => customConstellations.filter((c) => (c.vantageKey ? c.vantageKey === vantageKey : c.planetName === resolved.label)),
+    [customConstellations, vantageKey, resolved.label],
+  );
+
+  // ── Selection, search ────────────────────────────────────────────
+  const [selected, setSelected] = useState<number | null>(null);
+  const [hovered, setHovered] = useState<number | null>(null);
+  const [query, setQuery] = useState("");
+  const results = useMemo(() => (catalogue ? searchCatalogue(catalogue, query) : []), [catalogue, query]);
+  const [placeQuery, setPlaceQuery] = useState("");
+  const placeResults = useMemo(() => (catalogue ? searchCatalogue(catalogue, placeQuery, 6) : []), [catalogue, placeQuery]);
+
+  const aimAt = useCallback((dir: Vec3, fov?: number) => {
+    const { lon, lat } = lonLatOf(toFrame(frame, dir));
+    setView((v) => ({ lon, lat, fov: fov ?? Math.min(v.fov, 60) }));
+  }, [frame]);
+
+  // ── Panels ───────────────────────────────────────────────────────
+  const [panelOpen, setPanelOpen] = useState(true);
+  const [dataOpen, setDataOpen] = useState(true);
+  const [sheet, setSheet] = useState<"none" | "controls" | "data">("none");
+  const [briefOpen, setBriefOpen] = useState(false);
   const [showKbHelp, setShowKbHelp] = useState(false);
+  const [announce, setAnnounce] = useState("");
+  const [conflicts, setConflicts] = useState<ExoskyAssert[]>([]);
 
-  // ── Lazy star catalog ──────────────────────────────
-  const [starCatalog, setStarCatalog] = useState<typeof _starCatalogCache>([]);
-  useEffect(() => { loadStarCatalog().then(setStarCatalog); }, []);
+  // ── Flags ────────────────────────────────────────────────────────
+  const driftDeg = useMemo(() => {
+    const out: Record<string, number> = {};
+    for (const c of vantageConstellations) out[c.name] = poleDriftDeg(resolved.planet.obliquityDeg.value, resolved.planet.precessionYears.value, c.epochYears, epochYears);
+    for (const c of canonSky?.constellations ?? []) {
+      if (c.epoch !== null) out[c.entity.name] = poleDriftDeg(resolved.planet.obliquityDeg.value, resolved.planet.precessionYears.value, c.epoch, epochYears);
+    }
+    return out;
+  }, [vantageConstellations, canonSky, resolved, epochYears]);
+  const simFlags = useMemo(() => evaluateExoSkyFlags({
+    visibleCount: obs?.nakedEye ?? 9999,
+    catalogueComplete: reach.complete && !unplaced,
+    constellations: [
+      ...vantageConstellations.map((c) => ({ name: c.name, epochYears: c.epochYears })),
+      ...(canonSky?.constellations ?? []).filter((c) => c.epoch !== null).map((c) => ({ name: c.entity.name, epochYears: c.epoch as number })),
+    ],
+    epochYears,
+    driftDeg,
+    precessionYears: resolved.planet.precessionYears.value,
+  }), [obs, reach.complete, unplaced, vantageConstellations, canonSky, epochYears, driftDeg, resolved]);
 
-  // ── Custom Location State ─────────────────────────
-  const [customMode, setCustomMode] = useState(false);
-  const [customGalL, setCustomGalL] = useState(0);
-  const [customGalB, setCustomGalB] = useState(0);
-  const [customDistPc, setCustomDistPc] = useState(100);
-
-  // Set only when the current custom-mode vantage came from a Solaris
-  // handoff, so the "planet" derivation below can label and note it
-  // honestly instead of showing the generic "Custom (l=..., b=...)" text.
-  const [handoffPayload, setHandoffPayload] = useState<HandoffPayload | null>(null);
-
-  // Seed the custom-coordinates vantage from a Solaris handoff on first
-  // mount. This is the same mechanism the "AUTHOR COORDINATES" button
-  // turns on (setCustomMode(true) + the three custom* sliders); a handoff
-  // just sets those sliders programmatically instead of waiting for a click.
+  // ── Scene ref for the render loop ───────────────────────────────
+  const tokensRef = useRef<{ line: string; lineSoft: string; primary: string; t1: string; t2: string; t3: string } | null>(null);
   useEffect(() => {
-    if (!initialHandoff) return;
-    setCustomMode(true);
-    setCustomGalL(initialHandoff.galL);
-    setCustomGalB(initialHandoff.galB);
-    setCustomDistPc(initialHandoff.distPc);
-    setHandoffPayload(initialHandoff.payload);
-    onHandoffConsumed?.();
-    // Mount-only: a handoff seeds the initial view once, it does not keep
-    // re-applying itself if the writer then adjusts the sliders by hand.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // ── World-Entity Observation State ────────────────
-  // When the user selects a planet/star/moon from their own world, we read
-  // its metadata.exoskyCoords (if present) and put the simulator in
-  // "world-entity mode". If the entity has no coords yet, we show a
-  // hint to author them via the custom-coordinate UI; the user can then
-  // press "Save to entity" to persist back via useUpdateEntity.
-  const [worldEntityId, setWorldEntityId] = useState<string | null>(null);
-  const worldEntity = useMemo(
-    () => worldObservationEntities.find((e) => e.id === worldEntityId) ?? null,
-    [worldObservationEntities, worldEntityId],
-  );
-  const worldEntityCoords = useMemo(() => {
-    if (!worldEntity) return null;
-    const meta = (worldEntity.metadata ?? {}) as Record<string, unknown>;
-    const c = meta.exoskyCoords as { ra?: number; dec?: number; distancePc?: number } | undefined;
-    if (!c || typeof c.ra !== "number" || typeof c.dec !== "number" || typeof c.distancePc !== "number") {
-      return null;
-    }
-    return { ra: c.ra, dec: c.dec, distancePc: c.distancePc };
-  }, [worldEntity]);
-
-  // ── Hover detection throttle ref ──
-  const lastHoverCheckRef = useRef(0);
-
-  const DRAW_COLORS = [
-    { hex:"#FFA500", name:"Amber" },
-    { hex:"#FF6B8A", name:"Rose" },
-    { hex:"#2ECC71", name:"Emerald" },
-    { hex:"#9B59B6", name:"Violet" },
-    { hex:"#FFD43B", name:"Gold" },
-    { hex:"#E74C3C", name:"Coral" },
-    { hex:"#1ABC9C", name:"Teal" },
-    { hex:"#FFFFFF", name:"White" },
-  ];
-
-  const isDragging = useRef(false);
-  const lastMouse = useRef({ x:0, y:0 });
-  const pointerDownPos = useRef({ x:0, y:0 }); // For click detection
-  const activePointers = useRef(new Map()); // For pinch-to-zoom
-  const lastPinchDist = useRef(0);
-  const starPositions = useRef([]);
-  const mwMapRef = useRef(null);
-
-  // ── Sync state → refs for render loop access ──────────
-  /**
-   * (1.7) View state reaches the refs only when the STATE changed.
-   *
-   * These three used to be copied on every render. But a drag moves the
-   * refs directly and only writes state on pointer-up, and moving the
-   * pointer re-renders the component (hover detection sets state ~10x a
-   * second), so every such re-render threw the dragged view back to where
-   * the drag began. That snap-back was the jitter on ExoSky.
-   *
-   * `fov` state is the zoom TARGET: the loop eases fovRef toward it, so a
-   * wheel notch or FIND OUR SUN glides instead of jumping 5 degrees.
-   */
-  if (syncedView.current.ra !== viewRa) { syncedView.current.ra = viewRa; viewRaRef.current = viewRa; }
-  if (syncedView.current.dec !== viewDec) { syncedView.current.dec = viewDec; viewDecRef.current = viewDec; }
-  if (syncedView.current.fov !== fov) { syncedView.current.fov = fov; fovTargetRef.current = fov; }
-  showConstellationsRef.current = showConstellations;
-  showAtmosphereRef.current = showAtmosphere;
-  showGridRef.current = showGrid;
-  showMilkyWayRef.current = showMilkyWay;
-  showStarNamesRef.current = showStarNames;
-  showHorizonRef.current = showHorizon;
-  highlightSolRef.current = highlightSol;
-  showCustomConstellationsRef.current = showCustomConstellations;
-  atmoDensityRef.current = atmoDensity;
-  mwBrightnessRef.current = mwBrightness;
-  drawModeRef.current = drawMode;
-  currentDrawingRef.current = currentDrawing;
-  customConstellationsRef.current = customConstellations;
-  drawColorRef.current = drawColor;
-  hoveredStarRef.current = hoveredStar;
-  epochYearsRef.current = epochYears;
-
-  const planet = useMemo(() => {
-    // World-entity mode: prefer this when an entity is picked AND has stored coords.
-    if (worldEntity && worldEntityCoords) {
-      return {
-        star: worldEntity.name,
-        planet: `${worldEntity.name} (from your world)`,
-        ra: worldEntityCoords.ra,
-        dec: worldEntityCoords.dec,
-        dist: worldEntityCoords.distancePc,
-        atmoType: "none",
-        atmoDesc: "No atmosphere, vacuum observation",
-        note: worldEntity.summary || `${worldEntity.entity_type} from your world. Coordinates stored on this entity.`,
-        armNote: "Linked to your world",
-      };
-    }
-    if (!customMode) return EXOPLANET_SYSTEMS[selectedPlanet];
-    const l = customGalL * DEG, b = customGalB * DEG, dist = Math.max(0.01, customDistPc);
-    const gx = dist * Math.cos(b) * Math.cos(l);
-    const gy = dist * Math.cos(b) * Math.sin(l);
-    const gz = dist * Math.sin(b);
-    const [ex, ey, ez] = galToEq(gx, gy, gz);
-    const rd = xyzToRaDec(ex, ey, ez);
-    if (handoffPayload) {
-      // Sibling vantages ("Custom", line below) capitalize; matching that so
-      // describeHandoffPlanet's sentence, and this label, do not open mid-word.
-      const starLabel = handoffPayload.starType.charAt(0).toUpperCase() + handoffPayload.starType.slice(1);
-      return {
-        star: starLabel,
-        planet: `${handoffPayload.planetName} (from Solaris)`,
-        ra: rd.ra, dec: rd.dec, dist,
-        atmoType: "none", atmoDesc: "No atmosphere, vacuum observation",
-        note: `${describeHandoffPlanet(handoffPayload)} Distance (${dist.toFixed(0)} pc) and galactic position shown here are synthesized placeholders spread across the sky so handoffs do not collide, not part of the handoff itself.`,
-        armNote: "Handoff from Solaris",
-      };
-    }
-    return {
-      star: "Custom", planet: `Custom (l=${customGalL.toFixed(1)}°, b=${customGalB.toFixed(1)}°)`,
-      ra: rd.ra, dec: rd.dec, dist,
-      atmoType: "none", atmoDesc: "No atmosphere, vacuum observation",
-      note: `Galactic coords: l=${customGalL.toFixed(1)}°, b=${customGalB.toFixed(1)}°, d=${dist.toFixed(1)} pc (${(dist*3.262).toFixed(1)} ly)`,
-      armNote: "Custom location",
+    const rgb = (n: string, fallback: string) => {
+      const v = getToken(n);
+      return v ? `rgb(${v})` : fallback;
     };
-  }, [customMode, selectedPlanet, customGalL, customGalB, customDistPc, worldEntity, worldEntityCoords, handoffPayload]);
-
-  // ── Persistence bridge ──────────────────────────────────
-  // The wrapper page speaks STELLARFORGE_* over window events for component
-  // simulators (see useSimulationSave). Nothing here was listening, so Save,
-  // Load and Publish were all silent no-ops: requestSave dispatched
-  // REQUEST_STATE, no SAVE came back, and pendingPayload stayed null.
-  useEffect(() => {
-    const onRequestState = () => {
-      const payload = toExoskyPayload({
-        mode: worldEntity && worldEntityCoords ? "entity" : customMode ? "custom" : "catalog",
-        starName: planet.star,
-        planetName: planet.planet,
-        distPc: planet.dist,
-        armNote: planet.armNote,
-        atmoDesc: planet.atmoDesc,
-        galacticL: customMode ? customGalL : undefined,
-        galacticB: customMode ? customGalB : undefined,
-        viewRa, viewDec, fov,
-        epochYears,
-        showConstellations, showAtmosphere, showGrid,
-        showMilkyWay, showStarNames, showHorizon,
-        customConstellations,
-      });
-      window.postMessage({ type: "STELLARFORGE_SAVE", payload }, "*");
-    };
-
-    const onLoad = (event: Event) => {
-      const save = fromExoskySave((event as CustomEvent).detail);
-      if (!save) return;
-
-      // A loaded save is never the original handoff, even when it happens to
-      // restore custom-coordinate mode. Without this, a stale "(from
-      // Solaris)" note describing an unrelated planet could reattach itself
-      // to whatever coordinates this save carries.
-      setHandoffPayload(null);
-
-      // Restore the vantage first: constellations are drawn in that frame, so
-      // applying them against the wrong sky would put the lines in the wrong place.
-      const idx = EXOPLANET_SYSTEMS.findIndex((p) => p.planet === save.vantage.planetName);
-      if (idx >= 0) {
-        setCustomMode(false);
-        setSelectedPlanet(idx);
-      } else if (save.vantage.galacticL !== null && save.vantage.galacticB !== null) {
-        setCustomMode(true);
-        setCustomGalL(save.vantage.galacticL);
-        setCustomGalB(save.vantage.galacticB);
-        setCustomDistPc(save.vantage.distPc || 100);
-      }
-
-      setViewRa(save.view.ra);
-      setViewDec(save.view.dec);
-      setFov(save.view.fov);
-      setEpochYears(save.view.epochYears);
-      setShowConstellations(save.display.constellations);
-      setShowAtmosphere(save.display.atmosphere);
-      setShowGrid(save.display.grid);
-      setShowMilkyWay(save.display.milkyWay);
-      setShowStarNames(save.display.starNames);
-      setShowHorizon(save.display.horizon);
-
-      setCustomConstellations(
-        save.constellations.map((c, i) => ({
-          id: Date.now() + i,
-          name: c.name,
-          color: c.color,
-          visible: true,
-          // The render loop reads newRa/newDec; the payload stores ra/dec.
-          stars: c.stars.map((s) => ({ ...s, newRa: s.ra, newDec: s.dec })),
-          planetIndex: idx >= 0 ? idx : -1,
-          planetName: c.fromPlanet,
-          centRa: c.centRa,
-          centDec: c.centDec,
-        })),
-      );
-    };
-
-    window.addEventListener("STELLARFORGE_REQUEST_STATE", onRequestState);
-    window.addEventListener("STELLARFORGE_LOAD", onLoad as EventListener);
-    return () => {
-      window.removeEventListener("STELLARFORGE_REQUEST_STATE", onRequestState);
-      window.removeEventListener("STELLARFORGE_LOAD", onLoad as EventListener);
-    };
-  }, [
-    planet, customMode, customGalL, customGalB, worldEntity, worldEntityCoords,
-    viewRa, viewDec, fov, epochYears, showConstellations, showAtmosphere, showGrid,
-    showMilkyWay, showStarNames, showHorizon, customConstellations,
-  ]);
-
-  // Save the current custom coordinates back onto a selected world entity.
-  const saveCoordsToEntity = useCallback(() => {
-    if (!worldEntity) return;
-    const l = customGalL * DEG, b = customGalB * DEG, dist = Math.max(0.01, customDistPc);
-    const gx = dist * Math.cos(b) * Math.cos(l);
-    const gy = dist * Math.cos(b) * Math.sin(l);
-    const gz = dist * Math.sin(b);
-    const [ex, ey, ez] = galToEq(gx, gy, gz);
-    const rd = xyzToRaDec(ex, ey, ez);
-    updateEntity.mutate({
-      id: worldEntity.id,
-      metadata: {
-        ...(worldEntity.metadata ?? {}),
-        exoskyCoords: { ra: rd.ra, dec: rd.dec, distancePc: dist, galacticL: customGalL, galacticB: customGalB },
-      },
-    } as Parameters<typeof updateEntity.mutate>[0], {
-      onSuccess: () => {
-        toast({ title: "COORDINATES SAVED.", description: `${worldEntity.name} now has galactic coordinates.` });
-      },
-    });
-  }, [worldEntity, customGalL, customGalB, customDistPc, updateEntity, toast]);
-  const atmo = ATMO_MODELS[planet.atmoType];
-
-  // ── Procedural stars (memoized per session) ─────────
-  const proceduralStars = useMemo(() => generateProceduralStars(25000, 31415), []);
-
-  // ── Dense background field (20,000 points) ─────────
-  const backgroundField = useMemo(() => generateBackgroundField(20000, 77777), []);
-
-  // ── Spatial buckets for background field (by RA/Dec quadrant) ──
-  // 12 RA bins (30 deg each) x 6 Dec bins (30 deg each) = 72 buckets
-  const bgBuckets = useMemo(() => {
-    const buckets = new Array(BG_RA_BINS * BG_DEC_BINS);
-    for (let i = 0; i < buckets.length; i++) buckets[i] = [];
-    for (let i = 0; i < backgroundField.length; i++) {
-      const bg = backgroundField[i];
-      const raBin = Math.min(BG_RA_BINS - 1, Math.floor((bg.ra / 360) * BG_RA_BINS));
-      const decBin = Math.min(BG_DEC_BINS - 1, Math.floor(((bg.dec + 90) / 180) * BG_DEC_BINS));
-      buckets[raBin * BG_DEC_BINS + decBin].push(bg);
-      // (1.7) Fixed for the life of the field, so solved here once instead
-      // of per star per frame: the unit vector and the quantised colour.
-      unitOf(bg, bg.ra, bg.dec);
-      const [r, g, b] = bvToRGB(bg.bv);
-      bg._qr = Math.round(r / 16) * 16;
-      bg._qg = Math.round(g / 16) * 16;
-      bg._qb = Math.round(b / 16) * 16;
-      bg._qk = ((bg._qr >> 4) * 17 + (bg._qg >> 4)) * 17 + (bg._qb >> 4);
-    }
-    return buckets;
-  }, [backgroundField]);
-  // Pooled (colour, alpha) batches for the background field: reused every
-  // frame instead of a new Map, new arrays and a key string per star.
-  const bgBatchPool = useRef(new Map<number, { style: string; pts: number[] }>());
-
-  const allStars = useMemo(() => [...(starCatalog || []), ...proceduralStars], [starCatalog, proceduralStars]);
-
-  // ── Observer's galactocentric position ──────────────
-  const obsGC = useMemo(() => {
-    const eqPos = raDecDistToXYZ(planet.ra, planet.dec, planet.dist);
-    return eqXYZtoGalactocentric(eqPos[0], eqPos[1], eqPos[2]);
-  }, [planet]);
-
-  // ── Compute Milky Way map (async-ish) ────────��──────
-  // ── Compute Milky Way map (Web Worker) ──────────────
-  const mwWorkerRef = useRef(null);
-  useEffect(() => {
-    setMwReady(false);
-    // Use Web Worker to avoid blocking the main thread
-    if (!mwWorkerRef.current) {
-      try {
-        mwWorkerRef.current = new Worker("/exosky-mw-worker.js");
-      } catch {
-        // Fallback to main thread if Worker fails
-        const timer = setTimeout(() => {
-          mwMapRef.current = computeMilkyWayMap(obsGC[0], obsGC[1], obsGC[2]);
-          setMwReady(true);
-        }, 50);
-        return () => clearTimeout(timer);
-      }
-    }
-    const worker = mwWorkerRef.current;
-    const handler = (e) => {
-      mwMapRef.current = { brightness: e.data.brightness, dust: e.data.dust };
-      setMwReady(true);
-    };
-    worker.onmessage = handler;
-    worker.postMessage({ obsGCx: obsGC[0], obsGCy: obsGC[1], obsGCz: obsGC[2] });
-    return () => { worker.onmessage = null; };
-  }, [obsGC]);
-  // Cleanup worker on unmount
-  useEffect(() => {
-    return () => { if (mwWorkerRef.current) { mwWorkerRef.current.terminate(); mwWorkerRef.current = null; } };
-  }, []);
-
-  // ── Transform stars to observer frame ───────────────
-  const transformedStars = useMemo(() => {
-    const obs = raDecDistToXYZ(planet.ra, planet.dec, planet.dist);
-    /**
-     * Axial precession, applied to the observer-frame vector (astro.ts's own
-     * term for `rel` below) rather than per-star: the matrix is the same for
-     * every star in a given render, so it's built once here instead of once
-     * per star inside the map, which mattered at ~25,000 procedural stars.
-     *
-     * This is the one place precession belongs. It rotates every catalog and
-     * procedural star's position relative to the observer's equatorial pole,
-     * which is what actually changes "which star sits at the pole" as epoch
-     * moves. The separate 20,000-star background field (generateBackgroundField)
-     * is intentionally left untouched here, that's the Step 8 stretch scope,
-     * not this one, and the observer's galactocentric position used to seed
-     * the Milky Way structure map is a spatial fact about the observer, not
-     * an artifact of their rotational axis, so precession does not apply there.
-     */
-    const pm = precessionMatrix(epochYears);
-    return allStars.map(star => {
-      const pos = raDecDistToXYZ(star.ra, star.dec, star.dist);
-      const rel = [pos[0]-obs[0], pos[1]-obs[1], pos[2]-obs[2]];
-      const px = pm[0][0]*rel[0] + pm[0][1]*rel[1] + pm[0][2]*rel[2];
-      const py = pm[1][0]*rel[0] + pm[1][1]*rel[1] + pm[1][2]*rel[2];
-      const pz = pm[2][0]*rel[0] + pm[2][1]*rel[1] + pm[2][2]*rel[2];
-      const { ra, dec, dist } = xyzToRaDec(px, py, pz);
-      const appMag = apparentMag(star.absMag, dist);
-      const rgb = bvToRGB(star.bv);
-      const isSol = star.name === "Sol";
-      return { ...star, newRa:ra, newDec:dec, newDist:dist, appMag, rgb, isSol };
-    }).filter(s => s.appMag < 8.5).sort((a,b) => a.appMag - b.appMag);
-  }, [planet, allStars, epochYears]);
-  const transformedStarsRef = useRef(transformedStars);
-  transformedStarsRef.current = transformedStars;
-  const bgBucketsRef = useRef(bgBuckets);
-  bgBucketsRef.current = bgBuckets;
-  const obsGCRef = useRef(obsGC);
-  obsGCRef.current = obsGC;
-  const mwReadyRef = useRef(mwReady);
-  mwReadyRef.current = mwReady;
-  const atmoRef = useRef(atmo);
-  atmoRef.current = atmo;
-  const planetRef = useRef(planet);
-  planetRef.current = planet;
-
-  /**
-   * Per-stage render profiler, off unless asked for.
-   *
-   * The draw loop has eight distinct stages and the reported stutter could
-   * plausibly come from any of them. Guessing which one costs the most is how a
-   * rewrite ends up optimising the wrong thing: disabling the Milky Way band
-   * recovered only about a quarter of the frame, so the rest is somewhere else.
-   *
-   * Enable with ?profile=1, then read window.__exoskyProfile for a rolling
-   * median per stage. Costs one Boolean test per stage when off.
-   */
-  const profiling = useRef(
-    typeof window !== "undefined" && new URLSearchParams(window.location.search).has("profile"),
-  );
-  const profileMark = useRef(0);
-  const profileData = useRef<Record<string, number[]>>({});
-
-  /**
-   * Work counters, which milliseconds cannot answer honestly here.
-   *
-   * A headless browser's software rasteriser makes every ms figure suspect, and
-   * this session already burned a diagnosis on numbers measured that way. How
-   * many stars the spatial index actually walks is the same on any machine, so
-   * it is the part of "why is backgroundField the dominant stage" that can be
-   * settled without the owner's hardware.
-   */
-  const counters = useRef<Record<string, number>>({});
-  const camSnapshot = useRef({ viewRa: 0, viewDec: 0, fov: 0, mwQuality: 0 });
-  /** Last camera key and when it last changed, for progressive refinement. */
-  const lastCamKey = useRef("");
-  const lastCamMove = useRef(0);
-  const tally = useCallback((name: string, n = 1) => {
-    if (!profiling.current) return;
-    counters.current[name] = (counters.current[name] ?? 0) + n;
-  }, []);
-
-  const stage = useCallback((name: string) => {
-    if (!profiling.current) return;
-    const now = performance.now();
-    if (name !== "__start") {
-      (profileData.current[name] ??= []).push(now - profileMark.current);
-      // Rolling window, so a slow first frame does not dominate forever.
-      if (profileData.current[name].length > 120) profileData.current[name].shift();
-    }
-    profileMark.current = now;
-  }, []);
-
-  useEffect(() => {
-    if (!profiling.current) return;
-    (window as unknown as { __exoskyProfile?: unknown }).__exoskyProfile = () => {
-      const out: Record<string, { medianMs: number; samples: number }> = {};
-      let total = 0;
-      for (const [k, v] of Object.entries(profileData.current)) {
-        const sorted = [...v].sort((a, b) => a - b);
-        const med = sorted[Math.floor(sorted.length / 2)] ?? 0;
-        out[k] = { medianMs: +med.toFixed(2), samples: v.length };
-        total += med;
-      }
-      return { stages: out, totalMedianMs: +total.toFixed(2) };
-    };
-
-    // Per-frame averages, so the numbers mean "per redraw" not "since load".
-    (window as unknown as { __exoskyCounters?: unknown }).__exoskyCounters = () => {
-      const frames = counters.current.frames || 1;
-      const cam = camSnapshot.current;
-      const per = (k: string) => +((counters.current[k] ?? 0) / frames).toFixed(1);
-      const walked = per("bgWalked");
-      return {
-        frames,
-        // Read this before and after a drag. If it is identical, the
-        // measurement below is of an idle canvas and means nothing.
-        camera: { ...cam },
-        backgroundField: {
-          fieldSize: 20000,
-          bucketsVisited: per("bgBuckets"),
-          starsWalked: walked,
-          // How many of the walked stars were bright enough to pay for a
-          // projectStar call. The gap between this and starsWalked is what
-          // reordering the magnitude check ahead of projection now skips.
-          starsProjected: per("bgProjected"),
-          starsDrawn: per("bgDrawn"),
-          // The number that decides whether the index is worth keeping.
-          percentOfFieldWalked: +((walked / 20000) * 100).toFixed(1),
-        },
-      };
+    tokensRef.current = {
+      line: rgb("--sf-line-interactive-rgb", tokens.text.t4),
+      lineSoft: rgb("--sf-line-rgb", tokens.text.t4),
+      primary: rgb("--sf-primary-rgb", tokens.accent.base),
+      t1: tokens.text.t1,
+      t2: tokens.text.t2,
+      t3: tokens.text.t3,
     };
   }, []);
 
-  // ── Canvas render ───────────────────────────────────
-  const render = useCallback((time) => {
+  const scene = {
+    frame, mode, geometry, obs, catalogue, bodies, kEff, atmoKey: resolved.atmo.value,
+    showMilkyWay, showHorizon, showStarNames, showConstellations, showGrid, highlightSol, showCustomConstellations,
+    mwBrightness, earthFigures, solIndex, vantageConstellations, catalogueById, drawMode, currentDrawing, drawColor,
+    selected, hovered, hostAlt: hostAltAz.alt, reducedMotion, mwVersion, hostTeff: resolved.host.teffK.value,
+    geometryKey: `${geometry.sidereal.toFixed(4)}|${latitude}|${epochYears}|${vantageKey}|${resolved.atmo.value}|${mode}`,
+  };
+  const sceneRef = useRef(scene);
+  sceneRef.current = scene;
+
+  // ── Canvas ───────────────────────────────────────────────────────
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const dprRef = useRef(1);
+  const bgRef = useRef<{ canvas: HTMLCanvasElement | null; key: string }>({ canvas: null, key: "" });
+  const positions = useRef<number[]>([]); // [catalogueIndex, x, y, ...]
+  const bodyPositions = useRef<Array<{ id: string; x: number; y: number; r: number }>>([]);
+  const lastMove = useRef(0);
+  const drawnCount = useRef(0);
+
+  const render = useCallback((time: number) => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const S = sceneRef.current;
+    const tk = tokensRef.current;
+    if (!canvas || !tk) return;
     const ctx = canvas.getContext("2d");
-    // The backing store is the canvas's CSS size times the pixel ratio (see
-    // the canvas setup below); everything is drawn in CSS pixels.
-    const dpr = canvasDprRef.current;
+    if (!ctx) return;
+    const dpr = dprRef.current;
     const W = canvas.width / dpr, H = canvas.height / dpr;
+    if (W < 2 || H < 2) return;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const v = viewRef.current;
+    const cam = makeCamera(S.frame, v.lon, v.lat, v.fov, W, H);
+    const stand = S.mode === "stand";
+    const zen = S.geometry.horizon[2];
+    const hostDir = S.geometry.hostDir;
+    const sunAlt = S.hostAlt;
+    const hasAir = stand && S.kEff > 0;
+    const limit = limitingMag(stand ? sunAlt : -90, hasAir);
     const t = time * 0.001;
 
-    // Read all values from refs (avoids dependency on state for render loop)
-    const _viewRa = viewRaRef.current;
-    const _viewDec = viewDecRef.current;
-    const _fov = fovRef.current;
-    const _showMilkyWay = showMilkyWayRef.current;
-    const _showConstellations = showConstellationsRef.current;
-    const _showAtmosphere = showAtmosphereRef.current;
-    const _showGrid = showGridRef.current;
-    const _showStarNames = showStarNamesRef.current;
-    const _showHorizon = showHorizonRef.current;
-    const _highlightSol = highlightSolRef.current;
-    const _showCustomConstellations = showCustomConstellationsRef.current;
-    const _atmoDensity = atmoDensityRef.current;
-    const _mwBrightness = mwBrightnessRef.current;
-    const _drawMode = drawModeRef.current;
-    const _currentDrawing = currentDrawingRef.current;
-    const _customConstellations = customConstellationsRef.current;
-    const _drawColor = drawColorRef.current;
-    const _hoveredStar = hoveredStarRef.current;
-    const _transformedStars = transformedStarsRef.current;
-    const _epochYears = epochYearsRef.current;
-    const _obsGC = obsGCRef.current;
-    const _mwReady = mwReadyRef.current;
-    const _atmo = atmoRef.current;
-    const _planet = planetRef.current;
-    const _bgBuckets = bgBucketsRef.current;
-
-    stage("__start");
-    ctx.fillStyle = tokens.surface.simCanvas;
-    ctx.fillRect(0, 0, W, H);
-    stage("clear");
-
-    // ── MILKY WAY BAND (offscreen canvas) ────────────
-    if (_showMilkyWay && mwMapRef.current && _mwReady) {
-      const mwMap = mwMapRef.current;
-
-      /**
-       * Progressive refinement: draw coarse while the camera moves.
-       *
-       * The Milky Way is the only stage whose redraw condition includes the
-       * camera, so it recomputes on exactly the frames the user is dragging and
-       * on no others. Measured at 32.8 ms per frame while dragging against
-       * 0.1 ms idle, which is the reported stutter in one number.
-       *
-       * The sample step is quadratic in cost, so tripling it while the view is
-       * in motion cuts the work by ~9x. A reader cannot resolve fine galactic
-       * structure mid-drag, and the full-detail pass lands ~160 ms after they
-       * let go, which is what makes map applications feel instant rather than
-       * slow. Rewriting the loop to write pixels instead of rects was tried
-       * first and measured *worse* (44 ms), so it is not the answer here.
-       */
-      // epochYears is included here (not just viewRa/viewDec/fov) because it
-      // is also part of the redraw cache key below (mwParams.epochYears):
-      // without it in camKey, an epoch-slider drag would still force a
-      // needsRedraw every step but never trip cameraMoving, so it would
-      // always ray-march at full quality instead of getting the same cheap
-      // coarse pass a camera drag gets.
-      const camKey = `${_viewRa},${_viewDec},${_fov},${_epochYears}`;
-      if (camKey !== lastCamKey.current) {
-        lastCamKey.current = camKey;
-        lastCamMove.current = performance.now();
-      }
-      const cameraMoving = performance.now() - lastCamMove.current < 160;
-      const mwQuality = cameraMoving ? 3 : 1;
-
-      // Check if we need to re-render the MW offscreen canvas
-      const mwParams = mwParamsRef.current;
-      const planetKey = `${_planet.ra},${_planet.dec},${_planet.dist}`;
-      const needsRedraw = mwParams.viewRa !== _viewRa || mwParams.viewDec !== _viewDec
-        || mwParams.fov !== _fov || mwParams.planetKey !== planetKey
-        || mwParams.W !== W || mwParams.H !== H
-        || mwParams.mwBrightness !== _mwBrightness
-        || mwParams.showAtmosphere !== _showAtmosphere
-        || mwParams.atmoDensity !== _atmoDensity
-        || mwParams.quality !== mwQuality
-        || mwParams.epochYears !== _epochYears;
-
-      if (needsRedraw) {
-        // Create/resize offscreen canvas
-        if (!mwOffscreenRef.current || mwOffscreenRef.current.width !== W || mwOffscreenRef.current.height !== H) {
-          mwOffscreenRef.current = document.createElement("canvas");
-          mwOffscreenRef.current.width = W;
-          mwOffscreenRef.current.height = H;
-        }
-        const offCtx = mwOffscreenRef.current.getContext("2d");
-        offCtx.clearRect(0, 0, W, H);
-
-        // Pre-compute view basis vectors (hoisted out of the pixel loop)
-        const vRa = _viewRa * DEG, vDec = _viewDec * DEG;
-        const sinVRa = Math.sin(vRa), cosVRa = Math.cos(vRa);
-        const sinVDec = Math.sin(vDec), cosVDec = Math.cos(vDec);
-        const basis_rx = -sinVRa, basis_ry = cosVRa, basis_rz = 0;
-        const basis_ux = -sinVDec*cosVRa, basis_uy = -sinVDec*sinVRa, basis_uz = cosVDec;
-        const basis_vx = cosVDec*cosVRa, basis_vy = cosVDec*sinVRa, basis_vz = sinVDec;
-        const projScale = W / (2 * Math.tan(_fov * DEG / 2));
-
-        // Pre-compute observer l-correction (was inside the pixel loop before!)
-        const eqObs = raDecDistToXYZ(_planet.ra, _planet.dec, _planet.dist);
-        const [ogx, ogy] = eqToGal(eqObs[0], eqObs[1], eqObs[2]);
-        const lCorrection = Math.atan2(ogy, R_SUN + ogx) || 0;
-
-        /**
-         * Axial precession, inverted. `dirX/dirY/dirZ` below is built straight
-         * from `_viewRa`/`_viewDec`, the same raw camera numbers that
-         * `transformedStars` compares its precessed `newRa`/`newDec` against,
-         * i.e. this ray direction lives in the "display" frame, exactly like a
-         * point star's post-precession position, not the real fixed frame
-         * `eqToGal` expects (the galactic structure map does not itself move).
-         *
-         * `transformedStars` gets from the real frame to the display frame by
-         * applying `precessionMatrix(epochYears)` forward. Going the other way
-         * (display → real, which is what this block needs before eqToGal)
-         * requires the inverse of that rotation. Precession is a pure rotation,
-         * so its inverse is its transpose, which for this matrix equals
-         * `precessionMatrix(-epochYears)` (both fromEcliptic/toEcliptic are
-         * transposes of each other by construction, and negating epochYears
-         * negates theta, which is exactly what transposing the spin block
-         * does). Verified numerically: a fixed reference direction's galactic
-         * latitude, recovered this way, stays constant at ~17.3° across every
-         * tested epoch; applying the forward matrix instead swings it wildly
-         * (58.7°, -15.1°, ...), which is the double-rotation this avoids.
-         */
-        const pmInv = precessionMatrix(-_epochYears);
-
-        const step = Math.max(2, Math.floor(4 * (_fov / 90))) * mwQuality;
-
-        for (let sx = 0; sx < W; sx += step) {
-          for (let sy = 0; sy < H; sy += step) {
-            const dx = (sx - W/2), dy = (sy - H/2);
-            const localX = dx / projScale, localY = -dy / projScale;
-
-            let dirX = basis_vx + localX * basis_rx + localY * basis_ux;
-            let dirY = basis_vy + localX * basis_ry + localY * basis_uy;
-            let dirZ = basis_vz + localX * basis_rz + localY * basis_uz;
-            const len = Math.sqrt(dirX*dirX + dirY*dirY + dirZ*dirZ);
-            dirX /= len; dirY /= len; dirZ /= len;
-
-            const precX = pmInv[0][0]*dirX + pmInv[0][1]*dirY + pmInv[0][2]*dirZ;
-            const precY = pmInv[1][0]*dirX + pmInv[1][1]*dirY + pmInv[1][2]*dirZ;
-            const precZ = pmInv[2][0]*dirX + pmInv[2][1]*dirY + pmInv[2][2]*dirZ;
-
-            const [gx, gy, gz] = eqToGal(precX, precY, precZ);
-            const galB = Math.asin(Math.max(-1, Math.min(1, gz)));
-            const stdGalL = Math.atan2(gy, gx);
-            const obsL = ((stdGalL - lCorrection) % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
-
-            const brightness = sampleMWMap(mwMap.brightness, obsL, galB) * _mwBrightness;
-            if (brightness < 0.003) continue;
-
-            const centerWeight = Math.cos(obsL) * 0.3 + 0.5;
-            const rCol = Math.floor(180 + 40 * centerWeight);
-            const gCol = Math.floor(175 + 30 * centerWeight);
-            const bCol = Math.floor(200 - 20 * centerWeight);
-
-            let alpha = brightness * 0.45;
-            if (_showAtmosphere) {
-              alpha *= Math.max(0.05, 1 - _atmo.extinction * _atmoDensity * 1.5);
-            }
-            if (alpha < 0.002) continue;
-
-            offCtx.fillStyle = `rgba(${rCol},${gCol},${bCol},${Math.min(alpha, 0.35)})`;
-            offCtx.fillRect(sx - step/2, sy - step/2, step + 0.5, step + 0.5);
+    // ── 1. Sky, Milky Way and ground, one low-resolution pass ─────
+    const moving = performance.now() - lastMove.current < 180;
+    const q = moving ? 6 : 3;
+    const key = `${v.lon.toFixed(3)}|${v.lat.toFixed(3)}|${v.fov.toFixed(3)}|${W}|${H}|${q}|${S.geometryKey}|${S.kEff}|${S.showMilkyWay}|${S.showHorizon}|${S.mwBrightness}|${S.mwVersion}|${sunAlt.toFixed(2)}`;
+    if (bgRef.current.key !== key) {
+      const bw = Math.ceil(W / q), bh = Math.ceil(H / q);
+      let off = bgRef.current.canvas;
+      if (!off) off = bgRef.current.canvas = document.createElement("canvas");
+      if (off.width !== bw || off.height !== bh) { off.width = bw; off.height = bh; }
+      const octx = off.getContext("2d")!;
+      const img = octx.createImageData(bw, bh);
+      const data = img.data;
+      const [br, bg, bb] = parseRgb(tokens.surface.simCanvas);
+      const map = S.showMilkyWay ? mwMapRef.current : null;
+      const day = hasAir ? clamp((sunAlt + 4) / 14, 0, 1) : 0;
+      const twi = hasAir ? clamp(1 - Math.abs(sunAlt + 5) / 13, 0, 1) : 0;
+      const nightFactor = hasAir ? clamp((-sunAlt - 4) / 12, 0, 1) : 1;
+      const dayRgb = SKY_DAY_RGB[S.atmoKey as AtmoKey];
+      const twRgb = SKY_TWILIGHT_RGB[S.atmoKey as AtmoKey];
+      for (let y = 0; y < bh; y++) {
+        for (let x = 0; x < bw; x++) {
+          const d = unproject(cam, x * q + q / 2, y * q + q / 2);
+          const o = (y * bw + x) * 4;
+          let r = br, g = bg, b = bb;
+          const sinAlt = stand ? d[0] * zen[0] + d[1] * zen[1] + d[2] * zen[2] : 1;
+          if (stand && S.showHorizon && sinAlt < 0) {
+            const lit = 0.25 + day * 2.5;
+            data[o] = GROUND_RGB[0] * lit; data[o + 1] = GROUND_RGB[1] * lit; data[o + 2] = GROUND_RGB[2] * lit; data[o + 3] = 255;
+            continue;
           }
-        }
-
-        // Update cached params
-        mwParamsRef.current = { viewRa: _viewRa, viewDec: _viewDec, fov: _fov, planetKey, W, H, mwBrightness: _mwBrightness, showAtmosphere: _showAtmosphere, atmoDensity: _atmoDensity, quality: mwQuality, epochYears: _epochYears };
-      }
-
-      // Blit the cached MW offscreen canvas
-      if (mwOffscreenRef.current) {
-        ctx.drawImage(mwOffscreenRef.current, 0, 0);
-      }
-    }
-
-    stage("milkyWay");
-    // ── DENSE BACKGROUND STAR FIELD ─────────────────
-    // Use spatial buckets to only iterate stars near the current view
-    {
-      const extinctionMod = _showAtmosphere ? _atmo.extinction * _atmoDensity * 2.5 : 0;
-      let bgCount = 0;
-      const bgMax = 12000;
-      /**
-       * Batched by quantised (colour, alpha) instead of drawn star-by-star.
-       * Profiling (window.__exoskyProfile) showed this stage dominating the
-       * frame even when nothing else was visibly costly — up to bgMax stars
-       * each got their own `ctx.fillStyle = <fresh string>` before this fix,
-       * and a fillStyle change is a colour-parse + canvas state change, not a
-       * free assignment. Colour and twinkle-alpha are quantised into a small
-       * number of buckets (invisible at 0.7-1.5px) so fillStyle changes a
-       * few dozen times a frame instead of up to twelve thousand.
-       */
-      const bgBatches = bgBatchPool.current;
-      for (const batch of bgBatches.values()) batch.pts.length = 0;
-      const proj = createViewProjector(_viewRa, _viewDec, _fov, W, H);
-
-      // Determine which RA/Dec bins overlap the current view
-      const halfFov = _fov * 0.6;
-      const raMin = ((_viewRa - halfFov) + 360) % 360;
-      const raMax = ((_viewRa + halfFov) + 360) % 360;
-      const decMin = Math.max(-90, _viewDec - halfFov);
-      const decMax = Math.min(90, _viewDec + halfFov);
-
-      const raBinMin = Math.floor((raMin / 360) * BG_RA_BINS);
-      const raBinMax = Math.floor((raMax / 360) * BG_RA_BINS);
-      const decBinMin = Math.max(0, Math.floor(((decMin + 90) / 180) * BG_DEC_BINS));
-      const decBinMax = Math.min(BG_DEC_BINS - 1, Math.floor(((decMax + 90) / 180) * BG_DEC_BINS));
-
-      // Collect relevant bucket indices (handle RA wraparound)
-      const raBins = [];
-      if (raBinMin <= raBinMax) {
-        for (let r = raBinMin; r <= raBinMax; r++) raBins.push(((r % BG_RA_BINS) + BG_RA_BINS) % BG_RA_BINS);
-      } else {
-        // Wraparound
-        for (let r = raBinMin; r < BG_RA_BINS; r++) raBins.push(r);
-        for (let r = 0; r <= raBinMax; r++) raBins.push(r);
-      }
-
-      for (const rBin of raBins) {
-        for (let dBin = decBinMin; dBin <= decBinMax && bgCount < bgMax; dBin++) {
-          const bucket = _bgBuckets[rBin * BG_DEC_BINS + dBin];
-          tally("bgBuckets");
-          tally("bgWalked", bucket.length);
-          for (let i = 0; i < bucket.length && bgCount < bgMax; i++) {
-            const bg = bucket[i];
-            const useRa = bg.ra, useDec = bg.dec;
-
-            // Quick visibility check
-            let dRa = useRa - _viewRa;
-            if (dRa > 180) dRa -= 360; if (dRa < -180) dRa += 360;
-            if (Math.abs(dRa) > halfFov || Math.abs(useDec - _viewDec) > halfFov) continue;
-
-            /**
-             * Magnitude before projection, not after.
-             *
-             * eMag depends only on bg.baseMag, the precomputed galactic
-             * coordinates, and the Milky Way lookup: nothing here reads the
-             * projected screen point. projectStar is the expensive step in
-             * this loop (a normalise, an eqToGal matrix multiply, an asin, an
-             * atan2), and it used to run on every star inside the coarse box
-             * before the cheap magnitude test that actually decides whether
-             * most of them are visible. A background star field skews heavily
-             * toward dim stars by design, so most candidates fail this test;
-             * checking it first means projectStar is only paid for on the
-             * stars that stood a chance of being drawn.
-             */
-            let eMag = bg.baseMag + extinctionMod;
-
-            if (mwMapRef.current && _mwReady) {
-              const lNorm = ((bg.galL / 360) * L_STEPS) | 0;
-              const bNorm = (((bg.galB + 90) / 180) * B_STEPS) | 0;
-              if (lNorm >= 0 && lNorm < L_STEPS && bNorm >= 0 && bNorm < B_STEPS) {
-                const mwDensity = mwMapRef.current.brightness[lNorm * B_STEPS + bNorm];
-                eMag -= mwDensity * 1.5;
-              }
+          const altDeg = Math.asin(clamp(sinAlt, -1, 1)) * RAD;
+          const trans = hasAir ? Math.pow(10, -0.4 * S.kEff * airmass(Math.max(0, altDeg))) : 1;
+          if (map && nightFactor > 0) {
+            const gl = eqToGal(d[0], d[1], d[2]);
+            const lRad = Math.atan2(gl[1], gl[0]);
+            const bRad = Math.asin(clamp(gl[2], -1, 1));
+            const mw = sampleMilkyWay(map.brightness, lRad, bRad) * S.mwBrightness * trans * nightFactor;
+            if (mw > 0.002) {
+              const bulge = 0.5 + 0.5 * Math.cos(lRad);
+              const a = Math.min(0.42, mw * 0.5);
+              r += (MILKY_WAY_DISC_RGB[0] * (1 - bulge) + MILKY_WAY_BULGE_RGB[0] * bulge) * a;
+              g += (MILKY_WAY_DISC_RGB[1] * (1 - bulge) + MILKY_WAY_BULGE_RGB[1] * bulge) * a;
+              b += (MILKY_WAY_DISC_RGB[2] * (1 - bulge) + MILKY_WAY_BULGE_RGB[2] * bulge) * a;
             }
-
-            if (eMag > 7.5) continue;
-
-            tally("bgProjected");
-            const u = bg._u;
-            if (!proj.unit(u[0], u[1], u[2], 80)) continue;
-
-            const alpha = Math.min(0.8, Math.max(0.04, (7.5 - eMag) / 7.0));
-
-            const tw = ((Math.sin(t * 0.7 + i * 0.37) * 0.5 + 0.5) * 0.3 + 0.7);
-            const finalAlpha = alpha * tw;
-
-            if (finalAlpha < 0.02) continue;
-
-            const size = eMag < 4.5 ? 1.5 : eMag < 5.5 ? 1.0 : 0.7;
-
-            const qi = Math.round(finalAlpha / 0.04);
-            const key = bg._qk * 32 + qi;
-            let batch = bgBatches.get(key);
-            if (!batch) {
-              batch = { style: `rgba(${bg._qr},${bg._qg},${bg._qb},${qi * 0.04})`, pts: [] };
-              bgBatches.set(key, batch);
-            }
-            batch.pts.push(proj.x - size * 0.5, proj.y - size * 0.5, size);
-            bgCount++;
           }
-        }
-      }
-
-      for (const { style, pts } of bgBatches.values()) {
-        if (pts.length === 0) continue;
-        ctx.fillStyle = style;
-        for (let k = 0; k < pts.length; k += 3) {
-          const s = pts[k + 2];
-          ctx.fillRect(pts[k], pts[k + 1], s, s);
-        }
-      }
-
-      tally("bgDrawn", bgCount);
-      tally("frames");
-      // The camera, recorded with the counters. Any claim about "while
-      // dragging" is worthless unless the view provably moved, and this
-      // session has already produced one diagnosis that did not.
-      if (profiling.current) {
-        camSnapshot.current = { viewRa: _viewRa, viewDec: _viewDec, fov: _fov,
-          mwQuality: mwParamsRef.current.quality ?? 0 };
-      }
-    }
-
-    stage("backgroundField");
-    // ── ATMOSPHERIC SKY GRADIENT ────────────────────
-    if (_showAtmosphere && _atmo.extinction > 0) {
-      const [sr, sg, sb] = _atmo.skyColor;
-      const d = _atmoDensity;
-      const grad = ctx.createRadialGradient(W/2,H/2,0, W/2,H/2, Math.max(W,H)*0.7);
-      grad.addColorStop(0, `rgba(${sr},${sg},${sb},${0.02*d})`);
-      grad.addColorStop(0.6, `rgba(${sr},${sg},${sb},${0.06*d})`);
-      grad.addColorStop(1, `rgba(${sr},${sg},${sb},${0.15*d})`);
-      ctx.fillStyle = grad;
-      ctx.fillRect(0,0,W,H);
-      if (_atmo.haze > 0) {
-        const hg = ctx.createLinearGradient(0,H*0.5,0,H);
-        hg.addColorStop(0, `rgba(${sr},${sg},${sb},0)`);
-        hg.addColorStop(1, `rgba(${sr},${sg},${sb},${_atmo.haze*d*0.5})`);
-        ctx.fillStyle = hg;
-        ctx.fillRect(0,0,W,H);
-      }
-    }
-
-    stage("skyGradient");
-    // ── HORIZON LINE & GROUND PLANE ────────────────
-    if (_showHorizon) {
-      const horizonDec = 0;
-      const horizPts = [];
-      for (let ra = _viewRa - _fov * 0.8; ra <= _viewRa + _fov * 0.8; ra += _fov / 60) {
-        const p = projectStar(((ra % 360) + 360) % 360, horizonDec, _viewRa, _viewDec, _fov, W, H);
-        if (p) horizPts.push(p);
-      }
-
-      if (horizPts.length > 1) {
-        const lowestY = Math.max(...horizPts.map(p => p.y));
-        if (lowestY < H) {
-          const [sr, sg, sb] = _showAtmosphere ? _atmo.skyColor : [20, 18, 15];
-          const groundGrad = ctx.createLinearGradient(0, Math.min(...horizPts.map(p => p.y)), 0, H);
-          groundGrad.addColorStop(0, `rgba(${Math.floor(sr*0.15)},${Math.floor(sg*0.12)},${Math.floor(sb*0.1)},0.7)`);
-          groundGrad.addColorStop(0.3, `rgba(${Math.floor(sr*0.08)},${Math.floor(sg*0.06)},${Math.floor(sb*0.04)},0.85)`);
-          groundGrad.addColorStop(1, `rgba(6,5,4,0.95)`);
-
-          ctx.beginPath();
-          ctx.moveTo(horizPts[0].x, horizPts[0].y);
-          for (let i = 1; i < horizPts.length; i++) ctx.lineTo(horizPts[i].x, horizPts[i].y);
-          ctx.lineTo(W + 10, horizPts[horizPts.length - 1].y);
-          ctx.lineTo(W + 10, H + 10);
-          ctx.lineTo(-10, H + 10);
-          ctx.lineTo(-10, horizPts[0].y);
-          ctx.closePath();
-          ctx.fillStyle = groundGrad;
-          ctx.fill();
-        }
-
-        if (_showAtmosphere && _atmo.extinction > 0) {
-          const [sr, sg, sb] = _atmo.skyColor;
-          const d = _atmoDensity;
-          for (let i = 0; i < horizPts.length - 1; i++) {
-            const x1 = horizPts[i].x, y1 = horizPts[i].y;
-            const x2 = horizPts[i + 1].x, y2 = horizPts[i + 1].y;
-            const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
-
-            const glowH = 30 * d;
-            const glow = ctx.createLinearGradient(mx, my - glowH, mx, my + 4);
-            glow.addColorStop(0, `rgba(${sr},${sg},${sb},0)`);
-            glow.addColorStop(0.6, `rgba(${sr},${sg},${sb},${0.03 * d})`);
-            glow.addColorStop(1, `rgba(${sr},${sg},${sb},${0.08 * d})`);
-            ctx.fillStyle = glow;
-            ctx.fillRect(Math.min(x1, x2) - 2, my - glowH, Math.abs(x2 - x1) + 4, glowH + 4);
+          if (hasAir) {
+            const toSun = d[0] * hostDir[0] + d[1] * hostDir[1] + d[2] * hostDir[2];
+            // Brighter toward the horizon (more air) and toward the sun.
+            const horizonGain = 0.55 + 0.45 * (1 - Math.max(0, sinAlt));
+            const sunGain = 0.7 + 0.6 * Math.pow(Math.max(0, toSun), 6);
+            const dayA = day * horizonGain * sunGain * Math.min(1, S.kEff / 0.2);
+            const twA = twi * Math.exp(-Math.max(0, altDeg) / 9) * (0.25 + 0.75 * Math.pow((toSun + 1) / 2, 3)) * Math.min(1, S.kEff / 0.15);
+            r = r * (1 - dayA) + dayRgb[0] * dayA + twRgb[0] * twA * 0.8;
+            g = g * (1 - dayA) + dayRgb[1] * dayA + twRgb[1] * twA * 0.8;
+            b = b * (1 - dayA) + dayRgb[2] * dayA + twRgb[2] * twA * 0.8;
           }
+          data[o] = Math.min(255, r); data[o + 1] = Math.min(255, g); data[o + 2] = Math.min(255, b); data[o + 3] = 255;
         }
+      }
+      octx.putImageData(img, 0, 0);
+      bgRef.current.key = key;
+    }
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(bgRef.current.canvas!, 0, 0, W, H);
 
+    const aboveGround = (sx: number, sy: number, sz: number) => !stand || !S.showHorizon || sx * zen[0] + sy * zen[1] + sz * zen[2] >= 0;
+    const extinction = (sx: number, sy: number, sz: number) => {
+      if (!hasAir) return 0;
+      const sa = sx * zen[0] + sy * zen[1] + sz * zen[2];
+      return S.kEff * airmass(Math.max(0, Math.asin(clamp(sa, -1, 1)) * RAD));
+    };
+
+    // ── 2. Grid ───────────────────────────────────────────────────
+    if (S.showGrid) {
+      ctx.strokeStyle = tk.lineSoft;
+      ctx.lineWidth = 1;
+      ctx.setLineDash([2, 6]);
+      const line = (pts: Vec3[]) => {
         ctx.beginPath();
-        ctx.moveTo(horizPts[0].x, horizPts[0].y);
-        for (let i = 1; i < horizPts.length; i++) {
-          if (i < horizPts.length - 1) {
-            const xc = (horizPts[i].x + horizPts[i + 1].x) / 2;
-            const yc = (horizPts[i].y + horizPts[i + 1].y) / 2;
-            ctx.quadraticCurveTo(horizPts[i].x, horizPts[i].y, xc, yc);
-          } else {
-            ctx.lineTo(horizPts[i].x, horizPts[i].y);
-          }
+        let on = false;
+        for (const p of pts) {
+          if (projectInto(cam, p[0], p[1], p[2], 200)) { if (on) ctx.lineTo(cam.x, cam.y); else ctx.moveTo(cam.x, cam.y); on = true; } else on = false;
         }
-        ctx.strokeStyle = "rgba(255,255,255,0.08)";
-        ctx.lineWidth = 1;
         ctx.stroke();
-
-        const centerIdx = Math.floor(horizPts.length / 2);
-        const spread = Math.floor(horizPts.length * 0.3);
-        ctx.beginPath();
-        const startI = Math.max(0, centerIdx - spread);
-        const endI = Math.min(horizPts.length - 1, centerIdx + spread);
-        ctx.moveTo(horizPts[startI].x, horizPts[startI].y);
-        for (let i = startI + 1; i <= endI; i++) ctx.lineTo(horizPts[i].x, horizPts[i].y);
-        ctx.strokeStyle = "rgba(255,255,255,0.04)";
-        ctx.lineWidth = 3;
-        ctx.stroke();
-
-        if (_fov < 120) {
-          const labelPt = horizPts[Math.floor(horizPts.length * 0.85)];
-          if (labelPt && labelPt.y > 20 && labelPt.y < H - 20) {
-            ctx.font = '12px "MD Nichrome", "Jura", sans-serif';
-            ctx.fillStyle = tokens.text.t4;
-            ctx.textAlign = "center";
-            ctx.letterSpacing = "1.5px";
-            ctx.fillText("H O R I Z O N", labelPt.x, labelPt.y - 6);
-            ctx.letterSpacing = "0px";
-          }
-        }
+      };
+      for (let lat = -60; lat <= 60; lat += 30) {
+        const pts: Vec3[] = [];
+        for (let lon = 0; lon <= 360; lon += 4) pts.push(fromFrame(S.frame, [Math.cos(lat * DEG) * Math.cos(lon * DEG), Math.cos(lat * DEG) * Math.sin(lon * DEG), Math.sin(lat * DEG)]));
+        line(pts);
       }
-    }
-
-    stage("horizon");
-    // ── COORDINATE GRID ─────────────────────────────
-    if (_showGrid) {
-      ctx.strokeStyle = "rgba(255,255,255,0.025)";
-      ctx.lineWidth = 0.5;
-      for (let ra = 0; ra < 360; ra += 30) {
-        const pts = [];
-        for (let dec = -80; dec <= 80; dec += 5) {
-          const p = projectStar(ra, dec, _viewRa, _viewDec, _fov, W, H);
-          if (p) pts.push(p);
-        }
-        if (pts.length > 1) { ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); pts.slice(1).forEach(p => ctx.lineTo(p.x, p.y)); ctx.stroke(); }
+      for (let lon = 0; lon < 360; lon += stand ? 45 : 30) {
+        const pts: Vec3[] = [];
+        for (let lat = -88; lat <= 88; lat += 4) pts.push(fromFrame(S.frame, [Math.cos(lat * DEG) * Math.cos(lon * DEG), Math.cos(lat * DEG) * Math.sin(lon * DEG), Math.sin(lat * DEG)]));
+        line(pts);
       }
-      for (let dec = -60; dec <= 60; dec += 30) {
-        const pts = [];
-        for (let ra = 0; ra <= 360; ra += 5) {
-          const p = projectStar(ra, dec, _viewRa, _viewDec, _fov, W, H);
-          if (p) pts.push(p);
-        }
-        if (pts.length > 1) { ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); pts.slice(1).forEach(p => ctx.lineTo(p.x, p.y)); ctx.stroke(); }
-      }
-    }
-
-    stage("grid");
-    // ── CONSTELLATION LINES ─────────────────────────
-    if (_showConstellations) {
-      const starMap = {};
-      _transformedStars.forEach(s => { if (s.name) starMap[s.name] = s; });
-      ctx.strokeStyle = withAlpha(tokens.sim.accent, 0.05);
-      ctx.lineWidth = 0.7;
-      ctx.setLineDash([3,5]);
-      CONSTELLATION_LINES.forEach(([a,b]) => {
-        const sa = starMap[a], sb = starMap[b];
-        if (!sa || !sb) return;
-        const pa = projectStar(sa.newRa, sa.newDec, _viewRa, _viewDec, _fov, W, H, 500);
-        const pb = projectStar(sb.newRa, sb.newDec, _viewRa, _viewDec, _fov, W, H, 500);
-        if (!pa || !pb) return;
-        if (Math.sqrt((pa.x-pb.x)**2+(pa.y-pb.y)**2) > W*0.8) return;
-        ctx.beginPath(); ctx.moveTo(pa.x,pa.y); ctx.lineTo(pb.x,pb.y); ctx.stroke();
-      });
       ctx.setLineDash([]);
     }
 
-    stage("constellations");
-    // ── STARS ────────────────────────────────────────
-    // (1.7) Hover/click targets as the stars themselves plus their screen
-    // points, in reused arrays. This used to be a spread copy of every
-    // catalogue star every frame, which also gave the hovered star a new
-    // identity each frame and so re-rendered the panel 10x a second.
-    const positions = starPositions.current;
-    positions.length = 0;
-    const maxStars = 8000; // Performance cap
-    let count = 0;
-    const starProj = createViewProjector(_viewRa, _viewDec, _fov, W, H);
-    const p = starProj;
-
-    for (const s of _transformedStars) {
-      if (count >= maxStars) break;
-      const su = unitOf(s, s.newRa, s.newDec);
-      if (!starProj.unit(su[0], su[1], su[2], 80)) continue;
-
-      let eMag = s.appMag;
-      if (_showAtmosphere) eMag += _atmo.extinction * _atmoDensity * 2.5;
-      if (eMag > 7.2) continue;
-
-      const [r,g,b] = s.rgb;
-
-      // ── FAST PATH for dim procedural stars ──────
-      if (!s.isCatalog && eMag > 4.0) {
-        const alpha = Math.min(0.7, Math.max(0.06, (7.2 - eMag) / 5.0));
-        const sz = eMag < 5.0 ? 1.4 : eMag < 6.0 ? 1.0 : 0.7;
-        const tw = Math.sin(t*1.1 + s.newRa*0.13) * 0.15 + 0.85;
-        ctx.fillStyle = `rgba(${r},${g},${b},${alpha * tw})`;
-        ctx.fillRect(p.x - sz*0.5, p.y - sz*0.5, sz, sz);
-        count++;
-        continue;
+    const o = S.obs;
+    // ── 3. Earth's stick figures, deformed by the vantage ─────────
+    if (o && S.showConstellations) {
+      ctx.strokeStyle = tk.line;
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 5]);
+      ctx.beginPath();
+      for (const [a, b] of S.earthFigures) {
+        if (Number.isNaN(o.mag[a]) || Number.isNaN(o.mag[b])) continue;
+        if (!aboveGround(o.ux[a], o.uy[a], o.uz[a]) || !aboveGround(o.ux[b], o.uy[b], o.uz[b])) continue;
+        if (!projectInto(cam, o.ux[a], o.uy[a], o.uz[a], 400)) continue;
+        const ax = cam.x, ay = cam.y;
+        if (!projectInto(cam, o.ux[b], o.uy[b], o.uz[b], 400)) continue;
+        if (Math.hypot(cam.x - ax, cam.y - ay) > Math.max(W, H)) continue;
+        ctx.moveTo(ax, ay); ctx.lineTo(cam.x, cam.y);
       }
-
-      const magScale = Math.max(0.4, 4.5 - eMag * 0.5);
-      const tw = Math.sin(t*1.3 + s.newRa*0.1 + (s.newDec||0)*0.05) * 0.15 + 0.85;
-      const radius = magScale * tw * (s.isCatalog ? 1 : 0.85);
-      const alpha = Math.min(1, Math.max(0.15, 1 - eMag/7));
-
-      // Glow for bright stars
-      if (eMag < 2.0 && s.isCatalog) {
-        const glowR = radius * (eMag < 0 ? 14 : 7);
-        const glow = ctx.createRadialGradient(p.x,p.y,radius, p.x,p.y,glowR);
-        glow.addColorStop(0, `rgba(${r},${g},${b},${0.12*alpha})`);
-        glow.addColorStop(1, `rgba(${r},${g},${b},0)`);
-        ctx.beginPath(); ctx.arc(p.x,p.y,glowR,0,Math.PI*2); ctx.fillStyle=glow; ctx.fill();
-      }
-
-      // Sol highlight
-      if (s.isSol && _highlightSol) {
-        const pr = 8 + Math.sin(t*2)*3;
-        ctx.beginPath(); ctx.arc(p.x,p.y,pr,0,Math.PI*2);
-        ctx.strokeStyle = `rgba(255,215,59,${0.25+Math.sin(t*2)*0.1})`;
-        ctx.lineWidth = 1; ctx.stroke();
-        ctx.font = '12px "MD Nichrome", "Jura", sans-serif';
-        ctx.fillStyle = "rgb(255,215,59)";
-        ctx.textAlign = "center";
-        ctx.fillText("SOL", p.x, p.y-14);
-      }
-
-      // Star point
-      ctx.beginPath(); ctx.arc(p.x,p.y,radius,0,Math.PI*2);
-      ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
-      ctx.fill();
-
-      // Diffraction spikes
-      if (eMag < 0.5 && s.isCatalog) {
-        ctx.strokeStyle = `rgba(${r},${g},${b},${0.1*alpha})`;
-        ctx.lineWidth = 0.5;
-        const sl = radius*4;
-        ctx.beginPath();
-        ctx.moveTo(p.x-sl,p.y); ctx.lineTo(p.x+sl,p.y);
-        ctx.moveTo(p.x,p.y-sl); ctx.lineTo(p.x,p.y+sl);
-        ctx.stroke();
-      }
-
-      // Labels
-      if (_showStarNames && s.name && eMag < 5.5 && _fov < 140 && s.isCatalog) {
-        const labelAlpha = eMag < 2 ? 0.7 : eMag < 3.5 ? 0.55 : 0.35;
-        ctx.font = '12px "MD Nichrome", "Jura", sans-serif';
-        ctx.fillStyle = `rgba(${r},${g},${b},${labelAlpha})`;
-        ctx.textAlign = "center";
-        ctx.fillText(s.name, p.x, p.y + radius + 12);
-      }
-
-      if (s.isCatalog || (_drawMode && eMag < 5.5)) positions.push(s, p.x, p.y);
-      count++;
+      ctx.stroke();
+      ctx.setLineDash([]);
     }
 
-    stage("stars");
-    // ── DRAW MODE HOVER INDICATOR ─────────────────
-    if (_drawMode && _hoveredStar) {
-      const hp = projectStar(_hoveredStar.newRa, _hoveredStar.newDec, _viewRa, _viewDec, _fov, W, H, 500);
-      if (hp) {
-        const pulse = Math.sin(t * 4) * 0.3 + 0.7;
-        // Outer ring
-        ctx.beginPath();
-        ctx.arc(hp.x, hp.y, 10 * pulse, 0, Math.PI * 2);
-        ctx.strokeStyle = _drawColor + "66";
-        ctx.lineWidth = 1;
-        ctx.setLineDash([2, 2]);
-        ctx.stroke();
-        ctx.setLineDash([]);
-        // Inner target
-        ctx.beginPath();
-        ctx.arc(hp.x, hp.y, 3, 0, Math.PI * 2);
-        ctx.strokeStyle = _drawColor + "AA";
-        ctx.lineWidth = 1;
-        ctx.stroke();
-        // Preview line from last drawn star
-        if (_currentDrawing.length > 0) {
-          const lastStar = _currentDrawing[_currentDrawing.length - 1];
-          const lp = projectStar(lastStar.newRa, lastStar.newDec, _viewRa, _viewDec, _fov, W, H, 500);
-          if (lp) {
-            ctx.beginPath();
-            ctx.moveTo(lp.x, lp.y);
-            ctx.lineTo(hp.x, hp.y);
-            ctx.strokeStyle = _drawColor + "33";
-            ctx.lineWidth = 1;
-            ctx.setLineDash([4, 4]);
-            ctx.stroke();
-            ctx.setLineDash([]);
+    // ── 4. Stars ──────────────────────────────────────────────────
+    const pos = positions.current;
+    pos.length = 0;
+    let drawn = 0;
+    // Labels claim a box; a later (fainter) label that would overlap is skipped.
+    const placed: number[] = [];
+    const claim = (x: number, y: number, w: number, h: number) => {
+      for (let k = 0; k < placed.length; k += 4) {
+        if (x < placed[k] + placed[k + 2] && x + w > placed[k] && y < placed[k + 1] + placed[k + 3] && y + h > placed[k + 1]) return false;
+      }
+      placed.push(x, y, w, h);
+      return true;
+    };
+    if (o && S.catalogue) {
+      const zoomBoost = clamp(Math.log10(Math.max(1, 30 / Math.max(0.5, v.fov))) * 1.2, 0, 2.5);
+      const effLimit = limit + zoomBoost;
+      const batches = new Map<string, number[]>();
+      ctx.font = '12px "DM Sans", sans-serif';
+      ctx.textAlign = "left";
+      for (let k = 0; k < o.index.length && drawn < 14000; k++) {
+        const i = o.index[k];
+        const m = o.mag[i];
+        if (m > effLimit) break; // sorted brightest first; extinction only adds
+        const sx = o.ux[i], sy = o.uy[i], sz = o.uz[i];
+        if (!aboveGround(sx, sy, sz)) continue;
+        const eMag = m + extinction(sx, sy, sz);
+        if (eMag > effLimit) continue;
+        if (!projectInto(cam, sx, sy, sz, 20)) continue;
+        const st = S.catalogue[i];
+        const [r, g, b] = bvToRGB(st.bv);
+        let alpha = clamp((effLimit + 0.8 - eMag) / 2.4, 0.32, 1);
+        if (hasAir && !S.reducedMotion) {
+          const xm = Math.min(6, airmass(Math.max(0, Math.asin(clamp(sx * zen[0] + sy * zen[1] + sz * zen[2], -1, 1)) * RAD)));
+          alpha *= 1 - 0.06 * (xm - 1) * (0.5 + 0.5 * Math.sin(t * 7 + i * 1.7));
+        }
+        const rad = clamp(3.4 - 0.5 * (eMag - zoomBoost), 0.7, 5.5);
+        if (rad < 1.3) {
+          const qa = Math.round(alpha * 10) / 10;
+          const style = `rgba(${(r >> 4) << 4},${(g >> 4) << 4},${(b >> 4) << 4},${qa})`;
+          let arr = batches.get(style);
+          if (!arr) { arr = []; batches.set(style, arr); }
+          arr.push(cam.x - rad, cam.y - rad, rad * 2);
+        } else {
+          if (eMag < 1.2) {
+            const glowR = rad * (eMag < -0.5 ? 7 : 4.5);
+            const grad = ctx.createRadialGradient(cam.x, cam.y, rad * 0.5, cam.x, cam.y, glowR);
+            grad.addColorStop(0, `rgba(${r},${g},${b},${0.22 * alpha})`);
+            grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+            ctx.fillStyle = grad;
+            ctx.fillRect(cam.x - glowR, cam.y - glowR, glowR * 2, glowR * 2);
+          }
+          ctx.beginPath();
+          ctx.arc(cam.x, cam.y, rad, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+          ctx.fill();
+        }
+        if (eMag < 6.5 && pos.length < 24000) pos.push(i, cam.x, cam.y);
+        if (S.showStarNames && st.name && st.name !== "Sol" && eMag < (v.fov < 25 ? 4.8 : v.fov < 60 ? 3.2 : 2.2)) {
+          const lw = ctx.measureText(st.name).width;
+          if (claim(cam.x + rad + 3, cam.y - 8, lw + 2, 14)) {
+            ctx.fillStyle = tk.t2;
+            ctx.fillText(st.name, cam.x + rad + 4, cam.y + 4);
           }
         }
+        drawn++;
+      }
+      for (const [style, arr] of batches) {
+        ctx.fillStyle = style;
+        for (let k = 0; k < arr.length; k += 3) ctx.fillRect(arr[k], arr[k + 1], arr[k + 2], arr[k + 2]);
       }
     }
+    drawnCount.current = drawn;
 
-    // ── CUSTOM CONSTELLATIONS ───────────────────────
-    if (_showCustomConstellations) {
-      for (const cons of _customConstellations) {
-        if (!cons.visible) continue;
-        const pts = cons.stars.map(s => projectStar(s.newRa, s.newDec, _viewRa, _viewDec, _fov, W, H, 500)).filter(Boolean);
-        if (pts.length < 2) continue;
-
-        const cc = cons.color;
-
-        // Lines
-        ctx.strokeStyle = cc + "55";
-        ctx.lineWidth = 1.2;
-        ctx.setLineDash([]);
+    // ── 5. Bodies: host star, planets, moons ─────────────────────
+    const bp = bodyPositions.current;
+    bp.length = 0;
+    const ppd = pixelsPerDegree(cam);
+    for (const body of S.bodies) {
+      const d = body.dir;
+      if (!aboveGround(d[0], d[1], d[2])) continue;
+      const eMag = body.mag + extinction(d[0], d[1], d[2]);
+      if (body.kind !== "host" && eMag > limit + 1) continue;
+      if (!projectInto(cam, d[0], d[1], d[2], 60)) continue;
+      const discR = (body.sizeDeg / 2) * ppd;
+      if (body.kind === "host") {
+        const [r, g, b] = bvToRGB(bvFromTeff(S.hostTeff));
+        const rr = Math.max(3, discR);
+        const glowR = rr * 6 + 18;
+        const grad = ctx.createRadialGradient(cam.x, cam.y, rr * 0.8, cam.x, cam.y, glowR);
+        grad.addColorStop(0, `rgba(${r},${g},${b},0.55)`);
+        grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+        ctx.fillStyle = grad;
+        ctx.fillRect(cam.x - glowR, cam.y - glowR, glowR * 2, glowR * 2);
         ctx.beginPath();
-        ctx.moveTo(pts[0].x, pts[0].y);
-        for (let i = 1; i < pts.length; i++) {
-          const dist = Math.sqrt((pts[i].x-pts[i-1].x)**2 + (pts[i].y-pts[i-1].y)**2);
-          if (dist > W * 0.8) continue;
-          ctx.lineTo(pts[i].x, pts[i].y);
-        }
-        ctx.stroke();
-
-        // Star nodes
-        for (const pt of pts) {
+        ctx.arc(cam.x, cam.y, rr, 0, Math.PI * 2);
+        ctx.fillStyle = `rgb(${Math.min(255, r + 40)},${Math.min(255, g + 40)},${Math.min(255, b + 40)})`;
+        ctx.fill();
+        bp.push({ id: body.id, x: cam.x, y: cam.y, r: rr });
+      } else {
+        const rr = Math.max(1.6, discR);
+        const bx = cam.x, by = cam.y;
+        if (rr >= 4) {
+          // Phase: the lit limb faces the host star on screen.
+          const toward: Vec3 = [d[0] + (hostDir[0] - d[0]) * 0.02, d[1] + (hostDir[1] - d[1]) * 0.02, d[2] + (hostDir[2] - d[2]) * 0.02];
+          let ang = 0;
+          if (projectInto(cam, toward[0], toward[1], toward[2], 100000)) ang = Math.atan2(cam.y - by, cam.x - bx);
+          ctx.save();
+          ctx.translate(bx, by);
+          ctx.rotate(ang);
+          ctx.beginPath(); ctx.arc(0, 0, rr, 0, Math.PI * 2); ctx.fillStyle = "rgb(28,28,32)"; ctx.fill();
+          const tx = (1 - 2 * body.phase) * rr;
           ctx.beginPath();
-          ctx.arc(pt.x, pt.y, 3, 0, Math.PI * 2);
-          ctx.fillStyle = cc + "44";
+          ctx.arc(0, 0, rr, -Math.PI / 2, Math.PI / 2, false);
+          ctx.ellipse(0, 0, Math.abs(tx), rr, 0, Math.PI / 2, tx < 0 ? (3 * Math.PI) / 2 : -Math.PI / 2, tx >= 0);
+          ctx.fillStyle = "rgb(236,232,222)";
           ctx.fill();
-          ctx.strokeStyle = cc + "88";
-          ctx.lineWidth = 0.8;
-          ctx.stroke();
+          ctx.restore();
+        } else {
+          ctx.beginPath(); ctx.arc(bx, by, rr, 0, Math.PI * 2); ctx.fillStyle = "rgb(240,236,226)"; ctx.fill();
         }
-
-        // Label at centroid
-        const centP = projectStar(cons.centRa, cons.centDec, _viewRa, _viewDec, _fov, W, H, 500);
-        if (centP && _fov < 130) {
-          ctx.font = '12px "MD Nichrome", "Jura", sans-serif';
-          ctx.fillStyle = cc + "66";
-          ctx.textAlign = "center";
-          ctx.fillText(cons.name.toUpperCase(), centP.x, centP.y - 16);
-        }
+        bp.push({ id: body.id, x: bx, y: by, r: rr });
+        ctx.font = '12px "DM Sans", sans-serif';
+        ctx.fillStyle = tk.t1;
+        ctx.textAlign = "left";
+        ctx.fillText(body.name, bx + rr + 5, by - 4);
       }
     }
 
-    // ── IN-PROGRESS DRAWING ─────────────────────────
-    if (_drawMode && _currentDrawing.length > 0) {
-      const pts = _currentDrawing.map(s => projectStar(s.newRa, s.newDec, _viewRa, _viewDec, _fov, W, H, 500)).filter(Boolean);
-
-      if (pts.length >= 2) {
-        ctx.strokeStyle = _drawColor + "77";
-        ctx.lineWidth = 1.5;
-        ctx.setLineDash([6, 3]);
+    // ── 6. Sol ────────────────────────────────────────────────────
+    if (o && S.highlightSol && S.solIndex >= 0 && !Number.isNaN(o.mag[S.solIndex])) {
+      const i = S.solIndex;
+      if (aboveGround(o.ux[i], o.uy[i], o.uz[i]) && projectInto(cam, o.ux[i], o.uy[i], o.uz[i], 20)) {
         ctx.beginPath();
-        ctx.moveTo(pts[0].x, pts[0].y);
-        for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
-        ctx.stroke();
-        ctx.setLineDash([]);
-      }
-
-      // Nodes with pulsing rings
-      for (let i = 0; i < pts.length; i++) {
-        if (!pts[i]) continue;
-        const pulse = Math.sin(t * 3 + i * 0.5) * 0.3 + 0.7;
-        ctx.beginPath();
-        ctx.arc(pts[i].x, pts[i].y, 6 * pulse, 0, Math.PI * 2);
-        ctx.strokeStyle = _drawColor + "55";
+        ctx.arc(cam.x, cam.y, 9, 0, Math.PI * 2);
+        ctx.strokeStyle = SOL_MARKER;
         ctx.lineWidth = 1;
         ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(pts[i].x, pts[i].y, 2.5, 0, Math.PI * 2);
-        ctx.fillStyle = _drawColor + "AA";
-        ctx.fill();
-        ctx.font = '12px "JetBrains Mono", monospace';
-        ctx.fillStyle = _drawColor;
+        ctx.font = '12px "DM Sans", sans-serif';
+        ctx.fillStyle = SOL_MARKER;
         ctx.textAlign = "center";
-        ctx.fillText(`${i + 1}`, pts[i].x, pts[i].y - 10);
+        ctx.fillText("Sun", cam.x, cam.y - 14);
       }
-
-      ctx.font = '12px "MD Nichrome", "Jura", sans-serif';
-      ctx.fillStyle = _drawColor + "88";
-      ctx.textAlign = "center";
-      ctx.fillText(`DRAWING: ${_currentDrawing.length} STAR${_currentDrawing.length !== 1 ? 'S' : ''} SELECTED`, W / 2, 24);
-      ctx.font = '12px "DM Sans", sans-serif';
-      ctx.fillStyle = tokens.text.t3;
-      ctx.fillText("Click stars to connect · Esc to cancel", W / 2, 38);
-    } else if (_drawMode) {
-      ctx.font = '12px "MD Nichrome", "Jura", sans-serif';
-      ctx.fillStyle = _drawColor + "88";
-      ctx.textAlign = "center";
-      ctx.fillText("CONSTELLATION DRAWING MODE", W / 2, 24);
-      ctx.font = '12px "DM Sans", sans-serif';
-      ctx.fillStyle = tokens.text.t3;
-      ctx.fillText("Click a star to begin", W / 2, 38);
     }
 
-    // ── HUD OVERLAYS ────────────────────────────────
-    ctx.font = '16px "MD Nichrome", "Jura", sans-serif';
-    ctx.fillStyle = tokens.sim.accent;
-    ctx.textAlign = "right";
-    // On a phone the credit line spans the bottom edge, so the readout
-    // sits above it instead of on top of it.
-    // (the credit wraps to two lines below 480px, about 50px tall).
-    const hudLift = W < 480 ? 48 : 0;
-    ctx.fillText(`${Math.round(_fov)}°`, W-18, H-30-hudLift);
-    ctx.font = '12px "DM Sans", sans-serif';
-    ctx.fillStyle = tokens.text.t4;
-    ctx.fillText("FIELD OF VIEW", W-18, H-18-hudLift);
-
-    ctx.textAlign = "left";
-    ctx.font = '12px "MD Nichrome", "Jura", sans-serif';
-    ctx.fillStyle = tokens.text.t4;
-    // Above the credit line (the DOM footer at bottom:14), not under it.
-    ctx.fillText(`${count} STARS IN VIEW`, 18, H-44-(W < 480 ? 28 : 0));
-
-    if (_showMilkyWay && !_mwReady) {
-      ctx.font = '12px "MD Nichrome", "Jura", sans-serif';
-      ctx.fillStyle = "rgb(255,165,0)";
+    // ── 7. The writer's constellations, for this vantage only ────
+    const dirOfId = (id: string): Vec3 | null => {
+      const s = S.catalogueById?.get(id);
+      if (!s || !o || Number.isNaN(o.mag[s.i])) return null;
+      return [o.ux[s.i], o.uy[s.i], o.uz[s.i]];
+    };
+    if (S.showCustomConstellations) {
+      for (const c of S.vantageConstellations) {
+        if (!c.visible) continue;
+        const dirs = c.starIds.length ? c.starIds.map(dirOfId) : (c.legacyDirs ?? []);
+        ctx.strokeStyle = c.color;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        let prev: { x: number; y: number } | null = null;
+        let cx = 0, cy = 0, cn = 0;
+        for (const d of dirs) {
+          if (!d || !projectInto(cam, d[0], d[1], d[2], 400)) { prev = null; continue; }
+          if (prev && Math.hypot(cam.x - prev.x, cam.y - prev.y) < Math.max(W, H)) { ctx.moveTo(prev.x, prev.y); ctx.lineTo(cam.x, cam.y); }
+          prev = { x: cam.x, y: cam.y };
+          cx += cam.x; cy += cam.y; cn++;
+        }
+        ctx.stroke();
+        if (cn > 0 && v.fov < 140) {
+          ctx.font = '12px "DM Sans", sans-serif';
+          ctx.fillStyle = c.color;
+          ctx.textAlign = "center";
+          ctx.fillText(c.name, cx / cn, cy / cn - 14);
+        }
+      }
+    }
+    if (S.drawMode && o) {
+      ctx.strokeStyle = S.drawColor;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([6, 3]);
+      ctx.beginPath();
+      let first = true;
+      S.currentDrawing.forEach((i) => {
+        if (!projectInto(cam, o.ux[i], o.uy[i], o.uz[i], 400)) { first = true; return; }
+        if (first) ctx.moveTo(cam.x, cam.y); else ctx.lineTo(cam.x, cam.y);
+        first = false;
+      });
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.font = '12px "JetBrains Mono", monospace';
+      ctx.fillStyle = S.drawColor;
       ctx.textAlign = "center";
-      ctx.fillText("COMPUTING GALACTIC STRUCTURE...", W/2, H-44-hudLift);
+      S.currentDrawing.forEach((i, n) => {
+        if (projectInto(cam, o.ux[i], o.uy[i], o.uz[i], 0)) {
+          ctx.beginPath(); ctx.arc(cam.x, cam.y, 6, 0, Math.PI * 2); ctx.strokeStyle = S.drawColor; ctx.lineWidth = 1; ctx.stroke();
+          ctx.fillText(String(n + 1), cam.x, cam.y - 10);
+        }
+      });
     }
 
-    // `stage` is a useCallback with an empty dep list, so it is stable for the
-    // life of the component. Naming it here would re-create this deliberately
-    // stable render callback for no benefit, so the rule is silenced instead.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Stable callback, reads all values from refs
+    // ── 8. Horizon and compass ───────────────────────────────────
+    if (stand) {
+      const h = S.geometry.horizon;
+      ctx.strokeStyle = tk.line;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      let on = false;
+      for (let az = 0; az <= 360; az += 2) {
+        const d = fromFrame(h, [Math.cos(az * DEG), -Math.sin(az * DEG), 0]);
+        if (projectInto(cam, d[0], d[1], d[2], 200)) { if (on) ctx.lineTo(cam.x, cam.y); else ctx.moveTo(cam.x, cam.y); on = true; } else on = false;
+      }
+      ctx.stroke();
+      ctx.font = '14px "DM Sans", sans-serif';
+      ctx.textAlign = "center";
+      ctx.fillStyle = tk.t1;
+      for (const [label, az] of CARDINALS) {
+        const d = fromFrame(h, [Math.cos(az * DEG) * Math.cos(2 * DEG), -Math.sin(az * DEG) * Math.cos(2 * DEG), Math.sin(2 * DEG)]);
+        if (projectInto(cam, d[0], d[1], d[2], 0)) ctx.fillText(label, cam.x, cam.y - 4);
+      }
+    }
 
-  // ── Canvas setup ────────────────────────────────────
+    // ── 9. Selection ──────────────────────────────────────────────
+    const mark = (i: number | null, solid: boolean) => {
+      if (i === null || !o || Number.isNaN(o.mag[i])) return;
+      if (!projectInto(cam, o.ux[i], o.uy[i], o.uz[i], 0)) return;
+      ctx.beginPath();
+      ctx.arc(cam.x, cam.y, 11, 0, Math.PI * 2);
+      ctx.strokeStyle = tk.primary;
+      ctx.lineWidth = solid ? 1.5 : 1;
+      if (!solid) ctx.setLineDash([2, 3]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    };
+    mark(S.hovered, false);
+    mark(S.selected, true);
+  }, []);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    // Assigning canvas.width clears and reallocates the canvas even when
-    // the value is unchanged, so only do it when the size really changed,
-    // and at most once per burst of resize events.
-    //
-    // Sized to the canvas's own box, not the window: the sky sits under the
-    // header (and under the docked toolbar on phones), so a window-sized
-    // backing store was stretched to fit and the sky was squashed. The
-    // backing store follows devicePixelRatio (capped at 2, as the WebGL sims
-    // do) so stars and labels are sharp on high-density screens.
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) return;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      dprRef.current = dpr;
       const w = Math.round(rect.width * dpr), h = Math.round(rect.height * dpr);
-      canvasDprRef.current = dpr;
       if (canvas.width !== w) canvas.width = w;
       if (canvas.height !== h) canvas.height = h;
     };
     resize();
-    let resizeTimer: ReturnType<typeof setTimeout> | null = null;
-    const onResize = () => {
-      if (resizeTimer) clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(resize, 80);
-    };
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    const onResize = () => { if (timer) clearTimeout(timer); timer = setTimeout(resize, 80); };
     window.addEventListener("resize", onResize);
-    // The box also changes without a window resize (the toolbar docking
-    // above the sky on a phone, the bridge opening beside it).
-    const boxObserver = typeof ResizeObserver !== "undefined" ? new ResizeObserver(onResize) : null;
-    boxObserver?.observe(canvas);
-    // (1.7) One loop from the shared helper: it parks while the tab is
-    // hidden or the canvas is off screen, and hands back a clamped dt, which
-    // is what the zoom easing below runs on.
+    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(onResize) : null;
+    ro?.observe(canvas);
     const loop = createFrameLoop({
       target: canvas,
       render: ({ time, dt }) => {
-        const gap = fovTargetRef.current - fovRef.current;
+        const v = viewRef.current;
+        const gap = fovTargetRef.current - v.fov;
         if (gap !== 0) {
-          fovRef.current = Math.abs(gap) < 0.02 ? fovTargetRef.current : fovRef.current + gap * smoothingFor(dt);
+          const reduce = sceneRef.current.reducedMotion;
+          v.fov = reduce || Math.abs(gap) < 0.01 * v.fov ? fovTargetRef.current : v.fov + gap * smoothingFor(dt);
+          lastMove.current = performance.now();
         }
         render(time);
       },
@@ -1910,779 +951,969 @@ export default function ExoSkyV2({
     return () => {
       loop.stop();
       window.removeEventListener("resize", onResize);
-      boxObserver?.disconnect();
-      if (resizeTimer) clearTimeout(resizeTimer);
-      if (fovPublishTimer.current) clearTimeout(fovPublishTimer.current);
+      ro?.disconnect();
+      if (timer) clearTimeout(timer);
+      if (publishTimer.current) clearTimeout(publishTimer.current);
     };
-  }, [render]); // render is now stable ([] deps) so this effect runs once
+  }, [render]);
 
-  // ── Keyboard shortcuts ─────────────────────────────
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === '?') { setShowKbHelp(prev => !prev); return; }
-      if (e.key === 'Escape') {
-        if (showKbHelp) { setShowKbHelp(false); return; }
-        if (namingMode) { setNamingMode(false); setConstellationName(""); }
-        else if (drawMode) cancelDrawing();
-      }
-      if (e.key === 'Enter' && namingMode && constellationName.trim()) saveConstellation();
-      if (e.key === 'z' && (e.ctrlKey || e.metaKey) && drawMode && !namingMode) { e.preventDefault(); undoLastStar(); }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [drawMode, namingMode, constellationName, currentDrawing, showKbHelp]);
+  // ── Picking ──────────────────────────────────────────────────────
+  const pick = useCallback((mx: number, my: number, radius: number): number | null => {
+    const p = positions.current;
+    let best: number | null = null, bd = radius * radius;
+    for (let k = 0; k < p.length; k += 3) {
+      const dx = p[k + 1] - mx, dy = p[k + 2] - my;
+      const d = dx * dx + dy * dy;
+      if (d < bd) { bd = d; best = p[k]; }
+    }
+    return best;
+  }, []);
 
-  // ── Mouse & touch interaction ──────────────────────
-  // During drag, update refs directly (no re-render) and batch state sync on pointerUp
-  // Pinch-to-zoom: track two active pointers and adjust FOV based on distance change
-  const getPinchDist = () => {
-    const pts = [...activePointers.current.values()];
-    if (pts.length < 2) return 0;
-    const dx = pts[0].x - pts[1].x, dy = pts[0].y - pts[1].y;
-    return Math.sqrt(dx * dx + dy * dy);
+  // ── Pointer: drag, pinch, tap ────────────────────────────────────
+  const pointers = useRef(new Map<number, { x: number; y: number }>());
+  const dragging = useRef(false);
+  const downAt = useRef({ x: 0, y: 0 });
+  const last = useRef({ x: 0, y: 0 });
+  const pinchDist = useRef(0);
+  const lastHover = useRef(0);
+  const localXY = (e: React.PointerEvent) => {
+    const box = e.currentTarget.getBoundingClientRect();
+    return { x: e.clientX - box.left, y: e.clientY - box.top, w: box.width };
   };
-
-  const onDown = e => {
-    activePointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    if (activePointers.current.size === 1) {
-      isDragging.current = true;
-      const box = e.currentTarget.getBoundingClientRect();
-      lastMouse.current = {x:e.clientX - box.left,y:e.clientY - box.top};
-      pointerDownPos.current = {x:e.clientX - box.left,y:e.clientY - box.top};
-    } else if (activePointers.current.size === 2) {
-      isDragging.current = false; // Cancel drag when pinching
-      lastPinchDist.current = getPinchDist();
+  const onPointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+    const p = localXY(e);
+    if (pointers.current.size === 1) {
+      dragging.current = true;
+      downAt.current = { x: p.x, y: p.y };
+      last.current = { x: p.x, y: p.y };
+    } else if (pointers.current.size === 2) {
+      dragging.current = false;
+      const [a, b] = [...pointers.current.values()];
+      pinchDist.current = Math.hypot(a.x - b.x, a.y - b.y);
     }
   };
-  const onMove = e => {
-    activePointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    // Canvas-local, the space the star positions are recorded in.
-    const box = e.currentTarget.getBoundingClientRect();
-    const mx = e.clientX - box.left, my = e.clientY - box.top;
-
-    // Pinch-to-zoom with two active pointers
-    if (activePointers.current.size >= 2) {
-      const dist = getPinchDist();
-      if (lastPinchDist.current > 0 && dist > 0) {
-        const ratio = lastPinchDist.current / dist;
-        const newFov = Math.max(12, Math.min(160, fovRef.current * ratio));
-        fovRef.current = newFov;
-        fovTargetRef.current = newFov;
-        setFov(newFov);
+  const onPointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    if (pointers.current.has(e.pointerId)) pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const p = localXY(e);
+    if (pointers.current.size >= 2) {
+      const [a, b] = [...pointers.current.values()];
+      const d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (pinchDist.current > 0 && d > 0) {
+        // Ref-only during the gesture (E17): React hears about it at rest.
+        fovTargetRef.current = zoomFov(fovTargetRef.current, pinchDist.current / d);
+        viewRef.current.fov = fovTargetRef.current;
+        lastMove.current = performance.now();
       }
-      lastPinchDist.current = dist;
+      pinchDist.current = d;
       return;
     }
-
-    // ── Throttled hover detection with squared distance (no sqrt) ──
-    const now = performance.now();
-    if (now - lastHoverCheckRef.current > 100) {
-      lastHoverCheckRef.current = now;
-      let cl = null, cdSq = 28 * 28; // squared threshold (28px)
-      const positions = starPositions.current; // [star, x, y, star, x, y, ...]
-      for (let i = 0; i < positions.length; i += 3) {
-        const dxS = positions[i + 1] - mx, dyS = positions[i + 2] - my;
-        const dSq = dxS * dxS + dyS * dyS;
-        if (dSq < cdSq) { cl = positions[i]; cdSq = dSq; }
-      }
-      // Same star object as last time: React bails out, no re-render.
-      setHoveredStar(cl);
-    }
-
-    if (!isDragging.current) return;
-    const dx = mx - lastMouse.current.x, dy = my - lastMouse.current.y;
-    lastMouse.current = {x:mx,y:my};
-    const totalDist = Math.sqrt((mx-pointerDownPos.current.x)**2 + (my-pointerDownPos.current.y)**2);
-    if (drawMode && totalDist < 8) return; // Don't drag yet in draw mode until threshold
-    const sens = fovRef.current / 800;
-    // Update refs directly during drag, no state updates, no re-renders
-    viewRaRef.current = ((viewRaRef.current - dx*sens) % 360 + 360) % 360;
-    viewDecRef.current = Math.max(-89, Math.min(89, viewDecRef.current + dy*sens));
-  };
-  const onUp = e => {
-    activePointers.current.delete(e.pointerId);
-    if (activePointers.current.size < 2) lastPinchDist.current = 0;
-
-    const box = e.currentTarget.getBoundingClientRect();
-    const mx = e.clientX - box.left, my = e.clientY - box.top;
-    const totalDist = Math.sqrt((mx-pointerDownPos.current.x)**2 + (my-pointerDownPos.current.y)**2);
-
-    // Sync ref values back to state on pointer up (single batched update)
-    if (isDragging.current) {
-      setViewRa(viewRaRef.current);
-      setViewDec(viewDecRef.current);
-    }
-
-    // If in draw mode and this was a click (not a drag), add star to constellation
-    if (drawMode && totalDist < 8 && !namingMode) {
-      let closest = null, closestDistSq = 45 * 45; // Squared threshold
-      const positions = starPositions.current;
-      for (let i = 0; i < positions.length; i += 3) {
-        const dxS = positions[i + 1]-mx, dyS = positions[i + 2]-my;
-        const dSq = dxS*dxS + dyS*dyS;
-        if(dSq<closestDistSq){closest=positions[i];closestDistSq=dSq;}
-      }
-      if (closest) {
-        const last = currentDrawing[currentDrawing.length - 1];
-        if (!last || last.newRa !== closest.newRa || last.newDec !== closest.newDec) {
-          setCurrentDrawing(prev => [...prev, {
-            name: closest.name || `Star (${closest.newRa.toFixed(1)}°, ${closest.newDec.toFixed(1)}°)`,
-            newRa: closest.newRa,
-            newDec: closest.newDec,
-            appMag: closest.appMag,
-            rgb: closest.rgb,
-          }]);
-        }
+    if (e.pointerType === "mouse" && !dragging.current) {
+      const now = performance.now();
+      if (now - lastHover.current > 80) {
+        lastHover.current = now;
+        setHovered(pick(p.x, p.y, 16));
       }
     }
-
-    isDragging.current = false;
+    if (!dragging.current) return;
+    const dx = p.x - last.current.x, dy = p.y - last.current.y;
+    last.current = { x: p.x, y: p.y };
+    if (Math.hypot(p.x - downAt.current.x, p.y - downAt.current.y) < 6) return;
+    // Grab the sky: it follows the pointer. Longitude grows to the LEFT
+    // (we are inside the sphere), so a rightward drag increases it.
+    const degPerPx = viewRef.current.fov / Math.max(1, p.w);
+    viewRef.current.lon = ((viewRef.current.lon + dx * degPerPx) % 360 + 360) % 360;
+    viewRef.current.lat = clamp(viewRef.current.lat + dy * degPerPx, -90, 90);
+    lastMove.current = performance.now();
   };
-  // (1.7) A wheel notch moves the zoom target; the loop eases to it. React
-  // hears about it once the wheel rests, instead of re-rendering the whole
-  // simulator on every notch.
-  const onWheel = e => {
-    e.preventDefault();
-    const next = Math.max(12, Math.min(160, fovTargetRef.current + (e.deltaY > 0 ? 5 : -5)));
-    fovTargetRef.current = next;
-    if (fovPublishTimer.current) clearTimeout(fovPublishTimer.current);
-    fovPublishTimer.current = setTimeout(() => { fovPublishTimer.current = null; setFov(fovTargetRef.current); }, 140);
+  const onPointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const p = localXY(e);
+    const wasTap = pointers.current.size === 1 && Math.hypot(p.x - downAt.current.x, p.y - downAt.current.y) < 6;
+    pointers.current.delete(e.pointerId);
+    if (pointers.current.size < 2) pinchDist.current = 0;
+    dragging.current = false;
+    publishView();
+    if (!wasTap) return;
+    const hit = pick(p.x, p.y, e.pointerType === "touch" ? 28 : 18);
+    if (drawMode && !namingMode) {
+      if (hit !== null) setCurrentDrawing((prev) => (prev[prev.length - 1] === hit ? prev : [...prev, hit]));
+      return;
+    }
+    setSelected(hit);
+  };
+  const onWheel = (e: React.WheelEvent<HTMLCanvasElement>) => {
+    fovTargetRef.current = zoomFov(fovTargetRef.current, e.deltaY > 0 ? 1.15 : 1 / 1.15);
+    publishView();
+  };
+  // A non-passive wheel listener, so the page does not scroll under the sky.
+  useEffect(() => {
+    const c = canvasRef.current;
+    if (!c) return;
+    const stop = (ev: WheelEvent) => ev.preventDefault();
+    c.addEventListener("wheel", stop, { passive: false });
+    return () => c.removeEventListener("wheel", stop);
+  }, []);
+
+  // ── Keyboard (E19) ───────────────────────────────────────────────
+  const onCanvasKey = (e: ReactKeyboardEvent<HTMLCanvasElement>) => {
+    const step = viewRef.current.fov / 10;
+    let handled = true;
+    switch (e.key) {
+      case "ArrowLeft": viewRef.current.lon = (viewRef.current.lon + step) % 360; break;
+      case "ArrowRight": viewRef.current.lon = (viewRef.current.lon - step + 360) % 360; break;
+      case "ArrowUp": viewRef.current.lat = clamp(viewRef.current.lat + step, -90, 90); break;
+      case "ArrowDown": viewRef.current.lat = clamp(viewRef.current.lat - step, -90, 90); break;
+      case "+": case "=": fovTargetRef.current = zoomFov(fovTargetRef.current, 1 / 1.25); break;
+      case "-": case "_": fovTargetRef.current = zoomFov(fovTargetRef.current, 1.25); break;
+      default: handled = false;
+    }
+    if (handled) {
+      e.preventDefault();
+      lastMove.current = performance.now();
+      publishView();
+    }
+  };
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement | null)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") {
+        if (e.key === "Escape" && namingMode) { setNamingMode(false); setConstellationName(""); }
+        return;
+      }
+      if (e.key === "?") { setShowKbHelp((p) => !p); return; }
+      if (e.key === "Escape") {
+        if (showKbHelp) { setShowKbHelp(false); return; }
+        if (briefOpen) { setBriefOpen(false); return; }
+        if (namingMode) { setNamingMode(false); setConstellationName(""); return; }
+        if (drawMode) { setCurrentDrawing([]); setDrawMode(false); return; }
+        setSelected(null);
+      }
+      if (e.key === "z" && (e.ctrlKey || e.metaKey) && drawMode) { e.preventDefault(); setCurrentDrawing((p) => p.slice(0, -1)); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [drawMode, namingMode, showKbHelp, briefOpen]);
+
+  // Announce the view at rest (aria-live), so a screen-reader user knows where they look.
+  useEffect(() => {
+    const fovTxt = view.fov < 10 ? view.fov.toFixed(1) : Math.round(view.fov).toString();
+    if (mode === "stand") {
+      const az = (360 - view.lon) % 360;
+      setAnnounce(`Facing ${AZ_NAMES[Math.round(az / 45) % 8]}, ${Math.round(view.lat)}° up, field ${fovTxt}°.`);
+    } else {
+      setAnnounce(`Looking at right ascension ${Math.round(view.lon)}°, declination ${Math.round(view.lat)}°, field ${fovTxt}°.`);
+    }
+  }, [view, mode]);
+
+  // ── Persistence bridge ───────────────────────────────────────────
+  const placementForSave = placement && placement.source !== "canon" ? placement : null;
+  useEffect(() => {
+    const onRequestState = () => {
+      const payload = toExoskyPayload({
+        mode: worldEntityId ? "entity" : vantageKey === "custom" || placementForSave ? "custom" : "catalog",
+        starName: resolved.hostName,
+        planetName: resolved.label,
+        distPc: resolved.position ? Math.hypot(...resolved.position.value) : 0,
+        armNote: armNote(arm),
+        atmoDesc: atmo.desc,
+        galacticL: placementForSave?.l,
+        galacticB: placementForSave?.b,
+        vantageKey,
+        entityId: worldEntityId,
+        stand: { mode, latitude, timeOfDay, substellarLongitude, dayNumber, overrides },
+        readouts: { nakedEye: obs?.nakedEye ?? null, poleStar: poleStar && catalogue ? starLabel(catalogue[poleStar.index]) : null },
+        viewRa: view.lon, viewDec: view.lat, fov: view.fov,
+        epochYears,
+        showConstellations, showAtmosphere, showGrid, showMilkyWay, showStarNames, showHorizon,
+        customConstellations: customConstellations.map((c) => ({
+          name: c.name,
+          color: c.color,
+          planetName: c.planetName,
+          starIds: c.starIds,
+          epochYears: c.epochYears,
+          vantageKey: c.vantageKey,
+          entityId: c.entityId,
+          stars: c.starIds.map((id, n) => {
+            const s = catalogueById?.get(id);
+            const d = s && obs ? xyzToRaDec(obs.ux[s.i], obs.uy[s.i], obs.uz[s.i]) : { ra: 0, dec: 0 };
+            return { id, name: c.starNames[n] ?? id, ra: d.ra, dec: d.dec, appMag: s && obs ? obs.mag[s.i] : null };
+          }),
+        })),
+      });
+      // Distance for a custom position lives in parameters too.
+      if (placementForSave) (payload.parameters.exosky as { vantage: { distPc: number } }).vantage.distPc = placementForSave.distPc;
+      window.postMessage({ type: "STELLARFORGE_SAVE", payload }, "*");
+    };
+    const onLoad = (event: Event) => {
+      const save = fromExoskySave((event as CustomEvent).detail);
+      if (!save) return;
+      setHandoffPayload(null);
+      const key = save.vantage.key ?? VANTAGES.find((p) => p.planet === save.vantage.planetName)?.key ?? null;
+      if (key && (key.startsWith("world:") || VANTAGES.some((p) => p.key === key))) {
+        setVantageKey(key);
+        setPlacementDraft(null);
+      } else if (save.vantage.galacticL !== null && save.vantage.galacticB !== null) {
+        setVantageKey("custom");
+        setPlacementDraft({ l: save.vantage.galacticL, b: save.vantage.galacticB, distPc: save.vantage.distPc || 100 });
+      }
+      if (save.stand) {
+        setMode(save.stand.mode);
+        setLatitude(save.stand.latitude);
+        setTimeOfDay(save.stand.timeOfDay);
+        setSubstellarLongitude(save.stand.substellarLongitude);
+        setDayNumber(save.stand.dayNumber);
+        setOverrides(save.stand.overrides as WriterOverrides);
+      }
+      setView({ lon: save.view.ra, lat: save.view.dec, fov: clamp(save.view.fov, FOV_MIN, FOV_MAX) });
+      setEpochYears(save.view.epochYears);
+      setShowConstellations(save.display.constellations);
+      setShowAtmosphere(save.display.atmosphere);
+      setShowGrid(save.display.grid);
+      setShowMilkyWay(save.display.milkyWay);
+      setShowStarNames(save.display.starNames);
+      setShowHorizon(save.display.horizon);
+      setCustomConstellations(save.constellations.map((c, n) => ({
+        id: Date.now() + n,
+        name: c.name,
+        color: c.color,
+        visible: true,
+        starIds: c.starIds ?? [],
+        legacyDirs: c.starIds && c.starIds.length ? undefined : c.stars.map((s) => unitFromRaDec(s.ra, s.dec)),
+        starNames: c.stars.map((s) => s.name),
+        epochYears: c.epochYears ?? 0,
+        vantageKey: c.vantageKey ?? key,
+        planetName: c.fromPlanet,
+        entityId: c.entityId ?? null,
+      })));
+    };
+    window.addEventListener("STELLARFORGE_REQUEST_STATE", onRequestState);
+    window.addEventListener("STELLARFORGE_LOAD", onLoad as EventListener);
+    return () => {
+      window.removeEventListener("STELLARFORGE_REQUEST_STATE", onRequestState);
+      window.removeEventListener("STELLARFORGE_LOAD", onLoad as EventListener);
+    };
+  });
+
+  // ── Canon writes ─────────────────────────────────────────────────
+  const canWrite = !!worldId && !!worldEntity;
+  const writeFacts = useCallback(async (asserts: ExoskyAssert[], supersede = false) => {
+    const conflicted: ExoskyAssert[] = [];
+    try {
+      for (const a of asserts) {
+        const r = await assertFact.mutateAsync({ ...a, supersede });
+        if ("status" in r && r.status === "conflict") conflicted.push(a);
+      }
+    } catch {
+      // useAssertFact already showed the mapped error; stop here.
+      return;
+    }
+    setConflicts(conflicted);
+    toast({ title: conflicted.length ? `${asserts.length - conflicted.length} FACTS WRITTEN. ${conflicted.length} HELD BY CANON.` : "CANON UPDATED." });
+  }, [assertFact, toast]);
+
+  const savePole = () => {
+    if (!worldEntity || worldEntity.entity_type === "star") return;
+    void writeFacts(poleFacts(worldEntity.id, resolved.planet.pole.value, resolved.planet.precessionYears.source === "default" ? null : resolved.planet.precessionYears.value));
+  };
+  const savePlacement = () => {
+    if (!worldEntity || !placement) return;
+    const target = canonSky?.star?.id ?? worldEntity.id;
+    void writeFacts([galacticPositionFact(target, placement)]);
+    setPlacementDraft(null);
+  };
+  const saveReadouts = () => {
+    if (!worldEntity || !obs) return;
+    void writeFacts(skyReadoutFacts(worldEntity.id, {
+      poleStar: poleStar && catalogue ? starLabel(catalogue[poleStar.index]) : null,
+      nakedEye: obs.nakedEye,
+      epochYears,
+    }));
+  };
+  const addConstellationToCanon = async (c: DrawnConstellation) => {
+    if (!worldEntity || c.starIds.length < 2) return;
+    let created: { id: string };
+    try {
+      created = await createEntity.mutateAsync(constellationEntityInput({ name: c.name, starIds: c.starIds, epochYears: c.epochYears }, worldEntity));
+    } catch {
+      return; // useCreateEntity already showed the mapped error.
+    }
+    const names = [...(canonSky?.constellations ?? []).map((x) => x.entity.name), c.name];
+    await writeFacts(constellationFacts(created.id, { name: c.name, starIds: c.starIds, epochYears: c.epochYears }, worldEntity.id, names));
+    setCustomConstellations((prev) => prev.map((x) => (x.id === c.id ? { ...x, entityId: created.id } : x)));
   };
 
-  // ── Constellation drawing actions ───────────────────
-  const undoLastStar = () => setCurrentDrawing(prev => prev.slice(0, -1));
-
-  const cancelDrawing = () => {
-    setCurrentDrawing([]);
-    setDrawMode(false);
-    setNamingMode(false);
-    setConstellationName("");
-  };
-
-  const finishDrawing = () => {
-    if (currentDrawing.length < 2) return;
-    setNamingMode(true);
-    setConstellationName("");
-  };
-
+  // ── Constellation actions ────────────────────────────────────────
+  const finishDrawing = () => { if (currentDrawing.length >= 2) { setNamingMode(true); setConstellationName(""); } };
   const saveConstellation = () => {
-    if (!constellationName.trim() || currentDrawing.length < 2) return;
-    const centRa = currentDrawing.reduce((s,c) => s+c.newRa, 0) / currentDrawing.length;
-    const centDec = currentDrawing.reduce((s,c) => s+c.newDec, 0) / currentDrawing.length;
-    setCustomConstellations(prev => [...prev, {
+    if (!constellationName.trim() || currentDrawing.length < 2 || !catalogue) return;
+    setCustomConstellations((prev) => [...prev, {
       id: Date.now(),
       name: constellationName.trim(),
-      stars: [...currentDrawing],
       color: drawColor,
       visible: true,
-      planetIndex: customMode ? -1 : selectedPlanet,
-      planetName: planet.planet,
-      centRa, centDec,
+      starIds: currentDrawing.map((i) => catalogue[i].id),
+      starNames: currentDrawing.map((i) => starLabel(catalogue[i])),
+      epochYears,
+      vantageKey,
+      planetName: resolved.label,
+      entityId: null,
     }]);
     setCurrentDrawing([]);
     setNamingMode(false);
     setConstellationName("");
     setDrawMode(false);
   };
-
-  const deleteConstellation = (id) => setCustomConstellations(prev => prev.filter(c => c.id !== id));
-  const toggleConstellation = (id) => setCustomConstellations(prev => prev.map(c => c.id === id ? {...c, visible: !c.visible} : c));
-
   const exportConstellations = () => {
-    const data = customConstellations.map(c => ({
-      name: c.name,
-      color: c.color,
-      planet: c.planetName || EXOPLANET_SYSTEMS[c.planetIndex]?.planet || "Unknown",
-      stars: c.stars.map(s => ({ name: s.name, ra: s.newRa, dec: s.newDec, appMag: s.appMag })),
+    const data = vantageConstellations.map((c) => ({
+      name: c.name, color: c.color, seenFrom: c.planetName, epochYears: c.epochYears,
+      stars: c.starIds.map((id, n) => ({ id, name: c.starNames[n] })),
     }));
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = `exosky-constellations-${EXOPLANET_SYSTEMS[selectedPlanet].planet.replace(/\s+/g,'-')}.json`;
-    a.click(); URL.revokeObjectURL(url);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `exosky-constellations-${resolved.label.replace(/[^\w]+/g, "-")}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
-  const findSol = () => {
-    const sol = transformedStars.find(s => s.isSol);
-    if (sol) { setViewRa(sol.newRa); setViewDec(sol.newDec); setFov(40); }
-  };
-
-  const solData = useMemo(() => transformedStars.find(s => s.isSol), [transformedStars]);
-  const visibleCount = useMemo(() => {
-    const lim = showAtmosphere ? 6.5 - atmo.extinction*atmoDensity*2.5 : 6.5;
-    return transformedStars.filter(s => s.appMag < lim).length + backgroundField.filter(s => s.baseMag < lim).length;
-  }, [transformedStars, backgroundField, showAtmosphere, atmo, atmoDensity]);
-
-  // Consequence flag (Brief S4, 11-SIMULATOR-CONSTELLATION.md §2) — a pure
-  // predicate over the readout above, not a separate data source.
-  const simFlags = useMemo(() => evaluateExoSkyFlags({ visibleCount }), [visibleCount]);
-
-  // ── Galactic arm info ───────────────────────────────
-  const armInfo = useMemo(() => {
-    const R = Math.sqrt(obsGC[0]**2 + obsGC[1]**2);
-    const theta = Math.atan2(obsGC[1], obsGC[0]);
-    let closestArm = "Inter-arm region";
-    let minD = Infinity;
-    for (const arm of SPIRAL_ARMS) {
-      const armAngle = arm.theta0 + spiralArmAngle(R);
-      let dT = theta - armAngle;
-      dT = ((dT % (2*Math.PI)) + 3*Math.PI) % (2*Math.PI) - Math.PI;
-      const d = Math.abs(dT) * R;
-      if (d < minD) { minD = d; closestArm = arm.name; }
+  // ── Star chart (N10) ─────────────────────────────────────────────
+  const printChart = () => {
+    if (!obs || !catalogue) return;
+    const stars = [];
+    for (let k = 0; k < obs.index.length; k++) {
+      const i = obs.index[k];
+      if (obs.mag[i] > 5.5) break;
+      const d: Vec3 = [obs.ux[i], obs.uy[i], obs.uz[i]];
+      stars.push({ dir: d, mag: obs.mag[i] + (mode === "stand" ? kEff * airmass(Math.max(0, altAz(geometry.horizon, d).alt)) : 0), label: catalogue[i].name, isSol: i === solIndex });
     }
-    const inArm = minD < ARM_WIDTH * 1.5;
-    return {
-      R: R.toFixed(0),
-      closestArm,
-      inArm,
-      distToArm: minD.toFixed(0),
-      z: obsGC[2].toFixed(0),
-    };
-  }, [obsGC]);
+    const lines = vantageConstellations.flatMap((c) => {
+      const ds = c.starIds.map((id) => { const s = catalogueById?.get(id); return s ? [obs.ux[s.i], obs.uy[s.i], obs.uz[s.i]] as Vec3 : null; });
+      const out: Array<{ a: Vec3; b: Vec3; colour: string }> = [];
+      for (let n = 1; n < ds.length; n++) if (ds[n - 1] && ds[n]) out.push({ a: ds[n - 1]!, b: ds[n]!, colour: c.color });
+      return out;
+    });
+    const svg = buildStarChartSvg({
+      layout: mode === "stand" ? "horizon" : "pole",
+      frame: mode === "stand" ? geometry.horizon : geometry.eqFrame,
+      south: latitude < 0,
+      stars,
+      lines,
+      bodies: bodies.filter((b) => b.kind !== "host").map((b) => ({ dir: b.dir, label: b.name, mag: b.mag })),
+      title: `The sky from ${resolved.label}`,
+      subtitle: mode === "stand"
+        ? `${Math.abs(latitude)}° ${latitude >= 0 ? "N" : "S"} · ${resolved.planet.tidallyLocked.value ? `${Math.round(substellarLongitude)}° from the substellar point` : `local time ${(timeOfDay * 24).toFixed(1)} h`} · epoch ${epochYears === 0 ? "J2000" : `${epochYears > 0 ? "+" : ""}${epochYears} yr`}`
+        : `Centred on the ${latitude < 0 ? "south" : "north"} celestial pole · epoch ${epochYears === 0 ? "J2000" : `${epochYears > 0 ? "+" : ""}${epochYears} yr`}`,
+      credit: `StellarForge ExoSky · ${CATALOGUE_CREDIT}`,
+    });
+    const w = window.open("", "_blank");
+    if (w) {
+      w.document.write(`<!doctype html><title>Star chart: ${resolved.label.replace(/</g, "")}</title><style>@page{size:auto;margin:12mm}body{margin:0;display:flex;justify-content:center}svg{width:100%;max-width:190mm;height:auto}</style>${svg}`);
+      w.document.close();
+      setTimeout(() => w.print(), 300);
+    } else {
+      const blob = new Blob([svg], { type: "image/svg+xml" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = `exosky-chart-${resolved.label.replace(/[^\w]+/g, "-")}.svg`; a.click();
+      URL.revokeObjectURL(url);
+    }
+  };
 
-  // ═══════════════════════════════════════════════════════════════
+  // ── Scene brief (N7) ─────────────────────────────────────────────
+  const brief = useMemo(() => {
+    let brightestNight: { name: string; mag: number } | null = null;
+    for (const b of bodies) if (b.kind !== "host" && (!brightestNight || b.mag < brightestNight.mag)) brightestNight = { name: b.name, mag: b.mag };
+    if (obs && catalogue && brightestStar >= 0 && (!brightestNight || obs.mag[brightestStar] < brightestNight.mag)) {
+      brightestNight = { name: starLabel(catalogue[brightestStar]), mag: obs.mag[brightestStar] };
+    }
+    return skyConditionsBrief({
+      place: resolved.label,
+      epochYears,
+      latitude,
+      host: hostBody ? { name: hostBody.name, sizeDeg: hostBody.sizeDeg, mag: hostBody.mag, altDeg: hostAltAz.alt } : null,
+      locked: resolved.planet.tidallyLocked.value,
+      solarDayHours: geometry.solarDayHours,
+      orbitDays: resolved.planet.orbitDays.value,
+      poleStar: (latitude >= 0 ? poleStar : southPoleStar) && catalogue ? { name: starLabel(catalogue[(latitude >= 0 ? poleStar : southPoleStar)!.index]), separationDeg: (latitude >= 0 ? poleStar : southPoleStar)!.separationDeg } : null,
+      nakedEye: obs?.nakedEye ?? 0,
+      catalogueComplete: reach.complete && !unplaced,
+      brightestNight,
+      moons: bodies.filter((b) => b.kind === "moon").map((b) => ({ name: b.name, phase: b.phase, sizeDeg: b.sizeDeg })),
+      sol: solData ? { mag: solData.mag, visible: solData.mag <= NAKED_EYE_LIMIT } : null,
+      extinctionAtHorizon: atmo.k * atmoDensity * airmass(0),
+      atmoName: atmo.name,
+    });
+  }, [bodies, obs, catalogue, brightestStar, resolved, epochYears, latitude, hostBody, hostAltAz.alt, geometry.solarDayHours, poleStar, southPoleStar, reach.complete, unplaced, solData, atmo, atmoDensity]);
+
+  // ── Readout helpers ──────────────────────────────────────────────
+  const canonNakedEye = canonSky?.planet["planet.sky.naked_eye_count"];
+  const nakedEyeStale = typeof canonNakedEye === "number" && obs && canonNakedEye !== obs.nakedEye;
+  const selectedStar = selected !== null && catalogue && obs ? { s: catalogue[selected], mag: obs.mag[selected], dist: obs.dist[selected], dir: [obs.ux[selected], obs.uy[selected], obs.uz[selected]] as Vec3 } : null;
+  const selectedPos = selectedStar ? (mode === "stand" ? altAz(geometry.horizon, selectedStar.dir) : null) : null;
+  const selectedEq = selectedStar ? planetRaDec(geometry.eqFrame, selectedStar.dir) : null;
+  const locked = resolved.planet.tidallyLocked.value;
+  const orbitDays = resolved.planet.orbitDays.value;
+  const firstMoon = bodies.find((b) => b.kind === "moon");
+  const moonBody = firstMoon ? resolved.moons.find((m) => m.id === firstMoon.id) : null;
+  const statusTag = STATUS_LABEL[resolved.status];
+  const vantageOptionsWorld = worldId ? worldObservationEntities : [];
+  const fovLabel = view.fov < 10 ? view.fov.toFixed(1) : Math.round(view.fov).toString();
+
+  const sourceTag = (s: Source, note?: string) => (
+    <span style={{ fontFamily: FONT_SANS, fontSize: 12, color: s === "default" ? "var(--sf-amber-text)" : "var(--t4)", marginLeft: 6 }}>
+      {s === "default" ? `// ${note ?? "not set"}` : `(${SOURCE_LABEL[s]})`}
+    </span>
+  );
+
+  const pickVantage = (val: string) => {
+    setHandoffPayload(val === "handoff" ? handoffPayload : null);
+    setPlacementDraft(val === "custom" ? { l: 0, b: 0, distPc: 100 } : null);
+    setOverrides({});
+    setSelected(null);
+    setVantageKey(val);
+  };
+
+  // ═════════════════════════════════════════════════════════════════
+  const controlsPanel = (
+    <>
+      <label htmlFor="exo-vantage" style={SH}>Observation point</label>
+      <select id="exo-vantage" value={vantageKey} onChange={(e) => pickVantage(e.target.value)} style={SEL}>
+        {PRESET_GROUPS.map((g) => (
+          <optgroup key={g.label} label={g.label}>
+            {VANTAGES.filter(g.filter).map((p) => <option key={p.key} value={p.key}>{p.planet}</option>)}
+          </optgroup>
+        ))}
+        {handoffPayload && <option value="handoff">{handoffPayload.planetName} (from Solaris)</option>}
+        <option value="custom">Custom location</option>
+        {vantageOptionsWorld.length > 0 && (
+          <optgroup label="From your world">
+            {vantageOptionsWorld.map((e) => <option key={e.id} value={`world:${e.id}`}>{e.name}</option>)}
+          </optgroup>
+        )}
+      </select>
+      <div style={{ marginTop: 8, display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+        <span style={tagStyle(resolved.status)}>{statusTag}</span>
+      </div>
+      {vantageKey === "handoff" && handoffPayload && (
+        <p style={NOTE}>{describeHandoffPlanet(handoffPayload)}</p>
+      )}
+      {resolved.note && <p style={NOTE}>{resolved.note}</p>}
+      {resolved.source && <p style={{ ...NOTE, color: "var(--t4)" }}>Source: {resolved.source}</p>}
+
+      {(unplaced || vantageKey === "custom" || placementDraft || worldEntity) && (
+        <section aria-labelledby="exo-place" style={{ marginTop: 14 }}>
+          <h3 id="exo-place" style={SH}>Place this system</h3>
+          {unplaced && !placementDraft && (
+            <div style={WARN}>
+              <div style={WARN_TITLE}>// SYSTEM NOT PLACED</div>
+              <div style={{ fontSize: 13, color: "var(--t2)", lineHeight: 1.5 }}>Stars are shown as seen from the Sun. Put this system at a real star or at galactic coordinates.</div>
+            </div>
+          )}
+          <label htmlFor="exo-place-search" style={LBL_BLOCK}>Host it at a real star</label>
+          <input id="exo-place-search" type="search" value={placeQuery} onChange={(e) => setPlaceQuery(e.target.value)} placeholder="e.g. Tau Ceti, HIP 8102" style={FIELD} />
+          {placeResults.length > 0 && (
+            <ul style={LIST}>
+              {placeResults.map((s) => (
+                <li key={s.id}>
+                  <button type="button" style={LIST_BTN} onClick={() => {
+                    const g = eqToGal(s.x, s.y, s.z);
+                    setPlacementDraft({ l: ((Math.atan2(g[1], g[0]) * RAD) + 360) % 360, b: Math.asin(g[2] / Math.max(1e-9, s.dist)) * RAD, distPc: s.dist, catalogueId: s.id });
+                    setPlaceQuery("");
+                  }}>
+                    {starLabel(s)} <span style={{ color: "var(--t4)", fontFamily: FONT_MONO }}>{s.id} · {(s.dist * 3.2616).toFixed(1)} ly</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6, marginTop: 8 }}>
+            {([["Galactic l (°)", "l", 0, 360], ["Galactic b (°)", "b", -90, 90], ["Distance (pc)", "distPc", 0, 20000]] as const).map(([lbl, k, min, max]) => (
+              <label key={k} style={LBL_BLOCK}>
+                {lbl}
+                <input type="number" min={min} max={max} step={k === "distPc" ? 1 : 0.1}
+                  value={Number(((placementDraft ?? placement ?? { l: 0, b: 0, distPc: 0 })[k] ?? 0).toFixed(k === "distPc" ? 1 : 2))}
+                  onChange={(e) => {
+                    const base = placementDraft ?? (placement ? { l: placement.l, b: placement.b, distPc: placement.distPc } : { l: 0, b: 0, distPc: 10 });
+                    setPlacementDraft({ ...base, catalogueId: null, [k]: clamp(Number(e.target.value) || 0, min, max) });
+                  }} style={NUM_INPUT} />
+              </label>
+            ))}
+          </div>
+          <p style={{ ...NOTE, color: "var(--t4)" }}>l 0° is the galactic centre, b 0° the galactic plane. Distance is from the Sun.</p>
+          {placement && <p style={{ ...NOTE, fontFamily: FONT_MONO }}>{placement.catalogueId ? `${placement.catalogueId} · ` : ""}{(placement.distPc * 3.2616).toFixed(1)} ly from the Sun {sourceTag(placement.source)}</p>}
+          {canWrite && placementDraft && (
+            <button type="button" onClick={savePlacement} disabled={assertFact.isPending} style={{ ...BTN, width: "100%", marginTop: 6 }}>
+              Save position to canon
+            </button>
+          )}
+        </section>
+      )}
+
+      <section aria-labelledby="exo-stand" style={{ marginTop: 14 }}>
+        <h3 id="exo-stand" style={SH}>Stand here</h3>
+        <div role="radiogroup" aria-label="Viewpoint" style={{ display: "flex", gap: 6, marginTop: 6 }}>
+          {([["stand", "On the surface"], ["space", "From space"]] as const).map(([m, label]) => (
+            <button key={m} type="button" role="radio" aria-checked={mode === m} onClick={() => changeMode(m)} style={{ ...BTN, ...(mode === m ? null : BTN_QUIET), flex: 1 }}>{label}</button>
+          ))}
+        </div>
+        <Slider id="exo-lat" label="Latitude" value={latitude} min={-90} max={90} step={1} onChange={setLatitude} display={`${Math.abs(latitude)}° ${latitude >= 0 ? "N" : "S"}`} />
+        {locked ? (
+          <Slider id="exo-sub" label="Distance from the substellar point" value={substellarLongitude} min={0} max={180} step={1} onChange={setSubstellarLongitude}
+            display={`${substellarLongitude}° (sun ${hostAltAz.alt >= 0 ? `${Math.round(hostAltAz.alt)}° up` : `${Math.round(-hostAltAz.alt)}° down`})`} />
+        ) : (
+          <Slider id="exo-time" label="Time of day" value={timeOfDay} min={0} max={1} step={0.005} onChange={setTimeOfDay}
+            display={`${(timeOfDay * 24).toFixed(1)} h local${timeOfDay < 0.02 || timeOfDay > 0.98 ? " (midnight)" : Math.abs(timeOfDay - 0.5) < 0.02 ? " (noon)" : ""}`} />
+        )}
+        <Slider id="exo-date" label={locked ? "Orbit (turns the stars)" : "Date in the year"} value={dayNumber % Math.max(1, orbitDays)} min={0} max={Math.max(1, orbitDays)} step="any" onChange={setDayNumber}
+          display={`day ${(dayNumber % orbitDays).toFixed(orbitDays < 30 ? 1 : 0)} of ${orbitDays.toFixed(orbitDays < 30 ? 1 : 0)}`} />
+        <Slider id="exo-epoch" label="Epoch (years from J2000)" value={epochYears} min={-20000} max={20000} step={50} onChange={setEpochYears}
+          display={epochYears === 0 ? "now" : `${epochYears > 0 ? "+" : ""}${epochYears.toLocaleString()}`} />
+        <p style={{ ...NOTE, color: "var(--t3)" }}>Epoch moves the pole by this planet's own precession ({fmtYears(resolved.planet.precessionYears.value)} per cycle). Stars' own motions are not modelled.</p>
+
+        <details style={{ marginTop: 8 }}>
+          <summary style={SUMMARY}>The planet's spin</summary>
+          <label style={CKL}>
+            <input type="checkbox" checked={locked} onChange={(e) => setOverrides((o) => ({ ...o, tidallyLocked: e.target.checked }))} style={CK} />
+            Tidally locked {sourceTag(resolved.planet.tidallyLocked.source, resolved.planet.tidallyLocked.note)}
+          </label>
+          {!locked && (
+            <>
+              <NumberRow id="exo-rot" label="Day length (sidereal, h)" value={resolved.planet.rotationHours.value} step={0.1} min={0.5} max={10000}
+                onChange={(v) => setOverrides((o) => ({ ...o, rotationHours: v }))} tag={sourceTag(resolved.planet.rotationHours.source, resolved.planet.rotationHours.note)} />
+              <NumberRow id="exo-obl" label="Axial tilt (°)" value={resolved.planet.obliquityDeg.value} step={0.5} min={0} max={180}
+                onChange={(v) => setOverrides((o) => ({ ...o, obliquityDeg: v }))} tag={sourceTag(resolved.planet.obliquityDeg.source, resolved.planet.obliquityDeg.note)} />
+            </>
+          )}
+          <NumberRow id="exo-pra" label="Pole right ascension (°)" value={resolved.planet.pole.value.ra} step={1} min={0} max={360}
+            onChange={(v) => setOverrides((o) => ({ ...o, poleRa: v, poleDec: o.poleDec ?? resolved.planet.pole.value.dec }))} tag={sourceTag(resolved.planet.pole.source, resolved.planet.pole.note)} />
+          <NumberRow id="exo-pdec" label="Pole declination (°)" value={resolved.planet.pole.value.dec} step={1} min={-90} max={90}
+            onChange={(v) => setOverrides((o) => ({ ...o, poleDec: v, poleRa: o.poleRa ?? resolved.planet.pole.value.ra }))} />
+          <NumberRow id="exo-prec" label="Precession period (yr)" value={Math.round(resolved.planet.precessionYears.value)} step={100} min={100} max={1e9}
+            onChange={(v) => setOverrides((o) => ({ ...o, precessionYears: v }))} tag={sourceTag(resolved.planet.precessionYears.source, resolved.planet.precessionYears.note)} />
+          <p style={{ ...NOTE, color: "var(--t4)" }}>Solar day {fmtHours(geometry.solarDayHours)} · year {orbitDays.toFixed(orbitDays < 30 ? 2 : 1)} days ({sourceTag(resolved.planet.orbitDays.source, resolved.planet.orbitDays.note)})</p>
+          {canWrite && worldEntity?.entity_type !== "star" && (
+            <button type="button" onClick={savePole} disabled={assertFact.isPending} style={{ ...BTN, width: "100%", marginTop: 6 }}>Save pole to canon</button>
+          )}
+        </details>
+      </section>
+
+      <section aria-labelledby="exo-atmo" style={{ marginTop: 14 }}>
+        <h3 id="exo-atmo" style={SH}>Atmosphere</h3>
+        <label htmlFor="exo-atmo-type" style={LBL_BLOCK}>Type {sourceTag(resolved.atmo.source, resolved.atmo.note)}</label>
+        <select id="exo-atmo-type" value={resolved.atmo.value} onChange={(e) => setOverrides((o) => ({ ...o, atmo: e.target.value as AtmoKey }))} style={SEL}>
+          {(Object.keys(ATMO_MODELS) as AtmoKey[]).map((k) => <option key={k} value={k}>{ATMO_MODELS[k].name}</option>)}
+        </select>
+        <p style={NOTE}>{atmo.desc}</p>
+        <Slider id="exo-dens" label="Density" value={atmoDensity} min={0} max={3} step={0.1} onChange={setAtmoDensity} display={`${atmoDensity.toFixed(1)}× · ${(atmo.k * atmoDensity).toFixed(2)} mag per airmass`} />
+        <Slider id="exo-mw" label="Milky Way brightness" value={mwBrightness} min={0} max={3} step={0.1} onChange={setMwBrightness} display={`${mwBrightness.toFixed(1)}×`} />
+      </section>
+
+      <section aria-labelledby="exo-display" style={{ marginTop: 14 }}>
+        <h3 id="exo-display" style={SH}>Show</h3>
+        {([
+          ["Milky Way", showMilkyWay, setShowMilkyWay],
+          ["Air and daylight", showAtmosphere, setShowAtmosphere],
+          ["Ground", showHorizon, setShowHorizon],
+          ["Star names", showStarNames, setShowStarNames],
+          ["Earth's constellations", showConstellations, setShowConstellations],
+          ["Grid", showGrid, setShowGrid],
+          ["Mark the Sun", highlightSol, setHighlightSol],
+        ] as const satisfies ReadonlyArray<readonly [string, boolean, (v: boolean) => void]>).map(([label, val, set]) => (
+          <label key={label} style={CKL}><input type="checkbox" checked={val} onChange={(e) => set(e.target.checked)} style={CK} />{label}</label>
+        ))}
+      </section>
+
+      <section aria-labelledby="exo-draw" style={{ marginTop: 14 }}>
+        <h3 id="exo-draw" style={SH}>Constellations</h3>
+        {!drawMode ? (
+          <button type="button" onClick={() => { setDrawMode(true); setSelected(null); }} style={{ ...BTN, width: "100%", marginTop: 8 }}>Draw a constellation</button>
+        ) : (
+          <div style={{ marginTop: 6 }}>
+            <div role="radiogroup" aria-label="Line colour" style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 8 }}>
+              {CONSTELLATION_COLOURS.map((c) => (
+                <button key={c.hex} type="button" role="radio" onClick={() => setDrawColor(c.hex)} aria-label={`Line colour: ${c.name}`} aria-checked={drawColor === c.hex} style={swatchStyle(c.hex, drawColor === c.hex)} />
+              ))}
+            </div>
+            <p style={NOTE}>{currentDrawing.length === 0 ? "Tap stars to connect them." : `${currentDrawing.length} star${currentDrawing.length === 1 ? "" : "s"}: ${currentDrawing.map((i) => (catalogue ? starLabel(catalogue[i]) : "")).join(", ")}`}</p>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              {currentDrawing.length > 0 && <button type="button" onClick={() => setCurrentDrawing((p) => p.slice(0, -1))} style={{ ...BTN, ...BTN_QUIET, flex: 1 }}>Undo</button>}
+              {currentDrawing.length >= 2 && <button type="button" onClick={finishDrawing} style={{ ...BTN, flex: 1 }}>Name it</button>}
+              <button type="button" onClick={() => { setCurrentDrawing([]); setDrawMode(false); }} style={{ ...BTN, ...BTN_QUIET, flex: 1 }}>Cancel</button>
+            </div>
+            <p style={{ ...NOTE, color: "var(--t4)" }}>Esc to cancel · Ctrl+Z to undo</p>
+          </div>
+        )}
+        {vantageConstellations.length > 0 && (
+          <>
+            <label style={CKL}><input type="checkbox" checked={showCustomConstellations} onChange={(e) => setShowCustomConstellations(e.target.checked)} style={CK} />Your constellations here ({vantageConstellations.length})</label>
+            <button type="button" onClick={() => setConsManagerOpen((p) => !p)} aria-expanded={consManagerOpen} style={{ ...BTN, ...BTN_QUIET, width: "100%", marginTop: 6 }}>{consManagerOpen ? "Hide list" : "Manage"}</button>
+          </>
+        )}
+        {consManagerOpen && vantageConstellations.length > 0 && (
+          <ul style={{ ...LIST, marginTop: 8 }}>
+            {vantageConstellations.map((c) => (
+              <li key={c.id} style={{ borderBottom: "1px solid var(--sf-line-hairline)", padding: "6px 0" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span aria-hidden style={{ width: 12, height: 12, background: c.color, flexShrink: 0 }} />
+                  <span style={{ fontSize: 14, color: "var(--t1)", flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis" }}>{c.name}</span>
+                  <span style={{ fontSize: 12, color: "var(--t4)", fontFamily: FONT_MONO }}>{c.starIds.length || (c.legacyDirs?.length ?? 0)}★</span>
+                </div>
+                <div style={{ display: "flex", gap: 4, marginTop: 4, flexWrap: "wrap" }}>
+                  <button type="button" style={MINI} onClick={() => {
+                    const s = catalogueById?.get(c.starIds[0] ?? "");
+                    if (s && obs) aimAt([obs.ux[s.i], obs.uy[s.i], obs.uz[s.i]]);
+                  }}>Go to</button>
+                  <button type="button" style={MINI} aria-pressed={c.visible} onClick={() => setCustomConstellations((p) => p.map((x) => (x.id === c.id ? { ...x, visible: !x.visible } : x)))}>{c.visible ? "Hide" : "Show"}</button>
+                  {canWrite && !c.entityId && c.starIds.length >= 2 && <button type="button" style={MINI} onClick={() => void addConstellationToCanon(c)}>Add to canon</button>}
+                  {c.entityId && <span style={{ ...MINI, border: "none", color: "var(--sf-emerald-text)" }}>In canon</span>}
+                  <button type="button" style={{ ...MINI, color: "var(--sf-crimson-text)" }} onClick={() => setCustomConstellations((p) => p.filter((x) => x.id !== c.id))}>Delete</button>
+                </div>
+              </li>
+            ))}
+            <li><button type="button" onClick={exportConstellations} style={{ ...BTN, ...BTN_QUIET, width: "100%", marginTop: 8 }}>Export as JSON</button></li>
+          </ul>
+        )}
+        {(canonSky?.constellations.length ?? 0) > 0 && (
+          <p style={NOTE}>In canon for {canonSky!.label}: {canonSky!.constellations.map((c) => c.entity.name).join(", ")}</p>
+        )}
+      </section>
+
+      <section style={{ marginTop: 14 }}>
+        <h3 style={SH}>Help</h3>
+        <p style={{ ...NOTE, color: "var(--t3)" }}>Drag to look around · scroll, pinch or +/− to zoom · arrow keys pan · tap a star to identify it · ? for shortcuts</p>
+      </section>
+    </>
+  );
+
+  const dataPanel = (
+    <>
+      <h3 style={SH}>Find</h3>
+      <label htmlFor="exo-search" style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}>Find a star</label>
+      <input id="exo-search" type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Find a star: Vega, α Cen, HIP 70890" style={FIELD} />
+      {results.length > 0 && obs && (
+        <ul style={LIST}>
+          {results.map((s) => (
+            <li key={s.id}>
+              <button type="button" style={LIST_BTN} onClick={() => {
+                if (Number.isNaN(obs.mag[s.i])) { toast({ title: "THAT STAR IS THIS WORLD'S SUN." }); return; }
+                aimAt([obs.ux[s.i], obs.uy[s.i], obs.uz[s.i]]);
+                setSelected(s.i);
+                setQuery("");
+              }}>
+                {starLabel(s)} <span style={{ color: "var(--t4)", fontFamily: FONT_MONO }}>mag {Number.isNaN(obs.mag[s.i]) ? "sun" : obs.mag[s.i].toFixed(1)}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      <div style={{ display: "flex", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
+        <button type="button" style={{ ...BTN, flex: 1 }} disabled={!solData} onClick={() => { if (solData) { aimAt(solData.dir, 40); if (solIndex >= 0) setSelected(solIndex); } }}>Find our Sun</button>
+        <button type="button" style={{ ...BTN, flex: 1 }} onClick={() => { if (hostBody) aimAt(hostBody.dir, 40); }}>Find this sun</button>
+      </div>
+
+      {selectedStar && (
+        <section aria-live="polite" style={{ ...CARD, marginTop: 10 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <h3 style={{ ...SH, border: "none", margin: 0 }}>{starLabel(selectedStar.s)}</h3>
+            <button type="button" aria-label="Close star details" onClick={() => setSelected(null)} style={{ ...MINI, minWidth: "var(--hit-min)" }}>Close</button>
+          </div>
+          <DR l="Catalogue id" v={selectedStar.s.id} />
+          <DR l="Magnitude here" v={selectedStar.mag.toFixed(2)} />
+          <DR l="Magnitude from Earth" v={(selectedStar.s.absMag + 5 * Math.log10(Math.max(1e-6, selectedStar.s.dist) / 10)).toFixed(2)} />
+          <DR l="Distance from here" v={`${(selectedStar.dist * 3.2616).toFixed(2)} ly`} />
+          {selectedPos && <DR l="Altitude / azimuth" v={`${selectedPos.alt.toFixed(1)}° / ${selectedPos.az.toFixed(1)}°`} />}
+          {selectedEq && <DR l="Local RA / Dec" v={`${selectedEq.ra.toFixed(1)}° / ${selectedEq.dec.toFixed(1)}°`} />}
+          <DR l="Colour index (B-V)" v={selectedStar.s.bv.toFixed(2)} />
+        </section>
+      )}
+
+      <h3 style={{ ...SH, marginTop: 14 }}>This world's sun</h3>
+      <DR l="Star" v={resolved.hostName} />
+      {hostBody && <>
+        <DR l="Magnitude" v={hostBody.mag.toFixed(1)} />
+        <DR l="Disc" v={`${hostBody.sizeDeg.toFixed(hostBody.sizeDeg < 1 ? 3 : 1)}° · ${(hostBody.sizeDeg / 0.533).toFixed(2)}× our Sun`} />
+      </>}
+      {mode === "stand" && <DR l="Altitude" v={`${hostAltAz.alt.toFixed(1)}°`} />}
+      <DR l="Orbit" v={`${resolved.planet.au.value.toFixed(resolved.planet.au.value < 0.1 ? 4 : 2)} AU`} />
+      <p style={{ ...NOTE, color: "var(--t4)" }}>Luminosity {resolved.host.lumSolar.value.toPrecision(3)} L☉ {sourceTag(resolved.host.lumSolar.source, resolved.host.lumSolar.note)}</p>
+
+      {bodies.some((b) => b.kind !== "host") && (
+        <>
+          <h3 style={{ ...SH, marginTop: 14 }}>Planets and moons</h3>
+          <p style={{ ...NOTE, color: "var(--t4)", marginBottom: 4 }}>Magnitude · lit fraction · size</p>
+          {bodies.filter((b) => b.kind !== "host").map((b: SkyBody) => (
+            <DR key={b.id} l={b.name} v={`${b.mag.toFixed(1)} · ${Math.round(b.phase * 100)}%${b.sizeDeg > 0.01 ? ` · ${b.sizeDeg.toFixed(2)}°` : ""}`} />
+          ))}
+          <p style={{ ...NOTE, color: "var(--t4)" }}>{resolved.isEarth ? "Circular orbits in Earth's plane from J2000 mean longitudes: positions good to a few degrees." : "Circular orbits; starting phases are not known, so each body is placed by its id."}</p>
+        </>
+      )}
+
+      <h3 style={{ ...SH, marginTop: 14 }}>Navigation and calendar</h3>
+      {resolved.planet.pole.source === "default" && <p style={{ ...WARN_TITLE, marginTop: 6 }}>// POLE NOT SET. USING EARTH'S AXIS DIRECTION.</p>}
+      <DR l="Pole star (north)" v={poleStar && catalogue ? `${starLabel(catalogue[poleStar.index])}, ${poleStar.separationDeg.toFixed(1)}°` : "None"} />
+      <DR l="Pole star (south)" v={southPoleStar && catalogue ? `${starLabel(catalogue[southPoleStar.index])}, ${southPoleStar.separationDeg.toFixed(1)}°` : "None"} />
+      {circ && <DR l="Never sets here" v={`${Math.round(circ.skyFraction * 100)}% sky · ${Math.round(circ.starFraction * 100)}% stars`} />}
+      <DR l="Solar day" v={fmtHours(geometry.solarDayHours)} />
+      <DR l="Sidereal day" v={locked ? `${(orbitDays).toFixed(2)} days` : fmtHours(resolved.planet.rotationHours.value)} />
+      <DR l="Year" v={locked ? `${orbitDays.toFixed(2)} days` : `${((orbitDays * 24) / geometry.solarDayHours).toFixed(1)} local days`} />
+      {moonBody && <DR l={`${moonBody.name}'s month`} v={`${synodicMonthDays(moonBody.periodDays, orbitDays).toFixed(2)} days`} />}
+      <DR l="Brightest star rises at dawn" v={heliacal ? `day ${Math.round(heliacal.dayOfYear)}` : locked ? "No dawn here" : "Never (circumpolar or never rises)"} />
+      <p style={{ ...NOTE, color: "var(--t4)" }}>Dawn rising uses a rule of thumb: the sun 10° below the horizon for a first-magnitude star, 1° more per magnitude fainter.</p>
+      <DR l="Precession" v={fmtYears(resolved.planet.precessionYears.value)} />
+
+      <h3 style={{ ...SH, marginTop: 14 }}>The sky</h3>
+      <DR l="Naked-eye stars" v={`${obs ? obs.nakedEye.toLocaleString() : "…"}${reach.complete && !unplaced ? "" : " or more"}`} />
+      {nakedEyeStale && <p style={{ ...WARN_TITLE, marginTop: 2 }}>// CANON SAYS {String(canonNakedEye)}. STALE.</p>}
+      <DR l="Drawn now" v={`${drawnCount.current.toLocaleString()}`} />
+      <DR l="Catalogue complete within" v={`${Math.round(reach.completePc)} pc`} />
+      {mode === "stand" && <DR l="Starlight lost at the horizon" v={`${(kEff * airmass(0)).toFixed(1)} mag`} />}
+      {solData && <DR l="The Sun from here" v={`mag ${solData.mag.toFixed(2)} · ${(solData.dist * 3.2616).toFixed(2)} ly`} />}
+      {simFlags.filter((f) => !dismissedFlagIds.has(flagDismissKey(f))).map((f) => (
+        <div key={f.id} style={{ ...WARN, position: "relative" }}>
+          <div style={{ ...WARN_TITLE, paddingRight: 48 }}>{"// "}{f.title}</div>
+          <div style={{ fontSize: 13, lineHeight: 1.5, color: "var(--t2)", marginTop: 4, paddingRight: 48 }}>{f.body}</div>
+          <button type="button" onClick={() => dismissFlag(flagDismissKey(f))} aria-label={`Dismiss: ${f.title}`} style={{ ...MINI, position: "absolute", top: 0, right: 0, border: "none" }}>×</button>
+        </div>
+      ))}
+      {canWrite && worldEntity?.entity_type !== "star" && (
+        <button type="button" onClick={saveReadouts} disabled={assertFact.isPending} style={{ ...BTN, width: "100%", marginTop: 8 }}>Add pole star and star count to canon</button>
+      )}
+
+      <h3 style={{ ...SH, marginTop: 14 }}>Galactic position</h3>
+      <DR l="From the galactic centre" v={`${(Math.hypot(gc[0], gc[1]) / 1000).toFixed(2)} kpc`} />
+      <DR l="Above the plane" v={`${Math.round(gc[2])} pc`} />
+      <DR l="Nearest spiral arm" v={arm.name} />
+      <p style={{ ...NOTE, color: "var(--t3)" }}>{armNote(arm)}. Arms from Reid et al. 2019.</p>
+
+      {conflicts.length > 0 && (
+        <div style={WARN}>
+          <div style={WARN_TITLE}>// CANON HOLDS A DIFFERENT VALUE</div>
+          <div style={{ fontSize: 13, color: "var(--t2)" }}>{conflicts.map((c) => c.predicate).join(", ")}</div>
+          <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
+            <button type="button" style={{ ...BTN, ...BTN_QUIET, flex: 1 }} onClick={() => setConflicts([])}>Keep canon</button>
+            <button type="button" style={{ ...BTN, flex: 1 }} onClick={() => void writeFacts(conflicts, true)}>Replace</button>
+          </div>
+        </div>
+      )}
+
+      <div style={{ display: "flex", gap: 6, marginTop: 14, flexWrap: "wrap" }}>
+        <button type="button" style={{ ...BTN, flex: 1 }} onClick={printChart} disabled={!obs}>Print star chart</button>
+        <button type="button" style={{ ...BTN, flex: 1 }} onClick={() => setBriefOpen(true)}>Scene brief</button>
+      </div>
+    </>
+  );
+
+  // ═════════════════════════════════════════════════════════════════
+  const panelBase = { position: "absolute" as const, zIndex: 10, background: PANEL_BG, border: "1px solid var(--sf-line)", overflowY: "auto" as const };
   return (
-    <div className="exosky-root" style={{ width:"100%", height:"100%", overflow:"hidden", background:tokens.surface.simCanvas, position:"relative", cursor: drawMode ? "crosshair" : isDragging.current?"grabbing":"grab", fontFamily:FONT_SANS }}>
-      <canvas ref={canvasRef} style={{ position:"absolute",top:0,left:0,width:"100%",height:"100%" }}
-        onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerLeave={onUp} onWheel={onWheel} />
+    <div className="exosky-root" style={{ width: "100%", height: "100%", overflow: "hidden", background: tokens.surface.simCanvas, position: "relative", fontFamily: FONT_SANS }}>
+      <canvas
+        ref={canvasRef}
+        tabIndex={0}
+        role="application"
+        aria-roledescription="sky view"
+        aria-label={`The sky from ${resolved.label}. Arrow keys pan, plus and minus zoom, question mark lists shortcuts.`}
+        aria-describedby="exo-view-status"
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", cursor: drawMode ? "crosshair" : "grab", touchAction: "none" }}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
+        onPointerLeave={(e) => { if (e.pointerType === "mouse") setHovered(null); }}
+        onWheel={onWheel}
+        onKeyDown={onCanvasKey}
+      />
 
-      {/* ── TITLE ── */}
-      <SimulatorTitle name="EXOSKY" subtitle="Alien Night Sky Simulator" context={planet.planet}>
-        <div role="status" style={{ display:"inline-block",padding:"6px 14px",fontSize:12,fontFamily:FONT_MONO,fontWeight:500,letterSpacing:"0.10em",textTransform:"uppercase",borderRadius:0,
-          background: mwReady ? "rgb(var(--sf-primary-rgb) / 0.06)" : "rgb(var(--sf-amber-rgb) / 0.06)",
-          border: mwReady ? "1px solid var(--sf-primary)" : "1px solid var(--sf-amber)",
-          color: mwReady ? "var(--sf-primary-text)" : "var(--sf-amber-text)",
-          transition:`background-color ${EASE}, border-color ${EASE}, color ${EASE}`,
-        }}>{mwReady ? "● OBSERVING" : "// COMPUTING"}</div>
+      <SimulatorTitle name="EXOSKY" subtitle="The sky from any world" context={resolved.label}>
+        <div role="status" style={{ display: "inline-block", padding: "6px 14px", fontSize: 12, fontFamily: FONT_MONO, fontWeight: 500, letterSpacing: "0.10em", textTransform: "uppercase",
+          background: catalogueError ? "rgb(var(--sf-crimson-rgb) / 0.06)" : catalogue && mwReady ? "rgb(var(--sf-primary-rgb) / 0.06)" : "rgb(var(--sf-amber-rgb) / 0.06)",
+          border: `1px solid ${catalogueError ? "var(--sf-crimson)" : catalogue && mwReady ? "var(--sf-primary)" : "var(--sf-amber)"}`,
+          color: catalogueError ? "var(--sf-crimson-text)" : catalogue && mwReady ? "var(--sf-primary-text)" : "var(--sf-amber-text)" }}>
+          {catalogueError ? `// ${catalogueError}` : !catalogue ? "// LOADING STARS" : !mwReady ? "// COMPUTING GALAXY" : unplaced ? "// NOT PLACED" : "● OBSERVING"}
+        </div>
+        {catalogueError && <button type="button" onClick={loadStars} style={{ ...BTN, marginLeft: 8 }}>Retry</button>}
       </SimulatorTitle>
 
-      {/* ── CONTROL PANEL ── */}
-      <div className="sf-sb" style={{ position:"absolute",top:144,left:18,
-        width: isMobile ? undefined : 272,
-        right: isMobile ? 18 : undefined,
-        zIndex:10,
-        maxHeight: isMobile ? "30vh" : "calc(100% - 174px)",
-        overflowY:"auto",
-        background: PANEL_BG, border:"1px solid var(--sf-line)",
-        borderRadius:0,padding:panelOpen?"14px 18px":"8px 14px",transition:`padding ${EASE}` }}>
-        <button type="button" onClick={()=>setPanelOpen(!panelOpen)} aria-expanded={panelOpen} style={COLLAPSE}>
-          <span style={SH}>OBSERVATION POINT</span>
-          <span aria-hidden style={{color:"var(--t3)",fontSize:12}}>{panelOpen?"▾":"▸"}</span>
-        </button>
-        {panelOpen && <>
-          <select value={worldEntityId ? `world:${worldEntityId}` : (customMode ? "custom" : String(selectedPlanet))} onChange={e=>{
-            const val = e.target.value;
-            // A <select> only fires onChange when the value actually
-            // changes, so reaching this handler always means the writer
-            // picked something other than whatever was already showing.
-            // That is never the original handoff, so its stale note (wrong
-            // planet type, wrong AU, wrong star) should not follow them to
-            // wherever they picked next.
-            setHandoffPayload(null);
-            if (val === "custom") {
-              setCustomMode(true); setWorldEntityId(null);
-            } else if (val.startsWith("world:")) {
-              setWorldEntityId(val.slice(6));
-              setCustomMode(false);
-            } else {
-              setCustomMode(false); setWorldEntityId(null); setSelectedPlanet(Number(val));
-            }
-            setViewRa(180);setViewDec(10);}} style={SEL}>
-            {EXOPLANET_SYSTEMS.map((p,i) => <option key={i} value={String(i)}>{p.planet} ({(p.dist*3.262).toFixed(1)} ly)</option>)}
-            <option value="custom">── Custom Coordinates ──</option>
-            {worldId && worldObservationEntities.length > 0 && (
-              <optgroup label="── From Your World ──">
-                {worldObservationEntities.map((e) => {
-                  const meta = (e.metadata ?? {}) as Record<string, unknown>;
-                  const c = meta.exoskyCoords as { distancePc?: number } | undefined;
-                  const lyTag = c?.distancePc ? ` (${(c.distancePc*3.262).toFixed(1)} ly)` : ", needs coords";
-                  return <option key={e.id} value={`world:${e.id}`}>{e.name}{lyTag}</option>;
-                })}
-              </optgroup>
-            )}
-          </select>
-          {worldEntity && !worldEntityCoords && (
-            <div style={{marginTop:10,padding:"10px 12px",background:"rgb(var(--sf-amber-rgb) / 0.06)",border:"1px solid var(--sf-amber)",borderRadius:0}}>
-              <div style={{fontSize:12,fontFamily:FONT_MONO,letterSpacing:"0.10em",textTransform:"uppercase",color:"var(--sf-amber-text)",marginBottom:4}}>
-                // COORDINATES NOT SET
-              </div>
-              <div style={{fontSize:13,color:"var(--t2)",lineHeight:1.5,marginBottom:8}}>
-                <strong style={{color:"var(--t1)",fontWeight:500}}>{worldEntity.name}</strong> has no galactic coordinates yet. Use the sliders below to set them, then save back to the entity.
-              </div>
-              <button
-                onClick={() => setCustomMode(true)}
-                style={{...BTN,width:"100%",background:"rgb(var(--sf-amber-rgb) / 0.06)",borderColor:"var(--sf-amber)",color:"var(--sf-amber-text)"}}
-              >
-                ✦ AUTHOR COORDINATES
-              </button>
-            </div>
-          )}
-          {worldEntity && worldEntityCoords && (
-            <div style={{marginTop:10,padding:"8px 12px",background:"rgb(var(--sf-primary-rgb) / 0.06)",borderRadius:0}}>
-              <div style={{fontSize:12,fontFamily:FONT_MONO,letterSpacing:"0.10em",textTransform:"uppercase",color:"var(--sf-primary-text)",marginBottom:4}}>
-                // FROM YOUR WORLD
-              </div>
-              <div style={{fontSize:13,color:"var(--t2)",lineHeight:1.5}}>
-                Stored: RA {worldEntityCoords.ra.toFixed(2)}° · Dec {worldEntityCoords.dec.toFixed(2)}° · {worldEntityCoords.distancePc.toFixed(1)} pc
-              </div>
-            </div>
-          )}
-          {customMode && (
-            <div style={{marginTop:10}}>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
-                <span style={LBL}>Galactic l (°)</span>
-                <input type="number" value={customGalL} onChange={e=>setCustomGalL(Math.max(0, Math.min(360,Number(e.target.value)||0)))}
-                  min={0} max={360} step={0.1} style={NUM_INPUT} />
-              </div>
-              <input type="range" min="0" max="360" step="0.5" value={customGalL} onChange={e=>setCustomGalL(Number(e.target.value))} style={{width:"100%"}} />
-
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:8,marginBottom:4}}>
-                <span style={LBL}>Galactic b (°)</span>
-                <input type="number" value={customGalB} onChange={e=>setCustomGalB(Math.max(-90,Math.min(90,Number(e.target.value)||0)))}
-                  min={-90} max={90} step={0.1} style={NUM_INPUT} />
-              </div>
-              <input type="range" min="-90" max="90" step="0.5" value={customGalB} onChange={e=>setCustomGalB(Number(e.target.value))} style={{width:"100%"}} />
-
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:8,marginBottom:4}}>
-                <span style={LBL}>Distance (pc)</span>
-                <input type="number" value={customDistPc} onChange={e=>setCustomDistPc(Math.max(0.1,Number(e.target.value)||0.1))}
-                  min={0.1} max={10000} step={1} style={NUM_INPUT} />
-              </div>
-              <input type="range" min="1" max="5000" step="1" value={Math.min(5000,customDistPc)} onChange={e=>setCustomDistPc(Number(e.target.value))} style={{width:"100%"}} />
-
-              <div style={{marginTop:6,padding:"6px 12px",background:"rgb(var(--sf-primary-rgb) / 0.06)",borderRadius:0}}>
-                <div style={{fontSize:12,color:"var(--sf-primary-text)",fontFamily:FONT_MONO,lineHeight:1.7}}>
-                  RA {planet.ra.toFixed(2)}° · Dec {planet.dec.toFixed(2)}°<br/>
-                  {(customDistPc*3.262).toFixed(1)} ly from Sol
-                </div>
-              </div>
-
-              <div style={{marginTop:6,fontSize:12,color:"var(--t4)",lineHeight:1.6}}>
-                l=0° → Galactic center · b=0° → Galactic plane<br/>
-                Distance is from Sol (heliocentric)
-              </div>
-
-              {worldEntity && (
-                <button
-                  onClick={saveCoordsToEntity}
-                  disabled={updateEntity.isPending}
-                  style={{
-                    ...BTN,
-                    marginTop:10,
-                    width:"100%",
-                    ...(updateEntity.isPending ? BTN_DISABLED : null),
-                  }}
-                  title="Persist these coordinates onto the world entity (saved to metadata.exoskyCoords)"
-                >
-                  {updateEntity.isPending ? "SAVING…" : `↳ SAVE TO ${worldEntity.name.toUpperCase()}`}
-                </button>
-              )}
-            </div>
-          )}
-          <div style={{marginTop:8,fontSize:12,color:"var(--t3)",lineHeight:1.6}}>{planet.note}</div>
-          <div style={{marginTop:4,fontSize:12,color:"var(--sf-primary-text)",fontFamily:FONT_MONO}}>{planet.armNote}</div>
-
-          <div style={{...SH,marginTop:14}}>ATMOSPHERE</div>
-          <div style={{display:"flex",justifyContent:"space-between",marginTop:6}}>
-            <span style={LBL}>Type</span><span style={VAL}>{atmo.name}</span>
-          </div>
-          <div style={{fontSize:12,color:"var(--t3)",marginTop:2}}>{atmo.desc}</div>
-          <div style={{display:"flex",justifyContent:"space-between",marginTop:10,alignItems:"center"}}>
-            <span style={LBL}>Density</span><span style={VAL}>{atmoDensity.toFixed(1)}×</span>
-          </div>
-          <input type="range" min="0" max="3" step="0.1" value={atmoDensity} onChange={e=>setAtmoDensity(Number(e.target.value))} style={{width:"100%",marginTop:4}} />
-
-          <div style={{...SH,marginTop:14}}>MILKY WAY</div>
-          <div style={{display:"flex",justifyContent:"space-between",marginTop:6,alignItems:"center"}}>
-            <span style={LBL}>Brightness</span><span style={VAL}>{mwBrightness.toFixed(1)}×</span>
-          </div>
-          <input type="range" min="0" max="3" step="0.1" value={mwBrightness} onChange={e=>setMwBrightness(Number(e.target.value))} style={{width:"100%",marginTop:4}} />
-
-          <div style={{...SH,marginTop:14}}>EPOCH</div>
-          <div style={{display:"flex",justifyContent:"space-between",marginTop:6,alignItems:"center"}}>
-            <span style={LBL}>Years From Now</span>
-            <span style={VAL}>{epochYears===0 ? "NOW" : `${epochYears>0?"+":""}${epochYears.toLocaleString()}`}</span>
-          </div>
-          <input type="range" min="-13000" max="13000" step="50" value={epochYears} onChange={e=>setEpochYears(Number(e.target.value))} style={{width:"100%",marginTop:4}} />
-          <div style={{fontSize:12,color:"var(--t3)",marginTop:4,lineHeight:1.5}}>
-            Axial precession slowly turns which star sits near the pole. Real stars do not move on this timeline, only which direction the observer's pole points.
-          </div>
-
-          <div style={{...SH,marginTop:14}}>DISPLAY</div>
-          {([
-            ["Milky Way Band", showMilkyWay, setShowMilkyWay],
-            ["Atmosphere Effects", showAtmosphere, setShowAtmosphere],
-            ["Horizon Line", showHorizon, setShowHorizon],
-            ["Star Names", showStarNames, setShowStarNames],
-            ["Earth Constellations", showConstellations, setShowConstellations],
-            ["Coordinate Grid", showGrid, setShowGrid],
-            ["Highlight Sol", highlightSol, setHighlightSol],
-          ] as const satisfies ReadonlyArray<readonly [string, boolean, (v: boolean) => void]>).map(([label, val, set]) => (
-            <label key={label} style={CKL}>
-              <input type="checkbox" checked={val} onChange={e=>set(e.target.checked)} style={CK} />{label}
-            </label>
-          ))}
-
-          <button onClick={findSol} style={{...BTN,marginTop:12,width:"100%"}}>☉ FIND OUR SUN</button>
-
-          <div style={{...SH,marginTop:14}}>CONSTELLATION DRAWER</div>
-          {!drawMode ? (
-            <button onClick={() => setDrawMode(true)} style={{...BTN,marginTop:8,width:"100%",background:"rgb(var(--sf-amber-rgb) / 0.06)",borderColor:"var(--sf-amber)",color:"var(--sf-amber-text)"}}>
-              ✦ DRAW CONSTELLATION
+      {!isMobile && (
+        <>
+          <div className="sf-sb" style={{ ...panelBase, top: 144, left: 18, width: 288, maxHeight: "calc(100% - 200px)", padding: panelOpen ? "12px 16px" : "6px 14px" }}>
+            <button type="button" onClick={() => setPanelOpen((p) => !p)} aria-expanded={panelOpen} style={COLLAPSE}>
+              <span style={{ ...SH, border: "none" }}>Controls</span><span aria-hidden style={{ color: "var(--t3)" }}>{panelOpen ? "▾" : "▸"}</span>
             </button>
-          ) : (
-            <div style={{marginTop:6}}>
-              {/* Color picker */}
-              <div style={{display:"flex",gap:4,flexWrap:"wrap",marginBottom:8}}>
-                {DRAW_COLORS.map(c => (
-                  <button key={c.hex} type="button" onClick={() => setDrawColor(c.hex)}
-                    aria-label={`Line colour: ${c.name}`} aria-pressed={drawColor === c.hex}
-                    style={swatchStyle(c.hex, drawColor === c.hex)}
-                    title={c.name} />
-                ))}
-              </div>
-
-              {/* Star count */}
-              <div style={{fontSize:12,color:"var(--t3)",marginBottom:8}}>
-                {currentDrawing.length === 0 ? "Click stars to connect them" :
-                 `${currentDrawing.length} star${currentDrawing.length !== 1 ? 's' : ''} selected`}
-              </div>
-
-              {/* Star list */}
-              {currentDrawing.length > 0 && (
-                <div className="sf-sb" style={{maxHeight:80,overflowY:"auto",marginBottom:8,padding:"4px 0"}}>
-                  {currentDrawing.map((s, i) => (
-                    <div key={i} style={{fontSize:12,color:"var(--t2)",fontFamily:FONT_MONO,lineHeight:1.8}}>
-                      <span style={{color:drawColor,marginRight:6}}>{i+1}.</span>{s.name}
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Action buttons */}
-              <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-                {currentDrawing.length > 0 && (
-                  <button onClick={undoLastStar} style={{...BTN,...BTN_QUIET,flex:1,padding:"5px 6px"}}>
-                    ↩ UNDO
-                  </button>
-                )}
-                {currentDrawing.length >= 2 && (
-                  <button onClick={finishDrawing} style={{...BTN,flex:1,padding:"5px 6px"}}>
-                    ✓ NAME IT
-                  </button>
-                )}
-                <button onClick={cancelDrawing} style={{...BTN,flex:1,padding:"5px 6px",background:"rgb(var(--sf-crimson-rgb) / 0.06)",borderColor:"var(--sf-crimson)",color:"var(--sf-crimson-text)"}}>
-                  ✕ CANCEL
-                </button>
-              </div>
-              <div style={{fontSize:12,color:"var(--t4)",marginTop:6}}>Esc to cancel · Ctrl+Z to undo</div>
-            </div>
-          )}
-
-          {/* Saved constellations count */}
-          {customConstellations.length > 0 && (
-            <div style={{marginTop:8}}>
-              <label style={CKL}>
-                <input type="checkbox" checked={showCustomConstellations} onChange={e=>setShowCustomConstellations(e.target.checked)} style={CK} />
-                Custom Constellations ({customConstellations.length})
-              </label>
-              <button onClick={() => setConsManagerOpen(!consManagerOpen)} aria-expanded={consManagerOpen} style={{...BTN,...BTN_QUIET,marginTop:6,width:"100%",padding:"4px 8px"}}>
-                {consManagerOpen ? "▾" : "▸"} MANAGE
-              </button>
-            </div>
-          )}
-
-          <div style={{...SH,marginTop:14}}>NAVIGATION</div>
-          <div style={{fontSize:12,color:"var(--t3)",lineHeight:1.7}}>
-            Drag to look around · Scroll to zoom<br/>Hover stars for data
+            {panelOpen && controlsPanel}
           </div>
-        </>}
-      </div>
+          <div className="sf-sb" style={{ ...panelBase, top: 16, right: narrativeBridgeOpen ? 18 + 320 + 12 : 18, width: 320, maxHeight: "calc(100% - 72px)", padding: dataOpen ? "12px 16px" : "6px 14px", transition: "right 280ms cubic-bezier(0.2, 0, 0, 1)" }}>
+            <button type="button" onClick={() => setDataOpen((p) => !p)} aria-expanded={dataOpen} style={COLLAPSE}>
+              <span style={{ ...SH, border: "none" }}>Sky data</span><span aria-hidden style={{ color: "var(--t3)" }}>{dataOpen ? "▾" : "▸"}</span>
+            </button>
+            {dataOpen && dataPanel}
+          </div>
+        </>
+      )}
 
-      {/* ── DATA READOUT ── (slides left when NarrativeBridge is open so it doesn't overlap) */}
-      <div className="sf-sb" style={{
-        position:"absolute",
-        // On mobile the panel is full-width, so it stacks below the control
-        // panel instead of sitting beside it. The offset is computed from the
-        // control panel's own top (120) and cap (30vh) rather than a fixed
-        // px or vh guess, so the gap holds on any phone height.
-        top: isMobile ? "calc(144px + 30vh + 12px)" : 16,
-        right: isMobile ? 18 : (narrativeBridgeOpen ? 18 + 320 + 12 : 18),
-        left: isMobile ? 18 : undefined,
-        width: isMobile ? undefined : 320,
-        zIndex:10,
-        maxHeight: isMobile ? "26vh" : "calc(100% - 80px)",
-        overflowY:"auto",
-        background:PANEL_BG,
-        border:"1px solid var(--sf-line)",
-        borderRadius:0,
-        padding:"16px 20px",
-        transition:"right 280ms cubic-bezier(0.2, 0, 0, 1)",
-      }}>
-        <button type="button" onClick={()=>setDataOpen(!dataOpen)} aria-expanded={dataOpen} style={COLLAPSE}>
-          <span style={SH}>SYSTEM DATA</span>
-          <span aria-hidden style={{color:"var(--t3)",fontSize:12}}>{dataOpen?"▾":"▸"}</span>
-        </button>
-        {dataOpen && <>
-          <DR l="Host Star" v={planet.star} vc="var(--sf-amber-text)" />
-          <DR l="Distance" v={`${(planet.dist*3.262).toFixed(1)} ly`} />
-          <DR l="RA / Dec" v={`${planet.ra.toFixed(1)}° / ${planet.dec.toFixed(1)}°`} />
-
-          <div style={{...SH,marginTop:12}}>GALACTIC POSITION</div>
-          <DR l="Galactocentric R" v={`${armInfo.R} pc`} />
-          <DR l="Height (z)" v={`${armInfo.z} pc`} />
-          <DR l="Nearest Arm" v={armInfo.closestArm} vc={armInfo.inArm?"var(--sf-emerald-text)":"var(--t2)"} />
-          <DR l="Arm Distance" v={`${armInfo.distToArm} pc`} />
-          <DR l="In Arm?" v={armInfo.inArm?"Yes":"No"} vc={armInfo.inArm?"var(--sf-emerald-text)":"var(--sf-crimson-text)"} />
-
-          <div style={{...SH,marginTop:12}}>SOL FROM HERE</div>
-          {solData && <>
-            <DR l="Apparent Mag" v={solData.appMag.toFixed(2)} vc="var(--sf-amber-text)" />
-            <DR l="Distance" v={`${(solData.newDist*3.262).toFixed(2)} ly`} />
-            <DR l="Visibility" v={solData.appMag<1?"Bright star":solData.appMag<3?"Visible":solData.appMag<6?"Faint":"Invisible"} vc={solData.appMag<6?"var(--sf-emerald-text)":"var(--sf-crimson-text)"} />
-          </>}
-
-          <div style={{...SH,marginTop:12}}>SKY STATISTICS</div>
-          <DR l="Catalog Stars" v={`${(starCatalog || []).length}`} />
-          <DR l="Galactic Stars" v={`${transformedStars.length}`} />
-          <DR l="Background Field" v={`${backgroundField.length}`} />
-          <DR l="Naked Eye" v={`${visibleCount}`} />
-          {simFlags.filter(f => !dismissedFlagIds.has(flagDismissKey(f))).map(f => (
-            <div key={f.id} style={{borderLeft:"2px solid var(--sf-amber)",background:"rgb(var(--sf-amber-rgb) / 0.06)",padding:"6px 8px",margin:"6px 0",position:"relative"}}>
-              <div style={{fontFamily:FONT_MONO,fontSize:12,letterSpacing:"0.10em",textTransform:"uppercase",color:"var(--sf-amber-text)",paddingRight:40}}>{"// "}{f.title}</div>
-              <div style={{fontFamily:FONT_SANS,fontSize:13,lineHeight:1.5,color:"var(--t2)",marginTop:4,paddingRight:40}}>{f.body}</div>
-              <button
-                type="button"
-                onClick={() => dismissFlag(flagDismissKey(f))}
-                aria-label={`Dismiss: ${f.title}`}
-                style={{position:"absolute",top:0,right:0,background:"none",border:"none",color:"var(--t3)",cursor:"pointer",fontSize:16,lineHeight:1,minWidth:"var(--hit-min)",minHeight:"var(--hit-min)"}}
-              >
-                ×
-              </button>
+      {isMobile && (
+        <>
+          {sheet !== "none" && (
+            <div className="sf-sb" role="region" aria-label={sheet === "controls" ? "Controls" : "Sky data"} style={{ ...panelBase, left: 0, right: 0, bottom: 52, maxHeight: "52vh", padding: "12px 16px", borderLeft: "none", borderRight: "none" }}>
+              {sheet === "controls" ? controlsPanel : dataPanel}
             </div>
-          ))}
-          <DR l="Custom Constellations" v={`${customConstellations.length}`} />
-          <DR l="Extinction" v={`${(atmo.extinction*atmoDensity).toFixed(2)} mag`} />
+          )}
+          <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 11, display: "flex", gap: 6, padding: 4, background: PANEL_BG, borderTop: "1px solid var(--sf-line)" }}>
+            {([["controls", "Controls"], ["data", "Sky data"]] as const).map(([k, label]) => (
+              <button key={k} type="button" aria-expanded={sheet === k} onClick={() => setSheet((s) => (s === k ? "none" : k))} style={{ ...BTN, ...(sheet === k ? null : BTN_QUIET), flex: 1 }}>{label}</button>
+            ))}
+          </div>
+        </>
+      )}
 
-          <div style={{...SH,marginTop:12}}>VIEW</div>
-          <DR l="RA / Dec" v={`${viewRa.toFixed(1)}° / ${viewDec.toFixed(1)}°`} />
-          <DR l="FOV" v={`${fov}°`} />
-          <DR l="Epoch" v={epochYears===0 ? "Now (J2000)" : `${epochYears>0?"+":""}${epochYears.toLocaleString()} yr`} vc={epochYears!==0?"var(--sf-amber-text)":undefined} />
-
-          {hoveredStar && <>
-            <div style={{...SH,marginTop:12}}>SELECTED STAR</div>
-            <DR l="Name" v={hoveredStar.name || "Unnamed"} vc={`rgb(${hoveredStar.rgb.join(",")})`} />
-            <DR l="Mag (here)" v={hoveredStar.appMag.toFixed(2)} />
-            <DR l="Mag (Earth)" v={apparentMag(hoveredStar.absMag, hoveredStar.dist).toFixed(2)} />
-            <DR l="Distance" v={`${(hoveredStar.newDist*3.262).toFixed(2)} ly`} />
-            <DR l="B-V Index" v={hoveredStar.bv.toFixed(2)} />
-          </>}
-        </>}
+      {/* View readout: DOM, not canvas, so it is legible and announced. */}
+      <div style={{ position: "absolute", right: isMobile ? 12 : narrativeBridgeOpen ? 18 + 320 + 12 + 332 : 18 + 332, bottom: isMobile ? 64 : 40, zIndex: 9, textAlign: "right", pointerEvents: "none" }}>
+        <div style={{ fontFamily: FONT_MONO, fontSize: 16, color: "var(--t1)" }}>{fovLabel}°</div>
+        <div style={{ fontSize: 12, color: "var(--t3)" }}>field of view</div>
       </div>
+      <div id="exo-view-status" aria-live="polite" style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}>{announce}</div>
 
-      {/* ── NAMING MODAL ── */}
+      {drawMode && (
+        <div style={{ position: "absolute", top: isMobile ? 120 : 24, left: "50%", transform: "translateX(-50%)", zIndex: 12, background: PANEL_BG, border: `1px solid ${drawColor}`, padding: "6px 12px", fontSize: 13, color: "var(--t1)" }}>
+          Drawing: tap stars to connect ({currentDrawing.length})
+        </div>
+      )}
+
       {namingMode && (
-        <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,zIndex:100,display:"flex",alignItems:"center",justifyContent:"center",background:"var(--sf-scrim)"}}>
-          <div role="dialog" aria-modal="true" aria-label="Name your constellation" style={{background:"var(--sf-surface-elevated)",border:"1px solid var(--sf-line)",borderRadius:0,padding:"28px 32px",width:340,maxWidth:"90vw"}}>
-            <div style={{...SH,marginBottom:12,fontSize:12,borderBottom:"1px solid var(--sf-line-hairline)",paddingBottom:8}}>NAME YOUR CONSTELLATION</div>
-            
-            {/* Preview line */}
-            <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:16}}>
-              <div style={{width:40,height:2,background:drawColor}} />
-              <span style={{fontSize:12,color:"var(--t3)"}}>{currentDrawing.length} stars connected</span>
+        <div style={{ position: "absolute", inset: 0, zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", background: "var(--sf-scrim)" }}>
+          <div role="dialog" aria-modal="true" aria-labelledby="exo-name-title" style={{ background: "var(--sf-surface-elevated)", border: "1px solid var(--sf-line)", padding: "24px 28px", width: 360, maxWidth: "92vw" }}>
+            <h2 id="exo-name-title" style={{ ...SH, fontSize: 12 }}>Name this constellation</h2>
+            <p style={NOTE}>{currentDrawing.length} stars, seen from {resolved.label}, epoch {epochYears === 0 ? "J2000" : `${epochYears > 0 ? "+" : ""}${epochYears} yr`}.</p>
+            <label htmlFor="exo-cons-name" style={LBL_BLOCK}>Name</label>
+            <input id="exo-cons-name" type="text" value={constellationName} onChange={(e) => setConstellationName(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") saveConstellation(); }} placeholder="e.g. The Wanderer" autoFocus maxLength={40} style={FIELD} />
+            <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+              <button type="button" onClick={() => { setNamingMode(false); setConstellationName(""); }} style={{ ...BTN, ...BTN_QUIET, flex: 1 }}>Back</button>
+              <button type="button" onClick={saveConstellation} disabled={!constellationName.trim()} style={{ ...BTN, flex: 2, ...(constellationName.trim() ? null : BTN_DISABLED) }}>Save constellation</button>
             </div>
-
-            <input
-              type="text"
-              value={constellationName}
-              onChange={e => setConstellationName(e.target.value)}
-              onKeyDown={e => { if (e.key === 'Enter') saveConstellation(); }}
-              placeholder="e.g. The Wanderer, Kzinti Claw..."
-              autoFocus
-              maxLength={40}
-              style={{
-                width:"100%",fontFamily:FONT_HEADING,fontSize:16,fontWeight:400,
-                letterSpacing:"0.06em",textTransform:"uppercase",
-                background:"var(--sf-void)",color:"var(--t1)",
-                border:"1px solid var(--sf-line-hairline)",borderBottomColor:"var(--sf-line-interactive)",borderRadius:0,
-                padding:"12px 14px",minHeight:"var(--hit-min)",
-                transition:`border-color ${EASE}`,
-              }}
-              onFocus={e => e.target.style.borderColor = drawColor}
-              onBlur={e => { e.target.style.borderColor = "var(--sf-line-hairline)"; e.target.style.borderBottomColor = "var(--sf-line-interactive)"; }}
-            />
-
-            {/* Color adjustment */}
-            <div style={{display:"flex",gap:8,marginTop:14,alignItems:"center",flexWrap:"wrap"}}>
-              <span style={{fontSize:12,fontFamily:FONT_HEADING,letterSpacing:"0.12em",color:"var(--t4)",marginRight:4}}>COLOUR</span>
-              {DRAW_COLORS.map(c => (
-                <button key={c.hex} type="button" onClick={() => setDrawColor(c.hex)}
-                  aria-label={`Line colour: ${c.name}`} aria-pressed={drawColor === c.hex}
-                  style={swatchStyle(c.hex, drawColor === c.hex)} title={c.name} />
-              ))}
-            </div>
-
-            {/* Star list preview */}
-            <div className="sf-sb" style={{marginTop:14,maxHeight:100,overflowY:"auto",padding:"8px 0",borderTop:"1px solid var(--sf-line-hairline)"}}>
-              {currentDrawing.map((s, i) => (
-                <div key={i} style={{fontSize:12,color:"var(--t2)",fontFamily:FONT_MONO,lineHeight:1.9}}>
-                  <span style={{color:drawColor,marginRight:6}}>{i+1}.</span>
-                  {s.name}
-                  <span style={{color:"var(--t4)",marginLeft:6}}>mag {s.appMag.toFixed(1)}</span>
-                </div>
-              ))}
-            </div>
-
-            <div style={{display:"flex",gap:10,marginTop:18}}>
-              <button onClick={() => { setNamingMode(false); setConstellationName(""); }}
-                style={{...BTN,...BTN_QUIET,flex:1}}>
-                ← BACK
-              </button>
-              <button onClick={saveConstellation}
-                disabled={!constellationName.trim()}
-                style={{...BTN,flex:2,...(constellationName.trim() ? null : BTN_DISABLED)}}>
-                ✦ SAVE CONSTELLATION
-              </button>
-            </div>
-            <div style={{fontSize:12,color:"var(--t4)",marginTop:10,textAlign:"center"}}>Press Enter to save · Esc to go back</div>
           </div>
         </div>
       )}
 
-      {/* ── CONSTELLATION MANAGER ── */}
-      {consManagerOpen && customConstellations.length > 0 && (
-        <div className="sf-sb" style={{position:"absolute",bottom:40,left:18,
-          width: isMobile ? undefined : 260,
-          right: isMobile ? 18 : undefined,
-          zIndex:20,
-          background:PANEL_BG,border:"1px solid var(--sf-line)",
-          borderRadius:0,padding:"14px 18px",maxHeight:"40vh",overflowY:"auto"}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-            <span style={SH}>YOUR CONSTELLATIONS</span>
-            <button type="button" onClick={() => setConsManagerOpen(false)} aria-label="Close constellation manager" style={{...MINI_BTN,border:"none",color:"var(--t3)"}}>✕</button>
-          </div>
-          {customConstellations.map(cons => (
-            <div key={cons.id} style={{
-              display:"flex",alignItems:"center",justifyContent:"space-between",
-              padding:"6px 0",borderBottom:"1px solid var(--sf-line-hairline)"
-            }}>
-              <div style={{display:"flex",alignItems:"center",gap:8,flex:1,minWidth:0}}>
-                <div aria-hidden style={{width:10,height:10,borderRadius:0,flexShrink:0,background:cons.visible?cons.color:"transparent",border:`1px solid ${cons.color}`}} />
-                <div style={{minWidth:0}}>
-                  <div style={{fontSize:12,color:cons.visible?"var(--t2)":"var(--t4)",fontFamily:FONT_HEADING,fontWeight:400,letterSpacing:"0.06em",textTransform:"uppercase",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
-                    {cons.name}
-                  </div>
-                  <div style={{fontSize:12,color:"var(--t4)",fontFamily:FONT_MONO}}>
-                    {cons.stars.length} stars · {cons.planetName || EXOPLANET_SYSTEMS[cons.planetIndex]?.planet || "?"}
-                  </div>
-                </div>
-              </div>
-              <div style={{display:"flex",gap:8,flexShrink:0}}>
-                {/* Navigate to constellation */}
-                <button onClick={() => { setViewRa(cons.centRa); setViewDec(cons.centDec); }}
-                  className="exo-mini" style={{...MINI_BTN}} title="Navigate to" aria-label={`Navigate to ${cons.name}`}>⌖</button>
-                {/* Toggle visibility */}
-                <button onClick={() => toggleConstellation(cons.id)}
-                  className="exo-mini" style={{...MINI_BTN,color:cons.visible?"var(--t2)":"var(--t4)"}} title={cons.visible?"Hide":"Show"} aria-label={`${cons.visible?"Hide":"Show"} ${cons.name}`} aria-pressed={cons.visible}>
-                  {cons.visible ? "◉" : "○"}
-                </button>
-                {/* Delete */}
-                <button onClick={() => deleteConstellation(cons.id)}
-                  className="exo-mini" style={{...MINI_BTN,color:"var(--sf-crimson-text)"}} title="Delete" aria-label={`Delete ${cons.name}`}>✕</button>
-              </div>
+      {briefOpen && (
+        <div style={{ position: "absolute", inset: 0, zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", background: "var(--sf-scrim)" }}>
+          <div role="dialog" aria-modal="true" aria-labelledby="exo-brief-title" className="sf-sb" style={{ background: "var(--sf-surface-elevated)", border: "1px solid var(--sf-line)", padding: "24px 28px", width: 560, maxWidth: "94vw", maxHeight: "86vh", overflowY: "auto" }}>
+            <h2 id="exo-brief-title" style={{ ...SH, fontSize: 12 }}>Scene brief</h2>
+            <p style={{ fontFamily: FONT_MONO, fontSize: 12, letterSpacing: "0.10em", color: "var(--sf-amber-text)", margin: "8px 0" }}>{brief.label}</p>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0 }} className="sf-measure">
+              {brief.lines.map((l, n) => (
+                <li key={n} style={{ padding: "8px 0", borderBottom: "1px solid var(--sf-line-hairline)" }}>
+                  <div style={{ fontSize: 16, lineHeight: 1.6, color: "var(--t2)" }}>{l.text}</div>
+                  <div style={{ fontFamily: FONT_MONO, fontSize: 12, color: "var(--t4)", marginTop: 2 }}>{l.cites.join(" · ")}</div>
+                </li>
+              ))}
+            </ul>
+            <p style={{ ...NOTE, color: "var(--t3)" }}>Conditions, not prose. Copy what you need by hand; nothing here goes into your manuscript by itself.</p>
+            <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+              <button type="button" onClick={() => { void navigator.clipboard?.writeText(briefAsText(brief)); toast({ title: "BRIEF COPIED." }); }} style={{ ...BTN, ...BTN_QUIET, flex: 1 }}>Copy text</button>
+              <button type="button" onClick={() => setBriefOpen(false)} style={{ ...BTN, flex: 1 }}>Close</button>
             </div>
-          ))}
-          {customConstellations.length > 0 && (
-            <button onClick={exportConstellations} style={{...BTN,marginTop:12,width:"100%",padding:"5px 10px"}}>
-              ↓ EXPORT ALL (JSON)
-            </button>
-          )}
+          </div>
         </div>
       )}
 
-      {/* ── KEYBOARD HELP ── (sits left of data panel; further left when bridge is open) */}
       {showKbHelp && (
-        <div style={{
-          position:"absolute",
-          top: isMobile ? 16 : 16,
-          // The desktop formula chains off the data panel's fixed 320px width;
-          // on mobile that panel has no fixed width, so the same sum would
-          // place this off the right edge of a 390px screen entirely.
-          right: isMobile ? 18 : (narrativeBridgeOpen ? 18 + 320 + 12 + 320 + 12 : 18 + 320 + 12),
-          left: isMobile ? 18 : undefined,
-          zIndex:50,
-          width: isMobile ? undefined : 210,
-          maxHeight: isMobile ? "60vh" : undefined,
-          overflowY: isMobile ? "auto" : undefined,
-          background:PANEL_BG,
-          border:"1px solid var(--sf-line)",
-          borderRadius:0,
-          padding:"14px 18px",
-          transition:"right 280ms cubic-bezier(0.2, 0, 0, 1)",
-        }}>
-          <div style={{...SH,marginBottom:8}}>KEYBOARD SHORTCUTS</div>
-          {[["Drag","Pan sky"],["Scroll / Pinch","Zoom FOV"],["Esc","Cancel / Close"],["Ctrl+Z","Undo star (draw)"],["Enter","Save constellation"],["?","Toggle this help"]].map(([key,desc])=>(
-            <div key={key} style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",lineHeight:"2"}}>
-              <span style={{fontFamily:FONT_MONO,fontSize:12,color:"var(--sf-primary-text)",fontWeight:400,minWidth:56}}>{key}</span>
-              <span style={{fontFamily:FONT_SANS,fontSize:12,color:"var(--t3)",textAlign:"right"}}>{desc}</span>
+        <div role="dialog" aria-label="Keyboard shortcuts" style={{ ...panelBase, top: 16, left: "50%", transform: "translateX(-50%)", zIndex: 50, width: 260, padding: "12px 16px" }}>
+          <h3 style={SH}>Keyboard shortcuts</h3>
+          {[["Arrows", "Look around"], ["+ / −", "Zoom"], ["Drag", "Look around"], ["Scroll / pinch", "Zoom"], ["Tap", "Identify a star"], ["Esc", "Cancel / close"], ["Ctrl+Z", "Undo star (drawing)"], ["?", "This list"]].map(([k, d]) => (
+            <div key={k} style={{ display: "flex", justifyContent: "space-between", lineHeight: 2 }}>
+              <span style={{ fontFamily: FONT_MONO, fontSize: 12, color: "var(--sf-primary-text)" }}>{k}</span>
+              <span style={{ fontSize: 12, color: "var(--t3)" }}>{d}</span>
             </div>
           ))}
         </div>
       )}
 
-      {/* ── CREDITS ── */}
-      <div style={{ position:"absolute",bottom:14,left:18,zIndex:10,fontFamily:FONT_SANS,fontSize:12,letterSpacing:"0.06em",color:"var(--t4)",pointerEvents:"none" }}>
-        © 2025–2026 JASON D. BATT, PH.D. · <span style={{color:"var(--t3)"}}>STELLARFORGE.TOOLS</span> · <a href="/tools/exosky/science" style={{color:"var(--sf-primary-text)",textDecoration:"none",pointerEvents:"auto"}}>THE SCIENCE</a>
+      <div style={{ position: "absolute", bottom: isMobile ? 60 : 12, left: 18, zIndex: 9, fontSize: 12, color: "var(--t4)", maxWidth: isMobile ? "60%" : 520, lineHeight: 1.5 }}>
+        © 2025–2026 Jason D. Batt, Ph.D. · {isMobile ? "Stars: HYG v4.1, CC BY-SA 4.0" : CATALOGUE_CREDIT.replace("Star catalogue: ", "Stars: ")} · <a href="/tools/exosky/science" style={{ color: "var(--sf-primary-text)" }}>The science</a>
       </div>
 
       <style>{`
-        .exosky-root input[type=range]{-webkit-appearance:none;width:100%;height:2px;background:var(--sf-line-interactive);outline:none}
-        .exosky-root input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--sf-primary);cursor:pointer;border:2px solid var(--sf-void)}
-        .exosky-root input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--sf-primary);cursor:pointer;border:2px solid var(--sf-void)}
-        .exosky-root input[type=checkbox]{accent-color:var(--sf-primary);width:14px;height:14px}
-        .exosky-root input[type=number]{-moz-appearance:textfield}.exosky-root input[type=number]::-webkit-outer-spin-button,.exosky-root input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-        .exosky-root select option{background:var(--sf-surface);color:var(--t2)}
-        .exosky-root .exo-mini:hover{border-color:var(--sf-line-emphasis)!important}
+        .exosky-root input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:24px;background:transparent}
+        .exosky-root input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--sf-line-interactive)}
+        .exosky-root input[type=range]::-moz-range-track{height:2px;background:var(--sf-line-interactive)}
+        .exosky-root input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;margin-top:-7px;background:var(--sf-primary);border:2px solid var(--sf-void);cursor:pointer}
+        .exosky-root input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--sf-primary);border:2px solid var(--sf-void);border-radius:0;cursor:pointer}
+        .exosky-root input[type=checkbox]{accent-color:var(--sf-primary);width:16px;height:16px}
+        .exosky-root select option,.exosky-root select optgroup{background:var(--sf-surface);color:var(--t2)}
+        .exosky-root details>summary{cursor:pointer}
       `}</style>
     </div>
   );
 }
 
-// ── DATA ROW COMPONENT ────────────────────────────────────────
-function DR({ l, v, vc }: { l: ReactNode; v: ReactNode; vc?: string }) {
+// ── Small controls ──────────────────────────────────────────────────
+function Slider({ id, label, value, min, max, step, onChange, display }: { id: string; label: string; value: number; min: number; max: number; step: number | "any"; onChange: (v: number) => void; display: string }) {
   return (
-    <div style={{display:"flex",justifyContent:"space-between",lineHeight:1.9,alignItems:"baseline"}}>
-      <span style={{color:"var(--t3)",fontWeight:400,fontFamily:FONT_SANS,fontSize:12}}>{l}</span>
-      <span style={{color:vc||"var(--t1)",fontWeight:500,fontFamily:FONT_MONO,fontSize:14}}>{v}</span>
+    <div style={{ marginTop: 10 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+        <label htmlFor={id} style={LBL}>{label}</label>
+        <span style={VAL}>{display}</span>
+      </div>
+      <input id={id} type="range" min={min} max={max} step={step} value={value} onChange={(e) => onChange(Number(e.target.value))} aria-valuetext={display} style={{ width: "100%", minHeight: 32 }} />
     </div>
   );
 }
 
-// ── STYLE TOKENS ──────────────────────────────────────────────
-// DOM chrome reads the generated CSS variables (src/styles/tokens.css) so it
-// follows the active theme. Canvas draw code above uses src/styles/tokens.ts.
+function NumberRow({ id, label, value, min, max, step, onChange, tag }: { id: string; label: string; value: number; min: number; max: number; step: number; onChange: (v: number) => void; tag?: ReactNode }) {
+  return (
+    <div style={{ marginTop: 8 }}>
+      <label htmlFor={id} style={LBL_BLOCK}>{label}{tag}</label>
+      <input id={id} type="number" min={min} max={max} step={step} value={Number.isFinite(value) ? Number(value.toFixed(3)) : ""}
+        onChange={(e) => { const n = Number(e.target.value); if (Number.isFinite(n)) onChange(clamp(n, min, max)); }} style={NUM_INPUT} />
+    </div>
+  );
+}
+
+function DR({ l, v }: { l: ReactNode; v: ReactNode }) {
+  return (
+    <div style={{ display: "flex", justifyContent: "space-between", gap: 12, lineHeight: 1.7, alignItems: "baseline" }}>
+      <span style={{ color: "var(--t3)", fontSize: 13 }}>{l}</span>
+      <span style={{ color: "var(--t1)", fontWeight: 500, fontFamily: FONT_MONO, fontSize: 13, textAlign: "right" }}>{v}</span>
+    </div>
+  );
+}
+
+function tagStyle(status: string) {
+  const hue = status === "confirmed" || status === "home" || status === "yours" ? "emerald" : status === "candidate" || status === "disputed" ? "amber" : status === "refuted" ? "crimson" : "stellar";
+  return { display: "inline-block", padding: "2px 8px", fontSize: 12, fontWeight: 500, borderRadius: 0, border: `1px solid var(--sf-${hue})`, background: `rgb(var(--sf-${hue}-rgb) / 0.06)`, color: `var(--sf-${hue}-text)` } as const;
+}
+
+// ── Style tokens ────────────────────────────────────────────────────
+// DOM chrome reads the generated CSS variables so it follows the theme.
 const FONT_HEADING = "var(--font-heading)";
 const FONT_SANS = "var(--font-sans)";
 const FONT_MONO = "var(--font-mono)";
 const EASE = "180ms cubic-bezier(0.2, 0, 0, 1)";
-// (1.7) Solid: a translucent, blurred panel over a canvas that repaints
-// every frame is re-blurred by the compositor on every frame.
 const PANEL_BG = "rgb(var(--sf-surface-rgb))";
-const SH = { fontSize:12,fontFamily:FONT_HEADING,fontWeight:500,letterSpacing:"0.12em",textTransform:"uppercase",color:"var(--sf-primary-text)",marginTop:0,marginBottom:2,paddingBottom:3,borderBottom:"1px solid var(--sf-line-hairline)",width:"100%",textAlign:"left" } as const;
-const COLLAPSE = { cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,width:"100%",minHeight:"var(--hit-min)",background:"none",border:"none",padding:0,color:"inherit" } as const;
-const LBL = { fontSize:12,fontFamily:FONT_SANS,fontWeight:400,color:"var(--t3)" };
-const VAL = { fontSize:14,fontFamily:FONT_MONO,fontWeight:500,color:"var(--t1)" };
-const SEL = { width:"100%",marginTop:8,fontFamily:FONT_SANS,fontSize:16,background:"var(--sf-void)",color:"var(--t1)",border:"1px solid var(--sf-line-hairline)",borderBottomColor:"var(--sf-line-interactive)",padding:"7px 10px",minHeight:"var(--hit-min)",borderRadius:0 };
-const BTN = { fontFamily:FONT_SANS,fontSize:12,fontWeight:500,letterSpacing:"0.10em",textTransform:"uppercase",padding:"7px 12px",minHeight:"var(--hit-min)",border:"1px solid var(--sf-primary)",background:"rgb(var(--sf-primary-rgb) / 0.06)",color:"var(--sf-primary-text)",cursor:"pointer",borderRadius:0,transition:`background-color ${EASE}, border-color ${EASE}, color ${EASE}` } as const;
-/** Secondary action: outline only. */
-const BTN_QUIET = { background:"transparent",borderColor:"var(--sf-line)",color:"var(--t2)" } as const;
-/** Disabled is a colour state, never opacity. */
-const BTN_DISABLED = { background:"var(--sf-disabled-bg)",borderColor:"var(--sf-disabled-line)",color:"var(--sf-disabled-text)",cursor:"not-allowed" } as const;
-const CKL = { display:"flex",alignItems:"center",gap:8,marginTop:2,minHeight:32,fontSize:13,color:"var(--t2)",cursor:"pointer" };
-const CK = { accentColor:"var(--sf-primary)",width:14,height:14 };
-const NUM_INPUT = { width:76,fontFamily:FONT_MONO,fontSize:16,background:"var(--sf-void)",color:"var(--t1)",border:"1px solid var(--sf-line-hairline)",borderBottomColor:"var(--sf-line-interactive)",padding:"3px 5px",borderRadius:0,textAlign:"right" } as const;
-const MINI_BTN = { background:"none",border:"1px solid transparent",borderRadius:0,padding:0,minWidth:"var(--hit-min)",minHeight:"var(--hit-min)",cursor:"pointer",fontSize:14,color:"var(--t2)",lineHeight:1,transition:`border-color ${EASE}, color ${EASE}` };
-/** Constellation line-colour swatch. Selection reads as a t1 frame, not opacity. */
+const SH = { display: "block", fontSize: 12, fontFamily: FONT_HEADING, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--t4)", margin: 0, paddingBottom: 4, borderBottom: "1px solid var(--sf-line-hairline)", width: "100%", textAlign: "left" } as const;
+const COLLAPSE = { cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, width: "100%", minHeight: "var(--hit-min)", background: "none", border: "none", padding: 0, color: "inherit" } as const;
+const LBL = { fontSize: 13, fontFamily: FONT_SANS, color: "var(--t3)" } as const;
+const LBL_BLOCK = { display: "block", fontSize: 13, fontFamily: FONT_SANS, color: "var(--t3)", marginTop: 8 } as const;
+const VAL = { fontSize: 13, fontFamily: FONT_MONO, fontWeight: 500, color: "var(--t1)", textAlign: "right" } as const;
+const NOTE = { fontSize: 13, color: "var(--t2)", lineHeight: 1.5, margin: "6px 0 0" } as const;
+const SEL = { width: "100%", marginTop: 6, fontFamily: FONT_SANS, fontSize: 16, background: "var(--sf-void)", color: "var(--t1)", border: "1px solid var(--sf-line-hairline)", borderBottomColor: "var(--sf-line-interactive)", padding: "7px 10px", minHeight: "var(--hit-min)", borderRadius: 0 } as const;
+const FIELD = { width: "100%", marginTop: 6, fontFamily: FONT_SANS, fontSize: 16, background: "var(--sf-void)", color: "var(--t1)", border: "1px solid var(--sf-line-hairline)", borderBottomColor: "var(--sf-line-interactive)", padding: "8px 10px", minHeight: "var(--hit-min)", borderRadius: 0 } as const;
+const NUM_INPUT = { ...FIELD, fontFamily: FONT_MONO, marginTop: 4 } as const;
+const BTN = { fontFamily: FONT_SANS, fontSize: 14, fontWeight: 500, padding: "8px 12px", minHeight: "var(--hit-min)", border: "1px solid var(--sf-primary)", background: "rgb(var(--sf-primary-rgb) / 0.06)", color: "var(--sf-primary-text)", cursor: "pointer", borderRadius: 0, transition: `background-color ${EASE}, border-color ${EASE}, color ${EASE}` } as const;
+const BTN_QUIET = { background: "transparent", borderColor: "var(--sf-line)", color: "var(--t2)" } as const;
+const BTN_DISABLED = { background: "var(--sf-disabled-bg)", borderColor: "var(--sf-disabled-line)", color: "var(--sf-disabled-text)", cursor: "not-allowed" } as const;
+const MINI = { fontFamily: FONT_SANS, fontSize: 13, background: "none", border: "1px solid var(--sf-line)", borderRadius: 0, padding: "4px 10px", minHeight: "var(--hit-min)", cursor: "pointer", color: "var(--t2)" } as const;
+const CKL = { display: "flex", alignItems: "center", gap: 8, minHeight: "var(--hit-min)", fontSize: 14, color: "var(--t2)", cursor: "pointer", flexWrap: "wrap" } as const;
+const CK = { accentColor: "var(--sf-primary)", width: 16, height: 16 } as const;
+const LIST = { listStyle: "none", padding: 0, margin: "6px 0 0" } as const;
+const LIST_BTN = { display: "block", width: "100%", textAlign: "left", fontFamily: FONT_SANS, fontSize: 14, background: "none", border: "none", borderBottom: "1px solid var(--sf-line-hairline)", padding: "8px 4px", minHeight: "var(--hit-min)", color: "var(--t1)", cursor: "pointer" } as const;
+const CARD = { border: "1px solid var(--sf-line)", background: "var(--sf-surface-elevated)", padding: "8px 12px" } as const;
+const WARN = { border: "1px solid var(--sf-amber)", background: "rgb(var(--sf-amber-rgb) / 0.06)", padding: "8px 10px", margin: "8px 0" } as const;
+const WARN_TITLE = { fontFamily: FONT_MONO, fontSize: 12, letterSpacing: "0.10em", textTransform: "uppercase", color: "var(--sf-amber-text)", marginBottom: 4 } as const;
+const SUMMARY = { fontSize: 14, color: "var(--t1)", minHeight: "var(--hit-min)", display: "flex", alignItems: "center" } as const;
 function swatchStyle(hex: string, selected: boolean) {
-  return { width:32,height:32,padding:0,borderRadius:0,background:hex,cursor:"pointer",border: selected ? "2px solid var(--t1)" : "2px solid var(--sf-line)",outlineOffset:2,transition:`border-color ${EASE}` } as const;
+  return { width: 36, height: 36, padding: 0, borderRadius: 0, background: hex, cursor: "pointer", border: selected ? "2px solid var(--t1)" : "2px solid var(--sf-line)", transition: `border-color ${EASE}` } as const;
 }
