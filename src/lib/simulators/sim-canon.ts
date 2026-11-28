@@ -68,6 +68,20 @@ export interface SimCanon {
   children: SimChildEntity[];
   /** Payload keys deliberately not published, and why (Law I). */
   ephemeral: { key: string; why: string }[];
+  /** Dated events for the Chronicle (Rogue's per-body outcomes), relative to the run. */
+  events?: SimEvent[];
+  /** Ship's Voice reason the run must not be published (Rogue energy error). */
+  refusal?: string;
+}
+
+export interface SimEvent {
+  title: string;
+  description: string;
+  /** Years after the run's reference moment (Rogue: launch). */
+  offsetYears: number;
+  /** The body the event happened to, by name. */
+  body: string;
+  outcome: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -121,6 +135,7 @@ const SYMBOL: Partial<Record<Unit, string>> = {
   bar: "bar",
   days: "days",
   km2: "km²",
+  km: "km",
   earth_flux: "S⊕",
   hours: "h",
   deg: "°",
@@ -197,7 +212,7 @@ export function tidelockCanon(raw: unknown): SimCanon {
   c.scalar("planet.radius", "Radius", fin(p.planetRadius), "earth_radii");
   // atmDens is labelled "atm" in the sim; 1 atm = 1.013 bar.
   const atm = fin(p.atmDens);
-  c.scalar("planet.atmo_pressure", "Atmospheric pressure", atm === null ? null : atm * 1.01325, "bar");
+  c.scalar("planet.atmo_pressure", "Atmospheric pressure", fin(r.pressureBar) ?? (atm === null ? null : atm * 1.01325), "bar");
   const albedo = fin(p.albedo);
   c.scalar("planet.albedo", "Albedo", albedo, "fraction");
   const ocean = fin(p.ocean);
@@ -240,7 +255,18 @@ export function tidelockCanon(raw: unknown): SimCanon {
   c.scalar("star.luminosity", "Stellar luminosity", lum, "solar_lum");
   c.scalar("star.mass", "Stellar mass", pick(r, "starMass"), "solar_masses");
   c.scalar("star.temp_effective", "Effective temperature", pick(r, "starTeff", "starTemp"), "K");
-  placeAroundStar(c, lum, a, albedo ?? 0.3);
+  // 1.9 lane T posts insolation and Teq itself (results.units: S_earth, K);
+  // prefer the sim's numbers, compute only for older saves.
+  const simS = fin(r.insolation);
+  const simTeq = fin(r.teq);
+  if (simS !== null || simTeq !== null) {
+    c.scalar("planet.insolation", "Insolation", simS, "earth_flux");
+    c.scalar("planet.temp_equilibrium", "Equilibrium temperature", simTeq, "K");
+  } else {
+    placeAroundStar(c, lum, a, albedo ?? 0.3);
+  }
+  // Tidelock owns the terminator band width (08).
+  c.scalar("planet.terminator_band_width", "Terminator band width", fin(r.bandWidthKm), "km");
 
   out.facts = c.facts;
   out.ephemeral = [
@@ -267,12 +293,21 @@ export function exoforgeCanon(raw: unknown): SimCanon {
 
   c.scalar("planet.radius", "Radius", fin(p.radius), "earth_radii");
   c.scalar("planet.mass", "Mass", fin(p.mass), "earth_masses");
-  c.scalar("planet.temp_mean", "Mean surface temperature", fin(p.temp), "K");
-  c.scalar("orbit.period", "Orbital period", fin(p.period), "days");
+  // 1.9 lane T: temp is the DERIVED surface temperature, period the derived
+  // orbital period in days (results.units). Prefer results where posted.
+  c.scalar("planet.temp_mean", "Mean surface temperature", fin(r.surfaceTemp) ?? fin(p.temp), "K");
+  c.scalar("orbit.period", "Orbital period", fin(r.periodDays) ?? fin(p.period), "days");
+  c.scalar("orbit.semi_major_axis", "Orbital distance", fin(r.orbDistAU) ?? fin(p.orbDistAU), "au");
+  c.scalar("planet.insolation", "Insolation", fin(r.insolation), "earth_flux");
+  c.scalar("planet.temp_equilibrium", "Equilibrium temperature", fin(r.teq), "K");
+  c.scalar("star.luminosity", "Stellar luminosity", fin(r.starLum), "solar_lum");
+  c.scalar("star.mass", "Stellar mass", fin(r.starMass) ?? fin(p.starMass), "solar_masses");
   const ocean = fin(p.ocean);
   c.scalar("planet.hydrosphere_fraction", "Hydrosphere fraction", ocean === null ? null : ocean / 100, "fraction");
   c.scalar("planet.atmo_pressure", "Atmospheric pressure", fin(p.atmo), "bar");
-  c.scalar("star.temp_effective", "Effective temperature", fin(p.starTemp), "K");
+  c.scalar("star.temp_effective", "Effective temperature", fin(r.starTeff) ?? fin(p.starTemp), "K");
+  const albedoX = fin(p.albedo);
+  c.scalar("planet.albedo", "Albedo", albedoX, "fraction");
 
   // ExoForge owns planet.composition (08 predicate-level exception).
   const comp = fin(p.composition);
@@ -339,7 +374,7 @@ export function solarisCanon(raw: unknown): SimCanon {
   // the primary's.
   const totalL = stars.reduce((sum, s) => sum + (pick(s, "luminositySOL", "luminosityLsun", "luminosity", "lum") ?? 0), 0) || null;
   if (primary) {
-    c.spectral(str(primary.spectralClass) || str(primary.classification) || str(primary.type));
+    c.spectral(str(primary.spectralType) || str(primary.spectralClass) || str(primary.classification) || str(primary.type));
     c.scalar("star.luminosity", "Stellar luminosity", pick(primary, "luminositySOL", "luminosityLsun", "luminosity", "lum"), "solar_lum");
     c.scalar("star.mass", "Stellar mass", pick(primary, "massSOL", "massMsun", "mass"), "solar_masses");
     c.scalar("star.temp_effective", "Effective temperature", pick(primary, "temperatureK", "teffK", "teff", "temp"), "K");
@@ -364,6 +399,7 @@ export function solarisCanon(raw: unknown): SimCanon {
     c.scalar("planet.mass", "Mass", pick(p, "massEarth", "massEarths", "mass"), "earth_masses", key);
     c.scalar("planet.radius", "Radius", pick(p, "radiusEarth", "radiusEarths", "radius"), "earth_radii", key);
     c.scalar("planet.obliquity", "Axial tilt", pick(p, "axialTiltDeg", "obliquity"), "deg", key);
+    if (typeof p.tidallyLocked === "boolean") c.bool("orbit.tidally_locked", "Tidally locked", p.tidallyLocked, key);
     const albedo = pick(p, "albedo") ?? 0.3;
     // Prefer the sim's own numbers when it posts them; compute otherwise.
     const s = pick(p, "insolation", "insolationEarth", "flux");
@@ -396,18 +432,60 @@ export function solarisCanon(raw: unknown): SimCanon {
 // ---------------------------------------------------------------------------
 
 /**
- * Rogue stages an encounter. Its host-system facts are presets (the real Solar
- * System, TRAPPIST-1), not the writer's world, and its aftermath is an EVENT
- * with an epoch, which belongs on the Chronicle (lane S, R4), not as planet
- * facts. So a Rogue publish records the run and asserts nothing numeric.
+ * Rogue stages an encounter. Its host systems are presets (the real Solar
+ * System, TRAPPIST-1), so it asserts no planet facts; what it decides is what
+ * HAPPENED, per body, at a date on the run's own clock (lane S, R4:
+ * results.bodies / results.outcomes and results.epoch). Those become Chronicle
+ * events once the writer anchors the encounter in their world's calendar.
+ * A run whose relative energy error exceeds the sim's own limit
+ * (publishMaxEnergyError, 1e-3) is refused: its outcomes are integration
+ * error, not physics.
  */
-export function rogueCanon(): SimCanon {
-  return {
+export function rogueCanon(raw?: unknown): SimCanon {
+  const out: SimCanon = {
     entityType: "milestone",
     facts: [],
     children: [],
-    ephemeral: [{ key: "bodies/intruder", why: "encounter outcome; a Chronicle event, not planet canon" }],
+    ephemeral: [{ key: "intruder settings", why: "the writer's invention, recorded with the run" }],
+    events: [],
   };
+  const r = obj(obj(raw)?.results);
+  if (!r) return out;
+  const err = fin(r.energyError);
+  const max = fin(r.publishMaxEnergyError) ?? 1e-3;
+  if (err !== null && Math.abs(err) > max) {
+    out.refusal = `INTEGRATION ERROR ${Math.abs(err).toExponential(1)}, ABOVE ${max.toExponential(0)}. OUTCOMES NOT RELIABLE. LOWER THE TIME SCALE AND RUN AGAIN.`;
+  }
+  const epoch = obj(r.epoch);
+  const at = fin(epoch?.encounterYears) ?? fin(epoch?.elapsedYears) ?? 0;
+  const list = (Array.isArray(r.outcomes) ? r.outcomes : Array.isArray(r.bodies) ? r.bodies : [])
+    .map(obj)
+    .filter((b): b is Record<string, unknown> => b !== null);
+  const verb: Record<string, string> = {
+    ejected: "is thrown out of the system",
+    captured: "is captured by the intruder",
+    orbit_changed: "is knocked into a new orbit",
+  };
+  for (const b of list) {
+    const outcome = str(b.outcome) || (b.ejected === true ? "ejected" : b.captured === true ? "captured" : "");
+    if (!outcome || outcome === "retained") continue;
+    const name = str(b.name) || "A planet";
+    const a0 = fin(b.a0);
+    const a1 = fin(b.a);
+    const e1 = fin(b.e);
+    const detail =
+      outcome === "ejected"
+        ? `Was at ${a0 === null ? "?" : fmt(a0)} AU. Now unbound.`
+        : `${a0 === null ? "?" : fmt(a0)} AU before; ${a1 === null ? "?" : fmt(a1)} AU${e1 === null ? "" : `, e ${e1.toFixed(2)}`} after${str(b.boundTo) ? `, bound to ${str(b.boundTo)}` : ""}.`;
+    out.events!.push({
+      title: `${name} ${verb[outcome] ?? outcome}`,
+      description: detail,
+      offsetYears: at,
+      body: name,
+      outcome,
+    });
+  }
+  return out;
 }
 
 /**
@@ -432,7 +510,7 @@ export function simCanon(simulatorType: string, payload: unknown): SimCanon {
     case "solaris":
       return solarisCanon(payload);
     case "rogue":
-      return rogueCanon();
+      return rogueCanon(payload);
     case "exosky":
       return exoskyCanon();
     default:

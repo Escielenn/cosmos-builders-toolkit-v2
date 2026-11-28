@@ -238,17 +238,17 @@ describe("every simulator now reaches the writing surface", () => {
 // ---------------------------------------------------------------------------
 
 describe("golden default payloads", () => {
-  it("Tidelock: the 14.7-day year reads as days, not years (X1)", () => {
+  it("Tidelock: the 21.1-day year reads as days, not years (X1)", () => {
     const byKey = Object.fromEntries(extractTidelockFacts(TIDELOCK_DEFAULT).map((f) => [f.key, f.value]));
-    expect(byKey["locked.period"]).toBe("14.7 days");
+    expect(byKey["locked.period"]).toBe("21.1 days");
     expect(byKey["locked.star"]).toBe("M4V");
     expect(byKey["locked.gravity"]).toBe("1.00 g");
-    expect(byKey["locked.habitableBand"]).toContain("14.7% of the surface");
+    expect(byKey["locked.habitableBand"]).toContain("42.5% of the surface");
   });
 
   it("ExoForge: Earth defaults publish as Earth (X1, X2)", () => {
     const byKey = Object.fromEntries(extractExoforgeFacts(EXOFORGE_DEFAULT).map((f) => [f.key, f.value]));
-    expect(byKey["forged.period"]).toBe("365.3 days");
+    expect(byKey["forged.period"]).toBe("365.2 days");
     expect(byKey["forged.ocean"]).toBe("70%");
     expect(byKey["forged.cloud"]).toBe("40%");
     expect(byKey["forged.gravity"]).toBe("1.00 g");

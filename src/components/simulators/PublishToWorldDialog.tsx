@@ -43,6 +43,7 @@ import { publishSimRun, simRunMetadata, type PublishConflict, type SimRunSource 
 import { canon } from "@/canon";
 import { canonKeys } from "@/canon/hooks";
 import { useQueryClient } from "@tanstack/react-query";
+import { createChronicleEvent } from "@/services/chronicle-data";
 
 /** Map simulator output types to entity types */
 const OUTPUT_TYPE_MAP: Record<string, EntryType> = {
@@ -85,6 +86,10 @@ export default function PublishToWorldDialog({
   const qc = useQueryClient();
   const [conflicts, setConflicts] = useState<PublishConflict[]>([]);
   const [runSource, setRunSource] = useState<SimRunSource | null>(null);
+  // Rogue: the year the encounter happens in the writer's own calendar. The
+  // run only knows "years since launch"; nothing is dated until this is set.
+  const [anchorYear, setAnchorYear] = useState("");
+  const events = sim.events ?? [];
   const [isPublishing, setIsPublishing] = useState(false);
   const [matchCandidates, setMatchCandidates] = useState<EntityMatchCandidate[]>([]);
   const [matchDialogOpen, setMatchDialogOpen] = useState(false);
@@ -176,6 +181,22 @@ export default function PublishToWorldDialog({
     async (rootId: string, children: Record<string, string>, src: SimRunSource) => {
       if (!targetWorld) return;
       const out = await publishSimRun(canon, targetWorld, sim, { root: rootId, children }, src);
+      // Rogue outcomes to the Chronicle (R4), dated from the writer's anchor.
+      const year = Number.parseFloat(anchorYear);
+      if (events.length && Number.isFinite(year)) {
+        for (const ev of events) {
+          const at = year + ev.offsetYears;
+          await createChronicleEvent(targetWorld, {
+            title: ev.title,
+            description: `${ev.description} (Rogue run ${src.runId.slice(0, 8)}.)`,
+            eventDate: String(Math.round(at * 10) / 10),
+            sortValue: at,
+            eventType: "event",
+            linkedEntryId: rootId,
+            tags: ["rogue", ev.outcome],
+          });
+        }
+      }
       await qc.invalidateQueries({ queryKey: canonKeys.all(targetWorld) });
       const parts = [`${out.written + out.unchanged} ${out.written + out.unchanged === 1 ? "VALUE" : "VALUES"} IN CANON.`];
       if (out.derived) parts.push(`${out.derived} DERIVED.`);
@@ -189,7 +210,7 @@ export default function PublishToWorldDialog({
         setName("");
       }
     },
-    [targetWorld, sim, qc, toast, onOpenChange],
+    [targetWorld, sim, qc, toast, onOpenChange, anchorYear, events],
   );
 
   const createEntity = useCallback(async () => {
@@ -416,6 +437,41 @@ export default function PublishToWorldDialog({
             {/* Say what is travelling. A writer publishing a system they spent an
                 hour on should not have to open the Codex to find out whether the
                 numbers came with it. */}
+            {sim.refusal && (
+              <p role="alert" className="flex items-start gap-1.5 border border-sf-crimson bg-sf-crimson/[0.06] p-2 font-mono text-[12px] uppercase text-sf-crimson-text">
+                <TriangleAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-sf-crimson" aria-hidden />
+                // {sim.refusal}
+              </p>
+            )}
+
+            {events.length > 0 && !sim.refusal && (
+              <div className="border border-sf-line p-3">
+                <p className="text-[13px] text-t2">
+                  {events.length} {events.length === 1 ? "thing happens" : "things happen"} in this encounter. Give the
+                  year it happens in your world and each goes on the Chronicle.
+                </p>
+                <ul className="mt-2 space-y-0.5">
+                  {events.map((ev) => (
+                    <li key={ev.body} className="text-[13px] text-t1">
+                      {ev.title}
+                      <span className="block text-[12px] text-t3">{ev.description}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Label htmlFor="rogue-anchor" className="mt-3 block">
+                  Year of the encounter (optional)
+                </Label>
+                <Input
+                  id="rogue-anchor"
+                  inputMode="decimal"
+                  value={anchorYear}
+                  onChange={(e) => setAnchorYear(e.target.value)}
+                  placeholder="e.g. 2340"
+                  className="mt-1.5"
+                />
+              </div>
+            )}
+
             {hasData ? (
               facts.length > 0 ? (
                 <div className="border border-sf-line">
@@ -464,13 +520,15 @@ export default function PublishToWorldDialog({
             </Button>
             <Button
               onClick={handlePublish}
-              disabled={isPublishing || !name.trim() || !targetWorld || !hasData}
+              disabled={isPublishing || !name.trim() || !targetWorld || !hasData || !!sim.refusal}
               title={
                 !targetWorld
                   ? "Choose a world first"
                   : !hasData
                     ? "Still reading the simulation"
-                    : undefined
+                    : sim.refusal
+                      ? "This run's numbers are not reliable enough to publish"
+                      : undefined
               }
               className="gap-2"
             >

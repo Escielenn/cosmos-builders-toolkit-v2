@@ -31,7 +31,9 @@ describe("publishSimRun (X6)", () => {
     // The writer's canon mass is 1; a second run says radius 1.5 and mass 1 (unchanged).
     const heavier = { ...EXOFORGE_DEFAULT, parameters: { ...EXOFORGE_DEFAULT.parameters, radius: 1.5, temp: 300 } };
     const out = await publishSimRun(canon, "w1", exoforgeCanon(heavier), { root: "p1", children: {} }, { ...src, runId: "run-2" });
-    expect(out.conflicts.map((c) => c.fact.predicate).sort()).toEqual(["planet.radius", "planet.temp_mean"]);
+    // temp_mean now comes from the sim's derived results.surfaceTemp, so only
+    // the edited radius differs.
+    expect(out.conflicts.map((c) => c.fact.predicate).sort()).toEqual(["planet.radius"]);
     const radius = (await canon.rows("w1", { subjectId: "p1", predicate: "planet.radius" })).find((r) => r.confidence === "canon")!;
     expect(radius.value).toMatchObject({ value: 1 }); // untouched
     expect(out.stale).toBe(0); // the radius did not change in canon, so nothing downstream is stale
