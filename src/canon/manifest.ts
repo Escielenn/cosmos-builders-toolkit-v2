@@ -48,9 +48,10 @@ export interface ManifestProduces {
   /**
    * How to read a free-text field before asserting: `temperature_k` reads
    * "15°C", "288 K" or "59°F" (a bare number is °C, as the forms ask) into
-   * kelvin; `join` turns a list field into one comma-separated text.
+   * kelvin; `join` turns a list field into one comma-separated text;
+   * `count` asserts how many items a list field holds.
    */
-  parse?: "temperature_k" | "join";
+  parse?: "temperature_k" | "join" | "count";
 }
 
 export type OnMissing = "prompt" | "derive" | "link" | "ignore";

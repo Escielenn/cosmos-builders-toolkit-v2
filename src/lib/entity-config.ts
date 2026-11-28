@@ -265,6 +265,12 @@ export const ENTITY_MASTER_FIELDS: Record<string, MasterFieldDef[]> = {
       worksheetPaths: { "star-system-builder": "primaryStar.mass" },
     },
     {
+      label: "Bodies",
+      key: "systemBodies",
+      type: "text",
+      worksheetPaths: { "star-system-builder": "bodies" },
+    },
+    {
       label: "Stellar Age (Gyr)",
       key: "starAge",
       type: "number",

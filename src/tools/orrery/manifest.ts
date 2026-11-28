@@ -49,6 +49,9 @@ export const manifest: ToolManifest = {
     { predicate: "star.luminosity", from: "field:primaryStar.luminosity", unit: "solar_lum", kind: "scalar" },
     { predicate: "star.mass", from: "field:primaryStar.mass", unit: "solar_masses", kind: "scalar" },
     { predicate: "star.age", from: "field:primaryStar.age", unit: "gyr", kind: "scalar" },
+    // 1.9: Orrery is the domain owner of system.*; Solaris and Rogue promote
+    // their body counts through it (08), so it produces the count of its bodies.
+    { predicate: "system.body_count", from: "field:bodies", kind: "scalar", parse: "count" },
     { predicate: "star.temp_effective", from: `derive:${tempEffective.id}`, unit: "K", kind: "scalar" },
   ],
 

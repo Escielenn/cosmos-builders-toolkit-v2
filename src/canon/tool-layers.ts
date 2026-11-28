@@ -64,12 +64,6 @@ export const UNMANIFESTED_TOOL_LAYERS: Readonly<Record<string, CascadeLayer>> = 
   "kardashev-scale": "culture", // polity.kardashev
   "generation-ship": "culture", // vessel.*
   timeline: "integration",
-  // Simulators (their manifests are the sim lanes'; until they merge):
-  solaris: "physics",
-  rogue: "physics",
-  tidelock: "environment",
-  exoforge: "environment",
-  exosky: "environment",
 };
 
 /** Each wired tool's manifest `layer` (checked against the manifests in tests). */
@@ -87,6 +81,12 @@ export const MANIFEST_TOOL_LAYERS: Readonly<Record<string, CascadeLayer>> = {
   "evolutionary-biology": "biology", // phylo
   sensorium: "biology",
   "xenomythology-framework-builder": "mythology", // mythos
+  // Simulators (manifests by lanes E, S, T):
+  exosky: "physics",
+  solaris: "physics",
+  rogue: "physics",
+  tidelock: "environment",
+  exoforge: "environment",
 };
 
 const FROM_MANIFESTS = MANIFEST_TOOL_LAYERS;

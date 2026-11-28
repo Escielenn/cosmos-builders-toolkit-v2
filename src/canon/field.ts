@@ -253,6 +253,8 @@ export function planEmit(manifest: ToolManifest, data: unknown, opts: EmitOption
             const k = parseTemperatureK(raw);
             return k === null ? null : ({ kind: "scalar", value: k, unit: "K" } as FactValue);
           })()
+        : p.parse === "count"
+          ? (Array.isArray(raw) && raw.length > 0 ? ({ kind: "scalar", value: raw.length } as FactValue) : null)
         : p.parse === "join"
           ? (() => {
               const t = Array.isArray(raw) ? raw.map((x) => String(x).trim()).filter(Boolean).join(", ") : typeof raw === "string" ? raw.trim() : "";
