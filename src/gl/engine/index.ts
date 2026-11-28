@@ -1,10 +1,9 @@
 // ---------------------------------------------------------------------------
 // forge-gl engine core (Block G1). See docs/stellarforge/14-RENDER-ENGINE.md.
 //
-// Nothing mounts this yet. The scenes that will (System, Galaxy, Sky,
-// Encounter, and the Atlas's top level) are G3–G6; materials are G2. An
-// engine mounted before it has something canon-bound to draw is exactly the
-// tech demo §8 warns against.
+// Mounted by every scene in src/gl/scenes. The post stack (post.ts) is
+// shared by createEngine() and the r3f <PostStack>; PlanetScene (2.0 G) is
+// the first scene to draw through it.
 // ---------------------------------------------------------------------------
 
 export { DisposalRegistry } from "./disposal";
@@ -43,6 +42,16 @@ export {
 export type { CameraPose, Flight, Vec3 } from "./camera-rig";
 
 export { createEngine } from "./renderer";
+export {
+  AmbientGrainShader,
+  BLOOM_RADIUS,
+  BLOOM_THRESHOLD,
+  bloomStrength,
+  buildPostStack,
+  toneMappingFor,
+} from "./post";
+export type { PostStack as PostStackHandle, PostStackOptions } from "./post";
+export { PostStack } from "./PostStack";
 export type { Engine, EngineOptions } from "./renderer";
 
 // The tier system's consumer (G7). `decideTier` existed from G1 and nothing

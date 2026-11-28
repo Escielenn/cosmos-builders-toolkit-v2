@@ -1,5 +1,16 @@
 # StellarForge Changelog
 
+## 1.9100 · Planet preview (2.0, first look)
+- New page, /simulators/planet-preview: the first scene on forge-gl, the
+  shared 3D engine. Star colour from temperature, atmospheres coloured by their
+  gases and pressure, a day-night line that is sharp on airless worlds and soft
+  under thick air, clouds, city lights only where canon has a civilisation,
+  rings with the planet's shadow, and terrain coloured by the physics.
+- Chart tier: an ink-on-paper look for light themes and slower computers
+  (Display settings, Quality: Chart).
+- Click the planet or star to open its canon entry. Nothing else changes:
+  Tidelock and ExoForge stay as they are until the new scene replaces them.
+
 ## 1.9000 · True Numbers
 Every number a writer can quote is now right, records where it came from,
 and reaches the page. The simulators do what they say.

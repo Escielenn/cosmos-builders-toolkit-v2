@@ -107,3 +107,70 @@ export function coronaAmplitude(flareActivity: number | null | undefined): numbe
   }
   return Math.min(1, Math.max(0, flareActivity));
 }
+
+// ---------------------------------------------------------------------------
+// HDR star core that keeps its colour under bloom (Brief G2 §1).
+//
+// A photosphere has to be brighter than anything else in the frame (it is
+// what blooms), but naive HDR — kelvinToRGB × 4 — clips every channel past
+// the tone curve's shoulder and every class turns the same white. That is
+// the proof file's failure, which 14 §2 says to fix.
+//
+// So the gain goes through a hue-preserving soft clip: scale the colour by
+// a factor chosen on its brightest channel only, m' = M·(1 − e^(−m/M)).
+// Channel RATIOS are untouched, so an M-dwarf core stays red at any gain;
+// the brightest channel approaches M and never passes it. M = 1.6 sits
+// above the bloom threshold (1.0, post.ts) so the star glows, and below
+// the point where AgX's path-to-white has eaten the hue (AgX keeps
+// saturation up to roughly 2–3× diffuse white; Sobotka 2023).
+// The GLSL in StarMaterial mirrors this function line for line.
+// ---------------------------------------------------------------------------
+
+/** Ceiling of the brightest channel of a star core, linear HDR. */
+export const STAR_CORE_MAX = 1.6;
+
+export function starCoreRadiance(colour: RGB, gain: number): RGB {
+  const g = Math.max(0, Number.isFinite(gain) ? gain : 0);
+  const r = colour.r * g;
+  const gg = colour.g * g;
+  const b = colour.b * g;
+  const m = Math.max(r, gg, b);
+  if (m <= 0) return { r: 0, g: 0, b: 0 };
+  const k = (STAR_CORE_MAX * (1 - Math.exp(-m / STAR_CORE_MAX))) / m;
+  return { r: r * k, g: gg * k, b: b * k };
+}
+
+/** kelvinToRGB rescaled so its brightest channel is 1: hue without brightness. */
+export function blackbodyHue(kelvin: number): RGB {
+  const c = kelvinToRGB(kelvin);
+  const m = Math.max(c.r, c.g, c.b, 1e-9);
+  return { r: c.r / m, g: c.g / m, b: c.b / m };
+}
+
+/**
+ * The star's light as an adapted observer sees it: von Kries chromatic
+ * adaptation of degree D toward the illuminant,
+ *   c' = c / (D·c + 1 − D),  then renormalised (max channel 1).
+ *
+ * A camera white-balanced for the Sun would show an M-dwarf world as uniform
+ * orange, and ice, ocean and rock would stop being distinguishable, which is
+ * not what anyone standing there would see: the eye adapts most of the way
+ * to its illuminant. D = 0.8 is CIECAM02's degree of adaptation for an
+ * average surround under a bright adapting field (CIE 159:2004; Fairchild,
+ * "Color Appearance Models", 3rd ed., §9). The residual tint is the star's
+ * class, still visible: warm under K and M, cool under F and A.
+ *
+ * Used for REFLECTED and SCATTERED light. The photosphere itself keeps its
+ * true black-body colour.
+ */
+export const CHROMATIC_ADAPTATION_D = 0.8;
+
+export function adaptedLight(hue: RGB, d: number = CHROMATIC_ADAPTATION_D): RGB {
+  const k = Math.min(1, Math.max(0, d));
+  const f = (c: number) => c / (k * c + 1 - k);
+  const r = f(hue.r);
+  const g = f(hue.g);
+  const b = f(hue.b);
+  const m = Math.max(r, g, b, 1e-9);
+  return { r: r / m, g: g / m, b: b / m };
+}
