@@ -267,34 +267,17 @@ const EvolutionaryBiology = () => {
       {options.map((option) => {
         const isChecked = selected.includes(option.id);
         return (
-          <div
+          // 1.9 F-13/F-14: one real checkbox named by a real label; the
+          // whole row is the click target. (A role="checkbox" div wrapped a
+          // second, unnamed checkbox: 16 unnamed controls per sheet.)
+          <label
             key={option.id}
-            role="checkbox"
-            aria-checked={isChecked}
-            tabIndex={0}
-            className="flex items-start gap-3 p-3 rounded-none border border-sf-line hover:border-sf-primary cursor-pointer transition-colors"
-            onClick={(e) => {
-              e.preventDefault();
-              if (isChecked) {
-                onChange(selected.filter((id) => id !== option.id));
-              } else {
-                onChange([...selected, option.id]);
-              }
-            }}
-            onKeyDown={(e) => {
-              if (e.key === " " || e.key === "Enter") {
-                e.preventDefault();
-                if (isChecked) {
-                  onChange(selected.filter((id) => id !== option.id));
-                } else {
-                  onChange([...selected, option.id]);
-                }
-              }
-            }}
+            htmlFor={`phylo-opt-${option.id}`}
+            className="flex min-h-hit items-start gap-3 p-3 rounded-none border border-sf-line hover:border-sf-primary cursor-pointer transition-colors"
           >
             <Checkbox
+              id={`phylo-opt-${option.id}`}
               checked={isChecked}
-              tabIndex={-1}
               onCheckedChange={(checked) => {
                 if (checked) {
                   onChange([...selected, option.id]);
@@ -303,15 +286,15 @@ const EvolutionaryBiology = () => {
                 }
               }}
             />
-            <div>
+            <span>
               <span className="font-medium text-sm">{option.name}</span>
               {option.description && (
-                <p className="text-xs text-t4 mt-0.5">
+                <span className="block text-[13px] text-t3 mt-0.5">
                   {option.description}
-                </p>
+                </span>
               )}
-            </div>
-          </div>
+            </span>
+          </label>
         );
       })}
     </div>

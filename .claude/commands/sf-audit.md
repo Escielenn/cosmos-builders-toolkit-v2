@@ -4,12 +4,13 @@ description: Sweep the codebase for interconnection violations — orphan data, 
 
 # /sf-audit
 
-> **Not yet runnable as written.** The canon layer (`src/canon/`, including
-> `vocabulary.ts`) and per-tool manifests (`src/tools/<id>/manifest.ts`) do
-> not exist yet; they arrive with C2 (`12-SESSION-SEQUENCE.md`). Until C2
-> lands, run the checks below manually against `src/pages/tools/`,
-> `src/pages/simulators/` and `src/components/tools/StellarCartographer/`,
-> and report manifest coverage (check 1) as zero rather than as a pass.
+> **Runnable.** The canon layer exists (`src/canon/`: `vocabulary.ts`,
+> `manifest.ts`, `manifests/index.ts`, `derive.ts`, `narrate.ts`,
+> `tool-layers.ts`) and wired tools carry `src/tools/<id>/manifest.ts`.
+> Checks 1, 3, 4, 6 and 7 are unit-testable through `validateManifest` and
+> `MANIFESTS` (see `src/canon/__tests__/manifests.test.ts`); count studio
+> blocks with `renderableStudioBlocks()` from `src/canon/narrate.ts`. Checks
+> 8 to 10 are still manual greps / queries. (Header corrected 1.9, F-19.)
 
 Run the interconnection audit. This is the automated half of `docs/stellarforge/07-REVIEW-GATES.md`.
 

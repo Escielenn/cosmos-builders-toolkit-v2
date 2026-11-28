@@ -610,6 +610,7 @@ const Sensorium = () => {
                       <Label>Magnetic Field</Label>
                       <Switch
                         checked={formState.environment.magneticField.present}
+                        aria-label="Magnetic field present"
                         onCheckedChange={(v) => updateEnvironment("magneticField.present", v)}
                       />
                     </div>
@@ -658,6 +659,7 @@ const Sensorium = () => {
                         <span className="text-sm">Day/Night Cycle</span>
                         <Switch
                           checked={formState.environment.lighting.dayNightCycle}
+                        aria-label="Day/night cycle"
                           onCheckedChange={(v) => updateEnvironment("lighting.dayNightCycle", v)}
                         />
                       </div>
@@ -665,6 +667,7 @@ const Sensorium = () => {
                         <span className="text-sm">Tidally Locked</span>
                         <Switch
                           checked={formState.environment.lighting.tidallyLocked}
+                        aria-label="Tidally locked"
                           onCheckedChange={(v) => updateEnvironment("lighting.tidallyLocked", v)}
                         />
                       </div>

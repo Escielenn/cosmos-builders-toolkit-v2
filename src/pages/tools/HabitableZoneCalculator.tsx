@@ -512,6 +512,7 @@ const HabitableZoneCalculator = () => {
                     <label className="flex items-center gap-2 text-xs text-t4 cursor-pointer">
                       <Switch
                         checked={formState.star.autoLuminosity}
+                        aria-label="Work out luminosity from mass"
                         onCheckedChange={(checked) => updateStar({ autoLuminosity: checked })}
                       />
                       Auto from mass

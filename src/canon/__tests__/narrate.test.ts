@@ -54,3 +54,13 @@ describe("F-07 one cascade-layer scheme", () => {
     expect(LAYER_TOOL_MAP.technology).toEqual([]);
   });
 });
+
+describe("F-09 copied links notice a revised source", async () => {
+  const { isLinkStale } = await import("@/components/tools/WorksheetLinkSelector");
+  it("is stale only when the source saved after the copy", () => {
+    expect(isLinkStale("2026-11-01T00:00:00Z", "2026-11-02T00:00:00Z")).toBe(true);
+    expect(isLinkStale("2026-11-02T00:00:00Z", "2026-11-01T00:00:00Z")).toBe(false);
+    expect(isLinkStale("2026-11-01T00:00:00.000Z", "2026-11-01T00:00:00.500Z")).toBe(false);
+    expect(isLinkStale(undefined, "2026-11-01T00:00:00Z")).toBe(false);
+  });
+});
